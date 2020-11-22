@@ -5,29 +5,23 @@
     </title>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
     <link rel="stylesheet" href="index.css"> 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.0/split.min.js"></script>
   </head>
   <body>
-    <div class="flex">
-      <div id="first" class="split">
+    <div id="app" class="">
+      <div id="first" class="split-horizontal">
         <img src="cali.jpg" />
+        <!--<p>First</p>-->
       </div>
-      <div class="gutter gutter-vertical" />
-      <div id="second" class="split">
-        <img src="cali.jpg" />
+      <div id="st" class="split-horizontal">
+        <div id="second" class="split-vertical">
+          <img src="cali.jpg" />
+          <!--<p>Second</p>-->
+        </div>
+        <div id="third" class="split-vertical">
+          <!--<p>Third</p>-->
+          <img src="cali.jpg" />
+        </div>
       </div>
-        <script>
-          /*
-      <div id="third" class="split">
-        <img src="cali.jpg" />
-      </div>
-          */
-        </script>
     </div>
-    <script>
-      Split(["#first", "#second"], {
-        direction: "vertical",
-      });
-    </script>
   </body>
 </html>
