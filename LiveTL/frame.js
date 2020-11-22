@@ -21,17 +21,22 @@ runLiveTL = () => {
     var e = document.createElement("div");
     e.className = "livetl";
     document.body.appendChild(e);
+
+    var lastElement = null;
     setInterval(() => {
-        e.innerHTML = "";
-        document.querySelectorAll("#message").forEach(m => {
-            if (!m.innerText) return;
+        var messages = document.querySelectorAll("#message");
+        for (i = messages.length - 1; i >= 0; i--) {
+            var m = messages[i];
+            if (!m.innerText) continue;
+            if (m == lastElement) break;;
             // match lang with regex here
             var line = document.createElement("div");
             line.style.marginBottom = "10px";
             line.innerText = m.innerText;
             e.appendChild(line);
             e.scrollTop = e.scrollHeight;
-        });
+        }
+        lastElement = messages[messages.length - 1];
     }, 100);
 }
 
