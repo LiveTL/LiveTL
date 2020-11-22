@@ -233,24 +233,26 @@ runLiveTL = () => {
     var lastLang = null;
     setInterval(() => {
         if (select.value != lastLang) e.innerHTML = "";
-        var messages = document.querySelectorAll("#message");
+        var messages = document.querySelectorAll("yt-live-chat-text-message-renderer");
         for (i = messages.length - 1; i >= 0; i--) {
-            var m = messages[i];
+            var m = messages[i].querySelector("#message");
             if (!m.innerText) continue;
-            if (m == lastElement) break;
-            // match lang with regex here
+            if (messages[i].id == lastElement) break;
+            var parsed = /^\[(\w+)\] ?(.+)/.exec(m.innerText);
+            if (parsed == null || parsed[1] != select.value) continue;
             var line = document.createElement("div");
             line.style.marginBottom = "10px";
-            line.innerText = m.innerText;
+            line.style.marginTop = "10px";
+            line.innerText = parsed[2];
             e.appendChild(line);
             e.scrollTop = e.scrollHeight;
         }
-        lastElement = messages[messages.length - 1];
+        lastElement = messages[messages.length - 1].id;
         lastLang = select.value;
     }, 100);
 }
 
-window.onload = () => {
+window.onload = (() => {
     if (parent === top) {
         try {
             var params = JSON.parse('{"' +
@@ -265,4 +267,4 @@ window.onload = () => {
         } catch (e) {
         }
     }
-};
+});
