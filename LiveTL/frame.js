@@ -16,7 +16,10 @@ runLiveTL = () => {
             font-size: 20px;
             overflow: hidden;
             padding-left: 10px;
-    }`;
+            min-height: 0px !important;
+            min-width 0px !important;
+        }
+    `;
     document.getElementsByTagName('head')[0].appendChild(style);
     var e = document.createElement("div");
     e.className = "livetl";
