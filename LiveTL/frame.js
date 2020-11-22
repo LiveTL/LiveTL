@@ -238,6 +238,7 @@ runLiveTL = () => {
             if (parsed != null && parsed[1] == select.value) {
                 var line = document.createElement("div");
                 line.style.marginBottom = "10px";
+                line.style.marginTop = "10px";
                 line.textContent = parsed[2];
                 e.appendChild(line);
                 e.scrollTop = e.scrollHeight;
