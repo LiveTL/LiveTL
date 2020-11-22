@@ -25,13 +25,14 @@ runLiveTL = () => {
         e.innerHTML = "";
         document.querySelectorAll("#message").forEach(m => {
             if (!m.innerText) return;
+            // match lang with regex here
             var line = document.createElement("div");
             line.style.marginBottom = "10px";
             line.innerText = m.innerText;
             e.appendChild(line);
             e.scrollTop = e.scrollHeight;
         });
-    }, 10);
+    }, 100);
 }
 
 window.onload = () => {
