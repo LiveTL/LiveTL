@@ -1,33 +1,37 @@
 runLiveTL = () => {
     console.log("Running LiveTL!");
-    var e = document.querySelectorAll("#items")[1];
-    document.querySelectorAll("#items")[0].style.display = "none";
-    document.querySelectorAll("#panel-pages")[0].style.display = "none";
-    e.style.position = "fixed";
-    e.style.top = 0;
-    e.style.left = 0;
-    e.style.maxHeight = "100vh";
-    e.style.maxWidth = "100vw";
-    e.style.overflowY = "hidden";
-    e.style.zIndex = "69420";
-    e.style.backgroundColor = "var(--yt-live-chat-background-color)";
-    e.scrollTop = e.scrollHeight;
     var style = document.createElement('style');
     style.innerHTML = `
-        yt-img-shadow {
-            display: none !important;
-            width: 0px !important;
-        }
-        yt-live-chat-text-message-renderer > #content > * {
-            display:none;
-        }
-        yt-live-chat-text-message-renderer > #content > #message {
-            display: block !important;
+        .livetl {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--yt-live-chat-background-color);
+            color: var(--yt-live-chat-primary-text-color);
+            z-index: 69420;
+            word-wrap: break-word;
+            word-break: break-word;
+            font-size: 20px;
+            overflow: hidden;
+            padding-left: 10px;
     }`;
     document.getElementsByTagName('head')[0].appendChild(style);
+    var e = document.createElement("div");
+    e.className = "livetl";
+    document.body.appendChild(e);
     setInterval(() => {
-        e.scrollTop = e.scrollHeight;
-    }, 0);
+        e.innerHTML = "";
+        document.querySelectorAll("#message").forEach(m => {
+            if (!m.innerText) return;
+            var line = document.createElement("div");
+            line.style.marginBottom = "10px";
+            line.innerText = m.innerText;
+            e.appendChild(line);
+            e.scrollTop = e.scrollHeight;
+        });
+    }, 10);
 }
 
 window.onload = () => {
