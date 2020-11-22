@@ -215,7 +215,7 @@ runLiveTL = () => {
     var select = document.createElement("select");
     languages.forEach(lang => {
         var opt = document.createElement("option");
-        opt.innerText = lang.code;
+        opt.textContent = lang.code;
         opt.value = lang.code;
         if (lang.code == "en") opt.selected = true;
         select.appendChild(opt);
@@ -229,30 +229,27 @@ runLiveTL = () => {
     select.style.width = "5em !important";
     document.body.appendChild(select);
 
-    var lastElement = null;
     var lastLang = null;
     setInterval(() => {
         if (select.value != lastLang) e.innerHTML = "";
-        var messages = document.querySelectorAll("yt-live-chat-text-message-renderer");
-        for (i = messages.length - 1; i >= 0; i--) {
-            var m = messages[i].querySelector("#message");
-            if (!m.innerText) continue;
-            if (messages[i].id == lastElement) break;
-            var parsed = /^\[(\w+)\] ?(.+)/.exec(m.innerText);
-            if (parsed == null || parsed[1] != select.value) continue;
-            var line = document.createElement("div");
-            line.style.marginBottom = "10px";
-            line.style.marginTop = "10px";
-            line.innerText = parsed[2];
-            e.appendChild(line);
-            e.scrollTop = e.scrollHeight;
-        }
-        lastElement = messages[messages.length - 1].id;
+        var messages = document.querySelectorAll("#message");
+        messages.forEach(m => {
+            var parsed = /^\[(\w+)\] ?(.+)/.exec(m.textContent);
+            if (parsed != null && parsed[1] == select.value) {
+                var line = document.createElement("div");
+                line.style.marginBottom = "10px";
+                line.textContent = parsed[2];
+                e.appendChild(line);
+                e.scrollTop = e.scrollHeight;
+            }
+            m.remove();
+        });
         lastLang = select.value;
     }, 100);
 }
 
-window.onload = (() => {
+window.onload = () => {
+    setTimeout
     if (parent === top) {
         try {
             var params = JSON.parse('{"' +
@@ -267,4 +264,4 @@ window.onload = (() => {
         } catch (e) {
         }
     }
-});
+};

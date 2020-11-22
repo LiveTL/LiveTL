@@ -1,14 +1,26 @@
 <iframe id="livetl-chat" frameborder="0"></iframe>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/5qap5aO4i9A" frameborder="0"
+<iframe width="560" height="315" src="https://www.youtube.com/embed/5qap5aO4i9A?autoplay=1" frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
     id="stream"></iframe>
 <style>
     #livetl-chat {
-        width: 100%;
+        width: 50%;
         height: 100%;
         position: fixed;
         top: 0;
+        right: 0;
+    }
+
+    #stream {
+        position: fixed;
+        top: 0;
         left: 0;
+        width: 50%;
+        height: 100%;
+    }
+
+    * {
+        background-color: black;
     }
 </style>
 <script>
