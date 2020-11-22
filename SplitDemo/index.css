@@ -1,0 +1,15 @@
+.gutter {
+    background-color: #eee;
+
+    background-repeat: no-repeat;
+    background-position: 50%;
+}
+
+.split, .gutter.gutter-vertical {
+  float: left;
+}
+
+.gutter.gutter-vertical {
+  width: 10px;
+  cursor: col-resize;
+}
