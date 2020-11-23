@@ -185,6 +185,9 @@ const languages = [
     { code: 'zu', name: 'Zulu' }
 ];
 
+var languageConversionTable = {};
+languages.forEach(i => languageConversionTable[i.name + ` [${i.code}]`] = i);
+
 languages.sort((a, b) => a.code - b.code);
 
 function runLiveTL() {
@@ -216,14 +219,16 @@ function runLiveTL() {
         eee.src = "https://fonts.gstatic.com/s/i/materialiconsoutlined/settings/v7/24px.svg";
         e.className = "livetl";
         document.body.appendChild(e);
-        let select = document.createElement("select");
+        let select = document.createElement("input");
+        let datalist = document.createElement("datalist");
+        datalist.id = "languages";
         languages.forEach(lang => {
             let opt = document.createElement("option");
-            opt.textContent = lang.code;
-            opt.value = lang.code;
-            if (lang.code == "en") opt.selected = true;
-            select.appendChild(opt);
+            opt.value = lang.name + ` [${lang.code}]`;
+            if (lang.code == "en") select.value = opt.value;
+            datalist.appendChild(opt);
         });
+        document.body.appendChild(datalist);
         // eee.id = "langSelect";
         // eee.style.zIndex = 100000;
         // eee.style.position = "fixed";
@@ -232,27 +237,35 @@ function runLiveTL() {
         // eee.style.padding = "5px";
         // eee.style.width = "5em !important";
 
+        let lastLang = select.value;
         select.id = "langSelect";
+        select.setAttribute("list", datalist.id);
         select.style.zIndex = 100000;
         select.style.position = "fixed";
         select.style.top = 0;
         select.style.right = 0;
         select.style.padding = "5px";
-        select.style.width = "5em !important";
+        select.style.width = "auto !important";
+        select.onblur = () => {
+            console.log(lastLang);
+            if (!(select.value in languageConversionTable)) {
+                select.value = lastLang;
+            }
+        }
+        select.onfocus = () => select.value = "";
         let sd = document.createElement("div");
         // sd.appendChild(select);
         sd.appendChild(select);
         // settings svg: "https://fonts.gstatic.com/s/i/materialiconsoutlined/settings/v7/24px.svg";
         document.body.appendChild(sd);
 
-        let lastLang = null;
         setInterval(() => {
-            if (select.value != lastLang) e.innerHTML = "";
+            if (select.value in languageConversionTable && select.value != lastLang) e.innerHTML = "";
             let messages = document.querySelectorAll("#message");
             messages.forEach(m => {
                 let parsed = /^\[(\w+)\] ?(.+)/.exec(m.textContent);
                 if (parsed != null) console.log(parsed);
-                if (parsed != null && parsed[1].toLowerCase() == select.value) {
+                if (parsed != null && parsed[1].toLowerCase() == languageConversionTable[select.value].code) {
                     let line = document.createElement("div");
                     line.style.marginBottom = "10px";
                     line.style.marginTop = "10px";
@@ -261,7 +274,7 @@ function runLiveTL() {
                 }
                 m.remove();
             });
-            lastLang = select.value;
+            if (select.value in languageConversionTable) lastLang = select.value;
             e.scrollTop = e.scrollHeight;
         }, 100);
     }, 100);
