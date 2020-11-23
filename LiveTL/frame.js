@@ -185,6 +185,7 @@ const languages = [
     { code: 'zu', name: 'Zulu' }
 ];
 
+languages.sort((a, b) => a.code - b.code);
 
 runLiveTL = () => {
     switchChat();
