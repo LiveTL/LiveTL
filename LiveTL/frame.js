@@ -256,7 +256,6 @@ switchChat = () => {
     let virginity = 2;
     document.querySelectorAll(".yt-dropdown-menu").forEach((e) => {
         if (/Live chat/.exec(e.innerText) && virginity > 0) {
-            console.log(e);
             e.click();
             virginity--;
         }
