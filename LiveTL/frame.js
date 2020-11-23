@@ -238,11 +238,13 @@ runLiveTL = () => {
             for (i = 0; i < messages.length - 250; i++) messages[i].remove();
             messages.forEach(m => {
                 var parsed = /^\[(\w+)\] ?(.+)/.exec(m.textContent);
+                console.log(parsed);
                 if (parsed != null && parsed[1] == select.value) {
                     var line = document.createElement("div");
                     line.style.marginBottom = "10px";
                     line.style.marginTop = "10px";
                     line.textContent = parsed[2];
+                    console.log(parsed[2]);
                     e.appendChild(line);
                 }
                 m.remove();
@@ -263,15 +265,18 @@ switchChat = () => {
     })
 };
 
+parseParams = () => {
+    var s = decodeURI(location.search.substring(1))
+        .replace(/"/g, '\\"')
+        .replace(/&/g, '","')
+        .replace(/=/g, '":"');
+    return s == "" ? {} : JSON.parse('{"' + s + '"}');
+}
+
 window.onload = () => {
     if (parent === top) {
         try {
-            var params = JSON.parse('{"' +
-                decodeURI(location.search.substring(1))
-                    .replace(/"/g, '\\"')
-                    .replace(/&/g, '","')
-                    .replace(/=/g, '":"')
-                + '"}');
+            var params = parseParams();
             if (params.useLiveTL) {
                 console.log("Running LiveTL!");
                 runLiveTL();
