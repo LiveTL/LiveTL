@@ -243,11 +243,11 @@ runLiveTL = () => {
                     line.style.marginTop = "10px";
                     line.textContent = parsed[2];
                     e.appendChild(line);
-                    e.scrollTop = e.scrollHeight;
                 }
                 m.remove();
             });
             lastLang = select.value;
+            e.scrollTop = e.scrollHeight;
         }, 100);
     }, 100);
 }
