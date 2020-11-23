@@ -212,17 +212,62 @@ function runLiveTL() {
                 min-height: 0px !important;
                 min-width 0px !important;
             }
-
-            #settingsGear {
-                stroke: #D1D1D1;
+            .navBar{
+                zIndex: 100000;
+                position: "absolute";
+                top: 0;
+                right: 0;
             }
-        ` + modalCSS;
+            input {
+                padding: 5px;
+                width: "auto !important";
+            }
+            .dropdown-check-list {
+                display: inline-block;
+            }
+            .dropdown-check-list .anchor {
+                position: relative;
+                cursor: pointer;
+                display: inline-block;
+                padding: 5px 50px 5px 10px;
+                border: 1px solid #ccc;
+            }
+            .dropdown-check-list .anchor:after {
+                position: absolute;
+                content: "";
+                border-left: 2px solid black;
+                border-top: 2px solid black;
+                padding: 5px;
+                right: 10px;
+                top: 20%;
+                -moz-transform: rotate(-135deg);
+                -ms-transform: rotate(-135deg);
+                -o-transform: rotate(-135deg);
+                -webkit-transform: rotate(-135deg);
+                transform: rotate(-135deg);
+            }
+            .dropdown-check-list .anchor:active:after {
+                right: 8px;
+                top: 21%;
+            }
+            .dropdown-check-list ul.items {
+                padding: 2px;
+                display: none;
+                margin: 0;
+                border: 1px solid #ccc;
+                border-top: none;
+            }
+            .dropdown-check-list ul.items li {
+                list-style: none;
+            }
+        `;
         document.getElementsByTagName("head")[0].appendChild(style);
+        let livetlContainer = document.createElement("div");
+        livetlContainer.className = "livetl";
+        document.body.appendChild(livetlContainer);
         let e = document.createElement("div");
-        let settingsButton = document.createElement("div");
-        settingsButton.innerHTML = settingsGear;
-        e.className = "livetl";
-        document.body.appendChild(e);
+        // let eee = document.createElement("img");
+        // eee.src = "https://fonts.gstatic.com/s/i/materialiconsoutlined/settings/v7/24px.svg";
         let select = document.createElement("input");
         let datalist = document.createElement("datalist");
         datalist.id = "languages";
@@ -243,9 +288,6 @@ function runLiveTL() {
         let lastLang = select.value;
         select.id = "langSelect";
         select.setAttribute("list", datalist.id);
-        select.style.zIndex = 100000;
-        select.style.padding = "5px";
-        select.style.width = "auto !important";
         select.onblur = () => {
             console.log(lastLang);
             if (!(select.value in languageConversionTable)) {
@@ -253,33 +295,41 @@ function runLiveTL() {
             }
         }
         select.onfocus = () => select.value = "";
-        select.style.padding = "5px";
-        select.style.width = "5em !important";
-        let modalDiv = document.createElement("div");
-        modalDiv.className = "modal";
-        modalDiv.style.zIndex = 1000000;
-        let modalDivv = document.createElement("div");
-        modalDivv.className = "modal-content";
-        let closeSpan = document.createElement("span");
-        closeSpan.className = "close";
-        closeSpan.innerHTML = "&times";
-        settingsButton.addEventListener("click", (e) => {
-            modalDiv.style.display = "block";
-        });
-        closeSpan.addEventListener("click", (e) => {
-            modalDiv.style.display = "none";
-        })
-        window.addEventListener("click", (e) => {
-            if (e.target == modalDiv) {
-                modalDiv.style.display = "none";
+        let navbar = document.createElement("div");
+        navbar.className = "navbar";
+        // sd.appendChild(select);
+        navbar.className = "navbar";
+        navbar.appendChild(select);
+        // settings svg: "https://fonts.gstatic.com/s/i/materialiconsoutlined/settings/v7/24px.svg";
+        livetlContainer.appendChild(navbar);
+        livetlContainer.appendChild(e);
+
+        var checklist = document.createElement("div");
+        checklist.className = "dropdown-check-list";
+        navbar.appendChild(checklist);
+        var defaultText = document.createElement("span");
+        defaultText.className = "anchor";
+        defaultText.textContent = "Select Translators";
+        checklist.appendChild(defaultText);
+        var items = document.createElement("ul");
+        items.id = "items";
+        items.className = "items";
+        checklist.appendChild(items);
+        var allTranslators = {};
+        var shownTranslators = {};
+        checklist.getElementsByClassName('anchor')[0].onclick = () => {
+            if (items.classList.contains('visible')) {
+                items.classList.remove('visible');
+                items.style.display = "none";
             }
-        })
-        modalDivv.appendChild(closeSpan);
-        modalDivv.appendChild(select);
-        modalDivv.appendChild(datalist);
-        modalDiv.appendChild(modalDivv);
-        document.body.appendChild(settingsButton);
-        document.body.appendChild(modalDiv);
+            else {
+                items.classList.add('visible');
+                items.style.display = "block";
+            }
+        }
+        items.onblur = function (evt) {
+            items.classList.remove('visible');
+        }
 
         setInterval(() => {
             if (select.value in languageConversionTable && select.value != lastLang) e.innerHTML = "";
@@ -288,10 +338,13 @@ function runLiveTL() {
                 let parsed = /^\[(\w+)\] ?(.+)/.exec(m.textContent);
                 if (parsed != null) console.log(parsed);
                 if (parsed != null && parsed[1].toLowerCase() == languageConversionTable[select.value].code) {
+                    var author = document.querySelectorAll("#message")[3].parentElement.childNodes[1].textContent;
                     let line = document.createElement("div");
                     line.style.marginBottom = "10px";
                     line.style.marginTop = "10px";
                     line.textContent = parsed[2];
+                    line.title = author;
+                    $(line).tooltip();
                     e.appendChild(line);
                 }
                 m.remove();
