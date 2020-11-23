@@ -7,21 +7,30 @@
     <link rel="stylesheet" href="index.css"> 
   </head>
   <body>
-    <div id="app" class="">
+    <div id="app" class="flex-container">
       <div id="first" class="split-horizontal">
-        <img src="cali.jpg" />
+        <!--<img src="cali.jpg" />-->
         <!--<p>First</p>-->
+      <iframe src="https://www.youtube.com/embed/5qap5aO4i9A?autoplay=1" frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
+    id="stream"></iframe>
       </div>
-      <div id="st" class="split-horizontal">
-        <div id="second" class="split-vertical">
-          <img src="cali.jpg" />
+      <div id="st" class="">
+        <div id="second" class="st-c split-vertical">
+          <!--<img src="cali.jpg" />-->
           <!--<p>Second</p>-->
+          <iframe id="livetl-chat1" frameborder="0"></iframe>
         </div>
-        <div id="third" class="split-vertical">
+        <div id="third" class="st-c">
           <!--<p>Third</p>-->
-          <img src="cali.jpg" />
+          <!--<img src="cali.jpg" />-->
+          <iframe id="livetl-chat2" frameborder="0"></iframe>
         </div>
       </div>
     </div>
+    <script>
+      document.getElementById("livetl-chat1").src = `https://www.youtube.com/live_chat?v=5qap5aO4i9A&embed_domain=${document.domain}&useLiveTL=1`;
+      document.getElementById("livetl-chat2").src = `https://www.youtube.com/live_chat?v=5qap5aO4i9A&embed_domain=${document.domain}&useLiveTL=1`;
+    </script>
   </body>
 </html>

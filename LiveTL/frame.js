@@ -187,70 +187,82 @@ const languages = [
 
 
 runLiveTL = () => {
-    console.log("Running LiveTL!");
-    var style = document.createElement('style');
-    style.innerHTML = `
-        .livetl {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--yt-live-chat-background-color);
-            color: var(--yt-live-chat-primary-text-color);
-            z-index: 69420;
-            word-wrap: break-word;
-            word-break: break-word;
-            font-size: 20px;
-            overflow: hidden;
-            padding-left: 10px;
-            min-height: 0px !important;
-            min-width 0px !important;
-        }
-    `;
-    document.getElementsByTagName('head')[0].appendChild(style);
-    var e = document.createElement("div");
-    e.className = "livetl";
-    document.body.appendChild(e);
-    var select = document.createElement("select");
-    languages.forEach(lang => {
-        var opt = document.createElement("option");
-        opt.textContent = lang.code;
-        opt.value = lang.code;
-        if (lang.code == "en") opt.selected = true;
-        select.appendChild(opt);
-    });
-    select.id = "langSelect";
-    select.style.zIndex = 100000;
-    select.style.position = "fixed";
-    select.style.top = 0;
-    select.style.right = 0;
-    select.style.padding = "5px";
-    select.style.width = "5em !important";
-    document.body.appendChild(select);
-
-    var lastLang = null;
-    setInterval(() => {
-        if (select.value != lastLang) e.innerHTML = "";
-        var messages = document.querySelectorAll("#message");
-        messages.forEach(m => {
-            var parsed = /^\[(\w+)\] ?(.+)/.exec(m.textContent);
-            if (parsed != null && parsed[1] == select.value) {
-                var line = document.createElement("div");
-                line.style.marginBottom = "10px";
-                line.style.marginTop = "10px";
-                line.textContent = parsed[2];
-                e.appendChild(line);
-                e.scrollTop = e.scrollHeight;
+    switchChat();
+    setTimeout(() => {
+        var style = document.createElement('style');
+        style.innerHTML = `
+            .livetl {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: var(--yt-live-chat-background-color);
+                color: var(--yt-live-chat-primary-text-color);
+                z-index: 69420;
+                word-wrap: break-word;
+                word-break: break-word;
+                font-size: 20px;
+                overflow: hidden;
+                padding-left: 10px;
+                min-height: 0px !important;
+                min-width 0px !important;
             }
-            m.remove();
+        `;
+        document.getElementsByTagName('head')[0].appendChild(style);
+        var e = document.createElement("div");
+        e.className = "livetl";
+        document.body.appendChild(e);
+        var select = document.createElement("select");
+        languages.forEach(lang => {
+            var opt = document.createElement("option");
+            opt.textContent = lang.code;
+            opt.value = lang.code;
+            if (lang.code == "en") opt.selected = true;
+            select.appendChild(opt);
         });
-        lastLang = select.value;
+        select.id = "langSelect";
+        select.style.zIndex = 100000;
+        select.style.position = "fixed";
+        select.style.top = 0;
+        select.style.right = 0;
+        select.style.padding = "5px";
+        select.style.width = "5em !important";
+        document.body.appendChild(select);
+
+        var lastLang = null;
+        setInterval(() => {
+            if (select.value != lastLang) e.innerHTML = "";
+            var messages = document.querySelectorAll("#message");
+            messages.forEach(m => {
+                var parsed = /^\[(\w+)\] ?(.+)/.exec(m.textContent);
+                if (parsed != null && parsed[1] == select.value) {
+                    var line = document.createElement("div");
+                    line.style.marginBottom = "10px";
+                    line.style.marginTop = "10px";
+                    line.textContent = parsed[2];
+                    e.appendChild(line);
+                    e.scrollTop = e.scrollHeight;
+                }
+                m.remove();
+            });
+            lastLang = select.value;
+        }, 100);
     }, 100);
 }
 
+switchChat = () => {
+    let virginity = 2;
+    document.querySelectorAll(".yt-dropdown-menu").forEach((e) => {
+        if (/Live chat/.exec(e.innerText) && virginity > 0) {
+            console.log(e);
+            e.click();
+            virginity--;
+        }
+    })
+};
+
 window.onload = () => {
-    setTimeout
     if (parent === top) {
         try {
             var params = JSON.parse('{"' +
@@ -259,10 +271,11 @@ window.onload = () => {
                     .replace(/&/g, '","')
                     .replace(/=/g, '":"')
                 + '"}');
-            if (params.useLiveTL) {
+            if (true || params.useLiveTL) {
+                console.log("Running LiveTL!");
                 runLiveTL();
             }
         } catch (e) {
         }
     }
-};
+}

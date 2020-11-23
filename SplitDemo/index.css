@@ -8,12 +8,35 @@ img {
   height: 100%;
 }
 
+iframe {
+  height: 100%;
+  width: 100%;
+  object-fit: cover
+}
+
+div {
+  object-fit: cover;
+}
+
+#st {
+  float: left;
+  height: 100%;
+  overflow: hidden;
+  width: 25%;
+}
+
+.st-c {
+  height: 50%;
+  object-fit: cover;
+}
+
 .split-horizontal {
   border: 2px solid;
   resize: horizontal;
   overflow: hidden;
   float: left;
   height: 100%;
+  width: 75%;
 }
 
 .split-vertical {
