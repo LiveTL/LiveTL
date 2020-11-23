@@ -203,7 +203,7 @@ function runLiveTL() {
                 height: 100%;
                 background-color: var(--yt-live-chat-background-color);
                 color: var(--yt-live-chat-primary-text-color);
-                z-index: 69420;
+                z-index: 0;
                 word-wrap: break-word;
                 word-break: break-word;
                 font-size: 20px;
@@ -212,11 +212,14 @@ function runLiveTL() {
                 min-height: 0px !important;
                 min-width 0px !important;
             }
-            .navBar{
-                zIndex: 100000;
-                position: "absolute";
-                top: 0;
-                right: 0;
+            .livetl * {
+                vertical-align: top;
+            }
+            .navbar{
+                position: absolute;
+                margin-top: 10px;
+                min-height: 25px;
+                z-index: 69420;
             }
             input {
                 padding: 5px;
@@ -224,6 +227,9 @@ function runLiveTL() {
             }
             .dropdown-check-list {
                 display: inline-block;
+                background-color: white;
+                color: black;
+                font-size: 14px;
             }
             .dropdown-check-list .anchor {
                 position: relative;
@@ -260,15 +266,40 @@ function runLiveTL() {
             .dropdown-check-list ul.items li {
                 list-style: none;
             }
+
+            .translationText{
+                position: absolute;
+                z-index: -1;
+                top: 25px;
+                height: calc(100% - 25px);
+                padding-top: 10px;
+            }
+
+            .authorInfo {
+                font-size: 12px;
+                color: #bdbdbd;
+                margin-left: 5px;
+                vertical-align: baseline;
+            }
+
+            label {
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: -moz-none;
+                -o-user-select: none;
+                user-select: none;
+            }
         `;
         document.getElementsByTagName("head")[0].appendChild(style);
         let livetlContainer = document.createElement("div");
         livetlContainer.className = "livetl";
         document.body.appendChild(livetlContainer);
         let e = document.createElement("div");
+        e.className = "translationText";
         // let eee = document.createElement("img");
         // eee.src = "https://fonts.gstatic.com/s/i/materialiconsoutlined/settings/v7/24px.svg";
         let select = document.createElement("input");
+        select.dataset.role = "none";
         let datalist = document.createElement("datalist");
         datalist.id = "languages";
         languages.forEach(lang => {
@@ -277,19 +308,11 @@ function runLiveTL() {
             if (lang.code == "en") select.value = opt.value;
             datalist.appendChild(opt);
         });
-        settingsButton.id = "settingsGear";
-        settingsButton.style.zIndex = 100000;
-        settingsButton.style.position = "fixed";
-        settingsButton.style.top = 0;
-        settingsButton.style.right = 0;
-        settingsButton.style.padding = "5px";
-        settingsButton.style.width = "5em !important";
 
         let lastLang = select.value;
         select.id = "langSelect";
         select.setAttribute("list", datalist.id);
         select.onblur = () => {
-            console.log(lastLang);
             if (!(select.value in languageConversionTable)) {
                 select.value = lastLang;
             }
@@ -315,8 +338,47 @@ function runLiveTL() {
         items.id = "items";
         items.className = "items";
         checklist.appendChild(items);
+
         var allTranslators = {};
-        var shownTranslators = {};
+
+        var allTranslatorCheckbox = {};
+
+        checkboxUpdate = () => {
+            allTranslators = {};
+            var boxes = checklist.querySelectorAll("input");
+            boxes.forEach(box => {
+                allTranslators[box.id] = box;
+                if (box != allTranslatorCheckbox && !box.checked) allTranslatorCheckbox.checked = false;
+            });
+            if (allTranslatorCheckbox.checked) {
+                var boxes = checklist.querySelectorAll("input:not(:checked)");
+                boxes.forEach(box => box.checked = true)
+            }
+        }
+
+        createCheckbox = (name, checked = false, callback = null) => {
+            var selectTranslatorMessage = document.createElement("li");
+            items.append(selectTranslatorMessage);
+            var checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = name;
+            checkbox.checked = checked;
+            checkbox.onchange = callback || checkboxUpdate;
+            selectTranslatorMessage.appendChild(checkbox);
+            var person = document.createElement("label");
+            person.setAttribute("for", name);
+            person.textContent = person.value = name;
+            selectTranslatorMessage.appendChild(person);
+            checkboxUpdate();
+            return checkbox;
+        }
+
+        var allTranslatorCheckbox = createCheckbox("All Translators", true, () => {
+            var boxes = checklist.querySelectorAll("input:not(:checked)");
+            boxes.forEach(box => box.checked = allTranslatorCheckbox.checked);
+            checkboxUpdate();
+        });
+
         checklist.getElementsByClassName('anchor')[0].onclick = () => {
             if (items.classList.contains('visible')) {
                 items.classList.remove('visible');
@@ -332,25 +394,31 @@ function runLiveTL() {
         }
 
         setInterval(() => {
-            if (select.value in languageConversionTable && select.value != lastLang) e.innerHTML = "";
+            // if (select.value in languageConversionTable && select.value != lastLang) e.innerHTML = "";
             let messages = document.querySelectorAll("#message");
             messages.forEach(m => {
                 let parsed = /^\[(\w+)\] ?(.+)/.exec(m.textContent);
-                if (parsed != null) console.log(parsed);
+                if (parsed == null) return;
+                console.log(parsed);
                 if (parsed != null && parsed[1].toLowerCase() == languageConversionTable[select.value].code) {
-                    var author = document.querySelectorAll("#message")[3].parentElement.childNodes[1].textContent;
+                    var author = m.parentElement.childNodes[1].textContent;
                     let line = document.createElement("div");
                     line.style.marginBottom = "10px";
                     line.style.marginTop = "10px";
                     line.textContent = parsed[2];
-                    line.title = author;
-                    $(line).tooltip();
-                    e.appendChild(line);
+                    var authorInfo = document.createElement("span");
+                    authorInfo.className = "authorInfo";
+                    line.appendChild(authorInfo);
+                    authorInfo.textContent = author;
+                    if (!(author in allTranslators)) createCheckbox(author, allTranslatorCheckbox.checked);
+                    if (allTranslators[author].checked) e.appendChild(line);
+                    // line.onmouseover = () => authorInfo.textContent = `Translated by ${author}`;
+                    // line.onmouseleave = () => authorInfo.textContent = "";
                 }
-                m.remove();
             });
             if (select.value in languageConversionTable) lastLang = select.value;
             e.scrollTop = e.scrollHeight;
+            messages.forEach(m => m.remove());
         }, 100);
     }, 100);
 }

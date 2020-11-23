@@ -5,14 +5,13 @@
 
 #livetl-chat {
     width: 100%;
-    height: 100%;
+    flex-grow: 1;
+    min-height: 0;
 }
 
 #chat {
     width: 100%;
-    height: 50%;
-    flex-grow: 1;
-    min-height: 0;
+    height: 100%;
 }
 
 #stream {
@@ -43,7 +42,7 @@
 
 #sidePanel {
     width: 100%;
-    height: 50%;
+    height: 80%;
     max-height: calc(100% - 5px);
 }
 
