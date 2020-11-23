@@ -17,9 +17,9 @@ let start = () => {
     stream.style.display = "none";
     ltlchat.style.display = "none";
     chat.style.display = "none";
-    leftPanel.style.backgroundColor = "let(--accent)";
-    rightPanel.style.backgroundColor = "let(--accent)";
-    sidePanel.style.backgroundColor = "let(--accent)";
+    leftPanel.style.backgroundColor = "var(--accent)";
+    rightPanel.style.backgroundColor = "var(--accent)";
+    sidePanel.style.backgroundColor = "var(--accent)";
 };
 let stop = () => {
     stream.style.display = "block";
