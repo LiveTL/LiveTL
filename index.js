@@ -1,27 +1,27 @@
 parseParams = () => {
-    var s = decodeURI(location.search.substring(1))
+    let s = decodeURI(location.search.substring(1))
         .replace(/"/g, '\\"')
         .replace(/&/g, '","')
         .replace(/=/g, '":"');
     return s == "" ? {} : JSON.parse('{"' + s + '"}');
 }
 
-var v = parseParams().v || "5qap5aO4i9A";
-var stream = document.querySelectorAll("#stream")[0];
-var ltlchat = document.querySelectorAll("#livetl-chat")[0];
-var chat = document.querySelectorAll("#chat")[0];
-var leftPanel = document.querySelectorAll("#leftPanel")[0];
-var rightPanel = document.querySelectorAll("#rightPanel")[0];
-var sidePanel = document.querySelectorAll("#sidePanel")[0];
-var start = () => {
+let v = parseParams().v || "5qap5aO4i9A";
+let stream = document.querySelector("#stream");
+let ltlchat = document.querySelector("#livetl-chat");
+let chat = document.querySelector("#chat");
+let leftPanel = document.querySelector("#leftPanel");
+let rightPanel = document.querySelector("#rightPanel");
+let sidePanel = document.querySelector("#sidePanel");
+let start = () => {
     stream.style.display = "none";
     ltlchat.style.display = "none";
     chat.style.display = "none";
-    leftPanel.style.backgroundColor = "var(--accent)";
-    rightPanel.style.backgroundColor = "var(--accent)";
-    sidePanel.style.backgroundColor = "var(--accent)";
+    leftPanel.style.backgroundColor = "let(--accent)";
+    rightPanel.style.backgroundColor = "let(--accent)";
+    sidePanel.style.backgroundColor = "let(--accent)";
 };
-var stop = () => {
+let stop = () => {
     stream.style.display = "block";
     ltlchat.style.display = "block";
     chat.style.display = "block";
