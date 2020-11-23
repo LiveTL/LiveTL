@@ -308,7 +308,6 @@ function runLiveTL() {
             if (lang.code == "en") select.value = opt.value;
             datalist.appendChild(opt);
         });
-
         let lastLang = select.value;
         select.id = "langSelect";
         select.setAttribute("list", datalist.id);
@@ -322,6 +321,7 @@ function runLiveTL() {
         navbar.className = "navbar";
         // sd.appendChild(select);
         navbar.className = "navbar";
+        navbar.appendChild(datalist);
         navbar.appendChild(select);
         // settings svg: "https://fonts.gstatic.com/s/i/materialiconsoutlined/settings/v7/24px.svg";
         livetlContainer.appendChild(navbar);
