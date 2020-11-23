@@ -212,6 +212,8 @@ function runLiveTL() {
         `;
         document.getElementsByTagName("head")[0].appendChild(style);
         let e = document.createElement("div");
+        let eee = document.createElement("img");
+        eee.src = "https://fonts.gstatic.com/s/i/materialiconsoutlined/settings/v7/24px.svg";
         e.className = "livetl";
         document.body.appendChild(e);
         let select = document.createElement("select");
@@ -222,6 +224,14 @@ function runLiveTL() {
             if (lang.code == "en") opt.selected = true;
             select.appendChild(opt);
         });
+        // eee.id = "langSelect";
+        // eee.style.zIndex = 100000;
+        // eee.style.position = "fixed";
+        // eee.style.top = 0;
+        // eee.style.right = 0;
+        // eee.style.padding = "5px";
+        // eee.style.width = "5em !important";
+
         select.id = "langSelect";
         select.style.zIndex = 100000;
         select.style.position = "fixed";
@@ -230,6 +240,7 @@ function runLiveTL() {
         select.style.padding = "5px";
         select.style.width = "5em !important";
         let sd = document.createElement("div");
+        // sd.appendChild(select);
         sd.appendChild(select);
         // settings svg: "https://fonts.gstatic.com/s/i/materialiconsoutlined/settings/v7/24px.svg";
         document.body.appendChild(sd);
