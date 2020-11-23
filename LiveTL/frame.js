@@ -329,6 +329,7 @@ function runLiveTL() {
 
         var checklist = document.createElement("div");
         checklist.className = "dropdown-check-list";
+        checklist.tabIndex = 1;
         navbar.appendChild(checklist);
         var defaultText = document.createElement("span");
         defaultText.className = "anchor";
@@ -380,17 +381,13 @@ function runLiveTL() {
         });
 
         checklist.getElementsByClassName('anchor')[0].onclick = () => {
-            if (items.classList.contains('visible')) {
-                items.classList.remove('visible');
-                items.style.display = "none";
-            }
-            else {
-                items.classList.add('visible');
-                items.style.display = "block";
-            }
+            if (items.style.display != "block") items.style.display = "block";
+            else items.style.display = "none";
         }
-        items.onblur = function (evt) {
-            items.classList.remove('visible');
+
+        checklist.onblur = e => {
+            if (!e.currentTarget.contains(e.relatedTarget)) items.style.display = "none";
+            else e.currentTarget.focus();
         }
 
         setInterval(() => {
