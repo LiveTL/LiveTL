@@ -237,7 +237,7 @@ runLiveTL = () => {
             var messages = document.querySelectorAll("#message");
             messages.forEach(m => {
                 var parsed = /^\[(\w+)\] ?(.+)/.exec(m.textContent);
-                console.log(parsed);
+                if (parsed != null) console.log(parsed);
                 if (parsed != null && parsed[1].toLowerCase() == select.value) {
                     var line = document.createElement("div");
                     line.style.marginBottom = "10px";
