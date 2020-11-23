@@ -77,7 +77,7 @@ const languages = [
     { code: 'ik', name: 'Inupiaq' },
     { code: 'ga', name: 'Irish' },
     { code: 'it', name: 'Italian' },
-    { code: 'ja', name: 'Japanese' },
+    { code: 'jp', name: 'Japanese' },
     { code: 'jv', name: 'Javanese' },
     { code: 'kn', name: 'Kannada' },
     { code: 'kr', name: 'Kanuri' },
@@ -235,9 +235,9 @@ runLiveTL = () => {
         setInterval(() => {
             if (select.value != lastLang) e.innerHTML = "";
             var messages = document.querySelectorAll("#message");
-            for (i = 0; i < messages.length - 250; i++) messages[i].remove();
             messages.forEach(m => {
                 var parsed = /^\[(\w+)\] ?(.+)/.exec(m.textContent);
+                console.log(parsed);
                 if (parsed != null && parsed[1].toLowerCase() == select.value) {
                     var line = document.createElement("div");
                     line.style.marginBottom = "10px";
