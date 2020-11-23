@@ -187,10 +187,10 @@ const languages = [
 
 languages.sort((a, b) => a.code - b.code);
 
-runLiveTL = () => {
+function runLiveTL() {
     switchChat();
     setTimeout(() => {
-        var style = document.createElement('style');
+        let style = document.createElement('style');
         style.innerHTML = `
             .livetl {
                 position: fixed;
@@ -210,13 +210,13 @@ runLiveTL = () => {
                 min-width 0px !important;
             }
         `;
-        document.getElementsByTagName('head')[0].appendChild(style);
-        var e = document.createElement("div");
+        document.getElementsByTagName("head")[0].appendChild(style);
+        let e = document.createElement("div");
         e.className = "livetl";
         document.body.appendChild(e);
-        var select = document.createElement("select");
+        let select = document.createElement("select");
         languages.forEach(lang => {
-            var opt = document.createElement("option");
+            let opt = document.createElement("option");
             opt.textContent = lang.code;
             opt.value = lang.code;
             if (lang.code == "en") opt.selected = true;
@@ -229,17 +229,20 @@ runLiveTL = () => {
         select.style.right = 0;
         select.style.padding = "5px";
         select.style.width = "5em !important";
-        document.body.appendChild(select);
+        let sd = document.createElement("div");
+        sd.appendChild(select);
+        // settings svg: "https://fonts.gstatic.com/s/i/materialiconsoutlined/settings/v7/24px.svg";
+        document.body.appendChild(sd);
 
-        var lastLang = null;
+        let lastLang = null;
         setInterval(() => {
             if (select.value != lastLang) e.innerHTML = "";
-            var messages = document.querySelectorAll("#message");
+            let messages = document.querySelectorAll("#message");
             messages.forEach(m => {
-                var parsed = /^\[(\w+)\] ?(.+)/.exec(m.textContent);
+                let parsed = /^\[(\w+)\] ?(.+)/.exec(m.textContent);
                 if (parsed != null) console.log(parsed);
                 if (parsed != null && parsed[1].toLowerCase() == select.value) {
-                    var line = document.createElement("div");
+                    let line = document.createElement("div");
                     line.style.marginBottom = "10px";
                     line.style.marginTop = "10px";
                     line.textContent = parsed[2];
@@ -253,7 +256,7 @@ runLiveTL = () => {
     }, 100);
 }
 
-switchChat = () => {
+function switchChat() {
     let count = 2;
     document.querySelectorAll(".yt-dropdown-menu").forEach((e) => {
         if (/Live chat/.exec(e.innerText) && count > 0) {
@@ -263,8 +266,8 @@ switchChat = () => {
     })
 };
 
-parseParams = () => {
-    var s = decodeURI(location.search.substring(1))
+function parseParams() {
+    let s = decodeURI(location.search.substring(1))
         .replace(/"/g, '\\"')
         .replace(/&/g, '","')
         .replace(/=/g, '":"');
@@ -274,7 +277,7 @@ parseParams = () => {
 window.onload = () => {
     if (parent === top) {
         try {
-            var params = parseParams();
+            let params = parseParams();
             if (params.useLiveTL) {
                 console.log("Running LiveTL!");
                 runLiveTL();
