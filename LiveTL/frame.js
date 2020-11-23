@@ -271,7 +271,7 @@ window.onload = () => {
                     .replace(/&/g, '","')
                     .replace(/=/g, '":"')
                 + '"}');
-            if (true || params.useLiveTL) {
+            if (params.useLiveTL) {
                 console.log("Running LiveTL!");
                 runLiveTL();
             }
