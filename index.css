@@ -55,7 +55,7 @@ body {
 }
 
 #handleV {
-    width: 15px;
+    width: 10px;
     height: 100%;
     display: flex;
     align-items: center;
@@ -64,7 +64,7 @@ body {
 }
 
 #handleH {
-    height: 15px;
+    height: 10px;
     width: 100%;
     display: flex;
     align-items: flex-end;
@@ -72,9 +72,13 @@ body {
     z-index: 1;
 }
 
+#handleH>span {
+    margin-bottom: -3px;
+}
+
 .handle>span {
     color: black;
-    font-size: 25px;
+    font-size: 20px;
     background-color: transparent;
 }
 
