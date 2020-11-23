@@ -12,25 +12,40 @@
         <iframe src="https://www.youtube.com/embed/5qap5aO4i9A?autoplay=1" frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen id="stream"></iframe>
-        <div id='handle' class="ui-resizable-handle ui-resizable-e"><span>&vellip;</span></div>
+        <div id="handleV" class="handle ui-resizable-handle ui-resizable-e"><span>&vellip;</span></div>
     </div>
     <div id="rightPanel">
-        <iframe id="livetl-chat" frameborder="0"></iframe>
+        <div id="sidePanel">
+            <iframe id="livetl-chat" frameborder="0"></iframe>
+            <div id="handleH" class="handle ui-resizable-handle ui-resizable-s"><span>&hellip;</span></div>
+        </div>
+        <iframe id="chat" frameborder="0"></iframe>
     </div>
 </div>
 
 
 <style>
+    :root {
+        --accent: rgb(31, 77, 107);
+        --primary: rgb(0, 153, 255);
+    }
+
     #livetl-chat {
         width: 100%;
         height: 100%;
+    }
+
+
+    #chat {
+        width: 100%;
+        height: 50%;
+        flex-grow: 1;
     }
 
     #stream {
         width: 100%;
         height: 100%;
     }
-
 
     * {
         background-color: black;
@@ -48,22 +63,42 @@
         flex-grow: 1;
         height: 100%;
         max-width: calc(100% - 10px);
+        flex-direction: column;
+        display: flex;
+    }
+
+    #sidePanel {
+        width: 100%;
+        height: 50%;
     }
 
     body {
         margin: 0;
     }
 
-    #handle {
-        width: 10px;
+    .handle {
+        background-color: var(--primary);
+    }
+
+    #handleV {
+        width: 15px;
         height: 100%;
-        background-color: rgb(0, 153, 255);
         display: flex;
         align-items: center;
         justify-content: center;
+        z-index: 1;
     }
 
-    #handle>span {
+    #handleH {
+        height: 15px;
+        width: 100%;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        z-index: 1;
+    }
+
+    .handle>span {
         color: black;
         font-size: 20px;
         background-color: transparent;
@@ -78,20 +113,39 @@
     }
 </style>
 <script>
+    var stream = document.querySelectorAll("#stream")[0];
+    var ltlchat = document.querySelectorAll("#livetl-chat")[0];
+    var chat = document.querySelectorAll("#chat")[0];
+    var leftPanel = document.querySelectorAll("#leftPanel")[0];
+    var rightPanel = document.querySelectorAll("#rightPanel")[0];
+    var sidePanel = document.querySelectorAll("#sidePanel")[0];
+    var start = () => {
+        stream.style.display = "none";
+        ltlchat.style.display = "none";
+        chat.style.display = "none";
+        leftPanel.style.backgroundColor = "var(--accent)";
+        rightPanel.style.backgroundColor = "var(--accent)";
+        sidePanel.style.backgroundColor = "var(--accent)";
+    };
+    var stop = () => {
+        stream.style.display = "block";
+        ltlchat.style.display = "block";
+        chat.style.display = "block";
+        leftPanel.style.backgroundColor = "black";
+        rightPanel.style.backgroundColor = "black";
+        sidePanel.style.backgroundColor = "black";
+    };
     $("#leftPanel").resizable({
         handles: {
-            'e': "#handle"
-        }, start: () => {
-            document.querySelectorAll("#stream")[0].style.display = "none";
-            document.querySelectorAll("#livetl-chat")[0].style.display = "none";
-            document.querySelectorAll("#leftPanel")[0].style.backgroundColor = "rgb(31, 77, 107)";
-            document.querySelectorAll("#rightPanel")[0].style.backgroundColor = "rgb(31, 77, 107)";
-        }, stop: () => {
-            document.querySelectorAll("#stream")[0].style.display = "block";
-            document.querySelectorAll("#livetl-chat")[0].style.display = "block";
-            document.querySelectorAll("#leftPanel")[0].style.backgroundColor = "black";
-            document.querySelectorAll("#rightPanel")[0].style.backgroundColor = "black";
-        }
+            "e": "#handleV"
+        }, start: start, stop: stop
     });
-    document.getElementById("livetl-chat").src = `https://www.youtube.com/live_chat?v=5qap5aO4i9A&embed_domain=${document.domain}&useLiveTL=1`;
+    $("#sidePanel").resizable({
+        handles: {
+            "s": "#handleH"
+        }, start: start, stop: stop
+    });
+    var LINK = `https://www.youtube.com/live_chat?v=5qap5aO4i9A&embed_domain=${document.domain}`;
+    chat.src = LINK;
+    ltlchat.src = `${LINK}&useLiveTL=1`;
 </script>
