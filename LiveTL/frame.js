@@ -235,6 +235,7 @@ runLiveTL = () => {
         setInterval(() => {
             if (select.value != lastLang) e.innerHTML = "";
             var messages = document.querySelectorAll("#message");
+            for (i = 0; i < messages.length - 250; i++) messages[i].remove();
             messages.forEach(m => {
                 var parsed = /^\[(\w+)\] ?(.+)/.exec(m.textContent);
                 if (parsed != null && parsed[1] == select.value) {
@@ -253,11 +254,11 @@ runLiveTL = () => {
 }
 
 switchChat = () => {
-    let virginity = 2;
+    let count = 2;
     document.querySelectorAll(".yt-dropdown-menu").forEach((e) => {
-        if (/Live chat/.exec(e.innerText) && virginity > 0) {
+        if (/Live chat/.exec(e.innerText) && count > 0) {
             e.click();
-            virginity--;
+            count--;
         }
     })
 };
@@ -271,7 +272,7 @@ window.onload = () => {
                     .replace(/&/g, '","')
                     .replace(/=/g, '":"')
                 + '"}');
-            if (true || params.useLiveTL) {
+            if (params.useLiveTL) {
                 console.log("Running LiveTL!");
                 runLiveTL();
             }
