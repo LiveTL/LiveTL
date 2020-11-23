@@ -212,11 +212,15 @@ function runLiveTL() {
                 min-height: 0px !important;
                 min-width 0px !important;
             }
-        `;
+
+            #settingsGear {
+                stroke: #D1D1D1;
+            }
+        ` + modalCSS;
         document.getElementsByTagName("head")[0].appendChild(style);
         let e = document.createElement("div");
-        let eee = document.createElement("img");
-        eee.src = "https://fonts.gstatic.com/s/i/materialiconsoutlined/settings/v7/24px.svg";
+        let settingsButton = document.createElement("div");
+        settingsButton.innerHTML = settingsGear;
         e.className = "livetl";
         document.body.appendChild(e);
         let select = document.createElement("input");
@@ -228,22 +232,18 @@ function runLiveTL() {
             if (lang.code == "en") select.value = opt.value;
             datalist.appendChild(opt);
         });
-        document.body.appendChild(datalist);
-        // eee.id = "langSelect";
-        // eee.style.zIndex = 100000;
-        // eee.style.position = "fixed";
-        // eee.style.top = 0;
-        // eee.style.right = 0;
-        // eee.style.padding = "5px";
-        // eee.style.width = "5em !important";
+        settingsButton.id = "settingsGear";
+        settingsButton.style.zIndex = 100000;
+        settingsButton.style.position = "fixed";
+        settingsButton.style.top = 0;
+        settingsButton.style.right = 0;
+        settingsButton.style.padding = "5px";
+        settingsButton.style.width = "5em !important";
 
         let lastLang = select.value;
         select.id = "langSelect";
         select.setAttribute("list", datalist.id);
         select.style.zIndex = 100000;
-        select.style.position = "fixed";
-        select.style.top = 0;
-        select.style.right = 0;
         select.style.padding = "5px";
         select.style.width = "auto !important";
         select.onblur = () => {
@@ -253,11 +253,33 @@ function runLiveTL() {
             }
         }
         select.onfocus = () => select.value = "";
-        let sd = document.createElement("div");
-        // sd.appendChild(select);
-        sd.appendChild(select);
-        // settings svg: "https://fonts.gstatic.com/s/i/materialiconsoutlined/settings/v7/24px.svg";
-        document.body.appendChild(sd);
+        select.style.padding = "5px";
+        select.style.width = "5em !important";
+        let modalDiv = document.createElement("div");
+        modalDiv.className = "modal";
+        modalDiv.style.zIndex = 1000000;
+        let modalDivv = document.createElement("div");
+        modalDivv.className = "modal-content";
+        let closeSpan = document.createElement("span");
+        closeSpan.className = "close";
+        closeSpan.innerHTML = "&times";
+        settingsButton.addEventListener("click", (e) => {
+            modalDiv.style.display = "block";
+        });
+        closeSpan.addEventListener("click", (e) => {
+            modalDiv.style.display = "none";
+        })
+        window.addEventListener("click", (e) => {
+            if (e.target == modalDiv) {
+                modalDiv.style.display = "none";
+            }
+        })
+        modalDivv.appendChild(closeSpan);
+        modalDivv.appendChild(select);
+        modalDivv.appendChild(datalist);
+        modalDiv.appendChild(modalDivv);
+        document.body.appendChild(settingsButton);
+        document.body.appendChild(modalDiv);
 
         setInterval(() => {
             if (select.value in languageConversionTable && select.value != lastLang) e.innerHTML = "";
@@ -310,3 +332,46 @@ window.onload = () => {
         }
     }
 }
+
+const modalCSS = `
+
+ /* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+`;
+
+const settingsGear = `<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98 0-.34-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.09-.16-.26-.25-.44-.25-.06 0-.12.01-.17.03l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.06-.02-.12-.03-.18-.03-.17 0-.34.09-.43.25l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98 0 .33.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.09.16.26.25.44.25.06 0 .12-.01.17-.03l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.06.02.12.03.18.03.17 0 .34-.09.43-.25l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zm-1.98-1.71c.04.31.05.52.05.73 0 .21-.02.43-.05.73l-.14 1.13.89.7 1.08.84-.7 1.21-1.27-.51-1.04-.42-.9.68c-.43.32-.84.56-1.25.73l-1.06.43-.16 1.13-.2 1.35h-1.4l-.19-1.35-.16-1.13-1.06-.43c-.43-.18-.83-.41-1.23-.71l-.91-.7-1.06.43-1.27.51-.7-1.21 1.08-.84.89-.7-.14-1.13c-.03-.31-.05-.54-.05-.74s.02-.43.05-.73l.14-1.13-.89-.7-1.08-.84.7-1.21 1.27.51 1.04.42.9-.68c.43-.32.84-.56 1.25-.73l1.06-.43.16-1.13.2-1.35h1.39l.19 1.35.16 1.13 1.06.43c.43.18.83.41 1.23.71l.91.7 1.06-.43 1.27-.51.7 1.21-1.07.85-.89.7.14 1.13zM12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>`;
