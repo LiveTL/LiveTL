@@ -300,7 +300,6 @@ function runLiveTL() {
             .translationText{
                 position: absolute;
                 z-index: -1;
-                height: calc(100%);
                 margin-top: 5px;
                 margin-botton: 5px;
             }
@@ -322,7 +321,7 @@ function runLiveTL() {
 
             .hide {
                 stroke-width: 0;
-                fill: #D1D1D1;
+                fill: #CCCCCC;
                 stroke: rgb(0, 153, 255);
                 width: 12px;
                 height: 12px;
@@ -334,7 +333,7 @@ function runLiveTL() {
 
             .ban {
                 stroke-width: 0;
-                fill: #D1D1D1;
+                fill: #CCCCCC;
                 stroke: rgb(0, 153, 255);
                 width: 12px;
                 height: 12px;
@@ -351,11 +350,11 @@ function runLiveTL() {
             }
 
             .line {
-                margin-left: 10px;
+                margin-left: 15px;
             }
 
             .messageOptions {
-                margin-left: 3px;
+                margin-left: 5px;
             }
         ` + modalCSS;
 
@@ -622,12 +621,13 @@ function createModal(container) {
         let newDisplay = nextStyle[modalContainer.style.display];
         modalContainer.style.display = newDisplay;
         settingsButton.innerHTML = icon[newDisplay];
-        // if (newDisplay == "none") {
-        //     document.querySelector(".livetl").style.overflowY = "hidden";
-        // } else {
-        //     document.querySelector(".livetl").style.overflowY = "auto";
-        // }
-        updateSize();
+        if (newDisplay == "none") {
+            document.querySelector(".translationText").style.display = "block";
+            document.querySelector(".modal").style.height = "auto";
+        } else {
+            document.querySelector(".translationText").style.display = "none";
+            updateSize();
+        }
     });
 
     modalContainer.appendChild(modalContent);
@@ -641,8 +641,8 @@ function createModal(container) {
 const modalCSS = `
 
 svg {
-    stroke: #D1D1D1;
-    fill: #D1D1D1;
+    stroke: #CCCCCC;
+    fill: #CCCCCC;
 };
 
 
