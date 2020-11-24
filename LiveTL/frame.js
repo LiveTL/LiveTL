@@ -216,7 +216,6 @@ function runLiveTL() {
                 vertical-align: top;
             }
             .navbar{
-                position: absolute;
                 margin-top: 10px;
                 min-height: 25px;
                 z-index: 69420;
@@ -289,10 +288,13 @@ function runLiveTL() {
                 -o-user-select: none;
                 user-select: none;
             }
-        `;
+        ` + modalCSS;
+
+        let settings = createModal();
         document.getElementsByTagName("head")[0].appendChild(style);
         let livetlContainer = document.createElement("div");
         livetlContainer.className = "livetl";
+        livetlContainer.appendChild(settings);
         document.body.appendChild(livetlContainer);
         let e = document.createElement("div");
         e.className = "translationText";
@@ -319,18 +321,19 @@ function runLiveTL() {
         }
         select.onfocus = () => select.value = "";
         let navbar = document.createElement("div");
-        navbar.className = "navbar";
         // sd.appendChild(select);
         navbar.className = "navbar";
-        navbar.appendChild(select);
+        // navbar.appendChild(select);
         // settings svg: "https://fonts.gstatic.com/s/i/materialiconsoutlined/settings/v7/24px.svg";
-        livetlContainer.appendChild(navbar);
+        // settings.appendChild(navbar);
+        settings.appendChild(select);
         livetlContainer.appendChild(e);
 
         var checklist = document.createElement("div");
         checklist.className = "dropdown-check-list";
         checklist.tabIndex = 1;
-        navbar.appendChild(checklist);
+        // navbar.appendChild(checklist);
+        settings.appendChild(checklist);
         var defaultText = document.createElement("span");
         defaultText.className = "anchor";
         defaultText.textContent = "Select Translators";
@@ -451,7 +454,54 @@ window.onload = () => {
     }
 }
 
+function createModal() {
+    let settingsButton = document.createElement("div");
+    settingsButton.innerHTML = settingsGear;
+    settingsButton.id = "settingsGear";
+    settingsButton.style.zIndex = 100000;
+    settingsButton.style.position = "fixed";
+    settingsButton.style.top = 0;
+    settingsButton.style.right = 0;
+    settingsButton.style.padding = "5px";
+    settingsButton.style.width = "5em !important";
+
+    let modalContainer = document.createElement("div");
+    modalContainer.className = "modal";
+    modalContainer.style.zIndex = 1000000;
+
+    let modalContent = document.createElement("div");
+    modalContent.className = "modal-content";
+
+    let closeButton = document.createElement("span");
+    closeButton.className = "close";
+    closeButton.innerHTML = "&times";
+
+    settingsButton.addEventListener("click", (e) => {
+        modalContainer.style.display = "block";
+    });
+
+    closeButton.addEventListener("click", (e) => {
+        modalContainer.style.display = "none";
+    });
+
+    window.addEventListener("click", (e) => {
+        modalContainer.style.display = "none";
+    });
+
+    modalContent.appendChild(closeButton);
+    modalContainer.appendChild(modalContent);
+
+    document.body.appendChild(settingsButton);
+    document.body.appendChild(modalContainer);
+
+    return modalContent;
+}
+
 const modalCSS = `
+
+#settingsGear {
+    stroke: #D1D1D1;
+};
 
  /* The Modal (background) */
 .modal {
