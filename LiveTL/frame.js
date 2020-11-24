@@ -223,7 +223,7 @@ function runLiveTL() {
 
             /* width */
             ::-webkit-scrollbar {
-              width: 2px;
+              width: 4px;
             }
             
             /* Track */
@@ -321,7 +321,7 @@ function runLiveTL() {
 
             .hide {
                 stroke-width: 0;
-                fill: #CCCCCC;
+                fill: #A0A0A0;
                 stroke: rgb(0, 153, 255);
                 width: 12px;
                 height: 12px;
@@ -333,7 +333,7 @@ function runLiveTL() {
 
             .ban {
                 stroke-width: 0;
-                fill: #CCCCCC;
+                fill: #A0A0A0;
                 stroke: rgb(0, 153, 255);
                 width: 12px;
                 height: 12px;
@@ -641,8 +641,8 @@ function createModal(container) {
 const modalCSS = `
 
 svg {
-    stroke: #CCCCCC;
-    fill: #CCCCCC;
+    stroke: #A0A0A0;
+    fill: #A0A0A0;
 };
 
 
