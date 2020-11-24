@@ -190,6 +190,13 @@ languages.forEach(i => languageConversionTable[i.name + ` [${i.code}]`] = i);
 
 languages.sort((a, b) => a.code - b.code);
 
+
+// global helper function to handle scrolling
+function updateSize() {
+    var pix = document.querySelector(".dropdown-check-list").getBoundingClientRect().bottom;
+    document.querySelector(".modal").style.height = pix + "px";
+}
+
 function runLiveTL() {
     switchChat();
     setTimeout(() => {
@@ -207,11 +214,33 @@ function runLiveTL() {
                 word-wrap: break-word;
                 word-break: break-word;
                 font-size: 20px;
-                overflow: hidden;
-                padding: 10px;
+                overflow-x: none;
+                overflow-y: none;
+                padding: 0px;
                 min-height: 0px !important;
                 min-width 0px !important;
             }
+
+            /* width */
+            ::-webkit-scrollbar {
+              width: 2px;
+            }
+            
+            /* Track */
+            ::-webkit-scrollbar-track {
+              background: #f1f1f1; 
+            }
+             
+            /* Handle */
+            ::-webkit-scrollbar-thumb {
+              background: #888; 
+            }
+            
+            /* Handle on hover */
+            ::-webkit-scrollbar-thumb:hover {
+              background: #555; 
+            }
+
             .livetl * {
                 vertical-align: baseline;
             }
@@ -420,11 +449,13 @@ function runLiveTL() {
         checklist.getElementsByClassName('anchor')[0].onclick = () => {
             if (items.style.display != "block") items.style.display = "block";
             else items.style.display = "none";
+            updateSize();
         }
 
         checklist.onblur = e => {
             if (!e.currentTarget.contains(e.relatedTarget)) items.style.display = "none";
             else e.currentTarget.focus();
+            updateSize();
         }
 
         setInterval(() => {
@@ -571,6 +602,12 @@ function createModal(container) {
         let newDisplay = nextStyle[modalContainer.style.display];
         modalContainer.style.display = newDisplay;
         settingsButton.innerHTML = icon[newDisplay];
+        if (newDisplay == "none") {
+            document.querySelector(".livetl").style.overflowY = "none";
+        } else {
+            document.querySelector(".livetl").style.overflowY = "auto";
+        }
+        updateSize();
     });
 
     modalContainer.appendChild(modalContent);
@@ -590,7 +627,7 @@ svg {
 
 
  /* The Modal (background) */
-.modal, .modal-content {
+.modal .modal-content {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
