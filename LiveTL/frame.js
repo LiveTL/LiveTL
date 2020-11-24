@@ -218,7 +218,6 @@ function runLiveTL() {
             .navbar{
                 margin-top: 10px;
                 min-height: 25px;
-                z-index: 69420;
             }
             input {
                 padding: 5px;
@@ -290,12 +289,11 @@ function runLiveTL() {
             }
         ` + modalCSS;
 
-        let settings = createModal();
         document.getElementsByTagName("head")[0].appendChild(style);
         let livetlContainer = document.createElement("div");
         livetlContainer.className = "livetl";
-        livetlContainer.appendChild(settings);
         document.body.appendChild(livetlContainer);
+        let settings = createModal(livetlContainer);
         let e = document.createElement("div");
         e.className = "translationText";
         // let eee = document.createElement("img");
@@ -310,7 +308,6 @@ function runLiveTL() {
             if (lang.code == "en") select.value = opt.value;
             datalist.appendChild(opt);
         });
-
         let lastLang = select.value;
         select.id = "langSelect";
         select.setAttribute("list", datalist.id);
@@ -324,9 +321,12 @@ function runLiveTL() {
         // sd.appendChild(select);
         navbar.className = "navbar";
         // navbar.appendChild(select);
+        // navbar.appendChild(datalist);
+        // navbar.appendChild(select);
         // settings svg: "https://fonts.gstatic.com/s/i/materialiconsoutlined/settings/v7/24px.svg";
         // settings.appendChild(navbar);
         settings.appendChild(select);
+        settings.appendChild(datalist);
         livetlContainer.appendChild(e);
 
         var checklist = document.createElement("div");
@@ -454,7 +454,7 @@ window.onload = () => {
     }
 }
 
-function createModal() {
+function createModal(container) {
     let settingsButton = document.createElement("div");
     settingsButton.innerHTML = settingsGear;
     settingsButton.id = "settingsGear";
@@ -468,6 +468,7 @@ function createModal() {
     let modalContainer = document.createElement("div");
     modalContainer.className = "modal";
     modalContainer.style.zIndex = 1000000;
+    modalContainer.style.display = "none";
 
     let modalContent = document.createElement("div");
     modalContent.className = "modal-content";
@@ -484,15 +485,22 @@ function createModal() {
         modalContainer.style.display = "none";
     });
 
-    window.addEventListener("click", (e) => {
+    container.addEventListener("click", (e) => {
+        let t = e.target;
+        while (t != container) {
+            if (t == modalContainer || t == settingsButton) {
+                return;
+            }
+            t = t.parentElement;
+        }
         modalContainer.style.display = "none";
     });
 
     modalContent.appendChild(closeButton);
     modalContainer.appendChild(modalContent);
 
-    document.body.appendChild(settingsButton);
-    document.body.appendChild(modalContainer);
+    container.appendChild(settingsButton);
+    container.appendChild(modalContainer);
 
     return modalContent;
 }
