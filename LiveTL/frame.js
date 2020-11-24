@@ -215,7 +215,7 @@ function runLiveTL() {
                 word-break: break-word;
                 font-size: 20px;
                 overflow-x: none;
-                overflow-y: none;
+                overflow-y: auto;
                 padding: 0px;
                 min-height: 0px !important;
                 min-width 0px !important;
@@ -306,7 +306,7 @@ function runLiveTL() {
             }
 
             .authorName {
-                font-size: 15px;
+                font-size: 12px;
                 color: #bdbdbd;
                 margin-left: 5px;
                 vertical-align: baseline;
@@ -322,24 +322,36 @@ function runLiveTL() {
 
             .hide {
                 stroke-width: 0;
-                fill: cornflowerblue;
+                fill: #D1D1D1;
                 stroke: rgb(0, 153, 255);
-                width: 15px;
-                height: 15px;
+                width: 12px;
+                height: 12px;
+            }
+
+            .hide:hover {
+                fill: cornflowerblue;
             }
 
             .ban {
                 stroke-width: 0;
-                fill: crimson;
+                fill: #D1D1D1;
                 stroke: rgb(0, 153, 255);
-                width: 15px;
-                height: 15px;
+                width: 12px;
+                height: 12px;
+            }
+
+            .ban:hover {
+                fill: crimson;
             }
 
             .optionLabel {
                 position: absolute;
                 margin-left: 0;
                 display: contents !important;
+            }
+
+            .line {
+                margin-left: 10px;
             }
         ` + modalCSS;
 
@@ -413,7 +425,7 @@ function runLiveTL() {
             }
             let messages = document.querySelectorAll(".line");
             for (i = 0; i < messages.length; i++) {
-                if (i < messages.length - 25) {
+                if (i > 25) {
                     messages[i].remove();
                     continue;
                 }
@@ -526,9 +538,10 @@ function runLiveTL() {
                     `;
                     authorInfo.appendChild(ban);
                     if (!(author in allTranslators)) createCheckbox(author, allTranslatorCheckbox.checked);
-                    if (allTranslators[author].checked) e.appendChild(line);
-                    // line.onmouseover = () => authorInfo.textContent = `Translated by ${author}`;
-                    // line.onmouseleave = () => authorInfo.textContent = "";
+                    if (allTranslators[author].checked) e.prepend(line);
+                    authorInfo.style.display = "none";
+                    line.onmouseover = () => authorInfo.style.display = "inline-block";
+                    line.onmouseleave = () => authorInfo.style.display = "none";
                 }
                 m.remove();
             });
@@ -602,11 +615,11 @@ function createModal(container) {
         let newDisplay = nextStyle[modalContainer.style.display];
         modalContainer.style.display = newDisplay;
         settingsButton.innerHTML = icon[newDisplay];
-        if (newDisplay == "none") {
-            document.querySelector(".livetl").style.overflowY = "none";
-        } else {
-            document.querySelector(".livetl").style.overflowY = "auto";
-        }
+        // if (newDisplay == "none") {
+        //     document.querySelector(".livetl").style.overflowY = "hidden";
+        // } else {
+        //     document.querySelector(".livetl").style.overflowY = "auto";
+        // }
         updateSize();
     });
 
