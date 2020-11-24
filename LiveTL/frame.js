@@ -353,6 +353,10 @@ function runLiveTL() {
             .line {
                 margin-left: 10px;
             }
+
+            .messageOptions {
+                margin-left: 3px;
+            }
         ` + modalCSS;
 
         document.getElementsByTagName("head")[0].appendChild(style);
@@ -516,7 +520,6 @@ function runLiveTL() {
                         </g>
                     </svg>
                     `;
-                    authorInfo.appendChild(hide);
                     let ban = document.createElement("span");
                     ban.onclick = () => {
                         allTranslators[author].checked = false;
@@ -536,12 +539,16 @@ function runLiveTL() {
                         </g>
                     </svg>
                     `;
-                    authorInfo.appendChild(ban);
+                    var options = document.createElement("span");
+                    options.appendChild(hide);
+                    options.appendChild(ban);
+                    authorInfo.append(options);
                     if (!(author in allTranslators)) createCheckbox(author, allTranslatorCheckbox.checked);
                     if (allTranslators[author].checked) e.prepend(line);
-                    authorInfo.style.display = "none";
-                    line.onmouseover = () => authorInfo.style.display = "inline-block";
-                    line.onmouseleave = () => authorInfo.style.display = "none";
+                    options.style.display = "none";
+                    options.className = "messageOptions";
+                    line.onmouseover = () => options.style.display = "inline-block";
+                    line.onmouseleave = () => options.style.display = "none";
                 }
                 m.remove();
             });
