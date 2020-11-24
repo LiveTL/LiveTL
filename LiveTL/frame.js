@@ -208,7 +208,7 @@ function runLiveTL() {
                 word-break: break-word;
                 font-size: 20px;
                 overflow: hidden;
-                padding-left: 10px;
+                padding: 10px;
                 min-height: 0px !important;
                 min-width 0px !important;
             }
@@ -221,7 +221,6 @@ function runLiveTL() {
             }
             input {
                 padding: 5px;
-                width: "auto !important";
             }
             .dropdown-check-list {
                 display: inline-block;
@@ -307,6 +306,12 @@ function runLiveTL() {
                 width: 15px;
                 height: 15px;
             }
+
+            .optionLabel {
+                position: absolute;
+                margin-left: 0;
+                display: contents !important;
+            }
         ` + modalCSS;
 
         document.getElementsByTagName("head")[0].appendChild(style);
@@ -335,21 +340,30 @@ function runLiveTL() {
             }
         }
         select.onfocus = () => select.value = "";
-        
+
         let checklist = document.createElement("div");
         checklist.className = "dropdown-check-list";
         checklist.tabIndex = 1;
         let defaultText = document.createElement("span");
         defaultText.className = "anchor";
-        defaultText.textContent = "Select Translators";
+        defaultText.textContent = "View All";
         checklist.appendChild(defaultText);
         let items = document.createElement("ul");
         items.id = "items";
         items.className = "items";
         checklist.appendChild(items);
 
+        var langSelectLabel = document.createElement("span");
+        langSelectLabel.className = "optionLabel";
+        langSelectLabel.textContent = "Language:";
+        settings.appendChild(langSelectLabel);
         settings.appendChild(select);
         settings.appendChild(datalist);
+        settings.appendChild(document.createElement("br"));
+        var translatorSelectLabel = document.createElement("span");
+        translatorSelectLabel.className = "optionLabel";
+        translatorSelectLabel.textContent = "Translators:";
+        settings.appendChild(translatorSelectLabel);
         settings.appendChild(checklist);
         livetlContainer.appendChild(e);
 
@@ -543,12 +557,12 @@ function createModal(container) {
     modalContent.className = "modal-content";
 
     let nextStyle = {
-        "block": "none",
-        "none": "block",
+        "flex": "none",
+        "none": "flex",
     };
 
     let icon = {
-        "block": closeSVG,
+        "flex": closeSVG,
         "none": settingsGear,
     };
 
@@ -571,38 +585,44 @@ const modalCSS = `
 
 svg {
     stroke: #D1D1D1;
+    fill: #D1D1D1;
 };
 
 
  /* The Modal (background) */
 .modal, .modal-content {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  top: 0;
-  left: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: var(--yt-live-chat-background-color);
-  color: var(--yt-live-chat-primary-text-color);
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    top: 0;
+    left: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: var(--yt-live-chat-background-color);
+    color: var(--yt-live-chat-primary-text-color);
 }
 
 /* Modal Content/Box */
-.modal-content {
-  margin: 15% top; /* 15% from the top and centered */
-  padding: 20px;
-  width: 80%; /* Could be more or less, depending on screen size */
+
+.modal-content>* {
+    margin-left: 10px;
 }
 
+.modal-content>*:not(.dropdown-check-list) {
+    margin: 10px;
+}
 
-#settingsGear:hover,
-#settingsGear:focus,
-.svgButton:hover,
-.svgButton:focus {
+.modal {
+    justify-content: center;
+    padding-top: 30px;
+}
+
+#settingsGear {
+    top: 5px !important;
     stroke: #0099FF1;
     cursor: pointer;
-};
+}
 `;
 
 const closeSVG = `
