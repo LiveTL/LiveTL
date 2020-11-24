@@ -374,6 +374,16 @@ function runLiveTL() {
                 var boxes = checklist.querySelectorAll("input:not(:checked)");
                 boxes.forEach(box => box.checked = true)
             }
+            var messages = document.querySelectorAll(".line");
+            for (i = 0; i < messages.length; i++) {
+                if (i < messages.length - 25) {
+                    messages[i].remove();
+                    continue;
+                }
+                if (!allTranslators[messages[i].querySelector(".authorName").textContent].checked) {
+                    messages[i].remove();
+                }
+            }
         }
 
         createCheckbox = (name, checked = false, callback = null) => {
@@ -419,6 +429,7 @@ function runLiveTL() {
                 if (parsed != null && parsed[1].toLowerCase() == languageConversionTable[select.value].code) {
                     var author = m.parentElement.childNodes[1].textContent;
                     let line = document.createElement("div");
+                    line.className = "line";
                     line.style.marginBottom = "10px";
                     line.style.marginTop = "10px";
                     line.textContent = parsed[2];
@@ -429,6 +440,8 @@ function runLiveTL() {
                     authorName.textContent = author;
                     authorInfo.appendChild(authorName);
                     var hide = document.createElement("span");
+                    hide.style.cursor = "pointer";
+                    hide.onclick = () => line.remove();
                     hide.innerHTML = `
                     <svg class="hide" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                         viewBox="0 0 572.098 572.098" style="enable-background:new 0 0 572.098 572.098;"
@@ -455,6 +468,11 @@ function runLiveTL() {
                     `;
                     authorInfo.appendChild(hide);
                     var ban = document.createElement("span");
+                    ban.onclick = () => {
+                        allTranslators[author].checked = false;
+                        checkboxUpdate();
+                    }
+                    ban.style.cursor = "pointer";
                     ban.innerHTML = `
                     <svg class="ban" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <g data-name="Layer 2">
@@ -478,7 +496,7 @@ function runLiveTL() {
             if (select.value in languageConversionTable) lastLang = select.value;
             e.scrollTop = e.scrollHeight;
             messages.forEach(m => m.remove());
-        }, 100);
+        }, 1000);
     }, 100);
 }
 
