@@ -424,9 +424,8 @@ function runLiveTL() {
             let messages = document.querySelectorAll("#message");
             messages.forEach(m => {
                 let parsed = /^\[(\w+)\] ?(.+)/.exec(m.textContent);
-                if (parsed == null) return;
-                console.log(parsed);
                 if (parsed != null && parsed[1].toLowerCase() == languageConversionTable[select.value].code) {
+                    console.log(parsed);
                     var author = m.parentElement.childNodes[1].textContent;
                     let line = document.createElement("div");
                     line.className = "line";
@@ -492,10 +491,10 @@ function runLiveTL() {
                     // line.onmouseover = () => authorInfo.textContent = `Translated by ${author}`;
                     // line.onmouseleave = () => authorInfo.textContent = "";
                 }
+                m.remove();
             });
             if (select.value in languageConversionTable) lastLang = select.value;
             e.scrollTop = e.scrollHeight;
-            messages.forEach(m => m.remove());
         }, 1000);
     }, 100);
 }
@@ -564,7 +563,7 @@ function createModal(container) {
 
     container.addEventListener("click", (e) => {
         let t = e.target;
-        while (t != container) {
+        while (t != container && t != null) {
             if (t == modalContainer || t == settingsButton) {
                 return;
             }
