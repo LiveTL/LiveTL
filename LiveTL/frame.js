@@ -378,8 +378,6 @@ function runLiveTL() {
             livetlContainer.style.display = "none";
         }
         let settings = createModal(livetlContainer);
-        let settingsProjection = document.createElement("div");
-        settingsProjection.id = "settingsProjection";
         let e = document.createElement("div");
         e.className = "translationText";
         let select = document.createElement("input");
@@ -430,10 +428,8 @@ function runLiveTL() {
         translatorSelectContainer.appendChild(translatorSelectLabel);
         translatorSelectContainer.appendChild(checklist);
         settings.appendChild(translatorSelectContainer);
-        e.appendChild(settingsProjection);
         livetlContainer.appendChild(e);
 
-        settingsProjection.style.zIndex = -1;
 
 
         let allTranslators = {};
@@ -501,8 +497,6 @@ function runLiveTL() {
 
         prependE = (el) => {
             e.prepend(el);
-            settingsProjection.remove();
-            e.prepend(settingsProjection);
         }
 
         getProfilePic = (el) => {
@@ -528,7 +522,6 @@ function runLiveTL() {
         let welcomeText = document.createElement("span");
         welcomeText.textContent = "Welcome to LiveTL! Translations will appear above.";
         welcome.appendChild(welcomeText);
-        welcome.append(document.createElement("span"));
         prependE(welcome);
 
 
@@ -608,7 +601,6 @@ function runLiveTL() {
                     options.appendChild(hide);
                     options.appendChild(ban);
                     authorInfo.append(options);
-                    authorInfo.append(document.createElement("span"));
                     if (!(authorID in allTranslators)) createCheckbox(author, authorID, allTranslatorCheckbox.checked);
                     if (allTranslators[authorID].checked) prependE(line);
                     options.style.display = "none";
@@ -620,6 +612,12 @@ function runLiveTL() {
                 // m.textContent = "[SCANNED] " + m.textContent;
                 m.innerHTML = "";
             }
+            let settingsProjection = document.querySelector("#settingsProjection");
+            if (settingsProjection) settingsProjection.remove();
+            settingsProjection = document.createElement("div");
+            settingsProjection.id = "settingsProjection";
+            settingsProjection.style.zIndex = -1;
+            prependE(settingsProjection);
             // messages.forEach(m => {
             //     m.classList.add("scanned");
             //     let t = document.createElement("span");
@@ -819,7 +817,7 @@ svg {
 }
 
 #settingsProjection {
-    top: 10px;
+    margin-top: 10px;
     width: 25px;
     height: 25px;
     float: right;
