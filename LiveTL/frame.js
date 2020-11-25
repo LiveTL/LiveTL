@@ -351,10 +351,19 @@ function runLiveTL() {
 
             .line {
                 margin-left: 15px;
+                margin-top: 10px;
+                margin-bottom: 10px;
             }
 
             .messageOptions {
                 margin-left: 5px;
+            }
+
+            .logo {
+                width: 25px;
+                height: 25px;
+                vertical-align: top;
+                margin-right: 5px;
             }
         ` + modalCSS;
 
@@ -479,6 +488,17 @@ function runLiveTL() {
 
         // let checkedSet = new Set();
 
+        let welcome = document.createElement("div");
+        welcome.className = "line";
+        let logo = document.createElement("img");
+        logo.className = "logo";
+        logo.src = "https://kentonishi.github.io/LiveTL/favicon.ico";
+        welcome.appendChild(logo);
+        let welcomeText = document.createElement("span");
+        welcomeText.textContent = "Welcome to LiveTL! Translations will appear above.";
+        welcome.appendChild(welcomeText);
+        e.appendChild(welcome);
+
         setInterval(() => {
             // if (select.value in languageConversionTable && select.value != lastLang) e.innerHTML = "";
             var start = (new Date()).getMilliseconds();
@@ -495,8 +515,6 @@ function runLiveTL() {
                     let author = m.parentElement.childNodes[1].textContent;
                     let line = document.createElement("div");
                     line.className = "line";
-                    line.style.marginBottom = "10px";
-                    line.style.marginTop = "10px";
                     line.textContent = parsed[2];
                     let authorInfo = document.createElement("span");
                     let authorName = document.createElement("span");
