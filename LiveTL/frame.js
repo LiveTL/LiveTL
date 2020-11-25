@@ -453,6 +453,7 @@ function runLiveTL() {
                     messages[i].remove();
                     continue;
                 }
+                if (!messages[i].querySelector(".authorName")) continue;
                 if (!allTranslators[messages[i].querySelector(".authorName").textContent].checked) {
                     messages[i].remove();
                 }
