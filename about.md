@@ -1,3 +1,7 @@
+<head>
+    <link rel="icon" href="./favicon.ico" type="image/x-icon" />
+</head>
+
 # Getting Started with LiveTL
 
 You must have the [LiveTL extension]() installed to use LiveTL features.
@@ -7,7 +11,7 @@ To get started, visit your favorite streamer on YouTube. The chat should have so
 ![](./img/openlivetl.png)
 
 ## Other Info
-Feel free to give us feedback or suggestions through the LiveTL Discord server! [Here is the Discord invite](https://discord.gg/uJrV3tmthg).
+Feel free to give us feedback or suggestions through the LiveTL Discord server! [Here is the invite](https://discord.gg/uJrV3tmthg).
 
 Our code is completely open source on GitHub. We would appreciate if you could drop a star! [Here is our repository](https://github.com/KentoNishi/LiveTL).
 
