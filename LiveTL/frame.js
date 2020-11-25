@@ -430,9 +430,9 @@ function runLiveTL() {
         settings.appendChild(translatorSelectContainer);
         livetlContainer.appendChild(e);
 
+        let allTranslatorsStr = localStorage.getItem("allTranslators") || "{}";
 
-
-        let allTranslators = {};
+        let allTranslators = JSON.parse(allTranslatorsStr);
 
         let allTranslatorCheckbox = {};
 
@@ -458,6 +458,7 @@ function runLiveTL() {
                     messages[i].remove();
                 }
             }
+            localStorage.setItem("allTranslators", JSON.stringify(allTranslators));
         }
 
         createCheckbox = (name, authorID, checked = false, callback = null) => {
@@ -502,10 +503,8 @@ function runLiveTL() {
         getProfilePic = (el) => {
             try {
                 let parent = el;
-                let count = 0;
                 while (!parent.querySelector("img")) {
                     parent = parent.parentElement;
-                    count++;
                 }
                 return parent.querySelector("img").src;
             } catch (e) { };
