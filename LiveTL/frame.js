@@ -792,6 +792,7 @@ svg {
 .modal {
     justify-content: center;
     padding-top: 30px;
+    padding-left: 10px;
 }
 
 #settingsGear {
