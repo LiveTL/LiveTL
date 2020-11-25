@@ -200,6 +200,7 @@ function updateSize() {
 function runLiveTL() {
     switchChat();
     setTimeout(() => {
+        document.title = "LiveTL Chat";
         let style = document.createElement('style');
         style.innerHTML = `
             .livetl {
