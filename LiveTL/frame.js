@@ -430,9 +430,9 @@ function runLiveTL() {
         settings.appendChild(translatorSelectContainer);
         livetlContainer.appendChild(e);
 
-        let allTranslatorsStr = localStorage.getItem("allTranslators") || "{}";
+        // let allTranslatorsStr = localStorage.getItem("allTranslators") || "{}";
 
-        let allTranslators = JSON.parse(allTranslatorsStr);
+        let allTranslators = "{}"; // JSON.parse(allTranslatorsStr);
 
         let allTranslatorCheckbox = {};
 
@@ -458,7 +458,7 @@ function runLiveTL() {
                     messages[i].remove();
                 }
             }
-            localStorage.setItem("allTranslators", JSON.stringify(allTranslators));
+            // localStorage.setItem("allTranslators", JSON.stringify(allTranslators));
         }
 
         createCheckbox = (name, authorID, checked = false, callback = null) => {
