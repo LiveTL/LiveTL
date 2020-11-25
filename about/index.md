@@ -31,7 +31,7 @@ Our code is completely open source on GitHub. We would appreciate if you could d
 <script>
     document.head.innerHTML += `
         <head>
-            <link rel="icon" href="./favicon.ico" type="image/x-icon" />
+            <link rel="icon" href="../favicon.ico" type="image/x-icon" />
         </head>
     `;
 </script>
