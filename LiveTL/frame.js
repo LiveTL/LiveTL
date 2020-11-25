@@ -185,7 +185,7 @@ const languages = [
     { code: 'zu', name: 'Zulu' }
 ];
 
-var languageConversionTable = {};
+let languageConversionTable = {};
 languages.forEach(i => languageConversionTable[i.name + ` [${i.code}]`] = i);
 
 languages.sort((a, b) => a.code - b.code);
@@ -193,7 +193,7 @@ languages.sort((a, b) => a.code - b.code);
 
 // global helper function to handle scrolling
 function updateSize() {
-    var pix = document.querySelector(".dropdown-check-list").getBoundingClientRect().bottom;
+    let pix = document.querySelector(".dropdown-check-list").getBoundingClientRect().bottom;
     document.querySelector(".modal").style.height = pix + "px";
 }
 
@@ -413,14 +413,14 @@ function runLiveTL() {
         items.className = "items";
         checklist.appendChild(items);
 
-        var langSelectLabel = document.createElement("span");
+        let langSelectLabel = document.createElement("span");
         langSelectLabel.className = "optionLabel";
         langSelectLabel.textContent = "Language:";
         settings.appendChild(langSelectLabel);
         settings.appendChild(select);
         settings.appendChild(datalist);
         settings.appendChild(document.createElement("br"));
-        var translatorSelectLabel = document.createElement("span");
+        let translatorSelectLabel = document.createElement("span");
         translatorSelectLabel.className = "optionLabel";
         translatorSelectLabel.textContent = "Translators:";
         settings.appendChild(translatorSelectLabel);
@@ -453,11 +453,10 @@ function runLiveTL() {
                     messages[i].remove();
                     continue;
                 }
-                try {
-                    if (!allTranslators[messages[i].querySelector(".authorName").textContent].checked) {
-                        messages[i].remove();
-                    }
-                } catch (e) { }
+                if (!messages[i].querySelector(".authorName")) continue;
+                if (!allTranslators[messages[i].querySelector(".authorName").textContent].checked) {
+                    messages[i].remove();
+                }
             }
         }
 
@@ -530,9 +529,9 @@ function runLiveTL() {
 
         setInterval(() => {
             // if (select.value in languageConversionTable && select.value != lastLang) e.innerHTML = "";
-            var start = (new Date()).getMilliseconds();
+            let start = (new Date()).getMilliseconds();
             let messages = document.querySelectorAll(".yt-live-chat-text-message-renderer > #message");
-            for (var i = messages.length - 1; i >= 0; i--) {
+            for (let i = messages.length - 1; i >= 0; i--) {
                 // if (!checkedSet.has(m.textContent)) {
                 //     // console.log(`Scanning message: ${m.textContent}`);
                 //     checkedSet.add(m.textContent);
@@ -598,7 +597,7 @@ function runLiveTL() {
                         </g>
                     </svg>
                     `;
-                    var options = document.createElement("span");
+                    let options = document.createElement("span");
                     options.appendChild(hide);
                     options.appendChild(ban);
                     authorInfo.append(options);
@@ -691,7 +690,7 @@ window.onload = () => {
                     </a>
                 `;
                         let interval2 = setInterval(() => {
-                            var e = document.querySelector("ytd-live-chat-frame");
+                            let e = document.querySelector("ytd-live-chat-frame");
                             if (e != null) {
                                 clearInterval(interval2);
                                 document.querySelector("ytd-live-chat-frame").appendChild(a);
