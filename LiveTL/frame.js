@@ -549,9 +549,13 @@ function runLiveTL() {
                     line.onmouseover = () => options.style.display = "inline-block";
                     line.onmouseleave = () => options.style.display = "none";
                 }
-                m.classList.add("scanned");
-                m.textContent = "[SCANNED] " + m.textContent;
             });
+            messages.forEach(m => {
+                m.classList.add("scanned");
+                let t = document.createElement("span");
+                t.textContent = "[SCANNED] ";
+                m.prepend(t);
+            })
             if (select.value in languageConversionTable) lastLang = select.value;
             console.log(`Polling ${messages.length} messages took ${(new Date()).getMilliseconds() - start}ms`);
             // e.scrollTop = e.scrollHeight;
