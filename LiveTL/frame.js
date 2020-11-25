@@ -440,7 +440,7 @@ function runLiveTL() {
             allTranslators = {};
             let boxes = checklist.querySelectorAll("input");
             boxes.forEach(box => {
-                allTranslators[box.id] = box;
+                allTranslators[box.dataset.id] = box;
                 if (box != allTranslatorCheckbox && !box.checked) allTranslatorCheckbox.checked = false;
             });
             if (allTranslatorCheckbox.checked) {
@@ -454,30 +454,30 @@ function runLiveTL() {
                     continue;
                 }
                 if (!messages[i].querySelector(".authorName")) continue;
-                if (!allTranslators[messages[i].querySelector(".authorName").textContent].checked) {
+                if (!allTranslators[messages[i].querySelector(".authorName").dataset.id].checked) {
                     messages[i].remove();
                 }
             }
         }
 
-        createCheckbox = (name, checked = false, callback = null) => {
+        createCheckbox = (name, authorID, checked = false, callback = null) => {
             let selectTranslatorMessage = document.createElement("li");
             items.append(selectTranslatorMessage);
             let checkbox = document.createElement("input");
             checkbox.type = "checkbox";
-            checkbox.id = name;
+            checkbox.dataset.id = authorID;
             checkbox.checked = checked;
             checkbox.onchange = callback || checkboxUpdate;
             selectTranslatorMessage.appendChild(checkbox);
             let person = document.createElement("label");
-            person.setAttribute("for", name);
-            person.textContent = person.value = name;
+            person.setAttribute("for", authorID);
+            person.textContent = name;
             selectTranslatorMessage.appendChild(person);
             checkboxUpdate();
             return checkbox;
         }
 
-        allTranslatorCheckbox = createCheckbox("All Translators", true, () => {
+        allTranslatorCheckbox = createCheckbox("All Translators", "allTranslatorID", true, () => {
             let boxes = checklist.querySelectorAll("input:not(:checked)");
             boxes.forEach(box => box.checked = allTranslatorCheckbox.checked);
             checkboxUpdate();
@@ -542,6 +542,7 @@ function runLiveTL() {
                 if (parsed != null && parsed[1].toLowerCase() == languageConversionTable[select.value].code) {
                     console.log(getProfilePic(m));
                     let author = m.parentElement.childNodes[1].textContent;
+                    let authorID = getProfilePic(m);
                     let line = document.createElement("div");
                     line.className = "line";
                     line.textContent = parsed[2];
@@ -550,6 +551,7 @@ function runLiveTL() {
                     authorName.className = "authorName";
                     line.appendChild(authorInfo);
                     authorName.textContent = author;
+                    authorName.dataset.id = authorID;
                     authorInfo.appendChild(authorName);
                     let hide = document.createElement("span");
                     hide.style.cursor = "pointer";
@@ -580,7 +582,7 @@ function runLiveTL() {
                     `;
                     let ban = document.createElement("span");
                     ban.onclick = () => {
-                        allTranslators[author].checked = false;
+                        allTranslators[authorID].checked = false;
                         checkboxUpdate();
                     }
                     ban.style.cursor = "pointer";
@@ -601,8 +603,8 @@ function runLiveTL() {
                     options.appendChild(hide);
                     options.appendChild(ban);
                     authorInfo.append(options);
-                    if (!(author in allTranslators)) createCheckbox(author, allTranslatorCheckbox.checked);
-                    if (allTranslators[author].checked) prependE(line);
+                    if (!(authorID in allTranslators)) createCheckbox(author, authorID, allTranslatorCheckbox.checked);
+                    if (allTranslators[authorID].checked) prependE(line);
                     options.style.display = "none";
                     options.className = "messageOptions";
                     line.onmouseover = () => options.style.display = "inline-block";
