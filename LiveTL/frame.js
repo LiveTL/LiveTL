@@ -476,7 +476,7 @@ function runLiveTL() {
         setInterval(() => {
             // if (select.value in languageConversionTable && select.value != lastLang) e.innerHTML = "";
             var start = (new Date()).getMilliseconds();
-            let messages = document.querySelectorAll(".yt-live-chat-text-message-renderer > #message");
+            let messages = document.querySelectorAll(".yt-live-chat-text-message-renderer > #message:not(.scanned)");
             messages.forEach(m => {
                 let parsed = /^\[(\w+)\] ?(.+)/.exec(m.textContent);
                 if (parsed != null && parsed[1].toLowerCase() == languageConversionTable[select.value].code) {
@@ -549,7 +549,8 @@ function runLiveTL() {
                     line.onmouseover = () => options.style.display = "inline-block";
                     line.onmouseleave = () => options.style.display = "none";
                 }
-                m.id = "scanned";
+                m.classList.add("scanned");
+                m.textContent = "[SCANNED] " + m.textContent;
             });
             if (select.value in languageConversionTable) lastLang = select.value;
             console.log(`Polling ${messages.length} messages took ${(new Date()).getMilliseconds() - start}ms`);
