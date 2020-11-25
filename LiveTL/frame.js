@@ -298,12 +298,12 @@ function runLiveTL() {
                 position: absolute;
             }
 
-            .translationText{
+            .translationText {
                 position: absolute;
                 z-index: -1;
                 margin-top: 5px;
                 margin-botton: 5px;
-                width: 100%;
+                width: calc(100% - 10px);
             }
 
             .authorName {
