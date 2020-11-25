@@ -473,11 +473,17 @@ function runLiveTL() {
             updateSize();
         }
 
+        let checkedSet = new Set();
+
         setInterval(() => {
             // if (select.value in languageConversionTable && select.value != lastLang) e.innerHTML = "";
             var start = (new Date()).getMilliseconds();
             let messages = document.querySelectorAll(".yt-live-chat-text-message-renderer > #message:not(.scanned)");
             messages.forEach(m => {
+                if (!checkedSet.has(m.textContent)) {
+                    console.log(`Scanning message: ${m.textContent}`);
+                    checkedSet.add(m.textContent);
+                }
                 let parsed = /^\[(\w+)\] ?(.+)/.exec(m.textContent);
                 if (parsed != null && parsed[1].toLowerCase() == languageConversionTable[select.value].code) {
                     let author = m.parentElement.childNodes[1].textContent;
@@ -629,7 +635,7 @@ function createModal(container) {
         settingsButton.innerHTML = icon[newDisplay];
         if (newDisplay == "none") {
             document.querySelector(".translationText").style.display = "block";
-            document.querySelector(".modal").style.height = "auto";
+            modalContainer.style.height = "auto";
         } else {
             document.querySelector(".translationText").style.display = "none";
             updateSize();
