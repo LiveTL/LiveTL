@@ -493,6 +493,12 @@ function runLiveTL() {
             updateSize();
         }
 
+        prependE = (el) => {
+            e.prepend(el);
+            settingsProjection.remove();
+            e.prepend(settingsProjection);
+        }
+
         // let checkedSet = new Set();
 
         let welcome = document.createElement("div");
@@ -503,31 +509,9 @@ function runLiveTL() {
         welcome.appendChild(logo);
         let welcomeText = document.createElement("span");
         welcomeText.textContent = "Welcome to LiveTL! Translations will appear above.";
-        // welcomeText.textContent = "a a a a a a a a a a a a a a a a a a a a aa a a a a a a a a a";
         welcome.appendChild(welcomeText);
-        e.prepend(welcome);
-        settingsProjection.remove();
-        e.prepend(settingsProjection);
-
-        // Comment out later
-        for (let i = 0; i < 10; ++i) {
-            let author = "Ronak Badboi";
-            let line = document.createElement("div");
-            line.className = "line";
-            line.textContent = "a a a a a a a a a a a a a a a a a a a a aa a a a a a a a a a";
-            let authorInfo = document.createElement("span");
-            let authorName = document.createElement("span");
-            authorName.className = "authorName";
-            line.appendChild(authorInfo);
-            authorName.textContent = author;
-            authorInfo.appendChild(authorName);
-            line.style.float = "none";
-            authorName.style.float = "none";
-            authorInfo.style.float = "none";
-            e.prepend(line);
-            settingsProjection.remove();
-            e.prepend(settingsProjection);
-        }
+        prependE(welcome);
+        
 
         setInterval(() => {
             // if (select.value in languageConversionTable && select.value != lastLang) e.innerHTML = "";
@@ -603,11 +587,7 @@ function runLiveTL() {
                     options.appendChild(ban);
                     authorInfo.append(options);
                     if (!(author in allTranslators)) createCheckbox(author, allTranslatorCheckbox.checked);
-                    if (allTranslators[author].checked) {
-                        e.prepend(line);
-                        settingsProjection.remove();
-                        e.prepend(settingsProjection);
-                    }
+                    if (allTranslators[author].checked) prependE(line);
                     options.style.display = "none";
                     options.className = "messageOptions";
                     line.onmouseover = () => options.style.display = "inline-block";
@@ -666,9 +646,6 @@ function createModal(container) {
     settingsButton.innerHTML = settingsGear;
     settingsButton.id = "settingsGear";
     settingsButton.style.zIndex = 1000000;
-    settingsButton.style.position = "fixed";
-    settingsButton.style.top = 0;
-    settingsButton.style.right = 0;
     settingsButton.style.padding = "5px";
     settingsButton.style.width = "5em !important";
 
@@ -750,13 +727,15 @@ svg {
 }
 
 #settingsGear {
-    top: 5px !important;
+    top: 10px !important;
     stroke: #0099FF1;
     cursor: pointer;
+    float: right;
+    z-index: 1000000;
 }
 
 #settingsProjection {
-    top: 5px;
+    top: 10px;
     width: 25px;
     height: 25px;
     float: right;
