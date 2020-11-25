@@ -358,10 +358,14 @@ function runLiveTL() {
             }
         ` + modalCSS;
 
+
         document.getElementsByTagName("head")[0].appendChild(style);
         let livetlContainer = document.createElement("div");
         livetlContainer.className = "livetl";
         document.body.appendChild(livetlContainer);
+        if (params.devMode) {
+            livetlContainer.style.display = "none";
+        }
         let settings = createModal(livetlContainer);
         let e = document.createElement("div");
         e.className = "translationText";
@@ -473,17 +477,19 @@ function runLiveTL() {
             updateSize();
         }
 
-        let checkedSet = new Set();
+        // let checkedSet = new Set();
 
         setInterval(() => {
             // if (select.value in languageConversionTable && select.value != lastLang) e.innerHTML = "";
             var start = (new Date()).getMilliseconds();
-            let messages = document.querySelectorAll(".yt-live-chat-text-message-renderer > #message:not(.scanned)");
-            messages.forEach(m => {
-                if (!checkedSet.has(m.textContent)) {
-                    console.log(`Scanning message: ${m.textContent}`);
-                    checkedSet.add(m.textContent);
-                }
+            let messages = document.querySelectorAll(".yt-live-chat-text-message-renderer > #message");
+            for (var i = messages.length - 1; i >= 0; i--) {
+                // if (!checkedSet.has(m.textContent)) {
+                //     // console.log(`Scanning message: ${m.textContent}`);
+                //     checkedSet.add(m.textContent);
+                // }
+                let m = messages[i];
+                if (m.innerHTML == "") break;
                 let parsed = /^\[(\w+)\] ?(.+)/.exec(m.textContent);
                 if (parsed != null && parsed[1].toLowerCase() == languageConversionTable[select.value].code) {
                     let author = m.parentElement.childNodes[1].textContent;
@@ -557,8 +563,8 @@ function runLiveTL() {
                 }
                 // m.classList.add("scanned");
                 // m.textContent = "[SCANNED] " + m.textContent;
-                m.textContent = "";
-            });
+                m.innerHTML = "";
+            }
             // messages.forEach(m => {
             //     m.classList.add("scanned");
             //     let t = document.createElement("span");
@@ -566,7 +572,7 @@ function runLiveTL() {
             //     m.prepend(t);
             // })
             // if (select.value in languageConversionTable) lastLang = select.value;
-            console.log(`Polling ${messages.length} messages took ${(new Date()).getMilliseconds() - start}ms`);
+            // console.log(`Scanning took ${(new Date()).getMilliseconds() - start}ms`);
             // e.scrollTop = e.scrollHeight;
         }, 1000);
     }, 100);
@@ -590,10 +596,11 @@ function parseParams() {
     return s == "" ? {} : JSON.parse('{"' + s + '"}');
 }
 
+let params = {};
 window.onload = () => {
     if (parent === top) {
         try {
-            let params = parseParams();
+            params = parseParams();
             if (params.useLiveTL) {
                 console.log("Running LiveTL!");
                 runLiveTL();
