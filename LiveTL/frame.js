@@ -555,8 +555,9 @@ function runLiveTL() {
                     line.onmouseover = () => options.style.display = "inline-block";
                     line.onmouseleave = () => options.style.display = "none";
                 }
-                m.classList.add("scanned");
-                m.textContent = "[SCANNED] " + m.textContent;
+                // m.classList.add("scanned");
+                // m.textContent = "[SCANNED] " + m.textContent;
+                m.textContent = "";
             });
             if (select.value in languageConversionTable) lastLang = select.value;
             console.log(`Polling ${messages.length} messages took ${(new Date()).getMilliseconds() - start}ms`);
