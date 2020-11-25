@@ -1,7 +1,3 @@
-<head>
-    <link rel="icon" href="./favicon.ico" type="image/x-icon" />
-</head>
-
 # Getting Started with LiveTL
 
 You must have the [LiveTL extension]() installed to use LiveTL features.
@@ -31,3 +27,11 @@ Our code is completely open source on GitHub. We would appreciate if you could d
 
 ### Hide Message / Ban Translator
 ![](./img/ban.png)
+
+<script>
+    document.head.innerHTML += `
+        <head>
+            <link rel="icon" href="./favicon.ico" type="image/x-icon" />
+        </head>
+    `;
+</script>
