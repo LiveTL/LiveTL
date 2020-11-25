@@ -715,7 +715,7 @@ function createModal(container) {
     settingsButton.id = "settingsGear";
     settingsButton.style.zIndex = 1000000;
     settingsButton.style.padding = "5px";
-    settingsButton.style.width = "5em !important";
+    settingsButton.style.width = "24px";
 
     let modalContainer = document.createElement("div");
     modalContainer.className = "modal";
