@@ -1,4 +1,4 @@
-# <img src="./favicon.ico" style="width:25px;height:auto;" /> LiveTL
+# LiveTL
 
 Get live translations for YouTube streams, crowdsourced from bilingual viewers!
 
