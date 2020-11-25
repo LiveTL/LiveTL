@@ -387,7 +387,7 @@ function runLiveTL() {
         datalist.id = "languages";
         languages.forEach(lang => {
             let opt = document.createElement("option");
-            opt.value = lang.name + ` [${lang.code}]`;
+            opt.value = `${lang.name} [${lang.code}]`;
             if (lang.code == "en") select.value = opt.value;
             datalist.appendChild(opt);
         });
@@ -415,20 +415,23 @@ function runLiveTL() {
 
         let langSelectLabel = document.createElement("span");
         langSelectLabel.className = "optionLabel";
-        langSelectLabel.textContent = "Language:";
-        settings.appendChild(langSelectLabel);
-        settings.appendChild(select);
-        settings.appendChild(datalist);
-        settings.appendChild(document.createElement("br"));
+        langSelectLabel.textContent = "Language: ";
+        let langSelectContainer = document.createElement("div");
+        langSelectContainer.appendChild(langSelectLabel);
+        langSelectContainer.appendChild(select);
+        langSelectContainer.appendChild(datalist);
+        settings.appendChild(langSelectContainer);
+        // settings.appendChild(document.createElement("br"));
         let translatorSelectLabel = document.createElement("span");
         translatorSelectLabel.className = "optionLabel";
-        translatorSelectLabel.textContent = "Translators:";
-        settings.appendChild(translatorSelectLabel);
-        settings.appendChild(checklist);
+        translatorSelectLabel.innerHTML = "Translators:&nbsp";
+        let translatorSelectContainer = document.createElement("div");
+        translatorSelectContainer.appendChild(translatorSelectLabel);
+        translatorSelectContainer.appendChild(checklist);
+        settings.appendChild(translatorSelectContainer);
         e.appendChild(settingsProjection);
         livetlContainer.appendChild(e);
 
-        // settingsProjection.innerHTML = `<b>XX</b><br /><b>XX</b>`;
         settingsProjection.style.zIndex = -1;
 
 
@@ -783,12 +786,17 @@ svg {
 
 /* Modal Content/Box */
 
+
 .modal-content>* {
     margin-left: 10px;
 }
 
 .modal-content>*:not(.dropdown-check-list) {
     margin: 10px;
+}
+
+.modal-content {
+    justify-content: center;
 }
 
 .modal {
