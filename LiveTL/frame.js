@@ -303,6 +303,7 @@ function runLiveTL() {
                 z-index: -1;
                 margin-top: 5px;
                 margin-botton: 5px;
+                width: auto;
             }
 
             .authorName {
@@ -429,7 +430,7 @@ function runLiveTL() {
         translatorSelectContainer.appendChild(translatorSelectLabel);
         translatorSelectContainer.appendChild(checklist);
         settings.appendChild(translatorSelectContainer);
-        livetlContainer.appendChild(settingsProjection);
+        e.appendChild(settingsProjection);
         livetlContainer.appendChild(e);
 
         settingsProjection.style.zIndex = -1;
@@ -501,7 +502,7 @@ function runLiveTL() {
         prependE = (el) => {
             e.prepend(el);
             settingsProjection.remove();
-            livetlContainer.prepend(settingsProjection);
+            e.prepend(settingsProjection);
         }
 
         getProfilePic = (el) => {
