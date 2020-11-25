@@ -502,6 +502,18 @@ function runLiveTL() {
             e.prepend(settingsProjection);
         }
 
+        getProfilePic = (el) => {
+            try {
+                let parent = el;
+                let count = 0;
+                while (!parent.querySelector("img")) {
+                    parent = parent.parentElement;
+                    count++;
+                }
+                return parent.querySelector("img").src;
+            } catch (e) { };
+        }
+
         // let checkedSet = new Set();
 
         let welcome = document.createElement("div");
@@ -529,6 +541,7 @@ function runLiveTL() {
                 if (m.innerHTML == "") break;
                 let parsed = /^\[(\w+)\] ?(.+)/.exec(m.textContent);
                 if (parsed != null && parsed[1].toLowerCase() == languageConversionTable[select.value].code) {
+                    console.log(getProfilePic(m));
                     let author = m.parentElement.childNodes[1].textContent;
                     let line = document.createElement("div");
                     line.className = "line";
