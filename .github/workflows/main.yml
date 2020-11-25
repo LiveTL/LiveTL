@@ -1,5 +1,5 @@
 name: Create Archive
-on: [push]
+on: [release]
 jobs:
   build:
     runs-on: ubuntu-latest
