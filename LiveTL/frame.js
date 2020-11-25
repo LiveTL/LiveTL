@@ -453,9 +453,11 @@ function runLiveTL() {
                     messages[i].remove();
                     continue;
                 }
-                if (!allTranslators[messages[i].querySelector(".authorName").textContent].checked) {
-                    messages[i].remove();
-                }
+                try {
+                    if (!allTranslators[messages[i].querySelector(".authorName").textContent].checked) {
+                        messages[i].remove();
+                    }
+                } catch (e) { }
             }
         }
 
