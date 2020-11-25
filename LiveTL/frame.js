@@ -470,7 +470,7 @@ function runLiveTL() {
             selectTranslatorMessage.appendChild(checkbox);
             let person = document.createElement("label");
             person.setAttribute("for", name);
-            person.textContent = person.value = name + ", " + (new Date()).toString().split(" ")[4];
+            person.textContent = person.value = name;
             selectTranslatorMessage.appendChild(person);
             checkboxUpdate();
             return checkbox;
@@ -512,7 +512,7 @@ function runLiveTL() {
         welcomeText.textContent = "Welcome to LiveTL! Translations will appear above.";
         welcome.appendChild(welcomeText);
         prependE(welcome);
-        
+
 
         setInterval(() => {
             // if (select.value in languageConversionTable && select.value != lastLang) e.innerHTML = "";
