@@ -449,7 +449,7 @@ function runLiveTL() {
             selectTranslatorMessage.appendChild(checkbox);
             let person = document.createElement("label");
             person.setAttribute("for", name);
-            person.textContent = person.value = name;
+            person.textContent = person.value = name + ", " + (new Date()).toString().split(" ")[4];
             selectTranslatorMessage.appendChild(person);
             checkboxUpdate();
             return checkbox;
@@ -475,11 +475,11 @@ function runLiveTL() {
 
         setInterval(() => {
             // if (select.value in languageConversionTable && select.value != lastLang) e.innerHTML = "";
-            let messages = document.querySelectorAll("#message");
+            var start = (new Date()).getMilliseconds();
+            let messages = document.querySelectorAll(".yt-live-chat-text-message-renderer > #message");
             messages.forEach(m => {
                 let parsed = /^\[(\w+)\] ?(.+)/.exec(m.textContent);
                 if (parsed != null && parsed[1].toLowerCase() == languageConversionTable[select.value].code) {
-                    console.log(parsed);
                     let author = m.parentElement.childNodes[1].textContent;
                     let line = document.createElement("div");
                     line.className = "line";
@@ -549,10 +549,11 @@ function runLiveTL() {
                     line.onmouseover = () => options.style.display = "inline-block";
                     line.onmouseleave = () => options.style.display = "none";
                 }
-                m.remove();
+                m.id = "scanned";
             });
             if (select.value in languageConversionTable) lastLang = select.value;
-            e.scrollTop = e.scrollHeight;
+            console.log(`Polling ${messages.length} messages took ${(new Date()).getMilliseconds() - start}ms`);
+            // e.scrollTop = e.scrollHeight;
         }, 1000);
     }, 100);
 }
