@@ -376,6 +376,8 @@ function runLiveTL() {
             livetlContainer.style.display = "none";
         }
         let settings = createModal(livetlContainer);
+        let settingsProjection = document.createElement("div");
+        settingsProjection.id = "settingsProjection";
         let e = document.createElement("div");
         e.className = "translationText";
         let select = document.createElement("input");
@@ -422,7 +424,12 @@ function runLiveTL() {
         translatorSelectLabel.textContent = "Translators:";
         settings.appendChild(translatorSelectLabel);
         settings.appendChild(checklist);
+        e.appendChild(settingsProjection);
         livetlContainer.appendChild(e);
+
+        // settingsProjection.innerHTML = `<b>XX</b><br /><b>XX</b>`;
+        settingsProjection.style.zIndex = -1;
+
 
         let allTranslators = {};
 
@@ -496,8 +503,31 @@ function runLiveTL() {
         welcome.appendChild(logo);
         let welcomeText = document.createElement("span");
         welcomeText.textContent = "Welcome to LiveTL! Translations will appear above.";
+        // welcomeText.textContent = "a a a a a a a a a a a a a a a a a a a a aa a a a a a a a a a";
         welcome.appendChild(welcomeText);
-        e.appendChild(welcome);
+        e.prepend(welcome);
+        settingsProjection.remove();
+        e.prepend(settingsProjection);
+
+        // Comment out later
+        for (let i = 0; i < 10; ++i) {
+            let author = "Ronak Badboi";
+            let line = document.createElement("div");
+            line.className = "line";
+            line.textContent = "a a a a a a a a a a a a a a a a a a a a aa a a a a a a a a a";
+            let authorInfo = document.createElement("span");
+            let authorName = document.createElement("span");
+            authorName.className = "authorName";
+            line.appendChild(authorInfo);
+            authorName.textContent = author;
+            authorInfo.appendChild(authorName);
+            line.style.float = "none";
+            authorName.style.float = "none";
+            authorInfo.style.float = "none";
+            e.prepend(line);
+            settingsProjection.remove();
+            e.prepend(settingsProjection);
+        }
 
         setInterval(() => {
             // if (select.value in languageConversionTable && select.value != lastLang) e.innerHTML = "";
@@ -573,7 +603,11 @@ function runLiveTL() {
                     options.appendChild(ban);
                     authorInfo.append(options);
                     if (!(author in allTranslators)) createCheckbox(author, allTranslatorCheckbox.checked);
-                    if (allTranslators[author].checked) e.prepend(line);
+                    if (allTranslators[author].checked) {
+                        e.prepend(line);
+                        settingsProjection.remove();
+                        e.prepend(settingsProjection);
+                    }
                     options.style.display = "none";
                     options.className = "messageOptions";
                     line.onmouseover = () => options.style.display = "inline-block";
@@ -684,7 +718,7 @@ function createModal(container) {
     let settingsButton = document.createElement("div");
     settingsButton.innerHTML = settingsGear;
     settingsButton.id = "settingsGear";
-    settingsButton.style.zIndex = 100000;
+    settingsButton.style.zIndex = 1000000;
     settingsButton.style.position = "fixed";
     settingsButton.style.top = 0;
     settingsButton.style.right = 0;
@@ -773,6 +807,13 @@ svg {
     stroke: #0099FF1;
     cursor: pointer;
 }
+
+#settingsProjection {
+    top: 5px;
+    width: 25px;
+    height: 25px;
+    float: right;
+};
 `;
 
 const closeSVG = `
