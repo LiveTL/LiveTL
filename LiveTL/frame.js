@@ -303,7 +303,7 @@ function runLiveTL() {
                 z-index: -1;
                 margin-top: 5px;
                 margin-botton: 5px;
-                width: auto;
+                width: 100%;
             }
 
             .authorName {
