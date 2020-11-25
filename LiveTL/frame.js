@@ -222,6 +222,10 @@ function runLiveTL() {
                 min-width 0px !important;
             }
 
+            a {
+                color: var(--yt-live-chat-primary-text-color);
+            }
+
             /* width */
             ::-webkit-scrollbar {
               width: 4px;
@@ -369,6 +373,9 @@ function runLiveTL() {
             }
         ` + modalCSS;
 
+        document.head.innerHTML += `
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.1.7/css/fork-awesome.min.css" integrity="sha256-gsmEoJAws/Kd3CjuOQzLie5Q3yshhvmo7YNtBG7aaEY=" crossorigin="anonymous">
+        `;
 
         document.getElementsByTagName("head")[0].appendChild(style);
         let livetlContainer = document.createElement("div");
@@ -518,8 +525,22 @@ function runLiveTL() {
         logo.className = "logo";
         logo.src = "https://kentonishi.github.io/LiveTL/favicon.ico";
         welcome.appendChild(logo);
+        let discordIcon = document.createElement("i");
+        ["fa", "fa-discord"].forEach(c => discordIcon.classList.add(c));
+        let githubIcon = document.createElement("i");
+        ["fa", "fa-github"].forEach(c => githubIcon.classList.add(c));
         let welcomeText = document.createElement("span");
-        welcomeText.textContent = "Welcome to LiveTL! Translations will appear above.";
+        welcomeText.textContent = " Welcome to LiveTL! Translations will appear above.";
+        let di = document.createElement("a");
+        let gi = document.createElement("a");
+        di.appendChild(discordIcon);
+        gi.appendChild(githubIcon);
+        di.innerHTML = "&nbsp" + di.innerHTML;
+        gi.innerHTML = "&nbsp" + gi.innerHTML;
+        di.href = "https://discord.gg/uJrV3tmthg";
+        gi.href = "https://github.com/KentoNishi/LiveTL";
+        welcome.appendChild(di);
+        welcome.appendChild(gi);
         welcome.appendChild(welcomeText);
         prependE(welcome);
 
