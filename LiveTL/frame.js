@@ -224,6 +224,7 @@ function runLiveTL() {
 
             a {
                 color: var(--yt-live-chat-primary-text-color);
+                text-decoration:none;
             }
 
             /* width */
