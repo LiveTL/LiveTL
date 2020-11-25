@@ -706,7 +706,7 @@ window.onload = () => {
                     }
                     makeButton("Open Stream in LiveTL", () => window.location.href = "https://kentonishi.github.io/LiveTL/?v=" + params.v);
                     makeButton("Pop Out LiveTL Chat", () => window.open(`https://www.youtube.com/live_chat?v=${params.v}&useLiveTL=1`, "",
-                        "scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=400,height=600"
+                        "scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300"
                     ), "rgb(143, 143, 143)");
                 }
             }, 100);
