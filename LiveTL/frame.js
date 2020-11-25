@@ -429,7 +429,7 @@ function runLiveTL() {
         translatorSelectContainer.appendChild(translatorSelectLabel);
         translatorSelectContainer.appendChild(checklist);
         settings.appendChild(translatorSelectContainer);
-        e.appendChild(settingsProjection);
+        livetlContainer.appendChild(settingsProjection);
         livetlContainer.appendChild(e);
 
         settingsProjection.style.zIndex = -1;
@@ -501,7 +501,7 @@ function runLiveTL() {
         prependE = (el) => {
             e.prepend(el);
             settingsProjection.remove();
-            e.prepend(settingsProjection);
+            livetlContainer.prepend(settingsProjection);
         }
 
         getProfilePic = (el) => {
@@ -527,6 +527,7 @@ function runLiveTL() {
         let welcomeText = document.createElement("span");
         welcomeText.textContent = "Welcome to LiveTL! Translations will appear above.";
         welcome.appendChild(welcomeText);
+        welcome.append(document.createElement("span"));
         prependE(welcome);
 
 
@@ -606,6 +607,7 @@ function runLiveTL() {
                     options.appendChild(hide);
                     options.appendChild(ban);
                     authorInfo.append(options);
+                    authorInfo.append(document.createElement("span"));
                     if (!(authorID in allTranslators)) createCheckbox(author, authorID, allTranslatorCheckbox.checked);
                     if (allTranslators[authorID].checked) prependE(line);
                     options.style.display = "none";
@@ -725,6 +727,7 @@ function createModal(container) {
     let modalContainer = document.createElement("div");
     modalContainer.className = "modal";
     modalContainer.style.zIndex = 1000000;
+    modalContainer.style.width = "calc(100% - 20px);";
     modalContainer.style.display = "none";
 
     let modalContent = document.createElement("div");
@@ -809,7 +812,8 @@ svg {
     top: 10px !important;
     stroke: #0099FF1;
     cursor: pointer;
-    float: right;
+    position: fixed;
+    right: 0;
     z-index: 1000000;
 }
 
