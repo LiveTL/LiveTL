@@ -617,13 +617,66 @@ function parseParams() {
 let params = {};
 window.onload = () => {
     if (parent === top) {
-        try {
-            params = parseParams();
-            if (params.useLiveTL) {
-                console.log("Running LiveTL!");
-                runLiveTL();
-            }
-        } catch (e) { }
+        if (window.location.href.startsWith("https://www.youtube.com/live_chat")) {
+            try {
+                params = parseParams();
+                if (params.useLiveTL) {
+                    console.log("Running LiveTL!");
+                    runLiveTL();
+                }
+            } catch (e) { }
+        } else if (window.location.href.startsWith("https://www.youtube.com/watch")) {
+            let interval = setInterval(() => {
+                if (document.querySelector(".view-count") && document.querySelector(".view-count").textContent.endsWith("now")) {
+                    clearInterval(interval);
+                    console.log("Inserting LiveTL Launcher Buttons");
+                    params = parseParams();
+                    makeButton = (text, callback, color) => {
+                        let a = document.createElement("span");
+                        a.innerHTML = `
+                    <a class="yt-simple-endpoint style-scope ytd-toggle-button-renderer" tabindex="-1" style="
+                        background-color: ${color || "rgb(0, 153, 255)"};
+                        font: inherit;
+                        font-size: 11px;
+                        font-weight: bold;">
+                        <paper-button id="button" class="style-scope ytd-toggle-button-renderer" role="button" tabindex="0" animated=""
+                            elevation="0" aria-disabled="false" style="
+                        padding: 5px;
+                    ">
+                            <yt-formatted-string id="text" class="style-scope ytd-toggle-button-renderer">
+                            </yt-formatted-string>
+                            <paper-ripple class="style-scope paper-button">
+                                <div id="background" class="style-scope paper-ripple" style="opacity: 0.00738;"></div>
+                                <div id="waves" class="style-scope paper-ripple"></div>
+                            </paper-ripple>
+                            <paper-ripple class="style-scope paper-button">
+                                <div id="background" class="style-scope paper-ripple" style="opacity: 0.007456;"></div>
+                                <div id="waves" class="style-scope paper-ripple"></div>
+                            </paper-ripple>
+                            <paper-ripple class="style-scope paper-button">
+                                <div id="background" class="style-scope paper-ripple" style="opacity: 0.007748;"></div>
+                                <div id="waves" class="style-scope paper-ripple"></div>
+                            </paper-ripple>
+                        </paper-button>
+                    </a>
+                `;
+                        let interval2 = setInterval(() => {
+                            var e = document.querySelector("ytd-live-chat-frame");
+                            if (e != null) {
+                                clearInterval(interval2);
+                                document.querySelector("ytd-live-chat-frame").appendChild(a);
+                                a.querySelector("a").onclick = callback;
+                                a.querySelector("yt-formatted-string").textContent = text;
+                            }
+                        }, 100);
+                    }
+                    makeButton("Open Stream in LiveTL", () => window.location.href = "https://kentonishi.github.io/LiveTL/?v=" + params.v);
+                    makeButton("Pop Out LiveTL Chat", () => window.open(`https://www.youtube.com/live_chat?v=${params.v}&useLiveTL=1`, "",
+                        "scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=400,height=600"
+                    ), "rgb(143, 143, 143)");
+                }
+            }, 100);
+        }
     }
 }
 
