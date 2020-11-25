@@ -1,5 +1,3 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Create Archive
 on: [push]
 jobs:
@@ -11,4 +9,12 @@ jobs:
       uses: thedoctor0/zip-release@master
       with:
         filename: 'LiveTL.zip'
-        directory: "LiveTL"
+        path: "LiveTL"
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: LiveTL.zip
+        asset_name: LiveTL.zip
+        tag: ${{ github.ref }}
+        overwrite: true
