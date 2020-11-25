@@ -814,7 +814,7 @@ svg {
     stroke: #0099FF1;
     cursor: pointer;
     position: fixed;
-    right: 0;
+    right: 5px;
     z-index: 1000000;
 }
 
