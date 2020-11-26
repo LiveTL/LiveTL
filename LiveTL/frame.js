@@ -367,9 +367,10 @@ function runLiveTL() {
             }
 
             .logo {
-                width: 25px;
-                height: 25px;
+                width: 20px;
+                height: 20px;
                 vertical-align: top;
+                margin-top: 1px;
                 margin-right: 5px;
             }
         ` + modalCSS;
@@ -525,6 +526,9 @@ function runLiveTL() {
         let logo = document.createElement("img");
         logo.className = "logo";
         logo.src = "https://kentonishi.github.io/LiveTL/favicon.ico";
+        let logosize = "20px";
+        // logo.style.width = logosize;
+        // logo.style.height = logosize;
         welcome.appendChild(logo);
         let discordIcon = document.createElement("i");
         ["fa", "fa-discord"].forEach(c => discordIcon.classList.add(c));
@@ -536,7 +540,7 @@ function runLiveTL() {
         let gi = document.createElement("a");
         di.appendChild(discordIcon);
         gi.appendChild(githubIcon);
-        di.innerHTML = "&nbsp" + di.innerHTML;
+        // di.innerHTML = "&nbsp" + di.innerHTML;
         gi.innerHTML = "&nbsp" + gi.innerHTML;
         di.href = "https://discord.gg/uJrV3tmthg";
         gi.href = "https://github.com/KentoNishi/LiveTL";
