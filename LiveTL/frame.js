@@ -675,25 +675,29 @@ function parseParams() {
 }
 
 let params = {};
-window.onload = () => {
-    if (parent === top) {
-        if (window.location.href.startsWith("https://www.youtube.com/live_chat")) {
-            try {
+let activationInterval = setInterval(() => {
+    // console.log("Checking if LiveTL needs to be activated");
+    if (window.location.href.startsWith("https://www.youtube.com/live_chat")) {
+        clearInterval(activationInterval);
+        console.log("Using live chat");
+        try {
+            params = parseParams();
+            if (params.useLiveTL) {
+                console.log("Running LiveTL!");
+                runLiveTL();
+            }
+        } catch (e) { }
+    } else if (window.location.href.startsWith("https://www.youtube.com/watch")) {
+        clearInterval(activationInterval);
+        console.log("Watching video");
+        let interval = setInterval(() => {
+            if (document.querySelector(".view-count") && document.querySelector(".view-count").textContent.endsWith("now")) {
+                clearInterval(interval);
+                console.log("Inserting LiveTL Launcher Buttons");
                 params = parseParams();
-                if (params.useLiveTL) {
-                    console.log("Running LiveTL!");
-                    runLiveTL();
-                }
-            } catch (e) { }
-        } else if (window.location.href.startsWith("https://www.youtube.com/watch")) {
-            let interval = setInterval(() => {
-                if (document.querySelector(".view-count") && document.querySelector(".view-count").textContent.endsWith("now")) {
-                    clearInterval(interval);
-                    console.log("Inserting LiveTL Launcher Buttons");
-                    params = parseParams();
-                    makeButton = (text, callback, color) => {
-                        let a = document.createElement("span");
-                        a.innerHTML = `
+                makeButton = (text, callback, color) => {
+                    let a = document.createElement("span");
+                    a.innerHTML = `
                     <a class="yt-simple-endpoint style-scope ytd-toggle-button-renderer" tabindex="-1" style="
                         background-color: ${color || "rgb(0, 153, 255)"};
                         font: inherit;
@@ -720,25 +724,26 @@ window.onload = () => {
                         </paper-button>
                     </a>
                 `;
-                        let interval2 = setInterval(() => {
-                            let e = document.querySelector("ytd-live-chat-frame");
-                            if (e != null) {
-                                clearInterval(interval2);
-                                document.querySelector("ytd-live-chat-frame").appendChild(a);
-                                a.querySelector("a").onclick = callback;
-                                a.querySelector("yt-formatted-string").textContent = text;
-                            }
-                        }, 100);
-                    }
-                    makeButton("Open Stream in LiveTL", () => window.location.href = "https://kentonishi.github.io/LiveTL/?v=" + params.v);
-                    makeButton("Pop Out LiveTL Chat", () => window.open(`https://www.youtube.com/live_chat?v=${params.v}&useLiveTL=1`, "",
-                        "scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300"
-                    ), "rgb(143, 143, 143)");
+                    let interval2 = setInterval(() => {
+                        let e = document.querySelector("ytd-live-chat-frame");
+                        if (e != null) {
+                            clearInterval(interval2);
+                            document.querySelector("ytd-live-chat-frame").appendChild(a);
+                            a.querySelector("a").onclick = callback;
+                            a.querySelector("yt-formatted-string").textContent = text;
+                        }
+                    }, 100);
                 }
-            }, 100);
-        }
+                makeButton("Open Stream in LiveTL", () => window.location.href = "https://kentonishi.github.io/LiveTL/?v=" + params.v);
+                makeButton("Pop Out LiveTL Chat", () => window.open(`https://www.youtube.com/live_chat?v=${params.v}&useLiveTL=1`, "",
+                    "scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300"
+                ), "rgb(143, 143, 143)");
+            }
+        }, 100);
+    } else {
+        // console.log(`${window.location.href} does not need LiveTL`);
     }
-}
+}, 1000);
 
 function createModal(container) {
     let settingsButton = document.createElement("div");
