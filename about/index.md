@@ -1,6 +1,6 @@
 # Getting Started with LiveTL
 
-You must have the [LiveTL extension]() installed to use LiveTL features.
+You must have the [LiveTL extension](https://chrome.google.com/webstore/detail/livetl/moicohcfhhbmmngneghfjfjpdobmmnlg) installed to use LiveTL features.
 
 To get started, visit your favorite streamer on YouTube. The chat should have some new buttons for launching LiveTL!
 

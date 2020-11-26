@@ -2,7 +2,7 @@
 
 Get live translations for YouTube streams, crowdsourced from multilingual viewers!
 
-[Download for Free from the Chrome Web Store]()
+[Download for Free from the Chrome Web Store](https://chrome.google.com/webstore/detail/livetl/moicohcfhhbmmngneghfjfjpdobmmnlg)
 
 ## Feedback and Contributing
 
