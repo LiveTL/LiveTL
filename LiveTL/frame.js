@@ -687,7 +687,7 @@ function createSurroundRegex() {
     });
     
     return new RegExp(
-        `^([${pattern}])([${notPattern}]+)([${patternEnd}])`
+        `^([${pattern}])([${notPattern}]+)([${patternEnd}]) ?(.+)`
     );
 }
 
@@ -704,18 +704,34 @@ function surroundFilter(msg) {
     const surroundRegex = createSurroundRegex();
     const result = surroundRegex.exec(msg);
     if (result && surroundTokensMatch(result[1], result[3])) {
-        return result[2].trim();
+        return {
+            lang: result[2].trim(),
+            msg: result[4],
+        }
     }
 }
 
 function endFilter(msg) {
-    const result = /^([^\-^\:^\|]+)[\-\:\|]/.exec(msg);
+    const result = /^([^\-^\:^\|]+)[\-\:\|] ?(.+)/.exec(msg);
     if (result) {
-        return result[1].trim();
+        return {
+            lang: result[1].trim(),
+            msg: result[2],
+        }
     }
 }
 
-function getLanguage(msg) {
+/**
+ * Parses message for translation.
+ *
+ * @param msg the message
+ * @return undefined or 
+ * {
+ *    lang: language code,
+ *    msg: translated message
+ * }
+ */
+function parseTranslation(msg) {
     return surroundFilter(msg) || endFilter(msg);
 }
 
