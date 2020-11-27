@@ -378,11 +378,15 @@ function runLiveTL() {
         welcome.appendChild(welcomeText);
         prependE(welcome);
 
-
+        let firstLoop = true;
         setInterval(() => {
             // if (select.value in languageConversionTable && select.value != lastLang) e.innerHTML = "";
-            let start = (new Date()).getMilliseconds();
-            let messages = document.querySelectorAll(".yt-live-chat-text-message-renderer > #message");
+            // let start = (new Date()).getMilliseconds();
+            let messages = Array.from(document.querySelectorAll(".yt-live-chat-text-message-renderer > #message"));
+            if (firstLoop) {
+                messages = messages.reverse();
+                firstLoop = false;
+            }
             for (let i = messages.length - 1; i >= 0; i--) {
                 // if (!checkedSet.has(m.textContent)) {
                 //     // console.log(`Scanning message: ${m.textContent}`);
@@ -503,7 +507,7 @@ function parseParams() {
     return s == "" ? {} : JSON.parse('{"' + s + '"}');
 }
 
-function insertLiveTLButtons(isHolotools) {
+function insertLiveTLButtons(isHolotools = false) {
     console.log("Inserting LiveTL Launcher Buttons");
     params = parseParams();
     makeButton = (text, callback, color) => {
@@ -542,14 +546,10 @@ function insertLiveTLButtons(isHolotools) {
         </a>
     `;
         let interval2 = setInterval(() => {
-            let e = document.querySelector("ytd-live-chat-frame") || document.querySelector("#input-panel");
+            let e = isHolotools ? document.querySelector("#input-panel") : document.querySelector("ytd-live-chat-frame");
             if (e != null) {
                 clearInterval(interval2);
-                if (isHolotools) {
-                    e.appendChild(a);
-                } else {
-                    e.appendChild(a);
-                }
+                e.appendChild(a);
                 a.querySelector("a").onclick = callback;
                 a.querySelector("yt-formatted-string").textContent = text;
             }
@@ -581,7 +581,7 @@ let activationInterval = setInterval(() => {
         clearInterval(activationInterval);
         console.log("Watching video");
         let interval = setInterval(() => {
-            if (document.querySelector("#input-panel")) {
+            if (document.querySelector("ytd-live-chat-frame")) {
                 clearInterval(interval);
                 insertLiveTLButtons();
             }
@@ -647,13 +647,13 @@ function createSurroundRegex() {
     let pattern = "";
     let patternEnd = "";
     let notPattern = "";
-    
+
     surroundTokens.forEach((token) => {
         pattern = `${pattern}\\${token[0]}`;
         patternEnd = `${patternEnd}\\${token[1]}`;
         notPattern = `${notPattern}^\\${token[0]}^\\${token[1]}`;
     });
-    
+
     return new RegExp(
         `^([${pattern}])([${notPattern}]+)([${patternEnd}]) ?(.+)`
     );
