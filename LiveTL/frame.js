@@ -27,258 +27,32 @@ function runLiveTL() {
     switchChat();
     setTimeout(() => {
         document.title = "LiveTL Chat";
-        let style = document.createElement('style');
-        style.innerHTML = `
-            .livetl {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: var(--yt-live-chat-background-color);
-                color: var(--yt-live-chat-primary-text-color);
-                z-index: 0;
-                word-wrap: break-word;
-                word-break: break-word;
-                font-size: 20px;
-                overflow-x: none;
-                overflow-y: auto;
-                padding: 0px;
-                min-height: 0px !important;
-                min-width 0px !important;
-            }
+        
+        importFontAwesome();
+        importStyle();
 
-            a {
-                color: var(--yt-live-chat-primary-text-color);
-                text-decoration:none;
-            }
-
-            /* width */
-            ::-webkit-scrollbar {
-              width: 4px;
-            }
-            
-            /* Track */
-            ::-webkit-scrollbar-track {
-              background: #f1f1f1; 
-            }
-             
-            /* Handle */
-            ::-webkit-scrollbar-thumb {
-              background: #888; 
-            }
-            
-            /* Handle on hover */
-            ::-webkit-scrollbar-thumb:hover {
-              background: #555; 
-            }
-
-            .livetl * {
-                vertical-align: baseline;
-            }
-            .navbar{
-                margin-top: 10px;
-                min-height: 25px;
-            }
-            input {
-                padding: 5px;
-            }
-            .dropdown-check-list {
-                display: inline-block;
-                background-color: white;
-                color: black;
-                font-size: 14px;
-            }
-            .dropdown-check-list .anchor {
-                position: relative;
-                cursor: pointer;
-                display: inline-block;
-                padding: 5px 50px 5px 10px;
-                width: calc(100% - 60px);
-            }
-            .dropdown-check-list .anchor:after {
-                position: absolute;
-                content: "";
-                border-left: 2px solid black;
-                border-top: 2px solid black;
-                padding: 5px;
-                right: 10px;
-                top: 20%;
-                -moz-transform: rotate(-135deg);
-                -ms-transform: rotate(-135deg);
-                -o-transform: rotate(-135deg);
-                -webkit-transform: rotate(-135deg);
-                transform: rotate(-135deg);
-            }
-            .openList > .anchor:after {
-                border-right: 2px solid black !important;
-                border-bottom: 2px solid black !important;
-                border-left: 0 !important;
-                border-top: 0 !important;
-                margin-top: 5px !important;
-            }
-            .dropdown-check-list .anchor:active:after {
-                right: 8px;
-                top: 21%;
-            }
-            .dropdown-check-list ul.items {
-                padding: 2px;
-                display: none;
-                margin: 0;
-                border: 1px solid #ccc;
-                border-top: none;
-            }
-            .dropdown-check-list ul.items li {
-                list-style: none;
-            }
-
-            .dropdown-check-list {
-                position: absolute;
-            }
-
-            .translationText {
-                position: absolute;
-                z-index: -1;
-                margin-top: 5px;
-                margin-botton: 5px;
-                width: calc(100% - 10px);
-            }
-
-            .authorName {
-                font-size: 12px;
-                color: #bdbdbd;
-                margin-left: 5px;
-                vertical-align: baseline;
-            }
-
-            label {
-                -webkit-user-select: none;
-                -khtml-user-select: none;
-                -moz-user-select: -moz-none;
-                -o-user-select: none;
-                user-select: none;
-            }
-
-            .hide {
-                stroke-width: 0;
-                fill: #A0A0A0;
-                stroke: rgb(0, 153, 255);
-                width: 12px;
-                height: 12px;
-            }
-
-            .hide:hover {
-                fill: cornflowerblue;
-            }
-
-            .ban {
-                stroke-width: 0;
-                fill: #A0A0A0;
-                stroke: rgb(0, 153, 255);
-                width: 12px;
-                height: 12px;
-            }
-
-            .ban:hover {
-                fill: crimson;
-            }
-
-            .optionLabel {
-                position: absolute;
-                margin-left: 0;
-                display: contents !important;
-            }
-
-            .line {
-                margin-left: 15px;
-                margin-top: 10px;
-                margin-bottom: 10px;
-            }
-
-            .messageOptions {
-                margin-left: 5px;
-            }
-
-            .logo {
-                width: 20px;
-                height: 20px;
-                vertical-align: top;
-                margin-top: 1px;
-                margin-right: 5px;
-            }
-        ` + modalCSS;
-
-        document.head.innerHTML += `
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.1.7/css/fork-awesome.min.css" integrity="sha256-gsmEoJAws/Kd3CjuOQzLie5Q3yshhvmo7YNtBG7aaEY=" crossorigin="anonymous">
-        `;
-
-        document.getElementsByTagName("head")[0].appendChild(style);
         let livetlContainer = document.createElement("div");
         livetlContainer.className = "livetl";
         document.body.appendChild(livetlContainer);
         if (params.devMode) {
             livetlContainer.style.display = "none";
         }
-        let settings = createModal(livetlContainer);
-        let e = document.createElement("div");
-        e.className = "translationText";
-        let select = document.createElement("input");
-        select.dataset.role = "none";
-        let datalist = document.createElement("datalist");
-        datalist.id = "languages";
-        languages.forEach(lang => {
-            let opt = document.createElement("option");
-            opt.value = `${lang.name} (${lang.lang}) [${lang.code}]`;
-            if (lang.code == "en") select.value = opt.value;
-            datalist.appendChild(opt);
-        });
-        let lastLang = select.value;
-        select.id = "langSelect";
-        select.setAttribute("list", datalist.id);
-        select.onblur = () => {
-            if (!(select.value in languageConversionTable)) {
-                select.value = lastLang;
-            }
-        }
-        select.onfocus = () => select.value = "";
+        // let settings = createModal(livetlContainer);
+        let translationDiv = document.createElement("div");
+        translationDiv.className = "translationText";
 
-        let checklist = document.createElement("div");
-        checklist.className = "dropdown-check-list";
-        checklist.tabIndex = 1;
-        let defaultText = document.createElement("span");
-        defaultText.className = "anchor";
-        defaultText.textContent = "View All";
-        checklist.appendChild(defaultText);
-        let items = document.createElement("ul");
-        items.id = "items";
-        items.className = "items";
-        checklist.appendChild(items);
+        let settings = createSettings(livetlContainer);
 
-        let langSelectLabel = document.createElement("span");
-        langSelectLabel.className = "optionLabel";
-        langSelectLabel.textContent = "Language: ";
-        let langSelectContainer = document.createElement("div");
-        langSelectContainer.appendChild(langSelectLabel);
-        langSelectContainer.appendChild(select);
-        langSelectContainer.appendChild(datalist);
-        settings.appendChild(langSelectContainer);
-        // settings.appendChild(document.createElement("br"));
-        let translatorSelectLabel = document.createElement("span");
-        translatorSelectLabel.className = "optionLabel";
-        translatorSelectLabel.innerHTML = "Translators:&nbsp";
-        let translatorSelectContainer = document.createElement("div");
-        translatorSelectContainer.appendChild(translatorSelectLabel);
-        translatorSelectContainer.appendChild(checklist);
-        settings.appendChild(translatorSelectContainer);
-        livetlContainer.appendChild(e);
+        // settings.appendChild(createLanguageSelect());
+        // settings.appendChild(createTranslatorSelect());
+        livetlContainer.appendChild(translationDiv);
 
-        // let allTranslatorsStr = localStorage.getItem("allTranslators") || "{}";
-
-        let allTranslators = "{}"; // JSON.parse(allTranslatorsStr);
+        let allTranslators = {};
 
         let allTranslatorCheckbox = {};
 
         checkboxUpdate = () => {
+            let checklist = document.querySelector("#transelectChecklist");
             allTranslators = {};
             let boxes = checklist.querySelectorAll("input");
             boxes.forEach(box => {
@@ -300,10 +74,10 @@ function runLiveTL() {
                     messages[i].remove();
                 }
             }
-            // localStorage.setItem("allTranslators", JSON.stringify(allTranslators));
         }
 
         createCheckbox = (name, authorID, checked = false, callback = null) => {
+            let items = document.querySelector("#items");
             let selectTranslatorMessage = document.createElement("li");
             items.append(selectTranslatorMessage);
             let checkbox = document.createElement("input");
@@ -321,34 +95,15 @@ function runLiveTL() {
         }
 
         allTranslatorCheckbox = createCheckbox("All Translators", "allTranslatorID", true, () => {
-            let boxes = checklist.querySelectorAll("input:not(:checked)");
+            let boxes = document
+                .querySelector("#transelectChecklist")
+                .querySelectorAll("input:not(:checked)");
             boxes.forEach(box => box.checked = allTranslatorCheckbox.checked);
             checkboxUpdate();
         });
 
-        checklist.querySelector('.anchor').onclick = () => {
-            if (items.style.display != "block") {
-                checklist.classList.add("openList");
-                items.style.display = "block";
-            }
-            else {
-                checklist.classList.remove("openList");
-                items.style.display = "none";
-            }
-            updateSize();
-        }
-
-        checklist.onblur = e => {
-            if (!e.currentTarget.contains(e.relatedTarget)) {
-                checklist.classList.remove("openList");
-                items.style.display = "none";
-            }
-            else e.currentTarget.focus();
-            updateSize();
-        }
-
         prependE = (el) => {
-            e.prepend(el);
+            translationDiv.prepend(el);
         }
 
         getProfilePic = (el) => {
@@ -394,7 +149,7 @@ function runLiveTL() {
 
         let firstLoop = true;
         setInterval(() => {
-            // if (select.value in languageConversionTable && select.value != lastLang) e.innerHTML = "";
+            // if (select.value in languageConversionTable && select.value != lastLang) translationDiv.innerHTML = "";
             // let start = (new Date()).getMilliseconds();
             let messages = Array.from(document.querySelectorAll(".yt-live-chat-text-message-renderer > #message"));
             if (firstLoop) {
@@ -498,7 +253,7 @@ function runLiveTL() {
             // })
             // if (select.value in languageConversionTable) lastLang = select.value;
             // console.log(`Scanning took ${(new Date()).getMilliseconds() - start}ms`);
-            // e.scrollTop = e.scrollHeight;
+            // translationDiv.scrollTop = translationDiv.scrollHeight;
         }, 1000);
     }, 100);
 }
@@ -717,6 +472,145 @@ function parseTranslation(msg) {
     return surroundFilter(msg) || endFilter(msg);
 }
 
+function importFontAwesome() {
+    document.head.innerHTML += `
+    <link 
+     rel="stylesheet"
+     href="https://cdn.jsdelivr.net/npm/fork-awesome@1.1.7/css/fork-awesome.min.css"
+     integrity="sha256-gsmEoJAws/Kd3CjuOQzLie5Q3yshhvmo7YNtBG7aaEY="
+     crossorigin="anonymous">
+        `;
+}
+
+function setSelectInputCallbacks(select, defaultValue) {
+    select.onfocus = () => select.value = "";
+    select.onblur = () => {
+        if (!(select.value in languageConversionTable)) {
+            select.value = defaultValue;
+        }
+    };
+}
+
+function createLangSelectOption(lang) {
+    let opt = document.createElement("option");
+    opt.value = `${lang.name} (${lang.lang}) [${lang.code}]`;
+    return opt;
+}
+
+function createLangSelectLabel() {
+    let langSelectLabel = document.createElement("span");
+    langSelectLabel.className = "optionLabel";
+    langSelectLabel.textContent = "Language: ";
+    return langSelectLabel;
+}
+
+function createSelectInput() {
+    let select = document.createElement("input");
+    select.dataset.role = "none";
+    let defaultLang = languages[0];
+    select.value = `${defaultLang.name} (${defaultLang.lang}) [${defaultLang.code}]`;
+    select.setAttribute("list", "languages");
+    select.id = "langSelect";
+    setSelectInputCallbacks(select, select.value);
+    return select;
+}
+
+function createLangSelectDatalist() {
+    let datalist = document.createElement("datalist");
+    datalist.id = "languages";
+    let appendDatalist = e => datalist.appendChild(e);
+    languages.map(createLangSelectOption).map(appendDatalist);
+    return datalist;
+}
+
+function createLanguageSelect() {
+    let langSelectContainer = document.createElement("div");
+    langSelectContainer.appendChild(createLangSelectLabel());
+    langSelectContainer.appendChild(createSelectInput());
+    langSelectContainer.appendChild(createLangSelectDatalist());
+    return langSelectContainer;
+}
+
+function setChecklistOnclick(checklist) {
+    checklist.querySelector('.anchor').onclick = () => {
+        let items = document.querySelector("#items");
+        if (items.style.display != "block") {
+            checklist.classList.add("openList");
+            items.style.display = "block";
+        }
+        else {
+            checklist.classList.remove("openList");
+            items.style.display = "none";
+        }
+        updateSize();
+    }
+}
+
+function setChecklistOnblur(checklist) {
+    checklist.onblur = e => {
+        let items = document.querySelector("#items");
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+            checklist.classList.remove("openList");
+            items.style.display = "none";
+        }
+        else e.currentTarget.focus();
+        updateSize();
+    }
+}
+
+function setChecklistCallbacks(checklist) {
+    setChecklistOnclick(checklist);
+    setChecklistOnblur(checklist);
+}
+
+function createTransSelectDefaultText() {
+    let defaultText = document.createElement("span");
+    defaultText.className = "anchor";
+    defaultText.textContent = "View All";
+    return defaultText;
+}
+
+function createTransSelectChecklistItems() {
+    let items = document.createElement("ul");
+    items.id = "items";
+    items.className = "items";
+    return items;
+}
+
+function createTransSelectLabel() {
+    let translatorSelectLabel = document.createElement("span");
+    translatorSelectLabel.className = "optionLabel";
+    translatorSelectLabel.innerHTML = "Translators:&nbsp";
+    return translatorSelectLabel;
+}
+
+function createTransSelectChecklist() {
+    let checklist = document.createElement("div");
+    checklist.className = "dropdown-check-list";
+    checklist.id = "transelectChecklist";
+    checklist.tabIndex = 1;
+    checklist.appendChild(createTransSelectDefaultText());
+    checklist.appendChild(createTransSelectChecklistItems());
+    setChecklistCallbacks(checklist);
+    return checklist;
+}
+
+function createTranslatorSelect() {
+    let translatorSelectContainer = document.createElement("div");
+    translatorSelectContainer.appendChild(createTransSelectLabel());
+    translatorSelectContainer.appendChild(createTransSelectChecklist());
+    return translatorSelectContainer;
+}
+
+function createSettings(container) {
+    let settings = createModal(container);
+    settings.appendChild(createLanguageSelect());
+    settings.appendChild(createTranslatorSelect());
+    return settings;
+}
+
+// MARK
+
 const modalCSS = `
 
 svg {
@@ -776,6 +670,190 @@ svg {
     float: right;
 };
 `;
+
+function importStyle() {
+    let style = document.createElement('style');
+    style.innerHTML = `
+        .livetl {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--yt-live-chat-background-color);
+            color: var(--yt-live-chat-primary-text-color);
+            z-index: 0;
+            word-wrap: break-word;
+            word-break: break-word;
+            font-size: 20px;
+            overflow-x: none;
+            overflow-y: auto;
+            padding: 0px;
+            min-height: 0px !important;
+            min-width 0px !important;
+        }
+    
+        a {
+            color: var(--yt-live-chat-primary-text-color);
+            text-decoration:none;
+        }
+    
+        /* width */
+        ::-webkit-scrollbar {
+          width: 4px;
+        }
+        
+        /* Track */
+        ::-webkit-scrollbar-track {
+          background: #f1f1f1; 
+        }
+         
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+          background: #888; 
+        }
+        
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+          background: #555; 
+        }
+    
+        .livetl * {
+            vertical-align: baseline;
+        }
+        .navbar{
+            margin-top: 10px;
+            min-height: 25px;
+        }
+        input {
+            padding: 5px;
+        }
+        .dropdown-check-list {
+            display: inline-block;
+            background-color: white;
+            color: black;
+            font-size: 14px;
+        }
+        .dropdown-check-list .anchor {
+            position: relative;
+            cursor: pointer;
+            display: inline-block;
+            padding: 5px 50px 5px 10px;
+            width: calc(100% - 60px);
+        }
+        .dropdown-check-list .anchor:after {
+            position: absolute;
+            content: "";
+            border-left: 2px solid black;
+            border-top: 2px solid black;
+            padding: 5px;
+            right: 10px;
+            top: 20%;
+            -moz-transform: rotate(-135deg);
+            -ms-transform: rotate(-135deg);
+            -o-transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+            transform: rotate(-135deg);
+        }
+        .openList > .anchor:after {
+            border-right: 2px solid black !important;
+            border-bottom: 2px solid black !important;
+            border-left: 0 !important;
+            border-top: 0 !important;
+            margin-top: 5px !important;
+        }
+        .dropdown-check-list .anchor:active:after {
+            right: 8px;
+            top: 21%;
+        }
+        .dropdown-check-list ul.items {
+            padding: 2px;
+            display: none;
+            margin: 0;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
+        .dropdown-check-list ul.items li {
+            list-style: none;
+        }
+    
+        .dropdown-check-list {
+            position: absolute;
+        }
+    
+        .translationText {
+            position: absolute;
+            z-index: -1;
+            margin-top: 5px;
+            margin-botton: 5px;
+            width: calc(100% - 10px);
+        }
+    
+        .authorName {
+            font-size: 12px;
+            color: #bdbdbd;
+            margin-left: 5px;
+            vertical-align: baseline;
+        }
+    
+        label {
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: -moz-none;
+            -o-user-select: none;
+            user-select: none;
+        }
+    
+        .hide {
+            stroke-width: 0;
+            fill: #A0A0A0;
+            stroke: rgb(0, 153, 255);
+            width: 12px;
+            height: 12px;
+        }
+    
+        .hide:hover {
+            fill: cornflowerblue;
+        }
+    
+        .ban {
+            stroke-width: 0;
+            fill: #A0A0A0;
+            stroke: rgb(0, 153, 255);
+            width: 12px;
+            height: 12px;
+        }
+    
+        .ban:hover {
+            fill: crimson;
+        }
+    
+        .optionLabel {
+            position: absolute;
+            margin-left: 0;
+            display: contents !important;
+        }
+    
+        .line {
+            margin-left: 15px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+    
+        .messageOptions {
+            margin-left: 5px;
+        }
+    
+        .logo {
+            width: 20px;
+            height: 20px;
+            vertical-align: top;
+            margin-top: 1px;
+            margin-right: 5px;
+        }
+    ` + modalCSS;
+    document.head.appendChild(style);
+}
 
 const closeSVG = `
 <svg class="svgButton" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>`;
