@@ -686,7 +686,17 @@ function endFilter(msg) {
     }
 }
 
-function getLanguage(msg) {
+/**
+ * Parses translation
+ *
+ * @param msg the message to parse
+ * @return undefined or
+ * {
+ *    lang: lang code
+ *    msg: message
+ * }
+ */
+function parseTranslation(msg) {
     return surroundFilter(msg) || endFilter(msg);
 }
 
