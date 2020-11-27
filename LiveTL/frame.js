@@ -516,11 +516,14 @@ function insertLiveTLButtons(isHolotools) {
             font-weight: bold;
             width: 100%;
             margin: 0;
+            text-align: center;
             ">
             <paper-button id="button" class="style-scope ytd-toggle-button-renderer" role="button" tabindex="0" animated=""
                 elevation="0" aria-disabled="false" style="
-            padding: 5px;
-        ">
+                    padding: 5px;
+                    width: 100%;
+                    margin: 0;
+                ">
                 <yt-formatted-string id="text" class="style-scope ytd-toggle-button-renderer">
                 </yt-formatted-string>
                 <paper-ripple class="style-scope paper-button">
@@ -543,7 +546,6 @@ function insertLiveTLButtons(isHolotools) {
             if (e != null) {
                 clearInterval(interval2);
                 if (isHolotools) {
-                    e.style.textAlign = "center";
                     e.appendChild(a);
                 } else {
                     e.appendChild(a);
@@ -553,7 +555,8 @@ function insertLiveTLButtons(isHolotools) {
             }
         }, 100);
     }
-    makeButton("Watch in LiveTL", () => window.location.href = "https://kentonishi.github.io/LiveTL/?v=" + params.v);
+    let u = "https://kentonishi.github.io/LiveTL/?v=" + params.v;
+    makeButton("Watch in LiveTL", isHolotools ? () => window.open(u) : () => window.location.href = u);
     makeButton("Pop Out Translations", () => window.open(`https://www.youtube.com/live_chat?v=${params.v}&useLiveTL=1`, "",
         "scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300"
     ), "rgb(143, 143, 143)");
@@ -578,7 +581,7 @@ let activationInterval = setInterval(() => {
         clearInterval(activationInterval);
         console.log("Watching video");
         let interval = setInterval(() => {
-            if (document.querySelector(".view-count") && document.querySelector(".view-count").textContent.endsWith("now")) {
+            if (document.querySelector("#input-panel")) {
                 clearInterval(interval);
                 insertLiveTLButtons();
             }
