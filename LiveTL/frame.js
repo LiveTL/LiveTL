@@ -4,6 +4,7 @@ const languages = [
     { code: "ch", name: "Chinese", lang: "中文" },
     { code: "id", name: "Indonesian", lang: "bahasa Indonesia" },
     { code: "es", name: "Spanish", lang: "Español" },
+    { code: "kr", name: "Korean", lang: "한국" },
 ];
 
 
@@ -669,6 +670,53 @@ function runHolotools() {
             iframe.done = true;
         }
     });
+}
+
+function createSurroundRegex() {
+    const surroundTokens = [
+        "()", "[]", "{}", "||"
+    ];
+    let pattern = "";
+    let patternEnd = "";
+    let notPattern = "";
+    
+    surroundTokens.forEach((token) => {
+        pattern = `${pattern}\\${token[0]}`;
+        patternEnd = `${patternEnd}\\${token[1]}`;
+        notPattern = `${notPattern}^\\${token[0]}^\\${token[1]}`;
+    });
+    
+    return new RegExp(
+        `^([${pattern}])([${notPattern}]+)([${patternEnd}])`
+    );
+}
+
+function surroundTokensMatch(token1, token2) {
+    switch (token1) {
+        case '(': return token2 == ')'
+        case '[': return token2 == ']'
+        case '{': return token2 == '}'
+    }
+    return token1 == token2;
+}
+
+function surroundFilter(msg) {
+    const surroundRegex = createSurroundRegex();
+    const result = surroundRegex.exec(msg);
+    if (result && surroundTokensMatch(result[1], result[3])) {
+        return result[2].trim();
+    }
+}
+
+function endFilter(msg) {
+    const result = /^([^\-^\:^\|]+)[\-\:\|]/.exec(msg);
+    if (result) {
+        return result[1].trim();
+    }
+}
+
+function getLanguage(msg) {
+    return surroundFilter(msg) || endFilter(msg);
 }
 
 const modalCSS = `
