@@ -800,10 +800,16 @@ function getIframeVideoId(iframe) {
     return /\/embed\/(.+)\?/.exec(iframe.src)[1]
 }
 
-function makeButton(text, clickCallback) {
+function styleHolotoolsButton(button) {
+    button.style.width = "50%";
+    button.style.cursor = "pointer";
+}
+
+function makeHolotoolsButton(text, clickCallback) {
     let button = document.createElement("button");
     button.textContent = text;
     button.onclick = clickCallback;
+    styleHolotoolsButton(button);
     return button;
 }
 
@@ -816,10 +822,10 @@ function createHolotoolsLiveTLDiv(openInLiveTL, popOutLiveTL) {
 
 function addButtonsToHolotoolsIframe(iframe) {
     const vid = getIframeVideoId(iframe);
-    let openInLiveTL = makeButton("Open Stream in LiveTL", () => {
+    let openInLiveTL = makeHolotoolsButton("Open Stream in LiveTL", () => {
         window.location.href = `https://kentonishi.github.io/LiveTL/?v=${vid}`;
     });
-    let popOutLiveTL = makeButton("Pop Out LiveTL Chat", () => {
+    let popOutLiveTL = makeHolotoolsButton("Pop Out LiveTL Chat", () => {
         window.open(`https://www.youtube.com/live_chat?v=${vid}&useLiveTL=1`, "",
                     "scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300");
     });
