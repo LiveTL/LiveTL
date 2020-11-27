@@ -1,194 +1,15 @@
 const languages = [
-    { code: 'ab', name: 'Abkhazian' },
-    { code: 'aa', name: 'Afar' },
-    { code: 'af', name: 'Afrikaans' },
-    { code: 'ak', name: 'Akan' },
-    { code: 'sq', name: 'Albanian' },
-    { code: 'am', name: 'Amharic' },
-    { code: 'ar', name: 'Arabic' },
-    { code: 'an', name: 'Aragonese' },
-    { code: 'hy', name: 'Armenian' },
-    { code: 'as', name: 'Assamese' },
-    { code: 'av', name: 'Avaric' },
-    { code: 'ae', name: 'Avestan' },
-    { code: 'ay', name: 'Aymara' },
-    { code: 'az', name: 'Azerbaijani' },
-    { code: 'bm', name: 'Bambara' },
-    { code: 'ba', name: 'Bashkir' },
-    { code: 'eu', name: 'Basque' },
-    { code: 'be', name: 'Belarusian' },
-    { code: 'bn', name: 'Bengali' },
-    { code: 'bh', name: 'Bihari languages' },
-    { code: 'bi', name: 'Bislama' },
-    { code: 'bs', name: 'Bosnian' },
-    { code: 'br', name: 'Breton' },
-    { code: 'bg', name: 'Bulgarian' },
-    { code: 'my', name: 'Burmese' },
-    { code: 'ca', name: 'Catalan, Valencian' },
-    { code: 'km', name: 'Central Khmer' },
-    { code: 'ch', name: 'Chamorro' },
-    { code: 'ce', name: 'Chechen' },
-    { code: 'ny', name: 'Chichewa, Chewa, Nyanja' },
-    { code: 'zh', name: 'Chinese' },
-    { code: 'cu', name: 'Church Slavonic, Old Bulgarian, Old Church Slavonic' },
-    { code: 'cv', name: 'Chuvash' },
-    { code: 'kw', name: 'Cornish' },
-    { code: 'co', name: 'Corsican' },
-    { code: 'cr', name: 'Cree' },
-    { code: 'hr', name: 'Croatian' },
-    { code: 'cs', name: 'Czech' },
-    { code: 'da', name: 'Danish' },
-    { code: 'dv', name: 'Divehi, Dhivehi, Maldivian' },
-    { code: 'nl', name: 'Dutch, Flemish' },
-    { code: 'dz', name: 'Dzongkha' },
-    { code: 'en', name: 'English' },
-    { code: 'eo', name: 'Esperanto' },
-    { code: 'et', name: 'Estonian' },
-    { code: 'ee', name: 'Ewe' },
-    { code: 'fo', name: 'Faroese' },
-    { code: 'fj', name: 'Fijian' },
-    { code: 'fi', name: 'Finnish' },
-    { code: 'fr', name: 'French' },
-    { code: 'ff', name: 'Fulah' },
-    { code: 'gd', name: 'Gaelic, Scottish Gaelic' },
-    { code: 'gl', name: 'Galician' },
-    { code: 'lg', name: 'Ganda' },
-    { code: 'ka', name: 'Georgian' },
-    { code: 'de', name: 'German' },
-    { code: 'ki', name: 'Gikuyu, Kikuyu' },
-    { code: 'el', name: 'Greek (Modern)' },
-    { code: 'kl', name: 'Greenlandic, Kalaallisut' },
-    { code: 'gn', name: 'Guarani' },
-    { code: 'gu', name: 'Gujarati' },
-    { code: 'ht', name: 'Haitian, Haitian Creole' },
-    { code: 'ha', name: 'Hausa' },
-    { code: 'he', name: 'Hebrew' },
-    { code: 'hz', name: 'Herero' },
-    { code: 'hi', name: 'Hindi' },
-    { code: 'ho', name: 'Hiri Motu' },
-    { code: 'hu', name: 'Hungarian' },
-    { code: 'is', name: 'Icelandic' },
-    { code: 'io', name: 'Ido' },
-    { code: 'ig', name: 'Igbo' },
-    { code: 'id', name: 'Indonesian' },
-    // { code: 'ia', name: 'Interlingua (International Auxiliary Language Association)' },
-    { code: 'ie', name: 'Interlingue' },
-    { code: 'iu', name: 'Inuktitut' },
-    { code: 'ik', name: 'Inupiaq' },
-    { code: 'ga', name: 'Irish' },
-    { code: 'it', name: 'Italian' },
-    { code: 'jp', name: 'Japanese' },
-    { code: 'jv', name: 'Javanese' },
-    { code: 'kn', name: 'Kannada' },
-    { code: 'kr', name: 'Kanuri' },
-    { code: 'ks', name: 'Kashmiri' },
-    { code: 'kk', name: 'Kazakh' },
-    { code: 'rw', name: 'Kinyarwanda' },
-    { code: 'kv', name: 'Komi' },
-    { code: 'kg', name: 'Kongo' },
-    { code: 'ko', name: 'Korean' },
-    { code: 'kj', name: 'Kwanyama, Kuanyama' },
-    { code: 'ku', name: 'Kurdish' },
-    { code: 'ky', name: 'Kyrgyz' },
-    { code: 'lo', name: 'Lao' },
-    { code: 'la', name: 'Latin' },
-    { code: 'lv', name: 'Latvian' },
-    { code: 'lb', name: 'Letzeburgesch, Luxembourgish' },
-    { code: 'li', name: 'Limburgish, Limburgan, Limburger' },
-    { code: 'ln', name: 'Lingala' },
-    { code: 'lt', name: 'Lithuanian' },
-    { code: 'lu', name: 'Luba-Katanga' },
-    { code: 'mk', name: 'Macedonian' },
-    { code: 'mg', name: 'Malagasy' },
-    { code: 'ms', name: 'Malay' },
-    { code: 'ml', name: 'Malayalam' },
-    { code: 'mt', name: 'Maltese' },
-    { code: 'gv', name: 'Manx' },
-    { code: 'mi', name: 'Maori' },
-    { code: 'mr', name: 'Marathi' },
-    { code: 'mh', name: 'Marshallese' },
-    { code: 'ro', name: 'Moldovan, Moldavian, Romanian' },
-    { code: 'mn', name: 'Mongolian' },
-    { code: 'na', name: 'Nauru' },
-    { code: 'nv', name: 'Navajo, Navaho' },
-    { code: 'nd', name: 'Northern Ndebele' },
-    { code: 'ng', name: 'Ndonga' },
-    { code: 'ne', name: 'Nepali' },
-    { code: 'se', name: 'Northern Sami' },
-    { code: 'no', name: 'Norwegian' },
-    { code: 'nb', name: 'Norwegian Bokmål' },
-    { code: 'nn', name: 'Norwegian Nynorsk' },
-    { code: 'ii', name: 'Nuosu, Sichuan Yi' },
-    { code: 'oc', name: 'Occitan (post 1500)' },
-    { code: 'oj', name: 'Ojibwa' },
-    { code: 'or', name: 'Oriya' },
-    { code: 'om', name: 'Oromo' },
-    { code: 'os', name: 'Ossetian, Ossetic' },
-    { code: 'pi', name: 'Pali' },
-    { code: 'pa', name: 'Panjabi, Punjabi' },
-    { code: 'ps', name: 'Pashto, Pushto' },
-    { code: 'fa', name: 'Persian' },
-    { code: 'pl', name: 'Polish' },
-    { code: 'pt', name: 'Portuguese' },
-    { code: 'qu', name: 'Quechua' },
-    { code: 'rm', name: 'Romansh' },
-    { code: 'rn', name: 'Rundi' },
-    { code: 'ru', name: 'Russian' },
-    { code: 'sm', name: 'Samoan' },
-    { code: 'sg', name: 'Sango' },
-    { code: 'sa', name: 'Sanskrit' },
-    { code: 'sc', name: 'Sardinian' },
-    { code: 'sr', name: 'Serbian' },
-    { code: 'sn', name: 'Shona' },
-    { code: 'sd', name: 'Sindhi' },
-    { code: 'si', name: 'Sinhala, Sinhalese' },
-    { code: 'sk', name: 'Slovak' },
-    { code: 'sl', name: 'Slovenian' },
-    { code: 'so', name: 'Somali' },
-    { code: 'st', name: 'Sotho, Southern' },
-    { code: 'nr', name: 'South Ndebele' },
-    { code: 'es', name: 'Spanish, Castilian' },
-    { code: 'su', name: 'Sundanese' },
-    { code: 'sw', name: 'Swahili' },
-    { code: 'ss', name: 'Swati' },
-    { code: 'sv', name: 'Swedish' },
-    { code: 'tl', name: 'Tagalog' },
-    { code: 'ty', name: 'Tahitian' },
-    { code: 'tg', name: 'Tajik' },
-    { code: 'ta', name: 'Tamil' },
-    { code: 'tt', name: 'Tatar' },
-    { code: 'te', name: 'Telugu' },
-    { code: 'th', name: 'Thai' },
-    { code: 'bo', name: 'Tibetan' },
-    { code: 'ti', name: 'Tigrinya' },
-    { code: 'to', name: 'Tonga (Tonga Islands)' },
-    { code: 'ts', name: 'Tsonga' },
-    { code: 'tn', name: 'Tswana' },
-    { code: 'tr', name: 'Turkish' },
-    { code: 'tk', name: 'Turkmen' },
-    { code: 'tw', name: 'Twi' },
-    { code: 'ug', name: 'Uighur, Uyghur' },
-    { code: 'uk', name: 'Ukrainian' },
-    { code: 'ur', name: 'Urdu' },
-    { code: 'uz', name: 'Uzbek' },
-    { code: 've', name: 'Venda' },
-    { code: 'vi', name: 'Vietnamese' },
-    { code: 'vo', name: 'Volap_k' },
-    { code: 'wa', name: 'Walloon' },
-    { code: 'cy', name: 'Welsh' },
-    { code: 'fy', name: 'Western Frisian' },
-    { code: 'wo', name: 'Wolof' },
-    { code: 'xh', name: 'Xhosa' },
-    { code: 'yi', name: 'Yiddish' },
-    { code: 'yo', name: 'Yoruba' },
-    { code: 'za', name: 'Zhuang, Chuang' },
-    { code: 'zu', name: 'Zulu' }
+    { code: "en", name: "English", lang: "English" },
+    { code: "jp", name: "Japanese", lang: "日本語" },
+    { code: "ch", name: "Chinese", lang: "中文" },
+    { code: "id", name: "Indonesian", lang: "bahasa Indonesia" },
+    { code: "es", name: "Spanish", lang: "Español" },
+    { code: "kr", name: "Korean", lang: "한국" },
 ];
 
-let languageConversionTable = {};
-languages.forEach(i => languageConversionTable[i.name + ` [${i.code}]`] = i);
 
-languages.sort((a, b) => a.code - b.code);
+let languageConversionTable = {};
+languages.forEach(i => languageConversionTable[`${i.name} (${i.lang}) [${i.code}]`] = i);
 
 
 // global helper function to handle scrolling
@@ -198,6 +19,11 @@ function updateSize() {
 }
 
 function runLiveTL() {
+    document.head.innerHTML += `
+        <head>
+            <link rel="icon" href="https://kentonishi.github.io/LiveTL/favicon.ico" type="image/x-icon" />
+        </head>
+    `;
     switchChat();
     setTimeout(() => {
         document.title = "LiveTL Chat";
@@ -268,7 +94,7 @@ function runLiveTL() {
                 cursor: pointer;
                 display: inline-block;
                 padding: 5px 50px 5px 10px;
-                border: 1px solid #ccc;
+                width: calc(100% - 60px);
             }
             .dropdown-check-list .anchor:after {
                 position: absolute;
@@ -283,6 +109,13 @@ function runLiveTL() {
                 -o-transform: rotate(-135deg);
                 -webkit-transform: rotate(-135deg);
                 transform: rotate(-135deg);
+            }
+            .openList > .anchor:after {
+                border-right: 2px solid black !important;
+                border-bottom: 2px solid black !important;
+                border-left: 0 !important;
+                border-top: 0 !important;
+                margin-top: 5px !important;
             }
             .dropdown-check-list .anchor:active:after {
                 right: 8px;
@@ -395,7 +228,7 @@ function runLiveTL() {
         datalist.id = "languages";
         languages.forEach(lang => {
             let opt = document.createElement("option");
-            opt.value = `${lang.name} [${lang.code}]`;
+            opt.value = `${lang.name} (${lang.lang}) [${lang.code}]`;
             if (lang.code == "en") select.value = opt.value;
             datalist.appendChild(opt);
         });
@@ -493,14 +326,23 @@ function runLiveTL() {
             checkboxUpdate();
         });
 
-        checklist.getElementsByClassName('anchor')[0].onclick = () => {
-            if (items.style.display != "block") items.style.display = "block";
-            else items.style.display = "none";
+        checklist.querySelector('.anchor').onclick = () => {
+            if (items.style.display != "block") {
+                checklist.classList.add("openList");
+                items.style.display = "block";
+            }
+            else {
+                checklist.classList.remove("openList");
+                items.style.display = "none";
+            }
             updateSize();
         }
 
         checklist.onblur = e => {
-            if (!e.currentTarget.contains(e.relatedTarget)) items.style.display = "none";
+            if (!e.currentTarget.contains(e.relatedTarget)) {
+                checklist.classList.remove("openList");
+                items.style.display = "none";
+            }
             else e.currentTarget.focus();
             updateSize();
         }
@@ -544,16 +386,21 @@ function runLiveTL() {
         gi.innerHTML = "&nbsp" + gi.innerHTML;
         di.href = "https://discord.gg/uJrV3tmthg";
         gi.href = "https://github.com/KentoNishi/LiveTL";
+        di.target = gi.target = "about:blank";
         welcome.appendChild(di);
         welcome.appendChild(gi);
         welcome.appendChild(welcomeText);
         prependE(welcome);
 
-
+        let firstLoop = true;
         setInterval(() => {
             // if (select.value in languageConversionTable && select.value != lastLang) e.innerHTML = "";
-            let start = (new Date()).getMilliseconds();
-            let messages = document.querySelectorAll(".yt-live-chat-text-message-renderer > #message");
+            // let start = (new Date()).getMilliseconds();
+            let messages = Array.from(document.querySelectorAll(".yt-live-chat-text-message-renderer > #message"));
+            if (firstLoop) {
+                messages = messages.reverse();
+                firstLoop = false;
+            }
             for (let i = messages.length - 1; i >= 0; i--) {
                 // if (!checkedSet.has(m.textContent)) {
                 //     // console.log(`Scanning message: ${m.textContent}`);
@@ -561,14 +408,14 @@ function runLiveTL() {
                 // }
                 let m = messages[i];
                 if (m.innerHTML == "") break;
-                let parsed = /^\[(\w+)\] ?(.+)/.exec(m.textContent);
-                if (parsed != null && parsed[1].toLowerCase() == languageConversionTable[select.value].code) {
+                let parsed = parseTranslation(m.textContent);
+                if (parsed != null && parsed.lang.toLowerCase() == languageConversionTable[select.value].code) {
                     console.log(getProfilePic(m));
                     let author = m.parentElement.childNodes[1].textContent;
                     let authorID = getProfilePic(m);
                     let line = document.createElement("div");
                     line.className = "line";
-                    line.textContent = parsed[2];
+                    line.textContent = parsed.msg;
                     let authorInfo = document.createElement("span");
                     let authorName = document.createElement("span");
                     authorName.className = "authorName";
@@ -674,6 +521,61 @@ function parseParams() {
     return s == "" ? {} : JSON.parse('{"' + s + '"}');
 }
 
+function insertLiveTLButtons(isHolotools = false) {
+    console.log("Inserting LiveTL Launcher Buttons");
+    params = parseParams();
+    makeButton = (text, callback, color) => {
+        let a = document.createElement("span");
+        a.innerHTML = `
+        <a class="yt-simple-endpoint style-scope ytd-toggle-button-renderer" tabindex="-1" style="
+            background-color: ${color || "rgb(0, 153, 255)"};
+            font: inherit;
+            font-size: 11px;
+            font-weight: bold;
+            width: 100%;
+            margin: 0;
+            text-align: center;
+            ">
+            <paper-button id="button" class="style-scope ytd-toggle-button-renderer" role="button" tabindex="0" animated=""
+                elevation="0" aria-disabled="false" style="
+                    padding: 5px;
+                    width: 100%;
+                    margin: 0;
+                ">
+                <yt-formatted-string id="text" class="style-scope ytd-toggle-button-renderer">
+                </yt-formatted-string>
+                <paper-ripple class="style-scope paper-button">
+                    <div id="background" class="style-scope paper-ripple" style="opacity: 0.00738;"></div>
+                    <div id="waves" class="style-scope paper-ripple"></div>
+                </paper-ripple>
+                <paper-ripple class="style-scope paper-button">
+                    <div id="background" class="style-scope paper-ripple" style="opacity: 0.007456;"></div>
+                    <div id="waves" class="style-scope paper-ripple"></div>
+                </paper-ripple>
+                <paper-ripple class="style-scope paper-button">
+                    <div id="background" class="style-scope paper-ripple" style="opacity: 0.007748;"></div>
+                    <div id="waves" class="style-scope paper-ripple"></div>
+                </paper-ripple>
+            </paper-button>
+        </a>
+    `;
+        let interval2 = setInterval(() => {
+            let e = isHolotools ? document.querySelector("#input-panel") : document.querySelector("ytd-live-chat-frame");
+            if (e != null) {
+                clearInterval(interval2);
+                e.appendChild(a);
+                a.querySelector("a").onclick = callback;
+                a.querySelector("yt-formatted-string").textContent = text;
+            }
+        }, 100);
+    }
+    let u = "https://kentonishi.github.io/LiveTL/?v=" + params.v;
+    makeButton("Watch in LiveTL", isHolotools ? () => window.open(u) : () => window.location.href = u);
+    makeButton("Pop Out Translations", () => window.open(`https://www.youtube.com/live_chat?v=${params.v}&useLiveTL=1`, "",
+        "scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300"
+    ), "rgb(143, 143, 143)");
+}
+
 let params = {};
 let activationInterval = setInterval(() => {
     // console.log("Checking if LiveTL needs to be activated");
@@ -685,59 +587,17 @@ let activationInterval = setInterval(() => {
             if (params.useLiveTL) {
                 console.log("Running LiveTL!");
                 runLiveTL();
+            } else if (params.embed_domain == "hololive.jetri.co") {
+                insertLiveTLButtons(true);
             }
         } catch (e) { }
     } else if (window.location.href.startsWith("https://www.youtube.com/watch")) {
         clearInterval(activationInterval);
         console.log("Watching video");
         let interval = setInterval(() => {
-            if (document.querySelector(".view-count") && document.querySelector(".view-count").textContent.endsWith("now")) {
+            if (document.querySelector("ytd-live-chat-frame")) {
                 clearInterval(interval);
-                console.log("Inserting LiveTL Launcher Buttons");
-                params = parseParams();
-                makeButton = (text, callback, color) => {
-                    let a = document.createElement("span");
-                    a.innerHTML = `
-                    <a class="yt-simple-endpoint style-scope ytd-toggle-button-renderer" tabindex="-1" style="
-                        background-color: ${color || "rgb(0, 153, 255)"};
-                        font: inherit;
-                        font-size: 11px;
-                        font-weight: bold;">
-                        <paper-button id="button" class="style-scope ytd-toggle-button-renderer" role="button" tabindex="0" animated=""
-                            elevation="0" aria-disabled="false" style="
-                        padding: 5px;
-                    ">
-                            <yt-formatted-string id="text" class="style-scope ytd-toggle-button-renderer">
-                            </yt-formatted-string>
-                            <paper-ripple class="style-scope paper-button">
-                                <div id="background" class="style-scope paper-ripple" style="opacity: 0.00738;"></div>
-                                <div id="waves" class="style-scope paper-ripple"></div>
-                            </paper-ripple>
-                            <paper-ripple class="style-scope paper-button">
-                                <div id="background" class="style-scope paper-ripple" style="opacity: 0.007456;"></div>
-                                <div id="waves" class="style-scope paper-ripple"></div>
-                            </paper-ripple>
-                            <paper-ripple class="style-scope paper-button">
-                                <div id="background" class="style-scope paper-ripple" style="opacity: 0.007748;"></div>
-                                <div id="waves" class="style-scope paper-ripple"></div>
-                            </paper-ripple>
-                        </paper-button>
-                    </a>
-                `;
-                    let interval2 = setInterval(() => {
-                        let e = document.querySelector("ytd-live-chat-frame");
-                        if (e != null) {
-                            clearInterval(interval2);
-                            document.querySelector("ytd-live-chat-frame").appendChild(a);
-                            a.querySelector("a").onclick = callback;
-                            a.querySelector("yt-formatted-string").textContent = text;
-                        }
-                    }, 100);
-                }
-                makeButton("Open Stream in LiveTL", () => window.location.href = "https://kentonishi.github.io/LiveTL/?v=" + params.v);
-                makeButton("Pop Out LiveTL Chat", () => window.open(`https://www.youtube.com/live_chat?v=${params.v}&useLiveTL=1`, "",
-                    "scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300"
-                ), "rgb(143, 143, 143)");
+                insertLiveTLButtons();
             }
         }, 100);
     } else {
@@ -792,6 +652,69 @@ function createModal(container) {
     container.appendChild(modalContainer);
 
     return modalContent;
+}
+
+function createSurroundRegex() {
+    const surroundTokens = [
+        "()", "[]", "{}", "||"
+    ];
+    let pattern = "";
+    let patternEnd = "";
+    let notPattern = "";
+
+    surroundTokens.forEach((token) => {
+        pattern = `${pattern}\\${token[0]}`;
+        patternEnd = `${patternEnd}\\${token[1]}`;
+        notPattern = `${notPattern}^\\${token[0]}^\\${token[1]}`;
+    });
+
+    return new RegExp(
+        `^([${pattern}])([${notPattern}]+)([${patternEnd}]) ?(.+)`
+    );
+}
+
+function surroundTokensMatch(token1, token2) {
+    switch (token1) {
+        case '(': return token2 == ')'
+        case '[': return token2 == ']'
+        case '{': return token2 == '}'
+    }
+    return token1 == token2;
+}
+
+function surroundFilter(msg) {
+    const surroundRegex = createSurroundRegex();
+    const result = surroundRegex.exec(msg);
+    if (result && surroundTokensMatch(result[1], result[3])) {
+        return {
+            lang: result[2].trim(),
+            msg: result[4],
+        }
+    }
+}
+
+function endFilter(msg) {
+    const result = /^([^\-^\:^\|]+)[\-\:\.\|] ?(.+)/.exec(msg);
+    if (result) {
+        return {
+            lang: result[1].trim(),
+            msg: result[2],
+        }
+    }
+}
+
+/**
+ * Parses translation
+ *
+ * @param msg the message to parse
+ * @return undefined or
+ * {
+ *    lang: lang code
+ *    msg: message
+ * }
+ */
+function parseTranslation(msg) {
+    return surroundFilter(msg) || endFilter(msg);
 }
 
 const modalCSS = `
@@ -858,3 +781,4 @@ const closeSVG = `
 <svg class="svgButton" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>`;
 
 const settingsGear = `<svg class="svgButton" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98 0-.34-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.09-.16-.26-.25-.44-.25-.06 0-.12.01-.17.03l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.06-.02-.12-.03-.18-.03-.17 0-.34.09-.43.25l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98 0 .33.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.09.16.26.25.44.25.06 0 .12-.01.17-.03l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.06.02.12.03.18.03.17 0 .34-.09.43-.25l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zm-1.98-1.71c.04.31.05.52.05.73 0 .21-.02.43-.05.73l-.14 1.13.89.7 1.08.84-.7 1.21-1.27-.51-1.04-.42-.9.68c-.43.32-.84.56-1.25.73l-1.06.43-.16 1.13-.2 1.35h-1.4l-.19-1.35-.16-1.13-1.06-.43c-.43-.18-.83-.41-1.23-.71l-.91-.7-1.06.43-1.27.51-.7-1.21 1.08-.84.89-.7-.14-1.13c-.03-.31-.05-.54-.05-.74s.02-.43.05-.73l.14-1.13-.89-.7-1.08-.84.7-1.21 1.27.51 1.04.42.9-.68c.43-.32.84-.56 1.25-.73l1.06-.43.16-1.13.2-1.35h1.39l.19 1.35.16 1.13 1.06.43c.43.18.83.41 1.23.71l.91.7 1.06-.43 1.27-.51.7 1.21-1.07.85-.89.7.14 1.13zM12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>`;
+
