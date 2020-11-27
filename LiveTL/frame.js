@@ -37,14 +37,10 @@ function runLiveTL() {
         if (params.devMode) {
             livetlContainer.style.display = "none";
         }
-        // let settings = createModal(livetlContainer);
         let translationDiv = document.createElement("div");
         translationDiv.className = "translationText";
 
         let settings = createSettings(livetlContainer);
-
-        // settings.appendChild(createLanguageSelect());
-        // settings.appendChild(createTranslatorSelect());
         livetlContainer.appendChild(translationDiv);
 
         let allTranslators = {};
@@ -77,7 +73,8 @@ function runLiveTL() {
         }
 
         createCheckbox = (name, authorID, checked = false, callback = null) => {
-            let items = document.querySelector("#items");
+            let checklist = document.querySelector("#transelectChecklist");
+            let items = checklist.querySelector("#items");
             let selectTranslatorMessage = document.createElement("li");
             items.append(selectTranslatorMessage);
             let checkbox = document.createElement("input");
@@ -164,6 +161,7 @@ function runLiveTL() {
                 let m = messages[i];
                 if (m.innerHTML == "") break;
                 let parsed = parseTranslation(m.textContent);
+                let select = document.querySelector("#langSelect");
                 if (parsed != null && parsed.lang.toLowerCase() == languageConversionTable[select.value].code) {
                     console.log(getProfilePic(m));
                     let author = m.parentElement.childNodes[1].textContent;
@@ -533,7 +531,7 @@ function createLanguageSelect() {
 
 function setChecklistOnclick(checklist) {
     checklist.querySelector('.anchor').onclick = () => {
-        let items = document.querySelector("#items");
+        let items = checklist.querySelector("#items");
         if (items.style.display != "block") {
             checklist.classList.add("openList");
             items.style.display = "block";
