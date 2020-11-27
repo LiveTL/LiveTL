@@ -9,7 +9,7 @@ const languages = [
 
 
 let languageConversionTable = {};
-languages.forEach(i => languageConversionTable[i.name + ` [${i.code}]`] = i);
+languages.forEach(i => languageConversionTable[`${i.name} (${i.lang}) [${i.code}]`] = i);
 
 languages.sort((a, b) => a.code - b.code);
 
@@ -96,7 +96,7 @@ function runLiveTL() {
                 cursor: pointer;
                 display: inline-block;
                 padding: 5px 50px 5px 10px;
-                border: 1px solid #ccc;
+                width: calc(100% - 60px);
             }
             .dropdown-check-list .anchor:after {
                 position: absolute;
@@ -111,6 +111,13 @@ function runLiveTL() {
                 -o-transform: rotate(-135deg);
                 -webkit-transform: rotate(-135deg);
                 transform: rotate(-135deg);
+            }
+            .openList > .anchor:after {
+                border-right: 2px solid black !important;
+                border-bottom: 2px solid black !important;
+                border-left: 0 !important;
+                border-top: 0 !important;
+                margin-top: 5px !important;
             }
             .dropdown-check-list .anchor:active:after {
                 right: 8px;
@@ -223,7 +230,7 @@ function runLiveTL() {
         datalist.id = "languages";
         languages.forEach(lang => {
             let opt = document.createElement("option");
-            opt.value = `${lang.name} [${lang.code}]`;
+            opt.value = `${lang.name} (${lang.lang}) [${lang.code}]`;
             if (lang.code == "en") select.value = opt.value;
             datalist.appendChild(opt);
         });
@@ -321,14 +328,23 @@ function runLiveTL() {
             checkboxUpdate();
         });
 
-        checklist.getElementsByClassName('anchor')[0].onclick = () => {
-            if (items.style.display != "block") items.style.display = "block";
-            else items.style.display = "none";
+        checklist.querySelector('.anchor').onclick = () => {
+            if (items.style.display != "block") {
+                checklist.classList.add("openList");
+                items.style.display = "block";
+            }
+            else {
+                checklist.classList.remove("openList");
+                items.style.display = "none";
+            }
             updateSize();
         }
 
         checklist.onblur = e => {
-            if (!e.currentTarget.contains(e.relatedTarget)) items.style.display = "none";
+            if (!e.currentTarget.contains(e.relatedTarget)) {
+                checklist.classList.remove("openList");
+                items.style.display = "none";
+            }
             else e.currentTarget.focus();
             updateSize();
         }
@@ -394,14 +410,14 @@ function runLiveTL() {
                 // }
                 let m = messages[i];
                 if (m.innerHTML == "") break;
-                let parsed = /^\[(\w+)\] ?(.+)/.exec(m.textContent);
-                if (parsed != null && parsed[1].toLowerCase() == languageConversionTable[select.value].code) {
+                let parsed = parseTranslation(m.textContent);
+                if (parsed != null && parsed.lang.toLowerCase() == languageConversionTable[select.value].code) {
                     console.log(getProfilePic(m));
                     let author = m.parentElement.childNodes[1].textContent;
                     let authorID = getProfilePic(m);
                     let line = document.createElement("div");
                     line.className = "line";
-                    line.textContent = parsed[2];
+                    line.textContent = parsed.msg;
                     let authorInfo = document.createElement("span");
                     let authorName = document.createElement("span");
                     authorName.className = "authorName";
