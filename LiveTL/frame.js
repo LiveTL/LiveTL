@@ -740,6 +740,8 @@ let activationInterval = setInterval(() => {
                 ), "rgb(143, 143, 143)");
             }
         }, 100);
+    } else if (window.location.href.startsWith("https://hololive.jetri.co")) {
+        runHolotools();
     } else {
         // console.log(`${window.location.href} does not need LiveTL`);
     }
@@ -792,6 +794,47 @@ function createModal(container) {
     container.appendChild(modalContainer);
 
     return modalContent;
+}
+
+function getIframeVideoId(iframe) {
+    return /\/embed\/(.+)\?/.exec(iframe.src)[1]
+}
+
+function makeButton(text, clickCallback) {
+    let button = document.createElement("button");
+    button.textContent = text;
+    button.onclick = clickCallback;
+    return button;
+}
+
+function createHolotoolsLiveTLDiv(openInLiveTL, popOutLiveTL) {
+    let openDiv = document.createElement("div");
+    openDiv.appendChild(openInLiveTL);
+    openDiv.appendChild(popOutLiveTL);
+    return openDiv;
+}
+
+function addButtonsToHolotoolsIframe(iframe) {
+    const vid = getIframeVideoId(iframe);
+    let openInLiveTL = makeButton("Open Stream in LiveTL", () => {
+        window.location.href = `https://kentonishi.github.io/LiveTL/?v=${vid}`;
+    });
+    let popOutLiveTL = makeButton("Pop Out LiveTL Chat", () => {
+        window.open(`https://www.youtube.com/live_chat?v=${vid}&useLiveTL=1`, "",
+                    "scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300");
+    });
+    let openDiv = createHolotoolsLiveTLDiv(openInLiveTL, popOutLiveTL);
+    iframe.parentElement.prepend(openDiv);
+}
+
+function runHolotools() {
+    document.querySelectorAll("iframe").forEach((iframe) => {
+        if (iframe.done) { }
+        else {
+            addButtonsToHolotoolsIframe(iframe);
+            iframe.done = true;
+        }
+    });
 }
 
 const modalCSS = `
