@@ -696,7 +696,7 @@ function surroundFilter(msg) {
 }
 
 function endFilter(msg) {
-    const result = /^([^\-^\:^\|]+)[\-\:\|] ?(.+)/.exec(msg);
+    const result = /^([^\-^\:^\|]+)[\-\:\.\|] ?(.+)/.exec(msg);
     if (result) {
         return {
             lang: result[1].trim(),
