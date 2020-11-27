@@ -4,6 +4,7 @@ const languages = [
     { code: "ch", name: "Chinese", lang: "中文" },
     { code: "id", name: "Indonesian", lang: "bahasa Indonesia" },
     { code: "es", name: "Spanish", lang: "Español" },
+    { code: "kr", name: "Korean", lang: "한국" },
 ];
 
 
