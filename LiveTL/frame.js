@@ -11,8 +11,6 @@ const languages = [
 let languageConversionTable = {};
 languages.forEach(i => languageConversionTable[`${i.name} (${i.lang}) [${i.code}]`] = i);
 
-languages.sort((a, b) => a.code - b.code);
-
 
 // global helper function to handle scrolling
 function updateSize() {

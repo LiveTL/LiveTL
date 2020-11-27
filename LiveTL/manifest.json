@@ -1,7 +1,7 @@
 {
     "name": "LiveTL",
     "description": "Get live translations for YouTube streams, crowdsourced from bilingual viewers!",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "manifest_version": 2,
     "permissions": [],
     "content_scripts": [
