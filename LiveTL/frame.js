@@ -502,6 +502,62 @@ function parseParams() {
     return s == "" ? {} : JSON.parse('{"' + s + '"}');
 }
 
+function insertLiveTLButtons(isHolotools) {
+    console.log("Inserting LiveTL Launcher Buttons");
+    params = parseParams();
+    makeButton = (text, callback, color) => {
+        let a = document.createElement("span");
+        a.innerHTML = `
+        <a class="yt-simple-endpoint style-scope ytd-toggle-button-renderer" tabindex="-1" style="
+            background-color: ${color || "rgb(0, 153, 255)"};
+            font: inherit;
+            font-size: 11px;
+            font-weight: bold;
+            width: 100%;
+            margin: 0;
+            ">
+            <paper-button id="button" class="style-scope ytd-toggle-button-renderer" role="button" tabindex="0" animated=""
+                elevation="0" aria-disabled="false" style="
+            padding: 5px;
+        ">
+                <yt-formatted-string id="text" class="style-scope ytd-toggle-button-renderer">
+                </yt-formatted-string>
+                <paper-ripple class="style-scope paper-button">
+                    <div id="background" class="style-scope paper-ripple" style="opacity: 0.00738;"></div>
+                    <div id="waves" class="style-scope paper-ripple"></div>
+                </paper-ripple>
+                <paper-ripple class="style-scope paper-button">
+                    <div id="background" class="style-scope paper-ripple" style="opacity: 0.007456;"></div>
+                    <div id="waves" class="style-scope paper-ripple"></div>
+                </paper-ripple>
+                <paper-ripple class="style-scope paper-button">
+                    <div id="background" class="style-scope paper-ripple" style="opacity: 0.007748;"></div>
+                    <div id="waves" class="style-scope paper-ripple"></div>
+                </paper-ripple>
+            </paper-button>
+        </a>
+    `;
+        let interval2 = setInterval(() => {
+            let e = document.querySelector("ytd-live-chat-frame") || document.querySelector("#input-panel");
+            if (e != null) {
+                clearInterval(interval2);
+                if (isHolotools) {
+                    e.style.textAlign = "center";
+                    e.appendChild(a);
+                } else {
+                    e.appendChild(a);
+                }
+                a.querySelector("a").onclick = callback;
+                a.querySelector("yt-formatted-string").textContent = text;
+            }
+        }, 100);
+    }
+    makeButton("Watch in LiveTL", () => window.location.href = "https://kentonishi.github.io/LiveTL/?v=" + params.v);
+    makeButton("Pop Out Translations", () => window.open(`https://www.youtube.com/live_chat?v=${params.v}&useLiveTL=1`, "",
+        "scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300"
+    ), "rgb(143, 143, 143)");
+}
+
 let params = {};
 let activationInterval = setInterval(() => {
     // console.log("Checking if LiveTL needs to be activated");
@@ -513,6 +569,8 @@ let activationInterval = setInterval(() => {
             if (params.useLiveTL) {
                 console.log("Running LiveTL!");
                 runLiveTL();
+            } else if (params.embed_domain == "hololive.jetri.co") {
+                insertLiveTLButtons(true);
             }
         } catch (e) { }
     } else if (window.location.href.startsWith("https://www.youtube.com/watch")) {
@@ -521,55 +579,9 @@ let activationInterval = setInterval(() => {
         let interval = setInterval(() => {
             if (document.querySelector(".view-count") && document.querySelector(".view-count").textContent.endsWith("now")) {
                 clearInterval(interval);
-                console.log("Inserting LiveTL Launcher Buttons");
-                params = parseParams();
-                makeButton = (text, callback, color) => {
-                    let a = document.createElement("span");
-                    a.innerHTML = `
-                    <a class="yt-simple-endpoint style-scope ytd-toggle-button-renderer" tabindex="-1" style="
-                        background-color: ${color || "rgb(0, 153, 255)"};
-                        font: inherit;
-                        font-size: 11px;
-                        font-weight: bold;">
-                        <paper-button id="button" class="style-scope ytd-toggle-button-renderer" role="button" tabindex="0" animated=""
-                            elevation="0" aria-disabled="false" style="
-                        padding: 5px;
-                    ">
-                            <yt-formatted-string id="text" class="style-scope ytd-toggle-button-renderer">
-                            </yt-formatted-string>
-                            <paper-ripple class="style-scope paper-button">
-                                <div id="background" class="style-scope paper-ripple" style="opacity: 0.00738;"></div>
-                                <div id="waves" class="style-scope paper-ripple"></div>
-                            </paper-ripple>
-                            <paper-ripple class="style-scope paper-button">
-                                <div id="background" class="style-scope paper-ripple" style="opacity: 0.007456;"></div>
-                                <div id="waves" class="style-scope paper-ripple"></div>
-                            </paper-ripple>
-                            <paper-ripple class="style-scope paper-button">
-                                <div id="background" class="style-scope paper-ripple" style="opacity: 0.007748;"></div>
-                                <div id="waves" class="style-scope paper-ripple"></div>
-                            </paper-ripple>
-                        </paper-button>
-                    </a>
-                `;
-                    let interval2 = setInterval(() => {
-                        let e = document.querySelector("ytd-live-chat-frame");
-                        if (e != null) {
-                            clearInterval(interval2);
-                            document.querySelector("ytd-live-chat-frame").appendChild(a);
-                            a.querySelector("a").onclick = callback;
-                            a.querySelector("yt-formatted-string").textContent = text;
-                        }
-                    }, 100);
-                }
-                makeButton("Open Stream in LiveTL", () => window.location.href = "https://kentonishi.github.io/LiveTL/?v=" + params.v);
-                makeButton("Pop Out LiveTL Chat", () => window.open(`https://www.youtube.com/live_chat?v=${params.v}&useLiveTL=1`, "",
-                    "scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300"
-                ), "rgb(143, 143, 143)");
+                insertLiveTLButtons();
             }
         }, 100);
-    } else if (window.location.href.startsWith("https://hololive.jetri.co")) {
-        runHolotools();
     } else {
         // console.log(`${window.location.href} does not need LiveTL`);
     }
@@ -622,53 +634,6 @@ function createModal(container) {
     container.appendChild(modalContainer);
 
     return modalContent;
-}
-
-function getIframeVideoId(iframe) {
-    return /\/embed\/(.+)\?/.exec(iframe.src)[1]
-}
-
-function styleHolotoolsButton(button) {
-    button.style.width = "50%";
-    button.style.cursor = "pointer";
-}
-
-function makeHolotoolsButton(text, clickCallback) {
-    let button = document.createElement("button");
-    button.textContent = text;
-    button.onclick = clickCallback;
-    styleHolotoolsButton(button);
-    return button;
-}
-
-function createHolotoolsLiveTLDiv(openInLiveTL, popOutLiveTL) {
-    let openDiv = document.createElement("div");
-    openDiv.appendChild(openInLiveTL);
-    openDiv.appendChild(popOutLiveTL);
-    return openDiv;
-}
-
-function addButtonsToHolotoolsIframe(iframe) {
-    const vid = getIframeVideoId(iframe);
-    let openInLiveTL = makeHolotoolsButton("Open Stream in LiveTL", () => {
-        window.location.href = `https://kentonishi.github.io/LiveTL/?v=${vid}`;
-    });
-    let popOutLiveTL = makeHolotoolsButton("Pop Out LiveTL Chat", () => {
-        window.open(`https://www.youtube.com/live_chat?v=${vid}&useLiveTL=1`, "",
-            "scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300");
-    });
-    let openDiv = createHolotoolsLiveTLDiv(openInLiveTL, popOutLiveTL);
-    iframe.parentElement.prepend(openDiv);
-}
-
-function runHolotools() {
-    document.querySelectorAll("iframe").forEach((iframe) => {
-        if (iframe.done) { }
-        else {
-            addButtonsToHolotoolsIframe(iframe);
-            iframe.done = true;
-        }
-    });
 }
 
 const modalCSS = `

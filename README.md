@@ -13,6 +13,7 @@ We have a Discord server for those who would like to give feedback or discuss ne
 * [x] Select your favorite translators
 * [x] Ban spammers polluting translations
 * [x] Freely resizable chat, translation panel, and stream
+* [x] Support for HoloTools
 * [ ] Saved preferences across viewing sessions
 * [ ] Verified translators
 * [ ] Automatic language tagging for translators
