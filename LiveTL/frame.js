@@ -113,36 +113,7 @@ function runLiveTL() {
             } catch (e) { };
         }
 
-        // let checkedSet = new Set();
-
-        let welcome = document.createElement("div");
-        welcome.className = "line";
-        let logo = document.createElement("img");
-        logo.className = "logo";
-        logo.src = "https://kentonishi.github.io/LiveTL/favicon.ico";
-        let logosize = "20px";
-        // logo.style.width = logosize;
-        // logo.style.height = logosize;
-        welcome.appendChild(logo);
-        let discordIcon = document.createElement("i");
-        ["fa", "fa-discord"].forEach(c => discordIcon.classList.add(c));
-        let githubIcon = document.createElement("i");
-        ["fa", "fa-github"].forEach(c => githubIcon.classList.add(c));
-        let welcomeText = document.createElement("span");
-        welcomeText.textContent = " Welcome to LiveTL! Translations will appear above.";
-        let di = document.createElement("a");
-        let gi = document.createElement("a");
-        di.appendChild(discordIcon);
-        gi.appendChild(githubIcon);
-        // di.innerHTML = "&nbsp" + di.innerHTML;
-        gi.innerHTML = "&nbsp" + gi.innerHTML;
-        di.href = "https://discord.gg/uJrV3tmthg";
-        gi.href = "https://github.com/KentoNishi/LiveTL";
-        di.target = gi.target = "about:blank";
-        welcome.appendChild(di);
-        welcome.appendChild(gi);
-        welcome.appendChild(welcomeText);
-        prependE(welcome);
+        prependE(createWelcome());
 
         let firstLoop = true;
         setInterval(() => {
@@ -605,6 +576,48 @@ function createSettings(container) {
     settings.appendChild(createLanguageSelect());
     settings.appendChild(createTranslatorSelect());
     return settings;
+}
+
+function wrapIconWithLink(icon, link) {
+    let wrapper = document.createElement("a");
+    wrapper.href = link;
+    wrapper.target = "about:blank";
+    wrapper.appendChild(icon);
+    return wrapper;
+}
+
+function createLogo() {
+    let logo = document.createElement("img");
+    logo.className = "logo";
+    logo.src = "https://kentonishi.github.io/LiveTL/favicon.ico";
+    return logo;
+}
+
+function createIcon(faName, link, addSpace) {
+    let icon = document.createElement("i");
+    ["fa", faName].forEach(c => icon.classList.add(c));
+    let wrapped = wrapIconWithLink(icon, link);
+    if (addSpace) {
+        wrapped.innerHTML = `&nbsp${wrapped.innerHTML}`;
+    }
+    console.log(wrapped);
+    return wrapped;
+}
+
+function createWelcomeText() {
+    let welcomeText = document.createElement("span");
+    welcomeText.textContent = " Welcome to LiveTL! Translations will appear above.";
+    return welcomeText;
+}
+
+function createWelcome() {
+    let welcome = document.createElement("div");
+    welcome.className = "line";
+    welcome.appendChild(createLogo());
+    welcome.appendChild(createIcon("fa-discord", "https://discord.gg/uJrV3tmthg", false));
+    welcome.appendChild(createIcon("fa-github", "https://github.com/KentoNishi/LiveTL", true));
+    welcome.appendChild(createWelcomeText());
+    return welcome;
 }
 
 // MARK
