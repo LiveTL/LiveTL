@@ -116,39 +116,8 @@ function insertLiveTLButtons(isHolotools = false) {
     params = parseParams();
     makeButton = (text, callback, color) => {
         let a = document.createElement("span");
-        a.innerHTML = `
-        <a class="yt-simple-endpoint style-scope ytd-toggle-button-renderer" tabindex="-1" style="
-            background-color: ${color || "rgb(0, 153, 255)"};
-            font: inherit;
-            font-size: 11px;
-            font-weight: bold;
-            width: 100%;
-            margin: 0;
-            text-align: center;
-            ">
-            <paper-button id="button" class="style-scope ytd-toggle-button-renderer" role="button" tabindex="0" animated=""
-                elevation="0" aria-disabled="false" style="
-                    padding: 5px;
-                    width: 100%;
-                    margin: 0;
-                ">
-                <yt-formatted-string id="text" class="style-scope ytd-toggle-button-renderer">
-                </yt-formatted-string>
-                <paper-ripple class="style-scope paper-button">
-                    <div id="background" class="style-scope paper-ripple" style="opacity: 0.00738;"></div>
-                    <div id="waves" class="style-scope paper-ripple"></div>
-                </paper-ripple>
-                <paper-ripple class="style-scope paper-button">
-                    <div id="background" class="style-scope paper-ripple" style="opacity: 0.007456;"></div>
-                    <div id="waves" class="style-scope paper-ripple"></div>
-                </paper-ripple>
-                <paper-ripple class="style-scope paper-button">
-                    <div id="background" class="style-scope paper-ripple" style="opacity: 0.007748;"></div>
-                    <div id="waves" class="style-scope paper-ripple"></div>
-                </paper-ripple>
-            </paper-button>
-        </a>
-    `;
+        a.innerHTML = getLiveTLButtonHTML(color);
+
         let interval2 = setInterval(() => {
             let e = isHolotools ? document.querySelector("#input-panel") : document.querySelector("ytd-live-chat-frame");
             if (e != null) {
@@ -661,6 +630,42 @@ function createSettingsProjection(add) {
 }
 
 // MARK
+
+function getLiveTLButtonHTML(color) {
+    return `
+    <a class="yt-simple-endpoint style-scope ytd-toggle-button-renderer" tabindex="-1" style="
+        background-color: ${color || "rgb(0, 153, 255)"};
+        font: inherit;
+        font-size: 11px;
+        font-weight: bold;
+        width: 100%;
+        margin: 0;
+        text-align: center;
+        ">
+        <paper-button id="button" class="style-scope ytd-toggle-button-renderer" role="button" tabindex="0" animated=""
+            elevation="0" aria-disabled="false" style="
+                padding: 5px;
+                width: 100%;
+                margin: 0;
+            ">
+            <yt-formatted-string id="text" class="style-scope ytd-toggle-button-renderer">
+            </yt-formatted-string>
+            <paper-ripple class="style-scope paper-button">
+                <div id="background" class="style-scope paper-ripple" style="opacity: 0.00738;"></div>
+                <div id="waves" class="style-scope paper-ripple"></div>
+            </paper-ripple>
+            <paper-ripple class="style-scope paper-button">
+                <div id="background" class="style-scope paper-ripple" style="opacity: 0.007456;"></div>
+                <div id="waves" class="style-scope paper-ripple"></div>
+            </paper-ripple>
+            <paper-ripple class="style-scope paper-button">
+                <div id="background" class="style-scope paper-ripple" style="opacity: 0.007748;"></div>
+                <div id="waves" class="style-scope paper-ripple"></div>
+            </paper-ripple>
+        </paper-button>
+    </a>
+    `;
+}
 
 function importStyle() {
     let style = document.createElement('style');
