@@ -18,6 +18,10 @@ function updateSize() {
     document.querySelector(".modal").style.height = pix + "px";
 }
 
+
+let allTranslators = {v: {}};
+let allTranslatorCheckbox = {};
+
 function runLiveTL() {
     document.head.innerHTML += `
         <head>
@@ -43,36 +47,7 @@ function runLiveTL() {
         let settings = createSettings(livetlContainer);
         livetlContainer.appendChild(translationDiv);
 
-        let allTranslators = {v: {}};
-
-        let allTranslatorCheckbox = {};
-
-        checkboxUpdate = () => {
-            let checklist = document.querySelector("#transelectChecklist");
-            allTranslators.v = {};
-            let boxes = checklist.querySelectorAll("input");
-            boxes.forEach(box => {
-                allTranslators.v[box.dataset.id] = box;
-                if (box != allTranslatorCheckbox && !box.checked) allTranslatorCheckbox.checked = false;
-            });
-            if (allTranslatorCheckbox.checked) {
-                let boxes = checklist.querySelectorAll("input:not(:checked)");
-                boxes.forEach(box => box.checked = true)
-            }
-            let messages = document.querySelectorAll(".line");
-            for (i = 0; i < messages.length; i++) {
-                if (i > 25) {
-                    messages[i].remove();
-                    continue;
-                }
-                if (!messages[i].querySelector(".authorName")) continue;
-                if (!allTranslators.v[messages[i].querySelector(".authorName").dataset.id].checked) {
-                    messages[i].remove();
-                }
-            }
-        }
-
-        
+       
         allTranslatorCheckbox = createCheckbox("All Translators", "allTranslatorID", true, () => {
             let boxes = document
                 .querySelector("#transelectChecklist")
@@ -601,8 +576,12 @@ function createWelcome() {
     return welcome;
 }
 
+function getChecklist() {
+    return document.querySelector("#transelectChecklist");
+}
+
 function getChecklistItems() {
-    return document.querySelector("#transelectChecklist").querySelector("#items");
+    return getChecklist().querySelector("#items");
 }
 
 function createCheckmark(authorID, checked, onchange) {
@@ -632,6 +611,42 @@ function createCheckbox(name, authorID, checked = false, callback = null) {
     return checkbox;
 }
 
+function filterBoxes(boxes) {
+    boxes.forEach((box) => {
+        allTranslators.v[box.dataset.id] = box;
+        if (box != allTranslatorCheckbox && !box.checked) {
+            allTranslatorCheckbox.checked = false;
+        }
+    });
+}
+
+function checkAll() {
+    let boxes = getChecklist.querySelectorAll("input:not(:checked)");
+    boxes.forEach(box => box.checked = true);
+}
+
+function removeBadTranslations() {
+    document.querySelectorAll(".line").forEach((translation, i) => {
+        if (i > 25) {
+            translation.remove();
+        } else if (author = translation.querySelector(".authorName")) {
+            if (!allTranslators.v[author.dataset.id].checked) {
+                translation.remove();
+            }
+        }
+    });
+}
+
+function checkboxUpdate() {
+    let boxes = getChecklist().querySelectorAll("input");
+    allTranslators.v = {};
+    filterBoxes(boxes);
+    if (allTranslatorCheckbox.checked) {
+        checkAll();
+    }
+    removeBadTranslations();
+}
+ 
 
 // MARK
 
