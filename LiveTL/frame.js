@@ -43,16 +43,16 @@ function runLiveTL() {
         let settings = createSettings(livetlContainer);
         livetlContainer.appendChild(translationDiv);
 
-        let allTranslators = {};
+        let allTranslators = {v: {}};
 
         let allTranslatorCheckbox = {};
 
         checkboxUpdate = () => {
             let checklist = document.querySelector("#transelectChecklist");
-            allTranslators = {};
+            allTranslators.v = {};
             let boxes = checklist.querySelectorAll("input");
             boxes.forEach(box => {
-                allTranslators[box.dataset.id] = box;
+                allTranslators.v[box.dataset.id] = box;
                 if (box != allTranslatorCheckbox && !box.checked) allTranslatorCheckbox.checked = false;
             });
             if (allTranslatorCheckbox.checked) {
@@ -66,15 +66,32 @@ function runLiveTL() {
                     continue;
                 }
                 if (!messages[i].querySelector(".authorName")) continue;
-                if (!allTranslators[messages[i].querySelector(".authorName").dataset.id].checked) {
+                if (!allTranslators.v[messages[i].querySelector(".authorName").dataset.id].checked) {
                     messages[i].remove();
                 }
             }
         }
 
+        function getChecklistItems() {
+            return document.querySelector("#transelectChecklist").querySelector("#items");
+        }
+
+        function createCheckmark(authorID, checked, onchange) {
+            let checkmark = document.createElement("input");
+            checkmark.type = "checkbox";
+            checkmark.dataset.id = authorID;
+            checkmark.checked = checked;
+            checkmark.onchange = onchange;
+            return checkmark;
+        }
+
+        function createCheckbox(name, authorID, checked = false, callback = null) {
+            let items = getChecklistItems();
+            let checkbox = createCheckmark(authorID, checked, callback || checkboxUpdate);
+        }
+
         createCheckbox = (name, authorID, checked = false, callback = null) => {
-            let checklist = document.querySelector("#transelectChecklist");
-            let items = checklist.querySelector("#items");
+            let items = getChecklistItems();
             let selectTranslatorMessage = document.createElement("li");
             items.append(selectTranslatorMessage);
             let checkbox = document.createElement("input");
@@ -176,7 +193,7 @@ function runLiveTL() {
                     `;
                     let ban = document.createElement("span");
                     ban.onclick = () => {
-                        allTranslators[authorID].checked = false;
+                        allTranslators.v[authorID].checked = false;
                         checkboxUpdate();
                     }
                     ban.style.cursor = "pointer";
@@ -197,8 +214,8 @@ function runLiveTL() {
                     options.appendChild(hide);
                     options.appendChild(ban);
                     authorInfo.append(options);
-                    if (!(authorID in allTranslators)) createCheckbox(author, authorID, allTranslatorCheckbox.checked);
-                    if (allTranslators[authorID].checked) prependE(line);
+                    if (!(authorID in allTranslators.v)) createCheckbox(author, authorID, allTranslatorCheckbox.checked);
+                    if (allTranslators.v[authorID].checked) prependE(line);
                     options.style.display = "none";
                     options.className = "messageOptions";
                     line.onmouseover = () => options.style.display = "inline-block";
@@ -600,7 +617,6 @@ function createIcon(faName, link, addSpace) {
     if (addSpace) {
         wrapped.innerHTML = `&nbsp${wrapped.innerHTML}`;
     }
-    console.log(wrapped);
     return wrapped;
 }
 
