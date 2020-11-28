@@ -7,6 +7,14 @@ const languages = [
     { code: "ch", name: "Chinese", lang: "中文" },
 ];
 
+const DEBUG = false;
+
+function conlog(...args) {
+    if (DEBUG) {
+        return console.log(...args);
+    }
+}
+
 
 let languageConversionTable = {};
 languages.forEach(i => languageConversionTable[`${i.name} (${i.lang}) [${i.code}]`] = i);
@@ -66,8 +74,8 @@ function runLiveTL() {
                 let parsed = parseTranslation(m.textContent);
                 let select = document.querySelector("#langSelect");
                 if (parsed != null && parsed.lang.toLowerCase() == languageConversionTable[select.value].code) {
-                    console.log(m);
-                    console.log(getProfilePic(m));
+                    conlog(m);
+                    conlog(getProfilePic(m));
                     let author = m.parentElement.childNodes[1].textContent;
                     let authorID = getProfilePic(m);
                     let line = createTranslationElement(author, authorID, parsed.msg);
@@ -104,7 +112,7 @@ function parseParams() {
 }
 
 function insertLiveTLButtons(isHolotools = false) {
-    console.log("Inserting LiveTL Launcher Buttons");
+    conlog("Inserting LiveTL Launcher Buttons");
     params = parseParams();
     makeButton = (text, callback, color) => {
         let a = document.createElement("span");
@@ -162,11 +170,11 @@ let params = {};
 let activationInterval = setInterval(() => {
     if (window.location.href.startsWith("https://www.youtube.com/live_chat")) {
         clearInterval(activationInterval);
-        console.log("Using live chat");
+        conlog("Using live chat");
         try {
             params = parseParams();
             if (params.useLiveTL) {
-                console.log("Running LiveTL!");
+                conlog("Running LiveTL!");
                 runLiveTL();
             } else if (params.embed_domain == "hololive.jetri.co") {
                 insertLiveTLButtons(true);
@@ -174,7 +182,7 @@ let activationInterval = setInterval(() => {
         } catch (e) { }
     } else if (window.location.href.startsWith("https://www.youtube.com/watch")) {
         clearInterval(activationInterval);
-        console.log("Watching video");
+        conlog("Watching video");
         let interval = setInterval(() => {
             if (document.querySelector("ytd-live-chat-frame")) {
                 clearInterval(interval);
