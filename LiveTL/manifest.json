@@ -1,14 +1,15 @@
 {
     "name": "LiveTL - Live Translations for Streams",
     "description": "Get live translations for YouTube streams, crowdsourced from bilingual viewers!",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "manifest_version": 2,
     "permissions": [],
     "content_scripts": [
         {
             "matches": [
                 "https://www.youtube.com/*",
-                "https://hololive.jetri.co/*"
+                "https://hololive.jetri.co/*",
+                "https://kentonishi.github.io/LiveTL/*"
             ],
             "js": [
                 "frame.js"
