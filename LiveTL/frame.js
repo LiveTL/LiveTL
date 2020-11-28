@@ -233,7 +233,7 @@ function createSurroundRegex() {
     });
 
     return new RegExp(
-        `^([${pattern}])([${notPattern}]+)([${patternEnd}]) ?(.+)`
+        `^([${pattern}])([${notPattern}]+)([${patternEnd}]) ?[\-\:\.\|]? ?(.+)`
     );
 }
 
