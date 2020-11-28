@@ -72,42 +72,7 @@ function runLiveTL() {
             }
         }
 
-        function getChecklistItems() {
-            return document.querySelector("#transelectChecklist").querySelector("#items");
-        }
-
-        function createCheckmark(authorID, checked, onchange) {
-            let checkmark = document.createElement("input");
-            checkmark.type = "checkbox";
-            checkmark.dataset.id = authorID;
-            checkmark.checked = checked;
-            checkmark.onchange = onchange;
-            return checkmark;
-        }
-
-        function createCheckbox(name, authorID, checked = false, callback = null) {
-            let items = getChecklistItems();
-            let checkbox = createCheckmark(authorID, checked, callback || checkboxUpdate);
-        }
-
-        createCheckbox = (name, authorID, checked = false, callback = null) => {
-            let items = getChecklistItems();
-            let selectTranslatorMessage = document.createElement("li");
-            items.append(selectTranslatorMessage);
-            let checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.dataset.id = authorID;
-            checkbox.checked = checked;
-            checkbox.onchange = callback || checkboxUpdate;
-            selectTranslatorMessage.appendChild(checkbox);
-            let person = document.createElement("label");
-            person.setAttribute("for", authorID);
-            person.textContent = name;
-            selectTranslatorMessage.appendChild(person);
-            checkboxUpdate();
-            return checkbox;
-        }
-
+        
         allTranslatorCheckbox = createCheckbox("All Translators", "allTranslatorID", true, () => {
             let boxes = document
                 .querySelector("#transelectChecklist")
@@ -635,6 +600,38 @@ function createWelcome() {
     welcome.appendChild(createWelcomeText());
     return welcome;
 }
+
+function getChecklistItems() {
+    return document.querySelector("#transelectChecklist").querySelector("#items");
+}
+
+function createCheckmark(authorID, checked, onchange) {
+    let checkmark = document.createElement("input");
+    checkmark.type = "checkbox";
+    checkmark.dataset.id = authorID;
+    checkmark.checked = checked;
+    checkmark.onchange = onchange;
+    return checkmark;
+}
+
+function createCheckboxPerson(name, authorID) {
+    let person = document.createElement("label");
+    person.setAttribute("for", authorID);
+    person.textContent = name;
+    return person;
+}
+
+function createCheckbox(name, authorID, checked = false, callback = null) {
+    let items = getChecklistItems();
+    let checkbox = createCheckmark(authorID, checked, callback || checkboxUpdate);
+    let selectTranslatorMessage = document.createElement("li");
+    selectTranslatorMessage.appendChild(checkbox);
+    selectTranslatorMessage.appendChild(createCheckboxPerson(name, authorID));
+    items.appendChild(selectTranslatorMessage);
+    checkboxUpdate();
+    return checkbox;
+}
+
 
 // MARK
 
