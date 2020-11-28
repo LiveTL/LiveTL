@@ -1,8 +1,10 @@
-# LiveTL
+# LiveTL - Live Translations for Streams
 
 Get live translations for YouTube streams, crowdsourced from multilingual viewers!
 
 [Download for Free from the Chrome Web Store](https://chrome.google.com/webstore/detail/livetl/moicohcfhhbmmngneghfjfjpdobmmnlg)
+
+![](./img/livetlscreen.png)
 
 ## Feedback and Contributing
 

@@ -8,7 +8,8 @@
         {
             "matches": [
                 "https://www.youtube.com/*",
-                "https://hololive.jetri.co/*"
+                "https://hololive.jetri.co/*",
+                "https://kentonishi.github.io/LiveTL/*"
             ],
             "js": [
                 "frame.js"
