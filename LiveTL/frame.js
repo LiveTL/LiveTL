@@ -46,7 +46,6 @@ function runLiveTL() {
 
         let settings = createSettings(livetlContainer);
         livetlContainer.appendChild(translationDiv);
-
        
         allTranslatorCheckbox = createCheckbox("All Translators", "allTranslatorID", true, () => {
             let boxes = document
@@ -57,17 +56,6 @@ function runLiveTL() {
         });
 
         prependE = el => translationDiv.prepend(el);
-
-
-        getProfilePic = (el) => {
-            try {
-                let parent = el;
-                while (!parent.querySelector("img")) {
-                    parent = parent.parentElement;
-                }
-                return parent.querySelector("img").src;
-            } catch (e) { };
-        }
 
         prependE(createWelcome());
 
@@ -101,12 +89,7 @@ function runLiveTL() {
                 m.innerHTML = "";
             }
 
-            let settingsProjection = document.querySelector("#settingsProjection");
-            if (settingsProjection) settingsProjection.remove();
-            settingsProjection = document.createElement("div");
-            settingsProjection.id = "settingsProjection";
-            settingsProjection.style.zIndex = -1;
-            prependE(settingsProjection);
+            createSettingsProjection(prependE);
         }, 1000);
     }, 100);
 }
@@ -629,6 +612,25 @@ function createTranslationElement(author, authorID, translation) {
     setTranslationElementCallbacks(line);
     line.appendChild(createAuthorInfoElement(author, authorID));
     return line;
+}
+
+function getProfilePic(el) {
+    try {
+        let parent = el;
+        while (!parent.querySelector("img")) {
+            parent = parent.parentElement;
+        }
+        return parent.querySelector("img").src;
+    } catch (e) { };
+}
+
+function createSettingsProjection(add) {
+    let settingsProjection = document.querySelector("#settingsProjection");
+    if (settingsProjection) settingsProjection.remove();
+    settingsProjection = document.createElement("div");
+    settingsProjection.id = "settingsProjection";
+    settingsProjection.style.zIndex = -1;
+    add(settingsProjection);
 }
 
 // MARK
