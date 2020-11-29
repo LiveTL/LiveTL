@@ -21,6 +21,14 @@ We have a Discord server for those who would like to give feedback or discuss ne
 * [ ] Automatic language tagging for translators
 * [ ] Archived VOD Support
 
+## Issues
+* [ ] Extension and page version mismatch (local file serving to solve?)
+* [ ] Detect if extension is installed, if not redirect to install page
+* [ ] No automated testing
+
+
+If you are interested in helping us solve these issues and/or add features, please let us know in the Discord server and submit a Pull Request!
+
 ## Developers
 
 LiveTL was developed by [Kento Nishi](https://github.com/KentoNishi) and [Ronak Badhe](https://github.com/r2dev2bb8/).

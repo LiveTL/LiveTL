@@ -74,10 +74,8 @@ function runLiveTL() {
                 let parsed = parseTranslation(m.textContent);
                 let select = document.querySelector("#langSelect");
                 if (parsed != null && parsed.lang.toLowerCase() == languageConversionTable[select.value].code) {
-                    conlog(m);
-                    conlog(getProfilePic(m));
                     let author = m.parentElement.childNodes[1].textContent;
-                    let authorID = getProfilePic(m);
+                    let authorID = /\/ytc\/([^\=]+)\=/.exec(getProfilePic(m))[1];
                     let line = createTranslationElement(author, authorID, parsed.msg);
                     if (!(authorID in allTranslators.v)) {
                         createCheckbox(author, authorID, allTranslatorCheckbox.checked);
