@@ -449,32 +449,32 @@ function createIcon(faName, link, addSpace) {
     return wrapped;
 }
 
+async function shareExtension() {
+    let details = await (await fetch(await getWAR("manifest.json"))).json();
+    navigator.share({
+        title: details.name,
+        text: details.description,
+        url: "https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg",
+    });
+}
+
 function createWelcomeText() {
     let welcomeText = document.createElement("span");
     welcomeText.textContent = `Welcome to LiveTL! Translations will appear above.`;
     // welcomeText.appendChild(document.createElement("br"));
-    let buttons = document.createElement("span");
+    let buttons = document.createElement("div");
     buttons.classList.add("authorName");
-    let dontForget = document.createElement("span");
-    dontForget.textContent = "Don't forget to give us a ";
-    let reviewButton = document.createElement("a");
-    reviewButton.href = "https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg";
-    reviewButton.textContent = "5-star review";
-    reviewButton.target = "about:blank";
-    let starButton = document.createElement("a");
-    starButton.href = "https://github.com/KentoNishi/LiveTL";
-    starButton.textContent = "a star on GitHub";
-    starButton.target = "about:blank";
-    buttons.appendChild(dontForget);
-    buttons.appendChild(reviewButton);
-    let and = document.createElement("span");
-    and.textContent = " and ";
-    buttons.appendChild(and);
-    buttons.appendChild(starButton);
-    let excl = document.createElement("span");
-    excl.textContent = "!";
-    buttons.appendChild(excl);
+    buttons.style.marginLeft = "0px";
+    buttons.innerHTML = `
+        Please consider
+        <a id="shareExtension" href="javascript:void(0);">sharing LiveTL with your friends</a>, 
+        <a href="https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg">
+            giving us a 5-star review
+        </a>, and 
+        <a href="https://github.com/KentoNishi/LiveTL">starring our GitHub repository</a>!
+    `;
     welcomeText.appendChild(buttons);
+    welcomeText.querySelector("#shareExtension").onclick = shareExtension;
     return welcomeText;
 }
 
@@ -821,7 +821,7 @@ function importStyle() {
     
         .authorName {
             font-size: 12px;
-            color: #bdbdbd;
+            color: var(--yt-live-chat-secondary-text-color);
             margin-left: 5px;
             vertical-align: baseline;
         }
