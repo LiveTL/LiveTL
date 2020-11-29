@@ -35,5 +35,6 @@
         "index.js",
         "index.css"
     ],
+    "incognito": "split",
     "content_security_policy": "script-src 'self' https://www.w3schools.com/ https://ajax.googleapis.com/ https://ajax.aspnetcdn.com/; object-src 'self'"
 }
