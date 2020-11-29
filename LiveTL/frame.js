@@ -68,14 +68,16 @@ async function runLiveTL() {
 
         setInterval(() => {
             let messages = document.querySelectorAll(".yt-live-chat-text-message-renderer > #message");
-            for (let i = 0; i < messages.length; i++) {
+            let i = 0;
+            while (i < messages.length && messages[i].innerHTML == "") i++;
+            for (; i < messages.length; i++) {
                 let m = messages[i];
+                if (m.innerHTML == "") break;
                 let parsed = parseTranslation(m.textContent);
                 let select = document.querySelector("#langSelect");
                 if (parsed != null && parsed.lang.toLowerCase() == languageConversionTable[select.value].code) {
                     let author = m.parentElement.childNodes[1].textContent;
-                    let authorID = /\/ytc\/([^\=]+)\=/.exec(getProfilePic(m));
-                    authorID = authorID[1];
+                    let authorID = /\/ytc\/([^\=]+)\=/.exec(getProfilePic(m))[1];
                     let line = createTranslationElement(author, authorID, parsed.msg);
                     if (!(authorID in allTranslators.v)) {
                         createCheckbox(author, authorID, allTranslatorCheckbox.checked);
@@ -84,7 +86,7 @@ async function runLiveTL() {
                         prependE(line);
                     }
                 }
-                m.remove();
+                m.innerHTML = "";
             }
             createSettingsProjection(prependE);
         }, 1000);
