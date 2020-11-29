@@ -433,10 +433,14 @@ function wrapIconWithLink(icon, link) {
 }
 
 async function createLogo() {
+    let a = document.createElement("a");
+    a.href = "https://kentonishi.github.io/LiveTL/about/";
+    a.target = "about:blank";
     let logo = document.createElement("img");
     logo.className = "logo";
     logo.src = await getWAR("icons/favicon.ico");
-    return logo;
+    a.appendChild(logo);
+    return a;
 }
 
 function createIcon(faName, link, addSpace) {
@@ -468,10 +472,10 @@ function createWelcomeText() {
     buttons.innerHTML = `
         Please consider
         <a id="shareExtension" href="javascript:void(0);">sharing LiveTL with your friends</a>, 
-        <a href="https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg">
+        <a href="https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg" target="about:blank">
             giving us a 5-star review
         </a>, and 
-        <a href="https://github.com/KentoNishi/LiveTL">starring our GitHub repository</a>!
+        <a href="https://github.com/KentoNishi/LiveTL" target="about:blank">starring our GitHub repository</a>!
     `;
     welcomeText.appendChild(buttons);
     welcomeText.querySelector("#shareExtension").onclick = shareExtension;
