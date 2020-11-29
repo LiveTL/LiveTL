@@ -39,6 +39,6 @@ $("#sidePanel").resizable({
         "s": "#handleH"
     }, start: start, stop: stop
 });
-chat.src = `https://www.youtube.com/live_chat?v=${v}&embed_domain=${document.domain}`;
+chat.src = `https://kentonishi.github.io/LiveTL/embed?v=${v}&embed_domain=${document.domain}`;
 stream.src = `https://www.youtube.com/embed/${v}?autoplay=1`;
 ltlchat.src = `${chat.src}&useLiveTL=1`;

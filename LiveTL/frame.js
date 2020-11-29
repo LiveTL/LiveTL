@@ -7,14 +7,13 @@ const languages = [
     { code: "ch", name: "Chinese", lang: "中文" },
 ];
 
-const DEBUG = false;
-
 function conlog(...args) {
-    if (DEBUG) {
+    if (params.devMode) {
         return console.log(...args);
     }
 }
 
+getWAR = async u => new Promise((res, rej) => chrome.runtime.sendMessage({ type: "get_war", url: u }, r => res(r)));
 
 let languageConversionTable = {};
 languages.forEach(i => languageConversionTable[`${i.name} (${i.lang}) [${i.code}]`] = i);
@@ -30,14 +29,14 @@ function updateSize() {
 let allTranslators = { v: {} };
 let allTranslatorCheckbox = {};
 
-function runLiveTL() {
+async function runLiveTL() {
     document.head.innerHTML += `
         <head>
-            <link rel="icon" href="https://kentonishi.github.io/LiveTL/favicon.ico" type="image/x-icon" />
+            <link rel="icon" href="${await getWAR("icons/favicon.ico")}" type="image/x-icon" />
         </head>
     `;
     switchChat();
-    setTimeout(() => {
+    setTimeout(async () => {
         document.title = "LiveTL Chat";
 
         importFontAwesome();
@@ -65,7 +64,7 @@ function runLiveTL() {
 
         prependE = el => translationDiv.prepend(el);
 
-        prependE(createWelcome());
+        prependE(await createWelcome());
 
         setInterval(() => {
             let messages = document.querySelectorAll(".yt-live-chat-text-message-renderer > #message");
@@ -75,7 +74,8 @@ function runLiveTL() {
                 let select = document.querySelector("#langSelect");
                 if (parsed != null && parsed.lang.toLowerCase() == languageConversionTable[select.value].code) {
                     let author = m.parentElement.childNodes[1].textContent;
-                    let authorID = /\/ytc\/([^\=]+)\=/.exec(getProfilePic(m))[1];
+                    let authorID = /\/ytc\/([^\=]+)\=/.exec(getProfilePic(m));
+                    authorID = authorID[1];
                     let line = createTranslationElement(author, authorID, parsed.msg);
                     if (!(authorID in allTranslators.v)) {
                         createCheckbox(author, authorID, allTranslatorCheckbox.checked);
@@ -109,7 +109,7 @@ function parseParams() {
     return s == "" ? {} : JSON.parse('{"' + s + '"}');
 }
 
-function insertLiveTLButtons(isHolotools = false) {
+async function insertLiveTLButtons(isHolotools = false) {
     conlog("Inserting LiveTL Launcher Buttons");
     params = parseParams();
     makeButton = (text, callback, color) => {
@@ -126,11 +126,18 @@ function insertLiveTLButtons(isHolotools = false) {
             }
         }, 100);
     }
-    let u = "https://kentonishi.github.io/LiveTL/?v=" + params.v;
-    makeButton("Watch in LiveTL", isHolotools ? () => window.open(u) : () => window.location.href = u);
-    makeButton("Pop Out Translations", () => window.open(`https://www.youtube.com/live_chat?v=${params.v}&useLiveTL=1`, "",
-        "scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300"
-    ), "rgb(143, 143, 143)");
+
+    redirectTab = u => chrome.runtime.sendMessage({ type: "redirect", data: u });
+    createTab = u => chrome.runtime.sendMessage({ type: "tab", data: u });
+    createWindow = u => chrome.runtime.sendMessage({ type: "window", data: u });
+
+    let u = `${await getWAR("index.html")}?v=${params.v}`;
+    makeButton("Watch in LiveTL", () => redirectTab({ url: u }));
+    makeButton("Pop Out Translations", () => createWindow({
+        url: `https://www.youtube.com/live_chat?v=${params.v}&useLiveTL=1`,
+        type: "popup",
+        focused: true
+    }), "rgb(143, 143, 143)");
 }
 
 let params = {};
@@ -156,16 +163,15 @@ let activationInterval = setInterval(() => {
                 insertLiveTLButtons();
             }
         }, 100);
-    } else if (window.location.href.startsWith("https://kentonishi.github.io/LiveTL/about")) {
-        let interval = setInterval(() => {
-            let e = document.querySelector("#actionMessage");
-            if (e) {
-                clearInterval(interval);
-                e.textContent = `Thank you for installing LiveTL!`;
-            }
-        }, 100);
     }
 }, 1000);
+
+if (window.location.href.startsWith("https://kentonishi.github.io/LiveTL/about")) {
+    window.onload = () => {
+        let e = document.querySelector("#actionMessage");
+        e.textContent = `Thank you for installing LiveTL!`;
+    }
+}
 
 function createModal(container) {
     let settingsButton = document.createElement("div");
@@ -424,10 +430,10 @@ function wrapIconWithLink(icon, link) {
     return wrapper;
 }
 
-function createLogo() {
+async function createLogo() {
     let logo = document.createElement("img");
     logo.className = "logo";
-    logo.src = "https://kentonishi.github.io/LiveTL/favicon.ico";
+    logo.src = await getWAR("icons/favicon.ico");
     return logo;
 }
 
@@ -470,10 +476,10 @@ function createWelcomeText() {
     return welcomeText;
 }
 
-function createWelcome() {
+async function createWelcome() {
     let welcome = document.createElement("div");
     welcome.className = "line";
-    welcome.appendChild(createLogo());
+    welcome.appendChild(await createLogo());
     welcome.appendChild(createIcon("fa-discord", "https://discord.gg/uJrV3tmthg", false));
     welcome.appendChild(createIcon("fa-github", "https://github.com/KentoNishi/LiveTL", true));
     welcome.appendChild(createWelcomeText());
@@ -531,10 +537,12 @@ function checkAll() {
 
 function removeBadTranslations() {
     document.querySelectorAll(".line").forEach((translation, i) => {
-        if (i > 25) {
-            translation.remove();
-        } else if (author = translation.querySelector(".authorName")) {
-            if (!allTranslators.v[author.dataset.id].checked) {
+        // if (i > 25) {
+        //     translation.remove();
+        // } else 
+        // removed limiting
+        if (author = translation.querySelector(".authorName")) {
+            if (author.dataset.id && !allTranslators.v[author.dataset.id].checked) {
                 translation.remove();
             }
         }

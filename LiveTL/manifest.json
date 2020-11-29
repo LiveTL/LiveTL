@@ -28,5 +28,12 @@
         "16": "./icons/16x16.png",
         "48": "./icons/48x48.png",
         "128": "./icons/128x128.png"
-    }
+    },
+    "web_accessible_resources": [
+        "icons/*",
+        "index.html",
+        "index.js",
+        "index.css"
+    ],
+    "content_security_policy": "script-src 'self' https://www.w3schools.com/ https://ajax.googleapis.com/ https://ajax.aspnetcdn.com/; object-src 'self'"
 }
