@@ -24,8 +24,8 @@ We have a Discord server for those who would like to give feedback or discuss ne
 * [ ] Archived VOD Support
 
 ## Issues
-* [ ] Extension and page version mismatch (local file serving to solve?)
-* [ ] Detect if extension is installed, if not redirect to install page
+* [x] Extension and page version mismatch (local file serving to solve?)
+* [x] Detect if extension is installed, if not redirect to install page
 * [ ] No automated testing
 
 
