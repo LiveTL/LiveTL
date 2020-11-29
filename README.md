@@ -5,7 +5,7 @@
 
 Get live translations for YouTube streams, crowdsourced from multilingual viewers!
 
-[Download for Free from the Chrome Web Store](https://kentonishi.github.io/LiveTL)
+[Download for Free from the Chrome Web Store](https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg)
 
 ![](./img/livetlscreen.png)
 
