@@ -75,7 +75,8 @@ async function runLiveTL() {
                 if (m.innerHTML == "") break;
                 let parsed = parseTranslation(m.textContent);
                 let select = document.querySelector("#langSelect");
-                if (parsed != null && parsed.lang.toLowerCase() == languageConversionTable[select.value].code) {
+                if (parsed != null && parsed.lang.toLowerCase() == languageConversionTable[select.value].code
+                    && parsed.msg.replace(/\s/g, '') != "") {
                     let author = m.parentElement.childNodes[1].textContent;
                     let authorID = /\/ytc\/([^\=]+)\=/.exec(getProfilePic(m))[1];
                     let line = createTranslationElement(author, authorID, parsed.msg);
