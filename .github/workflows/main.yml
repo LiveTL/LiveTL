@@ -1,4 +1,4 @@
-name: Create Archive
+name: Latest Release Build
 on:
   release:
     types:

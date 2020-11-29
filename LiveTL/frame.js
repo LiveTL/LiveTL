@@ -7,6 +7,13 @@ const languages = [
     { code: "ch", name: "Chinese", lang: "中文" },
 ];
 
+function conlog(...args) {
+    if (params.devMode) {
+        return console.log(...args);
+    }
+}
+
+getWAR = async u => new Promise((res, rej) => chrome.runtime.sendMessage({ type: "get_war", url: u }, r => res(r)));
 
 let languageConversionTable = {};
 languages.forEach(i => languageConversionTable[`${i.name} (${i.lang}) [${i.code}]`] = i);
@@ -22,14 +29,14 @@ function updateSize() {
 let allTranslators = { v: {} };
 let allTranslatorCheckbox = {};
 
-function runLiveTL() {
+async function runLiveTL() {
     document.head.innerHTML += `
         <head>
-            <link rel="icon" href="https://kentonishi.github.io/LiveTL/favicon.ico" type="image/x-icon" />
+            <link rel="icon" href="${await getWAR("icons/favicon.ico")}" type="image/x-icon" />
         </head>
     `;
     switchChat();
-    setTimeout(() => {
+    setTimeout(async () => {
         document.title = "LiveTL Chat";
 
         importFontAwesome();
@@ -57,19 +64,21 @@ function runLiveTL() {
 
         prependE = el => translationDiv.prepend(el);
 
-        prependE(createWelcome());
+        prependE(await createWelcome());
 
         setInterval(() => {
             let messages = document.querySelectorAll(".yt-live-chat-text-message-renderer > #message");
-            for (let i = 0; i < messages.length; i++) {
+            let i = 0;
+            while (i < messages.length && messages[i].innerHTML == "") i++;
+            for (; i < messages.length; i++) {
                 let m = messages[i];
+                if (m.innerHTML == "") break;
                 let parsed = parseTranslation(m.textContent);
                 let select = document.querySelector("#langSelect");
-                if (parsed != null && parsed.lang.toLowerCase() == languageConversionTable[select.value].code) {
-                    console.log(m);
-                    console.log(getProfilePic(m));
+                if (parsed != null && parsed.lang.toLowerCase() == languageConversionTable[select.value].code
+                    && parsed.msg.replace(/\s/g, '') != "") {
                     let author = m.parentElement.childNodes[1].textContent;
-                    let authorID = getProfilePic(m);
+                    let authorID = /\/ytc\/([^\=]+)\=/.exec(getProfilePic(m))[1];
                     let line = createTranslationElement(author, authorID, parsed.msg);
                     if (!(authorID in allTranslators.v)) {
                         createCheckbox(author, authorID, allTranslatorCheckbox.checked);
@@ -78,7 +87,7 @@ function runLiveTL() {
                         prependE(line);
                     }
                 }
-                m.remove();
+                m.innerHTML = "";
             }
             createSettingsProjection(prependE);
         }, 1000);
@@ -103,44 +112,13 @@ function parseParams() {
     return s == "" ? {} : JSON.parse('{"' + s + '"}');
 }
 
-function insertLiveTLButtons(isHolotools = false) {
-    console.log("Inserting LiveTL Launcher Buttons");
+async function insertLiveTLButtons(isHolotools = false) {
+    conlog("Inserting LiveTL Launcher Buttons");
     params = parseParams();
     makeButton = (text, callback, color) => {
         let a = document.createElement("span");
-        a.innerHTML = `
-        <a class="yt-simple-endpoint style-scope ytd-toggle-button-renderer" tabindex="-1" style="
-            background-color: ${color || "rgb(0, 153, 255)"};
-            font: inherit;
-            font-size: 11px;
-            font-weight: bold;
-            width: 100%;
-            margin: 0;
-            text-align: center;
-            ">
-            <paper-button id="button" class="style-scope ytd-toggle-button-renderer" role="button" tabindex="0" animated=""
-                elevation="0" aria-disabled="false" style="
-                    padding: 5px;
-                    width: 100%;
-                    margin: 0;
-                ">
-                <yt-formatted-string id="text" class="style-scope ytd-toggle-button-renderer">
-                </yt-formatted-string>
-                <paper-ripple class="style-scope paper-button">
-                    <div id="background" class="style-scope paper-ripple" style="opacity: 0.00738;"></div>
-                    <div id="waves" class="style-scope paper-ripple"></div>
-                </paper-ripple>
-                <paper-ripple class="style-scope paper-button">
-                    <div id="background" class="style-scope paper-ripple" style="opacity: 0.007456;"></div>
-                    <div id="waves" class="style-scope paper-ripple"></div>
-                </paper-ripple>
-                <paper-ripple class="style-scope paper-button">
-                    <div id="background" class="style-scope paper-ripple" style="opacity: 0.007748;"></div>
-                    <div id="waves" class="style-scope paper-ripple"></div>
-                </paper-ripple>
-            </paper-button>
-        </a>
-    `;
+        a.innerHTML = getLiveTLButtonHTML(color);
+
         let interval2 = setInterval(() => {
             let e = isHolotools ? document.querySelector("#input-panel") : document.querySelector("ytd-live-chat-frame");
             if (e != null) {
@@ -151,22 +129,29 @@ function insertLiveTLButtons(isHolotools = false) {
             }
         }, 100);
     }
-    let u = "https://kentonishi.github.io/LiveTL/?v=" + params.v;
-    makeButton("Watch in LiveTL", isHolotools ? () => window.open(u) : () => window.location.href = u);
-    makeButton("Pop Out Translations", () => window.open(`https://www.youtube.com/live_chat?v=${params.v}&useLiveTL=1`, "",
-        "scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300"
-    ), "rgb(143, 143, 143)");
+
+    redirectTab = u => chrome.runtime.sendMessage({ type: "redirect", data: u });
+    createTab = u => chrome.runtime.sendMessage({ type: "tab", data: u });
+    createWindow = u => chrome.runtime.sendMessage({ type: "window", data: u });
+
+    let u = `${await getWAR("index.html")}?v=${params.v}`;
+    makeButton("Watch in LiveTL", () => redirectTab({ url: u }));
+    makeButton("Pop Out Translations", () => createWindow({
+        url: `https://www.youtube.com/live_chat?v=${params.v}&useLiveTL=1`,
+        type: "popup",
+        focused: true
+    }), "rgb(143, 143, 143)");
 }
 
 let params = {};
 let activationInterval = setInterval(() => {
     if (window.location.href.startsWith("https://www.youtube.com/live_chat")) {
         clearInterval(activationInterval);
-        console.log("Using live chat");
+        conlog("Using live chat");
         try {
             params = parseParams();
             if (params.useLiveTL) {
-                console.log("Running LiveTL!");
+                conlog("Running LiveTL!");
                 runLiveTL();
             } else if (params.embed_domain == "hololive.jetri.co") {
                 insertLiveTLButtons(true);
@@ -174,23 +159,22 @@ let activationInterval = setInterval(() => {
         } catch (e) { }
     } else if (window.location.href.startsWith("https://www.youtube.com/watch")) {
         clearInterval(activationInterval);
-        console.log("Watching video");
+        conlog("Watching video");
         let interval = setInterval(() => {
             if (document.querySelector("ytd-live-chat-frame")) {
                 clearInterval(interval);
                 insertLiveTLButtons();
             }
         }, 100);
-    } else if (window.location.href.startsWith("https://kentonishi.github.io/LiveTL/about")) {
-        let interval = setInterval(() => {
-            let e = document.querySelector("#actionMessage");
-            if (e) {
-                clearInterval(interval);
-                e.textContent = `Thank you for installing LiveTL!`;
-            }
-        }, 100);
     }
 }, 1000);
+
+if (window.location.href.startsWith("https://kentonishi.github.io/LiveTL/about")) {
+    window.onload = () => {
+        let e = document.querySelector("#actionMessage");
+        e.textContent = `Thank you for installing LiveTL!`;
+    }
+}
 
 function createModal(container) {
     let settingsButton = document.createElement("div");
@@ -256,7 +240,7 @@ function createSurroundRegex() {
     });
 
     return new RegExp(
-        `^([${pattern}])([${notPattern}]+)([${patternEnd}]) ?(.+)`
+        `^([${pattern}])([${notPattern}]+)([${patternEnd}]) ?[\-\:\.\|]? ?(.+)`
     );
 }
 
@@ -449,11 +433,15 @@ function wrapIconWithLink(icon, link) {
     return wrapper;
 }
 
-function createLogo() {
+async function createLogo() {
+    let a = document.createElement("a");
+    a.href = "https://kentonishi.github.io/LiveTL/about/";
+    a.target = "about:blank";
     let logo = document.createElement("img");
     logo.className = "logo";
-    logo.src = "https://kentonishi.github.io/LiveTL/favicon.ico";
-    return logo;
+    logo.src = await getWAR("icons/favicon.ico");
+    a.appendChild(logo);
+    return a;
 }
 
 function createIcon(faName, link, addSpace) {
@@ -466,39 +454,39 @@ function createIcon(faName, link, addSpace) {
     return wrapped;
 }
 
+async function shareExtension() {
+    let details = await (await fetch(await getWAR("manifest.json"))).json();
+    navigator.share({
+        title: details.name,
+        text: details.description,
+        url: "https://kentonishi.github.io/LiveTL",
+    });
+}
+
 function createWelcomeText() {
     let welcomeText = document.createElement("span");
     welcomeText.textContent = `Welcome to LiveTL! Translations will appear above.`;
     // welcomeText.appendChild(document.createElement("br"));
-    let buttons = document.createElement("span");
+    let buttons = document.createElement("div");
     buttons.classList.add("authorName");
-    let dontForget = document.createElement("span");
-    dontForget.textContent = "Don't forget to give us a ";
-    let reviewButton = document.createElement("a");
-    reviewButton.href = "https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg";
-    reviewButton.textContent = "5-star review";
-    reviewButton.target = "about:blank";
-    let starButton = document.createElement("a");
-    starButton.href = "https://github.com/KentoNishi/LiveTL";
-    starButton.textContent = "a star on GitHub";
-    starButton.target = "about:blank";
-    buttons.appendChild(dontForget);
-    buttons.appendChild(reviewButton);
-    let and = document.createElement("span");
-    and.textContent = " and ";
-    buttons.appendChild(and);
-    buttons.appendChild(starButton);
-    let excl = document.createElement("span");
-    excl.textContent = "!";
-    buttons.appendChild(excl);
+    buttons.style.marginLeft = "0px";
+    buttons.innerHTML = `
+        Please consider
+        <a id="shareExtension" href="javascript:void(0);">sharing LiveTL with your friends</a>, 
+        <a href="https://kentonishi.github.io/LiveTL" target="about:blank">
+            giving us a 5-star review
+        </a>, and 
+        <a href="https://github.com/KentoNishi/LiveTL" target="about:blank">starring our GitHub repository</a>!
+    `;
     welcomeText.appendChild(buttons);
+    welcomeText.querySelector("#shareExtension").onclick = shareExtension;
     return welcomeText;
 }
 
-function createWelcome() {
+async function createWelcome() {
     let welcome = document.createElement("div");
     welcome.className = "line";
-    welcome.appendChild(createLogo());
+    welcome.appendChild(await createLogo());
     welcome.appendChild(createIcon("fa-discord", "https://discord.gg/uJrV3tmthg", false));
     welcome.appendChild(createIcon("fa-github", "https://github.com/KentoNishi/LiveTL", true));
     welcome.appendChild(createWelcomeText());
@@ -556,10 +544,12 @@ function checkAll() {
 
 function removeBadTranslations() {
     document.querySelectorAll(".line").forEach((translation, i) => {
-        if (i > 25) {
-            translation.remove();
-        } else if (author = translation.querySelector(".authorName")) {
-            if (!allTranslators.v[author.dataset.id].checked) {
+        // if (i > 25) {
+        //     translation.remove();
+        // } else 
+        // removed limiting
+        if (author = translation.querySelector(".authorName")) {
+            if (author.dataset.id && !allTranslators.v[author.dataset.id].checked) {
                 translation.remove();
             }
         }
@@ -633,14 +623,27 @@ function createTranslationElement(author, authorID, translation) {
     return line;
 }
 
+function queryItemsNotInSet(element, query, forbidden, elementAccess = e => e) {
+    return Array
+        .from(element.querySelectorAll(query))
+        .filter(match => !(elementAccess(match) in forbidden));
+}
+
+function getEmojiSet(el) {
+    let emojis = {};
+    el.querySelectorAll("img").forEach(e => emojis[e.src] = true);
+    return emojis;
+}
+
 function getProfilePic(el) {
     try {
         let parent = el;
-        while (!parent.querySelector("img")) {
+        let emojis = getEmojiSet(el);
+        while (queryItemsNotInSet(parent, "img", emojis, e => e.src).length == 0) {
             parent = parent.parentElement;
         }
-        return parent.querySelector("img").src;
-    } catch (e) { };
+        return queryItemsNotInSet(parent, "img", emojis, e => e.src)[0].src;
+    } catch (e) { console.error(e) };
 }
 
 function createSettingsProjection(add) {
@@ -653,6 +656,42 @@ function createSettingsProjection(add) {
 }
 
 // MARK
+
+function getLiveTLButtonHTML(color) {
+    return `
+    <a class="yt-simple-endpoint style-scope ytd-toggle-button-renderer" tabindex="-1" style="
+        background-color: ${color || "rgb(0, 153, 255)"};
+        font: inherit;
+        font-size: 11px;
+        font-weight: bold;
+        width: 100%;
+        margin: 0;
+        text-align: center;
+        ">
+        <paper-button id="button" class="style-scope ytd-toggle-button-renderer" role="button" tabindex="0" animated=""
+            elevation="0" aria-disabled="false" style="
+                padding: 5px;
+                width: 100%;
+                margin: 0;
+            ">
+            <yt-formatted-string id="text" class="style-scope ytd-toggle-button-renderer">
+            </yt-formatted-string>
+            <paper-ripple class="style-scope paper-button">
+                <div id="background" class="style-scope paper-ripple" style="opacity: 0.00738;"></div>
+                <div id="waves" class="style-scope paper-ripple"></div>
+            </paper-ripple>
+            <paper-ripple class="style-scope paper-button">
+                <div id="background" class="style-scope paper-ripple" style="opacity: 0.007456;"></div>
+                <div id="waves" class="style-scope paper-ripple"></div>
+            </paper-ripple>
+            <paper-ripple class="style-scope paper-button">
+                <div id="background" class="style-scope paper-ripple" style="opacity: 0.007748;"></div>
+                <div id="waves" class="style-scope paper-ripple"></div>
+            </paper-ripple>
+        </paper-button>
+    </a>
+    `;
+}
 
 function importStyle() {
     let style = document.createElement('style');
@@ -787,7 +826,7 @@ function importStyle() {
     
         .authorName {
             font-size: 12px;
-            color: #bdbdbd;
+            color: var(--yt-live-chat-secondary-text-color);
             margin-left: 5px;
             vertical-align: baseline;
         }

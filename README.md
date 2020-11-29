@@ -1,8 +1,11 @@
 # LiveTL - Live Translations for Streams
 
+![Latest Release Build](https://github.com/KentoNishi/LiveTL/workflows/Latest%20Release%20Build/badge.svg)
+[![Discord](https://img.shields.io/discord/780938154437640232.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/uJrV3tmthg)
+
 Get live translations for YouTube streams, crowdsourced from multilingual viewers!
 
-[Download for Free from the Chrome Web Store](https://chrome.google.com/webstore/detail/livetl/moicohcfhhbmmngneghfjfjpdobmmnlg)
+[Download for Free from the Chrome Web Store](https://kentonishi.github.io/LiveTL)
 
 ![](./img/livetlscreen.png)
 
@@ -20,6 +23,16 @@ We have a Discord server for those who would like to give feedback or discuss ne
 * [ ] Verified translators
 * [ ] Automatic language tagging for translators
 * [ ] Archived VOD Support
+* [ ] FireFox Extension
+
+## Issues
+* [x] Extension and page version mismatch (local file serving to solve?)
+* [x] Detect if extension is installed, if not redirect to install page
+* [x] Broken in incognito
+* [ ] No automated testing
+
+
+If you are interested in helping us solve these issues and/or add features, please let us know in the Discord server and submit a Pull Request!
 
 ## Developers
 

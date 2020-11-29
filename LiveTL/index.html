@@ -1,0 +1,38 @@
+<html>
+
+<head>
+    <title>LiveTL</title>
+    <meta name="description"
+        content="Live translation view of YouTube chat. Translations in form of [lang] translation are shown." />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css"
+        type="text/css" media="all" />
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.12.1/jquery-ui.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="./index.css" type="text/css" />
+    <link rel="icon" href="./icons/favicon.ico" type="image/x-icon" />
+</head>
+
+<body>
+    <div id="display">
+        <div id="leftPanel">
+            <iframe src="" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen id="stream"></iframe>
+            <div id="handleV" class="handle ui-resizable-handle ui-resizable-e"><span>&vellip;</span></div>
+        </div>
+        <div id="rightPanel">
+            <div id="sidePanel">
+                <iframe id="chat" frameborder="0"></iframe>
+                <div id="handleH" class="handle ui-resizable-handle ui-resizable-s"><span>&hellip;</span></div>
+            </div>
+            <iframe id="livetl-chat" frameborder="0"></iframe>
+        </div>
+    </div>
+    <script src="./index.js"></script>
+</body>
+
+</html>
