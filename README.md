@@ -1,5 +1,7 @@
 # LiveTL - Live Translations for Streams
 
+[![Discord](https://img.shields.io/discord/780938154437640232.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/uJrV3tmthg)
+
 Get live translations for YouTube streams, crowdsourced from multilingual viewers!
 
 [Download for Free from the Chrome Web Store](https://chrome.google.com/webstore/detail/livetl/moicohcfhhbmmngneghfjfjpdobmmnlg)
