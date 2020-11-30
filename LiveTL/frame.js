@@ -636,27 +636,9 @@ function createTranslationElement(author, authorID, translation) {
     return line;
 }
 
-function queryItemsNotInSet(element, query, forbidden, elementAccess = e => e) {
-    return Array
-        .from(element.querySelectorAll(query))
-        .filter(match => !(elementAccess(match) in forbidden));
-}
-
-function getEmojiSet(el) {
-    let emojis = {};
-    el.querySelectorAll("img").forEach(e => emojis[e.src] = true);
-    return emojis;
-}
 
 function getProfilePic(el) {
-    try {
-        let parent = el;
-        let emojis = getEmojiSet(el);
-        while (queryItemsNotInSet(parent, "img", emojis, e => e.src).length == 0) {
-            parent = parent.parentElement;
-        }
-        return queryItemsNotInSet(parent, "img", emojis, e => e.src)[0].src;
-    } catch (e) { console.error(e) };
+    return el.parentElement.parentElement.querySelector("img").src;
 }
 
 function createSettingsProjection(add) {
