@@ -16,13 +16,20 @@ function conlog(...args) {
 getWAR = async u => new Promise((res, rej) => chrome.runtime.sendMessage({ type: "get_war", url: u }, r => res(r)));
 
 let languageConversionTable = {};
-languages.forEach(i => languageConversionTable[`${i.name} (${i.lang}) [${i.code}]`] = i);
 
 
 // global helper function to handle scrolling
 function updateSize() {
     let pix = document.querySelector(".dropdown-check-list").getBoundingClientRect().bottom;
     document.querySelector(".modal").style.height = pix + "px";
+}
+
+function isLangMatch(textLang, currentLang) {
+    return (
+        currentLang.name.toLowerCase().startsWith(textLang) ||
+        currentLang.code == textLang ||
+        currentLang.lang.toLowerCase().startsWith(textLang)
+    );
 }
 
 
@@ -75,7 +82,7 @@ async function runLiveTL() {
                 if (m.innerHTML == "") break;
                 let parsed = parseTranslation(m.textContent);
                 let select = document.querySelector("#langSelect");
-                if (parsed != null && parsed.lang.toLowerCase() == languageConversionTable[select.value].code
+                if (parsed != null && isLangMatch(parsed.lang.toLowerCase(), languageConversionTable[select.value])
                     && parsed.msg.replace(/\s/g, '') != "") {
                     let author = m.parentElement.childNodes[1].textContent;
                     let authorID = /\/ytc\/([^\=]+)\=/.exec(getProfilePic(m))[1];
@@ -227,7 +234,7 @@ function createModal(container) {
 
 function createSurroundRegex() {
     const surroundTokens = [
-        "()", "[]", "{}", "||", "<>", "【】"
+        "()", "[]", "{}", "||", "<>"
     ];
     let pattern = "";
     let patternEnd = "";
@@ -307,11 +314,17 @@ function setSelectInputCallbacks(select, defaultValue) {
     };
 }
 
+function createLangSelectionName(lang) {
+    return `${lang.name} (${lang.lang}) [${lang.code}]`;
+}
+
 function createLangSelectOption(lang) {
     let opt = document.createElement("option");
-    opt.value = `${lang.name} (${lang.lang}) [${lang.code}]`;
+    opt.value = createLangSelectionName(lang);
     return opt;
 }
+
+languages.forEach(i => languageConversionTable[createLangSelectionName(i)] = i);
 
 function createLangSelectLabel() {
     let langSelectLabel = document.createElement("span");
