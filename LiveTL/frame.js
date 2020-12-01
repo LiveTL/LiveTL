@@ -602,19 +602,19 @@ function createAuthorBanButton(authorID) {
     return ban;
 }
 
-function createAuthorInfoOptions(authorID) {
+function createAuthorInfoOptions(authorID, line) {
     let options = document.createElement("span");
-    options.appendChild(createAuthorHideButton(options));
+    options.appendChild(createAuthorHideButton(line));
     options.appendChild(createAuthorBanButton(authorID));
     options.style.display = "none";
     options.className = "messageOptions";
     return options;
 }
 
-function createAuthorInfoElement(author, authorID) {
+function createAuthorInfoElement(author, authorID, line) {
     let authorInfo = document.createElement("span");
     authorInfo.appendChild(createAuthorNameElement(author, authorID));
-    authorInfo.appendChild(createAuthorInfoOptions());
+    authorInfo.appendChild(createAuthorInfoOptions(authorID, line));
     return authorInfo;
 }
 
@@ -628,7 +628,7 @@ function createTranslationElement(author, authorID, translation) {
     line.className = "line";
     line.textContent = translation;
     setTranslationElementCallbacks(line);
-    line.appendChild(createAuthorInfoElement(author, authorID));
+    line.appendChild(createAuthorInfoElement(author, authorID, line));
     return line;
 }
 
