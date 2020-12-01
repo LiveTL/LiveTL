@@ -1,2 +1,5 @@
 *.zip
 *.zone*
+build/
+dist/
+*.swp

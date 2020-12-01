@@ -7,7 +7,7 @@ Get live translations for YouTube streams, crowdsourced from multilingual viewer
 
 [Download for Free from the Chrome Web Store](https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg)
 
-![](./img/livetlscreen.png)
+![Demo](./img/livetlscreen.png)
 
 ## Feedback and Contributing
 
@@ -23,7 +23,7 @@ We have a Discord server for those who would like to give feedback or discuss ne
 * [ ] Verified translators
 * [ ] Automatic language tagging for translators
 * [ ] Archived VOD Support
-* [ ] FireFox Extension
+* [ ] Firefox Extension
 
 ## Issues
 * [x] Extension and page version mismatch (local file serving to solve?)
@@ -31,8 +31,17 @@ We have a Discord server for those who would like to give feedback or discuss ne
 * [x] Broken in incognito
 * [ ] No automated testing
 
-
 If you are interested in helping us solve these issues and/or add features, please let us know in the Discord server and submit a Pull Request!
+
+## Usage
+
+To build from scratch, execute the following commands in a bash terminal. The resulting extension zip file will be in dist/. The unpacked extension will be in build/
+
+```bash
+git clone https://github.com/KentoNishi/LiveTL.git
+cd LiveTL/
+make
+```
 
 ## Developers
 

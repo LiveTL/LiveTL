@@ -1,7 +1,7 @@
 {
     "name": "LiveTL - Live Translations for Streams",
     "description": "Get live translations for YouTube streams, crowdsourced from bilingual viewers!",
-    "version": "0.1.8",
+    "version": "0.1.9",
     "manifest_version": 2,
     "permissions": [],
     "content_scripts": [
@@ -34,8 +34,10 @@
         "index.html",
         "index.js",
         "index.css",
+        "jquery.min.js",
+        "jquery-ui.min.js",
         "manifest.json"
     ],
     "incognito": "split",
-    "content_security_policy": "script-src 'self' https://www.w3schools.com/ https://ajax.googleapis.com/ https://ajax.aspnetcdn.com/; object-src 'self'"
+    "content_security_policy": "script-src 'self' ; object-src 'self'"
 }
