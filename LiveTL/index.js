@@ -11,14 +11,14 @@ let stream = document.querySelector("#stream");
 let ltlchat = document.querySelector("#livetl-chat");
 let chat = document.querySelector("#chat");
 let leftPanel = document.querySelector("#leftPanel");
-let rightPanel = document.querySelector("#rightPanel");
+let bottomRightPanel = document.querySelector("#bottomRightPanel");
 let topRightPanel = document.querySelector("#topRightPanel");
 let start = () => {
     stream.style.display = "none";
     ltlchat.style.display = "none";
     chat.style.display = "none";
     leftPanel.style.backgroundColor = "var(--accent)";
-    rightPanel.style.backgroundColor = "var(--accent)";
+    bottomRightPanel.style.backgroundColor = "var(--accent)";
     topRightPanel.style.backgroundColor = "var(--accent)";
 };
 let stop = () => {
@@ -26,7 +26,7 @@ let stop = () => {
     ltlchat.style.display = "block";
     chat.style.display = "block";
     leftPanel.style.backgroundColor = "black";
-    rightPanel.style.backgroundColor = "black";
+    bottomRightPanel.style.backgroundColor = "black";
     topRightPanel.style.backgroundColor = "black";
 };
 $("#leftPanel").resizable({
