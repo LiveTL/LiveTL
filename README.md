@@ -35,7 +35,7 @@ If you are interested in helping us solve these issues and/or add features, plea
 
 ## Usage
 
-To build from scratch, execute the following commands in a bash terminal. The resulting extension zip file will be in dist/.
+To build from scratch, execute the following commands in a bash terminal. The resulting extension zip file will be in dist/. The unpacked extension will be in build/
 
 ```bash
 git clone https://github.com/KentoNishi/LiveTL.git
