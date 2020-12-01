@@ -15,6 +15,8 @@ function conlog(...args) {
 
 getWAR = async u => new Promise((res, rej) => chrome.runtime.sendMessage({ type: "get_war", url: u }, r => res(r)));
 
+const isFirefox = /Firefox/.exec(navigator.userAgent) ? true: false;
+
 let languageConversionTable = {};
 
 
@@ -136,8 +138,7 @@ async function insertLiveTLButtons(isHolotools = false) {
 
     redirectTab = u => chrome.runtime.sendMessage({ type: "redirect", data: u });
     createTab = u => chrome.runtime.sendMessage({ type: "tab", data: u });
-    createWindow = u => chrome.runtime.sendMessage({ type: "window", data: u });
-
+    
     let u = `${await getWAR("index.html")}?v=${params.v}`;
     makeButton("Watch in LiveTL", () => redirectTab({ url: u }));
     makeButton("Pop Out Translations", () => createWindow({
@@ -653,6 +654,17 @@ async function setFavicon() {
     faviconLink.type = "image/x-icon";
     faviconLink.href = await favicon;
     document.head.appendChild(faviconLink);
+}
+
+async function createWindow(u) {
+    if (isFirefox) {
+        return window.open(u.url, "",
+            "scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300"
+        );
+    }
+    else {
+        return chrome.runtime.sendMessage({ type: "window", data: u });
+    }
 }
 
 // MARK
