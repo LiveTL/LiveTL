@@ -1,3 +1,4 @@
+const assert = require('assert').strict;
 const {parseTranslation, isLangMatch} = require("./filter.js")
 
 function compareTranslationMatches(other, correct) {
@@ -16,7 +17,9 @@ function testParseTranslation() {
         },
     ];
 
-    testCases.forEach(case => {
+    testCases.forEach((tc) => {
         assert.ok(true);
     });
 }
+
+testParseTranslation();

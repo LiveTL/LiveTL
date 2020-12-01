@@ -25,8 +25,9 @@ chrome: init
 	cp $(jquery) ./build/chrome/LiveTL/jquery.min.js
 	cp $(jquery-ui) ./build/chrome/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/chrome/LiveTL/jquery-ui.css
-	cat LiveTL/filter.js LiveTL/frame.js > ./build/chrome/LiveTL/frame.js
+	cat LiveTL/filter.js LiveTL/frame.js | grep -v module.export > ./build/chrome/LiveTL/frame.js
 	rm ./build/chrome/LiveTL/filter.js
+	rm ./build/chrome/LiveTL/*_test.js
 	cp ./LICENSE ./build/chrome/LiveTL/
 	cd build/chrome/ && zip -9r ../../dist/chrome/LiveTL.zip LiveTL/
 
@@ -38,7 +39,7 @@ firefox: init
 	cp $(jquery) ./build/firefox/LiveTL/jquery.min.js
 	cp $(jquery-ui) ./build/firefox/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/firefox/LiveTL/jquery-ui.css
-	cat LiveTL/filter.js LiveTL/frame.js > ./build/firefox/LiveTL/frame.js
+	cat LiveTL/filter.js LiveTL/frame.js | grep -v module.export > ./build/firefox/LiveTL/frame.js
 	rm ./build/firefox/LiveTL/filter.js
 	rm ./build/firefox/LiveTL/*_test.js
 	cp ./LICENSE ./build/firefox/LiveTL/
