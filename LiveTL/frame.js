@@ -458,9 +458,6 @@ function createIcon(faName, link, addSpace) {
     let icon = document.createElement("i");
     ["fa", "smallIcon", faName].forEach(c => icon.classList.add(c));
     let wrapped = wrapIconWithLink(icon, link);
-    // if (addSpace) {
-    //     wrapped.innerHTML = `${wrapped.innerHTML}`;
-    // }
     return wrapped;
 }
 
