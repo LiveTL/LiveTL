@@ -16,12 +16,16 @@ chrome: init
 	cp -r LiveTL/ build/chrome/
 	cp ./build/common/jquery.min.js ./build/chrome/LiveTL/jquery.min.js
 	cp ./build/common/jquery-ui.min.js ./build/chrome/LiveTL/jquery-ui.min.js
-	cd build/chrome/ && zip -9r ../../dist/chrome/LiveTL.zip LiveTL
+	cd build/chrome/ && zip -9r ../../dist/chrome/LiveTL.zip LiveTL/
 
 firefox: init
 	rm -rf dist/firefox/
 	mkdir dist/firefox/
-	cd LiveTL && zip -9r ../dist/firefox/LiveTL.zip *
+	mkdir -p build/firefox/
+	cp -r LiveTL build/firefox/
+	cp ./build/common/jquery.min.js ./build/firefox/LiveTL/jquery.min.js
+	cp ./build/common/jquery-ui.min.js ./build/firefox/LiveTL/jquery-ui.min.js
+	cd build/firefox/LiveTL && zip -9r ../../../dist/firefox/LiveTL.zip *
 	cp ./dist/firefox/LiveTL.zip ./dist/firefox/LiveTL.crx
 
 clean:
