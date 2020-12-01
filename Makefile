@@ -15,7 +15,7 @@ init:
        	wait
 
 test:
-	node LiveTL/*_test.js
+	node tests/*.js
 
 chrome: init
 	rm -rf dist/chrome/
@@ -27,7 +27,6 @@ chrome: init
 	cp $(jquery-css) ./build/chrome/LiveTL/jquery-ui.css
 	cat LiveTL/filter.js LiveTL/frame.js | grep -v module.export > ./build/chrome/LiveTL/frame.js
 	rm ./build/chrome/LiveTL/filter.js
-	rm ./build/chrome/LiveTL/*_test.js
 	cp ./LICENSE ./build/chrome/LiveTL/
 	cd build/chrome/ && zip -9r ../../dist/chrome/LiveTL.zip LiveTL/
 
@@ -41,7 +40,6 @@ firefox: init
 	cp $(jquery-css) ./build/firefox/LiveTL/jquery-ui.css
 	cat LiveTL/filter.js LiveTL/frame.js | grep -v module.export > ./build/firefox/LiveTL/frame.js
 	rm ./build/firefox/LiveTL/filter.js
-	rm ./build/firefox/LiveTL/*_test.js
 	cp ./LICENSE ./build/firefox/LiveTL/
 	grep -v incognito ./LiveTL/manifest.json > ./build/firefox/LiveTL/manifest.json
 	cd build/firefox/LiveTL && zip -9r ../../../dist/firefox/LiveTL.zip *

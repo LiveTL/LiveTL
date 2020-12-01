@@ -1,5 +1,5 @@
 const assert = require('assert').strict;
-const {parseTranslation, isLangMatch} = require("./filter.js")
+const {parseTranslation, isLangMatch} = require("../LiveTL/filter.js")
 
 function compareTranslationMatches(other, correct) {
     return other.lang == correct.lang && other.msg == correct.msg;
