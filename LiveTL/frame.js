@@ -15,7 +15,7 @@ function conlog(...args) {
 
 getWAR = async u => new Promise((res, rej) => chrome.runtime.sendMessage({ type: "get_war", url: u }, r => res(r)));
 
-const isFirefox = /Firefox/.exec(navigator.userAgent) ? true: false;
+const isFirefox = /Firefox/.exec(navigator.userAgent) ? true : false;
 
 let languageConversionTable = {};
 
@@ -27,11 +27,12 @@ function updateSize() {
 }
 
 function isLangMatch(textLang, currentLang) {
-    return (
-        currentLang.name.toLowerCase().startsWith(textLang) ||
-        currentLang.code == textLang ||
-        currentLang.lang.toLowerCase().startsWith(textLang)
-    );
+    textLang = textLang.toLowerCase().split(/[\ \-\:\.\|]/).filter(s => s != "");
+    return textLang.length <= 2 && textLang.some(s => (
+        currentLang.name.toLowerCase().startsWith(s) ||
+        s == currentLang.code ||
+        currentLang.lang.toLowerCase().startsWith(s)
+    ));
 }
 
 
@@ -138,7 +139,7 @@ async function insertLiveTLButtons(isHolotools = false) {
 
     redirectTab = u => chrome.runtime.sendMessage({ type: "redirect", data: u });
     createTab = u => chrome.runtime.sendMessage({ type: "tab", data: u });
-    
+
     let u = `${await getWAR("index.html")}?v=${params.v}`;
     makeButton("Watch in LiveTL", () => redirectTab({ url: u }));
     makeButton("Pop Out Translations", () => createWindow({
