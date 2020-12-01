@@ -1,7 +1,7 @@
 {
     "name": "LiveTL - Live Translations for Streams",
     "description": "Get live translations for YouTube streams, crowdsourced from bilingual viewers!",
-    "version": "0.1.9",
+    "version": "0.1.10",
     "manifest_version": 2,
     "permissions": [],
     "content_scripts": [
@@ -12,7 +12,7 @@
                 "https://kentonishi.github.io/LiveTL/*"
             ],
             "js": [
-                "frame.js"
+                "./js/frame.js"
             ],
             "all_frames": true
         }
@@ -20,7 +20,7 @@
     "browser_action": {},
     "background": {
         "scripts": [
-            "background.js"
+            "./js/background.js"
         ],
         "persistent": false
     },
@@ -32,8 +32,8 @@
     "web_accessible_resources": [
         "icons/*",
         "index.html",
-        "index.js",
-        "index.css",
+        "js/*",
+        "css/*",
         "jquery.min.js",
         "jquery-ui.min.js",
         "manifest.json"

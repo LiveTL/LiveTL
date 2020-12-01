@@ -12,28 +12,24 @@ function conlog(...args) {
         return console.log(...args);
     }
 }
-
-getWAR = async u => new Promise((res, rej) => chrome.runtime.sendMessage({ type: "get_war", url: u }, r => res(r)));
-
-const isFirefox = /Firefox/.exec(navigator.userAgent) ? true: false;
+const isFirefox = /Firefox/.exec(navigator.userAgent) ? true : false;
 
 let languageConversionTable = {};
 
+// WAR: web accessible resource
+async function getWAR(u) {
+    return new Promise((res, rej) => chrome.runtime.sendMessage({ type: "get_war", url: u }, r => res(r)));
+}
+
+async function getFile(name, format) {
+    return await (await fetch(await getWAR(name)))[format]();
+}
 
 // global helper function to handle scrolling
 function updateSize() {
     let pix = document.querySelector(".dropdown-check-list").getBoundingClientRect().bottom;
     document.querySelector(".modal").style.height = pix + "px";
 }
-
-function isLangMatch(textLang, currentLang) {
-    return (
-        currentLang.name.toLowerCase().startsWith(textLang) ||
-        currentLang.code == textLang ||
-        currentLang.lang.toLowerCase().startsWith(textLang)
-    );
-}
-
 
 let allTranslators = { v: {} };
 let allTranslatorCheckbox = {};
@@ -46,7 +42,7 @@ async function runLiveTL() {
         document.title = "LiveTL Chat";
 
         importFontAwesome();
-        importStyle();
+        await importStyle();
 
         let livetlContainer = document.createElement("div");
         livetlContainer.className = "livetl";
@@ -138,7 +134,7 @@ async function insertLiveTLButtons(isHolotools = false) {
 
     redirectTab = u => chrome.runtime.sendMessage({ type: "redirect", data: u });
     createTab = u => chrome.runtime.sendMessage({ type: "tab", data: u });
-    
+
     let u = `${await getWAR("index.html")}?v=${params.v}`;
     makeButton("Watch in LiveTL", () => redirectTab({ url: u }));
     makeButton("Pop Out Translations", () => createWindow({
@@ -228,69 +224,6 @@ function createModal(container) {
     container.appendChild(modalContainer);
 
     return modalContent;
-}
-
-function createSurroundRegex() {
-    const surroundTokens = [
-        "()", "[]", "{}", "||", "<>"
-    ];
-    let pattern = "";
-    let patternEnd = "";
-    let notPattern = "";
-
-    surroundTokens.forEach((token) => {
-        pattern = `${pattern}\\${token[0]}`;
-        patternEnd = `${patternEnd}\\${token[1]}`;
-        notPattern = `${notPattern}^\\${token[0]}^\\${token[1]}`;
-    });
-
-    return new RegExp(
-        `^([${pattern}])([${notPattern}]+)([${patternEnd}]) ?[\-\:\.\|]? ?(.+)`
-    );
-}
-
-function surroundTokensMatch(token1, token2) {
-    switch (token1) {
-        case '(': return token2 == ')'
-        case '[': return token2 == ']'
-        case '{': return token2 == '}'
-    }
-    return token1 == token2;
-}
-
-function surroundFilter(msg) {
-    const surroundRegex = createSurroundRegex();
-    const result = surroundRegex.exec(msg);
-    if (result && surroundTokensMatch(result[1], result[3])) {
-        return {
-            lang: result[2].trim(),
-            msg: result[4],
-        }
-    }
-}
-
-function endFilter(msg) {
-    const result = /^([^\-^\:^\|]+)[\-\:\.\|] ?(.+)/.exec(msg);
-    if (result) {
-        return {
-            lang: result[1].trim(),
-            msg: result[2],
-        }
-    }
-}
-
-/**
- * Parses translation
- *
- * @param msg the message to parse
- * @return undefined or
- * {
- *    lang: lang code
- *    msg: message
- * }
- */
-function parseTranslation(msg) {
-    return surroundFilter(msg) || endFilter(msg);
 }
 
 function importFontAwesome() {
@@ -463,7 +396,7 @@ function createIcon(faName, link, addSpace) {
 }
 
 async function shareExtension() {
-    let details = await (await fetch(await getWAR("manifest.json"))).json();
+    let details = getFile("manifest.json", "json");
     navigator.share({
         title: details.name,
         text: details.description,
@@ -480,9 +413,8 @@ function createWelcomeText() {
     buttons.innerHTML = `
         Please consider
         <a id="shareExtension" href="javascript:void(0);">sharing LiveTL with your friends</a>, 
-        <a href="https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg" target="about:blank">
-            giving us a 5-star review
-        </a>, and 
+        <a href="https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg" target="about:blank">giving us a 5-star review</a>, 
+        <a href="https://discord.gg/uJrV3tmthg" target="about:blank">joining our Discord server</a>, and
         <a href="https://github.com/KentoNishi/LiveTL" target="about:blank">starring our GitHub repository</a>!
     `;
     welcomeText.appendChild(buttons);
@@ -715,261 +647,9 @@ function getLiveTLButton(color) {
     return a;
 }
 
-function importStyle() {
+async function importStyle() {
     let style = document.createElement('style');
-    style.innerHTML = `
-        .livetl {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--yt-live-chat-background-color);
-            color: var(--yt-live-chat-primary-text-color);
-            z-index: 0;
-            word-wrap: break-word;
-            word-break: break-word;
-            font-size: 20px;
-            overflow-x: none;
-            overflow-y: auto;
-            padding: 0px;
-            min-height: 0px !important;
-            min-width 0px !important;
-        }
-    
-        a {
-            color: var(--yt-live-chat-primary-text-color);
-            text-decoration:none;
-        }
-    
-        /* width */
-        ::-webkit-scrollbar {
-          width: 4px;
-        }
-        
-        /* Track */
-        ::-webkit-scrollbar-track {
-          background: #f1f1f1; 
-        }
-         
-        /* Handle */
-        ::-webkit-scrollbar-thumb {
-          background: #888; 
-        }
-        
-        /* Handle on hover */
-        ::-webkit-scrollbar-thumb:hover {
-          background: #555; 
-        }
-    
-        .livetl * {
-            vertical-align: baseline;
-        }
-
-        .navbar{
-            margin-top: 10px;
-            min-height: 25px;
-        }
-
-        input {
-            padding: 5px;
-        }
-
-        a {
-            text-decoration: underline;
-        }
-
-        .dropdown-check-list {
-            display: inline-block;
-            background-color: white;
-            color: black;
-            font-size: 14px;
-        }
-
-        .dropdown-check-list .anchor {
-            position: relative;
-            cursor: pointer;
-            display: inline-block;
-            padding: 5px 50px 5px 10px;
-            width: calc(100% - 60px);
-        }
-
-        .dropdown-check-list .anchor:after {
-            position: absolute;
-            content: "";
-            border-left: 2px solid black;
-            border-top: 2px solid black;
-            padding: 5px;
-            right: 10px;
-            top: 20%;
-            -moz-transform: rotate(-135deg);
-            -ms-transform: rotate(-135deg);
-            -o-transform: rotate(-135deg);
-            -webkit-transform: rotate(-135deg);
-            transform: rotate(-135deg);
-        }
-
-        .openList > .anchor:after {
-            border-right: 2px solid black !important;
-            border-bottom: 2px solid black !important;
-            border-left: 0 !important;
-            border-top: 0 !important;
-            margin-top: 5px !important;
-        }
-
-        .dropdown-check-list .anchor:active:after {
-            right: 8px;
-            top: 21%;
-        }
-
-        .dropdown-check-list ul.items {
-            padding: 2px;
-            display: none;
-            margin: 0;
-            border: 1px solid #ccc;
-            border-top: none;
-        }
-
-        .dropdown-check-list ul.items li {
-            list-style: none;
-        }
-    
-        .dropdown-check-list {
-            position: absolute;
-        }
-    
-        .translationText {
-            position: absolute;
-            z-index: -1;
-            margin-top: 5px;
-            margin-botton: 5px;
-            width: calc(100% - 10px);
-        }
-    
-        .authorName {
-            font-size: 12px;
-            color: var(--yt-live-chat-secondary-text-color);
-            margin-left: 5px;
-            vertical-align: baseline;
-        }
-    
-        label {
-            -webkit-user-select: none;
-            -khtml-user-select: none;
-            -moz-user-select: -moz-none;
-            -o-user-select: none;
-            user-select: none;
-        }
-    
-        .hide {
-            stroke-width: 0;
-            fill: #A0A0A0;
-            stroke: rgb(0, 153, 255);
-            width: 12px;
-            height: 12px;
-        }
-    
-        .hide:hover {
-            fill: cornflowerblue;
-        }
-    
-        .ban {
-            stroke-width: 0;
-            fill: #A0A0A0;
-            stroke: rgb(0, 153, 255);
-            width: 12px;
-            height: 12px;
-        }
-    
-        .ban:hover {
-            fill: crimson;
-        }
-    
-        .optionLabel {
-            position: absolute;
-            margin-left: 0;
-            display: contents !important;
-        }
-    
-        .line {
-            margin-left: 15px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-    
-        .messageOptions {
-            margin-left: 5px;
-        }
-
-        .smallIcon {
-            margin-right: 5px;
-        }
-    
-        .logo {
-            width: 20px;
-            height: 20px;
-            vertical-align: top;
-            margin-top: 1px;
-            margin-right: 5px;
-        }
-
-        svg {
-            stroke: #A0A0A0;
-            fill: #A0A0A0;
-        };
-        
-        
-         /* The Modal (background) */
-        .modal .modal-content {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
-            top: 0;
-            left: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: var(--yt-live-chat-background-color);
-            color: var(--yt-live-chat-primary-text-color);
-        }
-        
-        /* Modal Content/Box */
-        
-        
-        .modal-content>* {
-            margin-left: 10px;
-        }
-        
-        .modal-content>*:not(.dropdown-check-list) {
-            margin: 10px;
-        }
-        
-        .modal-content {
-            justify-content: center;
-        }
-        
-        .modal {
-            justify-content: center;
-            padding-top: 30px;
-            padding-left: 10px;
-        }
-        
-        #settingsGear {
-            top: 10px !important;
-            stroke: #0099FF1;
-            cursor: pointer;
-            position: fixed;
-            right: 5px;
-            z-index: 1000000;
-        }
-        
-        #settingsProjection {
-            margin-top: 10px;
-            width: 25px;
-            height: 25px;
-            float: right;
-        };
-    `;
+    style.innerHTML = await getFile("css/frame.css", "text");
     document.head.appendChild(style);
 }
 
