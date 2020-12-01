@@ -25,6 +25,7 @@ firefox: init
 	cp -r LiveTL build/firefox/
 	cp ./build/common/jquery.min.js ./build/firefox/LiveTL/jquery.min.js
 	cp ./build/common/jquery-ui.min.js ./build/firefox/LiveTL/jquery-ui.min.js
+	grep -v incognito ./LiveTL/manifest.json > ./build/firefox/LiveTL/manifest.json
 	cd build/firefox/LiveTL && zip -9r ../../../dist/firefox/LiveTL.zip *
 	cp ./dist/firefox/LiveTL.zip ./dist/firefox/LiveTL.crx
 
