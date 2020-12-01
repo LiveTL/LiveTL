@@ -1,6 +1,6 @@
-all: chrome
+all: chrome firefox
 
-.PHONY: init chrome clean
+.PHONY: init chrome firefox clean
 
 init:
 	mkdir -p dist
@@ -10,7 +10,11 @@ chrome: init
 	mkdir dist/chrome/
 	zip -9r dist/chrome/LiveTL.zip LiveTL/
 
-# TODO Add firefox build instructions
+firefox: init
+	rm -rf dist/firefox/
+	mkdir dist/firefox/
+	cd LiveTL && zip -9r ../dist/firefox/LiveTL.zip *
+	ln -s ./dist/firefox/LiveTL.zip ./dist/firefox/LiveTL.crx
 
 clean:
 	rm -rf dist/
