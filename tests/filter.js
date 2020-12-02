@@ -1,5 +1,11 @@
 const assert = require('assert').strict;
-const {parseTranslation, isLangMatch} = require("../LiveTL/js/filter.js")
+const { parseTranslation, isLangMatch } = require("../LiveTL/js/lib/filter.js")
+const { languages } = require("../LiveTL/js/lib/constants.js");
+
+let langs = {};
+languages.forEach(lang => {
+    langs[lang.code] = lang
+});
 
 let tests = {
     value: 0,
@@ -49,7 +55,35 @@ function testParseTranslation() {
 function testLangMatch() {
     const testCases = [
         {
-            testCase: ["En", { code: "en", name: "English", lang: "English" }],
+            testCase: ["En", langs.en],
+            match: true,
+        },
+        {
+            testCase: ["Eng", langs.en],
+            match: true,
+        },
+        {
+            testCase: ["Jap", langs.jp],
+            match: true,
+        },
+        {
+            testCase: ["hi", langs.en],
+            match: false,
+        },
+        {
+            testCase: ["en/jp", langs.en],
+            match: true,
+        },
+        {
+            testCase: ["en/jp", langs.jp],
+            match: true,
+        },
+        {
+            testCase: ["TL: eng", langs.en],
+            match: true,
+        },
+        {
+            testCase: [": jap", langs.jp],
             match: true,
         },
     ];

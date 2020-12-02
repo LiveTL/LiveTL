@@ -13,7 +13,7 @@ function parseTranslation(msg) {
 }
 
 function isLangMatch(textLang, currentLang) {
-    textLang = textLang.toLowerCase().split(/[\ \-\:\.\|]/).filter(s => s != "");
+    textLang = textLang.toLowerCase().split(/[\/\ \-\:\.\|]/).filter(s => s != "");
     return textLang.length <= 2 && textLang.some(s => (
         currentLang.name.toLowerCase().startsWith(s) ||
         s == currentLang.code ||

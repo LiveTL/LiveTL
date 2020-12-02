@@ -18,7 +18,7 @@ init:
 test:
 	node tests/*.js
 
-chrome: init
+chrome: common
 	rm -rf dist/chrome/
 	mkdir dist/chrome/
 	mkdir -p build/chrome/LiveTL/
