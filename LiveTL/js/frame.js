@@ -32,8 +32,7 @@ async function runLiveTL() {
     setTimeout(async () => {
         document.title = "LiveTL Chat";
 
-        importFontAwesome();
-        await importStyle();
+        await Promise.all([importFontAwesome(), importStyle()]);
 
         let livetlContainer = document.createElement("div");
         livetlContainer.className = "livetl";
@@ -217,7 +216,7 @@ function createModal(container) {
     return modalContent;
 }
 
-function importFontAwesome() {
+async function importFontAwesome() {
     document.head.innerHTML += `
     <link 
      rel="stylesheet"
@@ -638,8 +637,16 @@ function getLiveTLButton(color) {
     return a;
 }
 
+async function importCSS(url) {
+    let frameCSSURL = getWAR(url);
+    let link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = await frameCSSURL;
+    link.type = "text/css";
+    console.log(link);
+    document.head.appendChild(link);
+}
+
 async function importStyle() {
-    let style = document.createElement('style');
-    style.innerHTML = await getFile("css/frame.css", "text");
-    document.head.appendChild(style);
+    return await importCSS("css/frame.css");
 }
