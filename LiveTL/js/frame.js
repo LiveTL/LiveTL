@@ -643,7 +643,6 @@ async function importCSS(url) {
     link.rel = "stylesheet";
     link.href = await frameCSSURL;
     link.type = "text/css";
-    console.log(link);
     document.head.appendChild(link);
 }
 
