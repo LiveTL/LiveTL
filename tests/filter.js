@@ -11,14 +11,14 @@ const tests = {
   value: 0
 };
 
-function compareTranslationMatches (other, correct) {
+function compareTranslationMatches(other, correct) {
   if (other && correct) {
     return other.lang === correct.lang && other.msg === correct.msg;
   }
   return other === correct;
 }
 
-function testParseTranslation () {
+function testParseTranslation() {
   const testCases = [
     {
       msg: '(en) Hello there',
@@ -52,7 +52,7 @@ function testParseTranslation () {
   tests.value++;
 }
 
-function testLangMatch () {
+function testLangMatch() {
   const testCases = [
     {
       testCase: ['En', langs.en],
