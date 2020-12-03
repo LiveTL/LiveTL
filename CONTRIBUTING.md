@@ -68,7 +68,7 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 - javascript is camelCased
 - folders are hyphen-cased
 - test files are cased according to the file that the test runs
-- follow the [standard style](https://standardjs.com/rules.html) for javascript
+- follow the [semistandard style](https://github.com/standard/semistandard) for javascript
 
 ## Directory structure
 
