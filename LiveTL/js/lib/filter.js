@@ -47,3 +47,5 @@ function isLangMatch (textLang, currentLang) {
     currentLang.lang.toLowerCase().startsWith(s)
   ))
 }
+
+module.exports = { parseTranslation, isLangMatch };
