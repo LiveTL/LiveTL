@@ -24,7 +24,6 @@ If you are looking to help with UI/UX, please note that we do not have a style g
 
 - Git ([Windows](https://git-scm.com/download/win) | [MacOS](https://git-scm.com/download/mac) | [Linux](https://git-scm.com/download/linux))
 - Node.js 10+ ([Windows, MacOS, and Linux](https://nodejs.org/en/download))
-- Firefox ()
 - Chromium based browser ([Windows, MacOS, and Linux](https://www.google.com/chrome/))
 - Firefox ([Windows, MacOS, and Linux](https://www.mozilla.org/en-US/firefox/new/))
 
@@ -56,24 +55,24 @@ If you are looking to help with UI/UX, please note that we do not have a style g
 ## Directory structure
 
 .
-├── LiveTL - extension
-│   ├── css - css files
-│   ├── icons - icons to use
-│   └── js - the main js files
-│       └── lib - modules that will be concatenated to the main `frame.js` file
-├── about - about github page
-├── build - build files
-│   ├── chrome
-│   │   └── LiveTL - chrome unpacked extension
-│   ├── common  - common files to be bundled in both extensions
-│   └── firefox
-│       └── LiveTL - firefox unpacked extension
-├── dist - distribution files
-│   ├── chrome - contains chrome zipped extension
-│   └── firefox - contains firefox zipped extension
-├── embed - embedding chat
-├── img   - image files to be shown on github
-└── tests - test files to be run
+├── LiveTL - extension	
+│   ├── css - css files	
+│   ├── icons - icons to use	
+│   └── js - the main js files	
+│       └── lib - modules that will be concatenated to the main `frame.js` file	
+├── about - about github page	
+├── build - build files	
+│   ├── chrome	
+│   │   └── LiveTL - chrome unpacked extension	
+│   ├── common  - common files to be bundled in both extensions	
+│   └── firefox	
+│       └── LiveTL - firefox unpacked extension	
+├── dist - distribution files	
+│   ├── chrome - contains chrome zipped extension	
+│   └── firefox - contains firefox zipped extension	
+├── embed - embedding chat	
+├── img   - image files to be shown on github	
+└── tests - test files to be run	
 
 ## Other
 
