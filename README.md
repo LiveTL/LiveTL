@@ -1,6 +1,11 @@
 # LiveTL - Live Translations for Streams
 
 ![Latest Release Build](https://github.com/KentoNishi/LiveTL/workflows/Latest%20Release%20Build/badge.svg)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg)](https://github.com/standard/semistandard)
+[![Contributors](https://img.shields.io/github/contributors/KentoNishi/LiveTL)](https://github.com/KentoNishi/LiveTL/contributors)
+[![Issues](https://img.shields.io/github/issues/KentoNishi/LiveTL)](https://github.com/KentoNishi/LiveTL/issues)
+![Total Lines](https://img.shields.io/tokei/lines/github/KentoNishi/LiveTL)
 [![Discord](https://img.shields.io/discord/780938154437640232.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/uJrV3tmthg)
 
 Get live translations for YouTube streams, crowdsourced from multilingual viewers!
