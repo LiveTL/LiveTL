@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		363C674525795AD8009020DE /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 363C674425795AD8009020DE /* Credits.rtf */; };
 		36F39D452578A47300BA3A6F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F39D442578A47300BA3A6F /* AppDelegate.swift */; };
 		36F39D482578A47300BA3A6F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36F39D462578A47300BA3A6F /* Main.storyboard */; };
 		36F39D4A2578A47300BA3A6F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F39D492578A47300BA3A6F /* ViewController.swift */; };
@@ -49,6 +50,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		363C674425795AD8009020DE /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		36F39D402578A47300BA3A6F /* LiveTl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiveTl.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		36F39D432578A47300BA3A6F /* LiveTl.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LiveTl.entitlements; sourceTree = "<group>"; };
 		36F39D442578A47300BA3A6F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -112,6 +114,7 @@
 		36F39D422578A47300BA3A6F /* LiveTl */ = {
 			isa = PBXGroup;
 			children = (
+				363C674425795AD8009020DE /* Credits.rtf */,
 				36F39D432578A47300BA3A6F /* LiveTl.entitlements */,
 				36F39D442578A47300BA3A6F /* AppDelegate.swift */,
 				36F39D462578A47300BA3A6F /* Main.storyboard */,
@@ -239,6 +242,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				36F39D4C2578A47500BA3A6F /* Assets.xcassets in Resources */,
+				363C674525795AD8009020DE /* Credits.rtf in Resources */,
 				36F39D482578A47300BA3A6F /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -440,7 +444,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "LiveTl Extension/LiveTl_Extension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = "d7971c5\nd7971c5\n";
+				CURRENT_PROJECT_VERSION = d7971c5;
 				DEVELOPMENT_TEAM = RJNC97Y8QD;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "LiveTl Extension/Info.plist";
@@ -463,7 +467,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "LiveTl Extension/LiveTl_Extension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = "d7971c5\nd7971c5\n";
+				CURRENT_PROJECT_VERSION = d7971c5;
 				DEVELOPMENT_TEAM = RJNC97Y8QD;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "LiveTl Extension/Info.plist";
@@ -490,7 +494,7 @@
 				CODE_SIGN_ENTITLEMENTS = LiveTl/LiveTl.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = "d7971c5\nd7971c5\n";
+				CURRENT_PROJECT_VERSION = d7971c5;
 				DEVELOPMENT_TEAM = RJNC97Y8QD;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = LiveTl/Info.plist;
@@ -515,7 +519,7 @@
 				CODE_SIGN_ENTITLEMENTS = LiveTl/LiveTl.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = "d7971c5\nd7971c5\n";
+				CURRENT_PROJECT_VERSION = d7971c5;
 				DEVELOPMENT_TEAM = RJNC97Y8QD;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = LiveTl/Info.plist;
