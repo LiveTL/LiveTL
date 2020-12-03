@@ -63,6 +63,18 @@ safari: common
 	rm -r dist/safari/tmp/
 	rm -r LiveTL-Safari/LiveTL/build/
 
+safari-noBuild: common 
+	rm -rf dist/safari/
+	mkdir dist/safari/
+	mkdir -p build/safari/
+	cp -r LiveTL build/safari/
+	cp $(jquery) ./build/safari/LiveTL/jquery.min.js
+	cp $(jquery-ui) ./build/safari/LiveTL/jquery-ui.min.js
+	cp $(jquery-css) ./build/safari/LiveTL/css/jquery-ui.css
+	cp ./build/common/frame.js ./build/safari/LiveTL/js/frame.js
+	rm -rf ./build/safari/LiveTL/js/lib/
+	cp ./LICENSE ./build/safari/LiveTL/
+	grep -v incognito ./LiveTL/manifest.json > ./build/safari/LiveTL/manifest.json
 
 common: init
 	cat $(lib)/constants.js $(lib)/../frame.js $(lib)/filter.js $(lib)/svgs.js \
