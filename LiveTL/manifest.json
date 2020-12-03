@@ -1,43 +1,43 @@
 {
-  "name": "LiveTL - Live Translations for Streams",
-  "description": "Get live translations for YouTube streams, crowdsourced from bilingual viewers!",
-  "version": "0.1.10",
-  "manifest_version": 2,
-  "permissions": [],
-  "content_scripts": [
-    {
-      "matches": [
-        "https://www.youtube.com/*",
-        "https://hololive.jetri.co/*",
-        "https://kentonishi.github.io/LiveTL/*"
-      ],
-      "js": [
-        "./js/frame.js"
-      ],
-      "all_frames": true
-    }
-  ],
-  "browser_action": {},
-  "background": {
-    "scripts": [
-      "./js/background.js"
+    "name": "LiveTL - Live Translations for Streams",
+    "description": "Get live translations for YouTube streams, crowdsourced from bilingual viewers!",
+    "version": "0.1.10",
+    "manifest_version": 2,
+    "permissions": [],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://www.youtube.com/*",
+                "https://hololive.jetri.co/*",
+                "https://kentonishi.github.io/LiveTL/*"
+            ],
+            "js": [
+                "./js/frame.js"
+            ],
+            "all_frames": true
+        }
     ],
-    "persistent": false
-  },
-  "icons": {
-    "16": "./icons/16x16.png",
-    "48": "./icons/48x48.png",
-    "128": "./icons/128x128.png"
-  },
-  "web_accessible_resources": [
-    "icons/*",
-    "index.html",
-    "js/*",
-    "css/*",
-    "jquery.min.js",
-    "jquery-ui.min.js",
-    "manifest.json"
-  ],
-  "incognito": "split",
-  "content_security_policy": "script-src 'self' ; object-src 'self'"
+    "browser_action": {},
+    "background": {
+        "scripts": [
+            "./js/background.js"
+        ],
+        "persistent": false
+    },
+    "icons": {
+        "16": "./icons/16x16.png",
+        "48": "./icons/48x48.png",
+        "128": "./icons/128x128.png"
+    },
+    "web_accessible_resources": [
+        "icons/*",
+        "index.html",
+        "js/*",
+        "css/*",
+        "jquery.min.js",
+        "jquery-ui.min.js",
+        "manifest.json"
+    ],
+    "incognito": "split",
+    "content_security_policy": "script-src 'self' ; object-src 'self'"
 }
