@@ -18,5 +18,4 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
       callback(chrome.runtime.getURL(request.url));
       break;
   }
-})
-;
+});

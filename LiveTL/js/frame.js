@@ -1,4 +1,4 @@
-function conlog (...args) {
+function conlog(...args) {
   if (params.devMode) {
     return console.log(...args);
   }
@@ -9,16 +9,16 @@ const isFirefox = !!/Firefox/.exec(navigator.userAgent);
 const languageConversionTable = {};
 
 // WAR: web accessible resource
-async function getWAR (u) {
+async function getWAR(u) {
   return new Promise((res, rej) => chrome.runtime.sendMessage({ type: 'get_war', url: u }, r => res(r)));
 }
 
-async function getFile (name, format) {
+async function getFile(name, format) {
   return await (await fetch(await getWAR(name)))[format]();
 }
 
 // global helper function to handle scrolling
-function updateSize () {
+function updateSize() {
   const pix = document.querySelector('.dropdown-check-list').getBoundingClientRect().bottom;
   document.querySelector('.modal').style.height = pix + 'px';
 }
@@ -26,7 +26,7 @@ function updateSize () {
 const allTranslators = { v: {} };
 let allTranslatorCheckbox = {};
 
-async function runLiveTL () {
+async function runLiveTL() {
   await setFavicon();
 
   switchChat();
@@ -87,7 +87,7 @@ async function runLiveTL () {
   }, 100);
 }
 
-function switchChat () {
+function switchChat() {
   let count = 2;
   document.querySelectorAll('.yt-dropdown-menu').forEach((e) => {
     if (/Live chat/.exec(e.innerText) && count > 0) {
@@ -97,7 +97,7 @@ function switchChat () {
   });
 }
 
-function parseParams () {
+function parseParams() {
   const s = decodeURI(location.search.substring(1))
     .replace(/"/g, '\\"')
     .replace(/&/g, '","')
@@ -105,7 +105,7 @@ function parseParams () {
   return s === '' ? {} : JSON.parse('{"' + s + '"}');
 }
 
-async function insertLiveTLButtons (isHolotools = false) {
+async function insertLiveTLButtons(isHolotools = false) {
   conlog('Inserting LiveTL Launcher Buttons');
   params = parseParams();
   const makeButton = (text, callback, color) => {
@@ -168,7 +168,7 @@ if (window.location.href.startsWith('https://kentonishi.github.io/LiveTL/about')
   };
 }
 
-function createModal (container) {
+function createModal(container) {
   const settingsButton = document.createElement('div');
   settingsGear(settingsButton);
   settingsButton.id = 'settingsGear';
@@ -216,7 +216,7 @@ function createModal (container) {
   return modalContent;
 }
 
-async function importFontAwesome () {
+async function importFontAwesome() {
   document.head.innerHTML += `
     <link 
      rel="stylesheet"
@@ -226,7 +226,7 @@ async function importFontAwesome () {
         `;
 }
 
-function setSelectInputCallbacks (select, defaultValue) {
+function setSelectInputCallbacks(select, defaultValue) {
   select.onfocus = () => select.value = '';
   select.onblur = () => {
     if (!(select.value in languageConversionTable)) {
@@ -235,11 +235,11 @@ function setSelectInputCallbacks (select, defaultValue) {
   };
 }
 
-function createLangSelectionName (lang) {
+function createLangSelectionName(lang) {
   return `${lang.name} (${lang.lang}) [${lang.code}]`;
 }
 
-function createLangSelectOption (lang) {
+function createLangSelectOption(lang) {
   const opt = document.createElement('option');
   opt.value = createLangSelectionName(lang);
   return opt;
@@ -247,14 +247,14 @@ function createLangSelectOption (lang) {
 
 languages.forEach(i => languageConversionTable[createLangSelectionName(i)] = i);
 
-function createLangSelectLabel () {
+function createLangSelectLabel() {
   const langSelectLabel = document.createElement('span');
   langSelectLabel.className = 'optionLabel';
   langSelectLabel.textContent = 'Language: ';
   return langSelectLabel;
 }
 
-function createSelectInput () {
+function createSelectInput() {
   const select = document.createElement('input');
   select.dataset.role = 'none';
   const defaultLang = languages[0];
@@ -265,7 +265,7 @@ function createSelectInput () {
   return select;
 }
 
-function createLangSelectDatalist () {
+function createLangSelectDatalist() {
   const datalist = document.createElement('datalist');
   datalist.id = 'languages';
   const appendDatalist = e => datalist.appendChild(e);
@@ -273,7 +273,7 @@ function createLangSelectDatalist () {
   return datalist;
 }
 
-function createLanguageSelect () {
+function createLanguageSelect() {
   const langSelectContainer = document.createElement('div');
   langSelectContainer.appendChild(createLangSelectLabel());
   langSelectContainer.appendChild(createSelectInput());
@@ -281,7 +281,7 @@ function createLanguageSelect () {
   return langSelectContainer;
 }
 
-function setChecklistOnclick (checklist) {
+function setChecklistOnclick(checklist) {
   checklist.querySelector('.anchor').onclick = () => {
     const items = checklist.querySelector('#items');
     if (items.style.display !== 'block') {
@@ -295,7 +295,7 @@ function setChecklistOnclick (checklist) {
   };
 }
 
-function setChecklistOnblur (checklist) {
+function setChecklistOnblur(checklist) {
   checklist.onblur = e => {
     const items = document.querySelector('#items');
     if (!e.currentTarget.contains(e.relatedTarget)) {
@@ -306,33 +306,33 @@ function setChecklistOnblur (checklist) {
   };
 }
 
-function setChecklistCallbacks (checklist) {
+function setChecklistCallbacks(checklist) {
   setChecklistOnclick(checklist);
   setChecklistOnblur(checklist);
 }
 
-function createTransSelectDefaultText () {
+function createTransSelectDefaultText() {
   const defaultText = document.createElement('span');
   defaultText.className = 'anchor';
   defaultText.textContent = 'View All';
   return defaultText;
 }
 
-function createTransSelectChecklistItems () {
+function createTransSelectChecklistItems() {
   const items = document.createElement('ul');
   items.id = 'items';
   items.className = 'items';
   return items;
 }
 
-function createTransSelectLabel () {
+function createTransSelectLabel() {
   const translatorSelectLabel = document.createElement('span');
   translatorSelectLabel.className = 'optionLabel';
   translatorSelectLabel.innerHTML = 'Translators:&nbsp';
   return translatorSelectLabel;
 }
 
-function createTransSelectChecklist () {
+function createTransSelectChecklist() {
   const checklist = document.createElement('div');
   checklist.className = 'dropdown-check-list';
   checklist.id = 'transelectChecklist';
@@ -343,21 +343,21 @@ function createTransSelectChecklist () {
   return checklist;
 }
 
-function createTranslatorSelect () {
+function createTranslatorSelect() {
   const translatorSelectContainer = document.createElement('div');
   translatorSelectContainer.appendChild(createTransSelectLabel());
   translatorSelectContainer.appendChild(createTransSelectChecklist());
   return translatorSelectContainer;
 }
 
-function createSettings (container) {
+function createSettings(container) {
   const settings = createModal(container);
   settings.appendChild(createLanguageSelect());
   settings.appendChild(createTranslatorSelect());
   return settings;
 }
 
-function wrapIconWithLink (icon, link) {
+function wrapIconWithLink(icon, link) {
   const wrapper = document.createElement('a');
   wrapper.href = link;
   wrapper.target = 'about:blank';
@@ -365,7 +365,7 @@ function wrapIconWithLink (icon, link) {
   return wrapper;
 }
 
-async function createLogo () {
+async function createLogo() {
   const a = document.createElement('a');
   a.href = 'https://kentonishi.github.io/LiveTL/about/';
   a.target = 'about:blank';
@@ -376,14 +376,14 @@ async function createLogo () {
   return a;
 }
 
-function createIcon (faName, link, addSpace) {
+function createIcon(faName, link, addSpace) {
   const icon = document.createElement('i');
   ['fa', 'smallIcon', faName].forEach(c => icon.classList.add(c));
   const wrapped = wrapIconWithLink(icon, link);
   return wrapped;
 }
 
-async function shareExtension () {
+async function shareExtension() {
   const details = getFile('manifest.json', 'json');
   navigator.share({
     title: details.name,
@@ -392,7 +392,7 @@ async function shareExtension () {
   });
 }
 
-function createWelcomeText () {
+function createWelcomeText() {
   const welcomeText = document.createElement('span');
   welcomeText.textContent = 'Welcome to LiveTL! Translations will appear above.';
   const buttons = document.createElement('div');
@@ -410,7 +410,7 @@ function createWelcomeText () {
   return welcomeText;
 }
 
-async function createWelcome () {
+async function createWelcome() {
   const welcome = document.createElement('div');
   welcome.className = 'line';
   welcome.appendChild(await createLogo());
@@ -420,15 +420,15 @@ async function createWelcome () {
   return welcome;
 }
 
-function getChecklist () {
+function getChecklist() {
   return document.querySelector('#transelectChecklist');
 }
 
-function getChecklistItems () {
+function getChecklistItems() {
   return getChecklist().querySelector('#items');
 }
 
-function createCheckmark (authorID, checked, onchange) {
+function createCheckmark(authorID, checked, onchange) {
   const checkmark = document.createElement('input');
   checkmark.type = 'checkbox';
   checkmark.dataset.id = authorID;
@@ -437,14 +437,14 @@ function createCheckmark (authorID, checked, onchange) {
   return checkmark;
 }
 
-function createCheckboxPerson (name, authorID) {
+function createCheckboxPerson(name, authorID) {
   const person = document.createElement('label');
   person.setAttribute('for', authorID);
   person.textContent = name;
   return person;
 }
 
-function createCheckbox (name, authorID, checked = false, callback = null) {
+function createCheckbox(name, authorID, checked = false, callback = null) {
   const items = getChecklistItems();
   const checkbox = createCheckmark(authorID, checked, callback || checkboxUpdate);
   const selectTranslatorMessage = document.createElement('li');
@@ -455,7 +455,7 @@ function createCheckbox (name, authorID, checked = false, callback = null) {
   return checkbox;
 }
 
-function filterBoxes (boxes) {
+function filterBoxes(boxes) {
   boxes.forEach((box) => {
     allTranslators.v[box.dataset.id] = box;
     if (box !== allTranslatorCheckbox && !box.checked) {
@@ -464,12 +464,12 @@ function filterBoxes (boxes) {
   });
 }
 
-function checkAll () {
+function checkAll() {
   const boxes = getChecklist().querySelectorAll('input:not(:checked)');
   boxes.forEach(box => box.checked = true);
 }
 
-function removeBadTranslations () {
+function removeBadTranslations() {
   document.querySelectorAll('.line').forEach((translation, i) => {
     // if (i > 25) {
     //     translation.remove();
@@ -482,7 +482,7 @@ function removeBadTranslations () {
   });
 }
 
-function checkboxUpdate () {
+function checkboxUpdate() {
   const boxes = getChecklist().querySelectorAll('input');
   allTranslators.v = {};
   filterBoxes(boxes);
@@ -492,7 +492,7 @@ function checkboxUpdate () {
   removeBadTranslations();
 }
 
-function createAuthorNameElement (author, authorID) {
+function createAuthorNameElement(author, authorID) {
   const authorName = document.createElement('span');
   authorName.textContent = author;
   authorName.dataset.id = authorID;
@@ -500,7 +500,7 @@ function createAuthorNameElement (author, authorID) {
   return authorName;
 }
 
-function createAuthorHideButton (translation) {
+function createAuthorHideButton(translation) {
   const hide = document.createElement('span');
   hide.style.cursor = 'pointer';
   hide.onclick = () => translation.remove();
@@ -508,7 +508,7 @@ function createAuthorHideButton (translation) {
   return hide;
 }
 
-function createAuthorBanButton (authorID) {
+function createAuthorBanButton(authorID) {
   const ban = document.createElement('span');
   ban.onclick = () => {
     allTranslators.v[authorID].checked = false;
@@ -519,7 +519,7 @@ function createAuthorBanButton (authorID) {
   return ban;
 }
 
-function createAuthorInfoOptions (authorID, line) {
+function createAuthorInfoOptions(authorID, line) {
   const options = document.createElement('span');
   options.appendChild(createAuthorHideButton(line));
   options.appendChild(createAuthorBanButton(authorID));
@@ -528,19 +528,19 @@ function createAuthorInfoOptions (authorID, line) {
   return options;
 }
 
-function createAuthorInfoElement (author, authorID, line) {
+function createAuthorInfoElement(author, authorID, line) {
   const authorInfo = document.createElement('span');
   authorInfo.appendChild(createAuthorNameElement(author, authorID));
   authorInfo.appendChild(createAuthorInfoOptions(authorID, line));
   return authorInfo;
 }
 
-function setTranslationElementCallbacks (line) {
+function setTranslationElementCallbacks(line) {
   line.onmouseover = () => line.querySelector('.messageOptions').style.display = 'inline-block';
   line.onmouseleave = () => line.querySelector('.messageOptions').style.display = 'none';
 }
 
-function createTranslationElement (author, authorID, translation) {
+function createTranslationElement(author, authorID, translation) {
   const line = document.createElement('div');
   line.className = 'line';
   line.textContent = translation;
@@ -549,11 +549,11 @@ function createTranslationElement (author, authorID, translation) {
   return line;
 }
 
-function getProfilePic (el) {
+function getProfilePic(el) {
   return el.parentElement.parentElement.querySelector('img').src;
 }
 
-function createSettingsProjection (add) {
+function createSettingsProjection(add) {
   let settingsProjection = document.querySelector('#settingsProjection');
   if (settingsProjection) settingsProjection.remove();
   settingsProjection = document.createElement('div');
@@ -562,7 +562,7 @@ function createSettingsProjection (add) {
   add(settingsProjection);
 }
 
-async function setFavicon () {
+async function setFavicon() {
   const favicon = getWAR('icons/favicon.ico');
   const faviconLink = document.createElement('link');
   faviconLink.rel = 'icon';
@@ -571,7 +571,7 @@ async function setFavicon () {
   document.head.appendChild(faviconLink);
 }
 
-async function createWindow (u) {
+async function createWindow(u) {
   if (isFirefox) {
     return window.open(u.url, '',
       'scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300'
@@ -583,7 +583,7 @@ async function createWindow (u) {
 
 // MARK
 
-function styleLiveTLButton (a, color) {
+function styleLiveTLButton(a, color) {
   a.style.backgroundColor = `${color || 'rgb(0, 153, 255)'}`;
   a.style.font = 'inherit';
   a.style.fontSize = '11px';
@@ -593,7 +593,7 @@ function styleLiveTLButton (a, color) {
   a.style.textAlign = 'center';
 }
 
-function setLiveTLButtonAttributes (a) {
+function setLiveTLButtonAttributes(a) {
   [
     'yt-simple-endpoint',
     'style-scope',
@@ -602,7 +602,7 @@ function setLiveTLButtonAttributes (a) {
   a.tabindex = '-1';
 }
 
-function getLiveTLButton (color) {
+function getLiveTLButton(color) {
   const a = document.createElement('a');
   setLiveTLButtonAttributes(a);
   styleLiveTLButton(a, color);
@@ -632,7 +632,7 @@ function getLiveTLButton (color) {
   return a;
 }
 
-async function importCSS (url) {
+async function importCSS(url) {
   const frameCSSURL = getWAR(url);
   const link = document.createElement('link');
   link.rel = 'stylesheet';
@@ -641,6 +641,6 @@ async function importCSS (url) {
   document.head.appendChild(link);
 }
 
-async function importStyle () {
+async function importStyle() {
   return await importCSS('css/frame.css');
 }

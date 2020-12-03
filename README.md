@@ -31,19 +31,11 @@ features! [Here is the invite](https://discord.gg/uJrV3tmthg).
 * [x] Freely resizable chat, translation panel, and stream
 * [x] Support for HoloTools
 * [x] Firefox Extension
-* [ ] Saved preferences across viewing sessions
-* [ ] Verified translators
-* [ ] Automatic language tagging for translators
-* [ ] Archived VOD Support
 
-## Issues
+## Progress
+Development progress is managed in the [repo's project page](https://github.com/KentoNishi/LiveTL/projects/1).
 
-* [x] Extension and page version mismatch (local file serving to solve?)
-* [x] Detect if extension is installed, if not redirect to install page
-* [x] Broken in incognito
-* [ ] No automated testing
-
-If you are interested in helping us solve these issues and/or add features, please let us know in the Discord server and
+If you are interested in helping us solve any issues and/or add features, please let us know in the Discord server and
 submit a Pull Request!
 
 ## Usage
