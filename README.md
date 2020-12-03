@@ -7,6 +7,8 @@ Get live translations for YouTube streams, crowdsourced from multilingual viewer
 
 [Download for Free from the Chrome Web Store](https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg)
 
+[Download for Free from the Firefox Add-on Store](https://addons.mozilla.org/en-US/firefox/addon/livetl/)
+
 ![Demo](./img/livetlscreen.png)
 
 ## Feedback and Contributing
@@ -14,18 +16,20 @@ Get live translations for YouTube streams, crowdsourced from multilingual viewer
 We have a Discord server for those who would like to give feedback or discuss new features! [Here is the invite](https://discord.gg/uJrV3tmthg).
 
 ## Features
+
 * [x] Filter translations for your language (messages tagged with en, es, etc.)
 * [x] Select your favorite translators
 * [x] Ban spammers polluting translations
 * [x] Freely resizable chat, translation panel, and stream
 * [x] Support for HoloTools
+* [x] Firefox Extension
 * [ ] Saved preferences across viewing sessions
 * [ ] Verified translators
 * [ ] Automatic language tagging for translators
 * [ ] Archived VOD Support
-* [ ] Firefox Extension
 
 ## Issues
+
 * [x] Extension and page version mismatch (local file serving to solve?)
 * [x] Detect if extension is installed, if not redirect to install page
 * [x] Broken in incognito
