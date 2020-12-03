@@ -54,29 +54,31 @@ If you are looking to help with UI/UX, please note that we do not have a style g
 
 ## Directory structure
 
-.
-├── LiveTL - extension	
-│   ├── css - css files	
-│   ├── icons - icons to use	
-│   └── js - the main js files	
-│       └── lib - modules that will be concatenated to the main `frame.js` file	
-├── about - about github page	
-├── build - build files	
-│   ├── chrome	
-│   │   └── LiveTL - chrome unpacked extension	
-│   ├── common  - common files to be bundled in both extensions	
-│   └── firefox	
-│       └── LiveTL - firefox unpacked extension	
-├── dist - distribution files	
-│   ├── chrome - contains chrome zipped extension	
-│   └── firefox - contains firefox zipped extension	
-├── embed - embedding chat	
-├── img   - image files to be shown on github	
-└── tests - test files to be run	
+.\
+├── LiveTL - extension\
+│   ├── css - css files\
+│   ├── icons - icons to use\
+│   └── js - the main js files\
+│       └── lib - modules that will be concatenated to the main `frame.js` file\
+├── about - about github page\
+├── build - build files\
+│   ├── chrome\
+│   │   └── LiveTL - chrome unpacked extension\
+│   ├── common  - common files to be bundled in both extensions\
+│   └── firefox\
+│       └── LiveTL - firefox unpacked extension\
+├── dist - distribution files\
+│   ├── chrome - contains chrome zipped extension\
+│   └── firefox - contains firefox zipped extension\
+├── embed - embedding chat\
+├── img   - image files to be shown on github\
+└── tests - test files to be run\
 
 ## Other
 
 - do not assign anything other than string literals to `innerHTML`
 - avoid remote code execution
+
+These guidelines are based off the guidelines from [Pogify](https://www.github.com/Pogify/pogify).
 
 ## **Thanks for contributing to LiveTL! We can't wait to see what you do with it!**
