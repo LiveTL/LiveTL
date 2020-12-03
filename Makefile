@@ -44,6 +44,25 @@ firefox: common
 	cp ./LICENSE ./build/firefox/LiveTL/
 	grep -v incognito ./LiveTL/manifest.json > ./build/firefox/LiveTL/manifest.json
 	cd build/firefox/LiveTL && zip -9r ../../../dist/firefox/LiveTL.zip *
+	
+safari: common 
+	rm -rf dist/safari/
+	mkdir dist/safari/
+	mkdir -p build/safari/
+	cp -r LiveTL build/safari/
+	cp $(jquery) ./build/safari/LiveTL/jquery.min.js
+	cp $(jquery-ui) ./build/safari/LiveTL/jquery-ui.min.js
+	cp $(jquery-css) ./build/safari/LiveTL/css/jquery-ui.css
+	cp ./build/common/frame.js ./build/safari/LiveTL/js/frame.js
+	rm -rf ./build/safari/LiveTL/js/lib/
+	cp ./LICENSE ./build/safari/LiveTL/
+	grep -v incognito ./LiveTL/manifest.json > ./build/safari/LiveTL/manifest.json
+	mkdir dist/safari/tmp/
+	xcodebuild -project LiveTL-Safari/LiveTL/LiveTL.xcodeproj CONFIGURATION_BUILD_DIR=../../dist/safari/tmp/
+	cp -r dist/safari/tmp/LiveTL.app dist/safari/LiveTL.app
+	rm -r dist/safari/tmp/
+	rm -r LiveTL-Safari/LiveTL/build/
+
 
 common: init
 	cat $(lib)/constants.js $(lib)/../frame.js $(lib)/filter.js $(lib)/svgs.js \
