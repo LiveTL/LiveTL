@@ -3,7 +3,7 @@ function conlog(...args) {
         return console.log(...args);
     }
 }
-const isFirefox = /Firefox/.exec(navigator.userAgent) ? true : false;
+const isFirefox = !!/Firefox/.exec(navigator.userAgent);
 
 let languageConversionTable = {};
 
@@ -107,23 +107,23 @@ function parseParams() {
 async function insertLiveTLButtons(isHolotools = false) {
     conlog("Inserting LiveTL Launcher Buttons");
     params = parseParams();
-    makeButton = (text, callback, color) => {
-        let a = document.createElement("span");
+    let makeButton = (text, callback, color) => {
+        let a = document.createElement('span');
         a.appendChild(getLiveTLButton(color));
 
         let interval2 = setInterval(() => {
-            let e = isHolotools ? document.querySelector("#input-panel") : document.querySelector("ytd-live-chat-frame");
+            let e = isHolotools ? document.querySelector('#input-panel') : document.querySelector('ytd-live-chat-frame');
             if (e != null) {
                 clearInterval(interval2);
                 e.appendChild(a);
-                a.querySelector("a").onclick = callback;
-                a.querySelector("yt-formatted-string").textContent = text;
+                a.querySelector('a').onclick = callback;
+                a.querySelector('yt-formatted-string').textContent = text;
             }
         }, 100);
-    }
+    };
 
-    redirectTab = u => chrome.runtime.sendMessage({ type: "redirect", data: u });
-    createTab = u => chrome.runtime.sendMessage({ type: "tab", data: u });
+    let redirectTab = u => chrome.runtime.sendMessage({type: 'redirect', data: u});
+    let createTab = u => chrome.runtime.sendMessage({type: 'tab', data: u});
 
     let u = `${await getWAR("index.html")}?v=${params.v}`;
     makeButton("Watch in LiveTL", () => redirectTab({ url: u }));
@@ -284,7 +284,7 @@ function createLanguageSelect() {
 function setChecklistOnclick(checklist) {
     checklist.querySelector('.anchor').onclick = () => {
         let items = checklist.querySelector("#items");
-        if (items.style.display != "block") {
+        if (items.style.display !== "block") {
             checklist.classList.add("openList");
             items.style.display = "block";
         }
@@ -460,7 +460,7 @@ function createCheckbox(name, authorID, checked = false, callback = null) {
 function filterBoxes(boxes) {
     boxes.forEach((box) => {
         allTranslators.v[box.dataset.id] = box;
-        if (box != allTranslatorCheckbox && !box.checked) {
+        if (box !== allTranslatorCheckbox && !box.checked) {
             allTranslatorCheckbox.checked = false;
         }
     });
@@ -475,13 +475,12 @@ function removeBadTranslations() {
     document.querySelectorAll(".line").forEach((translation, i) => {
         // if (i > 25) {
         //     translation.remove();
-        // } else 
+        // } else
         // removed limiting
-        if (author = translation.querySelector(".authorName")) {
-            if (author.dataset.id && !allTranslators.v[author.dataset.id].checked) {
-                translation.remove();
-            }
-        }
+        let author = translation.querySelector(".authorName")
+		if (author && author.dataset.id && !allTranslators.v[author.dataset.id].checked) {
+			translation.remove();
+		}
     });
 }
 
