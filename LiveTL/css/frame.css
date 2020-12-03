@@ -93,7 +93,7 @@ a {
     transform: rotate(-135deg);
 }
 
-.openList>.anchor:after {
+.openList > .anchor:after {
     border-right: 2px solid black !important;
     border-bottom: 2px solid black !important;
     border-left: 0 !important;
@@ -226,11 +226,11 @@ svg {
 
 /* Modal Content/Box */
 
-.modal-content>* {
+.modal-content > * {
     margin-left: 10px;
 }
 
-.modal-content>*:not(.dropdown-check-list) {
+.modal-content > *:not(.dropdown-check-list) {
     margin: 10px;
 }
 
