@@ -13,10 +13,10 @@ function parseTranslation(msg) {
 }
 
 function isLangMatch(textLang, currentLang) {
-    textLang = textLang.toLowerCase().split(/[\/\ \-\:\.\|]/).filter(s => s != "");
+    textLang = textLang.toLowerCase().split(/[\/\ \-\:\.\|]/).filter(s => s !== "");
     return textLang.length <= 2 && textLang.some(s => (
         currentLang.name.toLowerCase().startsWith(s) ||
-        s == currentLang.code ||
+        s === currentLang.code ||
         currentLang.lang.toLowerCase().startsWith(s)
     ));
 }
@@ -42,11 +42,11 @@ function createSurroundRegex() {
 
 function surroundTokensMatch(token1, token2) {
     switch (token1) {
-        case '(': return token2 == ')'
-        case '[': return token2 == ']'
-        case '{': return token2 == '}'
+        case '(': return token2 === ')'
+        case '[': return token2 === ']'
+        case '{': return token2 === '}'
     }
-    return token1 == token2;
+    return token1 === token2;
 }
 
 function surroundFilter(msg) {

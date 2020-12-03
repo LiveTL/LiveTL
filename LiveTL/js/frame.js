@@ -61,14 +61,14 @@ async function runLiveTL() {
         setInterval(() => {
             let messages = document.querySelectorAll(".yt-live-chat-text-message-renderer > #message");
             let i = 0;
-            while (i < messages.length && messages[i].innerHTML == "") i++;
+            while (i < messages.length && messages[i].innerHTML === "") i++;
             for (; i < messages.length; i++) {
                 let m = messages[i];
-                if (m.innerHTML == "") break;
+                if (m.innerHTML === "") break;
                 let parsed = parseTranslation(m.textContent);
                 let select = document.querySelector("#langSelect");
                 if (parsed != null && isLangMatch(parsed.lang.toLowerCase(), languageConversionTable[select.value])
-                    && parsed.msg.replace(/\s/g, '') != "") {
+                    && parsed.msg.replace(/\s/g, '') !== "") {
                     let author = m.parentElement.childNodes[1].textContent;
                     let authorID = /\/ytc\/([^\=]+)\=/.exec(getProfilePic(m))[1];
                     let line = createTranslationElement(author, authorID, parsed.msg);
@@ -101,7 +101,7 @@ function parseParams() {
         .replace(/"/g, '\\"')
         .replace(/&/g, '","')
         .replace(/=/g, '":"');
-    return s == "" ? {} : JSON.parse('{"' + s + '"}');
+    return s === "" ? {} : JSON.parse('{"' + s + '"}');
 }
 
 async function insertLiveTLButtons(isHolotools = false) {
@@ -144,7 +144,7 @@ let activationInterval = setInterval(() => {
             if (params.useLiveTL) {
                 conlog("Running LiveTL!");
                 runLiveTL();
-            } else if (params.embed_domain == "hololive.jetri.co") {
+            } else if (params.embed_domain === "hololive.jetri.co") {
                 insertLiveTLButtons(true);
             }
         } catch (e) { }
@@ -199,7 +199,7 @@ function createModal(container) {
         let newDisplay = nextStyle[modalContainer.style.display];
         modalContainer.style.display = newDisplay;
         icon[newDisplay](settingsButton);
-        if (newDisplay == "none") {
+        if (newDisplay === "none") {
             document.querySelector(".translationText").style.display = "block";
             modalContainer.style.height = "auto";
         } else {
