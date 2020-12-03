@@ -1,6 +1,10 @@
+const MAX_LANG_TAG_LEN = 7;
+
 const langTokens = [["[", "]"], ["{", "}"], ["(", ")"], ["|", "|"], ["<", ">"]];
 const startLangTokens = langTokens.flatMap(e => e[0]);
 const tokenMap = Object.fromEntries(langTokens);
+
+const transDelimiters = ["-", ":"];
 
 /**
  * Parses translation
@@ -15,28 +19,47 @@ const tokenMap = Object.fromEntries(langTokens);
 const parseTranslation = message => {
   const trimmed = message.trim();
 
-  const startsWithLeftToken = startLangTokens.includes(trimmed[0]);
-  if (!startsWithLeftToken) {
-    return undefined;
-  }
-
+  // try bracket trans blocks first - '[lang]', '[lang] -'
   const leftToken = trimmed[0];
   const rightToken = tokenMap[leftToken];
 
   const righTokenIndex = trimmed.indexOf(rightToken);
-  if (righTokenIndex === -1) {
-    return undefined;
+
+  if (righTokenIndex !== -1) {
+    const startsWithLeftToken = startLangTokens.includes(trimmed[0]);
+
+    if (startsWithLeftToken) {
+      let lang = trimmed.slice(1, righTokenIndex);
+      let msg = trimmed.slice(righTokenIndex + 1).trim();
+
+      // remove potential trailing dash
+      if (msg[0] === "-") {
+        msg = msg.slice(1).trim();
+      }
+
+      return {
+        lang,
+        msg,
+      };
+    }
   }
 
-  // 1 - opening token
-  const lang = trimmed.slice(1, righTokenIndex);
-  // 1 - closing token, trim - may be space after [lang] block
-  const msg = trimmed.slice(righTokenIndex + 1).trim();
+  // try all delims
+  for (let delim of transDelimiters) {
+    const idx = trimmed.indexOf(delim);
 
-  return {
-    lang,
-    msg,
-  };
+    if (idx !== -1 && idx < MAX_LANG_TAG_LEN) {
+      let lang = trimmed.slice(0, idx).trim();
+      let msg = trimmed.slice(idx + 1).trim();
+
+      return {
+        lang,
+        msg,
+      };
+    }
+  }
+
+  return undefined;
 };
 
 function isLangMatch (textLang, currentLang) {
