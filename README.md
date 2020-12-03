@@ -2,7 +2,7 @@
 
 ![Latest Release Build](https://github.com/KentoNishi/LiveTL/workflows/Latest%20Release%20Build/badge.svg)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg)](https://github.com/standard/semistandard)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![Contributors](https://img.shields.io/github/contributors/KentoNishi/LiveTL)](https://github.com/KentoNishi/LiveTL/contributors)
 [![Issues](https://img.shields.io/github/issues/KentoNishi/LiveTL)](https://github.com/KentoNishi/LiveTL/issues)
 ![Total Lines](https://img.shields.io/tokei/lines/github/KentoNishi/LiveTL)
