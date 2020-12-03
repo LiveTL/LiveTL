@@ -13,7 +13,8 @@ Get live translations for YouTube streams, crowdsourced from multilingual viewer
 
 ## Feedback and Contributing
 
-We have a Discord server for those who would like to give feedback or discuss new features! [Here is the invite](https://discord.gg/uJrV3tmthg).
+We have a Discord server for those who would like to give feedback or discuss new
+features! [Here is the invite](https://discord.gg/uJrV3tmthg).
 
 ## Features
 
@@ -35,11 +36,13 @@ We have a Discord server for those who would like to give feedback or discuss ne
 * [x] Broken in incognito
 * [ ] No automated testing
 
-If you are interested in helping us solve these issues and/or add features, please let us know in the Discord server and submit a Pull Request!
+If you are interested in helping us solve these issues and/or add features, please let us know in the Discord server and
+submit a Pull Request!
 
 ## Usage
 
-To build from scratch, execute the following commands in a bash terminal. The resulting extension zip file will be in dist/. The unpacked extension will be in build/
+To build from scratch, execute the following commands in a bash terminal. The resulting extension zip file will be in
+dist/. The unpacked extension will be in build/
 
 ```bash
 git clone https://github.com/KentoNishi/LiveTL.git
