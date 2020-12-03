@@ -3,7 +3,7 @@ function conlog(...args) {
         return console.log(...args);
     }
 }
-const isFirefox = /Firefox/.exec(navigator.userAgent) ? true : false;
+const isFirefox = !!/Firefox/.exec(navigator.userAgent);
 
 let languageConversionTable = {};
 
@@ -61,14 +61,14 @@ async function runLiveTL() {
         setInterval(() => {
             let messages = document.querySelectorAll(".yt-live-chat-text-message-renderer > #message");
             let i = 0;
-            while (i < messages.length && messages[i].innerHTML == "") i++;
+            while (i < messages.length && messages[i].innerHTML === "") i++;
             for (; i < messages.length; i++) {
                 let m = messages[i];
-                if (m.innerHTML == "") break;
+                if (m.innerHTML === "") break;
                 let parsed = parseTranslation(m.textContent);
                 let select = document.querySelector("#langSelect");
                 if (parsed != null && isLangMatch(parsed.lang.toLowerCase(), languageConversionTable[select.value])
-                    && parsed.msg.replace(/\s/g, '') != "") {
+                    && parsed.msg.replace(/\s/g, '') !== "") {
                     let author = m.parentElement.childNodes[1].textContent;
                     let authorID = /\/ytc\/([^\=]+)\=/.exec(getProfilePic(m))[1];
                     let line = createTranslationElement(author, authorID, parsed.msg);
@@ -101,29 +101,29 @@ function parseParams() {
         .replace(/"/g, '\\"')
         .replace(/&/g, '","')
         .replace(/=/g, '":"');
-    return s == "" ? {} : JSON.parse('{"' + s + '"}');
+    return s === "" ? {} : JSON.parse('{"' + s + '"}');
 }
 
 async function insertLiveTLButtons(isHolotools = false) {
     conlog("Inserting LiveTL Launcher Buttons");
     params = parseParams();
-    makeButton = (text, callback, color) => {
-        let a = document.createElement("span");
+    let makeButton = (text, callback, color) => {
+        let a = document.createElement('span');
         a.appendChild(getLiveTLButton(color));
 
         let interval2 = setInterval(() => {
-            let e = isHolotools ? document.querySelector("#input-panel") : document.querySelector("ytd-live-chat-frame");
+            let e = isHolotools ? document.querySelector('#input-panel') : document.querySelector('ytd-live-chat-frame');
             if (e != null) {
                 clearInterval(interval2);
                 e.appendChild(a);
-                a.querySelector("a").onclick = callback;
-                a.querySelector("yt-formatted-string").textContent = text;
+                a.querySelector('a').onclick = callback;
+                a.querySelector('yt-formatted-string').textContent = text;
             }
         }, 100);
-    }
+    };
 
-    redirectTab = u => chrome.runtime.sendMessage({ type: "redirect", data: u });
-    createTab = u => chrome.runtime.sendMessage({ type: "tab", data: u });
+    let redirectTab = u => chrome.runtime.sendMessage({type: 'redirect', data: u});
+    let createTab = u => chrome.runtime.sendMessage({type: 'tab', data: u});
 
     let u = `${await getWAR("index.html")}?v=${params.v}`;
     makeButton("Watch in LiveTL", () => redirectTab({ url: u }));
@@ -144,7 +144,7 @@ let activationInterval = setInterval(() => {
             if (params.useLiveTL) {
                 conlog("Running LiveTL!");
                 runLiveTL();
-            } else if (params.embed_domain == "hololive.jetri.co") {
+            } else if (params.embed_domain === "hololive.jetri.co") {
                 insertLiveTLButtons(true);
             }
         } catch (e) { }
@@ -199,7 +199,7 @@ function createModal(container) {
         let newDisplay = nextStyle[modalContainer.style.display];
         modalContainer.style.display = newDisplay;
         icon[newDisplay](settingsButton);
-        if (newDisplay == "none") {
+        if (newDisplay === "none") {
             document.querySelector(".translationText").style.display = "block";
             modalContainer.style.height = "auto";
         } else {
@@ -284,7 +284,7 @@ function createLanguageSelect() {
 function setChecklistOnclick(checklist) {
     checklist.querySelector('.anchor').onclick = () => {
         let items = checklist.querySelector("#items");
-        if (items.style.display != "block") {
+        if (items.style.display !== "block") {
             checklist.classList.add("openList");
             items.style.display = "block";
         }
@@ -460,7 +460,7 @@ function createCheckbox(name, authorID, checked = false, callback = null) {
 function filterBoxes(boxes) {
     boxes.forEach((box) => {
         allTranslators.v[box.dataset.id] = box;
-        if (box != allTranslatorCheckbox && !box.checked) {
+        if (box !== allTranslatorCheckbox && !box.checked) {
             allTranslatorCheckbox.checked = false;
         }
     });
@@ -475,13 +475,12 @@ function removeBadTranslations() {
     document.querySelectorAll(".line").forEach((translation, i) => {
         // if (i > 25) {
         //     translation.remove();
-        // } else 
+        // } else
         // removed limiting
-        if (author = translation.querySelector(".authorName")) {
-            if (author.dataset.id && !allTranslators.v[author.dataset.id].checked) {
-                translation.remove();
-            }
-        }
+        let author = translation.querySelector(".authorName")
+		if (author && author.dataset.id && !allTranslators.v[author.dataset.id].checked) {
+			translation.remove();
+		}
     });
 }
 
