@@ -7,22 +7,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Package extensions
-      run: make
-    - name: Upload Chrome package to release
-      uses: svenstaro/upload-release-action@v2
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: dist/chrome/LiveTL.zip
-        asset_name: LiveTL-Chrome.zip
-        tag: ${{ github.ref }}
-        overwrite: true
-    - name: Upload Firefox package to release
-      uses: svenstaro/upload-release-action@v2
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: dist/firefox/LiveTL.zip
-        asset_name: LiveTL-Firefox.zip
-        tag: ${{ github.ref }}
-        overwrite: true
+      - uses: actions/checkout@master
+      - name: Package extensions
+        run: make
+      - name: Upload Chrome package to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/chrome/LiveTL.zip
+          asset_name: LiveTL-Chrome.zip
+          tag: ${{ github.ref }}
+          overwrite: true
+      - name: Upload Firefox package to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/firefox/LiveTL.zip
+          asset_name: LiveTL-Firefox.zip
+          tag: ${{ github.ref }}
+          overwrite: true

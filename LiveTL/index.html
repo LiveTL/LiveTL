@@ -3,40 +3,40 @@
 <head>
     <title>LiveTL</title>
     <meta name="description"
-        content="Live translation view of YouTube chat. Translations in form of [lang] translation are shown." />
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+          content="Live translation view of YouTube chat. Translations in form of [lang] translation are shown."/>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
     <script src="./jquery.min.js"></script>
-    <link rel="stylesheet" href="./css/jquery-ui.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="./css/jquery-ui.css" type="text/css" media="all"/>
     <script src="./jquery-ui.min.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="./css/index.css" type="text/css" />
-    <link rel="icon" href="./icons/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="./css/index.css" type="text/css"/>
+    <link rel="icon" href="./icons/favicon.ico" type="image/x-icon"/>
 </head>
 
 <body>
-    <div id="display">
-        <div id="leftPanel">
-            <iframe src="" frameBorder="0"
+<div id="display">
+    <div id="leftPanel">
+        <iframe src="" frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowfullscreen id="stream"></iframe>
-            <div id="handleV" class="handle ui-resizable-handle ui-resizable-e"><span>&vellip;</span></div>
-        </div>
-        <div id="rightPanel">
-            <div id="topRightPanel">
-                <div class="iframeWrapper">
-                    <iframe id="chat" frameBorder="0"></iframe>
-                </div>
-                <div id="handleH" class="handle ui-resizable-handle ui-resizable-s"><span>&hellip;</span></div>
+        <div id="handleV" class="handle ui-resizable-handle ui-resizable-e"><span>&vellip;</span></div>
+    </div>
+    <div id="rightPanel">
+        <div id="topRightPanel">
+            <div class="iframeWrapper">
+                <iframe id="chat" frameBorder="0"></iframe>
             </div>
-            <div id="bottomRightPanel">
-                <div class="iframeWrapper">
-                    <iframe id="livetl-chat" frameBorder="0"></iframe>
-                </div>
+            <div id="handleH" class="handle ui-resizable-handle ui-resizable-s"><span>&hellip;</span></div>
+        </div>
+        <div id="bottomRightPanel">
+            <div class="iframeWrapper">
+                <iframe id="livetl-chat" frameBorder="0"></iframe>
             </div>
         </div>
     </div>
-    <script src="./js/index.js"></script>
+</div>
+<script src="./js/index.js"></script>
 </body>
 
 </html>
