@@ -1,6 +1,6 @@
 //
 //  ViewController.swift
-//  LiveTL
+//  LiveTl
 //
 //  Created by Andrew Glaze on 12/2/20.
 //
@@ -9,8 +9,8 @@ import Cocoa
 import SafariServices.SFSafariApplication
 import SafariServices.SFSafariExtensionManager
 
-let appName = "LiveTL"
-let extensionBundleIdentifier = "com.candygoblen123.LiveTL.Extension"
+let appName = "LiveTl"
+let extensionBundleIdentifier = "com.candygoblen123.LiveTl.Extension"
 
 class ViewController: NSViewController {
 

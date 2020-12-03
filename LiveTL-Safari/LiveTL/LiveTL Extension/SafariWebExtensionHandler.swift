@@ -1,6 +1,6 @@
 //
 //  SafariWebExtensionHandler.swift
-//  LiveTL Extension
+//  LiveTl Extension
 //
 //  Created by Andrew Glaze on 12/2/20.
 //

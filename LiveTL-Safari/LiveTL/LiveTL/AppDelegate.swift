@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  LiveTL
+//  LiveTl
 //
 //  Created by Andrew Glaze on 12/2/20.
 //
