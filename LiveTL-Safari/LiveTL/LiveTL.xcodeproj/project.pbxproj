@@ -183,6 +183,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 36F39D602578A47500BA3A6F /* Build configuration list for PBXNativeTarget "LiveTl Extension" */;
 			buildPhases = (
+				363C6737257953E6009020DE /* ShellScript */,
 				36F39D4E2578A47500BA3A6F /* Sources */,
 				36F39D4F2578A47500BA3A6F /* Frameworks */,
 				36F39D502578A47500BA3A6F /* Resources */,
@@ -258,6 +259,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		363C6737257953E6009020DE /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd $PROJECT_DIR\ncd ../../\nmake safari-noBuild\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		36F39D3C2578A47300BA3A6F /* Sources */ = {
@@ -419,6 +440,9 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "LiveTl Extension/LiveTl_Extension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "d7971c5\nd7971c5\n";
+				DEVELOPMENT_TEAM = RJNC97Y8QD;
+				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "LiveTl Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -426,6 +450,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 0.1.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.candygoblen123.LiveTl.Extension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -438,6 +463,9 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "LiveTl Extension/LiveTl_Extension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "d7971c5\nd7971c5\n";
+				DEVELOPMENT_TEAM = RJNC97Y8QD;
+				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "LiveTl Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -445,6 +473,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 0.1.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.candygoblen123.LiveTl.Extension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -461,12 +490,16 @@
 				CODE_SIGN_ENTITLEMENTS = LiveTl/LiveTl.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = "d7971c5\nd7971c5\n";
+				DEVELOPMENT_TEAM = RJNC97Y8QD;
+				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = LiveTl/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 0.1.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.candygoblen123.LiveTl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -482,12 +515,16 @@
 				CODE_SIGN_ENTITLEMENTS = LiveTl/LiveTl.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = "d7971c5\nd7971c5\n";
+				DEVELOPMENT_TEAM = RJNC97Y8QD;
+				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = LiveTl/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 0.1.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.candygoblen123.LiveTl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
