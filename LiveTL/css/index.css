@@ -70,12 +70,12 @@ body {
     z-index: 1;
 }
 
-#handleH>span {
+#handleH > span {
     margin-bottom: -1px;
     font-size: 20px;
 }
 
-.handle>span {
+.handle > span {
     color: lightgray;
     font-size: 19px;
     background-color: transparent;
@@ -105,7 +105,7 @@ body {
     background-color: transparent;
 }
 
-.iframeWrapper>iframe {
+.iframeWrapper > iframe {
     min-width: 0px !important;
     position: absolute;
     height: 100%;

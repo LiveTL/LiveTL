@@ -12,16 +12,16 @@
 </style>
 <iframe></iframe>
 <script>
-    parseParams = () => {
-        let s = decodeURI(location.search.substring(1))
-            .replace(/"/g, '\\"')
-            .replace(/&/g, '","')
-            .replace(/=/g, '":"');
-        return s == "" ? {} : JSON.parse('{"' + s + '"}');
-    }
+  parseParams = () => {
+    let s = decodeURI(location.search.substring(1))
+      .replace(/"/g, '\\"')
+      .replace(/&/g, '","')
+      .replace(/=/g, '":"')
+    return s == '' ? {} : JSON.parse('{"' + s + '"}')
+  }
 
-    let params = parseParams();
-    let v = params.v || "5qap5aO4i9A";
-    let chat = document.querySelector("iframe");
-    chat.src = `https://www.youtube.com/live_chat?v=${v}&embed_domain=${document.domain}&useLiveTL=${params.useLiveTL || ""}`;
+  let params = parseParams()
+  let v = params.v || '5qap5aO4i9A'
+  let chat = document.querySelector('iframe')
+  chat.src = `https://www.youtube.com/live_chat?v=${v}&embed_domain=${document.domain}&useLiveTL=${params.useLiveTL || ''}`
 </script>
