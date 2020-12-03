@@ -45,6 +45,8 @@ If you are looking to help with UI/UX, please note that we do not have a style g
   - The unpacked extension for each browser will be in `build/` and the packed extensions will be in `dist/`
 - `make test` will run the available tests
 - `make clean` will clear the build
+- In firefox, use about:debuggging to load the extension.
+- In chromium-based browsers, load an unpacked extension in the extension menu.
 
 ## Naming Scheme Conventions
 
@@ -72,7 +74,7 @@ If you are looking to help with UI/UX, please note that we do not have a style g
 │   └── firefox - contains firefox zipped extension\
 ├── embed - embedding chat\
 ├── img   - image files to be shown on github\
-└── tests - test files to be run\
+└── tests - test files to be run
 
 ## Other
 
