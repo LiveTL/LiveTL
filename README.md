@@ -2,7 +2,7 @@
 
 ![Latest Release Build](https://github.com/KentoNishi/LiveTL/workflows/Latest%20Release%20Build/badge.svg)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg)](https://github.com/standard/semistandard)
 [![Contributors](https://img.shields.io/github/contributors/KentoNishi/LiveTL)](https://github.com/KentoNishi/LiveTL/contributors)
 [![Issues](https://img.shields.io/github/issues/KentoNishi/LiveTL)](https://github.com/KentoNishi/LiveTL/issues)
 ![Total Lines](https://img.shields.io/tokei/lines/github/KentoNishi/LiveTL)
@@ -31,19 +31,11 @@ features! [Here is the invite](https://discord.gg/uJrV3tmthg).
 * [x] Freely resizable chat, translation panel, and stream
 * [x] Support for HoloTools
 * [x] Firefox Extension
-* [ ] Saved preferences across viewing sessions
-* [ ] Verified translators
-* [ ] Automatic language tagging for translators
-* [ ] Archived VOD Support
 
-## Issues
+## Progress
+Development progress is managed in the [repo's project page](https://github.com/KentoNishi/LiveTL/projects/1).
 
-* [x] Extension and page version mismatch (local file serving to solve?)
-* [x] Detect if extension is installed, if not redirect to install page
-* [x] Broken in incognito
-* [ ] No automated testing
-
-If you are interested in helping us solve these issues and/or add features, please let us know in the Discord server and
+If you are interested in helping us solve any issues and/or add features, please let us know in the Discord server and
 submit a Pull Request!
 
 ## Usage

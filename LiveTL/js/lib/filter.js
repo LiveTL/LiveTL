@@ -1,10 +1,10 @@
 const MAX_LANG_TAG_LEN = 7;
 
-const langTokens = [["[", "]"], ["{", "}"], ["(", ")"], ["|", "|"], ["<", ">"]];
+const langTokens = [['[', ']'], ['{', '}'], ['(', ')'], ['|', '|'], ['<', '>']];
 const startLangTokens = langTokens.flatMap(e => e[0]);
 const tokenMap = Object.fromEntries(langTokens);
 
-const transDelimiters = ["-", ":"];
+const transDelimiters = ['-', ':'];
 
 /**
  * Parses translation
@@ -29,32 +29,32 @@ const parseTranslation = message => {
     const startsWithLeftToken = startLangTokens.includes(trimmed[0]);
 
     if (startsWithLeftToken) {
-      let lang = trimmed.slice(1, righTokenIndex);
+      const lang = trimmed.slice(1, righTokenIndex);
       let msg = trimmed.slice(righTokenIndex + 1).trim();
 
       // remove potential trailing dash
-      if (msg[0] === "-") {
+      if (msg[0] === '-') {
         msg = msg.slice(1).trim();
       }
 
       return {
         lang,
-        msg,
+        msg
       };
     }
   }
 
   // try all delims
-  for (let delim of transDelimiters) {
+  for (const delim of transDelimiters) {
     const idx = trimmed.indexOf(delim);
 
     if (idx !== -1 && idx < MAX_LANG_TAG_LEN) {
-      let lang = trimmed.slice(0, idx).trim();
-      let msg = trimmed.slice(idx + 1).trim();
+      const lang = trimmed.slice(0, idx).trim();
+      const msg = trimmed.slice(idx + 1).trim();
 
       return {
         lang,
-        msg,
+        msg
       };
     }
   }
@@ -63,12 +63,12 @@ const parseTranslation = message => {
 };
 
 function isLangMatch (textLang, currentLang) {
-  textLang = textLang.toLowerCase().split(/[\/\ \-\:\.\|]/).filter(s => s !== '')
+  textLang = textLang.toLowerCase().split(/[\/\ \-\:\.\|]/).filter(s => s !== '');
   return textLang.length <= 2 && textLang.some(s => (
     currentLang.name.toLowerCase().startsWith(s) ||
     s === currentLang.code ||
     currentLang.lang.toLowerCase().startsWith(s)
-  ))
+  ));
 }
 
 module.exports = { parseTranslation, isLangMatch };
