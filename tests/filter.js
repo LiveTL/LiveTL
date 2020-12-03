@@ -13,9 +13,9 @@ let tests = {
 
 function compareTranslationMatches(other, correct) {
     if (other && correct) {
-        return other.lang == correct.lang && other.msg == correct.msg;
+        return other.lang === correct.lang && other.msg === correct.msg;
     }
-    return other == correct;
+    return other === correct;
 }
 
 function testParseTranslation() {
