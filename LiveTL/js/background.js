@@ -14,7 +14,7 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
         case 'redirect':
             chrome.tabs.update(request.data);
             break;
-        case 'get_war':
+        case 'get_war': // Is this supposed to set the request type or...?
             callback(chrome.runtime.getURL(request.url));
             break;
     }
