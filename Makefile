@@ -5,7 +5,7 @@ lib = "./LiveTL/js/lib"
 
 all: chrome firefox
 
-.PHONY: init chrome firefox clean
+.PHONY: init bench test chrome firefox clean
 
 init:
 	mkdir -p dist/
@@ -17,6 +17,9 @@ init:
 
 test:
 	node tests/*.js
+
+bench:
+	node bench/*.js
 
 chrome: common
 	rm -rf dist/chrome/
