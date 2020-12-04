@@ -1,0 +1,34 @@
+name: Latest Release Build Safari
+on:
+  release:
+    types:
+      - released
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@master
+      - name: Import Code-Signing Certificates
+        uses: devbotsxyz/xcode-import-certificate@master
+        with:
+            certificate-data: ${{ secrets.DEVELOPMENT_CERTIFICATE_DATA }}
+            certificate-passphrase: ${{ secrets.DEVELOPMENT_CERTIFICATE_PASSPHRASE }}
+            keychain-password: ${{ secrets.KEYCHAIN_PASSWORD }
+      - name: Archive
+        uses: devbotsxyz/xcode-archive@v1
+      - name: Export & Sign Release Build
+        uses: devbotsxyz/xcode-export-archive@master
+        with:
+          export-method: development
+      - name: Create Disk Image
+        run: hdiutil create -volname LiveTL-Safari -srcfolder ./Export/ -ov -format UDZO LiveTL-Safari.dmg
+        
+      - name: Upload Firefox package to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: LiveTL-Safari.dmg
+          asset_name: LiveTL-Safari.dmg
+          tag: ${{ github.ref }}
+          overwrite: true
