@@ -17,6 +17,8 @@ jobs:
             keychain-password: ${{ secrets.KEYCHAIN_PASSWORD }
       - name: Archive
         uses: devbotsxyz/xcode-archive@v1
+        with:
+          project: LiveTL-Safari/LiveTl/LiveTl.xcodeproj
       - name: Export & Sign Release Build
         uses: devbotsxyz/xcode-export-archive@master
         with:
