@@ -13,45 +13,25 @@ embedVideo = v => {
   let firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-  let currentVideoID = "";
-  let player;
-  let loadVideo;
 
   // https://developers.google.com/youtube/iframe_api_reference
   window.onYouTubeIframeAPIReady = () => {
-    function loadVideoInternal(id, start, playing) {
-      if (id == currentVideoID) {
-      } else {
-        player.loadVideoById({
-          videoId: id,
-        });
-      }
-      player.seekTo(start);
-      if (playing) {
-        player.playVideo();
-      } else {
-        player.pauseVideo();
-      }
-      currentVideoID = id;
-    }
-
-    loadVideo = (id, start, playing) => {
+    let player;
+    loadVideo = (id) => {
       if (!player) {
         player = new YT.Player('frame_div', {
           height: '100%',
           width: '100%',
-          events: {
-            onReady: () => {
-              loadVideoInternal(id, start, playing);
-            }
+          videoId: id,
+          playerVars: {
+            autoplay: 1
           }
         });
       } else {
-        loadVideoInternal(id, start, playing);
+        loadVideoInternal(id);
       }
     }
-
-    loadVideo(v, 0, 1);
+    loadVideo(v, false);
   }
 }
 
@@ -77,11 +57,13 @@ switch (mode) {
     embedVideo(v);
 
     window.onmessage = d => {
-      d = JSON.parse(d.data);
-      if (d.event == "infoDelivery") {
-        parent.postMessage({ "yt-player-video-progress": d.info.currentTime }, "*");
+      try {
+        d = JSON.parse(d.data);
+        if (d.event == "infoDelivery") {
+          parent.postMessage({ "yt-player-video-progress": d.info.currentTime }, "*");
+        }
       }
+      catch (e) { }
     }
-
     break;
 }
