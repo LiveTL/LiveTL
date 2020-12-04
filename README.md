@@ -24,6 +24,9 @@ or
 
 ![Demo](./img/livetlscreen.png)
 
+## FAQ
+[An FAQ can be found here](https://kentonishi.github.io/LiveTL/about/#frequently-asked-questions)
+
 ## Feedback and Contributing
 
 We have a Discord server for those who would like to give feedback or discuss new
