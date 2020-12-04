@@ -8,7 +8,6 @@ jobs:
     runs-on: macos-latest
     timeout-minutes: 15
     steps:
-      - working-directory: LiveTL-Safari/LiveTl/
       - uses: actions/checkout@master
       - name: Import Code-Signing Certificates
         uses: devbotsxyz/xcode-import-certificate@master
@@ -18,7 +17,6 @@ jobs:
             keychain-password: ${{ secrets.KEYCHAIN_PASSWORD }}
       - name: Archive
         uses: devbotsxyz/xcode-archive@v1
-        
       - name: Export & Sign Release Build
         uses: devbotsxyz/xcode-export-archive@master
         with:
