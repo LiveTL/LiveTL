@@ -1,7 +1,7 @@
 # Getting Started with LiveTL
 
 <span id="actionMessage">
-You must have the <a href="https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg">LiveTL extension</a> installed to use LiveTL features.
+You must have the <a href="https://kentonishi.github.io/LiveTL/">LiveTL extension</a> installed to use LiveTL features.
 </span>
 
 ## Launching LiveTL
@@ -40,7 +40,7 @@ You must disable the `Prevent Cross-site tracking` option in safari privacy sett
 ## Other Info
 
 If you like LiveTL, don't forget to <a href="javascript:shareExtension();">share it with your friends</a>
-and <a href="https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg">give
+and <a href="https://kentonishi.github.io/LiveTL/about/review">give
 us a 5-star review</a>!
 
 Please feel free to give us feedback or suggestions through the LiveTL Discord

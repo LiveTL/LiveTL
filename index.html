@@ -11,8 +11,9 @@
         window.location.href = "https://addons.mozilla.org/en-US/firefox/addon/livetl/";
       } else if (userAgentString.indexOf("Safari") > -1) {
         alert("Safari Support is currently in Beta.");
-        window.location.href = "https://github.com/KentoNishi/LiveTL/releases";
+        window.location.href = "https://github.com/KentoNishi/LiveTL/releases/latest";
       } else {
+        alert("We could not automatically detect your browser, so we're redirecting you to the Chrome Web Store.");
         window.location.href = "https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg";
       }
   </script>

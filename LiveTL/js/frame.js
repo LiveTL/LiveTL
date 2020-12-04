@@ -421,7 +421,7 @@ function createWelcomeText() {
   buttons.innerHTML = `
         Please consider
         <a id="shareExtension" href="javascript:void(0);">sharing LiveTL with your friends</a>, 
-        <a href="https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg" target="about:blank">giving us a 5-star review</a>, 
+        <a href="https://kentonishi.github.io/LiveTL/about/review" target="about:blank">giving us a 5-star review</a>, 
         <a href="https://discord.gg/uJrV3tmthg" target="about:blank">joining our Discord server</a>, and
         <a href="https://github.com/KentoNishi/LiveTL" target="about:blank">starring our GitHub repository</a>!
     `;
