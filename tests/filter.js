@@ -29,6 +29,10 @@ function testParseTranslation() {
       correct: { lang: 'es', msg: 'Hola eso' }
     },
     {
+      msg: '【jp】 Weird bracket gang',
+      correct: { lang: 'jp', msg: 'Weird bracket gang' }
+    },
+    {
       msg: 'jp - リーーーーーーー',
       correct: { lang: 'jp', msg: 'リーーーーーーー' }
     },
@@ -85,7 +89,16 @@ function testLangMatch() {
     {
       testCase: [': jap', langs.jp],
       match: true
+    },
+    {
+      testCase: ['英語／EN', langs.en],
+      match: true
+    },
+    {
+      testCase: ['英語／jp', langs.en],
+      match: false
     }
+
   ];
   testCases.forEach(({ testCase, match }) => {
     assert.equal(
