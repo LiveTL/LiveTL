@@ -14,6 +14,29 @@ Alternatively, you can open LiveTL from within HoloTools!
 
 ![](../img/holotoolslauncher.png)
 
+## Frequently Asked Questions
+
+### How does LiveTL work?
+LiveTL is, at its core, a chat filter for YouTube streams. It helps foreign viewers better catch translations that other viewers are providing in the live chat. LiveTL does not automatically translate streams -- instead, it picks up translations found in the chat.
+
+### I installed LiveTL but I don't see any buttons. 
+Once you install the extension, you must reload the YouTube stream for LiveTL to take effect.
+
+### I don't see any translations in the translations panel.
+If there are no translators in chat, LiveTL is unable to provide translations. Any messages properly tagged with a language (ex. `[en]`, `ESP:`, etc.) will appear when they are available.
+
+### Dark mode is broken!
+Dark mode in LiveTL is currently controlled by the system theme. A toggle is coming soon!
+
+### Banned translators, language settings, and panels are not being saved.
+LiveTL currently does not have saved preferences. Stay tuned for an update in the very near future for settings saved across sessions!
+
+### I want to reverse the order of translated messages or display translations as captions.
+A toggle for translation order is coming soon, and caption mode is also in the works!
+
+### I'm a Safari user, and I can't use the chat!
+You must disable the `Prevent Cross-site tracking` option in safari privacy settings.
+
 ## Other Info
 
 If you like LiveTL, don't forget to <a href="javascript:shareExtension();">share it with your friends</a>
