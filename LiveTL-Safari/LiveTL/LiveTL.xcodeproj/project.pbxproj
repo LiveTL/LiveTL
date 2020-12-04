@@ -1,0 +1,571 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		363C674525795AD8009020DE /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 363C674425795AD8009020DE /* Credits.rtf */; };
+		36F39D452578A47300BA3A6F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F39D442578A47300BA3A6F /* AppDelegate.swift */; };
+		36F39D482578A47300BA3A6F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36F39D462578A47300BA3A6F /* Main.storyboard */; };
+		36F39D4A2578A47300BA3A6F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F39D492578A47300BA3A6F /* ViewController.swift */; };
+		36F39D4C2578A47500BA3A6F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 36F39D4B2578A47500BA3A6F /* Assets.xcassets */; };
+		36F39D532578A47500BA3A6F /* LiveTl Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 36F39D522578A47500BA3A6F /* LiveTl Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		36F39D582578A47500BA3A6F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36F39D572578A47500BA3A6F /* Cocoa.framework */; };
+		36F39D5B2578A47500BA3A6F /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F39D5A2578A47500BA3A6F /* SafariWebExtensionHandler.swift */; };
+		36F39D702578A47600BA3A6F /* jquery-ui.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 36F39D682578A47600BA3A6F /* jquery-ui.min.js */; };
+		36F39D712578A47600BA3A6F /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 36F39D692578A47600BA3A6F /* index.html */; };
+		36F39D722578A47600BA3A6F /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 36F39D6A2578A47600BA3A6F /* LICENSE */; };
+		36F39D732578A47600BA3A6F /* css in Resources */ = {isa = PBXBuildFile; fileRef = 36F39D6B2578A47600BA3A6F /* css */; };
+		36F39D742578A47600BA3A6F /* js in Resources */ = {isa = PBXBuildFile; fileRef = 36F39D6C2578A47600BA3A6F /* js */; };
+		36F39D752578A47600BA3A6F /* jquery.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 36F39D6D2578A47600BA3A6F /* jquery.min.js */; };
+		36F39D762578A47600BA3A6F /* icons in Resources */ = {isa = PBXBuildFile; fileRef = 36F39D6E2578A47600BA3A6F /* icons */; };
+		36F39D772578A47600BA3A6F /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = 36F39D6F2578A47600BA3A6F /* manifest.json */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		36F39D542578A47500BA3A6F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 36F39D382578A47200BA3A6F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 36F39D512578A47500BA3A6F;
+			remoteInfo = "LiveTl Extension";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		36F39D632578A47500BA3A6F /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				36F39D532578A47500BA3A6F /* LiveTl Extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		363C674425795AD8009020DE /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
+		36F39D402578A47300BA3A6F /* LiveTl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiveTl.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		36F39D432578A47300BA3A6F /* LiveTl.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LiveTl.entitlements; sourceTree = "<group>"; };
+		36F39D442578A47300BA3A6F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		36F39D472578A47300BA3A6F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		36F39D492578A47300BA3A6F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		36F39D4B2578A47500BA3A6F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		36F39D4D2578A47500BA3A6F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		36F39D522578A47500BA3A6F /* LiveTl Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "LiveTl Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		36F39D572578A47500BA3A6F /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		36F39D5A2578A47500BA3A6F /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
+		36F39D5C2578A47500BA3A6F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		36F39D5D2578A47500BA3A6F /* LiveTl_Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LiveTl_Extension.entitlements; sourceTree = "<group>"; };
+		36F39D682578A47600BA3A6F /* jquery-ui.min.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = "jquery-ui.min.js"; path = "../../../build/safari/LiveTL/jquery-ui.min.js"; sourceTree = "<group>"; };
+		36F39D692578A47600BA3A6F /* index.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = index.html; path = ../../../build/safari/LiveTL/index.html; sourceTree = "<group>"; };
+		36F39D6A2578A47600BA3A6F /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../../../build/safari/LiveTL/LICENSE; sourceTree = "<group>"; };
+		36F39D6B2578A47600BA3A6F /* css */ = {isa = PBXFileReference; lastKnownFileType = folder; name = css; path = ../../../build/safari/LiveTL/css; sourceTree = "<group>"; };
+		36F39D6C2578A47600BA3A6F /* js */ = {isa = PBXFileReference; lastKnownFileType = folder; name = js; path = ../../../build/safari/LiveTL/js; sourceTree = "<group>"; };
+		36F39D6D2578A47600BA3A6F /* jquery.min.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = jquery.min.js; path = ../../../build/safari/LiveTL/jquery.min.js; sourceTree = "<group>"; };
+		36F39D6E2578A47600BA3A6F /* icons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = icons; path = ../../../build/safari/LiveTL/icons; sourceTree = "<group>"; };
+		36F39D6F2578A47600BA3A6F /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = ../../../build/safari/LiveTL/manifest.json; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		36F39D3D2578A47300BA3A6F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		36F39D4F2578A47500BA3A6F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36F39D582578A47500BA3A6F /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		36F39D372578A47200BA3A6F = {
+			isa = PBXGroup;
+			children = (
+				36F39D422578A47300BA3A6F /* LiveTl */,
+				36F39D592578A47500BA3A6F /* LiveTl Extension */,
+				36F39D562578A47500BA3A6F /* Frameworks */,
+				36F39D412578A47300BA3A6F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		36F39D412578A47300BA3A6F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				36F39D402578A47300BA3A6F /* LiveTl.app */,
+				36F39D522578A47500BA3A6F /* LiveTl Extension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		36F39D422578A47300BA3A6F /* LiveTl */ = {
+			isa = PBXGroup;
+			children = (
+				363C674425795AD8009020DE /* Credits.rtf */,
+				36F39D432578A47300BA3A6F /* LiveTl.entitlements */,
+				36F39D442578A47300BA3A6F /* AppDelegate.swift */,
+				36F39D462578A47300BA3A6F /* Main.storyboard */,
+				36F39D492578A47300BA3A6F /* ViewController.swift */,
+				36F39D4B2578A47500BA3A6F /* Assets.xcassets */,
+				36F39D4D2578A47500BA3A6F /* Info.plist */,
+			);
+			path = LiveTl;
+			sourceTree = "<group>";
+		};
+		36F39D562578A47500BA3A6F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				36F39D572578A47500BA3A6F /* Cocoa.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		36F39D592578A47500BA3A6F /* LiveTl Extension */ = {
+			isa = PBXGroup;
+			children = (
+				36F39D672578A47600BA3A6F /* Resources */,
+				36F39D5A2578A47500BA3A6F /* SafariWebExtensionHandler.swift */,
+				36F39D5C2578A47500BA3A6F /* Info.plist */,
+				36F39D5D2578A47500BA3A6F /* LiveTl_Extension.entitlements */,
+			);
+			path = "LiveTl Extension";
+			sourceTree = "<group>";
+		};
+		36F39D672578A47600BA3A6F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				36F39D682578A47600BA3A6F /* jquery-ui.min.js */,
+				36F39D692578A47600BA3A6F /* index.html */,
+				36F39D6A2578A47600BA3A6F /* LICENSE */,
+				36F39D6B2578A47600BA3A6F /* css */,
+				36F39D6C2578A47600BA3A6F /* js */,
+				36F39D6D2578A47600BA3A6F /* jquery.min.js */,
+				36F39D6E2578A47600BA3A6F /* icons */,
+				36F39D6F2578A47600BA3A6F /* manifest.json */,
+			);
+			name = Resources;
+			path = "LiveTl Extension";
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		36F39D3F2578A47300BA3A6F /* LiveTl */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 36F39D642578A47500BA3A6F /* Build configuration list for PBXNativeTarget "LiveTl" */;
+			buildPhases = (
+				36F39D3C2578A47300BA3A6F /* Sources */,
+				36F39D3D2578A47300BA3A6F /* Frameworks */,
+				36F39D3E2578A47300BA3A6F /* Resources */,
+				36F39D632578A47500BA3A6F /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				36F39D552578A47500BA3A6F /* PBXTargetDependency */,
+			);
+			name = LiveTl;
+			productName = LiveTl;
+			productReference = 36F39D402578A47300BA3A6F /* LiveTl.app */;
+			productType = "com.apple.product-type.application";
+		};
+		36F39D512578A47500BA3A6F /* LiveTl Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 36F39D602578A47500BA3A6F /* Build configuration list for PBXNativeTarget "LiveTl Extension" */;
+			buildPhases = (
+				363C6737257953E6009020DE /* ShellScript */,
+				36F39D4E2578A47500BA3A6F /* Sources */,
+				36F39D4F2578A47500BA3A6F /* Frameworks */,
+				36F39D502578A47500BA3A6F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "LiveTl Extension";
+			productName = "LiveTl Extension";
+			productReference = 36F39D522578A47500BA3A6F /* LiveTl Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		36F39D382578A47200BA3A6F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1220;
+				LastUpgradeCheck = 1220;
+				TargetAttributes = {
+					36F39D3F2578A47300BA3A6F = {
+						CreatedOnToolsVersion = 12.2;
+					};
+					36F39D512578A47500BA3A6F = {
+						CreatedOnToolsVersion = 12.2;
+					};
+				};
+			};
+			buildConfigurationList = 36F39D3B2578A47200BA3A6F /* Build configuration list for PBXProject "LiveTl" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 36F39D372578A47200BA3A6F;
+			productRefGroup = 36F39D412578A47300BA3A6F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				36F39D3F2578A47300BA3A6F /* LiveTl */,
+				36F39D512578A47500BA3A6F /* LiveTl Extension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		36F39D3E2578A47300BA3A6F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36F39D4C2578A47500BA3A6F /* Assets.xcassets in Resources */,
+				363C674525795AD8009020DE /* Credits.rtf in Resources */,
+				36F39D482578A47300BA3A6F /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		36F39D502578A47500BA3A6F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36F39D742578A47600BA3A6F /* js in Resources */,
+				36F39D732578A47600BA3A6F /* css in Resources */,
+				36F39D722578A47600BA3A6F /* LICENSE in Resources */,
+				36F39D702578A47600BA3A6F /* jquery-ui.min.js in Resources */,
+				36F39D772578A47600BA3A6F /* manifest.json in Resources */,
+				36F39D752578A47600BA3A6F /* jquery.min.js in Resources */,
+				36F39D762578A47600BA3A6F /* icons in Resources */,
+				36F39D712578A47600BA3A6F /* index.html in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		363C6737257953E6009020DE /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd $PROJECT_DIR\ncd ../../\nmake safari-noBuild\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		36F39D3C2578A47300BA3A6F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36F39D4A2578A47300BA3A6F /* ViewController.swift in Sources */,
+				36F39D452578A47300BA3A6F /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		36F39D4E2578A47500BA3A6F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36F39D5B2578A47500BA3A6F /* SafariWebExtensionHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		36F39D552578A47500BA3A6F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 36F39D512578A47500BA3A6F /* LiveTl Extension */;
+			targetProxy = 36F39D542578A47500BA3A6F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		36F39D462578A47300BA3A6F /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				36F39D472578A47300BA3A6F /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		36F39D5E2578A47500BA3A6F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		36F39D5F2578A47500BA3A6F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		36F39D612578A47500BA3A6F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "LiveTl Extension/LiveTl_Extension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = d7971c5;
+				DEVELOPMENT_TEAM = RJNC97Y8QD;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = "LiveTl Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 0.1.10;
+				PRODUCT_BUNDLE_IDENTIFIER = com.candygoblen123.LiveTl.Extension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		36F39D622578A47500BA3A6F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "LiveTl Extension/LiveTl_Extension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = d7971c5;
+				DEVELOPMENT_TEAM = RJNC97Y8QD;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = "LiveTl Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 0.1.10;
+				PRODUCT_BUNDLE_IDENTIFIER = com.candygoblen123.LiveTl.Extension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		36F39D652578A47500BA3A6F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = LiveTl/LiveTl.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = d7971c5;
+				DEVELOPMENT_TEAM = RJNC97Y8QD;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = LiveTl/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 0.1.10;
+				PRODUCT_BUNDLE_IDENTIFIER = com.candygoblen123.LiveTl;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		36F39D662578A47500BA3A6F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = LiveTl/LiveTl.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = d7971c5;
+				DEVELOPMENT_TEAM = RJNC97Y8QD;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = LiveTl/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 0.1.10;
+				PRODUCT_BUNDLE_IDENTIFIER = com.candygoblen123.LiveTl;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		36F39D3B2578A47200BA3A6F /* Build configuration list for PBXProject "LiveTl" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				36F39D5E2578A47500BA3A6F /* Debug */,
+				36F39D5F2578A47500BA3A6F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		36F39D602578A47500BA3A6F /* Build configuration list for PBXNativeTarget "LiveTl Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				36F39D612578A47500BA3A6F /* Debug */,
+				36F39D622578A47500BA3A6F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		36F39D642578A47500BA3A6F /* Build configuration list for PBXNativeTarget "LiveTl" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				36F39D652578A47500BA3A6F /* Debug */,
+				36F39D662578A47500BA3A6F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 36F39D382578A47200BA3A6F /* Project object */;
+}
