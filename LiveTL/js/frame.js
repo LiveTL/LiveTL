@@ -97,8 +97,8 @@ function switchChat() {
   });
 }
 
-function parseParams() {
-  const s = decodeURI(location.search.substring(1))
+function parseParams(loc) {
+  const s = decodeURI((loc || location.search).substring(1))
     .replace(/"/g, '\\"')
     .replace(/&/g, '","')
     .replace(/=/g, '":"');
@@ -126,8 +126,15 @@ async function insertLiveTLButtons(isHolotools = false) {
   const redirectTab = u => chrome.runtime.sendMessage({ type: 'redirect', data: u });
   const createTab = u => chrome.runtime.sendMessage({ type: 'tab', data: u });
 
-  const u = `${await getWAR('index.html')}?v=${params.v}`;
-  makeButton('Watch in LiveTL', () => redirectTab({ url: u }));
+  makeButton('Watch in LiveTL', async () => redirectTab({
+    url: `${await getWAR('index.html')}?v=${params.v}${(() => {
+      let src = document.querySelector("#chatframe").src;
+      if (src.startsWith("https://www.youtube.com/live_chat_replay")) {
+        return "&continuation=" + parseParams("?" + src.split("?")[1]).continuation;
+      }
+      return "";
+    })()}`
+  }));
   makeButton('Pop Out Translations', () => createWindow({
     url: `https://www.youtube.com/live_chat?v=${params.v}&useLiveTL=1`,
     type: 'popup',
@@ -137,7 +144,8 @@ async function insertLiveTLButtons(isHolotools = false) {
 
 let params = {};
 const activationInterval = setInterval(() => {
-  if (window.location.href.startsWith('https://www.youtube.com/live_chat')) {
+  if (window.location.href.startsWith('https://www.youtube.com/live_chat') ||
+    window.location.href.startsWith("https://www.youtube.com/live_chat_replay")) {
     clearInterval(activationInterval);
     conlog('Using live chat');
     try {
@@ -166,6 +174,18 @@ if (window.location.href.startsWith('https://kentonishi.github.io/LiveTL/about')
     const e = document.querySelector('#actionMessage');
     e.textContent = 'Thank you for installing LiveTL!';
   };
+} else if (window.location.href.startsWith("https://www.youtube.com/embed/")) {
+  window.onmessage = d => parent.postMessage(d.data, "*");
+} else if (window.location.href.startsWith("https://www.youtube.com/live_chat_replay")) {
+  try {
+    window.parent.location.href;
+  } catch (e) {
+    window.onmessage = d => {
+      if (window.origin != d.origin) {
+        postMessage(d.data);
+      }
+    };
+  }
 }
 
 function createModal(container) {

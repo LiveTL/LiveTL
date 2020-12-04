@@ -3,13 +3,18 @@
   "description": "Get live translations for YouTube streams, crowdsourced from bilingual viewers!",
   "version": "0.1.11",
   "manifest_version": 2,
-  "permissions": [],
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "https://www.youtube.com/live_chat_replay*"
+  ],
   "content_scripts": [
     {
       "matches": [
         "https://www.youtube.com/*",
         "https://hololive.jetri.co/*",
-        "https://kentonishi.github.io/LiveTL/*"
+        "https://kentonishi.github.io/LiveTL/*",
+        "http://localhost:8000/*"
       ],
       "js": [
         "./js/frame.js"
@@ -22,7 +27,7 @@
     "scripts": [
       "./js/background.js"
     ],
-    "persistent": false
+    "persistent": true
   },
   "icons": {
     "16": "./icons/16x16.png",
