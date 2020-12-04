@@ -14,7 +14,7 @@ jobs:
         with:
             certificate-data: ${{ secrets.DEVELOPMENT_CERTIFICATE_DATA }}
             certificate-passphrase: ${{ secrets.DEVELOPMENT_CERTIFICATE_PASSPHRASE }}
-            keychain-password: ${{ secrets.KEYCHAIN_PASSWORD }
+            keychain-password: ${{ secrets.KEYCHAIN_PASSWORD }}
       - name: Archive
         uses: devbotsxyz/xcode-archive@v1
         with:
