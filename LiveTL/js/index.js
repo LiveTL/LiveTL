@@ -30,6 +30,8 @@ const stop = () => {
   leftPanel.style.backgroundColor = 'black';
   bottomRightPanel.style.backgroundColor = 'black';
   topRightPanel.style.backgroundColor = 'black';
+  localStorage.setItem('LTL:rightPanelHeight', topRightPanel.style.height);
+  localStorage.setItem('LTL:leftPanelWidth', leftPanel.style.width);
 };
 $('#leftPanel').resizable({
   handles: {
@@ -61,3 +63,13 @@ if (c) {
 }
 stream.src = `${embedDomain}?v=${v}&mode=video`;
 ltlchat.src = `${chat.src}&useLiveTL=1`;
+
+let leftWidth = localStorage.getItem('LTL:leftPanelWidth');
+let rightHeight = localStorage.getItem('LTL:rightPanelHeight');
+
+if (leftWidth) {
+  leftPanel.style.width = leftWidth;
+}
+if (rightHeight) {
+  topRightPanel.style.height = rightHeight;
+}
