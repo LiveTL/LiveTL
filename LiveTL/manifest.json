@@ -6,7 +6,8 @@
   "permissions": [
     "webRequest",
     "webRequestBlocking",
-    "https://www.youtube.com/live_chat_replay*"
+    "https://www.youtube.com/live_chat_replay*",
+    "storage"
   ],
   "content_scripts": [
     {

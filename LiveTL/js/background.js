@@ -1,7 +1,29 @@
 const launch = () => chrome.tabs.create({ url: 'https://kentonishi.github.io/LiveTL/about' });
 
-chrome.runtime.onInstalled.addListener(launch);
+const changes = () => chrome.tabs.create({ url: 'https://github.com/KentoNishi/LiveTL/releases/latest' });
+
+//var didUpdate = false;
+//chrome.runtime.onInstalled.addListener(launch);
+
+chrome.runtime.onInstalled.addListener(function(details){
+    if(details.reason == "install"){
+        console.log("This is a first install!");
+        chrome.tabs.create({ url: 'https://kentonishi.github.io/LiveTL/about' });
+    }else if(details.reason == "update"){
+        //didUpdate = true;
+        var thisVersion = chrome.runtime.getManifest().version;
+        console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
+        chrome.browserAction.setIcon({
+            path: "./icons/update.png"
+        })
+        chrome.browserAction.onClicked.addListener(changes);
+    }
+});
+
+
 chrome.browserAction.onClicked.addListener(launch);
+
+
 
 chrome.runtime.onMessage.addListener((request, sender, callback) => {
   switch (request.type) {
