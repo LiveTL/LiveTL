@@ -6,7 +6,8 @@ parseParams = () => {
   return s == '' ? {} : JSON.parse('{"' + s + '"}');
 };
 
-const v = parseParams().v || '5qap5aO4i9A';
+const params = parseParams();
+const v = params.v || '5qap5aO4i9A';
 const stream = document.querySelector('#stream');
 const ltlchat = document.querySelector('#livetl-chat');
 const chat = document.querySelector('#chat');
@@ -33,16 +34,29 @@ $('#leftPanel').resizable({
   handles: {
     e: '#handleV'
   },
-start: start,
-stop: stop
+  start: start,
+  stop: stop
 });
 $('#topRightPanel').resizable({
   handles: {
     s: '#handleH'
   },
-start: start,
-stop: stop
+  start: start,
+  stop: stop
 });
-chat.src = `https://kentonishi.github.io/LiveTL/embed?v=${v}&embed_domain=${document.domain}`;
-stream.src = `https://www.youtube.com/embed/${v}?autoplay=1`;
+let c = params.continuation;
+const embedDomain = EMBED_DOMAIN;
+if (c) {
+  chat.src = `${embedDomain}?continuation=${c}`;
+  window.onmessage = d => {
+    d = JSON.parse(JSON.stringify(d.data));
+    try {
+      chat.contentWindow.postMessage(d, "*");
+      ltlchat.contentWindow.postMessage(d, "*");
+    } catch (e) { }
+  }
+} else {
+  chat.src = `${embedDomain}?v=${v}`;
+}
+stream.src = `${embedDomain}?v=${v}&mode=video`;
 ltlchat.src = `${chat.src}&useLiveTL=1`;

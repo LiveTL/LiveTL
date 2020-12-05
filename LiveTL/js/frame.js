@@ -99,8 +99,8 @@ function switchChat() {
   });
 }
 
-function parseParams() {
-  const s = decodeURI(location.search.substring(1))
+function parseParams(loc) {
+  const s = decodeURI((loc || location.search).substring(1))
     .replace(/"/g, '\\"')
     .replace(/&/g, '","')
     .replace(/=/g, '":"');
@@ -128,10 +128,22 @@ async function insertLiveTLButtons(isHolotools = false) {
   const redirectTab = u => chrome.runtime.sendMessage({ type: 'redirect', data: u });
   const createTab = u => chrome.runtime.sendMessage({ type: 'tab', data: u });
 
-  const u = `${await getWAR('index.html')}?v=${params.v}`;
-  makeButton('Watch in LiveTL', () => redirectTab({ url: u }));
+  getContinuation = (() => {
+    let src = document.querySelector("#chatframe").src;
+    if (src.startsWith("https://www.youtube.com/live_chat_replay")) {
+      return "&continuation=" + parseParams("?" + src.split("?")[1]).continuation;
+    }
+    return "";
+  });
+
+  const embedDomain = EMBED_DOMAIN;
+  const continuation = getContinuation();
+
+  makeButton('Watch in LiveTL', async () => redirectTab({
+    url: `${await getWAR('index.html')}?v=${params.v}${continuation}`
+  }));
   makeButton('Pop Out Translations', () => createWindow({
-    url: `https://www.youtube.com/live_chat?v=${params.v}&useLiveTL=1`,
+    url: `${embedDomain}?v=${params.v}&mode=chat&useLiveTL=1${continuation}`,
     type: 'popup',
     focused: true
   }), 'rgb(143, 143, 143)');
@@ -139,7 +151,8 @@ async function insertLiveTLButtons(isHolotools = false) {
 
 let params = {};
 const activationInterval = setInterval(() => {
-  if (window.location.href.startsWith('https://www.youtube.com/live_chat')) {
+  if (window.location.href.startsWith('https://www.youtube.com/live_chat') ||
+    window.location.href.startsWith("https://www.youtube.com/live_chat_replay")) {
     clearInterval(activationInterval);
     conlog('Using live chat');
     try {
@@ -168,6 +181,22 @@ if (window.location.href.startsWith('https://kentonishi.github.io/LiveTL/about')
     const e = document.querySelector('#actionMessage');
     e.textContent = 'Thank you for installing LiveTL!';
   };
+} else if (window.location.href.startsWith("https://www.youtube.com/embed/")) {
+  window.onmessage = d => {
+    try {
+      parent.postMessage(d.data, "*")
+    } catch (e) { }
+  };
+} else if (window.location.href.startsWith("https://www.youtube.com/live_chat_replay")) {
+  try {
+    window.parent.location.href;
+  } catch (e) {
+    window.onmessage = d => {
+      if (window.origin != d.origin) {
+        postMessage(d.data);
+      }
+    };
+  }
 }
 
 function createModal(container) {
@@ -238,7 +267,7 @@ function setSelectInputCallbacks(select, defaultValue) {
 }
 
 function createLangSelectionName(lang) {
-  return `${lang.name} (${lang.lang}) [${lang.code}]`;
+  return `${lang.name} (${lang.lang})`;
 }
 
 function createLangSelectOption(lang) {
@@ -260,7 +289,7 @@ function createSelectInput() {
   const select = document.createElement('input');
   select.dataset.role = 'none';
   const defaultLang = languages[0];
-  select.value = `${defaultLang.name} (${defaultLang.lang}) [${defaultLang.code}]`;
+  select.value = createLangSelectionName(defaultLang);
   select.setAttribute('list', 'languages');
   select.id = 'langSelect';
   setSelectInputCallbacks(select, select.value);
@@ -403,7 +432,7 @@ function createWelcomeText() {
   buttons.innerHTML = `
         Please consider
         <a id="shareExtension" href="javascript:void(0);">sharing LiveTL with your friends</a>, 
-        <a href="https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg" target="about:blank">giving us a 5-star review</a>, 
+        <a href="https://kentonishi.github.io/LiveTL/about/review" target="about:blank">giving us a 5-star review</a>, 
         <a href="https://discord.gg/uJrV3tmthg" target="about:blank">joining our Discord server</a>, and
         <a href="https://github.com/KentoNishi/LiveTL" target="about:blank">starring our GitHub repository</a>!
     `;

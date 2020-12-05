@@ -1,10 +1,11 @@
 const MAX_LANG_TAG_LEN = 7;
 
-const langTokens = [['[', ']'], ['{', '}'], ['(', ')'], ['|', '|'], ['<', '>']];
+const langTokens = [['[', ']'], ['{', '}'], ['(', ')'], ['|', '|'], ['<', '>'], ['【', '】'], ['「', '」'], ['『', '』'], ['〚', '〛'], ['（', '）'], ['〈', '〉'], ['⁽', '₎']];
 const startLangTokens = langTokens.flatMap(e => e[0]);
 const tokenMap = Object.fromEntries(langTokens);
 
 const transDelimiters = ['-', ':'];
+const langSplitRe = /[\/\ \-\:\.\|\／]/;
 
 /**
  * Parses translation
@@ -63,7 +64,7 @@ const parseTranslation = message => {
 };
 
 function isLangMatch (textLang, currentLang) {
-  textLang = textLang.toLowerCase().split(/[\/\ \-\:\.\|]/).filter(s => s !== '');
+  textLang = textLang.toLowerCase().split(langSplitRe).filter(s => s !== '');
   return textLang.length <= 2 && textLang.some(s => (
     currentLang.name.toLowerCase().startsWith(s) ||
     s === currentLang.code ||

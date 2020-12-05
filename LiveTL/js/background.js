@@ -19,3 +19,14 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
       break;
   }
 });
+
+chrome.webRequest.onHeadersReceived.addListener(
+  details => {
+    return {
+      responseHeaders: details.responseHeaders.filter(header => {
+        return (header.name.toLowerCase() !== 'x-frame-options');
+      })
+    };
+  }, {
+  urls: ["<all_urls>"]
+}, ["blocking", "responseHeaders"]);
