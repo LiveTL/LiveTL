@@ -281,7 +281,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $PROJECT_DIR\ncd ../../\nmake safari-noBuild\n";
+			shellScript = "cd $PROJECT_DIR\ncd ../../\nmake safari-noBuild EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
