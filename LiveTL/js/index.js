@@ -45,7 +45,7 @@ $('#topRightPanel').resizable({
   stop: stop
 });
 let c = params.continuation;
-const embedDomain = 'http://localhost:8000/embed';
+const embedDomain = EMBED_DOMAIN;
 if (c) {
   chat.src = `${embedDomain}?continuation=${c}`;
   window.onmessage = d => {
