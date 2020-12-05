@@ -113,12 +113,13 @@ async function insertLiveTLButtons(isHolotools = false) {
   conlog('Inserting LiveTL Launcher Buttons');
   params = parseParams();
   const makeButton = (text, callback, color) => {
-    const a = document.createElement('span');
+    let a = document.createElement('span');
     a.appendChild(getLiveTLButton(color));
+    a.className = 'liveTLBottan';
 
     const interval2 = setInterval(() => {
       const e = isHolotools ? document.querySelector('#input-panel') : document.querySelector('ytd-live-chat-frame');
-      if (e != null) {
+      if (e != null && document.querySelectorAll(".liveTLBottan").length < 2) {
         clearInterval(interval2);
         e.appendChild(a);
         a.querySelector('a').onclick = callback;
@@ -161,7 +162,7 @@ async function insertLiveTLButtons(isHolotools = false) {
 
 let params = {};
 let lastLocation = "";
-const activationInterval = setInterval(() => {
+const activationInterval = setInterval(async () => {
   if (window.location.href == lastLocation) return;
   lastLocation = window.location.href;
   if (window.location.href.startsWith('https://www.youtube.com/live_chat') ||
@@ -173,15 +174,15 @@ const activationInterval = setInterval(() => {
         conlog('Running LiveTL!');
         runLiveTL();
       } else if (params.embed_domain === 'hololive.jetri.co') {
-        insertLiveTLButtons(true);
+        await insertLiveTLButtons(true);
       }
     } catch (e) { }
   } else if (window.location.href.startsWith('https://www.youtube.com/watch')) {
     conlog('Watching video');
-    const interval = setInterval(() => {
+    const interval = setInterval(async () => {
       if (document.querySelector('ytd-live-chat-frame')) {
         clearInterval(interval);
-        insertLiveTLButtons();
+        await insertLiveTLButtons();
       }
     }, 100);
   } else if (window.location.href.startsWith(embedDomain)) {
