@@ -5,38 +5,28 @@ const changes = () => chrome.tabs.create({ url: 'https://github.com/KentoNishi/L
 //var didUpdate = false;
 //chrome.runtime.onInstalled.addListener(launch);
 
-chrome.runtime.onInstalled.addListener(function(details){
-    if(details.reason == "install"){
-        console.log("This is a first install!");
-        chrome.tabs.create({ url: 'https://kentonishi.github.io/LiveTL/about' });
-    }else if(details.reason == "update"){
-        //didUpdate = true;
-        var thisVersion = chrome.runtime.getManifest().version;
-        console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
-        chrome.browserAction.setIcon({
-            path: "./icons/update.png"
-        })
-        chrome.browserAction.onClicked.addListener(changes);
-    }
+chrome.runtime.onInstalled.addListener(function (details) {
+  if (details.reason == "install") {
+    console.log("This is a first install!");
+    chrome.tabs.create({ url: 'https://kentonishi.github.io/LiveTL/about' });
+  } else if (details.reason == "update") {
+    //didUpdate = true;
+    var thisVersion = chrome.runtime.getManifest().version;
+    console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
+    chrome.browserAction.setIcon({
+      path: "./icons/update.png"
+    })
+    chrome.browserAction.onClicked.addListener(changes);
+  }
 });
 
 
 chrome.browserAction.onClicked.addListener(launch);
 
 
-
 chrome.runtime.onMessage.addListener((request, sender, callback) => {
   switch (request.type) {
-    case 'window':
-      chrome.windows.create(request.data);
-      break;
-    case 'tab':
-      chrome.tabs.create(request.data);
-      break;
-    case 'redirect':
-      chrome.tabs.update(request.data);
-      break;
-    case 'get_war': // Is this supposed to set the request type or...?
+    case 'get_war':
       callback(chrome.runtime.getURL(request.url));
       break;
   }
