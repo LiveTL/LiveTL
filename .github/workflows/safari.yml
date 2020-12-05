@@ -24,10 +24,12 @@ jobs:
         with:
           export-method: development
           project: LiveTL-Safari/LiveTl/LiveTl.xcodeproj
-      - name: Create Disk Image
-        run: hdiutil create -volname LiveTL-Safari -srcfolder ./Export/ -ov -format UDZO LiveTL-Safari.dmg
+      - name: Prep disk image folder
+        run: mkdir ./image/ && cp ./Export/*.app ./image/LiveTL.app && ln -s /Applications ./image/
+      - name: Create Disk Image 
+        run: hdiutil create -volname LiveTL-Safari -srcfolder ./image/ -ov -format UDZO LiveTL-Safari.dmg
         
-      - name: Upload Firefox package to release
+      - name: Upload Safari package to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
