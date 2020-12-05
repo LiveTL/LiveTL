@@ -13,7 +13,7 @@ endif
 
 replace-embed-domain=sed 's|EMBED_DOMAIN|"$(EMBED_DOMAIN)"|g'
 replace-embed-domain-noquote=sed 's|EMBED_DOMAIN|$(EMBED_DOMAIN)|g'
-replace-version=sed 's|VERSION|$(VERSION)|g' | sed 's/[refs\/tagv]//g'
+replace-version=sed 's|VERSION|$(VERSION)|g'
 
 all: chrome firefox
 

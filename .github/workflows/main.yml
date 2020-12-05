@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Package extensions
-        run: make EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed VERSION=${{ github.ref }}
+        run: make EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed VERSION=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g')
       - name: Upload Chrome package to release
         uses: svenstaro/upload-release-action@v2
         with:
