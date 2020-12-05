@@ -12,9 +12,9 @@
 
 Get live translations for YouTube streams, crowdsourced from multilingual viewers!
 
-### [Click here to Download for Free](https://kentonishi.github.io/LiveTL/)
+### [Download LiveTL for your Browser](https://kentonishi.github.io/LiveTL/)
 
-or
+or...
 
 [Download for Free from the Chrome Web Store](https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg)
 
@@ -25,7 +25,7 @@ or
 ![Demo](./img/livetlscreen.png)
 
 ## FAQ
-[An FAQ can be found here](https://kentonishi.github.io/LiveTL/about/#frequently-asked-questions)
+[Find some answers to common questions in our FAQ!](https://kentonishi.github.io/LiveTL/about/#frequently-asked-questions)
 
 ## Feedback and Contributing
 
