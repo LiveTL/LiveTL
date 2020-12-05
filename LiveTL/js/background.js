@@ -6,7 +6,7 @@ chrome.browserAction.onClicked.addListener(launch);
 chrome.runtime.onMessage.addListener((request, sender, callback) => {
   switch (request.type) {
     case 'window':
-      chrome.windows.create(request.data);
+      chrome.windows.create(request.data, callback);
       break;
     case 'tab':
       chrome.tabs.create(request.data);
@@ -14,8 +14,11 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
     case 'redirect':
       chrome.tabs.update(request.data);
       break;
-    case 'get_war': // Is this supposed to set the request type or...?
+    case 'get_war':
       callback(chrome.runtime.getURL(request.url));
+      break;
+    case 'postMessageToWindow':
+      chrome.tabs.sendMessage(request.id, callback);
       break;
   }
 });

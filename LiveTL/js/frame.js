@@ -8,6 +8,8 @@ const isFirefox = !!/Firefox/.exec(navigator.userAgent);
 
 const languageConversionTable = {};
 
+const embedDomain = EMBED_DOMAIN;
+
 // WAR: web accessible resource
 async function getWAR(u) {
   return new Promise((res, rej) => chrome.runtime.sendMessage({ type: 'get_war', url: u }, r => res(r)));
@@ -123,35 +125,45 @@ async function insertLiveTLButtons(isHolotools = false) {
     }, 100);
   };
 
-  const redirectTab = u => chrome.runtime.sendMessage({ type: 'redirect', data: u });
-  const createTab = u => chrome.runtime.sendMessage({ type: 'tab', data: u });
+  const redirectTab = u => window.location.href = u;
+  const createTab = u => window.open(u);
+  const createWindow = u => window.open(u, '',
+    'scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300'
+  );
+
 
   getContinuation = (() => {
-    let src = document.querySelector("#chatframe").src;
+    let chatframe = document.querySelector("#chatframe");
+    let src = chatframe.contentWindow.location.href;
     if (src.startsWith("https://www.youtube.com/live_chat_replay")) {
       return "&continuation=" + parseParams("?" + src.split("?")[1]).continuation;
     }
     return "";
   });
 
-  const embedDomain = EMBED_DOMAIN;
-  const continuation = getContinuation();
+  getTitle = () => encodeURIComponent(document.querySelector("#container > .title").textContent);
 
-  makeButton('Watch in LiveTL', async () => redirectTab({
-    url: `${await getWAR('index.html')}?v=${params.v}${continuation}`
-  }));
-  makeButton('Pop Out Translations', () => createWindow({
-    url: `${embedDomain}?v=${params.v}&mode=chat&useLiveTL=1${continuation}`,
-    type: 'popup',
-    focused: true
-  }), 'rgb(143, 143, 143)');
+  makeButton('Watch in LiveTL', async () =>
+    redirectTab(`${await getWAR('index.html')}?v=${params.v}&title=${getTitle()}${getContinuation()}`));
+
+
+  makeButton('Pop Out Translations',
+    () => {
+      let tlwindow = createWindow(`${embedDomain}?v=${params.v}&mode=chat&title=${getTitle()}&useLiveTL=1${getContinuation()}`);
+      document.querySelector("#chatframe").contentWindow.onmessage = d => {
+        tlwindow.postMessage(d.data, "*");
+      }
+    },
+    'rgb(143, 143, 143)');
 }
 
 let params = {};
+let lastLocation = "";
 const activationInterval = setInterval(() => {
+  if (window.location.href == lastLocation) return;
+  lastLocation = window.location.href;
   if (window.location.href.startsWith('https://www.youtube.com/live_chat') ||
     window.location.href.startsWith("https://www.youtube.com/live_chat_replay")) {
-    clearInterval(activationInterval);
     conlog('Using live chat');
     try {
       params = parseParams();
@@ -163,7 +175,6 @@ const activationInterval = setInterval(() => {
       }
     } catch (e) { }
   } else if (window.location.href.startsWith('https://www.youtube.com/watch')) {
-    clearInterval(activationInterval);
     conlog('Watching video');
     const interval = setInterval(() => {
       if (document.querySelector('ytd-live-chat-frame')) {
@@ -171,6 +182,8 @@ const activationInterval = setInterval(() => {
         insertLiveTLButtons();
       }
     }, 100);
+  } else if (window.location.href.startsWith(embedDomain)) {
+    setFavicon();
   }
 }, 1000);
 
@@ -598,16 +611,6 @@ async function setFavicon() {
   faviconLink.type = 'image/x-icon';
   faviconLink.href = await favicon;
   document.head.appendChild(faviconLink);
-}
-
-async function createWindow(u) {
-  if (isFirefox) {
-    return window.open(u.url, '',
-      'scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300'
-    );
-  } else {
-    return chrome.runtime.sendMessage({ type: 'window', data: u });
-  }
 }
 
 // MARK

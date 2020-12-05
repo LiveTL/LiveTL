@@ -43,6 +43,7 @@ window.onload = () => {
   let c = params.continuation
   let mode = params.mode || "chat"
   let ltl = params.useLiveTL || "";
+  document.title = decodeURIComponent(params.title || "LiveTL");
   switch (mode) {
     case "chat":
       let frame = document.createElement("iframe");

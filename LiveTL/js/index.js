@@ -14,6 +14,7 @@ const chat = document.querySelector('#chat');
 const leftPanel = document.querySelector('#leftPanel');
 const bottomRightPanel = document.querySelector('#bottomRightPanel');
 const topRightPanel = document.querySelector('#topRightPanel');
+document.title = decodeURIComponent(params.title || "LiveTL");
 const start = () => {
   stream.style.display = 'none';
   ltlchat.style.display = 'none';
