@@ -41,6 +41,10 @@ function testParseTranslation() {
       correct: { lang: 'en', msg: 'Test translation' }
     },
     {
+      msg: '[en]: test translation',
+      correct: { lang: 'en', msg: 'test translation' }
+    },
+    {
       msg: 'No translation',
       correct: undefined
     }

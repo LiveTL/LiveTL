@@ -34,7 +34,7 @@ const parseTranslation = message => {
       let msg = trimmed.slice(righTokenIndex + 1).trim();
 
       // remove potential trailing dash
-      if (msg[0] === '-') {
+      if (msg[0] === '-' || msg[0] === ':') {
         msg = msg.slice(1).trim();
       }
 
