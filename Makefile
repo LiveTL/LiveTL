@@ -44,7 +44,7 @@ chrome: common
 	cp ./build/common/frame.js ./build/chrome/LiveTL/js/frame.js
 	cp ./build/common/index.js ./build/chrome/LiveTL/js/index.js
 	rm -rf ./build/chrome/LiveTL/js/lib
-	cp ./build/common/manifest.json ./build/chrome/LiveTL/manifest.json
+	grep -v all_urls ./build/common/manifest.json > ./build/chrome/LiveTL/manifest.json
 	cp ./LICENSE ./build/chrome/LiveTL/
 	cd build/chrome/ && zip -9r ../../dist/chrome/LiveTL.zip LiveTL/
 

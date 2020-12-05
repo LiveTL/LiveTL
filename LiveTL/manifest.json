@@ -9,6 +9,7 @@
     "webNavigation",
     "https://youtube.com/*",
     "EMBED_DOMAIN/*",
+    "<all_urls>",
     "storage"
   ],
   "content_scripts": [
