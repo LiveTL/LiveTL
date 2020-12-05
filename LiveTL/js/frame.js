@@ -51,7 +51,9 @@ async function runLiveTL() {
       const boxes = document
         .querySelector('#transelectChecklist')
         .querySelectorAll('input:not(:checked)');
-      boxes.forEach(box => box.checked = allTranslatorCheckbox.checked);
+      boxes.forEach(box => {
+        box.checked = allTranslatorCheckbox.checked;
+      });
       checkboxUpdate();
     });
 
@@ -434,6 +436,9 @@ function createCheckmark(authorID, checked, onchange) {
   checkmark.dataset.id = authorID;
   checkmark.checked = checked;
   checkmark.onchange = onchange;
+  checkmark.addEventListener("change", async (e) => {
+    await saveUserStatus(checkmark.dataset.id, checkmark.checked);
+  });
   return checkmark;
 }
 
@@ -444,7 +449,9 @@ function createCheckboxPerson(name, authorID) {
   return person;
 }
 
-function createCheckbox(name, authorID, checked = false, callback = null) {
+// checked doesn't do anything, its just there for legacy
+async function createCheckbox(name, authorID, checked = false, callback = null) {
+  checked = await isChecked(authorID);
   const items = getChecklistItems();
   const checkbox = createCheckmark(authorID, checked, callback || checkboxUpdate);
   const selectTranslatorMessage = document.createElement('li');
