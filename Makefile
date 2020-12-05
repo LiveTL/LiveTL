@@ -3,6 +3,12 @@ jquery-ui = "./build/common/jquery-ui.min.js"
 jquery-css = "./build/common/jquery-ui.css"
 lib = "./LiveTL/js/lib"
 
+ifndef EMBED_DOMAIN
+EMBED_DOMAIN=http://localhost:8000/embed
+endif
+
+replace-embed-domain=sed 's|EMBED_DOMAIN|"$(EMBED_DOMAIN)"|g'
+
 all: chrome firefox
 
 .PHONY: init bench test chrome firefox clean
@@ -30,6 +36,7 @@ chrome: common
 	cp $(jquery-ui) ./build/chrome/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/chrome/LiveTL/css/jquery-ui.css
 	cp ./build/common/frame.js ./build/chrome/LiveTL/js/frame.js
+	cp ./build/common/index.js ./build/chrome/LiveTL/js/index.js
 	rm -rf ./build/chrome/LiveTL/js/lib
 	cp ./LICENSE ./build/chrome/LiveTL/
 	cd build/chrome/ && zip -9r ../../dist/chrome/LiveTL.zip LiveTL/
@@ -43,6 +50,7 @@ firefox: common
 	cp $(jquery-ui) ./build/firefox/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/firefox/LiveTL/css/jquery-ui.css
 	cp ./build/common/frame.js ./build/firefox/LiveTL/js/frame.js
+	cp ./build/common/index.js ./build/firefox/LiveTL/js/index.js
 	rm -rf ./build/firefox/LiveTL/js/lib/
 	cp ./LICENSE ./build/firefox/LiveTL/
 	grep -v incognito ./LiveTL/manifest.json > ./build/firefox/LiveTL/manifest.json
@@ -57,6 +65,7 @@ safari: common
 	cp $(jquery-ui) ./build/safari/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/safari/LiveTL/css/jquery-ui.css
 	cp ./build/common/frame.js ./build/safari/LiveTL/js/frame.js
+	cp ./build/common/index.js ./build/safari/LiveTL/js/index.js
 	rm -rf ./build/safari/LiveTL/js/lib/
 	cp ./LICENSE ./build/safari/LiveTL/
 	grep -v incognito ./LiveTL/manifest.json > ./build/safari/LiveTL/manifest.json
@@ -75,13 +84,16 @@ safari-noBuild: common
 	cp $(jquery-ui) ./build/safari/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/safari/LiveTL/css/jquery-ui.css
 	cp ./build/common/frame.js ./build/safari/LiveTL/js/frame.js
+	cp ./build/common/index.js ./build/safari/LiveTL/js/index.js
 	rm -rf ./build/safari/LiveTL/js/lib/
 	cp ./LICENSE ./build/safari/LiveTL/
 	grep -v incognito ./LiveTL/manifest.json > ./build/safari/LiveTL/manifest.json
 
 common: init
 	cat $(lib)/constants.js $(lib)/../frame.js $(lib)/filter.js $(lib)/svgs.js \
-		| grep -v module.export > ./build/common/frame.js
+		| grep -v module.export | $(replace-embed-domain) \
+		> ./build/common/frame.js
+	$(replace-embed-domain) $(lib)/../index.js > ./build/common/index.js
 
 clean:
 	rm -rf dist/
