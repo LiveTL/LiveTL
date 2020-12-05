@@ -7,6 +7,7 @@
     "webRequest",
     "webRequestBlocking",
     "webNavigation",
+    "https://www.youtube.com/*",
     "<all_urls>",
     "storage"
   ],
