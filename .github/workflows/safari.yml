@@ -25,7 +25,7 @@ jobs:
           export-method: development
           project: LiveTL-Safari/LiveTl/LiveTl.xcodeproj
       - name: Prep disk image folder
-        run: mkdir ./image/ && cp ./Export/*.app ./image/LiveTL.app && ln -s /Applications ./image/
+        run: mkdir ./image/ && cp -r ./Export/*.app ./image/LiveTL.app && ln -s /Applications ./image/
       - name: Create Disk Image 
         run: hdiutil create -volname LiveTL-Safari -srcfolder ./image/ -ov -format UDZO LiveTL-Safari.dmg
         
