@@ -6,7 +6,11 @@
   "permissions": [
     "webRequest",
     "webRequestBlocking",
-    "https://www.youtube.com/live_chat_replay*",
+    "webNavigation",
+    "https://youtube.com/*",
+    "https://www.youtube.com/*",
+    "EMBED_DOMAIN/*",
+    "<all_urls>",
     "storage"
   ],
   "content_scripts": [
@@ -28,7 +32,7 @@
     "scripts": [
       "./js/background.js"
     ],
-    "persistent": true
+    "persistent": false
   },
   "icons": {
     "16": "./icons/16x16.png",
