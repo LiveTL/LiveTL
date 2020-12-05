@@ -6,7 +6,7 @@
     {
       "label": "build",
       "type": "shell",
-      "command": "make chrome",
+      "command": "export EMBED_DOMAIN=http://localhost:8000/embed;make chrome;make firefox;",
       "problemMatcher": [],
       "group": {
         "kind": "build",
