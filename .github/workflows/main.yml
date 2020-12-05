@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Package extensions
-        run: make
+        run: make EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed
       - name: Upload Chrome package to release
         uses: svenstaro/upload-release-action@v2
         with:
