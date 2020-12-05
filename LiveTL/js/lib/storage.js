@@ -11,6 +11,17 @@ async function saveUserStatus(userid, checked) {
   return await setStorage(userid, { checked });
 }
 
+async function getDefaultLanguage() {
+  let lang = await getStorage('LTL:defaultLang');
+  if (lang) {
+    return lang.lang;
+  }
+}
+
+async function setDefaultLanguage(lang) {
+  return await setStorage('LTL:defaultLang', { lang });
+}
+
 async function getStorage(key) {
   const result = await storage.get(key);
   return result ? result[key] : result;

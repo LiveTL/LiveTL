@@ -273,11 +273,15 @@ async function importFontAwesome() {
 
 function setSelectInputCallbacks(select, defaultValue) {
   select.onfocus = () => select.value = '';
-  select.onblur = () => {
+  const updateSelect = async () => {
     if (!(select.value in languageConversionTable)) {
       select.value = defaultValue;
     }
+    await setDefaultLanguage(select.value);
+    await getDefaultLanguage();
   };
+  select.onblur = updateSelect;
+  select.onchange = updateSelect;
 }
 
 function createLangSelectionName(lang) {
@@ -302,11 +306,12 @@ function createLangSelectLabel() {
 function createSelectInput() {
   const select = document.createElement('input');
   select.dataset.role = 'none';
-  const defaultLang = languages[0];
-  select.value = createLangSelectionName(defaultLang);
   select.setAttribute('list', 'languages');
   select.id = 'langSelect';
-  setSelectInputCallbacks(select, select.value);
+  getDefaultLanguage().then(defaultLang => {
+    select.value = defaultLang || createLangSelectionName(languages[0]);
+    setSelectInputCallbacks(select, select.value);
+  });
   return select;
 }
 
