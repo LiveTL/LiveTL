@@ -8,6 +8,7 @@ EMBED_DOMAIN=http://localhost:8000/embed
 endif
 
 replace-embed-domain=sed 's|EMBED_DOMAIN|"$(EMBED_DOMAIN)"|g'
+replace-embed-domain-noquote=sed 's|EMBED_DOMAIN|$(EMBED_DOMAIN)|g'
 
 all: chrome firefox
 
@@ -29,7 +30,7 @@ bench:
 
 chrome: common
 	rm -rf dist/chrome/
-	mkdir dist/chrome/
+	mkdir -p dist/chrome/
 	mkdir -p build/chrome/LiveTL/
 	cp -r LiveTL/ build/chrome/
 	cp $(jquery) ./build/chrome/LiveTL/jquery.min.js
@@ -38,12 +39,13 @@ chrome: common
 	cp ./build/common/frame.js ./build/chrome/LiveTL/js/frame.js
 	cp ./build/common/index.js ./build/chrome/LiveTL/js/index.js
 	rm -rf ./build/chrome/LiveTL/js/lib
+	cp ./build/common/manifest.json ./build/chrome/LiveTL/manifest.json
 	cp ./LICENSE ./build/chrome/LiveTL/
 	cd build/chrome/ && zip -9r ../../dist/chrome/LiveTL.zip LiveTL/
 
 firefox: common
 	rm -rf dist/firefox/
-	mkdir dist/firefox/
+	mkdir -p dist/firefox/
 	mkdir -p build/firefox/
 	cp -r LiveTL build/firefox/
 	cp $(jquery) ./build/firefox/LiveTL/jquery.min.js
@@ -53,12 +55,12 @@ firefox: common
 	cp ./build/common/index.js ./build/firefox/LiveTL/js/index.js
 	rm -rf ./build/firefox/LiveTL/js/lib/
 	cp ./LICENSE ./build/firefox/LiveTL/
-	grep -v incognito ./LiveTL/manifest.json > ./build/firefox/LiveTL/manifest.json
+	grep -v incognito ./build/common/manifest.json > ./build/firefox/LiveTL/manifest.json
 	cd build/firefox/LiveTL && zip -9r ../../../dist/firefox/LiveTL.zip *
 	
 safari: common 
 	rm -rf dist/safari/
-	mkdir dist/safari/
+	mkdir -p dist/safari/
 	mkdir -p build/safari/
 	cp -r LiveTL build/safari/
 	cp $(jquery) ./build/safari/LiveTL/jquery.min.js
@@ -68,7 +70,7 @@ safari: common
 	cp ./build/common/index.js ./build/safari/LiveTL/js/index.js
 	rm -rf ./build/safari/LiveTL/js/lib/
 	cp ./LICENSE ./build/safari/LiveTL/
-	grep -v incognito ./LiveTL/manifest.json > ./build/safari/LiveTL/manifest.json
+	grep -v incognito ./build/common/manifest.json > ./build/safari/LiveTL/manifest.json
 	mkdir dist/safari/tmp/
 	xcodebuild -project LiveTL-Safari/LiveTL/LiveTL.xcodeproj CONFIGURATION_BUILD_DIR=../../dist/safari/tmp/
 	cp -r dist/safari/tmp/LiveTL.app dist/safari/LiveTL.app
@@ -77,7 +79,7 @@ safari: common
 
 safari-noBuild: common 
 	rm -rf dist/safari/
-	mkdir dist/safari/
+	mkdir -p dist/safari/
 	mkdir -p build/safari/
 	cp -r LiveTL build/safari/
 	cp $(jquery) ./build/safari/LiveTL/jquery.min.js
@@ -87,13 +89,14 @@ safari-noBuild: common
 	cp ./build/common/index.js ./build/safari/LiveTL/js/index.js
 	rm -rf ./build/safari/LiveTL/js/lib/
 	cp ./LICENSE ./build/safari/LiveTL/
-	grep -v incognito ./LiveTL/manifest.json > ./build/safari/LiveTL/manifest.json
+	grep -v incognito ./build/common/manifest.json > ./build/safari/LiveTL/manifest.json
 
 common: init
 	cat $(lib)/constants.js $(lib)/../frame.js $(lib)/filter.js $(lib)/svgs.js \
 		| grep -v module.export | $(replace-embed-domain) \
 		> ./build/common/frame.js
 	$(replace-embed-domain) $(lib)/../index.js > ./build/common/index.js
+	$(replace-embed-domain-noquote) LiveTL/manifest.json > ./build/common/manifest.json
 
 clean:
 	rm -rf dist/
