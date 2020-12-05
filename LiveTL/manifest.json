@@ -7,8 +7,8 @@
     "webRequest",
     "webRequestBlocking",
     "webNavigation",
-    "https://www.youtube.com/*",
-    "<all_urls>",
+    "https://www.youtube.com/*?*",
+    "EMBED_DOMAIN/*",
     "storage"
   ],
   "content_scripts": [
