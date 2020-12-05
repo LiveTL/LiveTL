@@ -62,6 +62,8 @@ firefox: common
 	cp ./LICENSE ./build/firefox/LiveTL/
 	grep -v incognito ./build/common/manifest.json > ./build/firefox/LiveTL/manifest.json
 	cd build/firefox/LiveTL && zip -9r ../../../dist/firefox/LiveTL.zip *
+	echo version $(version)
+	echo ref $(github.ref)
 	
 safari: common 
 	rm -rf dist/safari/
