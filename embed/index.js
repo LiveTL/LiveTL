@@ -48,12 +48,14 @@ window.onload = () => {
       let frame = document.createElement("iframe");
       document.body.appendChild(frame);
       if (c) {
-        frame.src = `https://www.youtube.com/live_chat_replay?continuation=${c}&useLiveTL=${ltl}`
+        frame.src = `https://www.youtube.com/live_chat_replay?continuation=${c}&embed_domain=${document.domain}&useLiveTL=${ltl}`
       } else {
         frame.src = `https://www.youtube.com/live_chat?v=${v}&embed_domain=${document.domain}&useLiveTL=${ltl}`
       }
       window.onmessage = d => {
-        frame.contentWindow.postMessage(d.data, "*");
+        try {
+          frame.contentWindow.postMessage(d.data, "*");
+        } catch (e) { }
       }
       break;
 
@@ -63,6 +65,7 @@ window.onload = () => {
         try {
           d = JSON.parse(d.data);
           if (d.event == "infoDelivery") {
+            parent.postMessage({ "yt-player-video-progress": d.info.currentTime }, "*");
             parent.postMessage({ "yt-player-video-progress": d.info.currentTime }, "*");
           }
         }

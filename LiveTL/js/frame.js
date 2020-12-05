@@ -175,7 +175,11 @@ if (window.location.href.startsWith('https://kentonishi.github.io/LiveTL/about')
     e.textContent = 'Thank you for installing LiveTL!';
   };
 } else if (window.location.href.startsWith("https://www.youtube.com/embed/")) {
-  window.onmessage = d => parent.postMessage(d.data, "*");
+  window.onmessage = d => {
+    try {
+      parent.postMessage(d.data, "*")
+    } catch (e) { }
+  };
 } else if (window.location.href.startsWith("https://www.youtube.com/live_chat_replay")) {
   try {
     window.parent.location.href;
