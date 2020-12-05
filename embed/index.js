@@ -12,7 +12,9 @@ embedVideo = v => {
   tag.src = "https://www.youtube.com/iframe_api";
   let firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
+  let frameDiv = document.createElement('div');
+  frameDiv.id = "frame_div";
+  document.body.appendChild(frameDiv);
 
   // https://developers.google.com/youtube/iframe_api_reference
   window.onYouTubeIframeAPIReady = () => {
@@ -35,35 +37,37 @@ embedVideo = v => {
   }
 }
 
-let params = parseParams()
-let v = params.v || '5qap5aO4i9A'
-let c = params.continuation
-let mode = params.mode || "chat"
-let ltl = params.useLiveTL || "";
-let frame = document.querySelector('iframe')
-switch (mode) {
-  case "chat":
-    if (c) {
-      frame.src = `https://www.youtube.com/live_chat_replay?continuation=${c}&useLiveTL=${ltl}`
-    } else {
-      frame.src = `https://www.youtube.com/live_chat?v=${v}&embed_domain=${document.domain}&useLiveTL=${ltl}`
-    }
-    window.onmessage = d => {
-      frame.contentWindow.postMessage(d.data, "*");
-    }
-    break;
-
-  case "video":
-    embedVideo(v);
-
-    window.onmessage = d => {
-      try {
-        d = JSON.parse(d.data);
-        if (d.event == "infoDelivery") {
-          parent.postMessage({ "yt-player-video-progress": d.info.currentTime }, "*");
-        }
+window.onload = () => {
+  let params = parseParams()
+  let v = params.v || '5qap5aO4i9A'
+  let c = params.continuation
+  let mode = params.mode || "chat"
+  let ltl = params.useLiveTL || "";
+  switch (mode) {
+    case "chat":
+      let frame = document.createElement("iframe");
+      document.body.appendChild(frame);
+      if (c) {
+        frame.src = `https://www.youtube.com/live_chat_replay?continuation=${c}&useLiveTL=${ltl}`
+      } else {
+        frame.src = `https://www.youtube.com/live_chat?v=${v}&embed_domain=${document.domain}&useLiveTL=${ltl}`
       }
-      catch (e) { }
-    }
-    break;
-}
+      window.onmessage = d => {
+        frame.contentWindow.postMessage(d.data, "*");
+      }
+      break;
+
+    case "video":
+      embedVideo(v);
+      window.onmessage = d => {
+        try {
+          d = JSON.parse(d.data);
+          if (d.event == "infoDelivery") {
+            parent.postMessage({ "yt-player-video-progress": d.info.currentTime }, "*");
+          }
+        }
+        catch (e) { }
+      }
+      break;
+  }
+};
