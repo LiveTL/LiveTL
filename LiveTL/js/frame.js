@@ -137,7 +137,7 @@ async function insertLiveTLButtons(isHolotools = false) {
 
   getContinuation = (() => {
     let chatframe = document.querySelector("#chatframe");
-    let src = chatframe.contentWindow.location.href;
+    let src = chatframe.src;
     if (src.startsWith("https://www.youtube.com/live_chat_replay")) {
       return "&continuation=" + parseParams("?" + src.split("?")[1]).continuation;
     }
@@ -180,9 +180,9 @@ const activationInterval = setInterval(async () => {
   } else if (window.location.href.startsWith('https://www.youtube.com/watch')) {
     conlog('Watching video');
     const interval = setInterval(async () => {
-      if (document.querySelector('ytd-live-chat-frame')) {
+      if (document.querySelector('#chatframe')) {
         clearInterval(interval);
-        await insertLiveTLButtons();
+        document.querySelector('#chatframe').onload = async () => await insertLiveTLButtons();
       }
     }, 100);
   } else if (window.location.href.startsWith(embedDomain)) {
