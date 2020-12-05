@@ -4,7 +4,7 @@ jquery-css = "./build/common/jquery-ui.css"
 lib = "./LiveTL/js/lib"
 
 ifndef EMBED_DOMAIN
-EMBED_DOMAIN=http://localhost:8000/embed
+EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed
 endif
 
 replace-embed-domain=sed 's|EMBED_DOMAIN|"$(EMBED_DOMAIN)"|g'
