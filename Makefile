@@ -80,7 +80,7 @@ safari-noBuild: common
 	grep -v incognito ./LiveTL/manifest.json > ./build/safari/LiveTL/manifest.json
 
 common: init
-	cat $(lib)/constants.js $(lib)/storage.js $(lib)/../frame.js $(lib)/filter.js $(lib)/svgs.js \
+	cat $(lib)/constants.js $(lib)/../frame.js $(lib)/storage.js $(lib)/filter.js $(lib)/svgs.js \
 		| grep -v module.export > ./build/common/frame.js
 
 clean:
