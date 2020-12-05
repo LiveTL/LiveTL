@@ -7,8 +7,13 @@ ifndef EMBED_DOMAIN
 EMBED_DOMAIN=http://localhost:8000/embed
 endif
 
+ifndef VERSION
+VERSION=0.1.0
+endif
+
 replace-embed-domain=sed 's|EMBED_DOMAIN|"$(EMBED_DOMAIN)"|g'
 replace-embed-domain-noquote=sed 's|EMBED_DOMAIN|$(EMBED_DOMAIN)|g'
+replace-version=sed 's|VERSION|$(VERSION)|g'
 
 all: chrome firefox
 
@@ -96,7 +101,7 @@ common: init
 		| grep -v module.export | $(replace-embed-domain) \
 		> ./build/common/frame.js
 	$(replace-embed-domain) $(lib)/../index.js > ./build/common/index.js
-	$(replace-embed-domain-noquote) LiveTL/manifest.json > ./build/common/manifest.json
+	$(replace-embed-domain-noquote) LiveTL/manifest.json | $(replace-version) > ./build/common/manifest.json
 
 clean:
 	rm -rf dist/
