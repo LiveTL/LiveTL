@@ -26,7 +26,7 @@ embedVideo = v => {
           width: '100%',
           videoId: id,
           playerVars: {
-            autoplay: 1
+            autoplay: 0
           }
         });
       } else {
