@@ -126,17 +126,22 @@ async function insertLiveTLButtons(isHolotools = false) {
   const redirectTab = u => chrome.runtime.sendMessage({ type: 'redirect', data: u });
   const createTab = u => chrome.runtime.sendMessage({ type: 'tab', data: u });
 
+  getContinuation = (() => {
+    let src = document.querySelector("#chatframe").src;
+    if (src.startsWith("https://www.youtube.com/live_chat_replay")) {
+      return "&continuation=" + parseParams("?" + src.split("?")[1]).continuation;
+    }
+    return "";
+  });
+
+  const embedDomain = EMBED_DOMAIN;
+  const continuation = getContinuation();
+
   makeButton('Watch in LiveTL', async () => redirectTab({
-    url: `${await getWAR('index.html')}?v=${params.v}${(() => {
-      let src = document.querySelector("#chatframe").src;
-      if (src.startsWith("https://www.youtube.com/live_chat_replay")) {
-        return "&continuation=" + parseParams("?" + src.split("?")[1]).continuation;
-      }
-      return "";
-    })()}`
+    url: `${await getWAR('index.html')}?v=${params.v}${continuation}`
   }));
   makeButton('Pop Out Translations', () => createWindow({
-    url: `https://www.youtube.com/live_chat?v=${params.v}&useLiveTL=1`,
+    url: `${embedDomain}?v=${params.v}&mode=chat&useLiveTL=1${continuation}`,
     type: 'popup',
     focused: true
   }), 'rgb(143, 143, 143)');
@@ -260,7 +265,7 @@ function setSelectInputCallbacks(select, defaultValue) {
 }
 
 function createLangSelectionName(lang) {
-  return `${lang.name} (${lang.lang}) [${lang.code}]`;
+  return `${lang.name} (${lang.lang})`;
 }
 
 function createLangSelectOption(lang) {
@@ -282,7 +287,7 @@ function createSelectInput() {
   const select = document.createElement('input');
   select.dataset.role = 'none';
   const defaultLang = languages[0];
-  select.value = `${defaultLang.name} (${defaultLang.lang}) [${defaultLang.code}]`;
+  select.value = createLangSelectionName(defaultLang);
   select.setAttribute('list', 'languages');
   select.id = 'langSelect';
   setSelectInputCallbacks(select, select.value);
