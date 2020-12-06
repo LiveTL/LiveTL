@@ -1,6 +1,13 @@
 const launch = () => chrome.tabs.create({ url: 'https://kentonishi.github.io/LiveTL/about' });
 
-const changes = () => chrome.tabs.create({ url: 'https://github.com/KentoNishi/LiveTL/releases/latest' });
+const changes = () => {
+  chrome.tabs.create({ url: 'https://github.com/KentoNishi/LiveTL/releases/latest' });
+  chrome.browserAction.onClicked.addListener(launch);
+  chrome.browserAction.setIcon({
+    path: "./icons/128x128.png"
+  });
+  chrome.browserAction.onClicked.removeListener(changes);
+}
 
 //var didUpdate = false;
 //chrome.runtime.onInstalled.addListener(launch);
@@ -14,14 +21,12 @@ chrome.runtime.onInstalled.addListener(function (details) {
     var thisVersion = chrome.runtime.getManifest().version;
     console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
     chrome.browserAction.setIcon({
-      path: "./icons/update.png"
-    })
+      path: "./icons/notification_128x128.png"
+    });
     chrome.browserAction.onClicked.addListener(changes);
   }
 });
 
-
-chrome.browserAction.onClicked.addListener(launch);
 
 
 chrome.runtime.onMessage.addListener((request, sender, callback) => {
