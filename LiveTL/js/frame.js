@@ -148,18 +148,25 @@ async function insertLiveTLButtons(isHolotools = false) {
 
   getTitle = () => encodeURIComponent(document.querySelector("#container > .title").textContent);
 
-  makeButton('Watch in LiveTL', async () =>
-    redirectTab(`${await getWAR('index.html')}?v=${params.v}&title=${getTitle()}${getContinuation()}`));
+  if (!isHolotools) {
+    makeButton('Watch in LiveTL', async () =>
+      redirectTab(`${await getWAR('index.html')}?v=${params.v}&title=${getTitle()}${getContinuation()}`));
 
 
-  makeButton('Pop Out Translations',
-    async () => {
-      let tlwindow = createWindow(`${embedDomain}?v=${params.v}&mode=chat&title=${getTitle()}&useLiveTL=1${getContinuation()}`);
-      document.querySelector("#chatframe").contentWindow.onmessage = d => {
-        tlwindow.postMessage(d.data, "*");
-      }
-    },
-    'rgb(143, 143, 143)');
+    makeButton('Pop Out Translations',
+      async () => {
+        let tlwindow = createWindow(`${embedDomain}?v=${params.v}&mode=chat&title=${getTitle()}&useLiveTL=1${getContinuation()}`);
+        document.querySelector("#chatframe").contentWindow.onmessage = d => {
+          tlwindow.postMessage(d.data, "*");
+        }
+      },
+      'rgb(143, 143, 143)');
+  } else {
+    makeButton('Expand Translations',
+      async () => {
+        window.location.href = `${await getWAR('index.html')}?v=${params.v}&mode=chat&useLiveTL=1&noVideo=1`;
+      });
+  }
 }
 
 let params = {};

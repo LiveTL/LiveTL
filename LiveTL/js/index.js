@@ -62,15 +62,20 @@ if (c) {
 } else {
   chat.src = `${embedDomain}?v=${v}`;
 }
-stream.src = `${embedDomain}?v=${v}&mode=video`;
 ltlchat.src = `${chat.src}&useLiveTL=1`;
 
 let leftWidth = localStorage.getItem('LTL:leftPanelWidth');
+
 let rightHeight = localStorage.getItem('LTL:rightPanelHeight');
 
 if (leftWidth) {
   leftPanel.style.width = leftWidth;
 }
-if (rightHeight) {
-  topRightPanel.style.height = rightHeight;
+if (params.noVideo) {
+  leftPanel.style.display = 'none';
+} else {
+  stream.src = `${embedDomain}?v=${v}&mode=video`;
+  if (rightHeight) {
+    topRightPanel.style.height = rightHeight;
+  }
 }

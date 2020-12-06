@@ -1,1 +1,1 @@
-Archived stream support, custom user filters, text direction and font options, saved preferences across sessions, and performance improvements!
+Archived stream support, custom user filters, text direction and font options, saved preferences across sessions, better HoloTools integration, and performance improvements!
