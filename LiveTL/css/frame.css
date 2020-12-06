@@ -130,7 +130,7 @@ a {
     width: calc(100% - 10px);
 }
 
-.authorName {
+.smallText {
     font-size: 12px;
     color: var(--yt-live-chat-secondary-text-color);
     margin-left: 5px;

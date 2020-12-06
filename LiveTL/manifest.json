@@ -44,7 +44,8 @@
     "css/*",
     "jquery.min.js",
     "jquery-ui.min.js",
-    "manifest.json"
+    "manifest.json",
+    "changelog.txt"
   ],
   "incognito": "split",
   "content_security_policy": "script-src 'self' ; object-src 'self'"

@@ -46,7 +46,7 @@ async function runLiveTL() {
     const translationDiv = document.createElement('div');
     translationDiv.className = 'translationText';
 
-    const settings = createSettings(livetlContainer);
+    const settings = await createSettings(livetlContainer);
     livetlContainer.appendChild(translationDiv);
 
     allTranslatorCheckbox = createCheckbox('All Translators', 'allTranslatorID', true, () => {
@@ -153,7 +153,7 @@ async function insertLiveTLButtons(isHolotools = false) {
 
 
   makeButton('Pop Out Translations',
-    () => {
+    async () => {
       let tlwindow = createWindow(`${embedDomain}?v=${params.v}&mode=chat&title=${getTitle()}&useLiveTL=1${getContinuation()}`);
       document.querySelector("#chatframe").contentWindow.onmessage = d => {
         tlwindow.postMessage(d.data, "*");
@@ -242,7 +242,7 @@ function createModal(container) {
     none: settingsGear
   };
 
-  settingsButton.addEventListener('click', (e) => {
+  settingsButton.addEventListener('click', async (e) => {
     const newDisplay = nextStyle[modalContainer.style.display];
     modalContainer.style.display = newDisplay;
     icon[newDisplay](settingsButton);
@@ -252,6 +252,17 @@ function createModal(container) {
     } else {
       document.querySelector('.translationText').style.display = 'none';
       updateSize();
+    }
+
+    let previousTheme = await getStorage('theme');
+    let themeToggle = document.querySelector("#darkThemeToggle");
+    if (themeToggle.value != previousTheme) {
+      let dark = themeToggle.value == 'dark' ? 1 : 0;
+      await setStorage('theme', themeToggle.value);
+      window.parent.postMessage({ type: "themeChange", "darkTheme": dark }, "*");
+      var url = new URL(location.href);
+      url.searchParams.set('dark_theme', dark);
+      location.href = url.toString();
     }
   });
 
@@ -349,7 +360,7 @@ function setChecklistOnclick(checklist) {
 
 function setChecklistOnblur(checklist) {
   checklist.onblur = e => {
-    const items = document.querySelector('#items');
+    const items = checklist.querySelector('#items');
     if (!e.currentTarget.contains(e.relatedTarget)) {
       checklist.classList.remove('openList');
       items.style.display = 'none';
@@ -391,6 +402,7 @@ function createTransSelectChecklist() {
   checklist.tabIndex = 1;
   checklist.appendChild(createTransSelectDefaultText());
   checklist.appendChild(createTransSelectChecklistItems());
+  checklist.style.border = '1px solid gray';
   setChecklistCallbacks(checklist);
   return checklist;
 }
@@ -402,10 +414,28 @@ function createTranslatorSelect() {
   return translatorSelectContainer;
 }
 
-function createSettings(container) {
+async function createThemeToggle() {
+  const themeSettings = document.createElement('div');
+  const label = document.createElement('span');
+  label.textContent = 'Theme: ';
+  themeSettings.appendChild(label);
+  let themeToggle = document.createElement('select');
+  themeToggle.innerHTML = `
+    <option value='dark'>Dark</option>
+    <option value='light'>Light</option>
+  `;
+  themeToggle.style.padding = '4px';
+  themeToggle.value = (await getStorage('theme')) || 'dark';
+  themeToggle.id = "darkThemeToggle";
+  themeSettings.appendChild(themeToggle);
+  return themeSettings;
+}
+
+async function createSettings(container) {
   const settings = createModal(container);
   settings.appendChild(createLanguageSelect());
   settings.appendChild(createTranslatorSelect());
+  settings.appendChild(await createThemeToggle())
   return settings;
 }
 
@@ -436,7 +466,7 @@ function createIcon(faName, link, addSpace) {
 }
 
 async function shareExtension() {
-  const details = getFile('manifest.json', 'json');
+  const details = await getFile('manifest.json', 'json');
   navigator.share({
     title: details.name,
     text: details.description,
@@ -444,11 +474,11 @@ async function shareExtension() {
   });
 }
 
-function createWelcomeText() {
+async function createWelcomeText() {
   const welcomeText = document.createElement('span');
   welcomeText.textContent = 'Welcome to LiveTL! Translations will appear above.';
   const buttons = document.createElement('div');
-  buttons.classList.add('authorName');
+  buttons.classList.add('smallText');
   buttons.style.marginLeft = '0px';
   buttons.innerHTML = `
         Please consider
@@ -459,6 +489,22 @@ function createWelcomeText() {
     `;
   welcomeText.appendChild(buttons);
   welcomeText.querySelector('#shareExtension').onclick = shareExtension;
+
+  const versionInfo = document.createElement("div");
+  versionInfo.classList.add("smallText");
+  versionInfo.style.marginLeft = '0px';
+  const details = await getFile('manifest.json', 'json');
+  const update = await getFile('changelog.txt', 'text');
+  versionInfo.innerHTML = `<strong>[NEW IN v${details.version}]:</strong> <span id='updateInfo'></span> `;
+  versionInfo.querySelector('#updateInfo').textContent = update;
+  const learnMore = document.createElement('a');
+  learnMore.textContent = "Learn More";
+  learnMore.href = `https://github.com/KentoNishi/LiveTL/releases/tag/v${details.version}`;
+  learnMore.target = 'about:blank';
+  versionInfo.appendChild(learnMore);
+  versionInfo.style.marginTop = '10px';
+  welcomeText.appendChild(versionInfo);
+
   return welcomeText;
 }
 
@@ -468,7 +514,7 @@ async function createWelcome() {
   welcome.appendChild(await createLogo());
   welcome.appendChild(createIcon('fa-discord', 'https://discord.gg/uJrV3tmthg', false));
   welcome.appendChild(createIcon('fa-github', 'https://github.com/KentoNishi/LiveTL', true));
-  welcome.appendChild(createWelcomeText());
+  welcome.appendChild(await createWelcomeText());
   return welcome;
 }
 
@@ -487,7 +533,7 @@ function createCheckmark(authorID, checked, onchange) {
   checkmark.checked = checked;
   checkmark.onchange = onchange;
   checkmark.addEventListener("change", async (e) => {
-    await saveUserStatus(checkmark.dataset.id, checkmark.checked);
+    await setStorage(checkmark.dataset.id, checkmark.checked);
   });
   return checkmark;
 }
@@ -507,6 +553,7 @@ async function createCheckbox(name, authorID, checked = false, callback = null) 
   const selectTranslatorMessage = document.createElement('li');
   selectTranslatorMessage.appendChild(checkbox);
   selectTranslatorMessage.appendChild(createCheckboxPerson(name, authorID));
+  selectTranslatorMessage.style.marginRight = '4px';
   items.appendChild(selectTranslatorMessage);
   checkboxUpdate();
   return checkbox;
@@ -532,7 +579,7 @@ function removeBadTranslations() {
     //     translation.remove();
     // } else
     // removed limiting
-    const author = translation.querySelector('.authorName');
+    const author = translation.querySelector('.smallText');
     if (author && author.dataset.id && !allTranslators.v[author.dataset.id].checked) {
       translation.remove();
     }
@@ -553,7 +600,7 @@ function createAuthorNameElement(author, authorID) {
   const authorName = document.createElement('span');
   authorName.textContent = author;
   authorName.dataset.id = authorID;
-  authorName.className = 'authorName';
+  authorName.className = 'smallText';
   return authorName;
 }
 

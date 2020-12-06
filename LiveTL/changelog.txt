@@ -1,0 +1,1 @@
+Archived stream support, custom user filters, text direction and font options, saved preferences across sessions, and performance improvements!
