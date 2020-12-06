@@ -175,10 +175,21 @@ label {
     display: contents !important;
 }
 
+@keyframes splash {
+    from {
+    	background-color: rgba(0, 119, 255, 0.466);
+    }
+    to {
+        background-color: transparent;
+    }
+}
+
 .line {
     margin-left: 15px;
     margin-top: 10px;
     margin-bottom: 10px;
+    animation-iteration-count: 1;
+    animation: splash 1s normal forwards ease-in-out;
 }
 
 .messageOptions {
