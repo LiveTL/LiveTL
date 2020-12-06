@@ -1,7 +1,8 @@
 const launch = () => chrome.tabs.create({ url: 'https://kentonishi.github.io/LiveTL/about' });
 
 const changes = () => {
-  chrome.tabs.create({ url: 'https://github.com/KentoNishi/LiveTL/releases/latest' });
+  let v = chrome.runtime.getManifest().version;
+  chrome.tabs.create({ url: `https://kentonishi.github.io/LiveTL/changelogs?version=v${v}` });
   chrome.browserAction.onClicked.addListener(launch);
   chrome.browserAction.setIcon({
     path: "./icons/128x128.png"
