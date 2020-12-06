@@ -505,12 +505,12 @@ async function createWelcomeText() {
   versionInfo.classList.add("smallText");
   versionInfo.style.marginLeft = '0px';
   const details = await getFile('manifest.json', 'json');
-  const update = await getFile('changelog.txt', 'text');
+  const update = await getFile('updateMessage.txt', 'text');
   versionInfo.innerHTML = `<strong>[NEW IN v${details.version}]:</strong> <span id='updateInfo'></span> `;
   versionInfo.querySelector('#updateInfo').textContent = update;
   const learnMore = document.createElement('a');
   learnMore.textContent = "Learn More";
-  learnMore.href = `https://github.com/KentoNishi/LiveTL/releases/tag/v${details.version}`;
+  learnMore.href = `https://kentonishi.github.io/LiveTL/changelogs?version=v${details.version}`;
   learnMore.target = 'about:blank';
   versionInfo.appendChild(learnMore);
   versionInfo.style.marginTop = '10px';
