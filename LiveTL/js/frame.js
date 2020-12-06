@@ -80,9 +80,11 @@ async function runLiveTL() {
           if (!(authorID in allTranslators.v)) {
             createCheckbox(author, authorID, allTranslatorCheckbox.checked);
           }
-          if (allTranslators.v[authorID].checked) {
-            prependE(line);
-          }
+          isChecked(authorID).then(checked => {
+            if (checked) {
+              prependE(line);
+            }
+          });
         }
         m.innerHTML = '';
       }
