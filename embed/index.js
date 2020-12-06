@@ -43,16 +43,15 @@ window.onload = () => {
   let c = params.continuation
   let mode = params.mode || "chat"
   let ltl = params.useLiveTL || "";
-  let dark = params.darkTheme || 1;
   document.title = decodeURIComponent(params.title || "LiveTL");
   switch (mode) {
     case "chat":
       let frame = document.createElement("iframe");
       document.body.appendChild(frame);
       if (c) {
-        frame.src = `https://www.youtube.com/live_chat_replay?continuation=${c}&embed_domain=${document.domain}&dark_theme=${dark}&useLiveTL=${ltl}`
+        frame.src = `https://www.youtube.com/live_chat_replay?continuation=${c}&embed_domain=${document.domain}&dark_theme=1&useLiveTL=${ltl}`
       } else {
-        frame.src = `https://www.youtube.com/live_chat?v=${v}&embed_domain=${document.domain}&dark_theme=${dark}&useLiveTL=${ltl}`
+        frame.src = `https://www.youtube.com/live_chat?v=${v}&embed_domain=${document.domain}&dark_theme=1&useLiveTL=${ltl}`
       }
       window.onmessage = d => {
         try {

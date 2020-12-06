@@ -49,15 +49,16 @@ $('#topRightPanel').resizable({
 });
 let c = params.continuation;
 const embedDomain = EMBED_DOMAIN;
+
+window.onmessage = d => {
+  d = JSON.parse(JSON.stringify(d.data));
+  try {
+    chat.contentWindow.postMessage(d, "*");
+    ltlchat.contentWindow.postMessage(d, "*");
+  } catch (e) { }
+}
 if (c) {
   chat.src = `${embedDomain}?continuation=${c}`;
-  window.onmessage = d => {
-    d = JSON.parse(JSON.stringify(d.data));
-    try {
-      chat.contentWindow.postMessage(d, "*");
-      ltlchat.contentWindow.postMessage(d, "*");
-    } catch (e) { }
-  }
 } else {
   chat.src = `${embedDomain}?v=${v}`;
 }

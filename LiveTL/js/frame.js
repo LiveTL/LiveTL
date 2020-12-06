@@ -192,6 +192,12 @@ const activationInterval = setInterval(async () => {
   }
 }, 1000);
 
+// function changeThemeAndRedirect(dark) {
+//   var url = new URL(location.href);
+//   url.searchParams.set('dark_theme', dark);
+//   location.href = url.toString();
+// }
+
 if (window.location.href.startsWith('https://kentonishi.github.io/LiveTL/about')) {
   window.onload = () => {
     const e = document.querySelector('#actionMessage');
@@ -207,11 +213,11 @@ if (window.location.href.startsWith('https://kentonishi.github.io/LiveTL/about')
   try {
     window.parent.location.href;
   } catch (e) {
-    window.onmessage = d => {
+    window.addEventListener('message', d => {
       if (window.origin != d.origin) {
         postMessage(d.data);
       }
-    };
+    });
   }
 }
 
@@ -254,16 +260,14 @@ function createModal(container) {
       updateSize();
     }
 
-    let previousTheme = await getStorage('theme');
-    let themeToggle = document.querySelector("#darkThemeToggle");
-    if (themeToggle.value != previousTheme) {
-      let dark = themeToggle.value == 'dark' ? 1 : 0;
-      await setStorage('theme', themeToggle.value);
-      window.parent.postMessage({ type: "themeChange", "darkTheme": dark }, "*");
-      var url = new URL(location.href);
-      url.searchParams.set('dark_theme', dark);
-      location.href = url.toString();
-    }
+    // let previousTheme = await getStorage('theme');
+    // let themeToggle = document.querySelector("#darkThemeToggle");
+    // if (themeToggle.value != previousTheme) {
+    //   let dark = themeToggle.value == 'dark' ? 1 : 0;
+    //   await setStorage('theme', themeToggle.value);
+    //   window.parent.postMessage({ type: "themeChange", "darkTheme": dark }, "*");
+    //   changeThemeAndRedirect(dark);
+    // }
   });
 
   modalContainer.appendChild(modalContent);
@@ -414,28 +418,28 @@ function createTranslatorSelect() {
   return translatorSelectContainer;
 }
 
-async function createThemeToggle() {
-  const themeSettings = document.createElement('div');
-  const label = document.createElement('span');
-  label.textContent = 'Theme: ';
-  themeSettings.appendChild(label);
-  let themeToggle = document.createElement('select');
-  themeToggle.innerHTML = `
-    <option value='dark'>Dark</option>
-    <option value='light'>Light</option>
-  `;
-  themeToggle.style.padding = '4px';
-  themeToggle.value = (await getStorage('theme')) || 'dark';
-  themeToggle.id = "darkThemeToggle";
-  themeSettings.appendChild(themeToggle);
-  return themeSettings;
-}
+// async function createThemeToggle() {
+//   const themeSettings = document.createElement('div');
+//   const label = document.createElement('span');
+//   label.textContent = 'Theme: ';
+//   themeSettings.appendChild(label);
+//   let themeToggle = document.createElement('select');
+//   themeToggle.innerHTML = `
+//     <option value='dark'>Dark Mode</option>
+//     <option value='system'>System Theme</option>
+//   `;
+//   themeToggle.style.padding = '4px';
+//   themeToggle.value = (await getStorage('theme')) || 'dark';
+//   themeToggle.id = "darkThemeToggle";
+//   themeSettings.appendChild(themeToggle);
+//   return themeSettings;
+// }
 
 async function createSettings(container) {
   const settings = createModal(container);
   settings.appendChild(createLanguageSelect());
   settings.appendChild(createTranslatorSelect());
-  settings.appendChild(await createThemeToggle())
+  // settings.appendChild(await createThemeToggle())
   return settings;
 }
 
