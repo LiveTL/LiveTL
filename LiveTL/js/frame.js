@@ -439,7 +439,7 @@ async function createZoomSlider() {
   zoomSlider.value = ((await getStorage('zoom')) || 1);
   zoomSlider.style.verticalAlign = 'middle';
   let callback = async e => {
-    let scale = Math.round(parseFloat(zoomSlider.value) * 100);
+    let scale = Math.ceil(parseFloat(zoomSlider.value) * 100);
     let livetlContainer = document.querySelector('.livetl');
     livetlContainer.style.transformOrigin = '0 0';
     livetlContainer.style.transform = `scale(${scale / 100})`;
