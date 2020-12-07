@@ -8,6 +8,8 @@ const isFirefox = !!/Firefox/.exec(navigator.userAgent);
 
 const languageConversionTable = {};
 
+const MinecraftObserver = MutationObserver;
+
 const embedDomain = EMBED_DOMAIN;
 
 // WAR: web accessible resource
@@ -63,13 +65,21 @@ async function runLiveTL() {
 
     prependE(await createWelcome());
 
-    setInterval(() => {
-      const messages = document.querySelectorAll('.yt-live-chat-text-message-renderer > #message');
-      let i = 0;
-      while (i < messages.length && messages[i].innerHTML === '') i++;
-      for (; i < messages.length; i++) {
-        const m = messages[i];
-        if (m.innerHTML === '') break;
+    // const messageDiv = document.querySelector('.yt-live-chat-text-message-renderer');
+    // const messages = document.querySelectorAll('.yt-live-chat-text-message-renderer > #message');
+    const messages = Array.from(
+      document.querySelectorAll('.yt-live-chat-text-message-renderer > #message')
+    ).map(e => e.parentElement);
+
+      // const messages = document.querySelectorAll('.yt-live-chat-text-message-renderer > #message');
+
+    // setInterval(() => {
+    let observer = new MinecraftObserver((mutations, observer) => {
+      for (const mutation of mutations) {
+        console.log(mutation.target);
+      }
+
+      if (0 && m.innerHTML !== '') {
         const parsed = parseTranslation(m.textContent);
         const select = document.querySelector('#langSelect');
         if (parsed != null && isLangMatch(parsed.lang.toLowerCase(), languageConversionTable[select.value]) &&
@@ -89,8 +99,29 @@ async function runLiveTL() {
         m.innerHTML = '';
       }
       createSettingsProjection(prependE);
-    }, 1000);
-  }, 100);
+    });
+
+    let renderObserver = new MinecraftObserver((mutations, observer) => {
+      for (const mutation of mutations) {
+        // observer.observe(mutation.target, obConfig);
+        console.log("Observing", mutation);
+      }
+    });
+
+    const messageDiv = document.querySelectorAll('#items')[1]; // TODO Fix query to also have '.yt-live-chat-item-list-renderer'
+    console.log(messageDiv);
+
+    const obConfig = { attributes: true, childList: true, subTree: true };
+
+    // renderObserver.observe(messageDiv, { childList: true });
+    console.log("got here");
+
+    messages.forEach(msg => {
+      // observer.observe(msg, obConfig);
+      // console.log("Observing", msg);
+    });
+    // }, 1000);
+  }, 0);
 }
 
 function switchChat() {
