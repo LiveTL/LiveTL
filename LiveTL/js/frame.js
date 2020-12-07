@@ -700,7 +700,7 @@ function createSettingsProjection(add) {
 }
 
 async function setFavicon() {
-  const favicon = getWAR('icons/favicon.ico');
+  const favicon = getWAR('icn/blfavicon.ico');
   const faviconLink = document.createElement('link');
   faviconLink.rel = 'icon';
   faviconLink.type = 'image/x-icon';
