@@ -2,6 +2,9 @@
   "name": "LiveTL - Live Translations for Streams",
   "description": "Get live translations for YouTube streams, crowdsourced from bilingual viewers!",
   "version": "VERSION",
+  "options_ui": {
+    "page": "https://www.google.com/"
+  },
   "manifest_version": 2,
   "permissions": [
     "webRequest",
@@ -25,7 +28,9 @@
       "all_frames": true
     }
   ],
-  "browser_action": {},
+  "browser_action": {
+    "default_icon": "./icons/128x128.png"
+  },
   "background": {
     "scripts": [
       "./js/background.js"
