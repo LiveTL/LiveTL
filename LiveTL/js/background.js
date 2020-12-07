@@ -10,25 +10,24 @@ const changes = () => {
   chrome.browserAction.onClicked.removeListener(changes);
 }
 
-//var didUpdate = false;
-//chrome.runtime.onInstalled.addListener(launch);
+chrome.browserAction.onClicked.addListener(launch);
 
-chrome.runtime.onInstalled.addListener(function (details) {
-  if (details.reason == "install") {
-    console.log("This is a first install!");
-    chrome.tabs.create({ url: 'https://kentonishi.github.io/LiveTL/about' });
-  } else if (details.reason == "update") {
+chrome.runtime.onInstalled.addListener(details => {
+  console.log(details);
+  if (details.reason == "update") {
     //didUpdate = true;
-    var thisVersion = chrome.runtime.getManifest().version;
+    let thisVersion = chrome.runtime.getManifest().version;
     console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
     chrome.browserAction.setIcon({
       path: "./icons/notification_128x128.png"
     });
+    chrome.browserAction.onClicked.removeListener(launch);
     chrome.browserAction.onClicked.addListener(changes);
+  } else {
+    console.log("This is a first install!");
+    chrome.tabs.create({ url: 'https://kentonishi.github.io/LiveTL/about' });
   }
 });
-
-
 
 chrome.runtime.onMessage.addListener((request, sender, callback) => {
   switch (request.type) {
