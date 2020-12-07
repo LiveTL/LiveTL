@@ -425,28 +425,50 @@ function createTranslatorSelect() {
   return translatorSelectContainer;
 }
 
-// async function createThemeToggle() {
-//   const themeSettings = document.createElement('div');
-//   const label = document.createElement('span');
-//   label.textContent = 'Theme: ';
-//   themeSettings.appendChild(label);
-//   let themeToggle = document.createElement('select');
-//   themeToggle.innerHTML = `
-//     <option value='dark'>Dark Mode</option>
-//     <option value='system'>System Theme</option>
-//   `;
-//   themeToggle.style.padding = '4px';
-//   themeToggle.value = (await getStorage('theme')) || 'dark';
-//   themeToggle.id = "darkThemeToggle";
-//   themeSettings.appendChild(themeToggle);
-//   return themeSettings;
-// }
+async function createZoomSlider() {
+  const zoomSettings = document.createElement('div');
+  const label = document.createElement('span');
+  label.textContent = 'Zoom: ';
+  zoomSettings.appendChild(label);
+  let zoomSlider = document.createElement('input');
+  zoomSlider.type = 'range';
+  zoomSlider.min = '0.5';
+  zoomSlider.max = '2';
+  zoomSlider.style.padding = '4px';
+  zoomSlider.step = '0.01';
+  zoomSlider.value = ((await getStorage('zoom')) || 1);
+  zoomSlider.style.verticalAlign = 'middle';
+  let callback = async e => {
+    let scale = Math.round(parseFloat(zoomSlider.value) * 100);
+    let livetlContainer = document.querySelector('.livetl');
+    livetlContainer.style.transformOrigin = '0 0';
+    livetlContainer.style.transform = `scale(${scale / 100})`;
+    let inverse = 10000 / scale;
+    livetlContainer.style.width = `${inverse}%`;
+    livetlContainer.style.height = `${inverse}%`;
+    await setStorage('zoom', scale / 100);
+  };
+  zoomSettings.onchange = callback;
+  zoomSettings.appendChild(zoomSlider);
+  let resetButton = document.createElement('input');
+  resetButton.value = 'Reset';
+  resetButton.style.marginLeft = '4px';
+  resetButton.style.verticalAlign = 'middle';
+  resetButton.type = 'button';
+  resetButton.onclick = async () => {
+    zoomSlider.value = 1;
+    await callback();
+  }
+  zoomSettings.appendChild(resetButton);
+  await callback();
+  return zoomSettings;
+}
 
 async function createSettings(container) {
   const settings = createModal(container);
   settings.appendChild(createLanguageSelect());
   settings.appendChild(createTranslatorSelect());
-  // settings.appendChild(await createThemeToggle())
+  settings.appendChild(await createZoomSlider())
   return settings;
 }
 
