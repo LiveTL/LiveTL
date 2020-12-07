@@ -1,6 +1,10 @@
 jquery = "./build/common/jquery.min.js"
 jquery-ui = "./build/common/jquery-ui.min.js"
 jquery-css = "./build/common/jquery-ui.css"
+sjquery = "./build/static/jquery.min.js"
+sjquery-ui = "./build/static/jquery-ui.min.js"
+sjquery-css = "./build/static/jquery-ui.css"
+
 lib = "./LiveTL/js/lib"
 
 ifndef EMBED_DOMAIN
@@ -22,10 +26,14 @@ all: chrome firefox
 init:
 	mkdir -p dist/
 	mkdir -p build/common/
-	curl -s -o $(jquery) https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js & \
-	curl -s -o $(jquery-ui) https://ajax.aspnetcdn.com/ajax/jquery.ui/1.12.1/jquery-ui.min.js & \
-	curl -s -o $(jquery-css) https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css & \
+	mkdir -p build/static/
+	cp $(sjquery) $(jquery) || curl -s -o $(sjquery) https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js & \
+	cp $(sjquery-ui) $(jquery-ui) || curl -s -o $(sjquery-ui) https://ajax.aspnetcdn.com/ajax/jquery.ui/1.12.1/jquery-ui.min.js & \
+	cp $(sjquery-css) $(jquery-css) || curl -s -o $(sjquery-css) https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css & \
        	wait
+	cp $(sjquery) $(jquery)
+	cp $(sjquery-ui) $(jquery-ui)
+	cp $(sjquery-css) $(jquery-css)
 
 test:
 	node tests/*.js
