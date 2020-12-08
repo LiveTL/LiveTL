@@ -156,6 +156,22 @@ async function onMessageFromEmbeddedChat(m) {
   }
 }
 
+function isReplayChat() {
+  return window.location.href.startsWith('https://www.youtube.com/live_chat_replay');
+}
+
+function isLiveChat() {
+  return window.location.href.startsWith('https://www.youtube.com/live_chat');
+}
+
+function isChat() {
+  return isLiveChat() || isReplayChat();
+}
+
+function isVideo() {
+  return window.location.href.startsWith('https://www.youtube.com/watch');
+}
+
 let params = {};
 let lastLocation = '';
 async function loaded() {
@@ -164,8 +180,7 @@ async function loaded() {
   window.addEventListener('yt-navigate-finish', loaded);
   if (window.location.href == lastLocation) return;
   lastLocation = window.location.href;
-  if (window.location.href.startsWith('https://www.youtube.com/live_chat') ||
-    window.location.href.startsWith('https://www.youtube.com/live_chat_replay')) {
+  if (isChat()) {
     conlog('Using live chat');
     try {
       params = parseParams();
@@ -178,8 +193,7 @@ async function loaded() {
         window.parent.postMessage('embeddedChatLoaded', '*');
       }
     } catch (e) { }
-  } else if (window.location.href.startsWith('https://www.youtube.com/watch')) {
-    conlog('Watching video');
+  } else if (isVideo()) {
     window.removeEventListener('message', onMessageFromEmbeddedChat);
     window.addEventListener('message', onMessageFromEmbeddedChat);
   } else if (window.location.href.startsWith(embedDomain)) {
@@ -190,23 +204,24 @@ async function loaded() {
 window.addEventListener('load', loaded);
 window.addEventListener('yt-navigate-start', clearLiveTLButtons);
 
-if (isFirefox) {
+if ((isVideo() || isChat()) && isFirefox) {
   window.dispatchEvent(new Event('load'));
 }
 
+const aboutPage = 'https://kentonishi.github.io/LiveTL/about/';
 
-if (window.location.href.startsWith('https://kentonishi.github.io/LiveTL/about')) {
+if (window.location.href.startsWith(aboutPage)) {
   window.onload = () => {
     const e = document.querySelector('#actionMessage');
     e.textContent = 'Thank you for installing LiveTL!';
   };
-} else if (window.location.href.startsWith("https://www.youtube.com/embed/")) {
+} else if (window.location.href.startsWith('https://www.youtube.com/embed/')) {
   window.onmessage = d => {
     try {
-      parent.postMessage(d.data, "*")
+      parent.postMessage(d.data, '*')
     } catch (e) { }
   };
-} else if (window.location.href.startsWith("https://www.youtube.com/live_chat_replay")) {
+} else if (isReplayChat()) {
   try {
     window.parent.location.href;
   } catch (e) {
@@ -228,7 +243,7 @@ function wrapIconWithLink(icon, link) {
 
 async function createLogo() {
   const a = document.createElement('a');
-  a.href = 'https://kentonishi.github.io/LiveTL/about/';
+  a.href = aboutPage;
   a.target = 'about:blank';
   const logo = document.createElement('img');
   logo.className = 'logo';
@@ -249,7 +264,7 @@ async function shareExtension() {
   navigator.share({
     title: details.name,
     text: details.description,
-    url: 'https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg'
+    url: 'https://kentonishi.github.io/LiveTL'
   });
 }
 
