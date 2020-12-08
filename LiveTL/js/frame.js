@@ -485,11 +485,40 @@ async function createZoomSlider() {
   return zoomSettings;
 }
 
+const enableTimestampsInputId = 'enableTimestampsInput'
+async function createEnableTimestampsInput() {
+  const input = document.createElement('input');
+  input.id = enableTimestampsInputId;
+  input.type = 'checkbox';
+  input.checked = await getStorage('timestamps');
+  input.onchange = async () => await setStorage('timestamps', input.checked);
+  input.style = 'transform:scale(1.25);';
+
+  return input;
+}
+function createEnableTimestampsLabel() {
+  const label = document.createElement('label');
+  label.htmlFor = enableTimestampsInputId;
+  label.className = 'optionLabel'
+  label.textContent = 'Display Translation Timestamps?'
+
+  return label;
+}
+async function createEnableTimestamps() {
+  const enableTimestamps = document.createElement('div');
+  enableTimestamps.appendChild(await createEnableTimestampsInput())
+  enableTimestamps.appendChild(createEnableTimestampsLabel())
+
+  return enableTimestamps;
+}
+
 async function createSettings(container) {
   const settings = createModal(container);
   settings.appendChild(createLanguageSelect());
   settings.appendChild(createTranslatorSelect());
   settings.appendChild(await createZoomSlider())
+  settings.appendChild(await createEnableTimestamps());
+
   // This needs to be called after the zoomSlider is added to the DOM, otherwise it won't be able to find the element and read the value
   await updateZoomLevel();
 
