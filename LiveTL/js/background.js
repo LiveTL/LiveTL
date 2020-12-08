@@ -13,7 +13,6 @@ const changes = () => {
 chrome.browserAction.onClicked.addListener(launch);
 
 chrome.runtime.onInstalled.addListener(details => {
-  console.log(details);
   if (details.reason == "update") {
     //didUpdate = true;
     let thisVersion = chrome.runtime.getManifest().version;
@@ -46,7 +45,6 @@ function stripHeaders(headers) {
 
 chrome.webRequest.onHeadersReceived.addListener(
   function (details) {
-    console.log(details);
     return {
       responseHeaders: stripHeaders(details.responseHeaders)
     };

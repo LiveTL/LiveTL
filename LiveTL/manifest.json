@@ -3,7 +3,7 @@
   "description": "Get live translations for YouTube streams, crowdsourced from bilingual viewers!",
   "version": "VERSION",
   "options_ui": {
-    "page": "https://www.google.com/"
+    "page": "settings.html"
   },
   "manifest_version": 2,
   "permissions": [
