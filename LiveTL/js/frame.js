@@ -5,6 +5,7 @@ const embedDomain = EMBED_DOMAIN;
 const allTranslators = { v: {} };
 let allTranslatorCheckbox = {};
 let showTimestamps = true;
+let textDirection = 'bottom';
 
 async function runLiveTL() {
   await setFavicon();
@@ -36,6 +37,7 @@ async function runLiveTL() {
     checkboxUpdate();
   });
 
+  appendE = el => translationDiv.appendChild(el);
   prependE = el => translationDiv.prepend(el);
 
   prependE(await createWelcome());
@@ -59,9 +61,8 @@ async function runLiveTL() {
           }
           isChecked(authorID).then(checked => {
             if (checked) {
-              prependE(line);
+              (textDirection == 'bottom' ? appendE : prependE)(line);
             }
-            createSettingsProjection(prependE);
           });
         }
       });

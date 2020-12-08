@@ -19,6 +19,7 @@ async function createSettings(container) {
   settings.appendChild(createTranslatorSelect());
   settings.appendChild(await createZoomSlider())
   settings.appendChild(await createTimestampToggle());
+  settings.appendChild(await createTextDirectionToggle());
   return settings;
 }
 
@@ -303,8 +304,44 @@ async function createTimestampToggle() {
   const timestampSettings = document.createElement('div');
   timestampSettings.appendChild(createTimestampLabel());
   timestampSettings.appendChild(await createTimestampCheckbox());
-
   return timestampSettings;
+}
+
+function createTextDirectionLabel() {
+  const label = document.createElement('label');
+  label.className = 'optionLabel';
+  label.htmlFor = 'textDirToggle';
+  label.textContent = 'Text Direction: ';
+
+  return label;
+}
+
+async function createTextDirectionSelect() {
+  let textDirSelect = document.createElement('select');
+  textDirSelect.innerHTML = `
+    <option id="top" value="top">Top</option>
+    <option id="bottom" value="bottom">Bottom</option>
+  `;
+
+  let data = (await getStorage('text_direction'));
+  data = (data == null ? 'bottom' : data);
+  textDirSelect.value = textDirection = data;
+
+  textDirSelect.onchange = async () => {
+    textDirection = textDirSelect.value;
+    await setStorage('text_direction', textDirection);
+    document.querySelector('.translationText').querySelectorAll('.line').forEach(m => prependE(m));
+  };
+
+  return textDirSelect;
+}
+
+async function createTextDirectionToggle() {
+  const textDirToggle = document.createElement('div');
+  textDirToggle.appendChild(createTextDirectionLabel());
+  textDirToggle.appendChild(await createTextDirectionSelect());
+  textDirToggle.style.marginTop = '10px';
+  return textDirToggle;
 }
 
 function changeThemeAndRedirect(dark) {
