@@ -389,8 +389,9 @@ function createAuthorHideButton(translation) {
 
 function createAuthorBanButton(authorID) {
   const ban = document.createElement('span');
-  ban.onclick = () => {
+  ban.onclick = async () => {
     allTranslators.v[authorID].checked = false;
+    await saveUserStatus(authorID, false);
     checkboxUpdate();
   };
   ban.style.cursor = 'pointer';
