@@ -52,6 +52,7 @@ chrome: common
 	cp ./build/common/frame.js ./build/chrome/LiveTL/js/frame.js
 	cp ./build/common/index.js ./build/chrome/LiveTL/js/index.js
 	cp ./build/common/background.js ./build/chrome/LiveTL/js/background.js
+	cp ./build/common/settingsMenu.js ./build/chrome/LiveTL/js/settingsMenu.js
 	rm -rf ./build/chrome/LiveTL/js/lib
 	grep -v all_urls ./build/common/manifest.json > ./build/chrome/LiveTL/manifest.json
 	cp ./LICENSE ./build/chrome/LiveTL/
@@ -68,6 +69,7 @@ firefox: common
 	cp ./build/common/frame.js ./build/firefox/LiveTL/js/frame.js
 	cp ./build/common/index.js ./build/firefox/LiveTL/js/index.js
 	cp ./build/common/background.js ./build/firefox/LiveTL/js/background.js
+	cp ./build/common/settingsMenu.js ./build/firefox/LiveTL/js/settingsMenu.js
 	rm -rf ./build/firefox/LiveTL/js/lib/
 	cp ./LICENSE ./build/firefox/LiveTL/
 	grep -v incognito ./build/common/manifest.json > ./build/firefox/LiveTL/manifest.json
@@ -84,6 +86,7 @@ safari: common
 	cp ./build/common/frame.js ./build/safari/LiveTL/js/frame.js
 	cp ./build/common/index.js ./build/safari/LiveTL/js/index.js
 	cp ./build/common/background.js ./build/safari/LiveTL/js/background.js
+	cp ./build/common/settingsMenu.js ./build/safari/LiveTL/js/settingsMenu.js
 	rm -rf ./build/safari/LiveTL/js/lib/
 	cp ./LICENSE ./build/safari/LiveTL/
 	grep -v incognito ./build/common/manifest.json > ./build/safari/LiveTL/manifest.json
@@ -104,6 +107,7 @@ safari-noBuild: common
 	cp ./build/common/frame.js ./build/safari/LiveTL/js/frame.js
 	cp ./build/common/index.js ./build/safari/LiveTL/js/index.js
 	cp ./build/common/background.js ./build/safari/LiveTL/js/background.js
+	cp ./build/common/settingsMenu.js ./build/safari/LiveTL/js/settingsMenu.js
 	rm -rf ./build/safari/LiveTL/js/lib/
 	cp ./LICENSE ./build/safari/LiveTL/
 	grep -v incognito ./build/common/manifest.json > ./build/safari/LiveTL/manifest.json
@@ -115,6 +119,9 @@ common: init
 	$(replace-embed-domain) $(lib)/../index.js > ./build/common/index.js
 	$(replace-embed-domain-noquote) LiveTL/manifest.json | $(replace-version) > ./build/common/manifest.json
 	$(replace-embed-domain-noquote) LiveTL/js/background.js > ./build/common/background.js
+	cat $(lib)/constants.js $(lib)/storage.js $(lib)/settings.js $(lib)/css.js $(lib)/svgs.js $(lib)/../settingsMenu.js \
+		| grep -v module.export | $(replace-embed-domain) \
+		> ./build/common/settingsMenu.js
 
 clean:
 	rm -rf dist/
