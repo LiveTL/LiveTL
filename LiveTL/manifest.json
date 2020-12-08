@@ -2,9 +2,6 @@
   "name": "LiveTL - Live Translations for Streams",
   "description": "Get live translations for YouTube streams, crowdsourced from bilingual viewers!",
   "version": "VERSION",
-  "options_ui": {
-    "page": "settings.html"
-  },
   "manifest_version": 2,
   "permissions": [
     "webRequest",
