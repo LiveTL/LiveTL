@@ -107,23 +107,22 @@ function parseParams(loc) {
   return s === '' ? {} : JSON.parse('{"' + s + '"}');
 }
 
+function clearLiveTLButtons() {
+  document.querySelectorAll('.liveTLBotan').forEach(b => b.remove());
+}
+
 async function insertLiveTLButtons(isHolotools = false) {
   conlog('Inserting LiveTL Launcher Buttons');
+  clearLiveTLButtons();
   params = parseParams();
   const makeButton = (text, callback, color) => {
     let a = document.createElement('span');
     a.appendChild(getLiveTLButton(color));
-    a.className = 'liveTLBottan';
-
-    const interval2 = setInterval(() => {
-      const e = isHolotools ? document.querySelector('#input-panel') : document.querySelector('ytd-live-chat-frame');
-      if (e != null && document.querySelectorAll(".liveTLBottan").length < 2) {
-        clearInterval(interval2);
-        e.appendChild(a);
-        a.querySelector('a').onclick = callback;
-        a.querySelector('yt-formatted-string').textContent = text;
-      }
-    }, 100);
+    a.className = 'liveTLBotan';
+    const e = isHolotools ? document.querySelector('#input-panel') : document.querySelector('ytd-live-chat-frame');
+    e.appendChild(a);
+    a.querySelector('a').onclick = callback;
+    a.querySelector('yt-formatted-string').textContent = text;
   };
 
   const redirectTab = u => window.location.href = u;
@@ -135,7 +134,7 @@ async function insertLiveTLButtons(isHolotools = false) {
 
   getContinuation = (() => {
     let chatframe = document.querySelector("#chatframe");
-    let src = chatframe.src;
+    let src = chatframe.dataset.src;
     if (src.startsWith("https://www.youtube.com/live_chat_replay")) {
       return "&continuation=" + parseParams("?" + src.split("?")[1]).continuation;
     }
@@ -155,6 +154,7 @@ async function insertLiveTLButtons(isHolotools = false) {
         document.querySelector("#chatframe").contentWindow.onmessage = d => {
           tlwindow.postMessage(d.data, "*");
         }
+        document.querySelector("#chatframe").contentWindow.onbeforeunload = () => window.parent.postMessage('clearLiveTLButtons', '*');
       },
       'rgb(143, 143, 143)');
   } else {
@@ -165,9 +165,24 @@ async function insertLiveTLButtons(isHolotools = false) {
   }
 }
 
+async function onMessageFromEmbeddedChat(m) {
+  switch (m.data) {
+    case 'embeddedChatLoaded':
+      let f = document.querySelector('#chatframe');
+      f.dataset.src = f.contentWindow.location.href;
+      await insertLiveTLButtons();
+      break;
+    case 'clearLiveTLButtons':
+      clearLiveTLButtons();
+  }
+}
+
 let params = {};
 let lastLocation = '';
 async function loaded() {
+  window.removeEventListener('load', loaded);
+  window.removeEventListener('yt-navigate-finish', loaded);
+  window.addEventListener('yt-navigate-finish', loaded);
   if (window.location.href == lastLocation) return;
   lastLocation = window.location.href;
   if (window.location.href.startsWith('https://www.youtube.com/live_chat') ||
@@ -180,22 +195,21 @@ async function loaded() {
         runLiveTL();
       } else if (params.embed_domain === 'hololive.jetri.co') {
         await insertLiveTLButtons(true);
+      } else {
+        window.parent.postMessage('embeddedChatLoaded', '*');
       }
     } catch (e) { }
   } else if (window.location.href.startsWith('https://www.youtube.com/watch')) {
     conlog('Watching video');
-    const interval = setInterval(async () => {
-      if (document.querySelector('#chatframe')) {
-        clearInterval(interval);
-        document.querySelector('#chatframe').onload = async () => await insertLiveTLButtons();
-      }
-    }, 100);
+    window.removeEventListener('message', onMessageFromEmbeddedChat);
+    window.addEventListener('message', onMessageFromEmbeddedChat);
   } else if (window.location.href.startsWith(embedDomain)) {
     setFavicon();
   }
 }
-window.addEventListener('yt-navigate-finish', loaded);
+
 window.addEventListener('load', loaded);
+window.addEventListener('yt-navigate-start', clearLiveTLButtons);
 
 // function changeThemeAndRedirect(dark) {
 //   var url = new URL(location.href);
