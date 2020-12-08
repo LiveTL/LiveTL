@@ -1,7 +1,5 @@
 const isFirefox = !!/Firefox/.exec(navigator.userAgent);
 
-const languageConversionTable = {};
-
 const embedDomain = EMBED_DOMAIN;
 
 const allTranslators = { v: {} };

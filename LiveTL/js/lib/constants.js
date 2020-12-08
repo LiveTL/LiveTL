@@ -7,6 +7,8 @@ const languages = [
   { code: 'ch', name: 'Chinese', lang: '中文' }
 ];
 
+const languageConversionTable = {};
+
 function conlog(...args) {
   if (params.devMode) {
     return console.log(...args);
