@@ -6,6 +6,7 @@ const embedDomain = EMBED_DOMAIN;
 
 const allTranslators = { v: {} };
 let allTranslatorCheckbox = {};
+let showTimestamps = true;
 
 async function runLiveTL() {
   await setFavicon();
@@ -44,13 +45,17 @@ async function runLiveTL() {
   let observer = new MutationObserver((mutations, observer) => {
     mutations.forEach(mutation => {
       mutation.addedNodes.forEach(m => {
-        const parsed = parseTranslation(m.querySelector("#message").textContent);
+        const element = m.querySelector("#message");
+        if (!element) return;
+        const parsed = parseTranslation(element.textContent);
         const select = document.querySelector('#langSelect');
         if (parsed != null && isLangMatch(parsed.lang.toLowerCase(), languageConversionTable[select.value]) &&
           parsed.msg.replace(/\s/g, '') !== '') {
-          const author = m.querySelector("#author-name").textContent;
-          const authorID = /\/ytc\/([^\=]+)\=/.exec(m.querySelector("#author-photo > img").src)[1];
-          const line = createTranslationElement(author, authorID, parsed.msg);
+          const timestamp = m.querySelector('#timestamp').textContent;
+          const author = m.querySelector('#author-name').textContent;
+          const authorID = /\/ytc\/([^\=]+)\=/.exec(m.querySelector('#author-photo > img').src)[1];
+          console.log(showTimestamps, timestamp);
+          const line = createTranslationElement(author, authorID, parsed.msg, timestamp);
           if (!(authorID in allTranslators.v)) {
             createCheckbox(author, authorID, allTranslatorCheckbox.checked);
           }
@@ -390,9 +395,14 @@ function checkboxUpdate() {
   removeBadTranslations();
 }
 
-function createAuthorNameElement(author, authorID) {
+function createAuthorNameElement(author, authorID, timestamp) {
   const authorName = document.createElement('span');
-  authorName.textContent = author;
+  authorName.textContent = `${author}`;
+  let timestampElement = document.createElement('span');
+  timestampElement.textContent = ` (${timestamp})`;
+  timestampElement.className = 'timestampText';
+  timestampElement.style.display = showTimestamps ? 'contents' : 'none';
+  authorName.appendChild(timestampElement);
   authorName.dataset.id = authorID;
   authorName.className = 'smallText';
   return authorName;
@@ -427,9 +437,9 @@ function createAuthorInfoOptions(authorID, line) {
   return options;
 }
 
-function createAuthorInfoElement(author, authorID, line) {
+function createAuthorInfoElement(author, authorID, line, timestamp) {
   const authorInfo = document.createElement('span');
-  authorInfo.appendChild(createAuthorNameElement(author, authorID));
+  authorInfo.appendChild(createAuthorNameElement(author, authorID, timestamp));
   authorInfo.appendChild(createAuthorInfoOptions(authorID, line));
   return authorInfo;
 }
@@ -439,12 +449,12 @@ function setTranslationElementCallbacks(line) {
   line.onmouseleave = () => line.querySelector('.messageOptions').style.display = 'none';
 }
 
-function createTranslationElement(author, authorID, translation) {
+function createTranslationElement(author, authorID, translation, timestamp) {
   const line = document.createElement('div');
   line.className = 'line';
   line.textContent = translation;
   setTranslationElementCallbacks(line);
-  line.appendChild(createAuthorInfoElement(author, authorID, line));
+  line.appendChild(createAuthorInfoElement(author, authorID, line, timestamp));
   return line;
 }
 

@@ -18,6 +18,7 @@ async function createSettings(container) {
   settings.appendChild(createLanguageSelect());
   settings.appendChild(createTranslatorSelect());
   settings.appendChild(await createZoomSlider())
+  settings.appendChild(await createTimestampToggle());
   return settings;
 }
 
@@ -247,6 +248,27 @@ async function createZoomSlider() {
   zoomSettings.appendChild(resetButton);
   await callback();
   return zoomSettings;
+}
+
+async function createTimestampToggle() {
+  const timestampSettings = document.createElement('div');
+  const label = document.createElement('span');
+  label.textContent = 'Show Timestamps: ';
+  timestampSettings.appendChild(label);
+  let timestampToggle = document.createElement('input');
+  timestampToggle.type = 'checkbox';
+  timestampToggle.style.padding = '4px';
+  timestampToggle.checked = ((await getStorage('timestamps')) || false);
+  timestampToggle.style.verticalAlign = 'middle';
+  let callback = async e => {
+    showTimestamps = timestampToggle.checked;
+    await setStorage('timestamps', showTimestamps);
+    document.querySelectorAll('.timestampText').forEach(m => m.style.display = showTimestamps ? 'contents' : 'none');
+  };
+  timestampToggle.onchange = callback;
+  timestampSettings.appendChild(timestampToggle);
+  await callback();
+  return timestampSettings;
 }
 
 function changeThemeAndRedirect(dark) {

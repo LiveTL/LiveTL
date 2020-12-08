@@ -1,0 +1,1 @@
+createSettings(document.querySelector('.livetl'));
