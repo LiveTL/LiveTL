@@ -425,12 +425,17 @@ function createTranslatorSelect() {
   return translatorSelectContainer;
 }
 
-async function createZoomSlider() {
-  const zoomSettings = document.createElement('div');
+function createZoomLabel() {
   const label = document.createElement('span');
+  label.className = 'optionLabel';
   label.textContent = 'Zoom: ';
-  zoomSettings.appendChild(label);
+  return label;
+}
+
+const zoomSliderInputId = 'zoomSliderInput';
+async function createZoomSliderInput() {
   let zoomSlider = document.createElement('input');
+  zoomSlider.id = zoomSliderInputId;
   zoomSlider.type = 'range';
   zoomSlider.min = '0.5';
   zoomSlider.max = '2';
@@ -438,29 +443,45 @@ async function createZoomSlider() {
   zoomSlider.step = '0.01';
   zoomSlider.value = ((await getStorage('zoom')) || 1);
   zoomSlider.style.verticalAlign = 'middle';
-  let callback = async e => {
-    let scale = Math.ceil(parseFloat(zoomSlider.value) * 100);
-    let livetlContainer = document.querySelector('.livetl');
-    livetlContainer.style.transformOrigin = '0 0';
-    livetlContainer.style.transform = `scale(${scale / 100})`;
-    let inverse = 10000 / scale;
-    livetlContainer.style.width = `${inverse}%`;
-    livetlContainer.style.height = `${inverse}%`;
-    await setStorage('zoom', scale / 100);
-  };
-  zoomSettings.onchange = callback;
-  zoomSettings.appendChild(zoomSlider);
+  zoomSlider.onchange = () => updateZoomLevel();
+
+  return zoomSlider;
+}
+
+async function updateZoomLevel() {
+  let value = parseFloat(document.getElementById(zoomSliderInputId).value) || await getStorage('zoom') || 1
+  let scale = Math.ceil(value * 100);
+  let livetlContainer = document.querySelector('.livetl');
+  livetlContainer.style.transformOrigin = '0 0';
+  livetlContainer.style.transform = `scale(${scale / 100})`;
+  let inverse = 10000 / scale;
+  livetlContainer.style.width = `${inverse}%`;
+  livetlContainer.style.height = `${inverse}%`;
+  await setStorage('zoom', scale / 100);
+}
+
+function createZoomResetButton() {
   let resetButton = document.createElement('input');
   resetButton.value = 'Reset';
   resetButton.style.marginLeft = '4px';
   resetButton.style.verticalAlign = 'middle';
   resetButton.type = 'button';
   resetButton.onclick = async () => {
-    zoomSlider.value = 1;
-    await callback();
+    document.getElementById(zoomSliderInputId).value = 1;
+    await updateZoomLevel();
   }
-  zoomSettings.appendChild(resetButton);
-  await callback();
+
+  return resetButton;
+}
+
+async function createZoomSlider() {
+  const zoomSettings = document.createElement('div');
+  const zoomSliderInput = await createZoomSliderInput();
+
+  zoomSettings.appendChild(createZoomLabel());
+  zoomSettings.appendChild(zoomSliderInput);
+  zoomSettings.appendChild(createZoomResetButton());
+
   return zoomSettings;
 }
 
@@ -469,6 +490,9 @@ async function createSettings(container) {
   settings.appendChild(createLanguageSelect());
   settings.appendChild(createTranslatorSelect());
   settings.appendChild(await createZoomSlider())
+  // This needs to be called after the zoomSlider is added to the DOM, otherwise it won't be able to find the element and read the value
+  await updateZoomLevel();
+
   return settings;
 }
 
