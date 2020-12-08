@@ -8,8 +8,6 @@ const isFirefox = !!/Firefox/.exec(navigator.userAgent);
 
 const languageConversionTable = {};
 
-const MinecraftObserver = MutationObserver;
-
 const embedDomain = EMBED_DOMAIN;
 
 // WAR: web accessible resource
@@ -34,58 +32,45 @@ async function runLiveTL() {
   await setFavicon();
 
   switchChat();
-  setTimeout(async () => {
-    document.title = 'LiveTL Chat';
+  document.title = 'LiveTL Chat';
 
-    await Promise.all([importFontAwesome(), importStyle()]);
+  await Promise.all([importFontAwesome(), importStyle()]);
 
-    const livetlContainer = document.createElement('div');
-    livetlContainer.className = 'livetl';
-    document.body.appendChild(livetlContainer);
-    if (params.devMode) {
-      livetlContainer.style.opacity = '50%';
-    }
-    const translationDiv = document.createElement('div');
-    translationDiv.className = 'translationText';
+  const livetlContainer = document.createElement('div');
+  livetlContainer.className = 'livetl';
+  document.body.appendChild(livetlContainer);
+  if (params.devMode) {
+    livetlContainer.style.opacity = '50%';
+  }
+  const translationDiv = document.createElement('div');
+  translationDiv.className = 'translationText';
 
-    const settings = await createSettings(livetlContainer);
-    livetlContainer.appendChild(translationDiv);
+  const settings = await createSettings(livetlContainer);
+  livetlContainer.appendChild(translationDiv);
 
-    allTranslatorCheckbox = createCheckbox('All Translators', 'allTranslatorID', true, () => {
-      const boxes = document
-        .querySelector('#transelectChecklist')
-        .querySelectorAll('input:not(:checked)');
-      boxes.forEach(box => {
-        box.checked = allTranslatorCheckbox.checked;
-      });
-      checkboxUpdate();
+  allTranslatorCheckbox = createCheckbox('All Translators', 'allTranslatorID', true, () => {
+    const boxes = document
+      .querySelector('#transelectChecklist')
+      .querySelectorAll('input:not(:checked)');
+    boxes.forEach(box => {
+      box.checked = allTranslatorCheckbox.checked;
     });
+    checkboxUpdate();
+  });
 
-    prependE = el => translationDiv.prepend(el);
+  prependE = el => translationDiv.prepend(el);
 
-    prependE(await createWelcome());
+  prependE(await createWelcome());
 
-    // const messageDiv = document.querySelector('.yt-live-chat-text-message-renderer');
-    // const messages = document.querySelectorAll('.yt-live-chat-text-message-renderer > #message');
-    const messages = Array.from(
-      document.querySelectorAll('.yt-live-chat-text-message-renderer > #message')
-    ).map(e => e.parentElement);
-
-      // const messages = document.querySelectorAll('.yt-live-chat-text-message-renderer > #message');
-
-    // setInterval(() => {
-    let observer = new MinecraftObserver((mutations, observer) => {
-      for (const mutation of mutations) {
-        console.log(mutation.target);
-      }
-
-      if (0 && m.innerHTML !== '') {
-        const parsed = parseTranslation(m.textContent);
+  let observer = new MutationObserver((mutations, observer) => {
+    mutations.forEach(mutation => {
+      mutation.addedNodes.forEach(m => {
+        const parsed = parseTranslation(m.querySelector("#message").textContent);
         const select = document.querySelector('#langSelect');
         if (parsed != null && isLangMatch(parsed.lang.toLowerCase(), languageConversionTable[select.value]) &&
           parsed.msg.replace(/\s/g, '') !== '') {
-          const author = m.parentElement.childNodes[1].textContent;
-          const authorID = /\/ytc\/([^\=]+)\=/.exec(getProfilePic(m))[1];
+          const author = m.querySelector("#author-name").textContent;
+          const authorID = /\/ytc\/([^\=]+)\=/.exec(m.querySelector("#author-photo > img").src)[1];
           const line = createTranslationElement(author, authorID, parsed.msg);
           if (!(authorID in allTranslators.v)) {
             createCheckbox(author, authorID, allTranslatorCheckbox.checked);
@@ -94,34 +79,14 @@ async function runLiveTL() {
             if (checked) {
               prependE(line);
             }
+            createSettingsProjection(prependE);
           });
         }
-        m.innerHTML = '';
-      }
-      createSettingsProjection(prependE);
+      });
     });
+  });
 
-    let renderObserver = new MinecraftObserver((mutations, observer) => {
-      for (const mutation of mutations) {
-        // observer.observe(mutation.target, obConfig);
-        console.log("Observing", mutation);
-      }
-    });
-
-    const messageDiv = document.querySelectorAll('#items')[1]; // TODO Fix query to also have '.yt-live-chat-item-list-renderer'
-    console.log(messageDiv);
-
-    const obConfig = { attributes: true, childList: true, subTree: true };
-
-    // renderObserver.observe(messageDiv, { childList: true });
-    console.log("got here");
-
-    messages.forEach(msg => {
-      // observer.observe(msg, obConfig);
-      // console.log("Observing", msg);
-    });
-    // }, 1000);
-  }, 0);
+  observer.observe(document.querySelector("#items.yt-live-chat-item-list-renderer"), { childList: true });
 }
 
 function switchChat() {
@@ -201,12 +166,12 @@ async function insertLiveTLButtons(isHolotools = false) {
 }
 
 let params = {};
-let lastLocation = "";
-const activationInterval = setInterval(async () => {
+let lastLocation = '';
+async function loaded() {
   if (window.location.href == lastLocation) return;
   lastLocation = window.location.href;
   if (window.location.href.startsWith('https://www.youtube.com/live_chat') ||
-    window.location.href.startsWith("https://www.youtube.com/live_chat_replay")) {
+    window.location.href.startsWith('https://www.youtube.com/live_chat_replay')) {
     conlog('Using live chat');
     try {
       params = parseParams();
@@ -228,7 +193,9 @@ const activationInterval = setInterval(async () => {
   } else if (window.location.href.startsWith(embedDomain)) {
     setFavicon();
   }
-}, 1000);
+}
+window.addEventListener('yt-navigate-finish', loaded);
+window.addEventListener('load', loaded);
 
 // function changeThemeAndRedirect(dark) {
 //   var url = new URL(location.href);
@@ -540,17 +507,17 @@ async function shareExtension() {
 
 async function createWelcomeText() {
   const welcomeText = document.createElement('span');
-  welcomeText.textContent = 'Welcome to LiveTL! Translations will appear above.';
+  welcomeText.textContent = 'Welcome to LiveTL! Translations picked up from the chat will appear here.';
   const buttons = document.createElement('div');
   buttons.classList.add('smallText');
   buttons.style.marginLeft = '0px';
   buttons.innerHTML = `
-        Please consider
-        <a id="shareExtension" href="javascript:void(0);">sharing LiveTL with your friends</a>, 
-        <a href="https://kentonishi.github.io/LiveTL/about/review" target="about:blank">giving us a 5-star review</a>, 
-        <a href="https://discord.gg/uJrV3tmthg" target="about:blank">joining our Discord server</a>, and
-        <a href="https://github.com/KentoNishi/LiveTL" target="about:blank">starring our GitHub repository</a>!
-    `;
+    Please consider
+    <a id="shareExtension" href="javascript:void(0);">sharing LiveTL with your friends</a>, 
+    <a href="https://kentonishi.github.io/LiveTL/about/review" target="about:blank">giving us a 5-star review</a>, 
+    <a href="https://discord.gg/uJrV3tmthg" target="about:blank">joining our Discord server</a>, and
+    <a href="https://github.com/KentoNishi/LiveTL" target="about:blank">starring our GitHub repository</a>!
+  `;
   welcomeText.appendChild(buttons);
   welcomeText.querySelector('#shareExtension').onclick = shareExtension;
 
@@ -715,10 +682,6 @@ function createTranslationElement(author, authorID, translation) {
   setTranslationElementCallbacks(line);
   line.appendChild(createAuthorInfoElement(author, authorID, line));
   return line;
-}
-
-function getProfilePic(el) {
-  return el.parentElement.parentElement.querySelector('img').src;
 }
 
 function createSettingsProjection(add) {
