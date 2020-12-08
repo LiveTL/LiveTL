@@ -271,24 +271,39 @@ async function createZoomSlider() {
   return zoomSettings;
 }
 
-async function createTimestampToggle() {
-  const timestampSettings = document.createElement('div');
-  const label = document.createElement('span');
+function createTimestampLabel() {
+  const label = document.createElement('label');
+  label.className = 'optionLabel';
+  label.htmlFor = 'timestampToggle';
   label.textContent = 'Show Timestamps: ';
-  timestampSettings.appendChild(label);
+
+  return label;
+}
+
+async function createTimestampCheckbox() {
   let timestampToggle = document.createElement('input');
+  timestampToggle.id = 'timestampToggle';
   timestampToggle.type = 'checkbox';
   timestampToggle.style.padding = '4px';
-  timestampToggle.checked = ((await getStorage('timestamps')) || false);
   timestampToggle.style.verticalAlign = 'middle';
-  let callback = async e => {
+
+  let display = await getStorage('timestamp');
+  timestampToggle.checked = display === null ? display : true;
+
+  timestampToggle.onchange = async () => {
     showTimestamps = timestampToggle.checked;
     await setStorage('timestamps', showTimestamps);
     document.querySelectorAll('.timestampText').forEach(m => m.style.display = showTimestamps ? 'contents' : 'none');
   };
-  timestampToggle.onchange = callback;
-  timestampSettings.appendChild(timestampToggle);
-  await callback();
+
+  return timestampToggle;
+}
+
+async function createTimestampToggle() {
+  const timestampSettings = document.createElement('div');
+  timestampSettings.appendChild(createTimestampLabel());
+  timestampSettings.appendChild(await createTimestampCheckbox());
+
   return timestampSettings;
 }
 
