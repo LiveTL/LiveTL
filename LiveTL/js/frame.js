@@ -190,9 +190,7 @@ async function loaded() {
 window.addEventListener('load', loaded);
 window.addEventListener('yt-navigate-start', clearLiveTLButtons);
 
-if (isFirefox) {
-  window.dispatchEvent(new Event('load'));
-}
+window.dispatchEvent(new Event('load'));
 
 
 if (window.location.href.startsWith('https://kentonishi.github.io/LiveTL/about')) {
