@@ -210,6 +210,13 @@ label {
     display: contents !important;
 }
 
+.translationText > hr {
+    background-color: white;
+    height: 1px;
+    margin-left: 15px;
+    animation: none;
+}
+
 @keyframes splash {
     from {
         background-color: rgba(0, 119, 255, 0.466);
