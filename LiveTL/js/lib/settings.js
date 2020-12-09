@@ -289,13 +289,16 @@ async function createTimestampCheckbox() {
   timestampToggle.style.verticalAlign = 'middle';
 
   let display = await getStorage('timestamp');
-  timestampToggle.checked = display === null ? display : true;
+  display = display != null ? display : true;
+  timestampToggle.checked = display;
 
   timestampToggle.onchange = async () => {
     showTimestamps = timestampToggle.checked;
-    await setStorage('timestamps', showTimestamps);
+    await setStorage('timestamp', showTimestamps);
     document.querySelectorAll('.timestampText').forEach(m => m.style.display = showTimestamps ? 'contents' : 'none');
   };
+
+  await timestampToggle.onchange();
 
   return timestampToggle;
 }
