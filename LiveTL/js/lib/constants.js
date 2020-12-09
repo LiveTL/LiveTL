@@ -25,7 +25,7 @@ async function getFile(name, format) {
 }
 
 // global helper function to handle scrolling
-function updateSize() {
+function updateSettingsPanelSize() {
   const pix = document.querySelector('.dropdown-check-list').getBoundingClientRect().bottom;
   document.querySelector('.modal').style.height = pix + 'px';
 }

@@ -124,10 +124,8 @@ a {
 }
 
 .translationText {
-    position: absolute;
     z-index: -1;
-    width: calc(100% - 10px);
-    height: 100%;
+    width: 100%;
 }
 
 .smallText {
@@ -209,10 +207,9 @@ label {
     display: contents !important;
 }
 
-.translationText > hr {
+.sepLine {
     background-color: white;
     height: 1px;
-    margin-left: 10px;
     animation: none;
 }
 
@@ -227,10 +224,14 @@ label {
 
 .line {
     margin-left: 10px;
+    margin-right: 10px;
     margin-top: 10px;
-    margin-bottom: 10px;
     animation-iteration-count: 1;
     animation: splash 1s normal forwards ease-in-out;
+}
+
+.line:last-child {
+    padding-bottom: 10px;
 }
 
 .messageOptions {

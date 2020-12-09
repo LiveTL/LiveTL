@@ -58,9 +58,10 @@ function createModal(container) {
     if (newDisplay === 'none') {
       document.querySelector('.translationText').style.display = 'block';
       modalContainer.style.height = 'auto';
+      window.updateDimensions(true, textDirection == 'top');
     } else {
       document.querySelector('.translationText').style.display = 'none';
-      updateSize();
+      updateSettingsPanelSize();
     }
 
     if (enableDarkModeToggle) {
@@ -153,7 +154,7 @@ function setChecklistOnclick(checklist) {
       checklist.classList.remove('openList');
       items.style.display = 'none';
     }
-    updateSize();
+    updateSettingsPanelSize();
   };
 }
 
@@ -164,7 +165,7 @@ function setChecklistOnblur(checklist) {
       checklist.classList.remove('openList');
       items.style.display = 'none';
     } else e.currentTarget.focus();
-    updateSize();
+    updateSettingsPanelSize();
   };
 }
 
@@ -339,13 +340,15 @@ async function createTextDirectionSelect(container) {
     let modal = document.querySelector(".modal-content");
     tt.querySelectorAll('.line').forEach(m => prependE(m));
     if (textDirection == 'top') {
-      tt.style.top = null;
-      tt.style.transform = null;
+      tt.style.maxHeight = null;
+      tt.style.position = null;
+      tt.style.bottom = null;
       sg.style.bottom = '5px';
       sg.style.top = null;
     } else {
-      // tt.style.top = '100%';
-      // tt.style.transform = 'translateY(-100%)';
+      tt.style.maxHeight = '100%';
+      tt.style.position = 'absolute';
+      tt.style.bottom = '0';
       sg.style.top = '5px';
       sg.style.bottom = null;
     }

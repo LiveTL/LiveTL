@@ -25,6 +25,32 @@ async function runLiveTL() {
   translationDiv.className = 'translationText';
 
   livetlContainer.appendChild(translationDiv);
+
+  getDimensions = () => ({
+    clientHeight: livetlContainer.clientWidth,
+    scrollTop: livetlContainer.clientHeight,
+    scrollHeight: livetlContainer.scrollHeight
+  });
+
+  scrollToBottom = (dims, force = false) => {
+    if ((dims.clientHeight + dims.scrollTop >= dims.scrollHeight &&
+      translationDiv.style.display != 'none') || force) {
+      livetlContainer.scrollTo(0, livetlContainer.scrollHeight);
+    }
+  }
+
+  let dimensionsBefore = getDimensions();
+  window.updateDimensions = (force = false, goToTop = false) => {
+    if (goToTop) {
+      livetlContainer.scrollTo(0, 0);
+    } else {
+      scrollToBottom(dimensionsBefore, force);
+    }
+    dimensionsBefore = getDimensions();
+  };
+
+  window.onresize = updateDimensions;
+
   const settings = await createSettings(livetlContainer);
 
   allTranslatorCheckbox = createCheckbox('All Translators', 'allTranslatorID', true, () => {
@@ -37,28 +63,6 @@ async function runLiveTL() {
     checkboxUpdate();
   });
 
-
-  getDimensions = () => ({
-    clientHeight: livetlContainer.clientWidth,
-    scrollTop: livetlContainer.clientHeight,
-    scrollHeight: livetlContainer.scrollHeight
-  });
-
-  scrollToBottom = (dims) => {
-    if (dims.clientHeight + dims.scrollTop >= dims.scrollHeight &&
-      translationDiv.style.display != 'none') {
-      livetlContainer.scrollTo(0, livetlContainer.scrollHeight);
-    }
-  }
-
-  let dimensionsBefore = getDimensions();
-  updateDimensions = () => {
-    scrollToBottom(dimensionsBefore);
-    dimensionsBefore = getDimensions();
-  };
-
-  (new ResizeObserver(() => updateDimensions)).observe(livetlContainer);
-
   appendE = el => {
     translationDiv.appendChild(el);
     updateDimensions();
@@ -68,9 +72,12 @@ async function runLiveTL() {
   let prependOrAppend = e => (textDirection == 'bottom' ? appendE : prependE)(e);
 
   prependOrAppend(await createWelcome());
+  const hrParent = document.createElement('div');
   const hr = document.createElement('hr');
-  hr.className = 'line'; // so it properly gets inverted when changing the text direction
-  prependOrAppend(hr);
+  hrParent.className = 'line'; // so it properly gets inverted when changing the text direction
+  hr.className = 'sepLine';
+  hrParent.appendChild(hr);
+  prependOrAppend(hrParent);
 
   let observer = new MutationObserver((mutations, observer) => {
     mutations.forEach(mutation => {
@@ -265,6 +272,7 @@ if (window.location.href.startsWith(aboutPage)) {
         postMessage(d.data);
       }
     });
+    switchChat();
   }
 }
 
