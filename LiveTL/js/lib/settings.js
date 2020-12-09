@@ -20,6 +20,8 @@ async function createSettings(container) {
   settings.appendChild(await createZoomSlider())
   settings.appendChild(await createTimestampToggle());
   settings.appendChild(await createTextDirectionToggle(container));
+  settings.appendChild(await createDisplayModMessageToggle());
+
   await updateZoomLevel();
   return settings;
 }
@@ -56,7 +58,7 @@ function createModal(container) {
     modalContainer.style.display = newDisplay;
     icon[newDisplay](settingsButton);
     if (newDisplay === 'none') {
-      document.querySelector('.translationText').style.display = 'block';
+      document.querySelector('.translationText').style.display = null;
       modalContainer.style.height = 'auto';
       window.updateDimensions(true, textDirection == 'top');
     } else {
@@ -333,22 +335,16 @@ async function createTextDirectionSelect(container) {
   textDirSelect.value = textDirection = data;
 
   textDirSelect.onchange = async () => {
-    textDirection = textDirSelect.value;
+    const textDirection = textDirSelect.value;
     await setStorage('text_direction', textDirection);
     let tt = document.querySelector('.translationText');
     let sg = document.querySelector('#settingsGear');
-    let modal = document.querySelector(".modal-content");
-    tt.querySelectorAll('.line').forEach(m => prependE(m));
-    if (textDirection == 'top') {
-      tt.style.maxHeight = null;
-      tt.style.position = null;
-      tt.style.bottom = null;
+    if (textDirection === 'top') {
+      tt.style.flexDirection = 'column-reverse';
       sg.style.bottom = '5px';
       sg.style.top = null;
     } else {
-      tt.style.maxHeight = '100%';
-      tt.style.position = 'absolute';
-      tt.style.bottom = '0';
+      tt.style.flexDirection = 'column';
       sg.style.top = '5px';
       sg.style.bottom = null;
     }
@@ -364,6 +360,44 @@ async function createTextDirectionToggle(container) {
   textDirToggle.appendChild(await createTextDirectionSelect(container));
   textDirToggle.style.marginTop = '10px';
   return textDirToggle;
+}
+
+function createDisplayModMessageLabel() {
+  const label = document.createElement('label');
+  label.className = 'optionLabel';
+  label.htmlFor = 'displayModMessages';
+  label.textContent = 'Show Mod Messages: ';
+
+  return label;
+}
+
+async function createDisplayModMessageCheckbox() {
+  const checkbox = document.createElement('input');
+  checkbox.id = 'displayModMessages';
+  checkbox.type = 'checkbox';
+  checkbox.style.padding = '4px';
+  checkbox.style.verticalAlign = 'middle';
+
+  let display = await getStorage('displayModMessages');
+  checkbox.checked = display != null ? display : true;
+
+  checkbox.onchange = async () => {
+    const displayModMessages = checkbox.checked;
+    await setStorage('displayModMessages', displayModMessages);
+    document.querySelectorAll('.mod').forEach(el => el.style.display = displayModMessages ? 'block' : 'none');
+  };
+
+  await checkbox.onchange();
+
+  return checkbox;
+}
+
+async function createDisplayModMessageToggle() {
+  const displayModMessagesToggle = document.createElement('div');
+  displayModMessagesToggle.appendChild(createDisplayModMessageLabel());
+  displayModMessagesToggle.appendChild(await createDisplayModMessageCheckbox());
+
+  return displayModMessagesToggle;
 }
 
 function changeThemeAndRedirect(dark) {

@@ -128,8 +128,8 @@ a {
 }
 
 .translationText {
-    z-index: -1;
     width: 100%;
+    display: flex;
 }
 
 .smallText {
@@ -235,7 +235,16 @@ label {
 }
 
 .line:last-child {
-    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.message {
+    padding: 4px 2px 4px 4px;
+    border-radius: 5px;
+}
+
+.message:nth-child(2n) {
+    background-color: #2c2c2c !important;
 }
 
 .messageOptions {
