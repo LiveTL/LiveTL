@@ -168,6 +168,41 @@ label {
     fill: crimson;
 }
 
+.hasTooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip {
+    visibility: hidden;
+    width: 6em;
+    font-size: 0.6em;
+    background-color: #2b2b2b;
+    color: #efefef;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    bottom: 125%;
+    margin-left: -42px;
+    transition: opacity 0.3s;
+}
+
+.hasTooltip .tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.hasTooltip:hover .tooltip {
+    visibility: visible;
+}
+
 .optionLabel {
     position: absolute;
     margin-left: 0;
