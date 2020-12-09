@@ -407,23 +407,39 @@ function createAuthorNameElement(author, authorID, timestamp) {
   return authorName;
 }
 
+function createTooltip(text) {
+  const tooltip = document.createElement('span');
+  tooltip.className = 'tooltip';
+  tooltip.textContent = text;
+
+  return tooltip;
+}
+
 function createAuthorHideButton(translation) {
   const hide = document.createElement('span');
+  hide.className = 'hasTooltip'
   hide.style.cursor = 'pointer';
   hide.onclick = () => translation.remove();
+
   hideSVG(hide);
+  hide.appendChild(createTooltip('Hide Translation'))
+
   return hide;
 }
 
 function createAuthorBanButton(authorID) {
   const ban = document.createElement('span');
+  ban.className = 'hasTooltip'
+  ban.style.cursor = 'pointer';
   ban.onclick = async () => {
     allTranslators.v[authorID].checked = false;
     await saveUserStatus(authorID, false);
     checkboxUpdate();
   };
-  ban.style.cursor = 'pointer';
+
   banSVG(ban);
+  ban.appendChild(createTooltip('Ban Translator'))
+
   return ban;
 }
 
