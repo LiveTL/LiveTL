@@ -1,3 +1,7 @@
+:root {
+    --button: #49ddff;
+}
+
 .livetl {
     position: fixed;
     top: 0;
@@ -251,8 +255,8 @@ label {
 }
 
 svg {
-    stroke: white;
-    fill: white;
+    stroke: var(--button);
+    fill: var(--button);
 }
 
 ;
@@ -293,7 +297,7 @@ svg {
 
 .modal {
     justify-content: center;
-    padding-top: 30px;
+    display: table-cell;
 }
 
 #settingsGear {
@@ -302,7 +306,8 @@ svg {
     position: fixed;
     right: 5px;
     z-index: 1000000;
-    opacity: 0.5;
+    opacity: 0.75;
+    height: fit-content;
 }
 
 #settingsProjection {
