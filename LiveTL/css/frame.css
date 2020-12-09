@@ -213,7 +213,7 @@ label {
 .translationText > hr {
     background-color: white;
     height: 1px;
-    margin-left: 15px;
+    margin-left: 10px;
     animation: none;
 }
 
@@ -227,7 +227,7 @@ label {
 }
 
 .line {
-    margin-left: 15px;
+    margin-left: 10px;
     margin-top: 10px;
     margin-bottom: 10px;
     animation-iteration-count: 1;

@@ -339,15 +339,13 @@ async function createTextDirectionSelect(container) {
     let modal = document.querySelector(".modal-content");
     tt.querySelectorAll('.line').forEach(m => prependE(m));
     if (textDirection == 'top') {
-      container.style.display = modal.style.display = null;
-      container.style.justifyContent = modal.style.justifyContent = null;
-      container.style.direction = modal.style.direction = null;
+      tt.style.top = null;
+      tt.style.transform = null;
       sg.style.bottom = '5px';
       sg.style.top = null;
     } else {
-      container.style.display = modal.style.display = 'flex';
-      container.style.justifyContent = modal.style.justifyContent = 'flex-end';
-      container.style.flexDirection = modal.style.flexDirection = 'column';
+      tt.style.top = '100%';
+      tt.style.transform = 'translateY(-100%)';
       sg.style.top = '5px';
       sg.style.bottom = null;
     }
