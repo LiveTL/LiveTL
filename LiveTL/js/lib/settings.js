@@ -19,7 +19,7 @@ async function createSettings(container) {
   settings.appendChild(createTranslatorSelect());
   settings.appendChild(await createZoomSlider())
   settings.appendChild(await createTimestampToggle());
-  settings.appendChild(await createTextDirectionToggle());
+  settings.appendChild(await createTextDirectionToggle(container));
   await updateZoomLevel();
   return settings;
 }
@@ -320,7 +320,7 @@ function createTextDirectionLabel() {
   return label;
 }
 
-async function createTextDirectionSelect() {
+async function createTextDirectionSelect(container) {
   let textDirSelect = document.createElement('select');
   textDirSelect.innerHTML = `
     <option id="top" value="top">Top</option>
@@ -334,16 +334,33 @@ async function createTextDirectionSelect() {
   textDirSelect.onchange = async () => {
     textDirection = textDirSelect.value;
     await setStorage('text_direction', textDirection);
-    document.querySelector('.translationText').querySelectorAll('.line').forEach(m => prependE(m));
+    let tt = document.querySelector('.translationText');
+    let sg = document.querySelector('#settingsGear');
+    let modal = document.querySelector(".modal-content");
+    tt.querySelectorAll('.line').forEach(m => prependE(m));
+    if (textDirection == 'top') {
+      container.style.display = modal.style.display = null;
+      container.style.justifyContent = modal.style.justifyContent = null;
+      container.style.direction = modal.style.direction = null;
+      sg.style.bottom = '5px';
+      sg.style.top = null;
+    } else {
+      container.style.display = modal.style.display = 'flex';
+      container.style.justifyContent = modal.style.justifyContent = 'flex-end';
+      container.style.flexDirection = modal.style.flexDirection = 'column';
+      sg.style.top = '5px';
+      sg.style.bottom = null;
+    }
   };
 
+  await textDirSelect.onchange();
   return textDirSelect;
 }
 
-async function createTextDirectionToggle() {
+async function createTextDirectionToggle(container) {
   const textDirToggle = document.createElement('div');
   textDirToggle.appendChild(createTextDirectionLabel());
-  textDirToggle.appendChild(await createTextDirectionSelect());
+  textDirToggle.appendChild(await createTextDirectionSelect(container));
   textDirToggle.style.marginTop = '10px';
   return textDirToggle;
 }

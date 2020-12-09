@@ -24,8 +24,8 @@ async function runLiveTL() {
   const translationDiv = document.createElement('div');
   translationDiv.className = 'translationText';
 
-  const settings = await createSettings(livetlContainer);
   livetlContainer.appendChild(translationDiv);
+  const settings = await createSettings(livetlContainer);
 
   allTranslatorCheckbox = createCheckbox('All Translators', 'allTranslatorID', true, () => {
     const boxes = document
