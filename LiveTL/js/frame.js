@@ -65,19 +65,17 @@ async function runLiveTL() {
 
   appendE = el => {
     translationDiv.appendChild(el);
-    updateDimensions();
+    if (textDirection === 'bottom')
+      scrollToBottom(getDimensions());
   };
-  prependE = el => translationDiv.prepend(el);
 
-  let prependOrAppend = e => (textDirection == 'bottom' ? appendE : prependE)(e);
-
-  prependOrAppend(await createWelcome());
+  appendE(await createWelcome());
   const hrParent = document.createElement('div');
   const hr = document.createElement('hr');
   hrParent.className = 'line'; // so it properly gets inverted when changing the text direction
   hr.className = 'sepLine';
   hrParent.appendChild(hr);
-  prependOrAppend(hrParent);
+  appendE(hrParent);
 
   let observer = new MutationObserver((mutations, observer) => {
     mutations.forEach(mutation => {
@@ -105,7 +103,7 @@ async function runLiveTL() {
           // Check to make sure we haven't blacklisted the mod, and if not, send the message
           // After send the message, we bail so we don't have to run all the translation related things below
           if (await isChecked(messageInfo.author.id)) {
-            prependOrAppend(createMessageEntry(messageInfo, element.textContent));
+            appendE(createMessageEntry(messageInfo, element.textContent));
             return;
           }
         }
@@ -126,7 +124,7 @@ async function runLiveTL() {
 
           // Check to see if the sender is approved, and send the message if they are
           if (await isChecked(messageInfo.author.id))
-            prependOrAppend(createMessageEntry(messageInfo, translation.msg));
+            appendE(createMessageEntry(messageInfo, translation.msg));
         }
       });
     });

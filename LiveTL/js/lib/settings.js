@@ -56,7 +56,7 @@ function createModal(container) {
     modalContainer.style.display = newDisplay;
     icon[newDisplay](settingsButton);
     if (newDisplay === 'none') {
-      document.querySelector('.translationText').style.display = 'block';
+      document.querySelector('.translationText').style.display = null;
       modalContainer.style.height = 'auto';
       window.updateDimensions(true, textDirection == 'top');
     } else {
@@ -333,22 +333,16 @@ async function createTextDirectionSelect(container) {
   textDirSelect.value = textDirection = data;
 
   textDirSelect.onchange = async () => {
-    textDirection = textDirSelect.value;
+    const textDirection = textDirSelect.value;
     await setStorage('text_direction', textDirection);
     let tt = document.querySelector('.translationText');
     let sg = document.querySelector('#settingsGear');
-    let modal = document.querySelector(".modal-content");
-    tt.querySelectorAll('.line').forEach(m => prependE(m));
-    if (textDirection == 'top') {
-      tt.style.maxHeight = null;
-      tt.style.position = null;
-      tt.style.bottom = null;
+    if (textDirection === 'top') {
+      tt.style.flexDirection = 'column-reverse';
       sg.style.bottom = '5px';
       sg.style.top = null;
     } else {
-      tt.style.maxHeight = '100%';
-      tt.style.position = 'absolute';
-      tt.style.bottom = '0';
+      tt.style.flexDirection = 'column';
       sg.style.top = '5px';
       sg.style.bottom = null;
     }
