@@ -171,6 +171,7 @@ label {
 .hasTooltip {
     position: relative;
     display: inline-block;
+    margin-left: 3px;
 }
 
 .tooltip {
@@ -227,7 +228,7 @@ label {
 }
 
 .messageOptions {
-    margin-left: 5px;
+    margin-left: 1px;
 }
 
 .smallIcon {
