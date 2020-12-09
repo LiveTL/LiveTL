@@ -10,7 +10,7 @@
     word-wrap: break-word;
     word-break: break-word;
     font-size: 20px;
-    overflow-x: none;
+    overflow-x: hidden;
     overflow-y: auto;
     padding: 0px;
     min-height: 0px !important;
