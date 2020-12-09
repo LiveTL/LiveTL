@@ -20,6 +20,7 @@ async function createSettings(container) {
   settings.appendChild(await createZoomSlider())
   settings.appendChild(await createTimestampToggle());
   settings.appendChild(await createTextDirectionToggle());
+  await updateZoomLevel();
   return settings;
 }
 
@@ -76,7 +77,7 @@ function createModal(container) {
 
   modalContainer.appendChild(modalContent);
 
-  container.appendChild(settingsButton);
+  document.body.appendChild(settingsButton);
   container.appendChild(modalContainer);
 
   return modalContent;

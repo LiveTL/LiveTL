@@ -15,11 +15,7 @@
     padding: 0px;
     min-height: 0px !important;
     min-width: 0px !important;
-}
-
-a {
-    color: var(--yt-live-chat-primary-text-color);
-    text-decoration: none;
+    scrollbar-width: thin;
 }
 
 /* width */
@@ -31,7 +27,7 @@ a {
 /* Track */
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: transparent;
 }
 
 /* Handle */
@@ -44,6 +40,11 @@ a {
 
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
+}
+
+a {
+    color: var(--yt-live-chat-primary-text-color);
+    text-decoration: none;
 }
 
 .livetl * {
@@ -148,7 +149,6 @@ label {
 .hide {
     stroke-width: 0;
     fill: #A0A0A0;
-    stroke: rgb(0, 153, 255);
     width: 12px;
     height: 12px;
 }
@@ -160,7 +160,6 @@ label {
 .ban {
     stroke-width: 0;
     fill: #A0A0A0;
-    stroke: rgb(0, 153, 255);
     width: 12px;
     height: 12px;
 }
@@ -209,8 +208,8 @@ label {
 }
 
 svg {
-    stroke: #A0A0A0;
-    fill: #A0A0A0;
+    stroke: white;
+    fill: white;
 }
 
 ;
@@ -256,11 +255,12 @@ svg {
 }
 
 #settingsGear {
-    top: 10px !important;
+    bottom: 0px;
     cursor: pointer;
     position: fixed;
     right: 5px;
     z-index: 1000000;
+    opacity: 0.5;
 }
 
 #settingsProjection {

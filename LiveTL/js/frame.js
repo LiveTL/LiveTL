@@ -37,10 +37,37 @@ async function runLiveTL() {
     checkboxUpdate();
   });
 
-  appendE = el => translationDiv.appendChild(el);
+
+  getDimensions = () => ({
+    clientHeight: livetlContainer.clientWidth,
+    scrollTop: livetlContainer.clientHeight,
+    scrollHeight: livetlContainer.scrollHeight
+  });
+
+  scrollToBottom = (dims) => {
+    if (dims.clientHeight + dims.scrollTop >= dims.scrollHeight &&
+      translationDiv.style.display != 'none') {
+      livetlContainer.scrollTo(0, livetlContainer.scrollHeight);
+    }
+  }
+
+  let dimensionsBefore = getDimensions();
+  updateDimensions = () => {
+    scrollToBottom(dimensionsBefore);
+    dimensionsBefore = getDimensions();
+  };
+
+  (new ResizeObserver(() => updateDimensions)).observe(livetlContainer);
+
+  appendE = el => {
+    translationDiv.appendChild(el);
+    updateDimensions();
+  };
   prependE = el => translationDiv.prepend(el);
 
-  prependE(await createWelcome());
+  let prependOrAppend = e => (textDirection == 'bottom' ? appendE : prependE)(e);
+
+  prependOrAppend(await createWelcome());
 
   let observer = new MutationObserver((mutations, observer) => {
     mutations.forEach(mutation => {
@@ -61,7 +88,7 @@ async function runLiveTL() {
           }
           isChecked(authorID).then(checked => {
             if (checked) {
-              (textDirection == 'bottom' ? appendE : prependE)(line);
+              prependOrAppend(line);
             }
           });
         }
@@ -148,18 +175,6 @@ async function insertLiveTLButtons(isHolotools = false) {
   }
 }
 
-async function onMessageFromEmbeddedChat(m) {
-  switch (m.data) {
-    case 'embeddedChatLoaded':
-      let f = document.querySelector('#chatframe');
-      f.dataset.src = f.contentWindow.location.href;
-      await insertLiveTLButtons();
-      break;
-    case 'clearLiveTLButtons':
-      clearLiveTLButtons();
-  }
-}
-
 function isReplayChat() {
   return window.location.href.startsWith('https://www.youtube.com/live_chat_replay');
 }
@@ -174,6 +189,22 @@ function isChat() {
 
 function isVideo() {
   return window.location.href.startsWith('https://www.youtube.com/watch');
+}
+
+async function onMessageFromEmbeddedChat(m) {
+  if (!isVideo()) {
+    removeEventListener('message', onMessageFromEmbeddedChat);
+    return;
+  }
+  switch (m.data) {
+    case 'embeddedChatLoaded':
+      let f = document.querySelector('#chatframe');
+      f.dataset.src = f.contentWindow.location.href;
+      await insertLiveTLButtons();
+      break;
+    case 'clearLiveTLButtons':
+      clearLiveTLButtons();
+  }
 }
 
 let params = {};
@@ -197,14 +228,12 @@ async function loaded() {
         window.parent.postMessage('embeddedChatLoaded', '*');
       }
     } catch (e) { }
-  } else if (isVideo()) {
-    window.removeEventListener('message', onMessageFromEmbeddedChat);
-    window.addEventListener('message', onMessageFromEmbeddedChat);
   } else if (window.location.href.startsWith(embedDomain)) {
     setFavicon();
   }
 }
 
+window.addEventListener('message', onMessageFromEmbeddedChat);
 window.addEventListener('load', loaded);
 window.addEventListener('yt-navigate-start', clearLiveTLButtons);
 
@@ -263,13 +292,16 @@ function createIcon(faName, link, addSpace) {
   return wrapped;
 }
 
-async function shareExtension() {
+async function shareExtension(e) {
   const details = await getFile('manifest.json', 'json');
-  navigator.share({
-    title: details.name,
-    text: details.description,
-    url: 'https://kentonishi.github.io/LiveTL'
-  });
+  if (navigator.share) {
+    navigator.share({
+      title: details.name,
+      text: details.description,
+      url: 'https://kentonishi.github.io/LiveTL'
+    });
+    e.preventDefault();
+  }
 }
 
 async function createWelcomeText() {
@@ -280,7 +312,7 @@ async function createWelcomeText() {
   buttons.style.marginLeft = '0px';
   buttons.innerHTML = `
     Please consider
-    <a id="shareExtension" href="javascript:void(0);">sharing LiveTL with your friends</a>, 
+    <a id="shareExtension" href="https://kentonishi.github.io/LiveTL" target="about:blank">sharing LiveTL with your friends</a>, 
     <a href="https://kentonishi.github.io/LiveTL/about/review" target="about:blank">giving us a 5-star review</a>, 
     <a href="https://discord.gg/uJrV3tmthg" target="about:blank">joining our Discord server</a>, and
     <a href="https://github.com/KentoNishi/LiveTL" target="about:blank">starring our GitHub repository</a>!
