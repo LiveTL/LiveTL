@@ -474,16 +474,24 @@ function checkboxUpdate() {
   removeBadTranslations();
 }
 
+function createTimestampElement(timestamp) {
+  let timestampElement = document.createElement('span');
+  timestampElement.textContent = ` (${timestamp})`;
+  timestampElement.className = 'timestampText smallText';
+  timestampElement.style.display = showTimestamps ? 'contents' : 'none';
+
+  return timestampElement;
+}
+
 function createAuthorNameElement(messageInfo) {
   const authorName = document.createElement('span');
   authorName.textContent = `${messageInfo.author.name}`;
-  let timestampElement = document.createElement('span');
-  timestampElement.textContent = ` (${messageInfo.timestamp})`;
-  timestampElement.className = 'timestampText';
-  timestampElement.style.display = showTimestamps ? 'contents' : 'none';
-  authorName.appendChild(timestampElement);
   authorName.dataset.id = messageInfo.author.id;
   authorName.className = 'smallText';
+
+  if (messageInfo.author.moderator)
+    authorName.style.color = 'var(--yt-live-chat-moderator-color)';
+
   return authorName;
 }
 
@@ -535,6 +543,7 @@ function createAuthorInfoOptions(authorID, line) {
 function createAuthorInfoElement(messageInfo, line) {
   const authorInfo = document.createElement('span');
   authorInfo.appendChild(createAuthorNameElement(messageInfo));
+  authorInfo.appendChild(createTimestampElement(messageInfo.timestamp));
   authorInfo.appendChild(createAuthorInfoOptions(messageInfo.author.id, line));
   return authorInfo;
 }
