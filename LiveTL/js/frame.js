@@ -557,6 +557,10 @@ function createMessageEntry(messageInfo, message) {
   if (messageInfo.author.moderator)
     line.classList.add('mod');
 
+  if (textDirection === 'top') {
+    line.style.marginBottom = '0';
+  }
+
   line.textContent = message;
   setTranslationElementCallbacks(line);
   line.appendChild(createAuthorInfoElement(messageInfo, line));
