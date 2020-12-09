@@ -126,9 +126,8 @@ a {
 .translationText {
     position: absolute;
     z-index: -1;
-    margin-top: 5px;
-    margin-bottom: 5px;
     width: calc(100% - 10px);
+    height: 100%;
 }
 
 .smallText {

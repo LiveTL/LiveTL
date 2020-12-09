@@ -344,8 +344,8 @@ async function createTextDirectionSelect(container) {
       sg.style.bottom = '5px';
       sg.style.top = null;
     } else {
-      tt.style.top = '100%';
-      tt.style.transform = 'translateY(-100%)';
+      // tt.style.top = '100%';
+      // tt.style.transform = 'translateY(-100%)';
       sg.style.top = '5px';
       sg.style.bottom = null;
     }
