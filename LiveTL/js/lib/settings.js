@@ -20,6 +20,8 @@ async function createSettings(container) {
   settings.appendChild(await createZoomSlider())
   settings.appendChild(await createTimestampToggle());
   settings.appendChild(await createTextDirectionToggle(container));
+  settings.appendChild(await createDisplayModMessageToggle());
+
   await updateZoomLevel();
   return settings;
 }
@@ -358,6 +360,44 @@ async function createTextDirectionToggle(container) {
   textDirToggle.appendChild(await createTextDirectionSelect(container));
   textDirToggle.style.marginTop = '10px';
   return textDirToggle;
+}
+
+function createDisplayModMessageLabel() {
+  const label = document.createElement('label');
+  label.className = 'optionLabel';
+  label.htmlFor = 'displayModMessages';
+  label.textContent = 'Show Mod Messages: ';
+
+  return label;
+}
+
+async function createDisplayModMessageCheckbox() {
+  const checkbox = document.createElement('input');
+  checkbox.id = 'displayModMessages';
+  checkbox.type = 'checkbox';
+  checkbox.style.padding = '4px';
+  checkbox.style.verticalAlign = 'middle';
+
+  let display = await getStorage('displayModMessages');
+  checkbox.checked = display != null ? display : true;
+
+  checkbox.onchange = async () => {
+    const displayModMessages = checkbox.checked;
+    await setStorage('displayModMessages', displayModMessages);
+    document.querySelectorAll('.mod').forEach(el => el.style.display = displayModMessages ? 'block' : 'none');
+  };
+
+  await checkbox.onchange();
+
+  return checkbox;
+}
+
+async function createDisplayModMessageToggle() {
+  const displayModMessagesToggle = document.createElement('div');
+  displayModMessagesToggle.appendChild(createDisplayModMessageLabel());
+  displayModMessagesToggle.appendChild(await createDisplayModMessageCheckbox());
+
+  return displayModMessagesToggle;
 }
 
 function changeThemeAndRedirect(dark) {

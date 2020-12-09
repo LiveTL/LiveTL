@@ -88,7 +88,7 @@ async function runLiveTL() {
         const messageInfo = getMessageInfo(messageNode);
 
         // Determine whether we should display mod messages (if not set, default to yes)
-        let displayModMessages = getStorage('displayModMessages');
+        let displayModMessages = await getStorage('displayModMessages');
         if (displayModMessages == null) {
           displayModMessages = true;
           await setStorage('displayModMessages', true);
@@ -554,6 +554,9 @@ function setTranslationElementCallbacks(line) {
 function createMessageEntry(messageInfo, message) {
   const line = document.createElement('div');
   line.className = 'line message';
+  if (messageInfo.author.moderator)
+    line.classList.add('mod');
+
   line.textContent = message;
   setTranslationElementCallbacks(line);
   line.appendChild(createAuthorInfoElement(messageInfo, line));
