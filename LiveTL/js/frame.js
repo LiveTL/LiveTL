@@ -510,7 +510,7 @@ function createAuthorHideButton(translation) {
   hide.onclick = () => translation.remove();
 
   hideSVG(hide);
-  hide.appendChild(createTooltip('Hide Translation'))
+  hide.appendChild(createTooltip('Hide Message'))
 
   return hide;
 }
@@ -526,7 +526,7 @@ function createAuthorBanButton(authorID) {
   };
 
   banSVG(ban);
-  ban.appendChild(createTooltip('Ban Translator'))
+  ban.appendChild(createTooltip('Blacklist User'))
 
   return ban;
 }
