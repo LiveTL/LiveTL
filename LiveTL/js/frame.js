@@ -555,7 +555,7 @@ function setTranslationElementCallbacks(line) {
 
 function createMessageEntry(messageInfo, message) {
   const line = document.createElement('div');
-  line.className = 'line';
+  line.className = 'line message';
   line.textContent = message;
   setTranslationElementCallbacks(line);
   line.appendChild(createAuthorInfoElement(messageInfo, line));
