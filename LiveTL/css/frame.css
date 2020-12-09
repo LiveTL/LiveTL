@@ -214,6 +214,7 @@ label {
     background-color: white;
     height: 1px;
     margin-left: 15px;
+    animation: none;
 }
 
 @keyframes splash {

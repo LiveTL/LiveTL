@@ -68,7 +68,9 @@ async function runLiveTL() {
   let prependOrAppend = e => (textDirection == 'bottom' ? appendE : prependE)(e);
 
   prependOrAppend(await createWelcome());
-  prependOrAppend(document.createElement('hr'));
+  const hr = document.createElement('hr');
+  hr.className = 'line'; // so it properly gets inverted when changing the text direction
+  prependOrAppend(hr);
 
   let observer = new MutationObserver((mutations, observer) => {
     mutations.forEach(mutation => {
