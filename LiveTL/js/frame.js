@@ -68,6 +68,7 @@ async function runLiveTL() {
   let prependOrAppend = e => (textDirection == 'bottom' ? appendE : prependE)(e);
 
   prependOrAppend(await createWelcome());
+  prependOrAppend(document.createElement('hr'));
 
   let observer = new MutationObserver((mutations, observer) => {
     mutations.forEach(mutation => {
