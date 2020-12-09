@@ -81,7 +81,6 @@ async function runLiveTL() {
           const timestamp = m.querySelector('#timestamp').textContent;
           const author = m.querySelector('#author-name').textContent;
           const authorID = /\/ytc\/([^\=]+)\=/.exec(m.querySelector('#author-photo > img').src)[1];
-          console.log(showTimestamps, timestamp);
           const line = createTranslationElement(author, authorID, parsed.msg, timestamp);
           if (!(authorID in allTranslators.v)) {
             createCheckbox(author, authorID, allTranslatorCheckbox.checked);
