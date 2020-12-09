@@ -122,7 +122,7 @@ async function runLiveTL() {
         {
           // If the author isn't in the senders list, add them
           if (!(messageInfo.author.id in allTranslators.v))
-            await createCheckbox(messageInfo.author.name, messageInfo.author.id, allTranslatorCheckbox.checked)
+            await createCheckbox(messageInfo.author.name, messageInfo.author.id, allTranslatorCheckbox.checked);
 
           // Check to see if the sender is approved, and send the message if they are
           if (await isChecked(messageInfo.author.id))
@@ -135,20 +135,15 @@ async function runLiveTL() {
   observer.observe(document.querySelector("#items.yt-live-chat-item-list-renderer"), { childList: true });
 }
 
-function isMessageSentByMod(messageElement) {
-  const badges = messageElement.querySelector('#chat-badges');
-  return badges.hasChildNodes() ? badges.children[0].getAttribute('type') === 'moderator' : false
-}
-
 function getMessageInfo(messageElement) {
   return {
     author: {
       id: /\/ytc\/([^\=]+)\=/.exec(messageElement.querySelector('#author-photo > img').src)[1],
       name: messageElement.querySelector('#author-name').textContent,
-      moderator: isMessageSentByMod(messageElement)
+      moderator: messageElement.getAttribute('author-type') === 'moderator'
     },
     timestamp: messageElement.querySelector('#timestamp').textContent
-  }
+  };
 }
 
 function switchChat() {
