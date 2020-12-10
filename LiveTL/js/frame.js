@@ -3,9 +3,19 @@ const isFirefox = !!/Firefox/.exec(navigator.userAgent);
 const embedDomain = EMBED_DOMAIN;
 
 const allTranslators = { v: {} };
+const verifiedTranslators = ['AAUvwniNIzjhlVnN_WMmV2iBzQ2VuLm3Ix1EbqeHleDP']; // FIXME don't hardcode this....
+const distinguishedUsers = ['AAUvwnibH7aEJcoVdPRBx0fIUKxeC25FPeVEt17wGQ']; // TODO don't hardcode this....
 let allTranslatorCheckbox = {};
 let showTimestamps = true;
 let textDirection = 'bottom';
+
+// javascript 'enum'
+const authorType = {
+  MOD: 'mod',
+  VERIFIED: 'verified',
+  DISTINGUISHED: 'distinguished', // subject to change
+  STANDARD: 'standard'
+};
 
 async function runLiveTL() {
   await setFavicon();
@@ -49,7 +59,7 @@ async function runLiveTL() {
     dimensionsBefore = getDimensions();
   };
 
-  window.onresize = updateDimensions;
+  window.onresize = () => { if (translationDiv.style.display == 'block') updateDimensions(); };
 
   const settings = await createSettings(livetlContainer);
 
@@ -65,17 +75,20 @@ async function runLiveTL() {
 
   appendE = el => {
     translationDiv.appendChild(el);
-    if (textDirection === 'bottom')
-      scrollToBottom(getDimensions());
+    updateDimensions();
   };
 
-  appendE(await createWelcome());
+  prependE = el => translationDiv.prepend(el);
+
+  let prependOrAppend = e => (textDirection == 'bottom' ? appendE : prependE)(e);
+
+  prependOrAppend(await createWelcome());
   const hrParent = document.createElement('div');
   const hr = document.createElement('hr');
   hrParent.className = 'line'; // so it properly gets inverted when changing the text direction
   hr.className = 'sepLine';
   hrParent.appendChild(hr);
-  appendE(hrParent);
+  prependOrAppend(hrParent);
 
   let observer = new MutationObserver((mutations, observer) => {
     mutations.forEach(mutation => {
@@ -95,7 +108,7 @@ async function runLiveTL() {
         }
 
         // Check to see if the sender is a mod, and we display mod messages
-        if (messageInfo.author.moderator && displayModMessages) {
+        if (messageInfo.author.type === authorType.MOD && displayModMessages) {
           // If the mod isn't in the sender list, add them
           if (!(messageInfo.author.id in allTranslators.v))
             await createCheckbox(messageInfo.author.name, messageInfo.author.id, true);
@@ -103,7 +116,7 @@ async function runLiveTL() {
           // Check to make sure we haven't blacklisted the mod, and if not, send the message
           // After send the message, we bail so we don't have to run all the translation related things below
           if (await isChecked(messageInfo.author.id)) {
-            appendE(createMessageEntry(messageInfo, element.textContent));
+            prependOrAppend(createMessageEntry(messageInfo, element.textContent));
             return;
           }
         }
@@ -116,15 +129,14 @@ async function runLiveTL() {
         if (
           translation != null &&
           isLangMatch(translation.lang.toLowerCase(), languageConversionTable[selectedLanguage.value]) &&
-          translation.msg.replace(/\s/g, '') !== '')
-        {
+          translation.msg.replace(/\s/g, '') !== '') {
           // If the author isn't in the senders list, add them
           if (!(messageInfo.author.id in allTranslators.v))
             await createCheckbox(messageInfo.author.name, messageInfo.author.id, allTranslatorCheckbox.checked);
 
           // Check to see if the sender is approved, and send the message if they are
           if (await isChecked(messageInfo.author.id))
-            appendE(createMessageEntry(messageInfo, translation.msg));
+            prependOrAppend(createMessageEntry(messageInfo, translation.msg));
         }
       });
     });
@@ -133,12 +145,28 @@ async function runLiveTL() {
   observer.observe(document.querySelector("#items.yt-live-chat-item-list-renderer"), { childList: true });
 }
 
+function getAuthorType(messageElement, authorId) {
+  if (messageElement.getAttribute('author-type') === 'moderator')
+    return authorType.MOD
+
+  if (verifiedTranslators.includes(authorId))
+    return authorType.VERIFIED
+
+  if (distinguishedUsers.includes(authorId))
+    return authorType.DISTINGUISHED
+
+  return authorType.STANDARD;
+}
+
 function getMessageInfo(messageElement) {
+  // set this here so that we can access it when getting author type
+  const id = /\/ytc\/([^\=]+)\=/.exec(messageElement.querySelector('#author-photo > img').src)[1];
+
   return {
     author: {
-      id: /\/ytc\/([^\=]+)\=/.exec(messageElement.querySelector('#author-photo > img').src)[1],
+      id,
       name: messageElement.querySelector('#author-name').textContent,
-      moderator: messageElement.getAttribute('author-type') === 'moderator'
+      type: getAuthorType(messageElement, id)
     },
     timestamp: messageElement.querySelector('#timestamp').textContent
   };
@@ -285,7 +313,6 @@ window.addEventListener('yt-navigate-start', clearLiveTLButtons);
 
 if ((isVideo() || isChat()) && isFirefox) {
   window.dispatchEvent(new Event('load'));
-  console.log("hello", window.location.href);
 }
 
 const aboutPage = 'https://kentonishi.github.io/LiveTL/about/';
@@ -487,10 +514,11 @@ function createAuthorNameElement(messageInfo) {
   const authorName = document.createElement('span');
   authorName.textContent = `${messageInfo.author.name}`;
   authorName.dataset.id = messageInfo.author.id;
-  authorName.className = 'smallText';
+  authorName.className = `smallText ${messageInfo.author.type}`;
 
-  if (messageInfo.author.moderator)
-    authorName.style.color = 'var(--yt-live-chat-moderator-color)';
+  // capitalize the first letter
+  const type = messageInfo.author.type.charAt(0).toUpperCase() + messageInfo.author.type.slice(1);
+  authorName.appendChild(createTooltip(type));
 
   return authorName;
 }
@@ -556,8 +584,6 @@ function setTranslationElementCallbacks(line) {
 function createMessageEntry(messageInfo, message) {
   const line = document.createElement('div');
   line.className = 'line message';
-  if (messageInfo.author.moderator)
-    line.classList.add('mod');
 
   if (textDirection === 'top') {
     line.style.marginBottom = '0';
