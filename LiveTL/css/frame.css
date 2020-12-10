@@ -130,6 +130,7 @@ a {
 .translationText {
     z-index: -1;
     width: 100%;
+    display: block;
 }
 
 .smallText {
@@ -283,7 +284,6 @@ svg {
 /* The Modal (background) */
 
 .modal .modal-content {
-    display: none;
     /* Hidden by default */
     position: fixed;
     /* Stay in place */
@@ -293,7 +293,6 @@ svg {
     left: 0;
     width: 100%;
     /* Full width */
-    height: 100%;
     /* Full height */
     overflow: auto;
     /* Enable scroll if needed */
@@ -313,6 +312,9 @@ svg {
 
 .modal-content {
     justify-content: center;
+    display: inline-grid;
+    align-content: center;
+    min-height: 100%;
 }
 
 .modal {
