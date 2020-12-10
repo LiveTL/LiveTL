@@ -44,12 +44,12 @@ function createModal(container) {
   modalContent.className = 'modal-content';
 
   const nextStyle = {
-    flex: 'none',
-    none: 'flex'
+    block: 'none',
+    none: 'block'
   };
 
   const icon = {
-    flex: closeSVG,
+    block: closeSVG,
     none: settingsGear
   };
 
@@ -58,12 +58,11 @@ function createModal(container) {
     modalContainer.style.display = newDisplay;
     icon[newDisplay](settingsButton);
     if (newDisplay === 'none') {
-      document.querySelector('.translationText').style.display = null;
+      document.querySelector('.translationText').style.display = 'block';
       modalContainer.style.height = 'auto';
       window.updateDimensions(true, textDirection == 'top');
     } else {
       document.querySelector('.translationText').style.display = 'none';
-      updateSettingsPanelSize();
     }
 
     if (enableDarkModeToggle) {
@@ -156,7 +155,6 @@ function setChecklistOnclick(checklist) {
       checklist.classList.remove('openList');
       items.style.display = 'none';
     }
-    updateSettingsPanelSize();
   };
 }
 
@@ -167,7 +165,6 @@ function setChecklistOnblur(checklist) {
       checklist.classList.remove('openList');
       items.style.display = 'none';
     } else e.currentTarget.focus();
-    updateSettingsPanelSize();
   };
 }
 
@@ -339,12 +336,17 @@ async function createTextDirectionSelect(container) {
     await setStorage('text_direction', textDirection);
     let tt = document.querySelector('.translationText');
     let sg = document.querySelector('#settingsGear');
+    tt.querySelectorAll('.line').forEach(m => prependE(m));
     if (textDirection === 'top') {
-      tt.style.flexDirection = 'column-reverse';
+      tt.style.maxHeight = null;
+      tt.style.position = null;
+      tt.style.bottom = null;
       sg.style.bottom = '5px';
       sg.style.top = null;
     } else {
-      tt.style.flexDirection = 'column';
+      tt.style.maxHeight = '100%';
+      tt.style.position = 'absolute';
+      tt.style.bottom = '0';
       sg.style.top = '5px';
       sg.style.bottom = null;
     }

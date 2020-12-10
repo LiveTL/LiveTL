@@ -128,8 +128,9 @@ a {
 }
 
 .translationText {
+    z-index: -1;
     width: 100%;
-    display: flex;
+    display: block;
 }
 
 .smallText {
@@ -247,6 +248,18 @@ label {
     background-color: #2c2c2c !important;
 }
 
+.mod {
+    color: var(--yt-live-chat-moderator-color);
+}
+
+.verified {
+    color: #EF6C00;
+}
+
+.distinguished {
+    color: #8E24AA;
+}
+
 .messageOptions {
     margin-left: 1px;
 }
@@ -268,11 +281,9 @@ svg {
     fill: var(--button);
 }
 
-;
 /* The Modal (background) */
 
 .modal .modal-content {
-    display: none;
     /* Hidden by default */
     position: fixed;
     /* Stay in place */
@@ -282,7 +293,6 @@ svg {
     left: 0;
     width: 100%;
     /* Full width */
-    height: 100%;
     /* Full height */
     overflow: auto;
     /* Enable scroll if needed */
@@ -302,6 +312,9 @@ svg {
 
 .modal-content {
     justify-content: center;
+    display: inline-grid;
+    align-content: center;
+    min-height: 100%;
 }
 
 .modal {
