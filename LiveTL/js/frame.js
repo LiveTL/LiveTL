@@ -3,8 +3,8 @@ const isFirefox = !!/Firefox/.exec(navigator.userAgent);
 const embedDomain = EMBED_DOMAIN;
 
 const allTranslators = { v: {} };
-const verifiedTranslators = ['AAUvwniNIzjhlVnN_WMmV2iBzQ2VuLm3Ix1EbqeHleDP']; // FIXME don't hardcode this....
-const distinguishedUsers = ['AAUvwnibH7aEJcoVdPRBx0fIUKxeC25FPeVEt17wGQ']; // TODO don't hardcode this....
+const verifiedTranslators = []; // TODO Update dynamically
+const distinguishedUsers = []; // TODO Update dynamically
 let allTranslatorCheckbox = {};
 let showTimestamps = true;
 let textDirection = 'bottom';
