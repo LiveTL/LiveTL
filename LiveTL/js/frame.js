@@ -125,21 +125,15 @@ async function runLiveTL() {
         const translation = parseTranslation(element.textContent);
         const selectedLanguage = document.querySelector('#langSelect');
 
-        console.log('got translation info')
-
         // Make sure we parsed the message into a translation, and if so, check to see if it matches our desired language
         if (
           translation != null &&
           isLangMatch(translation.lang.toLowerCase(), languageConversionTable[selectedLanguage.value]) &&
           translation.msg.replace(/\s/g, '') !== '')
         {
-          console.log('it\'s a translation');
-
           // If the author isn't in the senders list, add them
           if (!(messageInfo.author.id in allTranslators.v))
             await createCheckbox(messageInfo.author.name, messageInfo.author.id, allTranslatorCheckbox.checked);
-
-          console.log('added checkbox')
 
           // Check to see if the sender is approved, and send the message if they are
           if (await isChecked(messageInfo.author.id))
@@ -156,9 +150,7 @@ function getAuthorType(messageElement, authorId) {
   if (messageElement.getAttribute('author-type') === 'moderator')
     return authorType.MOD
 
-  console.log(verifiedTranslators);
-  console.log(authorId);
-  if (verifiedTranslators.includes(authorId))
+    if (verifiedTranslators.includes(authorId))
     return authorType.VERIFIED
 
   if (distinguishedUsers.includes(authorId))
@@ -322,7 +314,6 @@ window.addEventListener('yt-navigate-start', clearLiveTLButtons);
 
 if ((isVideo() || isChat()) && isFirefox) {
   window.dispatchEvent(new Event('load'));
-  console.log("hello", window.location.href);
 }
 
 const aboutPage = 'https://kentonishi.github.io/LiveTL/about/';
