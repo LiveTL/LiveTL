@@ -285,7 +285,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $PROJECT_DIR\ncd ../../\nmake safari-noBuild EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed \n";
+			shellScript = "cd $PROJECT_DIR\necho ${PROJECT_DIR}/${INFOPLIST_FILE}\ncd ../../\nmake safari-noBuild EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed VERSION=$(/usr/libexec/PlistBuddy -c \"Print CFBundleShortVersionString\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\")\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -459,7 +459,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MARKETING_VERSION = "$(replace-version)";
+				MARKETING_VERSION = VERSION;
 				PRODUCT_BUNDLE_IDENTIFIER = com.candygoblen123.LiveTl.Extension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -482,7 +482,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MARKETING_VERSION = "$(replace-version)";
+				MARKETING_VERSION = VERSION;
 				PRODUCT_BUNDLE_IDENTIFIER = com.candygoblen123.LiveTl.Extension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -508,7 +508,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MARKETING_VERSION = "$(replace-version)";
+				MARKETING_VERSION = VERSION;
 				PRODUCT_BUNDLE_IDENTIFIER = com.candygoblen123.LiveTl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -533,7 +533,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MARKETING_VERSION = "$(replace-version)";
+				MARKETING_VERSION = VERSION;
 				PRODUCT_BUNDLE_IDENTIFIER = com.candygoblen123.LiveTl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
