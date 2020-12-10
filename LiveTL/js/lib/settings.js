@@ -17,10 +17,11 @@ async function createSettings(container) {
   const settings = createModal(container);
   settings.appendChild(createLanguageSelect());
   settings.appendChild(createTranslatorSelect());
+  settings.appendChild(await createDisplayModMessageToggle());
+  settings.appendChild(createCustomUserButton(container));
   settings.appendChild(await createZoomSlider())
   settings.appendChild(await createTimestampToggle());
   settings.appendChild(await createTextDirectionToggle(container));
-  settings.appendChild(await createDisplayModMessageToggle());
 
   await updateZoomLevel();
   return settings;
@@ -54,6 +55,10 @@ function createModal(container) {
   };
 
   settingsButton.addEventListener('click', async (e) => {
+    if (container.style.display == 'none') {
+      closeMessageSelector(container);
+      return;
+    }
     const newDisplay = nextStyle[modalContainer.style.display];
     modalContainer.style.display = newDisplay;
     icon[newDisplay](settingsButton);
@@ -197,7 +202,7 @@ function createTransSelectChecklistItems() {
 function createTransSelectLabel() {
   const translatorSelectLabel = document.createElement('span');
   translatorSelectLabel.className = 'optionLabel';
-  translatorSelectLabel.innerHTML = 'Translators:&nbsp';
+  translatorSelectLabel.innerHTML = 'User Filter:&nbsp';
   return translatorSelectLabel;
 }
 
@@ -408,3 +413,26 @@ function changeThemeAndRedirect(dark) {
   location.href = url.toString();
 }
 
+function closeMessageSelector(container) {
+  container.style.display = null;
+  document.querySelector('#chat').style.cursor = null;
+  document.querySelector('#settingsGear').style.backgroundColor = 'transparent';
+}
+
+function createCustomUserButton(container) {
+  let addButton = document.createElement('input');
+  addButton.value = 'Add User to Filter';
+  addButton.style.verticalAlign = 'middle';
+  addButton.type = 'button';
+  addButton.onclick = () => {
+    document.querySelector('#chat').style.cursor = "cell";
+    document.querySelector('#settingsGear').style.backgroundColor = 'black';
+    window.messageSelectCallback = e => {
+      console.log(e);
+      closeMessageSelector(container);
+      window.messageSelectCallback = null;
+    }
+    container.style.display = 'none';
+  }
+  return addButton;
+}

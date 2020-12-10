@@ -2,7 +2,7 @@ const isFirefox = !!/Firefox/.exec(navigator.userAgent);
 
 const embedDomain = EMBED_DOMAIN;
 
-const allTranslators = { v: {} };
+const allTranslators = { boxes: {}, bools: {} };
 const verifiedTranslators = ['AAUvwniNIzjhlVnN_WMmV2iBzQ2VuLm3Ix1EbqeHleDP']; // FIXME don't hardcode this....
 const distinguishedUsers = ['AAUvwnibH7aEJcoVdPRBx0fIUKxeC25FPeVEt17wGQ']; // TODO don't hardcode this....
 let allTranslatorCheckbox = {};
@@ -90,15 +90,19 @@ async function runLiveTL() {
   hrParent.appendChild(hr);
   prependOrAppend(hrParent);
 
+  let isNewUser = id => !allTranslators.bools[id];
+
   let observer = new MutationObserver((mutations, observer) => {
     mutations.forEach(mutation => {
       mutation.addedNodes.forEach(async messageNode => {
         const element = messageNode.querySelector("#message");
-        if (!element)
-          return;
+
 
         // Parse the message into it's different pieces
         const messageInfo = getMessageInfo(messageNode);
+        if (!messageInfo) return;
+        if (!element || !element.parentElement) return;
+        element.parentElement.parentElement.onclick = e => window.messageSelectCallback(e);
 
         // Determine whether we should display mod messages (if not set, default to yes)
         let displayModMessages = await getStorage('displayModMessages');
@@ -110,8 +114,9 @@ async function runLiveTL() {
         // Check to see if the sender is a mod, and we display mod messages
         if (messageInfo.author.type === authorType.MOD && displayModMessages) {
           // If the mod isn't in the sender list, add them
-          if (!(messageInfo.author.id in allTranslators.v))
+          if (isNewUser(messageInfo.author.id)) {
             await createCheckbox(messageInfo.author.name, messageInfo.author.id, true);
+          }
 
           // Check to make sure we haven't blacklisted the mod, and if not, send the message
           // After send the message, we bail so we don't have to run all the translation related things below
@@ -131,7 +136,7 @@ async function runLiveTL() {
           isLangMatch(translation.lang.toLowerCase(), languageConversionTable[selectedLanguage.value]) &&
           translation.msg.replace(/\s/g, '') !== '') {
           // If the author isn't in the senders list, add them
-          if (!(messageInfo.author.id in allTranslators.v))
+          if (isNewUser(messageInfo.author.id))
             await createCheckbox(messageInfo.author.name, messageInfo.author.id, allTranslatorCheckbox.checked);
 
           // Check to see if the sender is approved, and send the message if they are
@@ -160,7 +165,9 @@ function getAuthorType(messageElement, authorId) {
 
 function getMessageInfo(messageElement) {
   // set this here so that we can access it when getting author type
-  const id = /\/ytc\/([^\=]+)\=/.exec(messageElement.querySelector('#author-photo > img').src)[1];
+  let img = messageElement.querySelector('#author-photo > img');
+  if (!img) return;
+  const id = /\/ytc\/([^\=]+)\=/.exec(img.src)[1];
 
   return {
     author: {
@@ -452,6 +459,7 @@ function createCheckboxPerson(name, authorID) {
 
 // checked doesn't do anything, its just there for legacy
 async function createCheckbox(name, authorID, checked = false, callback = null) {
+  allTranslators.bools[authorID] = true;
   checked = await isChecked(authorID);
   const items = getChecklistItems();
   const checkbox = createCheckmark(authorID, checked, callback || checkboxUpdate);
@@ -466,7 +474,8 @@ async function createCheckbox(name, authorID, checked = false, callback = null) 
 
 function filterBoxes(boxes) {
   boxes.forEach((box) => {
-    allTranslators.v[box.dataset.id] = box;
+    allTranslators.boxes[box.dataset.id] = box;
+    allTranslators.bools[box.dataset.id] = box.checked;
     if (box !== allTranslatorCheckbox && !box.checked) {
       allTranslatorCheckbox.checked = false;
     }
@@ -485,7 +494,7 @@ function removeBadTranslations() {
     // } else
     // removed limiting
     const author = translation.querySelector('.smallText');
-    if (author && author.dataset.id && !allTranslators.v[author.dataset.id].checked) {
+    if (author && author.dataset.id && !allTranslators.bools[author.dataset.id]) {
       translation.remove();
     }
   });
@@ -493,7 +502,7 @@ function removeBadTranslations() {
 
 function checkboxUpdate() {
   const boxes = getChecklist().querySelectorAll('input');
-  allTranslators.v = {};
+  allTranslators.boxes = {};
   filterBoxes(boxes);
   if (allTranslatorCheckbox.checked) {
     checkAll();
@@ -548,7 +557,8 @@ function createAuthorBanButton(authorID) {
   ban.className = 'hasTooltip'
   ban.style.cursor = 'pointer';
   ban.onclick = async () => {
-    allTranslators.v[authorID].checked = false;
+    allTranslators.boxes[authorID].checked = false;
+    allTranslators.bools[authorID] = true;
     await saveUserStatus(authorID, false);
     checkboxUpdate();
   };

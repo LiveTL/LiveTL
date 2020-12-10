@@ -1,5 +1,8 @@
 :root {
-    --button: #49ddff;
+    --button-transparent: #49deff4f;
+    --hovered-transparent: #ff49d89e;
+    --button: #49deff;
+    --hovered: #ff49d8;
 }
 
 .livetl {
@@ -328,7 +331,6 @@ svg {
     position: fixed;
     right: 5px;
     z-index: 1000000;
-    opacity: 0.75;
     height: fit-content;
 }
 
@@ -343,4 +345,13 @@ select {
     margin-left: 2px;
     padding: 5px;
     vertical-align: middle;
+}
+
+yt-live-chat-text-message-renderer {
+    background-color: var(--button-transparent);
+    transition: 0.25s;
+}
+
+yt-live-chat-text-message-renderer:hover {
+    background-color: var(--hovered-transparent);
 }
