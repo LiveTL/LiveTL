@@ -24,10 +24,4 @@ async function getFile(name, format) {
   return await (await fetch(await getWAR(name)))[format]();
 }
 
-// global helper function to handle scrolling
-function updateSettingsPanelSize() {
-  const pix = document.querySelector('.dropdown-check-list').getBoundingClientRect().bottom;
-  document.querySelector('.modal').style.height = pix + 'px';
-}
-
 module.exports = { languages };

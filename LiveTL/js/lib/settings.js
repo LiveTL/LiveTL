@@ -44,12 +44,12 @@ function createModal(container) {
   modalContent.className = 'modal-content';
 
   const nextStyle = {
-    flex: 'none',
-    none: 'flex'
+    block: 'none',
+    none: 'block'
   };
 
   const icon = {
-    flex: closeSVG,
+    block: closeSVG,
     none: settingsGear
   };
 
@@ -63,7 +63,6 @@ function createModal(container) {
       window.updateDimensions(true, textDirection == 'top');
     } else {
       document.querySelector('.translationText').style.display = 'none';
-      updateSettingsPanelSize();
     }
 
     if (enableDarkModeToggle) {
@@ -156,7 +155,6 @@ function setChecklistOnclick(checklist) {
       checklist.classList.remove('openList');
       items.style.display = 'none';
     }
-    updateSettingsPanelSize();
   };
 }
 
@@ -167,7 +165,6 @@ function setChecklistOnblur(checklist) {
       checklist.classList.remove('openList');
       items.style.display = 'none';
     } else e.currentTarget.focus();
-    updateSettingsPanelSize();
   };
 }
 

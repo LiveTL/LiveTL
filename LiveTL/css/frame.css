@@ -283,7 +283,6 @@ svg {
 /* The Modal (background) */
 
 .modal .modal-content {
-    display: none;
     /* Hidden by default */
     position: fixed;
     /* Stay in place */
@@ -293,7 +292,6 @@ svg {
     left: 0;
     width: 100%;
     /* Full width */
-    height: 100%;
     /* Full height */
     overflow: auto;
     /* Enable scroll if needed */
@@ -313,6 +311,8 @@ svg {
 
 .modal-content {
     justify-content: center;
+    display: grid;
+    align-content: center;
 }
 
 .modal {
