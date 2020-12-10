@@ -3,9 +3,19 @@ const isFirefox = !!/Firefox/.exec(navigator.userAgent);
 const embedDomain = EMBED_DOMAIN;
 
 const allTranslators = { v: {} };
+const verifiedTranslators = ['AAUvwniNIzjhlVnN_WMmV2iBzQ2VuLm3Ix1EbqeHleDP']; // FIXME don't hardcode this....
+const distinguishedUsers = ['AAUvwnibH7aEJcoVdPRBx0fIUKxeC25FPeVEt17wGQ']; // TODO don't hardcode this....
 let allTranslatorCheckbox = {};
 let showTimestamps = true;
 let textDirection = 'bottom';
+
+// javascript 'enum'
+const authorType = {
+  MOD: 'mod',
+  VERIFIED: 'verified',
+  DISTINGUISHED: 'distinguished', // subject to change
+  STANDARD: 'standard'
+};
 
 async function runLiveTL() {
   await setFavicon();
@@ -95,7 +105,7 @@ async function runLiveTL() {
         }
 
         // Check to see if the sender is a mod, and we display mod messages
-        if (messageInfo.author.moderator && displayModMessages) {
+        if (messageInfo.author.type === authorType.MOD && displayModMessages) {
           // If the mod isn't in the sender list, add them
           if (!(messageInfo.author.id in allTranslators.v))
             await createCheckbox(messageInfo.author.name, messageInfo.author.id, true);
@@ -112,15 +122,21 @@ async function runLiveTL() {
         const translation = parseTranslation(element.textContent);
         const selectedLanguage = document.querySelector('#langSelect');
 
+        console.log('got translation info')
+
         // Make sure we parsed the message into a translation, and if so, check to see if it matches our desired language
         if (
           translation != null &&
           isLangMatch(translation.lang.toLowerCase(), languageConversionTable[selectedLanguage.value]) &&
           translation.msg.replace(/\s/g, '') !== '')
         {
+          console.log('it\'s a translation');
+
           // If the author isn't in the senders list, add them
           if (!(messageInfo.author.id in allTranslators.v))
             await createCheckbox(messageInfo.author.name, messageInfo.author.id, allTranslatorCheckbox.checked);
+
+          console.log('added checkbox')
 
           // Check to see if the sender is approved, and send the message if they are
           if (await isChecked(messageInfo.author.id))
@@ -133,12 +149,30 @@ async function runLiveTL() {
   observer.observe(document.querySelector("#items.yt-live-chat-item-list-renderer"), { childList: true });
 }
 
+function getAuthorType(messageElement, authorId) {
+  if (messageElement.getAttribute('author-type') === 'moderator')
+    return authorType.MOD
+
+  console.log(verifiedTranslators);
+  console.log(authorId);
+  if (verifiedTranslators.includes(authorId))
+    return authorType.VERIFIED
+
+  if (distinguishedUsers.includes(authorId))
+    return authorType.DISTINGUISHED
+
+  return authorType.STANDARD;
+}
+
 function getMessageInfo(messageElement) {
+  // set this here so that we can access it when getting author type
+  const id = /\/ytc\/([^\=]+)\=/.exec(messageElement.querySelector('#author-photo > img').src)[1];
+
   return {
     author: {
-      id: /\/ytc\/([^\=]+)\=/.exec(messageElement.querySelector('#author-photo > img').src)[1],
+      id,
       name: messageElement.querySelector('#author-name').textContent,
-      moderator: messageElement.getAttribute('author-type') === 'moderator'
+      type: getAuthorType(messageElement, id)
     },
     timestamp: messageElement.querySelector('#timestamp').textContent
   };
@@ -487,10 +521,11 @@ function createAuthorNameElement(messageInfo) {
   const authorName = document.createElement('span');
   authorName.textContent = `${messageInfo.author.name}`;
   authorName.dataset.id = messageInfo.author.id;
-  authorName.className = 'smallText';
+  authorName.className = `smallText ${messageInfo.author.type}`;
 
-  if (messageInfo.author.moderator)
-    authorName.style.color = 'var(--yt-live-chat-moderator-color)';
+  // capitalize the first letter
+  const type = messageInfo.author.type.charAt(0).toUpperCase() + messageInfo.author.type.slice(1);
+  authorName.appendChild(createTooltip(type));
 
   return authorName;
 }
@@ -556,8 +591,6 @@ function setTranslationElementCallbacks(line) {
 function createMessageEntry(messageInfo, message) {
   const line = document.createElement('div');
   line.className = 'line message';
-  if (messageInfo.author.moderator)
-    line.classList.add('mod');
 
   if (textDirection === 'top') {
     line.style.marginBottom = '0';

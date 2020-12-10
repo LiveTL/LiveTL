@@ -247,6 +247,18 @@ label {
     background-color: #2c2c2c !important;
 }
 
+.mod {
+    color: var(--yt-live-chat-moderator-color);
+}
+
+.verified {
+    color: #EF6C00;
+}
+
+.distinguished {
+    color: #8E24AA;
+}
+
 .messageOptions {
     margin-left: 1px;
 }
@@ -268,7 +280,6 @@ svg {
     fill: var(--button);
 }
 
-;
 /* The Modal (background) */
 
 .modal .modal-content {
