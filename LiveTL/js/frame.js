@@ -282,9 +282,12 @@ window.addEventListener('message', onMessageFromEmbeddedChat);
 window.addEventListener('load', loaded);
 window.addEventListener('yt-navigate-start', clearLiveTLButtons);
 
-if ((isVideo() || isChat()) && isFirefox) {
-  window.dispatchEvent(new Event('load'));
-}
+setTimeout(() => {
+  if ((isVideo() || isChat()) && isFirefox) {
+    window.dispatchEvent(new Event('load'));
+    console.log("hello", window.location.href);
+  }
+}, 100);
 
 const aboutPage = 'https://kentonishi.github.io/LiveTL/about/';
 
