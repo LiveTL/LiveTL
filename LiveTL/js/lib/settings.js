@@ -332,7 +332,7 @@ async function createTextDirectionSelect(container) {
   textDirSelect.value = textDirection = data;
 
   textDirSelect.onchange = async () => {
-    const textDirection = textDirSelect.value;
+    textDirection = textDirSelect.value;
     await setStorage('text_direction', textDirection);
     let tt = document.querySelector('.translationText');
     let sg = document.querySelector('#settingsGear');

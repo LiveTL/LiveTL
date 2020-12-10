@@ -328,7 +328,7 @@ if (window.location.href.startsWith(aboutPage)) {
       parent.postMessage(d.data, '*')
     } catch (e) { }
   };
-} else if (isReplayChat()) {
+} else if (isChat()) {
   try {
     window.parent.location.href;
   } catch (e) {
