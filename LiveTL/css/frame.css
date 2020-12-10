@@ -130,6 +130,7 @@ a {
 .translationText {
     z-index: -1;
     width: 100%;
+    display: block;
 }
 
 .smallText {
@@ -311,8 +312,9 @@ svg {
 
 .modal-content {
     justify-content: center;
-    display: grid;
+    display: inline-grid;
     align-content: center;
+    min-height: 100%;
 }
 
 .modal {

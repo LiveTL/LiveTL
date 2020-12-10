@@ -59,7 +59,7 @@ async function runLiveTL() {
     dimensionsBefore = getDimensions();
   };
 
-  window.onresize = updateDimensions;
+  window.onresize = () => { if (translationDiv.style.display == 'block') updateDimensions(); };
 
   const settings = await createSettings(livetlContainer);
 
@@ -129,8 +129,7 @@ async function runLiveTL() {
         if (
           translation != null &&
           isLangMatch(translation.lang.toLowerCase(), languageConversionTable[selectedLanguage.value]) &&
-          translation.msg.replace(/\s/g, '') !== '')
-        {
+          translation.msg.replace(/\s/g, '') !== '') {
           // If the author isn't in the senders list, add them
           if (!(messageInfo.author.id in allTranslators.v))
             await createCheckbox(messageInfo.author.name, messageInfo.author.id, allTranslatorCheckbox.checked);
@@ -150,7 +149,7 @@ function getAuthorType(messageElement, authorId) {
   if (messageElement.getAttribute('author-type') === 'moderator')
     return authorType.MOD
 
-    if (verifiedTranslators.includes(authorId))
+  if (verifiedTranslators.includes(authorId))
     return authorType.VERIFIED
 
   if (distinguishedUsers.includes(authorId))
