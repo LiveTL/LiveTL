@@ -238,7 +238,8 @@ function isVideo() {
 
 async function onMessageFromEmbeddedChat(m) {
   if (!isVideo()) {
-    removeEventListener('message', onMessageFromEmbeddedChat);
+    // I think this fixes the firefox no button issue
+    // removeEventListener('message', onMessageFromEmbeddedChat);
     return;
   }
   switch (m.data) {
@@ -282,12 +283,10 @@ window.addEventListener('message', onMessageFromEmbeddedChat);
 window.addEventListener('load', loaded);
 window.addEventListener('yt-navigate-start', clearLiveTLButtons);
 
-setTimeout(() => {
-  if ((isVideo() || isChat()) && isFirefox) {
-    window.dispatchEvent(new Event('load'));
-    console.log("hello", window.location.href);
-  }
-}, 100);
+if ((isVideo() || isChat()) && isFirefox) {
+  window.dispatchEvent(new Event('load'));
+  console.log("hello", window.location.href);
+}
 
 const aboutPage = 'https://kentonishi.github.io/LiveTL/about/';
 
