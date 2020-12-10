@@ -25,6 +25,32 @@ async function runLiveTL() {
   translationDiv.className = 'translationText';
 
   livetlContainer.appendChild(translationDiv);
+
+  getDimensions = () => ({
+    clientHeight: livetlContainer.clientWidth,
+    scrollTop: livetlContainer.clientHeight,
+    scrollHeight: livetlContainer.scrollHeight
+  });
+
+  scrollToBottom = (dims, force = false) => {
+    if ((dims.clientHeight + dims.scrollTop >= dims.scrollHeight &&
+      translationDiv.style.display != 'none') || force) {
+      livetlContainer.scrollTo(0, livetlContainer.scrollHeight);
+    }
+  }
+
+  let dimensionsBefore = getDimensions();
+  window.updateDimensions = (force = false, goToTop = false) => {
+    if (goToTop) {
+      livetlContainer.scrollTo(0, 0);
+    } else {
+      scrollToBottom(dimensionsBefore, force);
+    }
+    dimensionsBefore = getDimensions();
+  };
+
+  window.onresize = updateDimensions;
+
   const settings = await createSettings(livetlContainer);
 
   allTranslatorCheckbox = createCheckbox('All Translators', 'allTranslatorID', true, () => {
@@ -37,68 +63,85 @@ async function runLiveTL() {
     checkboxUpdate();
   });
 
-
-  getDimensions = () => ({
-    clientHeight: livetlContainer.clientWidth,
-    scrollTop: livetlContainer.clientHeight,
-    scrollHeight: livetlContainer.scrollHeight
-  });
-
-  scrollToBottom = (dims) => {
-    if (dims.clientHeight + dims.scrollTop >= dims.scrollHeight &&
-      translationDiv.style.display != 'none') {
-      livetlContainer.scrollTo(0, livetlContainer.scrollHeight);
-    }
-  }
-
-  let dimensionsBefore = getDimensions();
-  updateDimensions = () => {
-    scrollToBottom(dimensionsBefore);
-    dimensionsBefore = getDimensions();
-  };
-
-  (new ResizeObserver(() => updateDimensions)).observe(livetlContainer);
-
   appendE = el => {
     translationDiv.appendChild(el);
-    updateDimensions();
+    if (textDirection === 'bottom')
+      scrollToBottom(getDimensions());
   };
-  prependE = el => translationDiv.prepend(el);
 
-  let prependOrAppend = e => (textDirection == 'bottom' ? appendE : prependE)(e);
-
-  prependOrAppend(await createWelcome());
+  appendE(await createWelcome());
+  const hrParent = document.createElement('div');
   const hr = document.createElement('hr');
-  hr.className = 'line'; // so it properly gets inverted when changing the text direction
-  prependOrAppend(hr);
+  hrParent.className = 'line'; // so it properly gets inverted when changing the text direction
+  hr.className = 'sepLine';
+  hrParent.appendChild(hr);
+  appendE(hrParent);
 
   let observer = new MutationObserver((mutations, observer) => {
     mutations.forEach(mutation => {
-      mutation.addedNodes.forEach(m => {
-        const element = m.querySelector("#message");
-        if (!element) return;
-        const parsed = parseTranslation(element.textContent);
-        const select = document.querySelector('#langSelect');
-        if (parsed != null && isLangMatch(parsed.lang.toLowerCase(), languageConversionTable[select.value]) &&
-          parsed.msg.replace(/\s/g, '') !== '') {
-          const timestamp = m.querySelector('#timestamp').textContent;
-          const author = m.querySelector('#author-name').textContent;
-          const authorID = /\/ytc\/([^\=]+)\=/.exec(m.querySelector('#author-photo > img').src)[1];
-          const line = createTranslationElement(author, authorID, parsed.msg, timestamp);
-          if (!(authorID in allTranslators.v)) {
-            createCheckbox(author, authorID, allTranslatorCheckbox.checked);
+      mutation.addedNodes.forEach(async messageNode => {
+        const element = messageNode.querySelector("#message");
+        if (!element)
+          return;
+
+        // Parse the message into it's different pieces
+        const messageInfo = getMessageInfo(messageNode);
+
+        // Determine whether we should display mod messages (if not set, default to yes)
+        let displayModMessages = await getStorage('displayModMessages');
+        if (displayModMessages == null) {
+          displayModMessages = true;
+          await setStorage('displayModMessages', true);
+        }
+
+        // Check to see if the sender is a mod, and we display mod messages
+        if (messageInfo.author.moderator && displayModMessages) {
+          // If the mod isn't in the sender list, add them
+          if (!(messageInfo.author.id in allTranslators.v))
+            await createCheckbox(messageInfo.author.name, messageInfo.author.id, true);
+
+          // Check to make sure we haven't blacklisted the mod, and if not, send the message
+          // After send the message, we bail so we don't have to run all the translation related things below
+          if (await isChecked(messageInfo.author.id)) {
+            appendE(createMessageEntry(messageInfo, element.textContent));
+            return;
           }
-          isChecked(authorID).then(checked => {
-            if (checked) {
-              prependOrAppend(line);
-            }
-          });
+        }
+
+        // Try to parse the message into a translation and get the language we're looking for translations in
+        const translation = parseTranslation(element.textContent);
+        const selectedLanguage = document.querySelector('#langSelect');
+
+        // Make sure we parsed the message into a translation, and if so, check to see if it matches our desired language
+        if (
+          translation != null &&
+          isLangMatch(translation.lang.toLowerCase(), languageConversionTable[selectedLanguage.value]) &&
+          translation.msg.replace(/\s/g, '') !== '')
+        {
+          // If the author isn't in the senders list, add them
+          if (!(messageInfo.author.id in allTranslators.v))
+            await createCheckbox(messageInfo.author.name, messageInfo.author.id, allTranslatorCheckbox.checked);
+
+          // Check to see if the sender is approved, and send the message if they are
+          if (await isChecked(messageInfo.author.id))
+            appendE(createMessageEntry(messageInfo, translation.msg));
         }
       });
     });
   });
 
   observer.observe(document.querySelector("#items.yt-live-chat-item-list-renderer"), { childList: true });
+}
+
+function getMessageInfo(messageElement) {
+  return {
+    author: {
+      id: /\/ytc\/([^\=]+)\=/.exec(messageElement.querySelector('#author-photo > img').src)[1],
+      name: messageElement.querySelector('#author-name').textContent,
+      moderator: messageElement.getAttribute('author-type') === 'moderator'
+    },
+    timestamp: messageElement.querySelector('#timestamp').textContent
+  };
 }
 
 function switchChat() {
@@ -195,7 +238,8 @@ function isVideo() {
 
 async function onMessageFromEmbeddedChat(m) {
   if (!isVideo()) {
-    removeEventListener('message', onMessageFromEmbeddedChat);
+    // I think this fixes the firefox no button issue
+    // removeEventListener('message', onMessageFromEmbeddedChat);
     return;
   }
   switch (m.data) {
@@ -241,6 +285,7 @@ window.addEventListener('yt-navigate-start', clearLiveTLButtons);
 
 if ((isVideo() || isChat()) && isFirefox) {
   window.dispatchEvent(new Event('load'));
+  console.log("hello", window.location.href);
 }
 
 const aboutPage = 'https://kentonishi.github.io/LiveTL/about/';
@@ -265,6 +310,7 @@ if (window.location.href.startsWith(aboutPage)) {
         postMessage(d.data);
       }
     });
+    switchChat();
   }
 }
 
@@ -428,16 +474,24 @@ function checkboxUpdate() {
   removeBadTranslations();
 }
 
-function createAuthorNameElement(author, authorID, timestamp) {
-  const authorName = document.createElement('span');
-  authorName.textContent = `${author}`;
+function createTimestampElement(timestamp) {
   let timestampElement = document.createElement('span');
   timestampElement.textContent = ` (${timestamp})`;
-  timestampElement.className = 'timestampText';
+  timestampElement.className = 'timestampText smallText';
   timestampElement.style.display = showTimestamps ? 'contents' : 'none';
-  authorName.appendChild(timestampElement);
-  authorName.dataset.id = authorID;
+
+  return timestampElement;
+}
+
+function createAuthorNameElement(messageInfo) {
+  const authorName = document.createElement('span');
+  authorName.textContent = `${messageInfo.author.name}`;
+  authorName.dataset.id = messageInfo.author.id;
   authorName.className = 'smallText';
+
+  if (messageInfo.author.moderator)
+    authorName.style.color = 'var(--yt-live-chat-moderator-color)';
+
   return authorName;
 }
 
@@ -456,7 +510,7 @@ function createAuthorHideButton(translation) {
   hide.onclick = () => translation.remove();
 
   hideSVG(hide);
-  hide.appendChild(createTooltip('Hide Translation'))
+  hide.appendChild(createTooltip('Hide Message'))
 
   return hide;
 }
@@ -472,7 +526,7 @@ function createAuthorBanButton(authorID) {
   };
 
   banSVG(ban);
-  ban.appendChild(createTooltip('Ban Translator'))
+  ban.appendChild(createTooltip('Blacklist User'))
 
   return ban;
 }
@@ -486,10 +540,11 @@ function createAuthorInfoOptions(authorID, line) {
   return options;
 }
 
-function createAuthorInfoElement(author, authorID, line, timestamp) {
+function createAuthorInfoElement(messageInfo, line) {
   const authorInfo = document.createElement('span');
-  authorInfo.appendChild(createAuthorNameElement(author, authorID, timestamp));
-  authorInfo.appendChild(createAuthorInfoOptions(authorID, line));
+  authorInfo.appendChild(createAuthorNameElement(messageInfo));
+  authorInfo.appendChild(createTimestampElement(messageInfo.timestamp));
+  authorInfo.appendChild(createAuthorInfoOptions(messageInfo.author.id, line));
   return authorInfo;
 }
 
@@ -498,12 +553,19 @@ function setTranslationElementCallbacks(line) {
   line.onmouseleave = () => line.querySelector('.messageOptions').style.display = 'none';
 }
 
-function createTranslationElement(author, authorID, translation, timestamp) {
+function createMessageEntry(messageInfo, message) {
   const line = document.createElement('div');
-  line.className = 'line';
-  line.textContent = translation;
+  line.className = 'line message';
+  if (messageInfo.author.moderator)
+    line.classList.add('mod');
+
+  if (textDirection === 'top') {
+    line.style.marginBottom = '0';
+  }
+
+  line.textContent = message;
   setTranslationElementCallbacks(line);
-  line.appendChild(createAuthorInfoElement(author, authorID, line, timestamp));
+  line.appendChild(createAuthorInfoElement(messageInfo, line));
   return line;
 }
 

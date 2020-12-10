@@ -1,3 +1,7 @@
+:root {
+    --button: #49ddff;
+}
+
 .livetl {
     position: fixed;
     top: 0;
@@ -124,10 +128,8 @@ a {
 }
 
 .translationText {
-    position: absolute;
-    z-index: -1;
-    width: calc(100% - 10px);
-    height: 100%;
+    width: 100%;
+    display: flex;
 }
 
 .smallText {
@@ -209,10 +211,9 @@ label {
     display: contents !important;
 }
 
-.translationText > hr {
+.sepLine {
     background-color: white;
     height: 1px;
-    margin-left: 10px;
     animation: none;
 }
 
@@ -227,10 +228,23 @@ label {
 
 .line {
     margin-left: 10px;
+    margin-right: 10px;
     margin-top: 10px;
-    margin-bottom: 10px;
     animation-iteration-count: 1;
     animation: splash 1s normal forwards ease-in-out;
+}
+
+.line:last-child {
+    margin-bottom: 10px;
+}
+
+.message {
+    padding: 4px 2px 4px 4px;
+    border-radius: 5px;
+}
+
+.message:nth-child(2n) {
+    background-color: #2c2c2c !important;
 }
 
 .messageOptions {
@@ -250,8 +264,8 @@ label {
 }
 
 svg {
-    stroke: white;
-    fill: white;
+    stroke: var(--button);
+    fill: var(--button);
 }
 
 ;
@@ -292,7 +306,7 @@ svg {
 
 .modal {
     justify-content: center;
-    padding-top: 30px;
+    display: table-cell;
 }
 
 #settingsGear {
@@ -301,7 +315,8 @@ svg {
     position: fixed;
     right: 5px;
     z-index: 1000000;
-    opacity: 0.5;
+    opacity: 0.75;
+    height: fit-content;
 }
 
 #settingsProjection {
