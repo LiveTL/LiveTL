@@ -8,11 +8,12 @@ You must have the <a href="https://kentonishi.github.io/LiveTL/">LiveTL extensio
 
 To get started, visit your favorite streamer on YouTube. The chat should have some new buttons for launching LiveTL!
 
-![](../img/openlivetl.png)
+![](../img/launcher-ui.png)
+![](../img/launcher-buttons.png)
 
 Alternatively, you can open LiveTL from within HoloTools!
 
-![](../img/holotoolslauncher.png)
+![](../img/holotools-launcher.png)
 
 ## Frequently Asked Questions
 
@@ -52,23 +53,15 @@ star! [Here is our repository](https://github.com/KentoNishi/LiveTL).
 
 ## Screenshots
 
-### Open Stream in LiveTL
+### LiveTL Viewer
 
-![](../img/livetlscreen.png)
-
-### Hide Message / Ban Translator
-
-![](../img/ban.png)
+![](../img/cover.png)
 
 ### Options
 
 ![](../img/options.png)
 
-### Translator Selection
-
-![](../img/translators.png)
-
-### Pop Out LiveTL Chat
+### Pop-out Translations
 
 ![](../img/popout.png)
 
