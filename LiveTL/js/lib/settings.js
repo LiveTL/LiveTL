@@ -17,8 +17,8 @@ async function createSettings(container) {
   const settings = createModal(container);
   settings.appendChild(createLanguageSelect());
   settings.appendChild(createTranslatorSelect());
-  settings.appendChild(await createDisplayModMessageToggle());
   settings.appendChild(createCustomUserButton(container));
+  settings.appendChild(await createDisplayModMessageToggle());
   settings.appendChild(await createZoomSlider())
   settings.appendChild(await createTimestampToggle());
   settings.appendChild(await createTextDirectionToggle(container));
@@ -417,6 +417,16 @@ function closeMessageSelector(container) {
   container.style.display = null;
   document.querySelector('#chat').style.cursor = null;
   document.querySelector('#settingsGear').style.backgroundColor = 'transparent';
+  scrollBackToBottomOfChat();
+}
+
+function findParent(e) {
+  while (e && e.tagName != "YT-LIVE-CHAT-TEXT-MESSAGE-RENDERER") e = e.parentElement;
+  return e;
+}
+
+function scrollBackToBottomOfChat() {
+  document.querySelector('#show-more').dispatchEvent(new Event('click'));
 }
 
 function createCustomUserButton(container) {
@@ -424,13 +434,17 @@ function createCustomUserButton(container) {
   addButton.value = 'Add User to Filter';
   addButton.style.verticalAlign = 'middle';
   addButton.type = 'button';
-  addButton.onclick = () => {
+  addButton.onclick = async () => {
     document.querySelector('#chat').style.cursor = "cell";
     document.querySelector('#settingsGear').style.backgroundColor = 'black';
-    window.messageSelectCallback = e => {
-      console.log(e);
+    window.messageSelectCallback = async e => {
+      e = findParent(e.target);
+      const messageInfo = getMessageInfo(e);
+      if (isNewUser(messageInfo.author.id)) {
+        await createCheckbox(messageInfo.author.name, messageInfo.author.id, true);
+      }
+      allTranslators.addedByUser[messageInfo.author.id] = true;
       closeMessageSelector(container);
-      window.messageSelectCallback = null;
     }
     container.style.display = 'none';
   }
