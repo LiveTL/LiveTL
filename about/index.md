@@ -1,18 +1,19 @@
 # Getting Started with LiveTL
 
 <span id="actionMessage">
-You must have the <a href="https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg">LiveTL extension</a> installed to use LiveTL features.
+You must have the <a href="https://kentonishi.github.io/LiveTL/">LiveTL extension</a> installed to use LiveTL features.
 </span>
 
 ## Launching LiveTL
 
 To get started, visit your favorite streamer on YouTube. The chat should have some new buttons for launching LiveTL!
 
-![](../img/openlivetl.png)
+![](../img/launcher-ui.png)
+![](../img/launcher-buttons.png)
 
 Alternatively, you can open LiveTL from within HoloTools!
 
-![](../img/holotoolslauncher.png)
+![](../img/holotools-launcher.png)
 
 ## Frequently Asked Questions
 
@@ -40,7 +41,7 @@ You must disable the `Prevent Cross-site tracking` option in safari privacy sett
 ## Other Info
 
 If you like LiveTL, don't forget to <a href="javascript:shareExtension();">share it with your friends</a>
-and <a href="https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg">give
+and <a href="https://kentonishi.github.io/LiveTL/about/review">give
 us a 5-star review</a>!
 
 Please feel free to give us feedback or suggestions through the LiveTL Discord
@@ -52,23 +53,15 @@ star! [Here is our repository](https://github.com/KentoNishi/LiveTL).
 
 ## Screenshots
 
-### Open Stream in LiveTL
+### LiveTL Viewer
 
-![](../img/livetlscreen.png)
-
-### Hide Message / Ban Translator
-
-![](../img/ban.png)
+![](../img/cover.png)
 
 ### Options
 
 ![](../img/options.png)
 
-### Translator Selection
-
-![](../img/translators.png)
-
-### Pop Out LiveTL Chat
+### Pop-out Translations
 
 ![](../img/popout.png)
 

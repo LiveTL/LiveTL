@@ -12,11 +12,20 @@
 
 Get live translations for YouTube streams, crowdsourced from multilingual viewers!
 
+### [Download LiveTL for your Browser](https://kentonishi.github.io/LiveTL/)
+
+or...
+
 [Download for Free from the Chrome Web Store](https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg)
 
 [Download for Free from the Firefox Add-on Store](https://addons.mozilla.org/en-US/firefox/addon/livetl/)
 
-![Demo](./img/livetlscreen.png)
+[Download for Safari (currently in beta and not signed by Apple)](https://github.com/KentoNishi/LiveTL/releases/latest/)
+
+![Demo](./img/cover.png)
+
+## FAQ
+[Find some answers to common questions in our FAQ!](https://kentonishi.github.io/LiveTL/about/#frequently-asked-questions)
 
 ## Feedback and Contributing
 

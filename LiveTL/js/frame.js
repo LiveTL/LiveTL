@@ -1,90 +1,204 @@
-function conlog(...args) {
-  if (params.devMode) {
-    return console.log(...args);
-  }
-}
-
 const isFirefox = !!/Firefox/.exec(navigator.userAgent);
 
-const languageConversionTable = {};
+const embedDomain = EMBED_DOMAIN;
 
-// WAR: web accessible resource
-async function getWAR(u) {
-  return new Promise((res, rej) => chrome.runtime.sendMessage({ type: 'get_war', url: u }, r => res(r)));
-}
-
-async function getFile(name, format) {
-  return await (await fetch(await getWAR(name)))[format]();
-}
-
-// global helper function to handle scrolling
-function updateSize() {
-  const pix = document.querySelector('.dropdown-check-list').getBoundingClientRect().bottom;
-  document.querySelector('.modal').style.height = pix + 'px';
-}
-
-const allTranslators = { v: {} };
+const allTranslators = { boxes: {}, bools: {}, addedByUser: {} };
+const verifiedTranslators = []; //['AAUvwniNIzjhlVnN_WMmV2iBzQ2VuLm3Ix1EbqeHleDP']; // FIXME don't hardcode this....
+const distinguishedUsers = []; //['AAUvwnibH7aEJcoVdPRBx0fIUKxeC25FPeVEt17wGQ']; // TODO don't hardcode this....
 let allTranslatorCheckbox = {};
+let showTimestamps = true;
+let textDirection = 'bottom';
+
+let isNewUser = id => allTranslators.bools[id] == null;
+
+// javascript 'enum'
+const authorType = {
+  MOD: 'mod',
+  VERIFIED: 'verified',
+  DISTINGUISHED: 'distinguished', // subject to change
+  STANDARD: 'standard'
+};
 
 async function runLiveTL() {
   await setFavicon();
 
   switchChat();
-  setTimeout(async () => {
-    document.title = 'LiveTL Chat';
+  document.title = 'LiveTL Chat';
 
-    await Promise.all([importFontAwesome(), importStyle()]);
+  await Promise.all([importFontAwesome(), importStyle()]);
 
-    const livetlContainer = document.createElement('div');
-    livetlContainer.className = 'livetl';
-    document.body.appendChild(livetlContainer);
-    if (params.devMode) {
-      livetlContainer.style.opacity = '50%';
+  const livetlContainer = document.createElement('div');
+  livetlContainer.className = 'livetl';
+  document.body.appendChild(livetlContainer);
+  if (params.devMode) {
+    livetlContainer.style.opacity = '50%';
+  }
+  const translationDiv = document.createElement('div');
+  translationDiv.className = 'translationText';
+
+  livetlContainer.appendChild(translationDiv);
+
+  getDimensions = () => ({
+    clientHeight: livetlContainer.clientHeight,
+    scrollTop: livetlContainer.scrollTop,
+    scrollHeight: livetlContainer.scrollHeight
+  });
+
+  scrollToBottom = (dims, force = false) => {
+    if ((dims.clientHeight + dims.scrollTop >= dims.scrollHeight &&
+      translationDiv.style.display != 'none') || force) {
+      livetlContainer.scrollTo(0, livetlContainer.scrollHeight);
     }
-    const translationDiv = document.createElement('div');
-    translationDiv.className = 'translationText';
+  }
 
-    const settings = createSettings(livetlContainer);
-    livetlContainer.appendChild(translationDiv);
+  window.updateDimensions = (dims, force = false, goToTop = false) => {
+    dims = dims || getDimensions();
+    if (goToTop) {
+      livetlContainer.scrollTo(0, 0);
+    } else {
+      scrollToBottom(dims, force);
+    }
+  };
 
-    allTranslatorCheckbox = createCheckbox('All Translators', 'allTranslatorID', true, () => {
-      const boxes = document
-        .querySelector('#transelectChecklist')
-        .querySelectorAll('input:not(:checked)');
-      boxes.forEach(box => box.checked = allTranslatorCheckbox.checked);
-      checkboxUpdate();
+  let dimsBefore = getDimensions();
+  window.onresize = () => {
+    if (translationDiv.style.display != 'none') {
+      updateDimensions(dimsBefore);
+      dimsBefore = getDimensions();
+    }
+  };
+
+  const settings = await createSettings(livetlContainer);
+
+  allTranslatorCheckbox = createCheckbox('All Translators', 'allTranslatorID', true, () => {
+    const boxes = document
+      .querySelector('#transelectChecklist')
+      .querySelectorAll('input:not(:checked)');
+    boxes.forEach(box => {
+      box.checked = allTranslatorCheckbox.checked;
     });
+    checkboxUpdate();
+  });
 
-    prependE = el => translationDiv.prepend(el);
+  appendE = el => {
+    dimsBefore = getDimensions();
+    translationDiv.appendChild(el);
+    updateDimensions(dimsBefore);
+  };
 
-    prependE(await createWelcome());
+  prependE = el => translationDiv.prepend(el);
 
-    setInterval(() => {
-      const messages = document.querySelectorAll('.yt-live-chat-text-message-renderer > #message');
-      let i = 0;
-      while (i < messages.length && messages[i].innerHTML === '') i++;
-      for (; i < messages.length; i++) {
-        const m = messages[i];
-        if (m.innerHTML === '') break;
-        const parsed = parseTranslation(m.textContent);
-        const select = document.querySelector('#langSelect');
-        if (parsed != null && isLangMatch(parsed.lang.toLowerCase(), languageConversionTable[select.value]) &&
-          parsed.msg.replace(/\s/g, '') !== '') {
-          const author = m.parentElement.childNodes[1].textContent;
-          const authorID = /\/ytc\/([^\=]+)\=/.exec(getProfilePic(m))[1];
-          const line = createTranslationElement(author, authorID, parsed.msg);
-          if (!(authorID in allTranslators.v)) {
-            createCheckbox(author, authorID, allTranslatorCheckbox.checked);
-          }
-          if (allTranslators.v[authorID].checked) {
-            prependE(line);
-          }
-        }
-        m.innerHTML = '';
+  let prependOrAppend = e => (textDirection == 'bottom' ? appendE : prependE)(e);
+
+  prependOrAppend(await createWelcome());
+  const hrParent = document.createElement('div');
+  const hr = document.createElement('hr');
+  hrParent.className = 'line'; // so it properly gets inverted when changing the text direction
+  hr.className = 'sepLine';
+  hrParent.appendChild(hr);
+  prependOrAppend(hrParent);
+
+  window.onNewMessage = async messageNode => {
+    const element = messageNode.querySelector("#message");
+
+    messageNode = findParent(messageNode);
+
+    if (!messageNode) return;
+    // Parse the message into it's different pieces
+    const messageInfo = getMessageInfo(messageNode);
+
+    if (!messageInfo) return;
+    messageNode.onclick = e => window.messageSelectCallback(e);
+
+    // Determine whether we should display mod messages (if not set, default to yes)
+    let displayModMessages = await getStorage('displayModMessages');
+    if (displayModMessages == null) {
+      displayModMessages = true;
+      await setStorage('displayModMessages', true);
+    }
+
+    let checked = await isChecked(messageInfo.author.id);
+
+    // Check to see if the sender is a mod, and we display mod messages
+    if (messageInfo.author.type === authorType.MOD && displayModMessages) {
+      // If the mod isn't in the sender list, add them
+      if (isNewUser(messageInfo.author.id)) {
+        await createCheckbox(messageInfo.author.name, messageInfo.author.id, true);
       }
-      createSettingsProjection(prependE);
-    }, 1000);
-  }, 100);
+
+      // Check to make sure we haven't blacklisted the mod, and if not, send the message
+      // After send the message, we bail so we don't have to run all the translation related things below
+      if (checked) {
+        prependOrAppend(createMessageEntry(messageInfo, element.textContent));
+        return;
+      }
+    };
+
+    // Try to parse the message into a translation and get the language we're looking for translations in
+    const translation = parseTranslation(element.textContent);
+    const selectedLanguage = document.querySelector('#langSelect');
+
+    // Make sure we parsed the message into a translation, and if so, check to see if it matches our desired language
+    if (
+      translation != null &&
+      isLangMatch(translation.lang.toLowerCase(), languageConversionTable[selectedLanguage.value]) &&
+      translation.msg.replace(/\s/g, '') !== '') {
+      // If the author isn't in the senders list, add them
+      if (isNewUser(messageInfo.author.id))
+        await createCheckbox(messageInfo.author.name, messageInfo.author.id, allTranslatorCheckbox.checked);
+
+      // Check to see if the sender is approved, and send the message if they are
+      if (checked) {
+        prependOrAppend(createMessageEntry(messageInfo, translation.msg));
+        return;
+      }
+    }
+
+    // if the user manually added this person
+    if (allTranslators.addedByUser[messageInfo.author.id] && checked) {
+      prependOrAppend(createMessageEntry(messageInfo, element.textContent));
+      return;
+    }
+  };
+
+  let observer = new MutationObserver((mutations, observer) => {
+    mutations.forEach(mutation => {
+      mutation.addedNodes.forEach(window.onNewMessage);
+    });
+  });
+
+  observer.observe(document.querySelector("#items.yt-live-chat-item-list-renderer"), { childList: true });
+}
+
+function getAuthorType(messageElement, authorId) {
+  if (messageElement.getAttribute('author-type') === 'moderator')
+    return authorType.MOD
+
+  if (verifiedTranslators.includes(authorId))
+    return authorType.VERIFIED
+
+  if (distinguishedUsers.includes(authorId))
+    return authorType.DISTINGUISHED
+
+  return authorType.STANDARD;
+}
+
+function getMessageInfo(messageElement) {
+  // set this here so that we can access it when getting author type
+  // let img = messageElement.querySelector('#author-photo > img');
+  // if (!img) return;
+  const id = messageElement.querySelector('#author-name').textContent;
+  // image src detection is broken 
+  // /\/ytc\/([^\=]+)\=/.exec(img.src)[1];
+
+  return {
+    author: {
+      id: id,
+      name: id,
+      type: getAuthorType(messageElement, id)
+    },
+    timestamp: messageElement.querySelector('#timestamp').textContent
+  };
 }
 
 function switchChat() {
@@ -97,48 +211,114 @@ function switchChat() {
   });
 }
 
-function parseParams() {
-  const s = decodeURI(location.search.substring(1))
+function parseParams(loc) {
+  const s = decodeURI((loc || location.search).substring(1))
     .replace(/"/g, '\\"')
     .replace(/&/g, '","')
     .replace(/=/g, '":"');
   return s === '' ? {} : JSON.parse('{"' + s + '"}');
 }
 
+function clearLiveTLButtons() {
+  document.querySelectorAll('.liveTLBotan').forEach(b => b.remove());
+}
+
 async function insertLiveTLButtons(isHolotools = false) {
   conlog('Inserting LiveTL Launcher Buttons');
+  clearLiveTLButtons();
   params = parseParams();
   const makeButton = (text, callback, color) => {
-    const a = document.createElement('span');
+    let a = document.createElement('span');
     a.appendChild(getLiveTLButton(color));
-
-    const interval2 = setInterval(() => {
-      const e = isHolotools ? document.querySelector('#input-panel') : document.querySelector('ytd-live-chat-frame');
-      if (e != null) {
-        clearInterval(interval2);
-        e.appendChild(a);
-        a.querySelector('a').onclick = callback;
-        a.querySelector('yt-formatted-string').textContent = text;
-      }
-    }, 100);
+    a.className = 'liveTLBotan';
+    const e = isHolotools ? document.querySelector('#input-panel') : document.querySelector('ytd-live-chat-frame');
+    e.appendChild(a);
+    a.querySelector('a').onclick = callback;
+    a.querySelector('yt-formatted-string').textContent = text;
   };
 
-  const redirectTab = u => chrome.runtime.sendMessage({ type: 'redirect', data: u });
-  const createTab = u => chrome.runtime.sendMessage({ type: 'tab', data: u });
+  const redirectTab = u => window.location.href = u;
+  const createTab = u => window.open(u);
+  const createWindow = u => window.open(u, '',
+    'scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300'
+  );
 
-  const u = `${await getWAR('index.html')}?v=${params.v}`;
-  makeButton('Watch in LiveTL', () => redirectTab({ url: u }));
-  makeButton('Pop Out Translations', () => createWindow({
-    url: `https://www.youtube.com/live_chat?v=${params.v}&useLiveTL=1`,
-    type: 'popup',
-    focused: true
-  }), 'rgb(143, 143, 143)');
+
+  getContinuation = (() => {
+    let chatframe = document.querySelector("#chatframe");
+    let src = chatframe.dataset.src;
+    if (src.startsWith("https://www.youtube.com/live_chat_replay")) {
+      return "&continuation=" + parseParams("?" + src.split("?")[1]).continuation;
+    }
+    return "";
+  });
+
+  getTitle = () => encodeURIComponent(document.querySelector("#container > .title").textContent);
+
+  if (!isHolotools) {
+    makeButton('Watch in LiveTL', async () =>
+      redirectTab(`${await getWAR('index.html')}?v=${params.v}&title=${getTitle()}${getContinuation()}`));
+
+
+    makeButton('Pop Out Translations',
+      async () => {
+        let tlwindow = createWindow(`${embedDomain}?v=${params.v}&mode=chat&title=${getTitle()}&useLiveTL=1${getContinuation()}`);
+        document.querySelector("#chatframe").contentWindow.onmessage = d => {
+          tlwindow.postMessage(d.data, "*");
+        }
+        document.querySelector("#chatframe").contentWindow.onbeforeunload = () => window.parent.postMessage('clearLiveTLButtons', '*');
+      },
+      'rgb(143, 143, 143)');
+  } else {
+    makeButton('Expand Translations',
+      async () => {
+        window.location.href = `${await getWAR('index.html')}?v=${params.v}&mode=chat&useLiveTL=1&noVideo=1`;
+      });
+  }
+}
+
+function isReplayChat() {
+  return window.location.href.startsWith('https://www.youtube.com/live_chat_replay');
+}
+
+function isLiveChat() {
+  return window.location.href.startsWith('https://www.youtube.com/live_chat');
+}
+
+function isChat() {
+  return isLiveChat() || isReplayChat();
+}
+
+function isVideo() {
+  return window.location.href.startsWith('https://www.youtube.com/watch');
+}
+
+async function onMessageFromEmbeddedChat(m) {
+  if (!isVideo()) {
+    // I think this fixes the firefox no button issue
+    // removeEventListener('message', onMessageFromEmbeddedChat);
+    return;
+  }
+  switch (m.data) {
+    case 'embeddedChatLoaded':
+      let f = document.querySelector('#chatframe');
+      f.dataset.src = f.contentWindow.location.href;
+      await insertLiveTLButtons();
+      break;
+    case 'clearLiveTLButtons':
+      clearLiveTLButtons();
+  }
 }
 
 let params = {};
-const activationInterval = setInterval(() => {
-  if (window.location.href.startsWith('https://www.youtube.com/live_chat')) {
-    clearInterval(activationInterval);
+let lastLocation = '';
+async function loaded() {
+  // window.removeEventListener('load', loaded);
+  // window.removeEventListener('yt-navigate-finish', loaded);
+  // window.addEventListener('yt-navigate-finish', loaded);
+  if (window.location.href == lastLocation) return;
+  lastLocation = window.location.href;
+  if (isChat()) {
     conlog('Using live chat');
     try {
       params = parseParams();
@@ -146,215 +326,53 @@ const activationInterval = setInterval(() => {
         conlog('Running LiveTL!');
         runLiveTL();
       } else if (params.embed_domain === 'hololive.jetri.co') {
-        insertLiveTLButtons(true);
+        let observer = new MutationObserver(async (mutations, observer) => {
+          await insertLiveTLButtons(true);
+          observer.disconnect();
+          scrollBackToBottomOfChat();
+        });
+        observer.observe(document.querySelector('#chat #items'), { childList: true });
+      } else {
+        window.parent.postMessage('embeddedChatLoaded', '*');
       }
     } catch (e) { }
-  } else if (window.location.href.startsWith('https://www.youtube.com/watch')) {
-    clearInterval(activationInterval);
-    conlog('Watching video');
-    const interval = setInterval(() => {
-      if (document.querySelector('ytd-live-chat-frame')) {
-        clearInterval(interval);
-        insertLiveTLButtons();
-      }
-    }, 100);
+  } else if (window.location.href.startsWith(embedDomain)) {
+    setFavicon();
   }
-}, 1000);
+}
 
-if (window.location.href.startsWith('https://kentonishi.github.io/LiveTL/about')) {
+window.addEventListener('message', onMessageFromEmbeddedChat);
+window.addEventListener('load', loaded);
+window.addEventListener('yt-navigate-start', clearLiveTLButtons);
+
+if ((isVideo() || isChat()) && isFirefox) {
+  window.dispatchEvent(new Event('load'));
+}
+
+const aboutPage = 'https://kentonishi.github.io/LiveTL/about/';
+
+if (window.location.href.startsWith(aboutPage)) {
   window.onload = () => {
     const e = document.querySelector('#actionMessage');
     e.textContent = 'Thank you for installing LiveTL!';
   };
-}
-
-function createModal(container) {
-  const settingsButton = document.createElement('div');
-  settingsGear(settingsButton);
-  settingsButton.id = 'settingsGear';
-  settingsButton.style.zIndex = 1000000;
-  settingsButton.style.padding = '5px';
-  settingsButton.style.width = '24px';
-
-  const modalContainer = document.createElement('div');
-  modalContainer.className = 'modal';
-  modalContainer.style.zIndex = 1000000;
-  modalContainer.style.width = 'calc(100% - 20px);';
-  modalContainer.style.display = 'none';
-
-  const modalContent = document.createElement('div');
-  modalContent.className = 'modal-content';
-
-  const nextStyle = {
-    flex: 'none',
-    none: 'flex'
+} else if (window.location.href.startsWith('https://www.youtube.com/embed/')) {
+  window.onmessage = d => {
+    try {
+      parent.postMessage(d.data, '*')
+    } catch (e) { }
   };
-
-  const icon = {
-    flex: closeSVG,
-    none: settingsGear
-  };
-
-  settingsButton.addEventListener('click', (e) => {
-    const newDisplay = nextStyle[modalContainer.style.display];
-    modalContainer.style.display = newDisplay;
-    icon[newDisplay](settingsButton);
-    if (newDisplay === 'none') {
-      document.querySelector('.translationText').style.display = 'block';
-      modalContainer.style.height = 'auto';
-    } else {
-      document.querySelector('.translationText').style.display = 'none';
-      updateSize();
-    }
-  });
-
-  modalContainer.appendChild(modalContent);
-
-  container.appendChild(settingsButton);
-  container.appendChild(modalContainer);
-
-  return modalContent;
-}
-
-async function importFontAwesome() {
-  document.head.innerHTML += `
-    <link 
-     rel="stylesheet"
-     href="https://cdn.jsdelivr.net/npm/fork-awesome@1.1.7/css/fork-awesome.min.css"
-     integrity="sha256-gsmEoJAws/Kd3CjuOQzLie5Q3yshhvmo7YNtBG7aaEY="
-     crossorigin="anonymous">
-        `;
-}
-
-function setSelectInputCallbacks(select, defaultValue) {
-  select.onfocus = () => select.value = '';
-  select.onblur = () => {
-    if (!(select.value in languageConversionTable)) {
-      select.value = defaultValue;
-    }
-  };
-}
-
-function createLangSelectionName(lang) {
-  return `${lang.name} (${lang.lang}) [${lang.code}]`;
-}
-
-function createLangSelectOption(lang) {
-  const opt = document.createElement('option');
-  opt.value = createLangSelectionName(lang);
-  return opt;
-}
-
-languages.forEach(i => languageConversionTable[createLangSelectionName(i)] = i);
-
-function createLangSelectLabel() {
-  const langSelectLabel = document.createElement('span');
-  langSelectLabel.className = 'optionLabel';
-  langSelectLabel.textContent = 'Language: ';
-  return langSelectLabel;
-}
-
-function createSelectInput() {
-  const select = document.createElement('input');
-  select.dataset.role = 'none';
-  const defaultLang = languages[0];
-  select.value = `${defaultLang.name} (${defaultLang.lang}) [${defaultLang.code}]`;
-  select.setAttribute('list', 'languages');
-  select.id = 'langSelect';
-  setSelectInputCallbacks(select, select.value);
-  return select;
-}
-
-function createLangSelectDatalist() {
-  const datalist = document.createElement('datalist');
-  datalist.id = 'languages';
-  const appendDatalist = e => datalist.appendChild(e);
-  languages.map(createLangSelectOption).map(appendDatalist);
-  return datalist;
-}
-
-function createLanguageSelect() {
-  const langSelectContainer = document.createElement('div');
-  langSelectContainer.appendChild(createLangSelectLabel());
-  langSelectContainer.appendChild(createSelectInput());
-  langSelectContainer.appendChild(createLangSelectDatalist());
-  return langSelectContainer;
-}
-
-function setChecklistOnclick(checklist) {
-  checklist.querySelector('.anchor').onclick = () => {
-    const items = checklist.querySelector('#items');
-    if (items.style.display !== 'block') {
-      checklist.classList.add('openList');
-      items.style.display = 'block';
-    } else {
-      checklist.classList.remove('openList');
-      items.style.display = 'none';
-    }
-    updateSize();
-  };
-}
-
-function setChecklistOnblur(checklist) {
-  checklist.onblur = e => {
-    const items = document.querySelector('#items');
-    if (!e.currentTarget.contains(e.relatedTarget)) {
-      checklist.classList.remove('openList');
-      items.style.display = 'none';
-    } else e.currentTarget.focus();
-    updateSize();
-  };
-}
-
-function setChecklistCallbacks(checklist) {
-  setChecklistOnclick(checklist);
-  setChecklistOnblur(checklist);
-}
-
-function createTransSelectDefaultText() {
-  const defaultText = document.createElement('span');
-  defaultText.className = 'anchor';
-  defaultText.textContent = 'View All';
-  return defaultText;
-}
-
-function createTransSelectChecklistItems() {
-  const items = document.createElement('ul');
-  items.id = 'items';
-  items.className = 'items';
-  return items;
-}
-
-function createTransSelectLabel() {
-  const translatorSelectLabel = document.createElement('span');
-  translatorSelectLabel.className = 'optionLabel';
-  translatorSelectLabel.innerHTML = 'Translators:&nbsp';
-  return translatorSelectLabel;
-}
-
-function createTransSelectChecklist() {
-  const checklist = document.createElement('div');
-  checklist.className = 'dropdown-check-list';
-  checklist.id = 'transelectChecklist';
-  checklist.tabIndex = 1;
-  checklist.appendChild(createTransSelectDefaultText());
-  checklist.appendChild(createTransSelectChecklistItems());
-  setChecklistCallbacks(checklist);
-  return checklist;
-}
-
-function createTranslatorSelect() {
-  const translatorSelectContainer = document.createElement('div');
-  translatorSelectContainer.appendChild(createTransSelectLabel());
-  translatorSelectContainer.appendChild(createTransSelectChecklist());
-  return translatorSelectContainer;
-}
-
-function createSettings(container) {
-  const settings = createModal(container);
-  settings.appendChild(createLanguageSelect());
-  settings.appendChild(createTranslatorSelect());
-  return settings;
+} else if (isChat()) {
+  try {
+    window.parent.location.href;
+  } catch (e) {
+    window.addEventListener('message', d => {
+      if (window.origin != d.origin) {
+        postMessage(d.data);
+      }
+    });
+    switchChat();
+  }
 }
 
 function wrapIconWithLink(icon, link) {
@@ -367,7 +385,7 @@ function wrapIconWithLink(icon, link) {
 
 async function createLogo() {
   const a = document.createElement('a');
-  a.href = 'https://kentonishi.github.io/LiveTL/about/';
+  a.href = aboutPage;
   a.target = 'about:blank';
   const logo = document.createElement('img');
   logo.className = 'logo';
@@ -383,30 +401,49 @@ function createIcon(faName, link, addSpace) {
   return wrapped;
 }
 
-async function shareExtension() {
-  const details = getFile('manifest.json', 'json');
-  navigator.share({
-    title: details.name,
-    text: details.description,
-    url: 'https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg'
-  });
+async function shareExtension(e) {
+  const details = await getFile('manifest.json', 'json');
+  if (navigator.share) {
+    navigator.share({
+      title: details.name,
+      text: details.description,
+      url: 'https://kentonishi.github.io/LiveTL'
+    });
+    e.preventDefault();
+  }
 }
 
-function createWelcomeText() {
+async function createWelcomeText() {
   const welcomeText = document.createElement('span');
-  welcomeText.textContent = 'Welcome to LiveTL! Translations will appear above.';
+  welcomeText.textContent = 'Welcome to LiveTL! Translations picked up from the chat will appear here.';
   const buttons = document.createElement('div');
-  buttons.classList.add('authorName');
+  buttons.classList.add('smallText');
   buttons.style.marginLeft = '0px';
   buttons.innerHTML = `
-        Please consider
-        <a id="shareExtension" href="javascript:void(0);">sharing LiveTL with your friends</a>, 
-        <a href="https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg" target="about:blank">giving us a 5-star review</a>, 
-        <a href="https://discord.gg/uJrV3tmthg" target="about:blank">joining our Discord server</a>, and
-        <a href="https://github.com/KentoNishi/LiveTL" target="about:blank">starring our GitHub repository</a>!
-    `;
+    Please consider
+    <a id="shareExtension" href="https://kentonishi.github.io/LiveTL" target="about:blank">sharing LiveTL with your friends</a>, 
+    <a href="https://kentonishi.github.io/LiveTL/about/review" target="about:blank">giving us a 5-star review</a>, 
+    <a href="https://discord.gg/uJrV3tmthg" target="about:blank">joining our Discord server</a>, and
+    <a href="https://github.com/KentoNishi/LiveTL" target="about:blank">starring our GitHub repository</a>!
+  `;
   welcomeText.appendChild(buttons);
   welcomeText.querySelector('#shareExtension').onclick = shareExtension;
+
+  const versionInfo = document.createElement("div");
+  versionInfo.classList.add("smallText");
+  versionInfo.style.marginLeft = '0px';
+  const details = await getFile('manifest.json', 'json');
+  const update = await getFile('updateMessage.txt', 'text');
+  versionInfo.innerHTML = `<strong>[NEW IN v${details.version}]:</strong> <span id='updateInfo'></span> `;
+  versionInfo.querySelector('#updateInfo').textContent = update;
+  const learnMore = document.createElement('a');
+  learnMore.textContent = "Learn More";
+  learnMore.href = `https://kentonishi.github.io/LiveTL/changelogs?version=v${details.version}`;
+  learnMore.target = 'about:blank';
+  versionInfo.appendChild(learnMore);
+  versionInfo.style.marginTop = '10px';
+  welcomeText.appendChild(versionInfo);
+
   return welcomeText;
 }
 
@@ -416,7 +453,7 @@ async function createWelcome() {
   welcome.appendChild(await createLogo());
   welcome.appendChild(createIcon('fa-discord', 'https://discord.gg/uJrV3tmthg', false));
   welcome.appendChild(createIcon('fa-github', 'https://github.com/KentoNishi/LiveTL', true));
-  welcome.appendChild(createWelcomeText());
+  welcome.appendChild(await createWelcomeText());
   return welcome;
 }
 
@@ -434,6 +471,9 @@ function createCheckmark(authorID, checked, onchange) {
   checkmark.dataset.id = authorID;
   checkmark.checked = checked;
   checkmark.onchange = onchange;
+  checkmark.addEventListener("change", async (e) => {
+    await setStorage(checkmark.dataset.id, checkmark.checked);
+  });
   return checkmark;
 }
 
@@ -444,12 +484,16 @@ function createCheckboxPerson(name, authorID) {
   return person;
 }
 
-function createCheckbox(name, authorID, checked = false, callback = null) {
+// checked doesn't do anything, its just there for legacy
+async function createCheckbox(name, authorID, checked = false, callback = null) {
+  allTranslators.bools[authorID] = true;
+  checked = await isChecked(authorID);
   const items = getChecklistItems();
   const checkbox = createCheckmark(authorID, checked, callback || checkboxUpdate);
   const selectTranslatorMessage = document.createElement('li');
   selectTranslatorMessage.appendChild(checkbox);
   selectTranslatorMessage.appendChild(createCheckboxPerson(name, authorID));
+  selectTranslatorMessage.style.marginRight = '4px';
   items.appendChild(selectTranslatorMessage);
   checkboxUpdate();
   return checkbox;
@@ -457,7 +501,8 @@ function createCheckbox(name, authorID, checked = false, callback = null) {
 
 function filterBoxes(boxes) {
   boxes.forEach((box) => {
-    allTranslators.v[box.dataset.id] = box;
+    allTranslators.boxes[box.dataset.id] = box;
+    allTranslators.bools[box.dataset.id] = box.checked;
     if (box !== allTranslatorCheckbox && !box.checked) {
       allTranslatorCheckbox.checked = false;
     }
@@ -475,8 +520,8 @@ function removeBadTranslations() {
     //     translation.remove();
     // } else
     // removed limiting
-    const author = translation.querySelector('.authorName');
-    if (author && author.dataset.id && !allTranslators.v[author.dataset.id].checked) {
+    const author = translation.querySelector('.smallText');
+    if (author && author.dataset.id && !allTranslators.bools[author.dataset.id]) {
       translation.remove();
     }
   });
@@ -484,7 +529,7 @@ function removeBadTranslations() {
 
 function checkboxUpdate() {
   const boxes = getChecklist().querySelectorAll('input');
-  allTranslators.v = {};
+  allTranslators.boxes = {};
   filterBoxes(boxes);
   if (allTranslatorCheckbox.checked) {
     checkAll();
@@ -492,30 +537,62 @@ function checkboxUpdate() {
   removeBadTranslations();
 }
 
-function createAuthorNameElement(author, authorID) {
+function createTimestampElement(timestamp) {
+  let timestampElement = document.createElement('span');
+  timestampElement.textContent = ` (${timestamp})`;
+  timestampElement.className = 'timestampText smallText';
+  timestampElement.style.display = showTimestamps ? 'contents' : 'none';
+
+  return timestampElement;
+}
+
+function createAuthorNameElement(messageInfo) {
   const authorName = document.createElement('span');
-  authorName.textContent = author;
-  authorName.dataset.id = authorID;
-  authorName.className = 'authorName';
+  authorName.textContent = `${messageInfo.author.name}`;
+  authorName.dataset.id = messageInfo.author.id;
+  authorName.className = `smallText ${messageInfo.author.type}`;
+
+  // capitalize the first letter
+  const type = messageInfo.author.type.charAt(0).toUpperCase() + messageInfo.author.type.slice(1);
+  authorName.appendChild(createTooltip(type));
+
   return authorName;
+}
+
+function createTooltip(text) {
+  const tooltip = document.createElement('span');
+  tooltip.className = 'tooltip';
+  tooltip.textContent = text;
+
+  return tooltip;
 }
 
 function createAuthorHideButton(translation) {
   const hide = document.createElement('span');
+  hide.className = 'hasTooltip'
   hide.style.cursor = 'pointer';
   hide.onclick = () => translation.remove();
+
   hideSVG(hide);
+  hide.appendChild(createTooltip('Hide Message'))
+
   return hide;
 }
 
 function createAuthorBanButton(authorID) {
   const ban = document.createElement('span');
-  ban.onclick = () => {
-    allTranslators.v[authorID].checked = false;
+  ban.className = 'hasTooltip'
+  ban.style.cursor = 'pointer';
+  ban.onclick = async () => {
+    allTranslators.boxes[authorID].checked = false;
+    allTranslators.bools[authorID] = true;
+    await saveUserStatus(authorID, false);
     checkboxUpdate();
   };
-  ban.style.cursor = 'pointer';
+
   banSVG(ban);
+  ban.appendChild(createTooltip('Blacklist User'))
+
   return ban;
 }
 
@@ -528,10 +605,11 @@ function createAuthorInfoOptions(authorID, line) {
   return options;
 }
 
-function createAuthorInfoElement(author, authorID, line) {
+function createAuthorInfoElement(messageInfo, line) {
   const authorInfo = document.createElement('span');
-  authorInfo.appendChild(createAuthorNameElement(author, authorID));
-  authorInfo.appendChild(createAuthorInfoOptions(authorID, line));
+  authorInfo.appendChild(createAuthorNameElement(messageInfo));
+  authorInfo.appendChild(createTimestampElement(messageInfo.timestamp));
+  authorInfo.appendChild(createAuthorInfoOptions(messageInfo.author.id, line));
   return authorInfo;
 }
 
@@ -540,17 +618,18 @@ function setTranslationElementCallbacks(line) {
   line.onmouseleave = () => line.querySelector('.messageOptions').style.display = 'none';
 }
 
-function createTranslationElement(author, authorID, translation) {
+function createMessageEntry(messageInfo, message) {
   const line = document.createElement('div');
-  line.className = 'line';
-  line.textContent = translation;
-  setTranslationElementCallbacks(line);
-  line.appendChild(createAuthorInfoElement(author, authorID, line));
-  return line;
-}
+  line.className = 'line message';
 
-function getProfilePic(el) {
-  return el.parentElement.parentElement.querySelector('img').src;
+  if (textDirection === 'top') {
+    line.style.marginBottom = '0';
+  }
+
+  line.textContent = message;
+  setTranslationElementCallbacks(line);
+  line.appendChild(createAuthorInfoElement(messageInfo, line));
+  return line;
 }
 
 function createSettingsProjection(add) {
@@ -569,16 +648,6 @@ async function setFavicon() {
   faviconLink.type = 'image/x-icon';
   faviconLink.href = await favicon;
   document.head.appendChild(faviconLink);
-}
-
-async function createWindow(u) {
-  if (isFirefox) {
-    return window.open(u.url, '',
-      'scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300'
-    );
-  } else {
-    return chrome.runtime.sendMessage({ type: 'window', data: u });
-  }
 }
 
 // MARK
@@ -632,15 +701,4 @@ function getLiveTLButton(color) {
   return a;
 }
 
-async function importCSS(url) {
-  const frameCSSURL = getWAR(url);
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = await frameCSSURL;
-  link.type = 'text/css';
-  document.head.appendChild(link);
-}
 
-async function importStyle() {
-  return await importCSS('css/frame.css');
-}

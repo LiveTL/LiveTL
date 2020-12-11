@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		360AA7E6257E97CD008801EF /* updateMessage.txt in Resources */ = {isa = PBXBuildFile; fileRef = 360AA7E5257E97CD008801EF /* updateMessage.txt */; };
 		363C674525795AD8009020DE /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 363C674425795AD8009020DE /* Credits.rtf */; };
 		36F39D452578A47300BA3A6F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F39D442578A47300BA3A6F /* AppDelegate.swift */; };
 		36F39D482578A47300BA3A6F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36F39D462578A47300BA3A6F /* Main.storyboard */; };
@@ -50,6 +51,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		360AA7E5257E97CD008801EF /* updateMessage.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = updateMessage.txt; path = ../../../build/safari/LiveTL/updateMessage.txt; sourceTree = "<group>"; };
 		363C674425795AD8009020DE /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		36F39D402578A47300BA3A6F /* LiveTl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiveTl.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		36F39D432578A47300BA3A6F /* LiveTl.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LiveTl.entitlements; sourceTree = "<group>"; };
@@ -147,6 +149,7 @@
 		36F39D672578A47600BA3A6F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				360AA7E5257E97CD008801EF /* updateMessage.txt */,
 				36F39D682578A47600BA3A6F /* jquery-ui.min.js */,
 				36F39D692578A47600BA3A6F /* index.html */,
 				36F39D6A2578A47600BA3A6F /* LICENSE */,
@@ -217,7 +220,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 36F39D3B2578A47200BA3A6F /* Build configuration list for PBXProject "LiveTl" */;
+			buildConfigurationList = 36F39D3B2578A47200BA3A6F /* Build configuration list for PBXProject "LiveTL" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -255,6 +258,7 @@
 				36F39D732578A47600BA3A6F /* css in Resources */,
 				36F39D722578A47600BA3A6F /* LICENSE in Resources */,
 				36F39D702578A47600BA3A6F /* jquery-ui.min.js in Resources */,
+				360AA7E6257E97CD008801EF /* updateMessage.txt in Resources */,
 				36F39D772578A47600BA3A6F /* manifest.json in Resources */,
 				36F39D752578A47600BA3A6F /* jquery.min.js in Resources */,
 				36F39D762578A47600BA3A6F /* icons in Resources */,
@@ -267,6 +271,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		363C6737257953E6009020DE /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -280,7 +285,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $PROJECT_DIR\ncd ../../\nmake safari-noBuild\n";
+			shellScript = "cd $PROJECT_DIR\necho ${PROJECT_DIR}/${INFOPLIST_FILE}\ncd ../../\nmake safari-noBuild EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed VERSION=$(/usr/libexec/PlistBuddy -c \"Print CFBundleShortVersionString\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\")\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -444,7 +449,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "LiveTl Extension/LiveTl_Extension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = d7971c5;
+				CURRENT_PROJECT_VERSION = 37383a6;
 				DEVELOPMENT_TEAM = RJNC97Y8QD;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "LiveTl Extension/Info.plist";
@@ -454,7 +459,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MARKETING_VERSION = 0.1.10;
+				MARKETING_VERSION = VERSION;
 				PRODUCT_BUNDLE_IDENTIFIER = com.candygoblen123.LiveTl.Extension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -467,7 +472,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "LiveTl Extension/LiveTl_Extension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = d7971c5;
+				CURRENT_PROJECT_VERSION = 37383a6;
 				DEVELOPMENT_TEAM = RJNC97Y8QD;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "LiveTl Extension/Info.plist";
@@ -477,7 +482,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MARKETING_VERSION = 0.1.10;
+				MARKETING_VERSION = VERSION;
 				PRODUCT_BUNDLE_IDENTIFIER = com.candygoblen123.LiveTl.Extension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -494,7 +499,7 @@
 				CODE_SIGN_ENTITLEMENTS = LiveTl/LiveTl.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = d7971c5;
+				CURRENT_PROJECT_VERSION = 37383a6;
 				DEVELOPMENT_TEAM = RJNC97Y8QD;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = LiveTl/Info.plist;
@@ -503,7 +508,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MARKETING_VERSION = 0.1.10;
+				MARKETING_VERSION = VERSION;
 				PRODUCT_BUNDLE_IDENTIFIER = com.candygoblen123.LiveTl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -519,7 +524,7 @@
 				CODE_SIGN_ENTITLEMENTS = LiveTl/LiveTl.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = d7971c5;
+				CURRENT_PROJECT_VERSION = 37383a6;
 				DEVELOPMENT_TEAM = RJNC97Y8QD;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = LiveTl/Info.plist;
@@ -528,7 +533,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MARKETING_VERSION = 0.1.10;
+				MARKETING_VERSION = VERSION;
 				PRODUCT_BUNDLE_IDENTIFIER = com.candygoblen123.LiveTl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -538,7 +543,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		36F39D3B2578A47200BA3A6F /* Build configuration list for PBXProject "LiveTl" */ = {
+		36F39D3B2578A47200BA3A6F /* Build configuration list for PBXProject "LiveTL" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				36F39D5E2578A47500BA3A6F /* Debug */,

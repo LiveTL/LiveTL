@@ -6,13 +6,15 @@ parseParams = () => {
   return s == '' ? {} : JSON.parse('{"' + s + '"}');
 };
 
-const v = parseParams().v || '5qap5aO4i9A';
+const params = parseParams();
+const v = params.v || '5qap5aO4i9A';
 const stream = document.querySelector('#stream');
 const ltlchat = document.querySelector('#livetl-chat');
 const chat = document.querySelector('#chat');
 const leftPanel = document.querySelector('#leftPanel');
 const bottomRightPanel = document.querySelector('#bottomRightPanel');
 const topRightPanel = document.querySelector('#topRightPanel');
+document.title = decodeURIComponent(params.title || "LiveTL");
 const start = () => {
   stream.style.display = 'none';
   ltlchat.style.display = 'none';
@@ -28,21 +30,52 @@ const stop = () => {
   leftPanel.style.backgroundColor = 'black';
   bottomRightPanel.style.backgroundColor = 'black';
   topRightPanel.style.backgroundColor = 'black';
+  localStorage.setItem('LTL:rightPanelHeight', topRightPanel.style.height);
+  localStorage.setItem('LTL:leftPanelWidth', leftPanel.style.width);
 };
 $('#leftPanel').resizable({
   handles: {
     e: '#handleV'
   },
-start: start,
-stop: stop
+  start: start,
+  stop: stop
 });
 $('#topRightPanel').resizable({
   handles: {
     s: '#handleH'
   },
-start: start,
-stop: stop
+  start: start,
+  stop: stop
 });
-chat.src = `https://kentonishi.github.io/LiveTL/embed?v=${v}&embed_domain=${document.domain}`;
-stream.src = `https://www.youtube.com/embed/${v}?autoplay=1`;
+let c = params.continuation;
+const embedDomain = EMBED_DOMAIN;
+
+window.onmessage = d => {
+  d = JSON.parse(JSON.stringify(d.data));
+  try {
+    chat.contentWindow.postMessage(d, "*");
+    ltlchat.contentWindow.postMessage(d, "*");
+  } catch (e) { }
+}
+if (c) {
+  chat.src = `${embedDomain}?continuation=${c}`;
+} else {
+  chat.src = `${embedDomain}?v=${v}`;
+}
 ltlchat.src = `${chat.src}&useLiveTL=1`;
+
+let leftWidth = localStorage.getItem('LTL:leftPanelWidth');
+
+let rightHeight = localStorage.getItem('LTL:rightPanelHeight');
+
+if (leftWidth) {
+  leftPanel.style.width = leftWidth;
+}
+if (params.noVideo) {
+  leftPanel.style.display = 'none';
+} else {
+  stream.src = `${embedDomain}?v=${v}&mode=video`;
+  if (rightHeight) {
+    topRightPanel.style.height = rightHeight;
+  }
+}
