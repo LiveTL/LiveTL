@@ -65,7 +65,7 @@ function createModal(container) {
     if (newDisplay === 'none') {
       document.querySelector('.translationText').style.display = 'block';
       modalContainer.style.height = 'auto';
-      window.updateDimensions(true, textDirection == 'top');
+      window.updateDimensions(null, true, textDirection == 'top');
     } else {
       document.querySelector('.translationText').style.display = 'none';
     }

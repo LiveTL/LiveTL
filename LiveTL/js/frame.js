@@ -39,8 +39,8 @@ async function runLiveTL() {
   livetlContainer.appendChild(translationDiv);
 
   getDimensions = () => ({
-    clientHeight: livetlContainer.clientWidth,
-    scrollTop: livetlContainer.clientHeight,
+    clientHeight: livetlContainer.clientHeight,
+    scrollTop: livetlContainer.scrollTop,
     scrollHeight: livetlContainer.scrollHeight
   });
 
@@ -51,17 +51,16 @@ async function runLiveTL() {
     }
   }
 
-  let dimensionsBefore = getDimensions();
-  window.updateDimensions = (force = false, goToTop = false) => {
+  window.updateDimensions = (dims, force = false, goToTop = false) => {
+    dims = dims || getDimensions();
     if (goToTop) {
       livetlContainer.scrollTo(0, 0);
     } else {
-      scrollToBottom(dimensionsBefore, force);
+      scrollToBottom(dims, force);
     }
-    dimensionsBefore = getDimensions();
   };
 
-  window.onresize = () => { if (translationDiv.style.display == 'block') updateDimensions(); };
+  window.onresize = () => { if (translationDiv.style.display != 'none') updateDimensions(); };
 
   const settings = await createSettings(livetlContainer);
 
@@ -76,8 +75,9 @@ async function runLiveTL() {
   });
 
   appendE = el => {
+    let dimsBefore = getDimensions();
     translationDiv.appendChild(el);
-    updateDimensions();
+    updateDimensions(dimsBefore);
   };
 
   prependE = el => translationDiv.prepend(el);
