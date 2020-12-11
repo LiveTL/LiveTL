@@ -26,21 +26,15 @@ Once you install the extension, you must reload the YouTube stream for LiveTL to
 ### I don't see any translations in the translations panel.
 If there are no translators in chat, LiveTL is unable to provide translations. Any messages properly tagged with a language (ex. `[en]`, `ESP:`, etc.) will appear when they are available.
 
-### Dark mode is broken!
-Dark mode in LiveTL is currently controlled by the system theme. A toggle is coming soon!
-
-### Banned translators, language settings, and panels are not being saved.
-LiveTL currently does not have saved preferences. Stay tuned for an update in the very near future for settings saved across sessions!
-
-### I want to reverse the order of translated messages or display translations as captions.
-A toggle for translation order is coming soon, and caption mode is also in the works!
+### A translator is using their own style of language tags.
+You can manually select additional users to filter in the settings.
 
 ### I'm a Safari user, and I can't use the chat!
 You must disable the `Prevent Cross-site tracking` option in safari privacy settings.
 
 ## Other Info
 
-If you like LiveTL, don't forget to <a href="javascript:shareExtension();">share it with your friends</a>
+If you like LiveTL, don't forget to <a href="https://kentonishi.github.io/LiveTL/" target="about:blank">share it with your friends</a>
 and <a href="https://kentonishi.github.io/LiveTL/about/review">give
 us a 5-star review</a>!
 
@@ -71,13 +65,4 @@ star! [Here is our repository](https://github.com/KentoNishi/LiveTL).
             <link rel="icon" href="../favicon.ico" type="image/x-icon" />
         </head>
     `
-
-    async function shareExtension() {
-        let details = await (await fetch('https://kentonishi.github.io/LiveTL/LiveTL/manifest.json')).json()
-        navigator.share({
-            title: details.name,
-            text: details.description,
-            url: 'https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg',
-        })
-    }
 </script>

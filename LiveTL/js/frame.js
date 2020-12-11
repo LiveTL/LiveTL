@@ -123,7 +123,7 @@ async function runLiveTL() {
     if (messageInfo.author.type === authorType.MOD && displayModMessages) {
       // If the mod isn't in the sender list, add them
       if (isNewUser(messageInfo.author.id)) {
-        await createCheckbox(messageInfo.author.name, messageInfo.author.id, true);
+        await createCheckbox(messageInfo.author.name, messageInfo.author.id, displayModMessages);
       }
 
       // Check to make sure we haven't blacklisted the mod, and if not, send the message
@@ -188,7 +188,7 @@ function getMessageInfo(messageElement) {
   // let img = messageElement.querySelector('#author-photo > img');
   // if (!img) return;
   const id = messageElement.querySelector('#author-name').textContent;
-  // image src detection is broken 
+  // image src detection is broken
   // /\/ytc\/([^\=]+)\=/.exec(img.src)[1];
 
   return {
@@ -471,9 +471,7 @@ function createCheckmark(authorID, checked, onchange) {
   checkmark.dataset.id = authorID;
   checkmark.checked = checked;
   checkmark.onchange = onchange;
-  checkmark.addEventListener("change", async (e) => {
-    await setStorage(checkmark.dataset.id, checkmark.checked);
-  });
+  checkmark.addEventListener("change", async () => await setStorage(checkmark.dataset.id, checkmark.checked));
   return checkmark;
 }
 
@@ -516,10 +514,6 @@ function checkAll() {
 
 function removeBadTranslations() {
   document.querySelectorAll('.line').forEach((translation, i) => {
-    // if (i > 25) {
-    //     translation.remove();
-    // } else
-    // removed limiting
     const author = translation.querySelector('.smallText');
     if (author && author.dataset.id && !allTranslators.bools[author.dataset.id]) {
       translation.remove();
@@ -585,7 +579,7 @@ function createAuthorBanButton(authorID) {
   ban.style.cursor = 'pointer';
   ban.onclick = async () => {
     allTranslators.boxes[authorID].checked = false;
-    allTranslators.bools[authorID] = true;
+    allTranslators.bools[authorID] = false;
     await saveUserStatus(authorID, false);
     checkboxUpdate();
   };
