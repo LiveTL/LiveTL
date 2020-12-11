@@ -97,6 +97,7 @@ async function runLiveTL() {
 
     messageNode = findParent(messageNode);
 
+    if (!messageNode) return;
     // Parse the message into it's different pieces
     const messageInfo = getMessageInfo(messageNode);
 
@@ -148,7 +149,6 @@ async function runLiveTL() {
     }
 
     // if the user manually added this person
-    console.log(messageInfo.author.name, messageInfo.author.id, allTranslators.addedByUser[messageInfo.author.id], checked)
     if (allTranslators.addedByUser[messageInfo.author.id] && checked) {
       prependOrAppend(createMessageEntry(messageInfo, element.textContent));
       return;
