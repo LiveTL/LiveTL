@@ -22,7 +22,7 @@ or...
 
 [Download for Safari (currently in beta and not signed by Apple)](https://github.com/KentoNishi/LiveTL/releases/latest/)
 
-![Demo](./img/livetlscreen.png)
+![Demo](./img/cover.png)
 
 ## FAQ
 [Find some answers to common questions in our FAQ!](https://kentonishi.github.io/LiveTL/about/#frequently-asked-questions)

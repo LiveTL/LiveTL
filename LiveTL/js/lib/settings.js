@@ -17,10 +17,11 @@ async function createSettings(container) {
   const settings = createModal(container);
   settings.appendChild(createLanguageSelect());
   settings.appendChild(createTranslatorSelect());
+  settings.appendChild(createCustomUserButton(container));
+  settings.appendChild(await createDisplayModMessageToggle());
   settings.appendChild(await createZoomSlider())
   settings.appendChild(await createTimestampToggle());
   settings.appendChild(await createTextDirectionToggle(container));
-  settings.appendChild(await createDisplayModMessageToggle());
 
   await updateZoomLevel();
   return settings;
@@ -54,13 +55,17 @@ function createModal(container) {
   };
 
   settingsButton.addEventListener('click', async (e) => {
+    if (container.style.display == 'none') {
+      closeMessageSelector(container);
+      return;
+    }
     const newDisplay = nextStyle[modalContainer.style.display];
     modalContainer.style.display = newDisplay;
     icon[newDisplay](settingsButton);
     if (newDisplay === 'none') {
       document.querySelector('.translationText').style.display = 'block';
       modalContainer.style.height = 'auto';
-      window.updateDimensions(true, textDirection == 'top');
+      window.updateDimensions(null, true, textDirection == 'top');
     } else {
       document.querySelector('.translationText').style.display = 'none';
     }
@@ -197,7 +202,7 @@ function createTransSelectChecklistItems() {
 function createTransSelectLabel() {
   const translatorSelectLabel = document.createElement('span');
   translatorSelectLabel.className = 'optionLabel';
-  translatorSelectLabel.innerHTML = 'Translators:&nbsp';
+  translatorSelectLabel.innerHTML = 'User Filter:&nbsp';
   return translatorSelectLabel;
 }
 
@@ -332,7 +337,7 @@ async function createTextDirectionSelect(container) {
   textDirSelect.value = textDirection = data;
 
   textDirSelect.onchange = async () => {
-    const textDirection = textDirSelect.value;
+    textDirection = textDirSelect.value;
     await setStorage('text_direction', textDirection);
     let tt = document.querySelector('.translationText');
     let sg = document.querySelector('#settingsGear');
@@ -386,7 +391,7 @@ async function createDisplayModMessageCheckbox() {
   checkbox.onchange = async () => {
     const displayModMessages = checkbox.checked;
     await setStorage('displayModMessages', displayModMessages);
-    document.querySelectorAll('.mod').forEach(el => el.style.display = displayModMessages ? 'block' : 'none');
+    document.querySelectorAll('.mod').forEach(el => el.parentElement.parentElement.style.display = displayModMessages ? 'block' : 'none');
   };
 
   await checkbox.onchange();
@@ -408,3 +413,40 @@ function changeThemeAndRedirect(dark) {
   location.href = url.toString();
 }
 
+function closeMessageSelector(container) {
+  container.style.display = null;
+  document.querySelector('#chat').style.cursor = null;
+  document.querySelector('#settingsGear').classList.remove('pickUserDoneBtn');
+  scrollBackToBottomOfChat();
+}
+
+function findParent(e) {
+  while (e && e.tagName != "YT-LIVE-CHAT-TEXT-MESSAGE-RENDERER") e = e.parentElement;
+  return e;
+}
+
+function scrollBackToBottomOfChat() {
+  document.querySelector('#show-more').dispatchEvent(new Event('click'));
+}
+
+function createCustomUserButton(container) {
+  let addButton = document.createElement('input');
+  addButton.value = 'Add User to Filter';
+  addButton.style.verticalAlign = 'middle';
+  addButton.type = 'button';
+  addButton.onclick = async () => {
+    document.querySelector('#chat').style.cursor = "cell";
+    document.querySelector('#settingsGear').classList.add('pickUserDoneBtn');
+    window.messageSelectCallback = async e => {
+      e = findParent(e.target);
+      const messageInfo = getMessageInfo(e);
+      if (isNewUser(messageInfo.author.id)) {
+        await createCheckbox(messageInfo.author.name, messageInfo.author.id, true);
+      }
+      allTranslators.addedByUser[messageInfo.author.id] = true;
+      closeMessageSelector(container);
+    }
+    container.style.display = 'none';
+  }
+  return addButton;
+}
