@@ -225,9 +225,7 @@ label {
     from {
         background-color: rgba(0, 119, 255, 0.466);
     }
-    to {
-        background-color: transparent;
-    }
+    to {}
 }
 
 .line {
@@ -248,11 +246,11 @@ label {
 }
 
 .message:nth-child(2n) {
-    background-color: #2c2c2c !important;
+    background-color: #3e3e3e;
 }
 
 .message:nth-child(2n+1) {
-    background-color: #202020 !important;
+    background-color: #2b2b2b;
 }
 
 .mod {
@@ -339,6 +337,7 @@ label {
 }
 
 /* dumb */
+
 .pickUserDoneBtn {
     background-color: var(--yt-live-chat-header-background-color, var(--yt-opalescence-soft-grey-opacity-lighten-3)) !important;
 }
