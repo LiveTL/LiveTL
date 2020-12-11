@@ -118,5 +118,6 @@ body {
 #bottomRightPanel {
     width: 100%;
     flex-grow: 1;
-    position: relative;
+    position: relative;    
+    height: 0;
 }
