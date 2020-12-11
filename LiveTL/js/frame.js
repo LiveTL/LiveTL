@@ -60,7 +60,13 @@ async function runLiveTL() {
     }
   };
 
-  window.onresize = () => { if (translationDiv.style.display != 'none') updateDimensions(); };
+  let dimsBefore = getDimensions();
+  window.onresize = () => {
+    if (translationDiv.style.display != 'none') {
+      updateDimensions(dimsBefore);
+      dimsBefore = getDimensions();
+    }
+  };
 
   const settings = await createSettings(livetlContainer);
 
@@ -75,7 +81,7 @@ async function runLiveTL() {
   });
 
   appendE = el => {
-    let dimsBefore = getDimensions();
+    dimsBefore = getDimensions();
     translationDiv.appendChild(el);
     updateDimensions(dimsBefore);
   };
@@ -307,9 +313,9 @@ async function onMessageFromEmbeddedChat(m) {
 let params = {};
 let lastLocation = '';
 async function loaded() {
-  window.removeEventListener('load', loaded);
-  window.removeEventListener('yt-navigate-finish', loaded);
-  window.addEventListener('yt-navigate-finish', loaded);
+  // window.removeEventListener('load', loaded);
+  // window.removeEventListener('yt-navigate-finish', loaded);
+  // window.addEventListener('yt-navigate-finish', loaded);
   if (window.location.href == lastLocation) return;
   lastLocation = window.location.href;
   if (isChat()) {
@@ -320,7 +326,12 @@ async function loaded() {
         conlog('Running LiveTL!');
         runLiveTL();
       } else if (params.embed_domain === 'hololive.jetri.co') {
-        await insertLiveTLButtons(true);
+        let observer = new MutationObserver(async (mutations, observer) => {
+          await insertLiveTLButtons(true);
+          observer.disconnect();
+          scrollBackToBottomOfChat();
+        });
+        observer.observe(document.querySelector('#chat #items'), { childList: true });
       } else {
         window.parent.postMessage('embeddedChatLoaded', '*');
       }
