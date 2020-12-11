@@ -391,7 +391,7 @@ async function createDisplayModMessageCheckbox() {
   checkbox.onchange = async () => {
     const displayModMessages = checkbox.checked;
     await setStorage('displayModMessages', displayModMessages);
-    document.querySelectorAll('.mod').forEach(el => el.style.display = displayModMessages ? 'block' : 'none');
+    document.querySelectorAll('.mod').forEach(el => el.parentElement.parentElement.style.display = displayModMessages ? 'block' : 'none');
   };
 
   await checkbox.onchange();
