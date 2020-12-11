@@ -1,5 +1,8 @@
 :root {
-    --button: #49ddff;
+    --button-transparent: #49deff4f;
+    --hovered-transparent: #ff49d89e;
+    --button-fill: #49deff;
+    --hovered-fill: #ff49d8;
 }
 
 .livetl {
@@ -248,6 +251,10 @@ label {
     background-color: #2c2c2c !important;
 }
 
+.message:nth-child(2n+1) {
+    background-color: #202020 !important;
+}
+
 .mod {
     color: var(--yt-live-chat-moderator-color);
 }
@@ -276,9 +283,9 @@ label {
     margin-right: 5px;
 }
 
-svg {
-    stroke: var(--button);
-    fill: var(--button);
+.svgButton {
+    stroke: var(--button-fill);
+    fill: var(--button-fill);
 }
 
 /* The Modal (background) */
@@ -328,7 +335,6 @@ svg {
     position: fixed;
     right: 5px;
     z-index: 1000000;
-    opacity: 0.75;
     height: fit-content;
 }
 
@@ -343,4 +349,13 @@ select {
     margin-left: 2px;
     padding: 5px;
     vertical-align: middle;
+}
+
+yt-live-chat-text-message-renderer {
+    background-color: var(--button-transparent);
+    transition: 0.25s;
+}
+
+yt-live-chat-text-message-renderer:hover {
+    background-color: var(--hovered-transparent);
 }

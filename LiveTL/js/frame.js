@@ -2,12 +2,14 @@ const isFirefox = !!/Firefox/.exec(navigator.userAgent);
 
 const embedDomain = EMBED_DOMAIN;
 
-const allTranslators = { v: {} };
-const verifiedTranslators = []; // TODO Update dynamically
-const distinguishedUsers = []; // TODO Update dynamically
+const allTranslators = { boxes: {}, bools: {}, addedByUser: {} };
+const verifiedTranslators = []; //['AAUvwniNIzjhlVnN_WMmV2iBzQ2VuLm3Ix1EbqeHleDP']; // FIXME don't hardcode this....
+const distinguishedUsers = []; //['AAUvwnibH7aEJcoVdPRBx0fIUKxeC25FPeVEt17wGQ']; // TODO don't hardcode this....
 let allTranslatorCheckbox = {};
 let showTimestamps = true;
 let textDirection = 'bottom';
+
+let isNewUser = id => allTranslators.bools[id] == null;
 
 // javascript 'enum'
 const authorType = {
@@ -90,55 +92,72 @@ async function runLiveTL() {
   hrParent.appendChild(hr);
   prependOrAppend(hrParent);
 
+  window.onNewMessage = async messageNode => {
+    const element = messageNode.querySelector("#message");
+
+    messageNode = findParent(messageNode);
+
+    // Parse the message into it's different pieces
+    const messageInfo = getMessageInfo(messageNode);
+
+    if (!messageInfo) return;
+    messageNode.onclick = e => window.messageSelectCallback(e);
+
+    // Determine whether we should display mod messages (if not set, default to yes)
+    let displayModMessages = await getStorage('displayModMessages');
+    if (displayModMessages == null) {
+      displayModMessages = true;
+      await setStorage('displayModMessages', true);
+    }
+
+    let checked = await isChecked(messageInfo.author.id);
+
+    // Check to see if the sender is a mod, and we display mod messages
+    if (messageInfo.author.type === authorType.MOD && displayModMessages) {
+      // If the mod isn't in the sender list, add them
+      if (isNewUser(messageInfo.author.id)) {
+        await createCheckbox(messageInfo.author.name, messageInfo.author.id, true);
+      }
+
+      // Check to make sure we haven't blacklisted the mod, and if not, send the message
+      // After send the message, we bail so we don't have to run all the translation related things below
+      if (checked) {
+        prependOrAppend(createMessageEntry(messageInfo, element.textContent));
+        return;
+      }
+    };
+
+    // Try to parse the message into a translation and get the language we're looking for translations in
+    const translation = parseTranslation(element.textContent);
+    const selectedLanguage = document.querySelector('#langSelect');
+
+    // Make sure we parsed the message into a translation, and if so, check to see if it matches our desired language
+    if (
+      translation != null &&
+      isLangMatch(translation.lang.toLowerCase(), languageConversionTable[selectedLanguage.value]) &&
+      translation.msg.replace(/\s/g, '') !== '') {
+      // If the author isn't in the senders list, add them
+      if (isNewUser(messageInfo.author.id))
+        await createCheckbox(messageInfo.author.name, messageInfo.author.id, allTranslatorCheckbox.checked);
+
+      // Check to see if the sender is approved, and send the message if they are
+      if (checked) {
+        prependOrAppend(createMessageEntry(messageInfo, translation.msg));
+        return;
+      }
+    }
+
+    // if the user manually added this person
+    console.log(messageInfo.author.name, messageInfo.author.id, allTranslators.addedByUser[messageInfo.author.id], checked)
+    if (allTranslators.addedByUser[messageInfo.author.id] && checked) {
+      prependOrAppend(createMessageEntry(messageInfo, element.textContent));
+      return;
+    }
+  };
+
   let observer = new MutationObserver((mutations, observer) => {
     mutations.forEach(mutation => {
-      mutation.addedNodes.forEach(async messageNode => {
-        const element = messageNode.querySelector("#message");
-        if (!element)
-          return;
-
-        // Parse the message into it's different pieces
-        const messageInfo = getMessageInfo(messageNode);
-
-        // Determine whether we should display mod messages (if not set, default to yes)
-        let displayModMessages = await getStorage('displayModMessages');
-        if (displayModMessages == null) {
-          displayModMessages = true;
-          await setStorage('displayModMessages', true);
-        }
-
-        // Check to see if the sender is a mod, and we display mod messages
-        if (messageInfo.author.type === authorType.MOD && displayModMessages) {
-          // If the mod isn't in the sender list, add them
-          if (!(messageInfo.author.id in allTranslators.v))
-            await createCheckbox(messageInfo.author.name, messageInfo.author.id, true);
-
-          // Check to make sure we haven't blacklisted the mod, and if not, send the message
-          // After send the message, we bail so we don't have to run all the translation related things below
-          if (await isChecked(messageInfo.author.id)) {
-            prependOrAppend(createMessageEntry(messageInfo, element.textContent));
-            return;
-          }
-        }
-
-        // Try to parse the message into a translation and get the language we're looking for translations in
-        const translation = parseTranslation(element.textContent);
-        const selectedLanguage = document.querySelector('#langSelect');
-
-        // Make sure we parsed the message into a translation, and if so, check to see if it matches our desired language
-        if (
-          translation != null &&
-          isLangMatch(translation.lang.toLowerCase(), languageConversionTable[selectedLanguage.value]) &&
-          translation.msg.replace(/\s/g, '') !== '') {
-          // If the author isn't in the senders list, add them
-          if (!(messageInfo.author.id in allTranslators.v))
-            await createCheckbox(messageInfo.author.name, messageInfo.author.id, allTranslatorCheckbox.checked);
-
-          // Check to see if the sender is approved, and send the message if they are
-          if (await isChecked(messageInfo.author.id))
-            prependOrAppend(createMessageEntry(messageInfo, translation.msg));
-        }
-      });
+      mutation.addedNodes.forEach(window.onNewMessage);
     });
   });
 
@@ -160,12 +179,16 @@ function getAuthorType(messageElement, authorId) {
 
 function getMessageInfo(messageElement) {
   // set this here so that we can access it when getting author type
-  const id = /\/ytc\/([^\=]+)\=/.exec(messageElement.querySelector('#author-photo > img').src)[1];
+  // let img = messageElement.querySelector('#author-photo > img');
+  // if (!img) return;
+  const id = messageElement.querySelector('#author-name').textContent;
+  // image src detection is broken 
+  // /\/ytc\/([^\=]+)\=/.exec(img.src)[1];
 
   return {
     author: {
-      id,
-      name: messageElement.querySelector('#author-name').textContent,
+      id: id,
+      name: id,
       type: getAuthorType(messageElement, id)
     },
     timestamp: messageElement.querySelector('#timestamp').textContent
@@ -452,6 +475,7 @@ function createCheckboxPerson(name, authorID) {
 
 // checked doesn't do anything, its just there for legacy
 async function createCheckbox(name, authorID, checked = false, callback = null) {
+  allTranslators.bools[authorID] = true;
   checked = await isChecked(authorID);
   const items = getChecklistItems();
   const checkbox = createCheckmark(authorID, checked, callback || checkboxUpdate);
@@ -466,7 +490,8 @@ async function createCheckbox(name, authorID, checked = false, callback = null) 
 
 function filterBoxes(boxes) {
   boxes.forEach((box) => {
-    allTranslators.v[box.dataset.id] = box;
+    allTranslators.boxes[box.dataset.id] = box;
+    allTranslators.bools[box.dataset.id] = box.checked;
     if (box !== allTranslatorCheckbox && !box.checked) {
       allTranslatorCheckbox.checked = false;
     }
@@ -485,7 +510,7 @@ function removeBadTranslations() {
     // } else
     // removed limiting
     const author = translation.querySelector('.smallText');
-    if (author && author.dataset.id && !allTranslators.v[author.dataset.id].checked) {
+    if (author && author.dataset.id && !allTranslators.bools[author.dataset.id]) {
       translation.remove();
     }
   });
@@ -493,7 +518,7 @@ function removeBadTranslations() {
 
 function checkboxUpdate() {
   const boxes = getChecklist().querySelectorAll('input');
-  allTranslators.v = {};
+  allTranslators.boxes = {};
   filterBoxes(boxes);
   if (allTranslatorCheckbox.checked) {
     checkAll();
@@ -548,7 +573,8 @@ function createAuthorBanButton(authorID) {
   ban.className = 'hasTooltip'
   ban.style.cursor = 'pointer';
   ban.onclick = async () => {
-    allTranslators.v[authorID].checked = false;
+    allTranslators.boxes[authorID].checked = false;
+    allTranslators.bools[authorID] = true;
     await saveUserStatus(authorID, false);
     checkboxUpdate();
   };
