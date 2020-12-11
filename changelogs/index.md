@@ -1,9 +1,9 @@
 # Update <span class="version"></span>
 
-LiveTL was updated to the newest version. Here's what's new!
+LiveTL was updated to the newest version.
 
 
-<div class="changelogs">[Loading changelogs...]</div>
+<div class="changelogs" style="white-space: pre-line;">[Loading changelogs...]</div>
 
 
 <sub>
