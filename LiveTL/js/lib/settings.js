@@ -416,7 +416,7 @@ function changeThemeAndRedirect(dark) {
 function closeMessageSelector(container) {
   container.style.display = null;
   document.querySelector('#chat').style.cursor = null;
-  document.querySelector('#settingsGear').style.backgroundColor = 'transparent';
+  document.querySelector('#settingsGear').classList.remove('pickUserDoneBtn');
   scrollBackToBottomOfChat();
 }
 
@@ -436,7 +436,7 @@ function createCustomUserButton(container) {
   addButton.type = 'button';
   addButton.onclick = async () => {
     document.querySelector('#chat').style.cursor = "cell";
-    document.querySelector('#settingsGear').style.backgroundColor = 'black';
+    document.querySelector('#settingsGear').classList.add('pickUserDoneBtn');
     window.messageSelectCallback = async e => {
       e = findParent(e.target);
       const messageInfo = getMessageInfo(e);

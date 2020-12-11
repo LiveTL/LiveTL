@@ -330,12 +330,17 @@ label {
 }
 
 #settingsGear {
-    bottom: 0px;
+    bottom: 0;
     cursor: pointer;
     position: fixed;
     right: 5px;
     z-index: 1000000;
-    height: fit-content;
+    height: 24px;
+}
+
+/* dumb */
+.pickUserDoneBtn {
+    background-color: var(--yt-live-chat-header-background-color, var(--yt-opalescence-soft-grey-opacity-lighten-3)) !important;
 }
 
 #settingsProjection {
