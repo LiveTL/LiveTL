@@ -1,7 +1,7 @@
 async function isChecked(userid) {
   const status = await getStorage(userid);
-  if (status) {
-    return status.checked;
+  if (status != null) {
+    return status;
   }
   const allCheckmark = await getStorage('allTranslatorID');
   return allCheckmark ? allCheckmark.checked : true;
