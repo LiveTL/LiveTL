@@ -296,12 +296,15 @@ async function insertLiveTLButtons(isHolotools = false) {
   getTitle = () => encodeURIComponent(document.querySelector("#container > .title").textContent);
 
   if (!isHolotools) {
-    makeButton('Watch in LiveTL', async () =>
-      redirectTab(`${await getWAR('index.html')}?v=${params.v}&title=${getTitle()}${getContinuation()}`));
+    makeButton('Watch in LiveTL', async () => {
+      params = parseParams();
+      redirectTab(`${await getWAR('index.html')}?v=${params.v}&title=${getTitle()}${getContinuation()}`);
+    });
 
 
     makeButton('Pop Out Translations',
       async () => {
+        params = parseParams();
         let tlwindow = createWindow(`${embedDomain}?v=${params.v}&mode=chat&title=${getTitle()}&useLiveTL=1${getContinuation()}`);
         document.querySelector("#chatframe").contentWindow.addEventListener('message', d => {
           tlwindow.postMessage(d.data, "*");
@@ -311,6 +314,7 @@ async function insertLiveTLButtons(isHolotools = false) {
   } else {
     makeButton('Expand Translations',
       async () => {
+        params = parseParams();
         window.location.href = `${await getWAR('index.html')}?v=${params.v}&mode=chat&useLiveTL=1&noVideo=1`;
       });
   }
@@ -365,15 +369,12 @@ async function loaded() {
         conlog('Running LiveTL!');
         runLiveTL();
       }
-      let ob = new MutationObserver(async (mutations, ob) => {
-        if (params.embed_domain === 'hololive.jetri.co') {
-          await insertLiveTLButtons(true);
-          ob.disconnect();
-          scrollBackToBottomOfChat();
-        } else {
-          window.parent.postMessage('embeddedChatLoaded', '*');
-        }
-      });
+      if (params.embed_domain === 'hololive.jetri.co') {
+        await insertLiveTLButtons(true);
+        scrollBackToBottomOfChat();
+      } else {
+        window.parent.postMessage('embeddedChatLoaded', '*');
+      }
       ob.observe(document.querySelector('#chat #items'), { childList: true });
     } catch (e) { }
   } else if (window.location.href.startsWith(embedDomain)) {
