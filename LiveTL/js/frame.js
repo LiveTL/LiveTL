@@ -134,7 +134,7 @@ async function runLiveTL() {
 
     let container = document.querySelector('.livetl');
 
-    messageNode.addEventListener('mousedown', e => onMessageSelect(e, container));
+    messageNode.addEventListener('mousedown', async e => await onMessageSelect(e, container));
 
     // Determine whether we should display mod messages (if not set, default to yes)
     let displayModMessages = await getStorage('displayModMessages');
@@ -203,7 +203,7 @@ async function runLiveTL() {
   });
 
   observer.observe(document.querySelector("#items.yt-live-chat-item-list-renderer"), { childList: true });
-  let initialNodes = document.querySelector("#items.yt-live-chat-item-list-renderer");
+  let initialNodes = document.querySelector("#items.yt-live-chat-item-list-renderer").childNodes;
   for (i = 0; i < initialNodes.length; i++) {
     // DO NOT CHANGE TO FOREACH
     await onNewMessage(initialNodes[i]);
