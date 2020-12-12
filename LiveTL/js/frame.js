@@ -525,7 +525,6 @@ function createCheckboxPerson(name, authorID) {
   return person;
 }
 
-// checked doesn't do anything, its just there for legacy
 async function createCheckbox(name, authorID, checked = false, callback = null) {
   const items = getChecklistItems();
   const checkbox = createCheckmark(authorID, checked, callback || checkboxUpdate);
