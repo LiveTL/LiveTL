@@ -364,16 +364,17 @@ async function loaded() {
       if (params.useLiveTL) {
         conlog('Running LiveTL!');
         runLiveTL();
-      } else if (params.embed_domain === 'hololive.jetri.co') {
-        let ob = new MutationObserver(async (mutations, ob) => {
+      }
+      let ob = new MutationObserver(async (mutations, ob) => {
+        if (params.embed_domain === 'hololive.jetri.co') {
           await insertLiveTLButtons(true);
           ob.disconnect();
           scrollBackToBottomOfChat();
-        });
-        ob.observe(document.querySelector('#chat #items'), { childList: true });
-      } else {
-        window.parent.postMessage('embeddedChatLoaded', '*');
-      }
+        } else {
+          window.parent.postMessage('embeddedChatLoaded', '*');
+        }
+      });
+      ob.observe(document.querySelector('#chat #items'), { childList: true });
     } catch (e) { }
   } else if (window.location.href.startsWith(embedDomain)) {
     setFavicon();
