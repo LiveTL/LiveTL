@@ -50,13 +50,13 @@ $('#topRightPanel').resizable({
 let c = params.continuation;
 const embedDomain = EMBED_DOMAIN;
 
-window.onmessage = d => {
+window.addEventListener('message', d => {
   d = JSON.parse(JSON.stringify(d.data));
   try {
     chat.contentWindow.postMessage(d, "*");
     ltlchat.contentWindow.postMessage(d, "*");
   } catch (e) { }
-}
+});
 if (c) {
   chat.src = `${embedDomain}?continuation=${c}`;
 } else {
