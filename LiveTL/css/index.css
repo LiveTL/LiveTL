@@ -1,6 +1,7 @@
 :root {
     --accent: #2c2c2c;
     --primary: #4d4d4d;
+    color-scheme: light dark;
 }
 
 #livetl-chat {

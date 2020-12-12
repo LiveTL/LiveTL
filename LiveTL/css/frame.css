@@ -3,6 +3,7 @@
     --hovered-transparent: #ff49d89e;
     --button-fill: #49deff;
     --hovered-fill: #ff49d8;
+    color-scheme: light dark;
 }
 
 .livetl {
@@ -73,8 +74,8 @@ a {
 
 .dropdown-check-list {
     display: inline-block;
-    background-color: white;
-    color: black;
+    background-color: var(--yt-live-chat-background-color);
+    color: var(--yt-live-chat-primary-text-color);
     font-size: 14px;
 }
 
@@ -83,14 +84,14 @@ a {
     cursor: pointer;
     display: inline-block;
     padding: 5px 50px 5px 10px;
-    width: calc(100% - 60px);
+    width: calc(100% - 55px);
 }
 
 .dropdown-check-list .anchor:after {
     position: absolute;
     content: "";
-    border-left: 2px solid black;
-    border-top: 2px solid black;
+    border-left: 2px solid var(--yt-live-chat-primary-text-color);
+    border-top: 2px solid var(--yt-live-chat-primary-text-color);
     padding: 5px;
     right: 10px;
     top: 20%;
@@ -102,8 +103,8 @@ a {
 }
 
 .openList>.anchor:after {
-    border-right: 2px solid black !important;
-    border-bottom: 2px solid black !important;
+    border-right: 2px solid var(--yt-live-chat-primary-text-color) !important;
+    border-bottom: 2px solid var(--yt-live-chat-primary-text-color) !important;
     border-left: 0 !important;
     border-top: 0 !important;
     margin-top: 5px !important;
