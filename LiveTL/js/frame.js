@@ -81,12 +81,12 @@ async function runLiveTL() {
   };
 
   let dimsBefore = getDimensions();
-  window.onresize = () => {
+  window.addEventListener('resize', () => {
     if (translationDiv.style.display != 'none') {
       updateDimensions(dimsBefore);
       dimsBefore = getDimensions();
     }
-  };
+  });
 
   const settings = await createSettings(livetlContainer);
 
@@ -134,7 +134,7 @@ async function runLiveTL() {
 
     let container = document.querySelector('.livetl');
 
-    messageNode.onmousedown = e => onMessageSelect(e, container);
+    messageNode.addEventListener('mousedown', e => onMessageSelect(e, container));
 
     // Determine whether we should display mod messages (if not set, default to yes)
     let displayModMessages = await getStorage('displayModMessages');
@@ -273,7 +273,7 @@ async function insertLiveTLButtons(isHolotools = false) {
     a.className = 'liveTLBotan';
     const e = isHolotools ? document.querySelector('#input-panel') : document.querySelector('ytd-live-chat-frame');
     e.appendChild(a);
-    a.querySelector('a').onclick = callback;
+    a.querySelector('a').addEventListener('click', callback);
     a.querySelector('yt-formatted-string').textContent = text;
   };
 
@@ -306,7 +306,6 @@ async function insertLiveTLButtons(isHolotools = false) {
         document.querySelector("#chatframe").contentWindow.addEventListener('message', d => {
           tlwindow.postMessage(d.data, "*");
         });
-        // document.querySelector("#chatframe").contentWindow.onbeforeunload = () => window.parent.postMessage('clearLiveTLButtons', '*');
       },
       'rgb(143, 143, 143)');
   } else {
@@ -392,16 +391,16 @@ if ((isVideo() || isChat()) && isFirefox) {
 const aboutPage = 'https://kentonishi.github.io/LiveTL/about/';
 
 if (window.location.href.startsWith(aboutPage)) {
-  window.onload = () => {
+  window.addEventListener('load', () => {
     const e = document.querySelector('#actionMessage');
     e.textContent = 'Thank you for installing LiveTL!';
-  };
+  });
 } else if (window.location.href.startsWith('https://www.youtube.com/embed/')) {
-  window.onmessage = d => {
+  window.addEventListener('message', d => {
     try {
       parent.postMessage(d.data, '*')
     } catch (e) { }
-  };
+  });
 } else if (isChat()) {
   try {
     window.parent.location.href;
@@ -469,7 +468,7 @@ async function createWelcomeText() {
     <a href="https://github.com/KentoNishi/LiveTL" target="about:blank">starring our GitHub repository</a>!
   `;
   welcomeText.appendChild(buttons);
-  welcomeText.querySelector('#shareExtension').onclick = shareExtension;
+  welcomeText.querySelector('#shareExtension').addEventListener('click', shareExtension);
 
   const versionInfo = document.createElement("div");
   versionInfo.classList.add("smallText");
@@ -512,7 +511,7 @@ function createCheckmark(authorID, checked, onchange) {
   checkmark.type = 'checkbox';
   checkmark.dataset.id = authorID;
   checkmark.checked = checked;
-  checkmark.onchange = onchange;
+  checkmark.addEventListener('change', onchange);
   checkmark.addEventListener('change', async () => await saveUserStatus(checkmark.dataset.id, checkmark.checked));
   return checkmark;
 }
@@ -608,7 +607,7 @@ function createAuthorHideButton(translation) {
   const hide = document.createElement('span');
   hide.className = 'hasTooltip'
   hide.style.cursor = 'pointer';
-  hide.onclick = () => translation.remove();
+  hide.addEventListener('click', () => translation.remove());
 
   hideSVG(hide);
   hide.appendChild(createTooltip('Hide Message'))
@@ -620,11 +619,11 @@ function createAuthorBanButton(authorID) {
   const ban = document.createElement('span');
   ban.className = 'hasTooltip'
   ban.style.cursor = 'pointer';
-  ban.onclick = async () => {
+  ban.addEventListener('click', async () => {
     allTranslators[authorID].checked = allTranslators[authorID].checkbox.checked = false;
     await saveUserStatus(authorID);
     checkboxUpdate();
-  };
+  });;
 
   banSVG(ban);
   ban.appendChild(createTooltip('Blacklist User'))
@@ -650,8 +649,8 @@ function createAuthorInfoElement(messageInfo, line) {
 }
 
 function setTranslationElementCallbacks(line) {
-  line.onmouseover = () => line.querySelector('.messageOptions').style.display = 'inline-block';
-  line.onmouseleave = () => line.querySelector('.messageOptions').style.display = 'none';
+  line.addEventListener('mouseover', () => line.querySelector('.messageOptions').style.display = 'inline-block');
+  line.addEventListener('mouseleave', () => line.querySelector('.messageOptions').style.display = 'none');
 }
 
 function createMessageEntry(messageInfo, message) {

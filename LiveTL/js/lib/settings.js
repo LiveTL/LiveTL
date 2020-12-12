@@ -91,7 +91,7 @@ function createModal(container) {
 }
 
 function setSelectInputCallbacks(select, defaultValue) {
-  select.onfocus = () => select.value = '';
+  select.addEventListener('focus', () => select.value = '');
   const updateSelect = async () => {
     if (!(select.value in languageConversionTable)) {
       select.value = defaultValue;
@@ -99,8 +99,8 @@ function setSelectInputCallbacks(select, defaultValue) {
     await setDefaultLanguage(select.value);
     await getDefaultLanguage();
   };
-  select.onblur = updateSelect;
-  select.onchange = updateSelect;
+  select.addEventListener('blur', updateSelect);
+  select.addEventListener('change', updateSelect);
 }
 
 function createLangSelectionName(lang) {
@@ -151,7 +151,7 @@ function createLanguageSelect() {
 }
 
 function setChecklistOnclick(checklist) {
-  checklist.querySelector('.anchor').onclick = () => {
+  checklist.querySelector('.anchor').addEventListener('click', () => {
     const items = checklist.querySelector('#items');
     if (items.style.display !== 'block') {
       checklist.classList.add('openList');
@@ -160,17 +160,17 @@ function setChecklistOnclick(checklist) {
       checklist.classList.remove('openList');
       items.style.display = 'none';
     }
-  };
+  });;
 }
 
 function setChecklistOnblur(checklist) {
-  checklist.onblur = e => {
+  checklist.addEventListener('blur', e => {
     const items = checklist.querySelector('#items');
     if (!e.currentTarget.contains(e.relatedTarget)) {
       checklist.classList.remove('openList');
       items.style.display = 'none';
     } else e.currentTarget.focus();
-  };
+  });
 }
 
 function setChecklistCallbacks(checklist) {
@@ -236,7 +236,7 @@ async function createZoomSliderInput() {
   zoomSlider.step = '0.01';
   zoomSlider.value = ((await getStorage('zoom')) || 1);
   zoomSlider.style.verticalAlign = 'middle';
-  zoomSlider.onchange = () => updateZoomLevel();
+  zoomSlider.addEventListener('change', () => updateZoomLevel());
 
   return zoomSlider;
 }
@@ -259,10 +259,10 @@ function createZoomResetButton() {
   resetButton.style.marginLeft = '4px';
   resetButton.style.verticalAlign = 'middle';
   resetButton.type = 'button';
-  resetButton.onclick = async () => {
+  resetButton.addEventListener('click', async () => {
     document.getElementById(zoomSliderInputId).value = 1;
     await updateZoomLevel();
-  }
+  });
 
   return resetButton;
 }
@@ -298,13 +298,15 @@ async function createTimestampCheckbox() {
   display = display != null ? display : true;
   timestampToggle.checked = display;
 
-  timestampToggle.onchange = async () => {
+  let changed = async () => {
     showTimestamps = timestampToggle.checked;
     await setStorage('timestamp', showTimestamps);
     document.querySelectorAll('.timestampText').forEach(m => m.style.display = showTimestamps ? 'contents' : 'none');
   };
 
-  await timestampToggle.onchange();
+  timestampToggle.addEventListener('change', changed);
+
+  await changed();
 
   return timestampToggle;
 }
@@ -336,7 +338,7 @@ async function createTextDirectionSelect(container) {
   data = (data == null ? 'bottom' : data);
   textDirSelect.value = textDirection = data;
 
-  textDirSelect.onchange = async () => {
+  let changed = async () => {
     textDirection = textDirSelect.value;
     await setStorage('text_direction', textDirection);
     let tt = document.querySelector('.translationText');
@@ -357,7 +359,9 @@ async function createTextDirectionSelect(container) {
     }
   };
 
-  await textDirSelect.onchange();
+  textDirSelect.addEventListener('change', changed);
+
+  await changed();
   return textDirSelect;
 }
 
@@ -388,13 +392,15 @@ async function createDisplayModMessageCheckbox() {
   let display = await getStorage('displayModMessages');
   checkbox.checked = display != null ? display : true;
 
-  checkbox.onchange = async () => {
+  let changed = async () => {
     const displayModMessages = checkbox.checked;
     await setStorage('displayModMessages', displayModMessages);
     document.querySelectorAll('.mod').forEach(el => el.parentElement.parentElement.style.display = displayModMessages ? 'block' : 'none');
   };
 
-  await checkbox.onchange();
+  checkbox.addEventListener('change', changed);
+
+  await changed();
 
   return checkbox;
 }
@@ -434,10 +440,10 @@ function createCustomUserButton(container) {
   addButton.value = 'Add User to Filter';
   addButton.style.verticalAlign = 'middle';
   addButton.type = 'button';
-  addButton.onclick = () => {
+  addButton.addEventListener('click', () => {
     document.querySelector('#chat').style.cursor = "cell";
     document.querySelector('#settingsGear').classList.add('pickUserDoneBtn');
     container.style.display = 'none';
-  }
+  });
   return addButton;
 }
