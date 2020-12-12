@@ -126,6 +126,7 @@ function createSelectInput() {
   const select = document.createElement('input');
   select.dataset.role = 'none';
   select.setAttribute('list', 'languages');
+  select.setAttribute('autocomplete', 'off');
   select.id = 'langSelect';
   getDefaultLanguage().then(defaultLang => {
     select.value = defaultLang || createLangSelectionName(languages[0]);
