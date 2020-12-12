@@ -291,7 +291,7 @@ label {
 
 .modal .modal-content {
     /* Hidden by default */
-    position: fixed;
+    /* position: fixed; */
     /* Stay in place */
     z-index: 1;
     /* Sit on top */
