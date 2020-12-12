@@ -211,7 +211,8 @@ async function runLiveTL() {
 }
 
 function getAuthorType(messageElement, authorId) {
-  if (messageElement.getAttribute('author-type') === 'moderator')
+  if (messageElement.getAttribute('author-type') === 'moderator' ||
+      messageElement.getAttribute('author-type') === 'owner')
     return authorType.MOD
 
   if (verifiedTranslators.includes(authorId))
