@@ -434,18 +434,9 @@ function createCustomUserButton(container) {
   addButton.value = 'Add User to Filter';
   addButton.style.verticalAlign = 'middle';
   addButton.type = 'button';
-  addButton.onclick = async () => {
+  addButton.onclick = () => {
     document.querySelector('#chat').style.cursor = "cell";
     document.querySelector('#settingsGear').classList.add('pickUserDoneBtn');
-    window.messageSelectCallback = async e => {
-      e = findParent(e.target);
-      const messageInfo = getMessageInfo(e);
-      if (isNewUser(messageInfo.author.id)) {
-        await createCheckbox(messageInfo.author.name, messageInfo.author.id, true);
-      }
-      allTranslators.addedByUser[messageInfo.author.id] = true;
-      closeMessageSelector(container);
-    }
     container.style.display = 'none';
   }
   return addButton;

@@ -67,7 +67,6 @@ window.onload = () => {
           d = JSON.parse(d.data);
           if (d.event == "infoDelivery") {
             parent.postMessage({ "yt-player-video-progress": d.info.currentTime }, "*");
-            parent.postMessage({ "yt-player-state-change": 1 }, "*");
           }
         }
         catch (e) { }
