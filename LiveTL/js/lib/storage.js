@@ -6,8 +6,8 @@ async function isChecked(userid) {
   return (await getUserStatus(userid)).checked;
 }
 
-async function saveUserStatus(userid) {
-  return await setStorage('user_' + userid, allTranslators[userid]);
+async function saveUserStatus(userid, checked, addedByUser=false) {
+  return await setStorage(`user_${userid}`, { checked, addedByUser });
 }
 
 async function getUserStatus(userid) {

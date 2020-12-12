@@ -33,9 +33,9 @@ async function onMessageSelect(e, container) {
   if (isNewUser(messageInfo.author.id)) {
     allTranslators[messageInfo.author.id] = { addedByUser: true };
     await createCheckbox(messageInfo.author.name, messageInfo.author.id,
-      await getUserStatusAsBool(messageInfo.author.name));
+      await getUserStatusAsBool(messageInfo.author.name), true);
   }
-  await saveUserStatus(messageInfo.author.id);
+  // await saveUserStatus(messageInfo.author.id);
   closeMessageSelector(container);
 }
 
@@ -90,7 +90,7 @@ async function runLiveTL() {
 
   const settings = await createSettings(livetlContainer);
 
-  allTranslatorCheckbox = await createCheckbox('All Detected', 'allUsers', await isChecked('allUsers'), async () => {
+  allTranslatorCheckbox = await createCheckbox('All Detected', 'allUsers', await isChecked('allUsers'), false, async () => {
     const boxes = document
       .querySelector('#transelectChecklist')
       .querySelectorAll('input:not(:checked)');
@@ -98,9 +98,8 @@ async function runLiveTL() {
       // DO NOT CHANGE TO FOREACH
       box = boxes[i];
       box.checked = allTranslatorCheckbox.checked;
-      await saveUserStatus(box.dataset.id);
+      box.saveStatus();
     }
-    checkboxUpdate();
   });
 
   appendE = el => {
@@ -508,13 +507,17 @@ function getChecklistItems() {
   return getChecklist().querySelector('#items');
 }
 
-function createCheckmark(authorID, checked, onchange) {
+function createCheckmark(authorID, checked, addedByUser, onchange) {
   const checkmark = document.createElement('input');
   checkmark.type = 'checkbox';
   checkmark.dataset.id = authorID;
   checkmark.checked = checked;
   checkmark.addEventListener('change', onchange);
-  checkmark.addEventListener('change', async () => await saveUserStatus(checkmark.dataset.id, checkmark.checked));
+  checkmark.saveStatus = async () => {
+    await saveUserStatus(checkmark.dataset.id, checkmark.checked, addedByUser);
+    checkboxUpdate();
+  };
+  checkmark.addEventListener('change', checkmark.saveStatus);
   return checkmark;
 }
 
@@ -525,9 +528,9 @@ function createCheckboxPerson(name, authorID) {
   return person;
 }
 
-async function createCheckbox(name, authorID, checked = false, callback = null) {
+async function createCheckbox(name, authorID, checked = false, addedByUser = false, callback = null) {
   const items = getChecklistItems();
-  const checkbox = createCheckmark(authorID, checked, callback || checkboxUpdate);
+  const checkbox = createCheckmark(authorID, checked, addedByUser, callback || checkboxUpdate);
   const selectTranslatorMessage = document.createElement('li');
   selectTranslatorMessage.appendChild(checkbox);
   selectTranslatorMessage.appendChild(createCheckboxPerson(name, authorID));
@@ -535,7 +538,7 @@ async function createCheckbox(name, authorID, checked = false, callback = null) 
   items.appendChild(selectTranslatorMessage);
   allTranslators[authorID] = allTranslators[authorID] || {};
   allTranslators[authorID].checked = checked;
-  await saveUserStatus(authorID);
+  await saveUserStatus(authorID, checked, addedByUser);
   checkboxUpdate();
   return checkbox;
 }
@@ -622,9 +625,9 @@ function createAuthorBanButton(authorID) {
   ban.style.cursor = 'pointer';
   ban.addEventListener('click', async () => {
     allTranslators[authorID].checked = allTranslators[authorID].checkbox.checked = false;
-    await saveUserStatus(authorID);
+    // await saveUserStatus(authorID); checkbox already saves status onchange
     checkboxUpdate();
-  });;
+  });
 
   banSVG(ban);
   ban.appendChild(createTooltip('Blacklist User'))
