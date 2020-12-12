@@ -42,7 +42,7 @@ async function onMessageSelect(e, container) {
 async function runLiveTL() {
   await setFavicon();
 
-  switchChat();
+  await switchChat();
   document.title = 'LiveTL Chat';
 
   await Promise.all([importFontAwesome(), importStyle()]);
@@ -211,7 +211,7 @@ async function runLiveTL() {
 
 function getAuthorType(messageElement, authorId) {
   if (messageElement.getAttribute('author-type') === 'moderator' ||
-      messageElement.getAttribute('author-type') === 'owner')
+    messageElement.getAttribute('author-type') === 'owner')
     return authorType.MOD
 
   if (verifiedTranslators.includes(authorId))
@@ -241,7 +241,15 @@ function getMessageInfo(messageElement) {
   };
 }
 
-function switchChat() {
+async function reinsertButtons() {
+  params = parseParams();
+  if (params.embed_domain === 'hololive.jetri.co') {
+    await insertLiveTLButtons(true);
+    scrollBackToBottomOfChat();
+  }
+}
+
+async function switchChat() {
   let count = 2;
   document.querySelectorAll('.yt-dropdown-menu').forEach((e) => {
     if (/Live chat/.exec(e.innerText) && count > 0) {
@@ -372,6 +380,15 @@ async function loaded() {
       if (params.embed_domain === 'hololive.jetri.co') {
         await insertLiveTLButtons(true);
         scrollBackToBottomOfChat();
+        document.querySelector('#view-selector').querySelectorAll('a').forEach(a => {
+          a.addEventListener('click', reinsertButtons);
+        });
+        (new MutationObserver((data) => {
+          if (data.length == 2) {
+            reinsertButtons();
+          }
+        }).observe(document.querySelector('#view-selector').querySelector('#label-text'),
+          { 'characterData': true, 'attributes': false, 'childList': false, 'subtree': true }));
       } else {
         window.parent.postMessage('embeddedChatLoaded', '*');
       }
