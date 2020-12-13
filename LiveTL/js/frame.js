@@ -9,7 +9,6 @@ let allTranslatorCheckbox = {};
 let showTimestamps = true;
 let textDirection = 'bottom';
 
-
 async function addedByUser(id) {
   let s = (await getUserStatus(id));
   if ((id in allTranslators) && (s.addedByUser)) {
@@ -69,7 +68,7 @@ async function runLiveTL() {
       translationDiv.style.display != 'none') || force) {
       livetlContainer.scrollTo(0, livetlContainer.scrollHeight + 100);
     }
-  }
+  };
 
   window.updateDimensions = (dims, force = false, goToTop = false) => {
     dims = dims || getDimensions();
@@ -120,8 +119,20 @@ async function runLiveTL() {
   hrParent.appendChild(hr);
   prependOrAppend(hrParent);
 
+  let processedMessages = [];
+
   onNewMessage = async messageNode => {
-    const element = messageNode.querySelector("#message");
+    // Check to see if this message has already been processed
+    if (processedMessages.includes(messageNode.id) === false) {
+      // Record the fact that we processed this message
+      processedMessages.push(messageNode.id);
+
+      // Keep memory usage low(er) by trimming the array every so often
+      if (processedMessages.length > 25)
+        processedMessages = processedMessages.slice(0, 10)
+    } else return; // bail (why the fuck is it being mutated again?)
+
+    const element = messageNode.querySelector('#message');
 
     messageNode = findParent(messageNode);
 
@@ -157,7 +168,7 @@ async function runLiveTL() {
         prependOrAppend(createMessageEntry(messageInfo, element.textContent));
         return;
       }
-    };
+    }
 
     // Try to parse the message into a translation and get the language we're looking for translations in
     const translation = parseTranslation(element.textContent);
@@ -192,18 +203,18 @@ async function runLiveTL() {
   };
 
   let observer = new MutationObserver(async (mutations, observer) => {
-    for (m = 0; m < mutations.length; m++) {
+    for (let m = 0; m < mutations.length; m++) {
       let mutation = mutations[m];
-      for (i = 0; i < mutation.addedNodes.length; i++) {
+      for (let i = 0; i < mutation.addedNodes.length; i++) {
         // DO NOT CHANGE TO FOREACH
         await onNewMessage(mutation.addedNodes[i]);
       }
     }
   });
 
-  observer.observe(document.querySelector("#items.yt-live-chat-item-list-renderer"), { childList: true });
-  let initialNodes = document.querySelector("#items.yt-live-chat-item-list-renderer").childNodes;
-  for (i = 0; i < initialNodes.length; i++) {
+  observer.observe(document.querySelector('#items.yt-live-chat-item-list-renderer'), { childList: true });
+  let initialNodes = document.querySelector('#items.yt-live-chat-item-list-renderer').childNodes;
+  for (let i = 0; i < initialNodes.length; i++) {
     // DO NOT CHANGE TO FOREACH
     await onNewMessage(initialNodes[i]);
   }
@@ -212,13 +223,13 @@ async function runLiveTL() {
 function getAuthorType(messageElement, authorId) {
   if (messageElement.getAttribute('author-type') === 'moderator' ||
     messageElement.getAttribute('author-type') === 'owner')
-    return authorType.MOD
+    return authorType.MOD;
 
   if (verifiedTranslators.includes(authorId))
-    return authorType.VERIFIED
+    return authorType.VERIFIED;
 
   if (distinguishedUsers.includes(authorId))
-    return authorType.DISTINGUISHED
+    return authorType.DISTINGUISHED;
 
   return authorType.STANDARD;
 }
@@ -291,17 +302,16 @@ async function insertLiveTLButtons(isHolotools = false) {
     'scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300'
   );
 
-
   getContinuation = (() => {
-    let chatframe = document.querySelector("#chatframe");
+    let chatframe = document.querySelector('#chatframe');
     let src = chatframe.dataset.src;
-    if (src.startsWith("https://www.youtube.com/live_chat_replay")) {
-      return "&continuation=" + parseParams("?" + src.split("?")[1]).continuation;
+    if (src.startsWith('https://www.youtube.com/live_chat_replay')) {
+      return '&continuation=' + parseParams('?' + src.split('?')[1]).continuation;
     }
-    return "";
+    return '';
   });
 
-  getTitle = () => encodeURIComponent(document.querySelector("#container > .title").textContent);
+  getTitle = () => encodeURIComponent(document.querySelector('#container > .title').textContent);
 
   if (!isHolotools) {
     makeButton('Watch in LiveTL', async () => {
@@ -309,13 +319,12 @@ async function insertLiveTLButtons(isHolotools = false) {
       redirectTab(`${await getWAR('index.html')}?v=${params.v}&title=${getTitle()}${getContinuation()}`);
     });
 
-
     makeButton('Pop Out Translations',
       async () => {
         params = parseParams();
         let tlwindow = createWindow(`${embedDomain}?v=${params.v}&mode=chat&title=${getTitle()}&useLiveTL=1${getContinuation()}`);
-        document.querySelector("#chatframe").contentWindow.addEventListener('message', d => {
-          tlwindow.postMessage(d.data, "*");
+        document.querySelector('#chatframe').contentWindow.addEventListener('message', d => {
+          tlwindow.postMessage(d.data, '*');
         });
       },
       'rgb(143, 143, 143)');
@@ -363,6 +372,7 @@ async function onMessageFromEmbeddedChat(m) {
 
 let params = {};
 let lastLocation = '';
+
 async function loaded() {
   // window.removeEventListener('load', loaded);
   // window.removeEventListener('yt-navigate-finish', loaded);
@@ -417,7 +427,7 @@ if (window.location.href.startsWith(aboutPage)) {
 } else if (window.location.href.startsWith('https://www.youtube.com/embed/')) {
   window.addEventListener('message', d => {
     try {
-      parent.postMessage(d.data, '*')
+      parent.postMessage(d.data, '*');
     } catch (e) { }
   });
 } else if (isChat()) {
@@ -489,15 +499,15 @@ async function createWelcomeText() {
   welcomeText.appendChild(buttons);
   welcomeText.querySelector('#shareExtension').addEventListener('click', shareExtension);
 
-  const versionInfo = document.createElement("div");
-  versionInfo.classList.add("smallText");
+  const versionInfo = document.createElement('div');
+  versionInfo.classList.add('smallText');
   versionInfo.style.marginLeft = '0px';
   const details = await getFile('manifest.json', 'json');
   const update = await getFile('updateMessage.txt', 'text');
   versionInfo.innerHTML = `<strong>[NEW IN v${details.version}]:</strong> <span id='updateInfo'></span> `;
   versionInfo.querySelector('#updateInfo').textContent = update;
   const learnMore = document.createElement('a');
-  learnMore.textContent = "Learn More";
+  learnMore.textContent = 'Learn More';
   learnMore.href = `https://kentonishi.github.io/LiveTL/changelogs?version=v${details.version}`;
   learnMore.target = 'about:blank';
   versionInfo.appendChild(learnMore);
@@ -627,19 +637,19 @@ function createTooltip(text) {
 
 function createAuthorHideButton(translation) {
   const hide = document.createElement('span');
-  hide.className = 'hasTooltip'
+  hide.className = 'hasTooltip';
   hide.style.cursor = 'pointer';
   hide.addEventListener('click', () => translation.remove());
 
   hideSVG(hide);
-  hide.appendChild(createTooltip('Hide Message'))
+  hide.appendChild(createTooltip('Hide Message'));
 
   return hide;
 }
 
 function createAuthorBanButton(authorID) {
   const ban = document.createElement('span');
-  ban.className = 'hasTooltip'
+  ban.className = 'hasTooltip';
   ban.style.cursor = 'pointer';
   ban.addEventListener('click', async () => {
     allTranslators[authorID].checked = allTranslators[authorID].checkbox.checked = false;
@@ -648,7 +658,7 @@ function createAuthorBanButton(authorID) {
   });
 
   banSVG(ban);
-  ban.appendChild(createTooltip('Blacklist User'))
+  ban.appendChild(createTooltip('Blacklist User'));
 
   return ban;
 }
