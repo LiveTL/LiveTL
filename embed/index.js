@@ -37,7 +37,7 @@ embedVideo = v => {
   }
 }
 
-window.onload = () => {
+window.addEventListener('load', () => {
   let params = parseParams()
   let v = params.v || '5qap5aO4i9A'
   let c = params.continuation
@@ -53,25 +53,24 @@ window.onload = () => {
       } else {
         frame.src = `https://www.youtube.com/live_chat?v=${v}&embed_domain=${document.domain}&dark_theme=1&useLiveTL=${ltl}`
       }
-      window.onmessage = d => {
+      window.addEventListener('message', d => {
         try {
           frame.contentWindow.postMessage(d.data, "*");
         } catch (e) { }
-      }
+      });
       break;
 
     case "video":
       embedVideo(v);
-      window.onmessage = d => {
+      window.addEventListener('message', d => {
         try {
           d = JSON.parse(d.data);
           if (d.event == "infoDelivery") {
             parent.postMessage({ "yt-player-video-progress": d.info.currentTime }, "*");
-            parent.postMessage({ "yt-player-state-change": 1 }, "*");
           }
         }
         catch (e) { }
-      }
+      });
       break;
   }
-};
+});

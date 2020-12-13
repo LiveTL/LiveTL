@@ -1,14 +1,23 @@
-async function isChecked(userid) {
-  const status = await getStorage(userid);
-  if (status != null) {
-    return status;
-  }
-  const allCheckmark = await getStorage('allTranslatorID');
-  return allCheckmark ? allCheckmark.checked : true;
+function isNewUser(id) {
+  return allTranslators[id] == null;
 }
 
-async function saveUserStatus(userid, checked) {
-  return await setStorage(userid, { checked });
+async function isChecked(userid) {
+  return (await getUserStatus(userid)).checked;
+}
+
+async function saveUserStatus(userid, checked, addedByUser=false) {
+  return await setStorage(`user_${userid}`, { checked, addedByUser });
+}
+
+async function getUserStatus(userid) {
+  return (await getStorage('user_' + userid)) || {};
+}
+
+async function getUserStatusAsBool(id) {
+  let status = await getUserStatus(id);
+  status = status.checked != null ? status.checked : true;
+  return status;
 }
 
 async function getDefaultLanguage() {

@@ -3,6 +3,7 @@
     --hovered-transparent: #ff49d89e;
     --button-fill: #49deff;
     --hovered-fill: #ff49d8;
+    color-scheme: light dark;
 }
 
 .livetl {
@@ -73,8 +74,8 @@ a {
 
 .dropdown-check-list {
     display: inline-block;
-    background-color: white;
-    color: black;
+    background-color: var(--yt-live-chat-background-color);
+    color: var(--yt-live-chat-primary-text-color);
     font-size: 14px;
 }
 
@@ -83,14 +84,14 @@ a {
     cursor: pointer;
     display: inline-block;
     padding: 5px 50px 5px 10px;
-    width: calc(100% - 60px);
+    width: calc(100% - 55px);
 }
 
 .dropdown-check-list .anchor:after {
     position: absolute;
     content: "";
-    border-left: 2px solid black;
-    border-top: 2px solid black;
+    border-left: 2px solid var(--yt-live-chat-primary-text-color);
+    border-top: 2px solid var(--yt-live-chat-primary-text-color);
     padding: 5px;
     right: 10px;
     top: 20%;
@@ -101,9 +102,9 @@ a {
     transform: rotate(-135deg);
 }
 
-.openList>.anchor:after {
-    border-right: 2px solid black !important;
-    border-bottom: 2px solid black !important;
+.openList > .anchor:after {
+    border-right: 2px solid var(--yt-live-chat-primary-text-color) !important;
+    border-bottom: 2px solid var(--yt-live-chat-primary-text-color) !important;
     border-left: 0 !important;
     border-top: 0 !important;
     margin-top: 5px !important;
@@ -226,7 +227,6 @@ label {
         background-color: rgba(0, 119, 255, 0.466);
     }
     to {
-        background-color: transparent;
     }
 }
 
@@ -243,16 +243,16 @@ label {
 }
 
 .message {
-    padding: 4px 2px 4px 4px;
+    padding: 6px;
     border-radius: 5px;
 }
 
 .message:nth-child(2n) {
-    background-color: #2c2c2c !important;
+    background-color: var(--yt-spec-10-percent-layer);
 }
 
 .message:nth-child(2n+1) {
-    background-color: #202020 !important;
+    background-color: var(--yt-live-chat-action-panel-background-color);
 }
 
 .mod {
@@ -292,7 +292,7 @@ label {
 
 .modal .modal-content {
     /* Hidden by default */
-    position: fixed;
+    /* position: fixed; */
     /* Stay in place */
     z-index: 1;
     /* Sit on top */
@@ -309,11 +309,11 @@ label {
 
 /* Modal Content/Box */
 
-.modal-content>* {
+.modal-content > * {
     margin-left: 10px;
 }
 
-.modal-content>*:not(.dropdown-check-list) {
+.modal-content > *:not(.dropdown-check-list) {
     margin: 10px;
 }
 
@@ -339,6 +339,7 @@ label {
 }
 
 /* dumb */
+
 .pickUserDoneBtn {
     background-color: var(--yt-live-chat-header-background-color, var(--yt-opalescence-soft-grey-opacity-lighten-3)) !important;
 }

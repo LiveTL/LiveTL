@@ -1,6 +1,7 @@
 :root {
     --accent: #2c2c2c;
     --primary: #4d4d4d;
+    color-scheme: light dark;
 }
 
 #livetl-chat {
@@ -118,5 +119,6 @@ body {
 #bottomRightPanel {
     width: 100%;
     flex-grow: 1;
-    position: relative;
+    position: relative;    
+    height: 0;
 }

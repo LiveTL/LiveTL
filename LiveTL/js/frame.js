@@ -2,14 +2,21 @@ const isFirefox = !!/Firefox/.exec(navigator.userAgent);
 
 const embedDomain = EMBED_DOMAIN;
 
-const allTranslators = { boxes: {}, bools: {}, addedByUser: {} };
+const allTranslators = {};
 const verifiedTranslators = []; //['AAUvwniNIzjhlVnN_WMmV2iBzQ2VuLm3Ix1EbqeHleDP']; // FIXME don't hardcode this....
 const distinguishedUsers = []; //['AAUvwnibH7aEJcoVdPRBx0fIUKxeC25FPeVEt17wGQ']; // TODO don't hardcode this....
 let allTranslatorCheckbox = {};
 let showTimestamps = true;
 let textDirection = 'bottom';
 
-let isNewUser = id => allTranslators.bools[id] == null;
+async function addedByUser(id) {
+  let s = (await getUserStatus(id));
+  if ((id in allTranslators) && (s.addedByUser)) {
+    allTranslators[id] = allTranslators[id] || s;
+    return true;
+  }
+  return false;
+}
 
 // javascript 'enum'
 const authorType = {
@@ -19,10 +26,22 @@ const authorType = {
   STANDARD: 'standard'
 };
 
+async function onMessageSelect(e, container) {
+  e = findParent(e.target);
+  const messageInfo = getMessageInfo(e);
+  if (isNewUser(messageInfo.author.id)) {
+    allTranslators[messageInfo.author.id] = { addedByUser: true };
+    await createCheckbox(messageInfo.author.name, messageInfo.author.id,
+      await getUserStatusAsBool(messageInfo.author.name), true);
+  }
+  // await saveUserStatus(messageInfo.author.id);
+  closeMessageSelector(container);
+}
+
 async function runLiveTL() {
   await setFavicon();
 
-  switchChat();
+  await switchChat();
   document.title = 'LiveTL Chat';
 
   await Promise.all([importFontAwesome(), importStyle()]);
@@ -47,9 +66,9 @@ async function runLiveTL() {
   scrollToBottom = (dims, force = false) => {
     if ((dims.clientHeight + dims.scrollTop >= dims.scrollHeight &&
       translationDiv.style.display != 'none') || force) {
-      livetlContainer.scrollTo(0, livetlContainer.scrollHeight);
+      livetlContainer.scrollTo(0, livetlContainer.scrollHeight + 100);
     }
-  }
+  };
 
   window.updateDimensions = (dims, force = false, goToTop = false) => {
     dims = dims || getDimensions();
@@ -61,23 +80,25 @@ async function runLiveTL() {
   };
 
   let dimsBefore = getDimensions();
-  window.onresize = () => {
+  window.addEventListener('resize', () => {
     if (translationDiv.style.display != 'none') {
       updateDimensions(dimsBefore);
       dimsBefore = getDimensions();
     }
-  };
+  });
 
   const settings = await createSettings(livetlContainer);
 
-  allTranslatorCheckbox = createCheckbox('All Translators', 'allTranslatorID', true, () => {
+  allTranslatorCheckbox = await createCheckbox('All Detected', 'allUsers', await isChecked('allUsers'), false, async () => {
     const boxes = document
       .querySelector('#transelectChecklist')
       .querySelectorAll('input:not(:checked)');
-    boxes.forEach(box => {
+    for (i = 0; i < boxes.length; i++) {
+      // DO NOT CHANGE TO FOREACH
+      box = boxes[i];
       box.checked = allTranslatorCheckbox.checked;
-    });
-    checkboxUpdate();
+      box.saveStatus();
+    }
   });
 
   appendE = el => {
@@ -98,8 +119,20 @@ async function runLiveTL() {
   hrParent.appendChild(hr);
   prependOrAppend(hrParent);
 
-  window.onNewMessage = async messageNode => {
-    const element = messageNode.querySelector("#message");
+  let processedMessages = [];
+
+  onNewMessage = async messageNode => {
+    // Check to see if this message has already been processed
+    if (processedMessages.includes(messageNode.id) === false) {
+      // Record the fact that we processed this message
+      processedMessages.push(messageNode.id);
+
+      // Keep memory usage low(er) by trimming the array every so often
+      if (processedMessages.length > 25)
+        processedMessages = processedMessages.slice(0, 10)
+    } else return; // bail (why the fuck is it being mutated again?)
+
+    const element = messageNode.querySelector('#message');
 
     messageNode = findParent(messageNode);
 
@@ -108,7 +141,10 @@ async function runLiveTL() {
     const messageInfo = getMessageInfo(messageNode);
 
     if (!messageInfo) return;
-    messageNode.onclick = e => window.messageSelectCallback(e);
+
+    let container = document.querySelector('.livetl');
+
+    messageNode.addEventListener('mousedown', async e => await onMessageSelect(e, container));
 
     // Determine whether we should display mod messages (if not set, default to yes)
     let displayModMessages = await getStorage('displayModMessages');
@@ -117,22 +153,22 @@ async function runLiveTL() {
       await setStorage('displayModMessages', true);
     }
 
-    let checked = await isChecked(messageInfo.author.id);
-
     // Check to see if the sender is a mod, and we display mod messages
-    if (messageInfo.author.type === authorType.MOD && displayModMessages) {
+    if (messageInfo.author.type === authorType.MOD && displayModMessages &&
+      element.textContent.replace(/\s/g, '') !== '') {
       // If the mod isn't in the sender list, add them
       if (isNewUser(messageInfo.author.id)) {
-        await createCheckbox(messageInfo.author.name, messageInfo.author.id, displayModMessages);
+        await createCheckbox(messageInfo.author.name, messageInfo.author.id,
+          await getUserStatusAsBool(messageInfo.author.name));
       }
-
+      checked = (await isChecked(messageInfo.author.id));
       // Check to make sure we haven't blacklisted the mod, and if not, send the message
       // After send the message, we bail so we don't have to run all the translation related things below
       if (checked) {
         prependOrAppend(createMessageEntry(messageInfo, element.textContent));
         return;
       }
-    };
+    }
 
     // Try to parse the message into a translation and get the language we're looking for translations in
     const translation = parseTranslation(element.textContent);
@@ -144,9 +180,12 @@ async function runLiveTL() {
       isLangMatch(translation.lang.toLowerCase(), languageConversionTable[selectedLanguage.value]) &&
       translation.msg.replace(/\s/g, '') !== '') {
       // If the author isn't in the senders list, add them
-      if (isNewUser(messageInfo.author.id))
-        await createCheckbox(messageInfo.author.name, messageInfo.author.id, allTranslatorCheckbox.checked);
+      if (isNewUser(messageInfo.author.id)) {
+        await createCheckbox(messageInfo.author.name, messageInfo.author.id,
+          await getUserStatusAsBool(messageInfo.author.name));
+      }
 
+      checked = (await isChecked(messageInfo.author.id));
       // Check to see if the sender is approved, and send the message if they are
       if (checked) {
         prependOrAppend(createMessageEntry(messageInfo, translation.msg));
@@ -155,30 +194,42 @@ async function runLiveTL() {
     }
 
     // if the user manually added this person
-    if (allTranslators.addedByUser[messageInfo.author.id] && checked) {
-      prependOrAppend(createMessageEntry(messageInfo, element.textContent));
+    if (await addedByUser(messageInfo.author.id) && element.textContent.replace(/\s/g, '') !== '') {
+      checked = (await isChecked(messageInfo.author.id));
+      if (checked)
+        prependOrAppend(createMessageEntry(messageInfo, element.textContent));
       return;
     }
   };
 
-  let observer = new MutationObserver((mutations, observer) => {
-    mutations.forEach(mutation => {
-      mutation.addedNodes.forEach(window.onNewMessage);
-    });
+  let observer = new MutationObserver(async (mutations, observer) => {
+    for (let m = 0; m < mutations.length; m++) {
+      let mutation = mutations[m];
+      for (let i = 0; i < mutation.addedNodes.length; i++) {
+        // DO NOT CHANGE TO FOREACH
+        await onNewMessage(mutation.addedNodes[i]);
+      }
+    }
   });
 
-  observer.observe(document.querySelector("#items.yt-live-chat-item-list-renderer"), { childList: true });
+  observer.observe(document.querySelector('#items.yt-live-chat-item-list-renderer'), { childList: true });
+  let initialNodes = document.querySelector('#items.yt-live-chat-item-list-renderer').childNodes;
+  for (let i = 0; i < initialNodes.length; i++) {
+    // DO NOT CHANGE TO FOREACH
+    await onNewMessage(initialNodes[i]);
+  }
 }
 
 function getAuthorType(messageElement, authorId) {
-  if (messageElement.getAttribute('author-type') === 'moderator')
-    return authorType.MOD
+  if (messageElement.getAttribute('author-type') === 'moderator' ||
+    messageElement.getAttribute('author-type') === 'owner')
+    return authorType.MOD;
 
   if (verifiedTranslators.includes(authorId))
-    return authorType.VERIFIED
+    return authorType.VERIFIED;
 
   if (distinguishedUsers.includes(authorId))
-    return authorType.DISTINGUISHED
+    return authorType.DISTINGUISHED;
 
   return authorType.STANDARD;
 }
@@ -187,7 +238,7 @@ function getMessageInfo(messageElement) {
   // set this here so that we can access it when getting author type
   // let img = messageElement.querySelector('#author-photo > img');
   // if (!img) return;
-  const id = messageElement.querySelector('#author-name').textContent;
+  const id = messageElement.querySelector('#author-name').textContent.replace(/\n/g, ' ');
   // image src detection is broken
   // /\/ytc\/([^\=]+)\=/.exec(img.src)[1];
 
@@ -201,7 +252,15 @@ function getMessageInfo(messageElement) {
   };
 }
 
-function switchChat() {
+async function reinsertButtons() {
+  params = parseParams();
+  if (params.embed_domain === 'hololive.jetri.co') {
+    await insertLiveTLButtons(true);
+    scrollBackToBottomOfChat();
+  }
+}
+
+async function switchChat() {
   let count = 2;
   document.querySelectorAll('.yt-dropdown-menu').forEach((e) => {
     if (/Live chat/.exec(e.innerText) && count > 0) {
@@ -233,7 +292,7 @@ async function insertLiveTLButtons(isHolotools = false) {
     a.className = 'liveTLBotan';
     const e = isHolotools ? document.querySelector('#input-panel') : document.querySelector('ytd-live-chat-frame');
     e.appendChild(a);
-    a.querySelector('a').onclick = callback;
+    a.querySelector('a').addEventListener('click', callback);
     a.querySelector('yt-formatted-string').textContent = text;
   };
 
@@ -243,35 +302,36 @@ async function insertLiveTLButtons(isHolotools = false) {
     'scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300'
   );
 
-
   getContinuation = (() => {
-    let chatframe = document.querySelector("#chatframe");
+    let chatframe = document.querySelector('#chatframe');
     let src = chatframe.dataset.src;
-    if (src.startsWith("https://www.youtube.com/live_chat_replay")) {
-      return "&continuation=" + parseParams("?" + src.split("?")[1]).continuation;
+    if (src.startsWith('https://www.youtube.com/live_chat_replay')) {
+      return '&continuation=' + parseParams('?' + src.split('?')[1]).continuation;
     }
-    return "";
+    return '';
   });
 
-  getTitle = () => encodeURIComponent(document.querySelector("#container > .title").textContent);
+  getTitle = () => encodeURIComponent(document.querySelector('#container > .title').textContent);
 
   if (!isHolotools) {
-    makeButton('Watch in LiveTL', async () =>
-      redirectTab(`${await getWAR('index.html')}?v=${params.v}&title=${getTitle()}${getContinuation()}`));
-
+    makeButton('Watch in LiveTL', async () => {
+      params = parseParams();
+      redirectTab(`${await getWAR('index.html')}?v=${params.v}&title=${getTitle()}${getContinuation()}`);
+    });
 
     makeButton('Pop Out Translations',
       async () => {
+        params = parseParams();
         let tlwindow = createWindow(`${embedDomain}?v=${params.v}&mode=chat&title=${getTitle()}&useLiveTL=1${getContinuation()}`);
-        document.querySelector("#chatframe").contentWindow.onmessage = d => {
-          tlwindow.postMessage(d.data, "*");
-        }
-        document.querySelector("#chatframe").contentWindow.onbeforeunload = () => window.parent.postMessage('clearLiveTLButtons', '*');
+        document.querySelector('#chatframe').contentWindow.addEventListener('message', d => {
+          tlwindow.postMessage(d.data, '*');
+        });
       },
       'rgb(143, 143, 143)');
   } else {
     makeButton('Expand Translations',
       async () => {
+        params = parseParams();
         window.location.href = `${await getWAR('index.html')}?v=${params.v}&mode=chat&useLiveTL=1&noVideo=1`;
       });
   }
@@ -312,6 +372,7 @@ async function onMessageFromEmbeddedChat(m) {
 
 let params = {};
 let lastLocation = '';
+
 async function loaded() {
   // window.removeEventListener('load', loaded);
   // window.removeEventListener('yt-navigate-finish', loaded);
@@ -325,16 +386,23 @@ async function loaded() {
       if (params.useLiveTL) {
         conlog('Running LiveTL!');
         runLiveTL();
-      } else if (params.embed_domain === 'hololive.jetri.co') {
-        let observer = new MutationObserver(async (mutations, observer) => {
-          await insertLiveTLButtons(true);
-          observer.disconnect();
-          scrollBackToBottomOfChat();
+      }
+      if (params.embed_domain === 'hololive.jetri.co') {
+        await insertLiveTLButtons(true);
+        scrollBackToBottomOfChat();
+        document.querySelector('#view-selector').querySelectorAll('a').forEach(a => {
+          a.addEventListener('click', reinsertButtons);
         });
-        observer.observe(document.querySelector('#chat #items'), { childList: true });
+        (new MutationObserver((data) => {
+          if (data.length == 2) {
+            reinsertButtons();
+          }
+        }).observe(document.querySelector('#view-selector').querySelector('#label-text'),
+          { 'characterData': true, 'attributes': false, 'childList': false, 'subtree': true }));
       } else {
         window.parent.postMessage('embeddedChatLoaded', '*');
       }
+      ob.observe(document.querySelector('#chat #items'), { childList: true });
     } catch (e) { }
   } else if (window.location.href.startsWith(embedDomain)) {
     setFavicon();
@@ -352,16 +420,16 @@ if ((isVideo() || isChat()) && isFirefox) {
 const aboutPage = 'https://kentonishi.github.io/LiveTL/about/';
 
 if (window.location.href.startsWith(aboutPage)) {
-  window.onload = () => {
+  window.addEventListener('load', () => {
     const e = document.querySelector('#actionMessage');
     e.textContent = 'Thank you for installing LiveTL!';
-  };
+  });
 } else if (window.location.href.startsWith('https://www.youtube.com/embed/')) {
-  window.onmessage = d => {
+  window.addEventListener('message', d => {
     try {
-      parent.postMessage(d.data, '*')
+      parent.postMessage(d.data, '*');
     } catch (e) { }
-  };
+  });
 } else if (isChat()) {
   try {
     window.parent.location.href;
@@ -369,6 +437,8 @@ if (window.location.href.startsWith(aboutPage)) {
     window.addEventListener('message', d => {
       if (window.origin != d.origin) {
         postMessage(d.data);
+      } else {
+        conlog(d.data);
       }
     });
     switchChat();
@@ -427,17 +497,17 @@ async function createWelcomeText() {
     <a href="https://github.com/KentoNishi/LiveTL" target="about:blank">starring our GitHub repository</a>!
   `;
   welcomeText.appendChild(buttons);
-  welcomeText.querySelector('#shareExtension').onclick = shareExtension;
+  welcomeText.querySelector('#shareExtension').addEventListener('click', shareExtension);
 
-  const versionInfo = document.createElement("div");
-  versionInfo.classList.add("smallText");
+  const versionInfo = document.createElement('div');
+  versionInfo.classList.add('smallText');
   versionInfo.style.marginLeft = '0px';
   const details = await getFile('manifest.json', 'json');
   const update = await getFile('updateMessage.txt', 'text');
   versionInfo.innerHTML = `<strong>[NEW IN v${details.version}]:</strong> <span id='updateInfo'></span> `;
   versionInfo.querySelector('#updateInfo').textContent = update;
   const learnMore = document.createElement('a');
-  learnMore.textContent = "Learn More";
+  learnMore.textContent = 'Learn More';
   learnMore.href = `https://kentonishi.github.io/LiveTL/changelogs?version=v${details.version}`;
   learnMore.target = 'about:blank';
   versionInfo.appendChild(learnMore);
@@ -465,13 +535,17 @@ function getChecklistItems() {
   return getChecklist().querySelector('#items');
 }
 
-function createCheckmark(authorID, checked, onchange) {
+function createCheckmark(authorID, checked, addedByUser, onchange) {
   const checkmark = document.createElement('input');
   checkmark.type = 'checkbox';
   checkmark.dataset.id = authorID;
   checkmark.checked = checked;
-  checkmark.onchange = onchange;
-  checkmark.addEventListener("change", async () => await setStorage(checkmark.dataset.id, checkmark.checked));
+  checkmark.addEventListener('change', onchange);
+  checkmark.saveStatus = async () => {
+    await saveUserStatus(checkmark.dataset.id, checkmark.checked, addedByUser);
+    checkboxUpdate();
+  };
+  checkmark.addEventListener('change', checkmark.saveStatus);
   return checkmark;
 }
 
@@ -482,25 +556,26 @@ function createCheckboxPerson(name, authorID) {
   return person;
 }
 
-// checked doesn't do anything, its just there for legacy
-async function createCheckbox(name, authorID, checked = false, callback = null) {
-  allTranslators.bools[authorID] = true;
-  checked = await isChecked(authorID);
+async function createCheckbox(name, authorID, checked = false, addedByUser = false, callback = null) {
   const items = getChecklistItems();
-  const checkbox = createCheckmark(authorID, checked, callback || checkboxUpdate);
+  const checkbox = createCheckmark(authorID, checked, addedByUser, callback || checkboxUpdate);
   const selectTranslatorMessage = document.createElement('li');
   selectTranslatorMessage.appendChild(checkbox);
   selectTranslatorMessage.appendChild(createCheckboxPerson(name, authorID));
   selectTranslatorMessage.style.marginRight = '4px';
   items.appendChild(selectTranslatorMessage);
+  allTranslators[authorID] = allTranslators[authorID] || {};
+  allTranslators[authorID].checked = checked;
+  await saveUserStatus(authorID, checked, addedByUser);
   checkboxUpdate();
   return checkbox;
 }
 
 function filterBoxes(boxes) {
   boxes.forEach((box) => {
-    allTranslators.boxes[box.dataset.id] = box;
-    allTranslators.bools[box.dataset.id] = box.checked;
+    allTranslators[box.dataset.id] = allTranslators[box.dataset.id] || {};
+    allTranslators[box.dataset.id].checkbox = box;
+    allTranslators[box.dataset.id].checked = box.checked;
     if (box !== allTranslatorCheckbox && !box.checked) {
       allTranslatorCheckbox.checked = false;
     }
@@ -515,7 +590,7 @@ function checkAll() {
 function removeBadTranslations() {
   document.querySelectorAll('.line').forEach((translation, i) => {
     const author = translation.querySelector('.smallText');
-    if (author && author.dataset.id && !allTranslators.bools[author.dataset.id]) {
+    if (author && author.dataset.id && !allTranslators[author.dataset.id].checked) {
       translation.remove();
     }
   });
@@ -523,7 +598,6 @@ function removeBadTranslations() {
 
 function checkboxUpdate() {
   const boxes = getChecklist().querySelectorAll('input');
-  allTranslators.boxes = {};
   filterBoxes(boxes);
   if (allTranslatorCheckbox.checked) {
     checkAll();
@@ -563,29 +637,28 @@ function createTooltip(text) {
 
 function createAuthorHideButton(translation) {
   const hide = document.createElement('span');
-  hide.className = 'hasTooltip'
+  hide.className = 'hasTooltip';
   hide.style.cursor = 'pointer';
-  hide.onclick = () => translation.remove();
+  hide.addEventListener('click', () => translation.remove());
 
   hideSVG(hide);
-  hide.appendChild(createTooltip('Hide Message'))
+  hide.appendChild(createTooltip('Hide Message'));
 
   return hide;
 }
 
 function createAuthorBanButton(authorID) {
   const ban = document.createElement('span');
-  ban.className = 'hasTooltip'
+  ban.className = 'hasTooltip';
   ban.style.cursor = 'pointer';
-  ban.onclick = async () => {
-    allTranslators.boxes[authorID].checked = false;
-    allTranslators.bools[authorID] = false;
-    await saveUserStatus(authorID, false);
+  ban.addEventListener('click', async () => {
+    allTranslators[authorID].checked = allTranslators[authorID].checkbox.checked = false;
+    // await saveUserStatus(authorID); checkbox already saves status onchange
     checkboxUpdate();
-  };
+  });
 
   banSVG(ban);
-  ban.appendChild(createTooltip('Blacklist User'))
+  ban.appendChild(createTooltip('Blacklist User'));
 
   return ban;
 }
@@ -608,18 +681,13 @@ function createAuthorInfoElement(messageInfo, line) {
 }
 
 function setTranslationElementCallbacks(line) {
-  line.onmouseover = () => line.querySelector('.messageOptions').style.display = 'inline-block';
-  line.onmouseleave = () => line.querySelector('.messageOptions').style.display = 'none';
+  line.addEventListener('mouseover', () => line.querySelector('.messageOptions').style.display = 'inline-block');
+  line.addEventListener('mouseleave', () => line.querySelector('.messageOptions').style.display = 'none');
 }
 
 function createMessageEntry(messageInfo, message) {
   const line = document.createElement('div');
   line.className = 'line message';
-
-  if (textDirection === 'top') {
-    line.style.marginBottom = '0';
-  }
-
   line.textContent = message;
   setTranslationElementCallbacks(line);
   line.appendChild(createAuthorInfoElement(messageInfo, line));
