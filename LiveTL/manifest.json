@@ -6,7 +6,6 @@
   "permissions": [
     "webRequest",
     "webRequestBlocking",
-    "webNavigation",
     "https://www.youtube.com/*?*",
     "EMBED_DOMAIN/*",
     "storage"
