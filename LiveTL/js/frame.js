@@ -678,11 +678,6 @@ function setTranslationElementCallbacks(line) {
 function createMessageEntry(messageInfo, message) {
   const line = document.createElement('div');
   line.className = 'line message';
-
-  if (textDirection === 'top') {
-    line.style.marginBottom = '0';
-  }
-
   line.textContent = message;
   setTranslationElementCallbacks(line);
   line.appendChild(createAuthorInfoElement(messageInfo, line));
