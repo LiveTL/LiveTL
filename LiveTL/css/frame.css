@@ -102,7 +102,7 @@ a {
     transform: rotate(-135deg);
 }
 
-.openList>.anchor:after {
+.openList > .anchor:after {
     border-right: 2px solid var(--yt-live-chat-primary-text-color) !important;
     border-bottom: 2px solid var(--yt-live-chat-primary-text-color) !important;
     border-left: 0 !important;
@@ -226,7 +226,8 @@ label {
     from {
         background-color: rgba(0, 119, 255, 0.466);
     }
-    to {}
+    to {
+    }
 }
 
 .line {
@@ -242,16 +243,16 @@ label {
 }
 
 .message {
-    padding: 4px 2px 4px 4px;
+    padding: 6px;
     border-radius: 5px;
 }
 
 .message:nth-child(2n) {
-    background-color: #3e3e3e;
+    background-color: var(--yt-spec-10-percent-layer);
 }
 
 .message:nth-child(2n+1) {
-    background-color: #2b2b2b;
+    background-color: var(--yt-live-chat-action-panel-background-color);
 }
 
 .mod {
@@ -308,11 +309,11 @@ label {
 
 /* Modal Content/Box */
 
-.modal-content>* {
+.modal-content > * {
     margin-left: 10px;
 }
 
-.modal-content>*:not(.dropdown-check-list) {
+.modal-content > *:not(.dropdown-check-list) {
     margin: 10px;
 }
 
