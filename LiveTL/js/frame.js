@@ -128,8 +128,8 @@ async function runLiveTL() {
       processedMessages.push(messageNode.id);
 
       // Keep memory usage low(er) by trimming the array every so often
-      if (processedMessages.length > 25)
-        processedMessages = processedMessages.slice(0, 10)
+      if (processedMessages.length > 100)
+        processedMessages = processedMessages.slice(0, 25)
     } else return; // bail (why the fuck is it being mutated again?)
 
     const element = messageNode.querySelector('#message');
