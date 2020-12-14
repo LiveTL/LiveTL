@@ -1,38 +1,40 @@
-params = parseParams();
-let v = params.v || '5qap5aO4i9A';
-let stream = document.querySelector('#stream');
-let ltlchat = document.querySelector('#livetl-chat');
-let chat = document.querySelector('#chat');
-let leftPanel = document.querySelector('#leftPanel');
-let bottomRightPanel = document.querySelector('#bottomRightPanel');
-let topRightPanel = document.querySelector('#topRightPanel');
+parseParams = () => {
+  const s = decodeURI(location.search.substring(1))
+    .replace(/"/g, '\\"')
+    .replace(/&/g, '","')
+    .replace(/=/g, '":"');
+  return s == '' ? {} : JSON.parse('{"' + s + '"}');
+};
+
+const params = parseParams();
+const v = params.v || '5qap5aO4i9A';
+const stream = document.querySelector('#stream');
+const ltlchat = document.querySelector('#livetl-chat');
+const chat = document.querySelector('#chat');
+const videoPanel = document.querySelector('#videoPanel');
+const outputPanel = document.querySelector('#outputPanel');
+const youtubeChatPanel = document.querySelector('#youtubeChatPanel');
 document.title = decodeURIComponent(params.title || "LiveTL");
-let start = () => {
+const start = () => {
   stream.style.display = 'none';
   ltlchat.style.display = 'none';
   chat.style.display = 'none';
-  leftPanel.style.backgroundColor = 'var(--accent)';
-  bottomRightPanel.style.backgroundColor = 'var(--accent)';
-  topRightPanel.style.backgroundColor = 'var(--accent)';
+  videoPanel.style.backgroundColor = 'var(--accent)';
+  outputPanel.style.backgroundColor = 'var(--accent)';
+  youtubeChatPanel.style.backgroundColor = 'var(--accent)';
 };
-let stop = () => {
+const stop = () => {
   stream.style.display = 'block';
   ltlchat.style.display = 'block';
   chat.style.display = 'block';
-  leftPanel.style.backgroundColor = 'black';
-  bottomRightPanel.style.backgroundColor = 'black';
-  topRightPanel.style.backgroundColor = 'black';
-  localStorage.setItem('LTL:rightPanelHeight', topRightPanel.style.height);
-  localStorage.setItem('LTL:leftPanelWidth', leftPanel.style.width);
+  videoPanel.style.backgroundColor = 'black';
+  outputPanel.style.backgroundColor = 'black';
+  youtubeChatPanel.style.backgroundColor = 'black';
+  localStorage.setItem('LTL:rightPanelHeight', youtubeChatPanel.style.height);
+  localStorage.setItem('LTL:leftPanelWidth', getPaneWidth().toString());
 };
-$('#leftPanel').resizable({
-  handles: {
-    e: '#handleV'
-  },
-  start: start,
-  stop: stop
-});
-$('#topRightPanel').resizable({
+
+$('#youtubeChatPanel').resizable({
   handles: {
     s: '#handleH'
   },
@@ -40,9 +42,49 @@ $('#topRightPanel').resizable({
   stop: stop
 });
 
+const side = 'right'; // TODO set this based of value gotten from settings
+
+// resizing yoinked from https://spin.atomicobject.com/2019/11/21/creating-a-resizable-html-element/
+const getResizeableElement = () => document.getElementById('videoPanel');
+const getHandleElement = () => document.getElementById('handleV');
+
+const setPaneWidth = (width) => {
+  getResizeableElement().style
+    .setProperty('--resizeable-width', `${width}px`);
+};
+
+const getPaneWidth = () => {
+  const pxWidth = getComputedStyle(getResizeableElement())
+    .getPropertyValue('--resizeable-width');
+  return parseInt(pxWidth, 10);
+};
+
+const startDragging = (event) => {
+  event.preventDefault();
+  start();
+  const host = getResizeableElement();
+  const startingPaneWidth = getPaneWidth();
+  const xOffset = event.pageX;
+
+  const mouseDragHandler = (moveEvent) => {
+    moveEvent.preventDefault();
+    const primaryButtonPressed = moveEvent.buttons === 1;
+    if (!primaryButtonPressed) {
+      setPaneWidth(Math.min(Math.max(getPaneWidth(), 150), 4000));
+      document.body.removeEventListener('mousemove', mouseDragHandler);
+      stop();
+      return;
+    }
+
+    const paneOriginAdjustment = side === 'right' ? 1 : -1;
+    setPaneWidth((xOffset - moveEvent.pageX ) * paneOriginAdjustment + startingPaneWidth);
+  };
+  const remove = document.body.addEventListener('mousemove', mouseDragHandler);
+};
+
+getHandleElement().addEventListener('mousedown', startDragging);
+
 let c = params.continuation;
-
-
 let r = params.isReplay;
 r = r == null ? c : r;
 
@@ -72,13 +114,13 @@ let leftWidth = localStorage.getItem('LTL:leftPanelWidth');
 let rightHeight = localStorage.getItem('LTL:rightPanelHeight');
 
 if (leftWidth) {
-  leftPanel.style.width = leftWidth;
+  setPaneWidth(leftWidth);
 }
 if (params.noVideo) {
-  leftPanel.style.display = 'none';
+  videoPanel.style.display = 'none';
 } else {
   stream.src = `${embedDomain}?v=${v}&mode=video`;
   if (rightHeight) {
-    topRightPanel.style.height = rightHeight;
+    youtubeChatPanel.style.height = rightHeight;
   }
 }
