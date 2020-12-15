@@ -2,20 +2,17 @@ const isFirefox = !!/Firefox/.exec(navigator.userAgent);
 
 const embedDomain = EMBED_DOMAIN;
 
-const allTranslators = {};
-const verifiedTranslators = []; //['AAUvwniNIzjhlVnN_WMmV2iBzQ2VuLm3Ix1EbqeHleDP']; // FIXME don't hardcode this....
-const distinguishedUsers = []; //['AAUvwnibH7aEJcoVdPRBx0fIUKxeC25FPeVEt17wGQ']; // TODO don't hardcode this....
+const allTranslators = { byID: {}, byName: {} };
+// byName is unused, always checking from storage
+const verifiedTranslators = [];
+const distinguishedUsers = [];
 let allTranslatorCheckbox = {};
 let showTimestamps = true;
 let textDirection = 'bottom';
 
 async function addedByUser(id) {
-  let s = (await getUserStatus(id));
-  if ((id in allTranslators) && (s.addedByUser)) {
-    allTranslators[id] = allTranslators[id] || s;
-    return true;
-  }
-  return false;
+  let s = (await getUserStatus(id, true)).checked;
+  return s;
 }
 
 // javascript 'enum'
@@ -25,18 +22,6 @@ const authorType = {
   DISTINGUISHED: 'Distinguished', // subject to change
   STANDARD: 'Standard'
 };
-
-async function onMessageSelect(e, container) {
-  e = findParent(e.target);
-  const messageInfo = getMessageInfo(e);
-  if (isNewUser(messageInfo.author.id)) {
-    allTranslators[messageInfo.author.id] = { addedByUser: true };
-    await createCheckbox(messageInfo.author.name, messageInfo.author.id,
-      await getUserStatusAsBool(messageInfo.author.name), true);
-  }
-  // await saveUserStatus(messageInfo.author.id);
-  closeMessageSelector(container);
-}
 
 async function runLiveTL() {
   await setFavicon();
@@ -89,16 +74,17 @@ async function runLiveTL() {
 
   const settings = await createSettings(livetlContainer);
 
-  allTranslatorCheckbox = await createCheckbox('All Detected', 'allUsers', await isChecked('allUsers'), false, async () => {
-    const boxes = document
-      .querySelector('#transelectChecklist')
-      .querySelectorAll('input:not(:checked)');
-    for (i = 0; i < boxes.length; i++) {
-      // DO NOT CHANGE TO FOREACH
-      box = boxes[i];
-      box.checked = allTranslatorCheckbox.checked;
-      box.saveStatus();
-    }
+  allTranslatorCheckbox = await createCheckbox('Automatically Detect', undefined, await isChecked('allUsers'), false, async () => {
+    // const boxes = document
+    //   .querySelector('#transelectChecklist')
+    //   .querySelectorAll('input:not(:checked)');
+    // for (i = 0; i < boxes.length; i++) {
+    //   // DO NOT CHANGE TO FOREACH
+    //   box = boxes[i];
+    //   box.checked = allTranslatorCheckbox.checked;
+    //   box.saveStatus();
+    // }
+    checkboxUpdate();
   });
 
   appendE = el => {
@@ -172,44 +158,15 @@ async function runLiveTL() {
     }
 
     // if the user manually added this person
-    if (await addedByUser(messageInfo.author.id)) {
+    if (await addedByUser(messageInfo.author.name)) {
+      if (isNewUser(messageInfo.author.id)) {
+        await createCheckbox(messageInfo.author.name, messageInfo.author.id, true);
+      }
       checked = (await isChecked(messageInfo.author.id));
       if (checked)
         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
       return;
     }
-  };
-}
-
-function getAuthorType(messageElement, authorId) {
-  if (messageElement.getAttribute('author-type') === 'moderator' ||
-    messageElement.getAttribute('author-type') === 'owner')
-    return authorType.MOD;
-
-  if (verifiedTranslators.includes(authorId))
-    return authorType.VERIFIED;
-
-  if (distinguishedUsers.includes(authorId))
-    return authorType.DISTINGUISHED;
-
-  return authorType.STANDARD;
-}
-
-function getMessageInfo(messageElement) {
-  // set this here so that we can access it when getting author type
-  // let img = messageElement.querySelector('#author-photo > img');
-  // if (!img) return;
-  const id = messageElement.querySelector('#author-name').textContent.replace(/\n/g, ' ');
-  // image src detection is broken
-  // /\/ytc\/([^\=]+)\=/.exec(img.src)[1];
-
-  return {
-    author: {
-      id: id,
-      name: id,
-      type: getAuthorType(messageElement, id)
-    },
-    timestamp: messageElement.querySelector('#timestamp').textContent
   };
 }
 
@@ -576,29 +533,37 @@ function createCheckboxPerson(name, authorID) {
   return person;
 }
 
-async function createCheckbox(name, authorID, checked = false, addedByUser = false, callback = null) {
+async function createCheckbox(name, authorID = 'allUsers', checked = false, addedByUser = false, callback = null, customFilter = false) {
   const items = getChecklistItems();
   const checkbox = createCheckmark(authorID, checked, addedByUser, callback || checkboxUpdate);
   const selectTranslatorMessage = document.createElement('li');
   selectTranslatorMessage.appendChild(checkbox);
-  selectTranslatorMessage.appendChild(createCheckboxPerson(name, authorID));
+  let nameElement = createCheckboxPerson(name, authorID);
+  selectTranslatorMessage.appendChild(nameElement);
   selectTranslatorMessage.style.marginRight = '4px';
   items.appendChild(selectTranslatorMessage);
-  allTranslators[authorID] = allTranslators[authorID] || {};
-  allTranslators[authorID].checked = checked;
-  await saveUserStatus(authorID, checked, addedByUser);
+  let b = customFilter ? 'byName' : 'byID';
+  await saveUserStatus(authorID, checked, addedByUser, customFilter);
+  if (customFilter || authorID == 'allUsers') {
+    nameElement.classList.add('italics');
+    checkbox.dataset.customFilter = 'true';
+  } else {
+    allTranslators[b][authorID] = allTranslators[b][authorID] || {};
+    allTranslators[b][authorID].checked = checked;
+  }
   checkboxUpdate();
   return checkbox;
 }
 
 function filterBoxes(boxes) {
   boxes.forEach((box) => {
-    allTranslators[box.dataset.id] = allTranslators[box.dataset.id] || {};
-    allTranslators[box.dataset.id].checkbox = box;
-    allTranslators[box.dataset.id].checked = box.checked;
-    if (box !== allTranslatorCheckbox && !box.checked) {
-      allTranslatorCheckbox.checked = false;
-    }
+    if (box.dataset.customFilter) return;
+    allTranslators.byID[box.dataset.id] = allTranslators.byID[box.dataset.id] || {};
+    allTranslators.byID[box.dataset.id].checkbox = box;
+    allTranslators.byID[box.dataset.id].checked = box.checked;
+    // if (box !== allTranslatorCheckbox && !box.checked) {
+    //   allTranslatorCheckbox.checked = false;
+    // }
   });
 }
 
@@ -610,7 +575,7 @@ function checkAll() {
 function removeBadTranslations() {
   document.querySelectorAll('.line').forEach((translation, i) => {
     const author = translation.querySelector('.smallText');
-    if (author && author.dataset.id && !allTranslators[author.dataset.id].checked) {
+    if (author && author.dataset.id && !allTranslators.byID[author.dataset.id].checked) {
       translation.remove();
     }
   });
@@ -619,9 +584,9 @@ function removeBadTranslations() {
 function checkboxUpdate() {
   const boxes = getChecklist().querySelectorAll('input');
   filterBoxes(boxes);
-  if (allTranslatorCheckbox.checked) {
-    checkAll();
-  }
+  // if (allTranslatorCheckbox.checked) {
+  //   checkAll();
+  // }
   removeBadTranslations();
 }
 
@@ -676,7 +641,7 @@ function createAuthorBanButton(authorID) {
   ban.className = 'hasTooltip';
   ban.style.cursor = 'pointer';
   ban.addEventListener('click', async () => {
-    allTranslators[authorID].checked = allTranslators[authorID].checkbox.checked = false;
+    allTranslators.byID[authorID].checked = allTranslators.byID[authorID].checkbox.checked = false;
     // await saveUserStatus(authorID); checkbox already saves status onchange
     checkboxUpdate();
   });

@@ -441,10 +441,14 @@ function createCustomUserButton(container) {
   addButton.value = 'Add User to Filter';
   addButton.style.verticalAlign = 'middle';
   addButton.type = 'button';
-  addButton.addEventListener('click', () => {
-    document.querySelector('#chat').style.cursor = "cell";
-    document.querySelector('#settingsGear').classList.add('pickUserDoneBtn');
-    container.style.display = 'none';
+  addButton.addEventListener('click', async () => {
+    let name = prompt("Enter a username:");
+    if (name) {
+      await saveUserStatus(name, true, undefined, true);
+      await createCheckbox(`(Custom) ${name}`, name, true, undefined, async (e) => {
+        await saveUserStatus(name, e.target.checked, undefined, true);
+      }, true)
+    }
   });
   return addButton;
 }

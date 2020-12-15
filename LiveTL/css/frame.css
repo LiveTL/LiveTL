@@ -3,6 +3,7 @@
     --hovered-transparent: #ff49d89e;
     --button-fill: #49deff;
     --hovered-fill: #ff49d8;
+    --yt-live-chat-background-color: black;
     color-scheme: light dark;
 }
 
@@ -24,6 +25,10 @@
     min-height: 0px !important;
     min-width: 0px !important;
     scrollbar-width: thin;
+}
+
+.italics {
+    font-style: italic;
 }
 
 /* width */
@@ -102,7 +107,7 @@ a {
     transform: rotate(-135deg);
 }
 
-.openList > .anchor:after {
+.openList>.anchor:after {
     border-right: 2px solid var(--yt-live-chat-primary-text-color) !important;
     border-bottom: 2px solid var(--yt-live-chat-primary-text-color) !important;
     border-left: 0 !important;
@@ -226,8 +231,7 @@ label {
     from {
         background-color: rgba(0, 119, 255, 0.466);
     }
-    to {
-    }
+    to {}
 }
 
 .line {
@@ -309,11 +313,11 @@ label {
 
 /* Modal Content/Box */
 
-.modal-content > * {
+.modal-content>* {
     margin-left: 10px;
 }
 
-.modal-content > *:not(.dropdown-check-list) {
+.modal-content>*:not(.dropdown-check-list) {
     margin: 10px;
 }
 

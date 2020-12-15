@@ -1,22 +1,22 @@
 function isNewUser(id) {
-  return allTranslators[id] == null;
+  return allTranslators.byID[id] == null;
 }
 
 async function isChecked(userid) {
   return (await getUserStatus(userid)).checked;
 }
 
-async function saveUserStatus(userid, checked, addedByUser=false) {
-  return await setStorage(`user_${userid}`, { checked, addedByUser });
+async function saveUserStatus(userid, checked, addedByUser, byname) {
+  return await setStorage(`user${(byname ? 'byname' : '')}_${userid}`, { checked, addedByUser });
 }
 
-async function getUserStatus(userid) {
-  return (await getStorage('user_' + userid)) || {};
+async function getUserStatus(userid, byname) {
+  return (await getStorage(`user${(byname ? 'byname' : '')}_${userid}`)) || {};
 }
 
 async function getUserStatusAsBool(id) {
   let status = await getUserStatus(id);
-  status = status.checked != null ? status.checked : true;
+  status = status.checked != null ? status.checked : allTranslatorCheckbox.checked;
   return status;
 }
 
