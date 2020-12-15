@@ -26,7 +26,7 @@ embedVideo = v => {
           width: '100%',
           videoId: id,
           playerVars: {
-            autoplay: 0
+            autoplay: 1
           }
         });
       } else {
@@ -46,18 +46,18 @@ window.addEventListener('load', () => {
   document.title = decodeURIComponent(params.title || "LiveTL");
   switch (mode) {
     case "chat":
-      let frame = document.createElement("iframe");
-      document.body.appendChild(frame);
+      // let frame = document.createElement("iframe");
+      // document.body.appendChild(frame);
       if (c) {
-        frame.src = `https://www.youtube.com/live_chat_replay?continuation=${c}&embed_domain=${document.domain}&dark_theme=1&useLiveTL=${ltl}`
+        window.location.href = `https://www.youtube.com/live_chat_replay?continuation=${c}&embed_domain=${document.domain}&dark_theme=1&useLiveTL=${ltl}`
       } else {
-        frame.src = `https://www.youtube.com/live_chat?v=${v}&embed_domain=${document.domain}&dark_theme=1&useLiveTL=${ltl}`
+        window.location.href = `https://www.youtube.com/live_chat?v=${v}&embed_domain=${document.domain}&dark_theme=1&useLiveTL=${ltl}`
       }
-      window.addEventListener('message', d => {
-        try {
-          frame.contentWindow.postMessage(d.data, "*");
-        } catch (e) { }
-      });
+      // window.addEventListener('message', d => {
+      //   try {
+      //     frame.contentWindow.postMessage(d.data, "*");
+      //   } catch (e) { }
+      // });
       break;
 
     case "video":
