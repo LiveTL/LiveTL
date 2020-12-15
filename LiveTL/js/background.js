@@ -61,7 +61,7 @@ chrome.webRequest.onHeadersReceived.addListener(
 
 isLiveTL = details => {
   let livetl = false;
-  details.requestHeaders.filter(h => {
+  (details.requestHeaders || []).filter(h => {
     if (h.name == 'livetl') {
       livetl = true;
       return false;

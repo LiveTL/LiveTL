@@ -59,7 +59,7 @@ let q = `?isReplay=${(r ? 1 : '')}&continuation=${c}&v=${v}`;
 (async () => {
   let main = await getWAR('index.html');
   let pop = await getWAR('popout/index.html');
-  ltlchat.src = `${pop}${q}&useLiveTL=1`;
+  ltlchat.src = `${pop}${q}&useLiveTL=1&isReplay=${(r ? 1 : '')}`;
   if (window.location.href.startsWith(main)) {
     ltlchat.src = `${pop}${q}&useLiveTL=1`;
   }

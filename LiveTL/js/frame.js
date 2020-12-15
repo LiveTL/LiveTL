@@ -276,7 +276,7 @@ async function insertLiveTLButtons(isHolotools = false) {
 
   getTitle = () => encodeURIComponent(document.querySelector('#container > .title').textContent);
 
-  restOfURL = () => `&title=${getTitle()}&useLiveTL=1${getContinuationURL()}&isReplay=${(isReplayChat() ? 1 : '')}`;
+  restOfURL = () => `&title=${getTitle()}&useLiveTL=1${getContinuationURL()}&isReplay=${(hasReplayChatOpen() ? 1 : '')}`;
 
   if (!isHolotools) {
     makeButton('Watch in LiveTL', async () => {
@@ -313,6 +313,10 @@ async function insertLiveTLButtons(isHolotools = false) {
 
 function isReplayChat() {
   return window.location.href.startsWith('https://www.youtube.com/live_chat_replay');
+}
+
+function hasReplayChatOpen() {
+  return document.querySelector('#chatframe').contentWindow.location.href.startsWith('https://www.youtube.com/live_chat_replay');
 }
 
 function isLiveChat() {
@@ -379,12 +383,13 @@ async function loaded() {
           let messages = [];
           if (!response.continuationContents) return;
           (response.continuationContents.liveChatContinuation.actions || []).forEach(action => {
-            if (action.addChatItemAction) {
-              let item = action.addChatItemAction.item.liveChatTextMessageRenderer;
-              if (!item) return;
+            try {
+              var currentElement = (action.addChatItemAction || action.replayChatItemAction.actions[0].addChatItemAction).item;
+              let item = currentElement.liveChatTextMessageRenderer;
               let authorTypes = [];
               (item.authorBadges || []).forEach(badge =>
                 authorTypes.push(badge.liveChatAuthorBadgeRenderer.tooltip));
+              if (!item.message.runs[0].text) return;
               item = {
                 author: {
                   name: item.authorName.simpleText,
@@ -395,9 +400,8 @@ async function loaded() {
                 timestamp: item.timestampUsec
               };
               messages.push(item);
-            }
+            } catch (e) { console.log(e) }
           });
-          // console.log(messages);
           window.parent.postMessage({
             type: 'messageChunk',
             messages: messages
@@ -419,7 +423,6 @@ async function loaded() {
       } else {
         window.parent.postMessage('embeddedChatLoaded', '*');
       }
-      ob.observe(document.querySelector('#chat #items'), { childList: true });
     } catch (e) { }
   }
 }
