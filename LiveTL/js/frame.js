@@ -435,6 +435,7 @@ async function loaded() {
             })
           })).json();
           let messages = [];
+          if (!response.continuationContents) return;
           response.continuationContents.liveChatContinuation.actions.forEach(action => {
             if (action.addChatItemAction) {
               let item = action.addChatItemAction.item.liveChatTextMessageRenderer;
