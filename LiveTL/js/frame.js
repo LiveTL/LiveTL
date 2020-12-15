@@ -282,6 +282,10 @@ function clearLiveTLButtons() {
   document.querySelectorAll('.liveTLBotan').forEach(b => b.remove());
 }
 
+getContinuation = (src) => {
+  return parseParams('?' + src.split('?')[1]).continuation;
+}
+
 async function insertLiveTLButtons(isHolotools = false) {
   conlog('Inserting LiveTL Launcher Buttons');
   clearLiveTLButtons();
@@ -302,11 +306,12 @@ async function insertLiveTLButtons(isHolotools = false) {
     'scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300'
   );
 
-  getContinuation = (() => {
+
+  getContinuationURL = (() => {
     let chatframe = document.querySelector('#chatframe');
     let src = chatframe.dataset.src;
     if (src.startsWith('https://www.youtube.com/live_chat_replay')) {
-      return '&continuation=' + parseParams('?' + src.split('?')[1]).continuation;
+      return '&continuation=' + getContinuation(chatframe.dataset.src);
     }
     return '';
   });
@@ -316,16 +321,25 @@ async function insertLiveTLButtons(isHolotools = false) {
   if (!isHolotools) {
     makeButton('Watch in LiveTL', async () => {
       params = parseParams();
-      redirectTab(`${await getWAR('index.html')}?v=${params.v}&title=${getTitle()}${getContinuation()}`);
+      redirectTab(`${await getWAR('index.html')}?v=${params.v}&title=${getTitle()}${getContinuationURL()}`);
     });
 
     makeButton('Pop Out Translations',
       async () => {
         params = parseParams();
-        let tlwindow = createWindow(`${embedDomain}?v=${params.v}&mode=chat&title=${getTitle()}&useLiveTL=1${getContinuation()}`);
+        let tlwindow = createWindow(`${embedDomain}?v=${params.v}&mode=chat&title=${getTitle()}&useLiveTL=1${getContinuationURL()}`);
         document.querySelector('#chatframe').contentWindow.addEventListener('message', d => {
           tlwindow.postMessage(d.data, '*');
         });
+        window.addEventListener('message', m => {
+          if (typeof m.data == 'object') {
+            switch (m.data.type) {
+              case 'messageChunk':
+                tlwindow.postMessage(m.data, '*');
+                break;
+            }
+          }
+        })
       },
       'rgb(143, 143, 143)');
   } else {
@@ -359,14 +373,16 @@ async function onMessageFromEmbeddedChat(m) {
     // removeEventListener('message', onMessageFromEmbeddedChat);
     return;
   }
-  switch (m.data) {
-    case 'embeddedChatLoaded':
-      let f = document.querySelector('#chatframe');
-      f.dataset.src = f.contentWindow.location.href;
-      await insertLiveTLButtons();
-      break;
-    case 'clearLiveTLButtons':
-      clearLiveTLButtons();
+  if (typeof m.data == 'string') {
+    switch (m.data) {
+      case 'embeddedChatLoaded':
+        let f = document.querySelector('#chatframe');
+        f.dataset.src = f.contentWindow.location.href;
+        await insertLiveTLButtons();
+        break;
+      case 'clearLiveTLButtons':
+        clearLiveTLButtons();
+    }
   }
 }
 
@@ -386,6 +402,56 @@ async function loaded() {
       if (params.useLiveTL) {
         conlog('Running LiveTL!');
         runLiveTL();
+      } else {
+        chrome.runtime.onMessage.addListener((d) => window.dispatchEvent(new CustomEvent('chromeMessage', { detail: d })));
+        window.addEventListener('chromeMessage', async (d) => {
+          heads = {};
+          d.detail.headers.forEach(h => {
+            heads[h.name] = h.value;
+          });
+          heads['content-type'] = 'application/json';
+          heads['accept'] = 'application/json';
+          heads.livetl = 1;
+          let response = await (await fetch(d.detail.url, {
+            method: 'POST', headers: heads,
+            body: JSON.stringify({
+              "context": {
+                "client": {
+                  "hl": "en",
+                  "gl": "US",
+                  "visitorData": "",
+                  "userAgent": navigator.userAgent,
+                  "clientName": "WEB",
+                  "clientVersion": heads['X-Youtube-Client-Version'],
+                  "userInterfaceTheme": "USER_INTERFACE_THEME_DARK",
+                  "mainAppWebInfo": {
+                    "graftUrl": window.location.href
+                  }
+                },
+                "request": { "internalExperimentFlags": [], "consistencyTokenJars": [] }, "user": {}
+              },
+              "continuation": getContinuation(window.location.href),
+              "webClientInfo": { "isDocumentHidden": false }
+            })
+          })).json();
+          let messages = [];
+          response.continuationContents.liveChatContinuation.actions.forEach(action => {
+            if (action.addChatItemAction) {
+              let item = action.addChatItemAction.item.liveChatTextMessageRenderer;
+              if (!item) return;
+              item = {
+                name: item.authorName.simpleText,
+                id: item.authorExternalChannelId,
+                message: item.message.runs[0].text
+              };
+              messages.push(item);
+            }
+          });
+          window.parent.postMessage({
+            type: 'messageChunk',
+            messages: messages
+          }, '*');
+        });
       }
       if (params.embed_domain === 'hololive.jetri.co') {
         await insertLiveTLButtons(true);
@@ -405,7 +471,15 @@ async function loaded() {
       ob.observe(document.querySelector('#chat #items'), { childList: true });
     } catch (e) { }
   } else if (window.location.href.startsWith(embedDomain)) {
-    setFavicon();
+    window.addEventListener('message', m => {
+      if (typeof m.data == 'object') {
+        switch (m.data.type) {
+          case 'messageChunk':
+            console.log(m.data);
+            break;
+        }
+      }
+    });
   }
 }
 
@@ -434,6 +508,8 @@ if (window.location.href.startsWith(aboutPage)) {
   try {
     window.parent.location.href;
   } catch (e) {
+    // if it's a framed chat. will have to change
+    // when the livetl chat is made local
     window.addEventListener('message', d => {
       if (window.origin != d.origin) {
         postMessage(d.data);

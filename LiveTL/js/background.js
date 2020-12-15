@@ -44,7 +44,7 @@ function stripHeaders(headers) {
 }
 
 chrome.webRequest.onHeadersReceived.addListener(
-  function (details) {
+  details => {
     return {
       responseHeaders: stripHeaders(details.responseHeaders)
     };
@@ -53,3 +53,28 @@ chrome.webRequest.onHeadersReceived.addListener(
     "<all_urls>"
   ]
 }, ["blocking", "responseHeaders"]);
+
+chrome.webRequest.onBeforeSendHeaders.addListener(
+  details => {
+    console.log(details);
+    let livetl = false;
+    details.requestHeaders.filter(h => {
+      if (h.name == 'livetl') {
+        livetl = true;
+        return false;
+      }
+      return true;
+    });
+    if (details.frameId != 0 && (
+      details.url.startsWith("https://www.youtube.com/youtubei/v1/live_chat/get_live_chat") ||
+      details.url.startsWith("https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay")) &&
+      !livetl) {
+      chrome.tabs.sendMessage(
+        details.tabId, { url: details.url, headers: details.requestHeaders }
+      );
+    }
+  }, {
+  urls: [
+    "<all_urls>"
+  ]
+}, ["requestHeaders", "extraHeaders"]);
