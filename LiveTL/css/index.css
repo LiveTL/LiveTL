@@ -122,3 +122,8 @@ body {
     position: relative;    
     height: 0;
 }
+
+#ltlcaptions {
+    z-index: 100;
+    bottom: 10%;
+}

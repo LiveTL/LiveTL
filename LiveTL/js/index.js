@@ -9,6 +9,7 @@ parseParams = () => {
 const params = parseParams();
 const v = params.v || '5qap5aO4i9A';
 const stream = document.querySelector('#stream');
+const leftPanelContainer = document.querySelector('#leftPanelContainer');
 const ltlchat = document.querySelector('#livetl-chat');
 const chat = document.querySelector('#chat');
 const leftPanel = document.querySelector('#leftPanel');
@@ -16,7 +17,10 @@ const bottomRightPanel = document.querySelector('#bottomRightPanel');
 const topRightPanel = document.querySelector('#topRightPanel');
 document.title = decodeURIComponent(params.title || "LiveTL");
 const start = () => {
-  stream.style.display = 'none';
+  leftPanelContainer.childNodes.forEach(node => {
+    node.style.display = 'none';
+  });
+  // stream.style.display = 'none';
   ltlchat.style.display = 'none';
   chat.style.display = 'none';
   leftPanel.style.backgroundColor = 'var(--accent)';
@@ -24,7 +28,10 @@ const start = () => {
   topRightPanel.style.backgroundColor = 'var(--accent)';
 };
 const stop = () => {
-  stream.style.display = 'block';
+  // stream.style.display = 'block';
+  leftPanelContainer.childNodes.forEach(node => {
+    node.style.display = 'block';
+  })
   ltlchat.style.display = 'block';
   chat.style.display = 'block';
   leftPanel.style.backgroundColor = 'black';
@@ -79,3 +86,29 @@ if (params.noVideo) {
     topRightPanel.style.height = rightHeight;
   }
 }
+
+
+function displayCaptionSegment(segment) {
+  const captions = document.querySelector('#ltlcaptions');
+  let caption = document.createElement("span");
+  caption.className = "captionSegment";
+  caption.textContent = segment;
+  captions.appendChild(caption);
+}
+
+function splitCaptionIntoSegments(caption, maxLength) {
+  return [caption];
+}
+
+function displayCaption(caption) {
+  clearCaptions();
+  splitCaptionIntoSegments.forEach(displayCaptionSegment);
+}
+
+function clearCaptions() {
+  const captions = document.querySelector('#ltlcaptions');
+  captions.childNodes.forEach(node => node.remove());
+}
+
+displayCaption("Hello there");
+
