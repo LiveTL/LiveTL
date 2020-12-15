@@ -20,10 +20,10 @@ async function addedByUser(id) {
 
 // javascript 'enum'
 const authorType = {
-  MOD: 'mod',
-  VERIFIED: 'verified',
-  DISTINGUISHED: 'distinguished', // subject to change
-  STANDARD: 'standard'
+  MOD: 'Moderator',
+  VERIFIED: 'Verified',
+  DISTINGUISHED: 'Distinguished', // subject to change
+  STANDARD: 'Standard'
 };
 
 async function onMessageSelect(e, container) {
@@ -121,30 +121,10 @@ async function runLiveTL() {
 
   let processedMessages = [];
 
-  onNewMessage = async messageNode => {
-    // Check to see if this message has already been processed
-    if (processedMessages.includes(messageNode.id) === false) {
-      // Record the fact that we processed this message
-      processedMessages.push(messageNode.id);
+  let container = document.querySelector('.livetl');
 
-      // Keep memory usage low(er) by trimming the array every so often
-      if (processedMessages.length > 100)
-        processedMessages = processedMessages.slice(0, 25)
-    } else return; // bail (why the fuck is it being mutated again?)
-
-    const element = messageNode.querySelector('#message');
-
-    messageNode = findParent(messageNode);
-
-    if (!messageNode) return;
-    // Parse the message into it's different pieces
-    const messageInfo = getMessageInfo(messageNode);
-
+  window.onNewMessage = async messageInfo => {
     if (!messageInfo) return;
-
-    let container = document.querySelector('.livetl');
-
-    messageNode.addEventListener('mousedown', async e => await onMessageSelect(e, container));
 
     // Determine whether we should display mod messages (if not set, default to yes)
     let displayModMessages = await getStorage('displayModMessages');
@@ -154,8 +134,7 @@ async function runLiveTL() {
     }
 
     // Check to see if the sender is a mod, and we display mod messages
-    if (messageInfo.author.type === authorType.MOD && displayModMessages &&
-      element.textContent.replace(/\s/g, '') !== '') {
+    if (messageInfo.author.types.includes(authorType.MOD) && displayModMessages) {
       // If the mod isn't in the sender list, add them
       if (isNewUser(messageInfo.author.id)) {
         await createCheckbox(messageInfo.author.name, messageInfo.author.id,
@@ -165,20 +144,19 @@ async function runLiveTL() {
       // Check to make sure we haven't blacklisted the mod, and if not, send the message
       // After send the message, we bail so we don't have to run all the translation related things below
       if (checked) {
-        prependOrAppend(createMessageEntry(messageInfo, element.textContent));
+        prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
         return;
       }
     }
 
     // Try to parse the message into a translation and get the language we're looking for translations in
-    const translation = parseTranslation(element.textContent);
-    const selectedLanguage = document.querySelector('#langSelect');
+    const translation = parseTranslation(messageInfo.message);
+    const selectedLanguage = document.querySelector('#langSelect').value;
 
     // Make sure we parsed the message into a translation, and if so, check to see if it matches our desired language
     if (
       translation != null &&
-      isLangMatch(translation.lang.toLowerCase(), languageConversionTable[selectedLanguage.value]) &&
-      translation.msg.replace(/\s/g, '') !== '') {
+      isLangMatch(translation.lang.toLowerCase(), languageConversionTable[selectedLanguage])) {
       // If the author isn't in the senders list, add them
       if (isNewUser(messageInfo.author.id)) {
         await createCheckbox(messageInfo.author.name, messageInfo.author.id,
@@ -194,30 +172,13 @@ async function runLiveTL() {
     }
 
     // if the user manually added this person
-    if (await addedByUser(messageInfo.author.id) && element.textContent.replace(/\s/g, '') !== '') {
+    if (await addedByUser(messageInfo.author.id)) {
       checked = (await isChecked(messageInfo.author.id));
       if (checked)
-        prependOrAppend(createMessageEntry(messageInfo, element.textContent));
+        prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
       return;
     }
   };
-
-  let observer = new MutationObserver(async (mutations, observer) => {
-    for (let m = 0; m < mutations.length; m++) {
-      let mutation = mutations[m];
-      for (let i = 0; i < mutation.addedNodes.length; i++) {
-        // DO NOT CHANGE TO FOREACH
-        await onNewMessage(mutation.addedNodes[i]);
-      }
-    }
-  });
-
-  observer.observe(document.querySelector('#items.yt-live-chat-item-list-renderer'), { childList: true });
-  let initialNodes = document.querySelector('#items.yt-live-chat-item-list-renderer').childNodes;
-  for (let i = 0; i < initialNodes.length; i++) {
-    // DO NOT CHANGE TO FOREACH
-    await onNewMessage(initialNodes[i]);
-  }
 }
 
 function getAuthorType(messageElement, authorId) {
@@ -409,41 +370,29 @@ async function loaded() {
           d.detail.headers.forEach(h => {
             heads[h.name] = h.value;
           });
-          heads['content-type'] = 'application/json';
-          heads['accept'] = 'application/json';
           heads.livetl = 1;
           let response = await (await fetch(d.detail.url, {
-            method: 'POST', headers: heads,
-            body: JSON.stringify({
-              "context": {
-                "client": {
-                  "hl": "en",
-                  "gl": "US",
-                  "visitorData": "",
-                  "userAgent": navigator.userAgent,
-                  "clientName": "WEB",
-                  "clientVersion": heads['X-Youtube-Client-Version'],
-                  "userInterfaceTheme": "USER_INTERFACE_THEME_DARK",
-                  "mainAppWebInfo": {
-                    "graftUrl": window.location.href
-                  }
-                },
-                "request": { "internalExperimentFlags": [], "consistencyTokenJars": [] }, "user": {}
-              },
-              "continuation": getContinuation(window.location.href),
-              "webClientInfo": { "isDocumentHidden": false }
-            })
+            method: 'POST',
+            headers: heads,
+            body: d.detail.body
           })).json();
           let messages = [];
           if (!response.continuationContents) return;
-          response.continuationContents.liveChatContinuation.actions.forEach(action => {
+          (response.continuationContents.liveChatContinuation.actions || []).forEach(action => {
             if (action.addChatItemAction) {
               let item = action.addChatItemAction.item.liveChatTextMessageRenderer;
-              if (!item || !item.authorName) return;
+              if (!item) return;
+              let authorTypes = [];
+              (item.authorBadges || []).forEach(badge =>
+                authorTypes.push(badge.liveChatAuthorBadgeRenderer.tooltip));
               item = {
-                name: item.authorName.simpleText,
-                id: item.authorExternalChannelId,
-                message: item.message.runs[0].text
+                author: {
+                  name: item.authorName.simpleText,
+                  id: item.authorExternalChannelId,
+                  types: authorTypes
+                },
+                message: item.message.runs[0].text,
+                timestamp: item.timestampUsec
               };
               messages.push(item);
             }
@@ -472,17 +421,6 @@ async function loaded() {
       }
       ob.observe(document.querySelector('#chat #items'), { childList: true });
     } catch (e) { }
-  } else if (window.location.href.startsWith(embedDomain)) {
-    // FIXME MOVE TO NEW EMBED SITE
-    window.addEventListener('message', m => {
-      if (typeof m.data == 'object') {
-        switch (m.data.type) {
-          case 'messageChunk':
-            console.log(m.data);
-            break;
-        }
-      }
-    });
   }
 }
 
@@ -686,7 +624,9 @@ function checkboxUpdate() {
 
 function createTimestampElement(timestamp) {
   let timestampElement = document.createElement('span');
-  timestampElement.textContent = ` (${timestamp})`;
+  let date = (new Date(parseInt(timestamp) / 1000)).toLocaleTimeString(navigator.language,
+    { hour: '2-digit', minute: '2-digit' });
+  timestampElement.textContent = ` (${date})`;
   timestampElement.className = 'timestampText smallText';
   timestampElement.style.display = showTimestamps ? 'contents' : 'none';
 
@@ -700,7 +640,9 @@ function createAuthorNameElement(messageInfo) {
   authorName.className = `smallText ${messageInfo.author.type}`;
 
   // capitalize the first letter
-  const type = messageInfo.author.type.charAt(0).toUpperCase() + messageInfo.author.type.slice(1);
+  const authorTypes = [];
+  messageInfo.author.types.forEach(d => authorTypes.push(d.charAt(0).toUpperCase() + d.slice(1)));
+  const type = authorTypes.join(', ');
   authorName.appendChild(createTooltip(type));
 
   return authorName;

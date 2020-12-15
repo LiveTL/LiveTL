@@ -1,21 +1,13 @@
-parseParams = () => {
-  const s = decodeURI(location.search.substring(1))
-    .replace(/"/g, '\\"')
-    .replace(/&/g, '","')
-    .replace(/=/g, '":"');
-  return s == '' ? {} : JSON.parse('{"' + s + '"}');
-};
-
-const params = parseParams();
-const v = params.v || '5qap5aO4i9A';
-const stream = document.querySelector('#stream');
-const ltlchat = document.querySelector('#livetl-chat');
-const chat = document.querySelector('#chat');
-const leftPanel = document.querySelector('#leftPanel');
-const bottomRightPanel = document.querySelector('#bottomRightPanel');
-const topRightPanel = document.querySelector('#topRightPanel');
+params = parseParams();
+let v = params.v || '5qap5aO4i9A';
+let stream = document.querySelector('#stream');
+let ltlchat = document.querySelector('#livetl-chat');
+let chat = document.querySelector('#chat');
+let leftPanel = document.querySelector('#leftPanel');
+let bottomRightPanel = document.querySelector('#bottomRightPanel');
+let topRightPanel = document.querySelector('#topRightPanel');
 document.title = decodeURIComponent(params.title || "LiveTL");
-const start = () => {
+let start = () => {
   stream.style.display = 'none';
   ltlchat.style.display = 'none';
   chat.style.display = 'none';
@@ -23,7 +15,7 @@ const start = () => {
   bottomRightPanel.style.backgroundColor = 'var(--accent)';
   topRightPanel.style.backgroundColor = 'var(--accent)';
 };
-const stop = () => {
+let stop = () => {
   stream.style.display = 'block';
   ltlchat.style.display = 'block';
   chat.style.display = 'block';
@@ -47,8 +39,8 @@ $('#topRightPanel').resizable({
   start: start,
   stop: stop
 });
+
 let c = params.continuation;
-const embedDomain = EMBED_DOMAIN;
 
 
 let r = params.isReplay;
@@ -62,8 +54,18 @@ window.addEventListener('message', d => {
   } catch (e) { }
 });
 
-chat.src = `${embedDomain}?isReplay=${(r ? 1 : '')}&continuation=${c}&v=${v}`;
-ltlchat.src = `${chat.src}&useLiveTL=1`;
+let q = `?isReplay=${(r ? 1 : '')}&continuation=${c}&v=${v}`;
+
+(async () => {
+  let main = await getWAR('index.html');
+  let pop = await getWAR('popout/index.html');
+  ltlchat.src = `${pop}${q}&useLiveTL=1`;
+  if (window.location.href.startsWith(main)) {
+    ltlchat.src = `${pop}${q}&useLiveTL=1`;
+  }
+})();
+
+chat.src = embedDomain + q;
 
 let leftWidth = localStorage.getItem('LTL:leftPanelWidth');
 

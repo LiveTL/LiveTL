@@ -1,4 +1,8 @@
 const launch = () => chrome.tabs.create({ url: 'https://kentonishi.github.io/LiveTL/about' });
+const YT_URLS = [
+  "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat?*",
+  "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay?*"
+];
 
 const changes = () => {
   let v = chrome.runtime.getManifest().version;
@@ -54,26 +58,36 @@ chrome.webRequest.onHeadersReceived.addListener(
   ]
 }, ["blocking", "responseHeaders"]);
 
+
+isLiveTL = details => {
+  let livetl = false;
+  details.requestHeaders.filter(h => {
+    if (h.name == 'livetl') {
+      livetl = true;
+      return false;
+    }
+    return true;
+  });
+  return livetl;
+};
+
+let mostRecentBodies = {};
+
 chrome.webRequest.onBeforeSendHeaders.addListener(
   details => {
-    console.log(details);
-    let livetl = false;
-    details.requestHeaders.filter(h => {
-      if (h.name == 'livetl') {
-        livetl = true;
-        return false;
-      }
-      return true;
-    });
-    if ((details.url.startsWith("https://www.youtube.com/youtubei/v1/live_chat/get_live_chat") ||
-      details.url.startsWith("https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay")) &&
-      !livetl) {
+    if (!isLiveTL(details)) {
       chrome.tabs.sendMessage(
-        details.tabId, { url: details.url, headers: details.requestHeaders }
+        details.tabId, { url: details.url, headers: details.requestHeaders, body: mostRecentBodies[details.url] }
       );
     }
   }, {
-  urls: [
-    "<all_urls>"
-  ]
+  urls: YT_URLS
 }, ["requestHeaders", "extraHeaders"]);
+
+chrome.webRequest.onBeforeRequest.addListener(
+  details => {
+    mostRecentBodies[details.url] = decodeURIComponent(String.fromCharCode.apply(null,
+      new Uint8Array(details.requestBody.raw[0].bytes)));
+  }, {
+  urls: YT_URLS
+}, ["requestBody", "extraHeaders"]);
