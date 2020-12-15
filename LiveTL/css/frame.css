@@ -276,9 +276,9 @@ label {
 }
 
 .logo {
-    width: 20px;
-    height: 20px;
-    vertical-align: top;
+    width: 18px;
+    height: 18px;
+    vertical-align: unset;
     margin-top: 1px;
     margin-right: 5px;
 }
