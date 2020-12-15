@@ -6,7 +6,7 @@
     {
       "label": "build",
       "type": "shell",
-      "command": "export EMBED_DOMAIN=https://cranky-beaver-1d73c7.netlify.app/embed;export VERSION=0.2.0;make chrome;make firefox;",
+      "command": "export EMBED_DOMAIN=http://localhost:8000/embed;export VERSION=0.2.0;make chrome;make firefox;",
       "problemMatcher": [],
       "group": {
         "kind": "build",

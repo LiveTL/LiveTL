@@ -50,6 +50,10 @@ $('#topRightPanel').resizable({
 let c = params.continuation;
 const embedDomain = EMBED_DOMAIN;
 
+
+let r = params.isReplay;
+r = r == null ? c : r;
+
 window.addEventListener('message', d => {
   d = JSON.parse(JSON.stringify(d.data));
   try {
@@ -57,11 +61,8 @@ window.addEventListener('message', d => {
     ltlchat.contentWindow.postMessage(d, "*");
   } catch (e) { }
 });
-if (c) {
-  chat.src = `${embedDomain}?continuation=${c}`;
-} else {
-  chat.src = `${embedDomain}?v=${v}`;
-}
+
+chat.src = `${embedDomain}?isReplay=${(r ? 1 : '')}&continuation=${c}&v=${v}`;
 ltlchat.src = `${chat.src}&useLiveTL=1`;
 
 let leftWidth = localStorage.getItem('LTL:leftPanelWidth');

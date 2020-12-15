@@ -287,7 +287,7 @@ getContinuation = (src) => {
 }
 
 async function insertLiveTLButtons(isHolotools = false) {
-  conlog('Inserting LiveTL Launcher Buttons');
+  console.log('Inserting LiveTL Launcher Buttons');
   clearLiveTLButtons();
   params = parseParams();
   const makeButton = (text, callback, color) => {
@@ -310,24 +310,23 @@ async function insertLiveTLButtons(isHolotools = false) {
   getContinuationURL = (() => {
     let chatframe = document.querySelector('#chatframe');
     let src = chatframe.dataset.src;
-    if (src.startsWith('https://www.youtube.com/live_chat_replay')) {
-      return '&continuation=' + getContinuation(chatframe.dataset.src);
-    }
-    return '';
+    return '&continuation=' + getContinuation(chatframe.dataset.src);
   });
 
   getTitle = () => encodeURIComponent(document.querySelector('#container > .title').textContent);
 
+  restOfURL = () => `&title=${getTitle()}&useLiveTL=1${getContinuationURL()}&isReplay=${(isReplayChat() ? 1 : '')}`;
+
   if (!isHolotools) {
     makeButton('Watch in LiveTL', async () => {
       params = parseParams();
-      redirectTab(`${await getWAR('index.html')}?v=${params.v}&title=${getTitle()}${getContinuationURL()}`);
+      redirectTab(`${await getWAR('index.html')}?v=${params.v}${restOfURL()}`);
     });
 
     makeButton('Pop Out Translations',
       async () => {
         params = parseParams();
-        let tlwindow = createWindow(`${embedDomain}?v=${params.v}&mode=chat&title=${getTitle()}&useLiveTL=1${getContinuationURL()}`);
+        let tlwindow = createWindow(`${embedDomain}?v=${params.v}&mode=chat${restOfURL()}`);
         document.querySelector('#chatframe').contentWindow.addEventListener('message', d => {
           tlwindow.postMessage(d.data, '*');
         });
@@ -396,13 +395,14 @@ async function loaded() {
   if (window.location.href == lastLocation) return;
   lastLocation = window.location.href;
   if (isChat()) {
-    conlog('Using live chat');
+    console.log('Using live chat');
     try {
       params = parseParams();
       if (params.useLiveTL) {
-        conlog('Running LiveTL!');
+        console.log('Running LiveTL!');
         runLiveTL();
       } else {
+        console.log('Monitoring network events');
         chrome.runtime.onMessage.addListener((d) => window.dispatchEvent(new CustomEvent('chromeMessage', { detail: d })));
         window.addEventListener('chromeMessage', async (d) => {
           heads = {};
@@ -439,7 +439,7 @@ async function loaded() {
           response.continuationContents.liveChatContinuation.actions.forEach(action => {
             if (action.addChatItemAction) {
               let item = action.addChatItemAction.item.liveChatTextMessageRenderer;
-              if (!item) return;
+              if (!item || !item.authorName) return;
               item = {
                 name: item.authorName.simpleText,
                 id: item.authorExternalChannelId,
@@ -448,6 +448,7 @@ async function loaded() {
               messages.push(item);
             }
           });
+          // console.log(messages);
           window.parent.postMessage({
             type: 'messageChunk',
             messages: messages
@@ -472,6 +473,7 @@ async function loaded() {
       ob.observe(document.querySelector('#chat #items'), { childList: true });
     } catch (e) { }
   } else if (window.location.href.startsWith(embedDomain)) {
+    // FIXME MOVE TO NEW EMBED SITE
     window.addEventListener('message', m => {
       if (typeof m.data == 'object') {
         switch (m.data.type) {
@@ -515,7 +517,7 @@ if (window.location.href.startsWith(aboutPage)) {
       if (window.origin != d.origin) {
         postMessage(d.data);
       } else {
-        conlog(d.data);
+        // console.log(d.data);
       }
     });
     switchChat();

@@ -9,12 +9,6 @@ const languages = [
 
 const languageConversionTable = {};
 
-function conlog(...args) {
-  if (params.devMode) {
-    return console.log(...args);
-  }
-}
-
 // WAR: web accessible resource
 async function getWAR(u) {
   return new Promise((res, rej) => chrome.runtime.sendMessage({ type: 'get_war', url: u }, r => res(r)));

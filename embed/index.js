@@ -39,25 +39,17 @@ embedVideo = v => {
 
 window.addEventListener('load', () => {
   let params = parseParams()
-  let v = params.v || '5qap5aO4i9A'
-  let c = params.continuation
-  let mode = params.mode || "chat"
+  let v = params.v || '5qap5aO4i9A';
+  let c = params.continuation;
+  let r = params.isReplay;
+  r = r == null ? c : r;
+  let replay = (r ? '_replay' : '');
+  let mode = params.mode || "chat";
   let ltl = params.useLiveTL || "";
   document.title = decodeURIComponent(params.title || "LiveTL");
   switch (mode) {
     case "chat":
-      // let frame = document.createElement("iframe");
-      // document.body.appendChild(frame);
-      if (c) {
-        window.location.href = `https://www.youtube.com/live_chat_replay?continuation=${c}&embed_domain=${document.domain}&dark_theme=1&useLiveTL=${ltl}`
-      } else {
-        window.location.href = `https://www.youtube.com/live_chat?v=${v}&embed_domain=${document.domain}&dark_theme=1&useLiveTL=${ltl}`
-      }
-      // window.addEventListener('message', d => {
-      //   try {
-      //     frame.contentWindow.postMessage(d.data, "*");
-      //   } catch (e) { }
-      // });
+      window.location.href = `https://www.youtube.com/live_chat${replay}?continuation=${c}&v=${v}&embed_domain=${document.domain}&dark_theme=1&useLiveTL=${ltl}`;
       break;
 
     case "video":

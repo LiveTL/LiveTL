@@ -65,8 +65,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
       }
       return true;
     });
-    if (details.frameId != 0 && (
-      details.url.startsWith("https://www.youtube.com/youtubei/v1/live_chat/get_live_chat") ||
+    if ((details.url.startsWith("https://www.youtube.com/youtubei/v1/live_chat/get_live_chat") ||
       details.url.startsWith("https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay")) &&
       !livetl) {
       chrome.tabs.sendMessage(
