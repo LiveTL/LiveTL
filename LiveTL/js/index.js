@@ -4,6 +4,7 @@ const stream = document.querySelector('#stream');
 const ltlchat = document.querySelector('#livetl-chat');
 const chat = document.querySelector('#chat');
 const videoPanel = document.querySelector('#videoPanel');
+const liveTLPanel = document.querySelector('#ltlPanel');
 const outputPanel = document.querySelector('#outputPanel');
 const youtubeChatPanel = document.querySelector('#youtubeChatPanel');
 document.title = decodeURIComponent(params.title || 'LiveTL');
@@ -34,8 +35,6 @@ $('#youtubeChatPanel').resizable({
   stop: stop
 });
 
-const side = 'right'; // TODO set this based of value gotten from settings
-
 // resizing yoinked and modified from https://spin.atomicobject.com/2019/11/21/creating-a-resizable-html-element/
 const getResizeableElement = () => document.getElementById('videoPanel');
 const getHandleElement = () => document.getElementById('handleV');
@@ -59,10 +58,10 @@ const startDragging = (event) => {
   const startingPaneWidth = getPaneWidth();
   const xOffset = event.pageX;
 
-  const mouseDragHandler = (moveEvent) => {
+  const mouseDragHandler = async (moveEvent) => {
     moveEvent.preventDefault();
 
-    const paneOriginAdjustment = side === 'left' ? 1 : -1;
+    const paneOriginAdjustment = await getStorage('chatSide') === 'left' ? 1 : -1;
     setPaneWidth((xOffset - moveEvent.pageX) * paneOriginAdjustment + startingPaneWidth);
   };
 
@@ -71,8 +70,18 @@ const startDragging = (event) => {
     setPaneWidth(Math.min(Math.max(getPaneWidth(), 150), 4000));
     document.body.removeEventListener('mousemove', mouseDragHandler);
     stop();
-  })
+  });
 };
+
+getStorage('chatSide').then(side => {
+  if (side === 'right') {
+    videoPanel.style.order = '1';
+    liveTLPanel.style.order = '3';
+  } else {
+    videoPanel.style.order = '3';
+    liveTLPanel.style.order = '1';
+  }
+});
 
 getHandleElement().addEventListener('mousedown', startDragging);
 
@@ -82,6 +91,7 @@ r = r == null ? c : r;
 
 window.addEventListener('message', d => {
   d = JSON.parse(JSON.stringify(d.data));
+
   try {
     chat.contentWindow.postMessage(d, '*');
     ltlchat.contentWindow.postMessage(d, '*');
