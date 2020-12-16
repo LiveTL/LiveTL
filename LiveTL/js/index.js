@@ -96,13 +96,8 @@ getStorage('chatSide').then(side => {
 getHandleElement().addEventListener('mousedown', startDragging);
 
 window.addEventListener('resize', () => {
-  const videoPanel = document.getElementById('videoPanel');
-  const videoPanelWidth = parseInt(getComputedStyle(videoPanel).getPropertyValue('--resizeable-width'), 10);
-  console.log(videoPanelWidth);
-  console.log(window.innerWidth - 150);
-  if (videoPanelWidth > window.innerWidth - 150) {
-    console.log('resizing')
-    videoPanel.style.setProperty('resizeable-width', `${window.innerWidth - 150}px`)
+  if (getPaneWidth() > window.innerWidth - 150) {
+    setPaneWidth(window.innerWidth - 150);
   }
 })
 
