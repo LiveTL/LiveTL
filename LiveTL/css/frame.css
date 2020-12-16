@@ -271,8 +271,10 @@ label {
     background-color: #212121;
 }
 
-.mod {
-    color: var(--yt-live-chat-moderator-color);
+.moderator {
+    /* from youtube. !important so that if a user is a verified channel, or a member in the channel they're talking in,
+     mod colour takes precedence */
+    color: #5e84f1 !important;
 }
 
 .verified {
@@ -354,18 +356,6 @@ label {
     height: 24px;
 }
 
-/* dumb */
-
-.pickUserDoneBtn {
-    background-color: var(--yt-live-chat-header-background-color, var(--yt-opalescence-soft-grey-opacity-lighten-3)) !important;
-}
-
-#settingsProjection {
-    margin-top: 10px;
-    width: 25px;
-    height: 25px;
-    float: right;
-}
 
 select {
     margin-left: 2px;
