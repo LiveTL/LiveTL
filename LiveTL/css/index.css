@@ -29,12 +29,10 @@
 }
 
 #videoPanel {
-    --resizeable-width: 300px;
-    min-width: 150px; /* FIXME doesn't even do anything??? */
+    --resizeable-width: calc(100% - 150px);
     width: var(--resizeable-width);
     height: 100%;
-    top: 0;
-    left: 0;
+    order: 1;
 }
 
 #ltlPanel {
@@ -42,6 +40,7 @@
     height: 100%;
     flex-direction: column;
     display: flex;
+    order: 3;
 }
 
 #youtubeChatPanel {

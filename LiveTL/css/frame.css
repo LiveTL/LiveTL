@@ -3,14 +3,15 @@
     --hovered-transparent: #ff49d89e;
     --button-fill: #49deff;
     --hovered-fill: #ff49d8;
-    --yt-live-chat-background-color: black;
-    --yt-live-chat-primary-text-color: white;
-    --yt-live-chat-secondary-text-color: white;
+    --yt-live-chat-background-color: #181818;
+    --yt-live-chat-primary-text-color: #efefef;
+    --yt-live-chat-secondary-text-color: #aaaaaa;
     color-scheme: light dark;
 }
 
 body {
     margin: 0;
+    font-family: "Roboto Light", sans-serif;
 }
 
 .livetl {
@@ -113,7 +114,7 @@ a {
     transform: rotate(-135deg);
 }
 
-.openList>.anchor:after {
+.openList > .anchor:after {
     border-right: 2px solid var(--yt-live-chat-primary-text-color) !important;
     border-bottom: 2px solid var(--yt-live-chat-primary-text-color) !important;
     border-left: 0 !important;
@@ -237,7 +238,8 @@ label {
     from {
         background-color: rgba(0, 119, 255, 0.466);
     }
-    to {}
+    to {
+    }
 }
 
 .line {
@@ -258,11 +260,11 @@ label {
 }
 
 .message:nth-child(2n) {
-    background-color: var(--yt-spec-10-percent-layer);
+    background-color: #2b2b2b;
 }
 
 .message:nth-child(2n+1) {
-    background-color: var(--yt-live-chat-action-panel-background-color);
+    background-color: #212121;
 }
 
 .mod {
@@ -319,11 +321,11 @@ label {
 
 /* Modal Content/Box */
 
-.modal-content>* {
+.modal-content > * {
     margin-left: 10px;
 }
 
-.modal-content>*:not(.dropdown-check-list) {
+.modal-content > *:not(.dropdown-check-list) {
     margin: 10px;
 }
 

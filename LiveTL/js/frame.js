@@ -50,7 +50,7 @@ async function runLiveTL() {
 
   scrollToBottom = (dims, force = false) => {
     if ((dims.clientHeight + dims.scrollTop >= dims.scrollHeight &&
-      translationDiv.style.display != 'none') || force) {
+      translationDiv.style.display !== 'none') || force) {
       livetlContainer.scrollTo(0, livetlContainer.scrollHeight + 100);
     }
   };
@@ -66,7 +66,7 @@ async function runLiveTL() {
 
   let dimsBefore = getDimensions();
   window.addEventListener('resize', () => {
-    if (translationDiv.style.display != 'none') {
+    if (translationDiv.style.display !== 'none') {
       updateDimensions(dimsBefore);
       dimsBefore = getDimensions();
     }
@@ -205,7 +205,7 @@ function clearLiveTLButtons() {
 
 getContinuation = (src) => {
   return parseParams('?' + src.split('?')[1]).continuation;
-}
+};
 
 async function insertLiveTLButtons(isHolotools = false) {
   console.log('Inserting LiveTL Launcher Buttons');
@@ -226,7 +226,6 @@ async function insertLiveTLButtons(isHolotools = false) {
   const createWindow = u => window.open(u, '',
     'scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300'
   );
-
 
   getContinuationURL = (() => {
     let chatframe = document.querySelector('#chatframe');
@@ -259,7 +258,7 @@ async function insertLiveTLButtons(isHolotools = false) {
                 break;
             }
           }
-        })
+        });
       },
       'rgb(143, 143, 143)');
   } else {
