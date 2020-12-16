@@ -124,6 +124,11 @@ function clearCaptions() {
   captions.childNodes.forEach(node => node.remove());
 }
 
+window.addEventListener("message", (event) => {
+  if (event.data.action === "caption") {
+    displayCaption(event.data.caption, 10000);
+  }
+});
 
 // Demo call to displayCaption
 // displayCaption("Oi koroneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneone", 1000, false);
