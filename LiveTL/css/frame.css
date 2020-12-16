@@ -336,7 +336,7 @@ label {
 
 .modal {
     justify-content: center;
-    display: table-cell;
+    display: contents;
 }
 
 #settingsGear {
