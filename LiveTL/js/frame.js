@@ -74,18 +74,21 @@ async function runLiveTL() {
 
   const settings = await createSettings(livetlContainer);
 
-  allTranslatorCheckbox = await createCheckbox('Automatically Detect', undefined, await isChecked('allUsers'), false, async () => {
-    // const boxes = document
-    //   .querySelector('#transelectChecklist')
-    //   .querySelectorAll('input:not(:checked)');
-    // for (i = 0; i < boxes.length; i++) {
-    //   // DO NOT CHANGE TO FOREACH
-    //   box = boxes[i];
-    //   box.checked = allTranslatorCheckbox.checked;
-    //   box.saveStatus();
-    // }
-    checkboxUpdate();
-  });
+  let allUsersVal = (await isChecked('allUsers'));
+  allTranslatorCheckbox = await createCheckbox('Automatically Detect', undefined,
+    allUsersVal == null ? true : allUsersVal
+    , false, async () => {
+      // const boxes = document
+      //   .querySelector('#transelectChecklist')
+      //   .querySelectorAll('input:not(:checked)');
+      // for (i = 0; i < boxes.length; i++) {
+      //   // DO NOT CHANGE TO FOREACH
+      //   box = boxes[i];
+      //   box.checked = allTranslatorCheckbox.checked;
+      //   box.saveStatus();
+      // }
+      checkboxUpdate();
+    });
 
   appendE = el => {
     dimsBefore = getDimensions();
@@ -340,24 +343,25 @@ async function loaded() {
           let messages = [];
           if (!response.continuationContents) return;
           (response.continuationContents.liveChatContinuation.actions || []).forEach(action => {
-            try {
-              var currentElement = (action.addChatItemAction || action.replayChatItemAction.actions[0].addChatItemAction).item;
-              let item = currentElement.liveChatTextMessageRenderer;
-              let authorTypes = [];
-              (item.authorBadges || []).forEach(badge =>
-                authorTypes.push(badge.liveChatAuthorBadgeRenderer.tooltip));
-              if (!item.message.runs[0].text) return;
-              item = {
-                author: {
-                  name: item.authorName.simpleText,
-                  id: item.authorExternalChannelId,
-                  types: authorTypes
-                },
-                message: item.message.runs[0].text,
-                timestamp: item.timestampUsec
-              };
-              messages.push(item);
-            } catch (e) { console.log(e) }
+            let currentElement = (action.addChatItemAction || action.replayChatItemAction.actions[0].addChatItemAction || {}).item;
+            if (!currentElement) return;
+            let messageItem = currentElement.liveChatTextMessageRenderer;
+            if (!messageItem) return;
+            messageItem.authorBadges = messageItem.authorBadges || [];
+            let authorTypes = [];
+            messageItem.authorBadges.forEach(badge =>
+              authorTypes.push(badge.liveChatAuthorBadgeRenderer.tooltip));
+            if (!messageItem.message.runs[0].text) return;
+            item = {
+              author: {
+                name: messageItem.authorName.simpleText,
+                id: messageItem.authorExternalChannelId,
+                types: authorTypes
+              },
+              message: messageItem.message.runs[0].text,
+              timestamp: messageItem.timestampUsec
+            };
+            messages.push(item);
           });
           window.parent.postMessage({
             type: 'messageChunk',
@@ -406,20 +410,14 @@ if (window.location.href.startsWith(aboutPage)) {
     } catch (e) { }
   });
 } else if (isChat()) {
-  try {
-    window.parent.location.href;
-  } catch (e) {
-    // if it's a framed chat. will have to change
-    // when the livetl chat is made local
-    window.addEventListener('message', d => {
-      if (window.origin != d.origin) {
-        postMessage(d.data);
-      } else {
-        // console.log(d.data);
-      }
-    });
-    switchChat();
-  }
+  window.addEventListener('message', d => {
+    if (window.origin != d.origin) {
+      postMessage(d.data);
+    } else {
+      // console.log(d.data);
+    }
+  });
+  switchChat();
 }
 
 function wrapIconWithLink(icon, link) {

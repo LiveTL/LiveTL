@@ -98,7 +98,7 @@ window.addEventListener('message', d => {
   } catch (e) { }
 });
 
-let q = `?isReplay=${(r ? 1 : '')}&continuation=${c}&v=${v}`;
+let q = `?isReplay=${(r ? 1 : '')}&v=${v}${(c ? `&continuation=${c}` : '')}`;
 
 (async () => {
   let main = await getWAR('index.html');

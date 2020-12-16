@@ -43,7 +43,8 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
 function stripHeaders(headers) {
   return headers.filter(header => {
     let headerName = header.name.toLowerCase();
-    return !(headerName === 'content-security-policy' || headerName === 'x-frame-options');
+    return !(headerName === 'content-security-policy'
+      || headerName === 'x-frame-options');
   })
 }
 
@@ -61,13 +62,14 @@ chrome.webRequest.onHeadersReceived.addListener(
 
 isLiveTL = details => {
   let livetl = false;
-  (details.requestHeaders || []).filter(h => {
+  details.requestHeaders = (details.requestHeaders || []).reduce((arr, h) => {
     if (h.name == 'livetl') {
       livetl = true;
-      return false;
+    } else if (h.name != 'X-Origin') {
+      arr.push(h);
     }
-    return true;
-  });
+    return arr;
+  }, []);
   return livetl;
 };
 
@@ -82,7 +84,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
     }
   }, {
   urls: YT_URLS
-}, ["requestHeaders", "extraHeaders"]);
+}, ["requestHeaders"]);
 
 chrome.webRequest.onBeforeRequest.addListener(
   details => {
@@ -90,4 +92,4 @@ chrome.webRequest.onBeforeRequest.addListener(
       new Uint8Array(details.requestBody.raw[0].bytes)));
   }, {
   urls: YT_URLS
-}, ["requestBody", "extraHeaders"]);
+}, ["requestBody"]);

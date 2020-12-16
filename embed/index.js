@@ -49,7 +49,8 @@ window.addEventListener('load', () => {
   document.title = decodeURIComponent(params.title || "LiveTL");
   switch (mode) {
     case "chat":
-      window.location.href = `https://www.youtube.com/live_chat${replay}?continuation=${c}&v=${v}&embed_domain=${document.domain}&dark_theme=1&useLiveTL=${ltl}`;
+      let cont = c ? `continuation=${c}&` : '';
+      window.location.href = `https://www.youtube.com/live_chat${replay}?${cont}v=${v}&embed_domain=${document.domain}&dark_theme=1&useLiveTL=${ltl}`;
       break;
 
     case "video":
