@@ -138,6 +138,7 @@ if (leftWidth) {
 
 if (params.noVideo) {
   videoPanel.style.display = 'none';
+  document.querySelector('#handleV').style.display = 'none';
 } else {
   stream.src = `${embedDomain}?v=${v}&mode=video`;
   if (rightHeight) {
