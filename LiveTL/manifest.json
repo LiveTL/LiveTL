@@ -49,7 +49,7 @@
     "jquery-ui.min.js",
     "manifest.json",
     "updateMessage.txt",
-    "./popout/*"
+    "popout/*"
   ],
   "incognito": "split",
   "content_security_policy": "script-src 'self' ; object-src 'self'"
