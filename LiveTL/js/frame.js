@@ -22,10 +22,11 @@ const authorType = {
 };
 
 async function runLiveTL() {
+  params = parseParams();
   await setFavicon();
 
   await switchChat();
-  document.title = 'LiveTL Chat';
+  document.title = decodeURIComponent(params.title) || 'LiveTL Chat';
 
   await Promise.all([importFontAwesome(), importStyle()]);
 
@@ -221,10 +222,13 @@ async function insertLiveTLButtons(isHolotools = false) {
 
   const redirectTab = u => window.location.href = u;
   const createTab = u => window.open(u);
-  const createWindow = u => window.open(u, '',
-    'scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300'
-  );
-
+  const createWindow = async u => {
+    return new Promise((res, rej) => {
+      chrome.runtime.sendMessage({ type: 'window', url: u }, d => {
+        res(d);
+      });
+    });
+  }
   getContinuationURL = (() => {
     let chatframe = document.querySelector('#chatframe');
     let src = chatframe.dataset.src;
@@ -241,18 +245,28 @@ async function insertLiveTLButtons(isHolotools = false) {
       redirectTab(`${await getWAR('index.html')}?v=${params.v}${restOfURL()}`);
     });
 
+    sendToWindow = (id, data) => {
+      try {
+        chrome.runtime.sendMessage({ type: 'message', data: data, id: id }, {});
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
     makeButton('Pop Out Translations',
       async () => {
         params = parseParams();
-        let tlwindow = createWindow(`${await getWAR('popout/index.html')}?v=${params.v}&mode=chat${restOfURL()}`);
+        let tlwindow = await createWindow(`${await getWAR('popout/index.html')}?v=${params.v}&mode=chat${restOfURL()}`);
+        console.log('Launched translation window with ID', tlwindow);
         document.querySelector('#chatframe').contentWindow.addEventListener('message', d => {
-          tlwindow.postMessage(d.data, '*');
+          sendToWindow(tlwindow, d.data);
         });
         window.addEventListener('message', m => {
           if (typeof m.data == 'object') {
             switch (m.data.type) {
               case 'messageChunk':
-                tlwindow.postMessage(m.data, '*');
+                sendToWindow(tlwindow, m.data);
+                console.log('Sent', m.data, 'to', tlwindow);
                 break;
             }
           }
@@ -309,6 +323,7 @@ async function onMessageFromEmbeddedChat(m) {
 
 let params = {};
 let lastLocation = '';
+chrome.runtime.onMessage.addListener((d) => window.dispatchEvent(new CustomEvent('chromeMessage', { detail: d })));
 
 async function loaded() {
   // window.removeEventListener('load', loaded);
@@ -325,7 +340,6 @@ async function loaded() {
         runLiveTL();
       } else {
         console.log('Monitoring network events');
-        chrome.runtime.onMessage.addListener((d) => window.dispatchEvent(new CustomEvent('chromeMessage', { detail: d })));
         window.addEventListener('chromeMessage', async (d) => {
           heads = {};
           d.detail.headers.forEach(h => {
