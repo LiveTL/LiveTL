@@ -111,3 +111,4 @@ function clearCaptions() {
 }
 
 displayCaption("Hello there");
+displayCaption("Oi koroneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneone");
