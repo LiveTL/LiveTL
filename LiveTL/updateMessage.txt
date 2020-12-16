@@ -1,1 +1,1 @@
-Archived stream support, custom user filters, text direction and zoom options, saved preferences across sessions, complete HoloTools integration, message timestamps, moderator message whitelisting, animation/interface facelifts, and performance improvements!
+Massive backend performance improvements, new user filter selection, left side chat toggle, various bugfixes, and more!

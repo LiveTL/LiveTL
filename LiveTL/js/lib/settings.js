@@ -19,9 +19,10 @@ async function createSettings(container) {
   settings.appendChild(createTranslatorSelect());
   settings.appendChild(createCustomUserButton(container));
   settings.appendChild(await createDisplayModMessageToggle());
-  settings.appendChild(await createZoomSlider())
+  settings.appendChild(await createZoomSlider());
   settings.appendChild(await createTimestampToggle());
   settings.appendChild(await createTextDirectionToggle(container));
+  settings.appendChild(await createChatSideToggle());
 
   await updateZoomLevel();
   return settings;
@@ -72,11 +73,11 @@ function createModal(container) {
 
     if (enableDarkModeToggle) {
       let previousTheme = await getStorage('theme');
-      let themeToggle = document.querySelector("#darkThemeToggle");
+      let themeToggle = document.querySelector('#darkThemeToggle');
       if (themeToggle.value != previousTheme) {
         let dark = themeToggle.value == 'dark' ? 1 : 0;
         await setStorage('theme', themeToggle.value);
-        window.parent.postMessage({ type: "themeChange", "darkTheme": dark }, "*");
+        window.parent.postMessage({ type: 'themeChange', 'darkTheme': dark }, '*');
         changeThemeAndRedirect(dark);
       }
     }
@@ -161,7 +162,8 @@ function setChecklistOnclick(checklist) {
       checklist.classList.remove('openList');
       items.style.display = 'none';
     }
-  });;
+  });
+  ;
 }
 
 function setChecklistOnblur(checklist) {
@@ -227,6 +229,7 @@ function createZoomLabel() {
 }
 
 const zoomSliderInputId = 'zoomSliderInput';
+
 async function createZoomSliderInput() {
   let zoomSlider = document.createElement('input');
   zoomSlider.id = zoomSliderInputId;
@@ -243,7 +246,7 @@ async function createZoomSliderInput() {
 }
 
 async function updateZoomLevel() {
-  let value = parseFloat(document.getElementById(zoomSliderInputId).value) || await getStorage('zoom') || 1
+  let value = parseFloat(document.getElementById(zoomSliderInputId).value) || await getStorage('zoom') || 1;
   let scale = Math.ceil(value * 100);
   document.body.style.transformOrigin = '0 0';
   document.body.style.transform = `scale(${scale / 100})`;
@@ -327,7 +330,7 @@ function createTextDirectionLabel() {
   return label;
 }
 
-async function createTextDirectionSelect(container) {
+async function createTextDirectionSelect() {
   let textDirSelect = document.createElement('select');
   textDirSelect.innerHTML = `
     <option id="top" value="top">Top</option>
@@ -371,6 +374,85 @@ async function createTextDirectionToggle(container) {
   textDirToggle.appendChild(await createTextDirectionSelect(container));
   textDirToggle.style.marginTop = '10px';
   return textDirToggle;
+}
+
+function createChatSideLabel() {
+  const label = document.createElement('label');
+  label.className = 'optionLabel';
+  label.textContent = 'Chat side: ';
+
+  return label;
+}
+
+async function createChatSideRadios() {
+  const left = document.createElement('input');
+  const right = document.createElement('input');
+
+  left.id = 'chatSideLeft';
+  right.id = 'chatSideRight';
+
+  left.type = right.type = 'radio';
+  left.name = right.name = 'chatSide';
+
+  const side = await getStorage('chatSide');
+
+  if (side === 'right') {
+    right.checked = true;
+  } else if (side === 'left') {
+    left.checked = true;
+  } else {
+    right.checked = true;
+  }
+
+  const onChange = async () => {
+    const videoPanel = parent.document.getElementById('videoPanel');
+    const liveTlPanel = parent.document.getElementById('ltlPanel');
+
+    if (right.checked === true) {
+      await setStorage('chatSide', 'right');
+
+      videoPanel.style.order = '1';
+      liveTlPanel.style.order = '3';
+    } else if (left.checked === true) {
+      await setStorage('chatSide', 'left');
+
+      videoPanel.style.order = '3';
+      liveTlPanel.style.order = '1';
+    }
+  };
+
+  left.addEventListener('change', onChange);
+  right.addEventListener('change', onChange);
+
+  return { left, right };
+}
+
+function createChatSideRadioLabels() {
+  const left = document.createElement('label');
+  const right = document.createElement('label');
+
+  left.htmlFor = 'chatSideLeft';
+  right.htmlFor = 'chatSideRight';
+
+  left.textContent = 'Left';
+  right.textContent = 'Right';
+
+  return { left, right };
+}
+
+async function createChatSideToggle() {
+  const chatSideToggle = document.createElement('div');
+  chatSideToggle.appendChild(createChatSideLabel());
+
+  const radios = await createChatSideRadios();
+  const labels = createChatSideRadioLabels();
+
+  chatSideToggle.appendChild(radios.left);
+  chatSideToggle.appendChild(labels.left);
+  chatSideToggle.appendChild(radios.right);
+  chatSideToggle.appendChild(labels.right);
+
+  return chatSideToggle;
 }
 
 function createDisplayModMessageLabel() {
@@ -427,7 +509,7 @@ function closeMessageSelector(container) {
 }
 
 function findParent(e) {
-  while (e && e.tagName != "YT-LIVE-CHAT-TEXT-MESSAGE-RENDERER") e = e.parentElement;
+  while (e && e.tagName != 'YT-LIVE-CHAT-TEXT-MESSAGE-RENDERER') e = e.parentElement;
   return e;
 }
 
@@ -441,12 +523,12 @@ function createCustomUserButton(container) {
   addButton.style.verticalAlign = 'middle';
   addButton.type = 'button';
   addButton.addEventListener('click', async () => {
-    let name = prompt("Enter a username:");
+    let name = prompt('Enter a username:');
     if (name) {
       await saveUserStatus(name, true, undefined, true);
       await createCheckbox(`(Custom) ${name}`, name, true, undefined, async (e) => {
         await saveUserStatus(name, e.target.checked, undefined, true);
-      }, true)
+      }, true);
     }
   });
   return addButton;
