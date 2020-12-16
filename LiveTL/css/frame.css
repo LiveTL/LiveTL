@@ -9,9 +9,14 @@
     color-scheme: light dark;
 }
 
+html {
+    overflow-y: hidden;
+}
+
 body {
     margin: 0;
     font-family: "Roboto Light", sans-serif;
+    overflow-y: none;
 }
 
 .livetl {
@@ -114,7 +119,7 @@ a {
     transform: rotate(-135deg);
 }
 
-.openList > .anchor:after {
+.openList>.anchor:after {
     border-right: 2px solid var(--yt-live-chat-primary-text-color) !important;
     border-bottom: 2px solid var(--yt-live-chat-primary-text-color) !important;
     border-left: 0 !important;
@@ -238,8 +243,7 @@ label {
     from {
         background-color: rgba(0, 119, 255, 0.466);
     }
-    to {
-    }
+    to {}
 }
 
 .line {
@@ -321,11 +325,11 @@ label {
 
 /* Modal Content/Box */
 
-.modal-content > * {
+.modal-content>* {
     margin-left: 10px;
 }
 
-.modal-content > *:not(.dropdown-check-list) {
+.modal-content>*:not(.dropdown-check-list) {
     margin: 10px;
 }
 
