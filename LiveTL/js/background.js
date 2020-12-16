@@ -37,6 +37,25 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
     case 'get_war':
       callback(chrome.runtime.getURL(request.url));
       break;
+    case 'message':
+      try {
+        chrome.tabs.sendMessage(
+          request.id, request.data
+        );
+      } catch (e) { }
+      break;
+    case 'window':
+      (window.browser || window.chrome).windows.create({
+        url: request.url,
+        type: 'popup',
+        height: 300,
+        width: 600
+      }).then(tab => {
+        console.log('Created window', tab);
+        callback(tab.id);
+      });
+      return true;
+    // can't break here, callback breaks 
   }
 });
 
@@ -78,9 +97,14 @@ let mostRecentBodies = {};
 chrome.webRequest.onBeforeSendHeaders.addListener(
   details => {
     if (!isLiveTL(details)) {
-      chrome.tabs.sendMessage(
-        details.tabId, { url: details.url, headers: details.requestHeaders, body: mostRecentBodies[details.url] }
-      );
+      // console.log(details.tabId);
+      try {
+        chrome.tabs.sendMessage(
+          details.tabId, { url: details.url, headers: details.requestHeaders, body: mostRecentBodies[details.url] }
+        );
+      } catch (e) {
+        console.log(e);
+      }
     }
   }, {
   urls: YT_URLS
