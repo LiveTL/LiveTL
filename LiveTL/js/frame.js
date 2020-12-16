@@ -2,41 +2,24 @@ const isFirefox = !!/Firefox/.exec(navigator.userAgent);
 
 const embedDomain = EMBED_DOMAIN;
 
-const allTranslators = {};
-const verifiedTranslators = []; //['AAUvwniNIzjhlVnN_WMmV2iBzQ2VuLm3Ix1EbqeHleDP']; // FIXME don't hardcode this....
-const distinguishedUsers = []; //['AAUvwnibH7aEJcoVdPRBx0fIUKxeC25FPeVEt17wGQ']; // TODO don't hardcode this....
+const allTranslators = { byID: {}, byName: {} };
+// byName is unused, always checking from storage
 let allTranslatorCheckbox = {};
 let showTimestamps = true;
 let textDirection = 'bottom';
 
 async function addedByUser(id) {
-  let s = (await getUserStatus(id));
-  if ((id in allTranslators) && (s.addedByUser)) {
-    allTranslators[id] = allTranslators[id] || s;
-    return true;
-  }
-  return false;
+  let s = (await getUserStatus(id, true)).checked != null;
+  return s;
 }
 
 // javascript 'enum'
 const authorType = {
-  MOD: 'mod',
-  VERIFIED: 'verified',
-  DISTINGUISHED: 'distinguished', // subject to change
-  STANDARD: 'standard'
+  MOD: 'Moderator',
+  VERIFIED: 'Verified',
+  DISTINGUISHED: 'Distinguished', // subject to change
+  STANDARD: 'Standard'
 };
-
-async function onMessageSelect(e, container) {
-  e = findParent(e.target);
-  const messageInfo = getMessageInfo(e);
-  if (isNewUser(messageInfo.author.id)) {
-    allTranslators[messageInfo.author.id] = { addedByUser: true };
-    await createCheckbox(messageInfo.author.name, messageInfo.author.id,
-      await getUserStatusAsBool(messageInfo.author.name), true);
-  }
-  // await saveUserStatus(messageInfo.author.id);
-  closeMessageSelector(container);
-}
 
 async function runLiveTL() {
   await setFavicon();
@@ -65,7 +48,7 @@ async function runLiveTL() {
 
   scrollToBottom = (dims, force = false) => {
     if ((dims.clientHeight + dims.scrollTop >= dims.scrollHeight &&
-      translationDiv.style.display != 'none') || force) {
+      translationDiv.style.display !== 'none') || force) {
       livetlContainer.scrollTo(0, livetlContainer.scrollHeight + 100);
     }
   };
@@ -81,25 +64,29 @@ async function runLiveTL() {
 
   let dimsBefore = getDimensions();
   window.addEventListener('resize', () => {
-    if (translationDiv.style.display != 'none') {
+    if (translationDiv.style.display !== 'none') {
       updateDimensions(dimsBefore);
       dimsBefore = getDimensions();
     }
   });
 
-  const settings = await createSettings(livetlContainer);
+  await createSettings(livetlContainer);
 
-  allTranslatorCheckbox = await createCheckbox('All Detected', 'allUsers', await isChecked('allUsers'), false, async () => {
-    const boxes = document
-      .querySelector('#transelectChecklist')
-      .querySelectorAll('input:not(:checked)');
-    for (i = 0; i < boxes.length; i++) {
-      // DO NOT CHANGE TO FOREACH
-      box = boxes[i];
-      box.checked = allTranslatorCheckbox.checked;
-      box.saveStatus();
-    }
-  });
+  let allUsersVal = (await isChecked('allUsers'));
+  allTranslatorCheckbox = await createCheckbox('Automatically Detect', undefined,
+    allUsersVal == null ? true : allUsersVal
+    , false, async () => {
+      // const boxes = document
+      //   .querySelector('#transelectChecklist')
+      //   .querySelectorAll('input:not(:checked)');
+      // for (i = 0; i < boxes.length; i++) {
+      //   // DO NOT CHANGE TO FOREACH
+      //   box = boxes[i];
+      //   box.checked = allTranslatorCheckbox.checked;
+      //   box.saveStatus();
+      // }
+      checkboxUpdate();
+    });
 
   appendE = el => {
     dimsBefore = getDimensions();
@@ -119,32 +106,8 @@ async function runLiveTL() {
   hrParent.appendChild(hr);
   prependOrAppend(hrParent);
 
-  let processedMessages = [];
-
-  onNewMessage = async messageNode => {
-    // Check to see if this message has already been processed
-    if (processedMessages.includes(messageNode.id) === false) {
-      // Record the fact that we processed this message
-      processedMessages.push(messageNode.id);
-
-      // Keep memory usage low(er) by trimming the array every so often
-      if (processedMessages.length > 25)
-        processedMessages = processedMessages.slice(0, 10)
-    } else return; // bail (why the fuck is it being mutated again?)
-
-    const element = messageNode.querySelector('#message');
-
-    messageNode = findParent(messageNode);
-
-    if (!messageNode) return;
-    // Parse the message into it's different pieces
-    const messageInfo = getMessageInfo(messageNode);
-
+  window.onNewMessage = async messageInfo => {
     if (!messageInfo) return;
-
-    let container = document.querySelector('.livetl');
-
-    messageNode.addEventListener('mousedown', async e => await onMessageSelect(e, container));
 
     // Determine whether we should display mod messages (if not set, default to yes)
     let displayModMessages = await getStorage('displayModMessages');
@@ -153,11 +116,14 @@ async function runLiveTL() {
       await setStorage('displayModMessages', true);
     }
 
+    /********************************************
+     * TODO FIXME Messages need to be displayed at the appropriate time in the video, not whenever we receive them.
+     ********************************************/
+
     // Check to see if the sender is a mod, and we display mod messages
-    if (messageInfo.author.type === authorType.MOD && displayModMessages &&
-      element.textContent.replace(/\s/g, '') !== '') {
+    if (messageInfo.author.types.includes(authorType.MOD) && displayModMessages) {
       // If the mod isn't in the sender list, add them
-      if (isNewUser(messageInfo.author.id)) {
+      if (await isNewUser(messageInfo.author.id)) {
         await createCheckbox(messageInfo.author.name, messageInfo.author.id,
           await getUserStatusAsBool(messageInfo.author.name));
       }
@@ -165,22 +131,21 @@ async function runLiveTL() {
       // Check to make sure we haven't blacklisted the mod, and if not, send the message
       // After send the message, we bail so we don't have to run all the translation related things below
       if (checked) {
-        prependOrAppend(createMessageEntry(messageInfo, element.textContent));
+        prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
         return;
       }
     }
 
     // Try to parse the message into a translation and get the language we're looking for translations in
-    const translation = parseTranslation(element.textContent);
-    const selectedLanguage = document.querySelector('#langSelect');
+    const translation = parseTranslation(messageInfo.message);
+    const selectedLanguage = document.querySelector('#langSelect').value;
 
     // Make sure we parsed the message into a translation, and if so, check to see if it matches our desired language
     if (
       translation != null &&
-      isLangMatch(translation.lang.toLowerCase(), languageConversionTable[selectedLanguage.value]) &&
-      translation.msg.replace(/\s/g, '') !== '') {
+      isLangMatch(translation.lang.toLowerCase(), languageConversionTable[selectedLanguage])) {
       // If the author isn't in the senders list, add them
-      if (isNewUser(messageInfo.author.id)) {
+      if (await isNewUser(messageInfo.author.id)) {
         await createCheckbox(messageInfo.author.name, messageInfo.author.id,
           await getUserStatusAsBool(messageInfo.author.name));
       }
@@ -194,61 +159,15 @@ async function runLiveTL() {
     }
 
     // if the user manually added this person
-    if (await addedByUser(messageInfo.author.id) && element.textContent.replace(/\s/g, '') !== '') {
+    if (await addedByUser(messageInfo.author.name)) {
+      if (await isNewUser(messageInfo.author.id)) {
+        await createCheckbox(messageInfo.author.name, messageInfo.author.id, true);
+      }
       checked = (await isChecked(messageInfo.author.id));
       if (checked)
-        prependOrAppend(createMessageEntry(messageInfo, element.textContent));
+        prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
       return;
     }
-  };
-
-  let observer = new MutationObserver(async (mutations, observer) => {
-    for (let m = 0; m < mutations.length; m++) {
-      let mutation = mutations[m];
-      for (let i = 0; i < mutation.addedNodes.length; i++) {
-        // DO NOT CHANGE TO FOREACH
-        await onNewMessage(mutation.addedNodes[i]);
-      }
-    }
-  });
-
-  observer.observe(document.querySelector('#items.yt-live-chat-item-list-renderer'), { childList: true });
-  let initialNodes = document.querySelector('#items.yt-live-chat-item-list-renderer').childNodes;
-  for (let i = 0; i < initialNodes.length; i++) {
-    // DO NOT CHANGE TO FOREACH
-    await onNewMessage(initialNodes[i]);
-  }
-}
-
-function getAuthorType(messageElement, authorId) {
-  if (messageElement.getAttribute('author-type') === 'moderator' ||
-    messageElement.getAttribute('author-type') === 'owner')
-    return authorType.MOD;
-
-  if (verifiedTranslators.includes(authorId))
-    return authorType.VERIFIED;
-
-  if (distinguishedUsers.includes(authorId))
-    return authorType.DISTINGUISHED;
-
-  return authorType.STANDARD;
-}
-
-function getMessageInfo(messageElement) {
-  // set this here so that we can access it when getting author type
-  // let img = messageElement.querySelector('#author-photo > img');
-  // if (!img) return;
-  const id = messageElement.querySelector('#author-name').textContent.replace(/\n/g, ' ');
-  // image src detection is broken
-  // /\/ytc\/([^\=]+)\=/.exec(img.src)[1];
-
-  return {
-    author: {
-      id: id,
-      name: id,
-      type: getAuthorType(messageElement, id)
-    },
-    timestamp: messageElement.querySelector('#timestamp').textContent
   };
 }
 
@@ -282,8 +201,12 @@ function clearLiveTLButtons() {
   document.querySelectorAll('.liveTLBotan').forEach(b => b.remove());
 }
 
+getContinuation = (src) => {
+  return parseParams('?' + src.split('?')[1]).continuation;
+};
+
 async function insertLiveTLButtons(isHolotools = false) {
-  conlog('Inserting LiveTL Launcher Buttons');
+  console.log('Inserting LiveTL Launcher Buttons');
   clearLiveTLButtons();
   params = parseParams();
   const makeButton = (text, callback, color) => {
@@ -302,29 +225,37 @@ async function insertLiveTLButtons(isHolotools = false) {
     'scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300'
   );
 
-  getContinuation = (() => {
+  getContinuationURL = (() => {
     let chatframe = document.querySelector('#chatframe');
     let src = chatframe.dataset.src;
-    if (src.startsWith('https://www.youtube.com/live_chat_replay')) {
-      return '&continuation=' + parseParams('?' + src.split('?')[1]).continuation;
-    }
-    return '';
+    return '&continuation=' + getContinuation(chatframe.dataset.src);
   });
 
   getTitle = () => encodeURIComponent(document.querySelector('#container > .title').textContent);
 
+  restOfURL = () => `&title=${getTitle()}&useLiveTL=1${getContinuationURL()}&isReplay=${(hasReplayChatOpen() ? 1 : '')}`;
+
   if (!isHolotools) {
     makeButton('Watch in LiveTL', async () => {
       params = parseParams();
-      redirectTab(`${await getWAR('index.html')}?v=${params.v}&title=${getTitle()}${getContinuation()}`);
+      redirectTab(`${await getWAR('index.html')}?v=${params.v}${restOfURL()}`);
     });
 
     makeButton('Pop Out Translations',
       async () => {
         params = parseParams();
-        let tlwindow = createWindow(`${embedDomain}?v=${params.v}&mode=chat&title=${getTitle()}&useLiveTL=1${getContinuation()}`);
+        let tlwindow = createWindow(`${await getWAR('popout/index.html')}?v=${params.v}&mode=chat${restOfURL()}`);
         document.querySelector('#chatframe').contentWindow.addEventListener('message', d => {
           tlwindow.postMessage(d.data, '*');
+        });
+        window.addEventListener('message', m => {
+          if (typeof m.data == 'object') {
+            switch (m.data.type) {
+              case 'messageChunk':
+                tlwindow.postMessage(m.data, '*');
+                break;
+            }
+          }
         });
       },
       'rgb(143, 143, 143)');
@@ -339,6 +270,10 @@ async function insertLiveTLButtons(isHolotools = false) {
 
 function isReplayChat() {
   return window.location.href.startsWith('https://www.youtube.com/live_chat_replay');
+}
+
+function hasReplayChatOpen() {
+  return document.querySelector('#chatframe').contentWindow.location.href.startsWith('https://www.youtube.com/live_chat_replay');
 }
 
 function isLiveChat() {
@@ -359,14 +294,16 @@ async function onMessageFromEmbeddedChat(m) {
     // removeEventListener('message', onMessageFromEmbeddedChat);
     return;
   }
-  switch (m.data) {
-    case 'embeddedChatLoaded':
-      let f = document.querySelector('#chatframe');
-      f.dataset.src = f.contentWindow.location.href;
-      await insertLiveTLButtons();
-      break;
-    case 'clearLiveTLButtons':
-      clearLiveTLButtons();
+  if (typeof m.data == 'string') {
+    switch (m.data) {
+      case 'embeddedChatLoaded':
+        let f = document.querySelector('#chatframe');
+        f.dataset.src = f.contentWindow.location.href;
+        await insertLiveTLButtons();
+        break;
+      case 'clearLiveTLButtons':
+        clearLiveTLButtons();
+    }
   }
 }
 
@@ -380,12 +317,54 @@ async function loaded() {
   if (window.location.href == lastLocation) return;
   lastLocation = window.location.href;
   if (isChat()) {
-    conlog('Using live chat');
+    console.log('Using live chat');
     try {
       params = parseParams();
       if (params.useLiveTL) {
-        conlog('Running LiveTL!');
+        console.log('Running LiveTL!');
         runLiveTL();
+      } else {
+        console.log('Monitoring network events');
+        chrome.runtime.onMessage.addListener((d) => window.dispatchEvent(new CustomEvent('chromeMessage', { detail: d })));
+        window.addEventListener('chromeMessage', async (d) => {
+          heads = {};
+          d.detail.headers.forEach(h => {
+            heads[h.name] = h.value;
+          });
+          heads.livetl = 1;
+          let response = await (await fetch(d.detail.url, {
+            method: 'POST',
+            headers: heads,
+            body: d.detail.body
+          })).json();
+          let messages = [];
+          if (!response.continuationContents) return;
+          (response.continuationContents.liveChatContinuation.actions || []).forEach(action => {
+            let currentElement = (action.addChatItemAction || action.replayChatItemAction.actions[0].addChatItemAction || {}).item;
+            if (!currentElement) return;
+            let messageItem = currentElement.liveChatTextMessageRenderer;
+            if (!messageItem) return;
+            messageItem.authorBadges = messageItem.authorBadges || [];
+            let authorTypes = [];
+            messageItem.authorBadges.forEach(badge =>
+              authorTypes.push(badge.liveChatAuthorBadgeRenderer.tooltip));
+            if (!messageItem.message.runs[0].text) return;
+            item = {
+              author: {
+                name: messageItem.authorName.simpleText,
+                id: messageItem.authorExternalChannelId,
+                types: authorTypes
+              },
+              message: messageItem.message.runs[0].text,
+              timestamp: isReplayChat() ? messageItem.timestampText.simpleText : parseTimestamp(messageItem.timestampUsec)
+            };
+            messages.push(item);
+          });
+          window.parent.postMessage({
+            type: 'messageChunk',
+            messages: messages
+          }, '*');
+        });
       }
       if (params.embed_domain === 'hololive.jetri.co') {
         await insertLiveTLButtons(true);
@@ -402,11 +381,13 @@ async function loaded() {
       } else {
         window.parent.postMessage('embeddedChatLoaded', '*');
       }
-      ob.observe(document.querySelector('#chat #items'), { childList: true });
     } catch (e) { }
-  } else if (window.location.href.startsWith(embedDomain)) {
-    setFavicon();
   }
+}
+
+function parseTimestamp(timestamp) {
+  return (new Date(parseInt(timestamp) / 1000)).toLocaleTimeString(navigator.language,
+    { hour: '2-digit', minute: '2-digit' });
 }
 
 window.addEventListener('message', onMessageFromEmbeddedChat);
@@ -431,18 +412,12 @@ if (window.location.href.startsWith(aboutPage)) {
     } catch (e) { }
   });
 } else if (isChat()) {
-  try {
-    window.parent.location.href;
-  } catch (e) {
-    window.addEventListener('message', d => {
-      if (window.origin != d.origin) {
-        postMessage(d.data);
-      } else {
-        conlog(d.data);
-      }
-    });
-    switchChat();
-  }
+  window.addEventListener('message', d => {
+    if (window.origin != d.origin) {
+      postMessage(d.data);
+    }
+  });
+  switchChat();
 }
 
 function wrapIconWithLink(icon, link) {
@@ -556,29 +531,37 @@ function createCheckboxPerson(name, authorID) {
   return person;
 }
 
-async function createCheckbox(name, authorID, checked = false, addedByUser = false, callback = null) {
+async function createCheckbox(name, authorID = 'allUsers', checked = false, addedByUser = false, callback = null, customFilter = false) {
   const items = getChecklistItems();
   const checkbox = createCheckmark(authorID, checked, addedByUser, callback || checkboxUpdate);
   const selectTranslatorMessage = document.createElement('li');
   selectTranslatorMessage.appendChild(checkbox);
-  selectTranslatorMessage.appendChild(createCheckboxPerson(name, authorID));
+  let nameElement = createCheckboxPerson(name, authorID);
+  selectTranslatorMessage.appendChild(nameElement);
   selectTranslatorMessage.style.marginRight = '4px';
   items.appendChild(selectTranslatorMessage);
-  allTranslators[authorID] = allTranslators[authorID] || {};
-  allTranslators[authorID].checked = checked;
-  await saveUserStatus(authorID, checked, addedByUser);
+  let b = customFilter ? 'byName' : 'byID';
+  await saveUserStatus(authorID, checked, addedByUser, customFilter);
+  if (customFilter || authorID == 'allUsers') {
+    nameElement.classList.add('italics');
+    checkbox.dataset.customFilter = 'true';
+  } else {
+    allTranslators[b][authorID] = allTranslators[b][authorID] || {};
+    allTranslators[b][authorID].checked = checked;
+  }
   checkboxUpdate();
   return checkbox;
 }
 
 function filterBoxes(boxes) {
   boxes.forEach((box) => {
-    allTranslators[box.dataset.id] = allTranslators[box.dataset.id] || {};
-    allTranslators[box.dataset.id].checkbox = box;
-    allTranslators[box.dataset.id].checked = box.checked;
-    if (box !== allTranslatorCheckbox && !box.checked) {
-      allTranslatorCheckbox.checked = false;
-    }
+    if (box.dataset.customFilter) return;
+    allTranslators.byID[box.dataset.id] = allTranslators.byID[box.dataset.id] || {};
+    allTranslators.byID[box.dataset.id].checkbox = box;
+    allTranslators.byID[box.dataset.id].checked = box.checked;
+    // if (box !== allTranslatorCheckbox && !box.checked) {
+    //   allTranslatorCheckbox.checked = false;
+    // }
   });
 }
 
@@ -590,7 +573,7 @@ function checkAll() {
 function removeBadTranslations() {
   document.querySelectorAll('.line').forEach((translation, i) => {
     const author = translation.querySelector('.smallText');
-    if (author && author.dataset.id && !allTranslators[author.dataset.id].checked) {
+    if (author && author.dataset.id && !allTranslators.byID[author.dataset.id].checked) {
       translation.remove();
     }
   });
@@ -599,9 +582,9 @@ function removeBadTranslations() {
 function checkboxUpdate() {
   const boxes = getChecklist().querySelectorAll('input');
   filterBoxes(boxes);
-  if (allTranslatorCheckbox.checked) {
-    checkAll();
-  }
+  // if (allTranslatorCheckbox.checked) {
+  //   checkAll();
+  // }
   removeBadTranslations();
 }
 
@@ -618,10 +601,12 @@ function createAuthorNameElement(messageInfo) {
   const authorName = document.createElement('span');
   authorName.textContent = `${messageInfo.author.name}`;
   authorName.dataset.id = messageInfo.author.id;
-  authorName.className = `smallText ${messageInfo.author.type}`;
+  authorName.className = `smallText ${messageInfo.author.types.join(' ').toLowerCase()}`;
 
   // capitalize the first letter
-  const type = messageInfo.author.type.charAt(0).toUpperCase() + messageInfo.author.type.slice(1);
+  const authorTypes = [];
+  messageInfo.author.types.forEach(d => authorTypes.push(d.charAt(0).toUpperCase() + d.slice(1)));
+  const type = authorTypes.join(', ');
   authorName.appendChild(createTooltip(type));
 
   return authorName;
@@ -652,7 +637,7 @@ function createAuthorBanButton(authorID) {
   ban.className = 'hasTooltip';
   ban.style.cursor = 'pointer';
   ban.addEventListener('click', async () => {
-    allTranslators[authorID].checked = allTranslators[authorID].checkbox.checked = false;
+    allTranslators.byID[authorID].checked = allTranslators.byID[authorID].checkbox.checked = false;
     // await saveUserStatus(authorID); checkbox already saves status onchange
     checkboxUpdate();
   });

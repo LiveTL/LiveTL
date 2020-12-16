@@ -6,8 +6,9 @@
   "permissions": [
     "webRequest",
     "webRequestBlocking",
-    "webNavigation",
     "https://www.youtube.com/*?*",
+    "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat/*",
+    "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay/*",
     "EMBED_DOMAIN/*",
     "storage"
   ],
@@ -47,7 +48,8 @@
     "jquery.min.js",
     "jquery-ui.min.js",
     "manifest.json",
-    "updateMessage.txt"
+    "updateMessage.txt",
+    "popout/*"
   ],
   "incognito": "split",
   "content_security_policy": "script-src 'self' ; object-src 'self'"
