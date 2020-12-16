@@ -63,7 +63,7 @@ const parseTranslation = message => {
   return undefined;
 };
 
-function isLangMatch (textLang, currentLang) {
+function isLangMatch(textLang, currentLang) {
   textLang = textLang.toLowerCase().split(langSplitRe).filter(s => s !== '');
   return textLang.length <= 2 && textLang.some(s => (
     currentLang.name.toLowerCase().startsWith(s) ||
