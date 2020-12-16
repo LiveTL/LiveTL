@@ -246,7 +246,7 @@ async function insertLiveTLButtons(isHolotools = false) {
     makeButton('Pop Out Translations',
       async () => {
         params = parseParams();
-        let tlwindow = createWindow(`${embedDomain}?v=${params.v}&mode=chat${restOfURL()}`);
+        let tlwindow = createWindow(`${await getWAR('popout/index.html')}?v=${params.v}&mode=chat${restOfURL()}`);
         document.querySelector('#chatframe').contentWindow.addEventListener('message', d => {
           tlwindow.postMessage(d.data, '*');
         });
