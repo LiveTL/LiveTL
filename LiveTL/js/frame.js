@@ -601,7 +601,7 @@ function createAuthorNameElement(messageInfo) {
   const authorName = document.createElement('span');
   authorName.textContent = `${messageInfo.author.name}`;
   authorName.dataset.id = messageInfo.author.id;
-  authorName.className = `smallText ${messageInfo.author.type}`;
+  authorName.className = `smallText ${messageInfo.author.types.join(' ').toLowerCase()}`;
 
   // capitalize the first letter
   const authorTypes = [];
