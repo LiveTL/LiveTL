@@ -1,12 +1,4 @@
-parseParams = () => {
-  const s = decodeURI(location.search.substring(1))
-    .replace(/"/g, '\\"')
-    .replace(/&/g, '","')
-    .replace(/=/g, '":"');
-  return s == '' ? {} : JSON.parse('{"' + s + '"}');
-};
-
-const params = parseParams();
+params = parseParams();
 const v = params.v || '5qap5aO4i9A';
 const stream = document.querySelector('#stream');
 const ltlchat = document.querySelector('#livetl-chat');
@@ -14,7 +6,7 @@ const chat = document.querySelector('#chat');
 const videoPanel = document.querySelector('#videoPanel');
 const outputPanel = document.querySelector('#outputPanel');
 const youtubeChatPanel = document.querySelector('#youtubeChatPanel');
-document.title = decodeURIComponent(params.title || "LiveTL");
+document.title = decodeURIComponent(params.title || 'LiveTL');
 const start = () => {
   stream.style.display = 'none';
   ltlchat.style.display = 'none';
@@ -44,7 +36,7 @@ $('#youtubeChatPanel').resizable({
 
 const side = 'right'; // TODO set this based of value gotten from settings
 
-// resizing yoinked from https://spin.atomicobject.com/2019/11/21/creating-a-resizable-html-element/
+// resizing yoinked and modified from https://spin.atomicobject.com/2019/11/21/creating-a-resizable-html-element/
 const getResizeableElement = () => document.getElementById('videoPanel');
 const getHandleElement = () => document.getElementById('handleV');
 
@@ -62,24 +54,24 @@ const getPaneWidth = () => {
 const startDragging = (event) => {
   event.preventDefault();
   start();
-  const host = getResizeableElement();
+  getResizeableElement();
+
   const startingPaneWidth = getPaneWidth();
   const xOffset = event.pageX;
 
   const mouseDragHandler = (moveEvent) => {
     moveEvent.preventDefault();
-    const primaryButtonPressed = moveEvent.buttons === 1;
-    if (!primaryButtonPressed) {
-      setPaneWidth(Math.min(Math.max(getPaneWidth(), 150), 4000));
-      document.body.removeEventListener('mousemove', mouseDragHandler);
-      stop();
-      return;
-    }
 
-    const paneOriginAdjustment = side === 'right' ? 1 : -1;
-    setPaneWidth((xOffset - moveEvent.pageX ) * paneOriginAdjustment + startingPaneWidth);
+    const paneOriginAdjustment = side === 'left' ? 1 : -1;
+    setPaneWidth((xOffset - moveEvent.pageX) * paneOriginAdjustment + startingPaneWidth);
   };
-  const remove = document.body.addEventListener('mousemove', mouseDragHandler);
+
+  document.body.addEventListener('mousemove', mouseDragHandler);
+  document.body.addEventListener('mouseup', () => {
+    setPaneWidth(Math.min(Math.max(getPaneWidth(), 150), 4000));
+    document.body.removeEventListener('mousemove', mouseDragHandler);
+    stop();
+  })
 };
 
 getHandleElement().addEventListener('mousedown', startDragging);
@@ -91,8 +83,8 @@ r = r == null ? c : r;
 window.addEventListener('message', d => {
   d = JSON.parse(JSON.stringify(d.data));
   try {
-    chat.contentWindow.postMessage(d, "*");
-    ltlchat.contentWindow.postMessage(d, "*");
+    chat.contentWindow.postMessage(d, '*');
+    ltlchat.contentWindow.postMessage(d, '*');
   } catch (e) { }
 });
 
