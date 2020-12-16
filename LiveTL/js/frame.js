@@ -11,7 +11,7 @@ let showTimestamps = true;
 let textDirection = 'bottom';
 
 async function addedByUser(id) {
-  let s = (await getUserStatus(id, true)).checked;
+  let s = (await getUserStatus(id, true)).checked != null;
   return s;
 }
 
@@ -122,7 +122,7 @@ async function runLiveTL() {
     // Check to see if the sender is a mod, and we display mod messages
     if (messageInfo.author.types.includes(authorType.MOD) && displayModMessages) {
       // If the mod isn't in the sender list, add them
-      if (isNewUser(messageInfo.author.id)) {
+      if (await isNewUser(messageInfo.author.id)) {
         await createCheckbox(messageInfo.author.name, messageInfo.author.id,
           await getUserStatusAsBool(messageInfo.author.name));
       }
@@ -144,7 +144,7 @@ async function runLiveTL() {
       translation != null &&
       isLangMatch(translation.lang.toLowerCase(), languageConversionTable[selectedLanguage])) {
       // If the author isn't in the senders list, add them
-      if (isNewUser(messageInfo.author.id)) {
+      if (await isNewUser(messageInfo.author.id)) {
         await createCheckbox(messageInfo.author.name, messageInfo.author.id,
           await getUserStatusAsBool(messageInfo.author.name));
       }
@@ -159,7 +159,7 @@ async function runLiveTL() {
 
     // if the user manually added this person
     if (await addedByUser(messageInfo.author.name)) {
-      if (isNewUser(messageInfo.author.id)) {
+      if (await isNewUser(messageInfo.author.id)) {
         await createCheckbox(messageInfo.author.name, messageInfo.author.id, true);
       }
       checked = (await isChecked(messageInfo.author.id));

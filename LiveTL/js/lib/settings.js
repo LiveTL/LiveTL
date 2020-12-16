@@ -245,12 +245,11 @@ async function createZoomSliderInput() {
 async function updateZoomLevel() {
   let value = parseFloat(document.getElementById(zoomSliderInputId).value) || await getStorage('zoom') || 1
   let scale = Math.ceil(value * 100);
-  let livetlContainer = document.querySelector('.livetl');
-  livetlContainer.style.transformOrigin = '0 0';
-  livetlContainer.style.transform = `scale(${scale / 100})`;
+  document.body.style.transformOrigin = '0 0';
+  document.body.style.transform = `scale(${scale / 100})`;
   let inverse = 10000 / scale;
-  livetlContainer.style.width = `${inverse}%`;
-  livetlContainer.style.height = `${inverse}%`;
+  document.body.style.width = `${inverse}%`;
+  document.body.style.height = `${inverse}%`;
   await setStorage('zoom', scale / 100);
 }
 

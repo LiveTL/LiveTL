@@ -1,4 +1,4 @@
-function isNewUser(id) {
+async function isNewUser(id) {
   return allTranslators.byID[id] == null;
 }
 

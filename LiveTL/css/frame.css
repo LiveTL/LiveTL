@@ -4,7 +4,13 @@
     --button-fill: #49deff;
     --hovered-fill: #ff49d8;
     --yt-live-chat-background-color: black;
+    --yt-live-chat-primary-text-color: white;
+    --yt-live-chat-secondary-text-color: white;
     color-scheme: light dark;
+}
+
+body {
+    margin: 0;
 }
 
 .livetl {
@@ -95,8 +101,8 @@ a {
 .dropdown-check-list .anchor:after {
     position: absolute;
     content: "";
-    border-left: 2px solid var(--yt-live-chat-primary-text-color);
-    border-top: 2px solid var(--yt-live-chat-primary-text-color);
+    border-left: 2px solid white;
+    border-top: 2px solid white;
     padding: 5px;
     right: 10px;
     top: 20%;
