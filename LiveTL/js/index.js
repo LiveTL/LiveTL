@@ -7,7 +7,7 @@ parseParams = () => {
 };
 
 const params = parseParams();
-const v = params.v || '5qap5aO4i9A';
+const v = params.v || '5qap5aO4i9A'; // ChilledCow
 const stream = document.querySelector('#stream');
 const leftPanelContainer = document.querySelector('#leftPanelContainer');
 const ltlchat = document.querySelector('#livetl-chat');
@@ -17,7 +17,7 @@ const bottomRightPanel = document.querySelector('#bottomRightPanel');
 const topRightPanel = document.querySelector('#topRightPanel');
 document.title = decodeURIComponent(params.title || "LiveTL");
 const start = () => {
-  leftPanelContainer.childNodes.forEach(node => {
+  leftPanelContainer.querySelectorAll('*').forEach(node => {
     node.style.display = 'none';
   });
   // stream.style.display = 'none';
@@ -29,9 +29,9 @@ const start = () => {
 };
 const stop = () => {
   // stream.style.display = 'block';
-  leftPanelContainer.childNodes.forEach(node => {
+  leftPanelContainer.querySelectorAll('*').forEach(node => {
     node.style.display = 'block';
-  })
+  });
   ltlchat.style.display = 'block';
   chat.style.display = 'block';
   leftPanel.style.backgroundColor = 'black';
@@ -102,7 +102,7 @@ function splitCaptionIntoSegments(caption, maxLength) {
 
 function displayCaption(caption) {
   clearCaptions();
-  splitCaptionIntoSegments.forEach(displayCaptionSegment);
+  splitCaptionIntoSegments(caption, 100).forEach(displayCaptionSegment);
 }
 
 function clearCaptions() {
@@ -111,4 +111,3 @@ function clearCaptions() {
 }
 
 displayCaption("Hello there");
-
