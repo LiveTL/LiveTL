@@ -4,8 +4,6 @@ const embedDomain = EMBED_DOMAIN;
 
 const allTranslators = { byID: {}, byName: {} };
 // byName is unused, always checking from storage
-const verifiedTranslators = [];
-const distinguishedUsers = [];
 let allTranslatorCheckbox = {};
 let showTimestamps = true;
 let textDirection = 'bottom';
@@ -72,7 +70,7 @@ async function runLiveTL() {
     }
   });
 
-  const settings = await createSettings(livetlContainer);
+  await createSettings(livetlContainer);
 
   let allUsersVal = (await isChecked('allUsers'));
   allTranslatorCheckbox = await createCheckbox('Automatically Detect', undefined,
@@ -108,10 +106,6 @@ async function runLiveTL() {
   hrParent.appendChild(hr);
   prependOrAppend(hrParent);
 
-  let processedMessages = [];
-
-  let container = document.querySelector('.livetl');
-
   window.onNewMessage = async messageInfo => {
     if (!messageInfo) return;
 
@@ -121,6 +115,10 @@ async function runLiveTL() {
       displayModMessages = true;
       await setStorage('displayModMessages', true);
     }
+
+    /********************************************
+     * TODO FIXME Messages need to be displayed at the appropriate time in the video, not whenever we receive them.
+     ********************************************/
 
     // Check to see if the sender is a mod, and we display mod messages
     if (messageInfo.author.types.includes(authorType.MOD) && displayModMessages) {
@@ -358,7 +356,7 @@ async function loaded() {
                 types: authorTypes
               },
               message: messageItem.message.runs[0].text,
-              timestamp: messageItem.timestampUsec
+              timestamp: isReplayChat() ? messageItem.timestampText.simpleText : parseTimestamp(messageItem.timestampUsec)
             };
             messages.push(item);
           });
@@ -387,6 +385,11 @@ async function loaded() {
   }
 }
 
+function parseTimestamp(timestamp) {
+  return (new Date(parseInt(timestamp) / 1000)).toLocaleTimeString(navigator.language,
+    { hour: '2-digit', minute: '2-digit' });
+}
+
 window.addEventListener('message', onMessageFromEmbeddedChat);
 window.addEventListener('load', loaded);
 window.addEventListener('yt-navigate-start', clearLiveTLButtons);
@@ -412,8 +415,6 @@ if (window.location.href.startsWith(aboutPage)) {
   window.addEventListener('message', d => {
     if (window.origin != d.origin) {
       postMessage(d.data);
-    } else {
-      // console.log(d.data);
     }
   });
   switchChat();
@@ -589,9 +590,7 @@ function checkboxUpdate() {
 
 function createTimestampElement(timestamp) {
   let timestampElement = document.createElement('span');
-  let date = (new Date(parseInt(timestamp) / 1000)).toLocaleTimeString(navigator.language,
-    { hour: '2-digit', minute: '2-digit' });
-  timestampElement.textContent = ` (${date})`;
+  timestampElement.textContent = ` (${timestamp})`;
   timestampElement.className = 'timestampText smallText';
   timestampElement.style.display = showTimestamps ? 'contents' : 'none';
 
