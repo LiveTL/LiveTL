@@ -27,7 +27,7 @@ init:
 	mkdir -p dist/
 	mkdir -p build/common/
 	mkdir -p build/static/
-	@cp $(sjquery) $(jquery) || curl -s -o $(sjquery) https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js & \
+	cp $(sjquery) $(jquery) || curl -s -o $(sjquery) https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js & \
 	cp $(sjquery-ui) $(jquery-ui) || curl -s -o $(sjquery-ui) https://ajax.aspnetcdn.com/ajax/jquery.ui/1.12.1/jquery-ui.min.js & \
 	cp $(sjquery-css) $(jquery-css) || curl -s -o $(sjquery-css) https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css & \
        	wait
@@ -36,10 +36,10 @@ init:
 	cp $(sjquery-css) $(jquery-css)
 
 test:
-	@node tests/*.js
+	node tests/*.js
 
 bench:
-	@node bench/*.js
+	node bench/*.js
 
 chrome: common
 	rm -rf dist/chrome/
