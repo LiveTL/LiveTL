@@ -88,21 +88,35 @@ if (params.noVideo) {
 }
 
 
-function displayCaptionSegment(segment) {
-  const captions = document.querySelector('#ltlcaptions');
-  let caption = document.createElement("span");
-  caption.className = "captionSegment";
+function createCaptionSegment(segment) {
+  let caption = document.createElement('p');
+  caption.className = 'captionSegment';
   caption.textContent = segment;
-  captions.appendChild(caption);
+  // May add animations later
+  caption.removeSelf = () => {
+    caption.remove();
+  };
+  return caption;
 }
 
-function splitCaptionIntoSegments(caption, maxLength) {
+// Just here in case we need it later
+function splitCaptionIntoSegments(caption, maxLength=100) {
   return [caption];
 }
 
-function displayCaption(caption) {
-  clearCaptions();
-  splitCaptionIntoSegments(caption, 100).forEach(displayCaptionSegment);
+function displayCaption(caption, persistFor=-1, clear=true) {
+  const captions = document.querySelector('#ltlcaptions');
+  if (clear) {
+    clearCaptions();
+  }
+  splitCaptionIntoSegments(caption)
+    .map(createCaptionSegment)
+    .map(caption => {
+      captions.appendChild(caption);
+      if (persistFor >= 0) {
+        setTimeout(() => caption.removeSelf(), persistFor);
+      }
+    });
 }
 
 function clearCaptions() {
@@ -110,5 +124,6 @@ function clearCaptions() {
   captions.childNodes.forEach(node => node.remove());
 }
 
-displayCaption("Hello there");
-displayCaption("Oi koroneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneone");
+
+// Demo call to displayCaption
+// displayCaption("Oi koroneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneone", 1000, false);
