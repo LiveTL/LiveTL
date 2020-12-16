@@ -24,7 +24,10 @@ const stop = () => {
   outputPanel.style.backgroundColor = 'black';
   youtubeChatPanel.style.backgroundColor = 'black';
   localStorage.setItem('LTL:rightPanelHeight', youtubeChatPanel.style.height);
-  localStorage.setItem('LTL:leftPanelWidth', getPaneWidth().toString());
+  const width = getPaneWidth();
+  if (isNaN(width) === false) {
+    localStorage.setItem('LTL:leftPanelWidth', width.toString());
+  }
 };
 
 $('#youtubeChatPanel').resizable({
