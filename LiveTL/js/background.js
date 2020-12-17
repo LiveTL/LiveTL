@@ -1,8 +1,9 @@
 const launch = () => chrome.tabs.create({ url: 'https://kentonishi.github.io/LiveTL/about' });
 const YT_URLS = [
-  "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat?*",
-  "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay?*"
+  "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat*",
+  "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay*"
 ];
+var requestString = "";
 
 const changes = () => {
   let v = chrome.runtime.getManifest().version;
@@ -98,18 +99,29 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
   details => {
     if (!isLiveTL(details)) {
       // console.debug(details.tabId);
-      try {
-        chrome.tabs.sendMessage(
-          details.tabId, { url: details.url, headers: details.requestHeaders, body: mostRecentBodies[details.url] }
-        );
-      } catch (e) {
-        console.debug(e);
+      if (false){
+        try {
+          chrome.tabs.sendMessage(
+            details.tabId, { url: details.url, headers: details.requestHeaders, body: mostRecentBodies[details.url] }
+          );
+        } catch (e) {
+          console.debug(e);
+        }
+      } else {
+        console.log("Using Safari Method")
+        try {
+          chrome.tabs.sendMessage(
+            details.tabId, { url: details.url, headers: details.requestHeaders, body: requestString }
+          );
+        } catch (e) {
+          console.debug(e);
+        }
       }
     }
+      
   }, {
   urls: YT_URLS
 }, ["requestHeaders"]);
-
 chrome.webRequest.onBeforeRequest.addListener(
   details => {
     mostRecentBodies[details.url] = decodeURIComponent(String.fromCharCode.apply(null,
@@ -118,8 +130,67 @@ chrome.webRequest.onBeforeRequest.addListener(
   urls: YT_URLS
 }, ["requestBody"]);
 
+function parseParams(loc) {
+  const s = decodeURI((loc || location.search).substring(1))
+    .replace(/"/g, '\\"')
+    .replace(/&/g, '","')
+    .replace(/=/g, '":"');
+  return s === '' ? {} : JSON.parse('{"' + s + '"}');
+}
+
+getContinuation = (src) => {
+  return parseParams('?' + src.split('?')[1]).continuation;
+};
+
 browser.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
-    if (request.requestArray)
-      console.log(request.requestArray)
+    if (request.requestArray){
+      //console.log(request.requestArray)
+      let RA = request.requestArray
+      requestString = JSON.stringify({
+        "context":{
+           "client":{
+              "hl":RA[0], 
+              "gl":RA[1], 
+              "deviceMake":RA[2], 
+              "visitorData":RA[3], 
+              "userAgent":RA[4], 
+              "clientName":RA[5], 
+              "clientVersion":RA[6], 
+              "osName":RA[7], 
+              "osVersion":RA[8], 
+              "browserName":RA[9], 
+              "browserVersion":RA[10], 
+              "screenWidthPoints":RA[11], 
+              "screenHeightPoints":RA[12], 
+              "screenPixelDensity":RA[13], 
+              "screenDensityFloat":RA[14], 
+              "utcOffsetMinutes":RA[15], 
+              "userInterfaceTheme":"USER_INTERFACE_THEME_DARK", 
+              "mainAppWebInfo":{
+                 "graftUrl":RA[17]
+              },
+              "timeZone":RA[18] 
+           },
+           "request":{
+              "sessionId":RA[19], 
+              "internalExperimentFlags":[
+                 
+              ], 
+              "consistencyTokenJars":[
+                 
+              ] 
+           },
+           "user":{
+              "onBehalfOfUser":RA[20] 
+           },
+        },
+        "continuation":getContinuation(RA[17]),
+        "webClientInfo":{
+           "isDocumentHidden":false
+        }
+     })
+     console.log(requestString)
+    }
   });
+
