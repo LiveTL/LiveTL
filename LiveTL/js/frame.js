@@ -48,9 +48,9 @@ async function runLiveTL() {
   });
 
   scrollToBottom = (dims, force = false) => {
-    if ((dims.clientHeight + dims.scrollTop >= dims.scrollHeight &&
+    if ((dims.clientHeight + dims.scrollTop + 25 >= dims.scrollHeight &&
       translationDiv.style.display !== 'none') || force) {
-      livetlContainer.scrollTo(0, livetlContainer.scrollHeight + 100);
+      livetlContainer.scrollTo(0, livetlContainer.scrollHeight + dims.clientHeight);
     }
   };
 
