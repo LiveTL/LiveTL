@@ -59,7 +59,9 @@ async function runLiveTL() {
     if (goToTop) {
       livetlContainer.scrollTo(0, 0);
     } else {
-      scrollToBottom(dims, force);
+      if (textDirection !== 'top') {
+        scrollToBottom(dims, force);
+      }
     }
   };
 
@@ -230,7 +232,7 @@ async function insertLiveTLButtons(isHolotools = false) {
         res(d);
       });
     });
-  }
+  };
   getContinuationURL = (() => {
     let chatframe = document.querySelector('#chatframe');
     let src = chatframe.dataset.src;
@@ -253,7 +255,7 @@ async function insertLiveTLButtons(isHolotools = false) {
       } catch (e) {
         console.debug(e);
       }
-    }
+    };
 
     makeButton('Pop Out Translations',
       async () => {
