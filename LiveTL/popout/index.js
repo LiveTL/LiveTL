@@ -2,7 +2,7 @@ let messageReceive = m => {
   if (typeof m.data == 'object') {
     switch (m.data.type) {
       case 'messageChunk':
-        console.log('Received message chunk:', m.data);
+        console.debug('Received message chunk:', m.data);
         m.data.messages.forEach(onNewMessage);
         break;
     }

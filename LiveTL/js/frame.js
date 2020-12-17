@@ -65,7 +65,7 @@ async function runLiveTL() {
 
   let dimsBefore = getDimensions();
   window.addEventListener('resize', () => {
-    if (translationDiv.style.display !== 'none') {
+    if (translationDiv.style.display !== 'none' && textDirection == 'bottom') {
       updateDimensions(dimsBefore);
       dimsBefore = getDimensions();
     }
@@ -209,7 +209,7 @@ getContinuation = (src) => {
 let windowsWithBinds = {};
 
 async function insertLiveTLButtons(isHolotools = false) {
-  console.log('Inserting LiveTL Launcher Buttons');
+  console.debug('Inserting LiveTL Launcher Buttons');
   clearLiveTLButtons();
   params = parseParams();
   const makeButton = (text, callback, color) => {
@@ -251,7 +251,7 @@ async function insertLiveTLButtons(isHolotools = false) {
       try {
         chrome.runtime.sendMessage({ type: 'message', data: data, id: id }, {});
       } catch (e) {
-        console.log(e);
+        console.debug(e);
       }
     }
 
@@ -259,7 +259,7 @@ async function insertLiveTLButtons(isHolotools = false) {
       async () => {
         params = parseParams();
         let tlwindow = await createWindow(`${await getWAR('popout/index.html')}?v=${params.v}&mode=chat${restOfURL()}`);
-        console.log('Launched translation window with ID', tlwindow);
+        console.debug('Launched translation window with ID', tlwindow);
         if (!windowsWithBinds[tlwindow]) {
           document.querySelector('#chatframe').contentWindow.addEventListener('message', d => {
             sendToWindow(tlwindow, d.data);
@@ -269,7 +269,7 @@ async function insertLiveTLButtons(isHolotools = false) {
               switch (m.data.type) {
                 case 'messageChunk':
                   sendToWindow(tlwindow, m.data);
-                  console.log('Sent', m.data, 'to', tlwindow);
+                  console.debug('Sent', m.data, 'to', tlwindow);
                   break;
               }
             }
@@ -337,14 +337,14 @@ async function loaded() {
   if (window.location.href == lastLocation) return;
   lastLocation = window.location.href;
   if (isChat()) {
-    console.log('Using live chat');
+    console.debug('Using live chat');
     try {
       params = parseParams();
       if (params.useLiveTL) {
-        console.log('Running LiveTL!');
+        console.debug('Running LiveTL!');
         runLiveTL();
       } else {
-        console.log('Monitoring network events');
+        console.debug('Monitoring network events');
         window.addEventListener('chromeMessage', async (d) => {
           heads = {};
           d.detail.headers.forEach(h => {

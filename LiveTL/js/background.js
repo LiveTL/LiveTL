@@ -20,14 +20,14 @@ chrome.runtime.onInstalled.addListener(details => {
   if (details.reason == "update") {
     //didUpdate = true;
     let thisVersion = chrome.runtime.getManifest().version;
-    console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
+    console.debug("Updated from " + details.previousVersion + " to " + thisVersion + "!");
     chrome.browserAction.setIcon({
       path: "./icons/notification_128x128.png"
     });
     chrome.browserAction.onClicked.removeListener(launch);
     chrome.browserAction.onClicked.addListener(changes);
   } else {
-    console.log("This is a first install!");
+    console.debug("This is a first install!");
     chrome.tabs.create({ url: 'https://kentonishi.github.io/LiveTL/about' });
   }
 });
@@ -51,7 +51,7 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
         height: 300,
         width: 600
       }).then(tab => {
-        console.log('Created window', tab);
+        console.debug('Created window', tab);
         callback(tab.id);
       });
       return true;
@@ -97,13 +97,13 @@ let mostRecentBodies = {};
 chrome.webRequest.onBeforeSendHeaders.addListener(
   details => {
     if (!isLiveTL(details)) {
-      // console.log(details.tabId);
+      // console.debug(details.tabId);
       try {
         chrome.tabs.sendMessage(
           details.tabId, { url: details.url, headers: details.requestHeaders, body: mostRecentBodies[details.url] }
         );
       } catch (e) {
-        console.log(e);
+        console.debug(e);
       }
     }
   }, {
