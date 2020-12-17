@@ -51,7 +51,7 @@ function createModal(container) {
   };
 
   const icon = {
-    block: closeSVG,
+    contents: closeSVG,
     none: settingsGear
   };
 
