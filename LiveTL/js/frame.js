@@ -65,7 +65,7 @@ async function runLiveTL() {
 
   let dimsBefore = getDimensions();
   window.addEventListener('resize', () => {
-    if (translationDiv.style.display !== 'none') {
+    if (translationDiv.style.display !== 'none' && textDirection == 'bottom') {
       updateDimensions(dimsBefore);
       dimsBefore = getDimensions();
     }
