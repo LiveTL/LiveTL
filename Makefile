@@ -104,6 +104,7 @@ safari-noBuild: common
 	cp ./build/common/frame.js ./build/safari/LiveTL/js/frame.js
 	cp ./build/common/index.js ./build/safari/LiveTL/js/index.js
 	cp ./build/common/background.js ./build/safari/LiveTL/js/background.js
+	cp ./build/common/collect.js ./build/safari/LiveTL/js/collect.js
 	rm -rf ./build/safari/LiveTL/js/lib/
 	cp ./LICENSE ./build/safari/LiveTL/
 	grep -v incognito ./build/common/manifest.json > ./build/safari/LiveTL/manifest.json
@@ -115,6 +116,8 @@ common: init
 	$(replace-embed-domain) $(lib)/../index.js > ./build/common/index.js
 	$(replace-embed-domain-noquote) LiveTL/manifest.json | $(replace-version) > ./build/common/manifest.json
 	$(replace-embed-domain-noquote) LiveTL/js/background.js > ./build/common/background.js
+	cp LiveTL/js/collect.js ./build/common/collect.js
+	
 
 clean:
 	rm -rf dist/

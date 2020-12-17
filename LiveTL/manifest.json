@@ -24,6 +24,16 @@
         "./js/frame.js"
       ],
       "all_frames": true
+    },
+    {
+        "matches": [
+            "https://www.youtube.com/live_chat*",
+            "https://www.youtube.com/live_chat_replay*"
+        ],
+        "js": [
+            "./js/collect.js"
+        ],
+        "all_frames": true
     }
   ],
   "browser_action": {
@@ -52,5 +62,11 @@
     "popout/*"
   ],
   "incognito": "split",
-  "content_security_policy": "script-src 'self' ; object-src 'self'"
+  "content_security_policy": "script-src 'self' ; object-src 'self'",
+  "externally_connectable": {
+    "matches": [
+      "https://www.youtube.com/live_chat*",
+      "https://www.youtube.com/live_chat_replay*"
+    ]
+  }
 }

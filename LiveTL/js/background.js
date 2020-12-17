@@ -93,3 +93,9 @@ chrome.webRequest.onBeforeRequest.addListener(
   }, {
   urls: YT_URLS
 }, ["requestBody"]);
+
+browser.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    if (request.requestArray)
+      console.log(request.requestArray)
+  });

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		360AA7E6257E97CD008801EF /* updateMessage.txt in Resources */ = {isa = PBXBuildFile; fileRef = 360AA7E5257E97CD008801EF /* updateMessage.txt */; };
+		361F07E8258A6E050044E008 /* popout in Resources */ = {isa = PBXBuildFile; fileRef = 361F07E6258A6E050044E008 /* popout */; };
+		361F07E9258A6E050044E008 /* constants.js in Resources */ = {isa = PBXBuildFile; fileRef = 361F07E7258A6E050044E008 /* constants.js */; };
 		363C674525795AD8009020DE /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 363C674425795AD8009020DE /* Credits.rtf */; };
 		36F39D452578A47300BA3A6F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F39D442578A47300BA3A6F /* AppDelegate.swift */; };
 		36F39D482578A47300BA3A6F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36F39D462578A47300BA3A6F /* Main.storyboard */; };
@@ -52,6 +54,8 @@
 
 /* Begin PBXFileReference section */
 		360AA7E5257E97CD008801EF /* updateMessage.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = updateMessage.txt; path = ../../../build/safari/LiveTL/updateMessage.txt; sourceTree = "<group>"; };
+		361F07E6258A6E050044E008 /* popout */ = {isa = PBXFileReference; lastKnownFileType = folder; name = popout; path = ../../../build/safari/LiveTL/popout; sourceTree = "<group>"; };
+		361F07E7258A6E050044E008 /* constants.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = constants.js; path = ../../../build/safari/LiveTL/constants.js; sourceTree = "<group>"; };
 		363C674425795AD8009020DE /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		36F39D402578A47300BA3A6F /* LiveTl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiveTl.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		36F39D432578A47300BA3A6F /* LiveTl.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LiveTl.entitlements; sourceTree = "<group>"; };
@@ -149,6 +153,8 @@
 		36F39D672578A47600BA3A6F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				361F07E7258A6E050044E008 /* constants.js */,
+				361F07E6258A6E050044E008 /* popout */,
 				360AA7E5257E97CD008801EF /* updateMessage.txt */,
 				36F39D682578A47600BA3A6F /* jquery-ui.min.js */,
 				36F39D692578A47600BA3A6F /* index.html */,
@@ -255,10 +261,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				36F39D742578A47600BA3A6F /* js in Resources */,
+				361F07E9258A6E050044E008 /* constants.js in Resources */,
 				36F39D732578A47600BA3A6F /* css in Resources */,
 				36F39D722578A47600BA3A6F /* LICENSE in Resources */,
 				36F39D702578A47600BA3A6F /* jquery-ui.min.js in Resources */,
 				360AA7E6257E97CD008801EF /* updateMessage.txt in Resources */,
+				361F07E8258A6E050044E008 /* popout in Resources */,
 				36F39D772578A47600BA3A6F /* manifest.json in Resources */,
 				36F39D752578A47600BA3A6F /* jquery.min.js in Resources */,
 				36F39D762578A47600BA3A6F /* icons in Resources */,
@@ -285,7 +293,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $PROJECT_DIR\necho ${PROJECT_DIR}/${INFOPLIST_FILE}\ncd ../../\nmake safari-noBuild EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed VERSION=$(/usr/libexec/PlistBuddy -c \"Print CFBundleShortVersionString\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\")\n";
+			shellScript = "cd $PROJECT_DIR\necho ${PROJECT_DIR}/${INFOPLIST_FILE}\ncd ../../\nmake safari-noBuild EMBED_DOMAIN=http://localhost:8000/embed VERSION=$(/usr/libexec/PlistBuddy -c \"Print CFBundleShortVersionString\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\")\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
