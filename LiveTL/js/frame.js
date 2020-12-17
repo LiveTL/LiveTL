@@ -48,9 +48,9 @@ async function runLiveTL() {
   });
 
   scrollToBottom = (dims, force = false) => {
-    if ((dims.clientHeight + dims.scrollTop >= dims.scrollHeight &&
+    if ((dims.clientHeight + dims.scrollTop + 25 >= dims.scrollHeight &&
       translationDiv.style.display !== 'none') || force) {
-      livetlContainer.scrollTo(0, livetlContainer.scrollHeight + 100);
+      livetlContainer.scrollTo(0, livetlContainer.scrollHeight + dims.clientHeight);
     }
   };
 
@@ -206,6 +206,8 @@ getContinuation = (src) => {
   return parseParams('?' + src.split('?')[1]).continuation;
 };
 
+let windowsWithBinds = {};
+
 async function insertLiveTLButtons(isHolotools = false) {
   console.log('Inserting LiveTL Launcher Buttons');
   clearLiveTLButtons();
@@ -258,19 +260,22 @@ async function insertLiveTLButtons(isHolotools = false) {
         params = parseParams();
         let tlwindow = await createWindow(`${await getWAR('popout/index.html')}?v=${params.v}&mode=chat${restOfURL()}`);
         console.log('Launched translation window with ID', tlwindow);
-        document.querySelector('#chatframe').contentWindow.addEventListener('message', d => {
-          sendToWindow(tlwindow, d.data);
-        });
-        window.addEventListener('message', m => {
-          if (typeof m.data == 'object') {
-            switch (m.data.type) {
-              case 'messageChunk':
-                sendToWindow(tlwindow, m.data);
-                console.log('Sent', m.data, 'to', tlwindow);
-                break;
+        if (!windowsWithBinds[tlwindow]) {
+          document.querySelector('#chatframe').contentWindow.addEventListener('message', d => {
+            sendToWindow(tlwindow, d.data);
+          });
+          window.addEventListener('message', m => {
+            if (typeof m.data == 'object') {
+              switch (m.data.type) {
+                case 'messageChunk':
+                  sendToWindow(tlwindow, m.data);
+                  console.log('Sent', m.data, 'to', tlwindow);
+                  break;
+              }
             }
-          }
-        });
+          });
+          windowsWithBinds[tlwindow] = true;
+        }
       },
       'rgb(143, 143, 143)');
   } else {
