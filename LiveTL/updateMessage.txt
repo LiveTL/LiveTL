@@ -1,1 +1,1 @@
-Massive backend performance improvements, new user filter selection, left side chat toggle, various bugfixes, and more!
+Massive backend performance improvements, new user filter selection, left side chat toggle, Russian Language support, various bugfixes, and more!
