@@ -344,7 +344,7 @@ label {
 
 .modal {
     justify-content: center;
-    display: contents;
+    display: none;
 }
 
 #settingsGear {

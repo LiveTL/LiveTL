@@ -46,12 +46,12 @@ function createModal(container) {
   modalContent.className = 'modal-content';
 
   const nextStyle = {
-    block: 'none',
-    none: 'block'
+    contents: 'none',
+    none: 'contents'
   };
 
   const icon = {
-    block: closeSVG,
+    contents: closeSVG,
     none: settingsGear
   };
 

@@ -22,10 +22,11 @@ const authorType = {
 };
 
 async function runLiveTL() {
+  params = parseParams();
   await setFavicon();
 
   await switchChat();
-  document.title = 'LiveTL Chat';
+  document.title = decodeURIComponent(params.title) || 'LiveTL Chat';
 
   await Promise.all([importFontAwesome(), importStyle()]);
 
@@ -47,9 +48,9 @@ async function runLiveTL() {
   });
 
   scrollToBottom = (dims, force = false) => {
-    if ((dims.clientHeight + dims.scrollTop >= dims.scrollHeight &&
+    if ((dims.clientHeight + dims.scrollTop + 25 >= dims.scrollHeight &&
       translationDiv.style.display !== 'none') || force) {
-      livetlContainer.scrollTo(0, livetlContainer.scrollHeight + 100);
+      livetlContainer.scrollTo(0, livetlContainer.scrollHeight + dims.clientHeight);
     }
   };
 
@@ -58,13 +59,15 @@ async function runLiveTL() {
     if (goToTop) {
       livetlContainer.scrollTo(0, 0);
     } else {
-      scrollToBottom(dims, force);
+      if (textDirection !== 'top') {
+        scrollToBottom(dims, force);
+      }
     }
   };
 
   let dimsBefore = getDimensions();
   window.addEventListener('resize', () => {
-    if (translationDiv.style.display !== 'none') {
+    if (translationDiv.style.display !== 'none' && textDirection == 'bottom') {
       updateDimensions(dimsBefore);
       dimsBefore = getDimensions();
     }
@@ -205,8 +208,10 @@ getContinuation = (src) => {
   return parseParams('?' + src.split('?')[1]).continuation;
 };
 
+let windowsWithBinds = {};
+
 async function insertLiveTLButtons(isHolotools = false) {
-  console.log('Inserting LiveTL Launcher Buttons');
+  console.debug('Inserting LiveTL Launcher Buttons');
   clearLiveTLButtons();
   params = parseParams();
   const makeButton = (text, callback, color) => {
@@ -221,10 +226,13 @@ async function insertLiveTLButtons(isHolotools = false) {
 
   const redirectTab = u => window.location.href = u;
   const createTab = u => window.open(u);
-  const createWindow = u => window.open(u, '',
-    'scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300'
-  );
-
+  const createWindow = async u => {
+    return new Promise((res, rej) => {
+      chrome.runtime.sendMessage({ type: 'window', url: u }, d => {
+        res(d);
+      });
+    });
+  };
   getContinuationURL = (() => {
     let chatframe = document.querySelector('#chatframe');
     let src = chatframe.dataset.src;
@@ -241,22 +249,35 @@ async function insertLiveTLButtons(isHolotools = false) {
       redirectTab(`${await getWAR('index.html')}?v=${params.v}${restOfURL()}`);
     });
 
+    sendToWindow = (id, data) => {
+      try {
+        chrome.runtime.sendMessage({ type: 'message', data: data, id: id }, {});
+      } catch (e) {
+        console.debug(e);
+      }
+    };
+
     makeButton('Pop Out Translations',
       async () => {
         params = parseParams();
-        let tlwindow = createWindow(`${await getWAR('popout/index.html')}?v=${params.v}&mode=chat${restOfURL()}`);
-        document.querySelector('#chatframe').contentWindow.addEventListener('message', d => {
-          tlwindow.postMessage(d.data, '*');
-        });
-        window.addEventListener('message', m => {
-          if (typeof m.data == 'object') {
-            switch (m.data.type) {
-              case 'messageChunk':
-                tlwindow.postMessage(m.data, '*');
-                break;
+        let tlwindow = await createWindow(`${await getWAR('popout/index.html')}?v=${params.v}&mode=chat${restOfURL()}`);
+        console.debug('Launched translation window with ID', tlwindow);
+        if (!windowsWithBinds[tlwindow]) {
+          document.querySelector('#chatframe').contentWindow.addEventListener('message', d => {
+            sendToWindow(tlwindow, d.data);
+          });
+          window.addEventListener('message', m => {
+            if (typeof m.data == 'object') {
+              switch (m.data.type) {
+                case 'messageChunk':
+                  sendToWindow(tlwindow, m.data);
+                  console.debug('Sent', m.data, 'to', tlwindow);
+                  break;
+              }
             }
-          }
-        });
+          });
+          windowsWithBinds[tlwindow] = true;
+        }
       },
       'rgb(143, 143, 143)');
   } else {
@@ -309,6 +330,7 @@ async function onMessageFromEmbeddedChat(m) {
 
 let params = {};
 let lastLocation = '';
+chrome.runtime.onMessage.addListener((d) => window.dispatchEvent(new CustomEvent('chromeMessage', { detail: d })));
 
 async function loaded() {
   // window.removeEventListener('load', loaded);
@@ -317,15 +339,14 @@ async function loaded() {
   if (window.location.href == lastLocation) return;
   lastLocation = window.location.href;
   if (isChat()) {
-    console.log('Using live chat');
+    console.debug('Using live chat');
     try {
       params = parseParams();
       if (params.useLiveTL) {
-        console.log('Running LiveTL!');
+        console.debug('Running LiveTL!');
         runLiveTL();
       } else {
-        console.log('Monitoring network events');
-        chrome.runtime.onMessage.addListener((d) => window.dispatchEvent(new CustomEvent('chromeMessage', { detail: d })));
+        console.debug('Monitoring network events');
         window.addEventListener('chromeMessage', async (d) => {
           heads = {};
           d.detail.headers.forEach(h => {
@@ -340,7 +361,9 @@ async function loaded() {
           let messages = [];
           if (!response.continuationContents) return;
           (response.continuationContents.liveChatContinuation.actions || []).forEach(action => {
-            let currentElement = (action.addChatItemAction || action.replayChatItemAction.actions[0].addChatItemAction || {}).item;
+            let currentElement = (action.addChatItemAction ||
+              (action.replayChatItemAction != null ? action.replayChatItemAction.actions[0].addChatItemAction : null)
+              || {}).item;
             if (!currentElement) return;
             let messageItem = currentElement.liveChatTextMessageRenderer;
             if (!messageItem) return;
@@ -348,14 +371,18 @@ async function loaded() {
             let authorTypes = [];
             messageItem.authorBadges.forEach(badge =>
               authorTypes.push(badge.liveChatAuthorBadgeRenderer.tooltip));
-            if (!messageItem.message.runs[0].text) return;
+            let messageText = '';
+            messageItem.message.runs.forEach(run => {
+              if (run.text) messageText += run.text;
+            });
+            if (!messageText) return;
             item = {
               author: {
                 name: messageItem.authorName.simpleText,
                 id: messageItem.authorExternalChannelId,
                 types: authorTypes
               },
-              message: messageItem.message.runs[0].text,
+              message: messageText,
               timestamp: isReplayChat() ? messageItem.timestampText.simpleText : parseTimestamp(messageItem.timestampUsec)
             };
             messages.push(item);

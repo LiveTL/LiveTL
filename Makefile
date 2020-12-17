@@ -45,7 +45,7 @@ chrome: common
 	rm -rf dist/chrome/
 	mkdir -p dist/chrome/
 	mkdir -p build/chrome/LiveTL/
-	cp -r LiveTL/ build/chrome/
+	cp -r LiveTL build/chrome/
 	cp $(jquery) ./build/chrome/LiveTL/jquery.min.js
 	cp $(jquery-ui) ./build/chrome/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/chrome/LiveTL/css/jquery-ui.css

@@ -20,14 +20,14 @@ chrome.runtime.onInstalled.addListener(details => {
   if (details.reason == "update") {
     //didUpdate = true;
     let thisVersion = chrome.runtime.getManifest().version;
-    console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
+    console.debug("Updated from " + details.previousVersion + " to " + thisVersion + "!");
     chrome.browserAction.setIcon({
       path: "./icons/notification_128x128.png"
     });
     chrome.browserAction.onClicked.removeListener(launch);
     chrome.browserAction.onClicked.addListener(changes);
   } else {
-    console.log("This is a first install!");
+    console.debug("This is a first install!");
     chrome.tabs.create({ url: 'https://kentonishi.github.io/LiveTL/about' });
   }
 });
@@ -37,6 +37,25 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
     case 'get_war':
       callback(chrome.runtime.getURL(request.url));
       break;
+    case 'message':
+      try {
+        chrome.tabs.sendMessage(
+          request.id, request.data
+        );
+      } catch (e) { }
+      break;
+    case 'window':
+      (window.browser || window.chrome).windows.create({
+        url: request.url,
+        type: 'popup',
+        height: 300,
+        width: 600
+      }).then(tab => {
+        console.debug('Created window', tab);
+        callback(tab.id);
+      });
+      return true;
+    // can't break here, callback breaks 
   }
 });
 
@@ -78,9 +97,14 @@ let mostRecentBodies = {};
 chrome.webRequest.onBeforeSendHeaders.addListener(
   details => {
     if (!isLiveTL(details)) {
-      chrome.tabs.sendMessage(
-        details.tabId, { url: details.url, headers: details.requestHeaders, body: mostRecentBodies[details.url] }
-      );
+      // console.debug(details.tabId);
+      try {
+        chrome.tabs.sendMessage(
+          details.tabId, { url: details.url, headers: details.requestHeaders, body: mostRecentBodies[details.url] }
+        );
+      } catch (e) {
+        console.debug(e);
+      }
     }
   }, {
   urls: YT_URLS
