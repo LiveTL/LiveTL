@@ -117,4 +117,4 @@ function testLangMatch() {
 testParseTranslation();
 testLangMatch();
 
-console.log(`Finished ${tests.value} unit tests for filter.js`);
+console.debug(`Finished ${tests.value} unit tests for filter.js`);
