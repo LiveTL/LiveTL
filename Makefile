@@ -12,7 +12,7 @@ EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed
 endif
 
 ifndef VERSION
-VERSION=0.1.0
+VERSION=69.42.0
 endif
 
 replace-embed-domain=sed 's|EMBED_DOMAIN|"$(EMBED_DOMAIN)"|g'
