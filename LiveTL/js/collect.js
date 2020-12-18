@@ -2,6 +2,8 @@ let collectScript = document.createElement("script")
 //Array key: [hl, gl, deviceMake, visitorData, userAgent, clientName, clientVersion, osName, osVersion, browserName, browserVersion, screenWidthPoints, screenHeightPoints, screenPixelDensity, screenDensityFloat, utcOffsetMinutes, userInterfaceTheme, graftUrl, timeZone, sessionId, onBehalfOfUser]
 collectScript.innerHTML = `
     let liveTlId = "` + browser.runtime.id + `"
+    let continuation = document.getElementsByTagName("yt-live-chat-renderer")[0].__data.data.continuations[0].invalidationContinuationData.continuation
+
     let requestArray = [
         window.ytcfg.get("INNERTUBE_CONTEXT").client.hl,
         window.ytcfg.get("INNERTUBE_CONTEXT").client.gl,
@@ -27,12 +29,14 @@ collectScript.innerHTML = `
     ];
     console.log(requestArray)
     window.postMessage({requestArray: requestArray}, "*");
+    window.postMessage({continuation: continuation}, "*");
+
 `
 // need to inject script b/c cross domain protections
 document.head.appendChild(collectScript)
 
 window.addEventListener("message", function(event) {
     var requestArray = event.data;
-    browser.runtime.sendMessage(requestArray)
+    browser.runtime.sendMessage(requestArray);
 }, false);
 

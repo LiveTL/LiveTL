@@ -99,7 +99,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
   details => {
     if (!isLiveTL(details)) {
       // console.debug(details.tabId);
-      if (false){
+      if (mostRecentBodies[details.url]){
         try {
           chrome.tabs.sendMessage(
             details.tabId, { url: details.url, headers: details.requestHeaders, body: mostRecentBodies[details.url] }
@@ -138,8 +138,15 @@ function parseParams(loc) {
   return s === '' ? {} : JSON.parse('{"' + s + '"}');
 }
 
-getContinuation = (src) => {
-  return parseParams('?' + src.split('?')[1]).continuation;
+function getContinuation() {
+  let message = "getContinuation"
+  browser.runtime.sendMessage(message)
+  browser.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    if (request.continuation) {
+      console.log(request.continuation)
+      return request.continuation;
+    }
+  });
 };
 
 browser.runtime.onMessage.addListener(
@@ -185,7 +192,7 @@ browser.runtime.onMessage.addListener(
               "onBehalfOfUser":RA[20] 
            },
         },
-        "continuation":getContinuation(RA[17]),
+        "continuation":getContinuation(),
         "webClientInfo":{
            "isDocumentHidden":false
         }
