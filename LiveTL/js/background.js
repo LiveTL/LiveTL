@@ -97,10 +97,12 @@ let mostRecentBodies = {};
 chrome.webRequest.onBeforeSendHeaders.addListener(
   details => {
     if (!isLiveTL(details)) {
-      // console.debug(details.tabId);
       try {
+        let t = details.tabId;
+        console.log(`Sending data to tab ${t}`)
         chrome.tabs.sendMessage(
-          details.tabId, { url: details.url, headers: details.requestHeaders, body: mostRecentBodies[details.url] }
+          t, { url: details.url, headers: details.requestHeaders, body: mostRecentBodies[details.url] },
+          {frameId: details.frameId}
         );
       } catch (e) {
         console.debug(e);

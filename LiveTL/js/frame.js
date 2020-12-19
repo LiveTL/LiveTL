@@ -361,31 +361,33 @@ async function loaded() {
           let messages = [];
           if (!response.continuationContents) return;
           (response.continuationContents.liveChatContinuation.actions || []).forEach(action => {
-            let currentElement = (action.addChatItemAction ||
-              (action.replayChatItemAction != null ? action.replayChatItemAction.actions[0].addChatItemAction : null)
-              || {}).item;
-            if (!currentElement) return;
-            let messageItem = currentElement.liveChatTextMessageRenderer;
-            if (!messageItem) return;
-            messageItem.authorBadges = messageItem.authorBadges || [];
-            let authorTypes = [];
-            messageItem.authorBadges.forEach(badge =>
-              authorTypes.push(badge.liveChatAuthorBadgeRenderer.tooltip));
-            let messageText = '';
-            messageItem.message.runs.forEach(run => {
-              if (run.text) messageText += run.text;
-            });
-            if (!messageText) return;
-            item = {
-              author: {
-                name: messageItem.authorName.simpleText,
-                id: messageItem.authorExternalChannelId,
-                types: authorTypes
-              },
-              message: messageText,
-              timestamp: isReplayChat() ? messageItem.timestampText.simpleText : parseTimestamp(messageItem.timestampUsec)
-            };
-            messages.push(item);
+            try {
+              let currentElement = (action.addChatItemAction ||
+                (action.replayChatItemAction != null ? action.replayChatItemAction.actions[0].addChatItemAction : null)
+                || {}).item;
+              if (!currentElement) return;
+              let messageItem = currentElement.liveChatTextMessageRenderer;
+              if (!messageItem) return;
+              messageItem.authorBadges = messageItem.authorBadges || [];
+              let authorTypes = [];
+              messageItem.authorBadges.forEach(badge =>
+                authorTypes.push(badge.liveChatAuthorBadgeRenderer.tooltip));
+              let messageText = '';
+              messageItem.message.runs.forEach(run => {
+                if (run.text) messageText += run.text;
+              });
+              if (!messageText) return;
+              item = {
+                author: {
+                  name: messageItem.authorName.simpleText,
+                  id: messageItem.authorExternalChannelId,
+                  types: authorTypes
+                },
+                message: messageText,
+                timestamp: isReplayChat() ? messageItem.timestampText.simpleText : parseTimestamp(messageItem.timestampUsec)
+              };
+              messages.push(item);
+            } catch (e) { console.debug(e); }
           });
           window.parent.postMessage({
             type: 'messageChunk',

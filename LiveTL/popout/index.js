@@ -1,3 +1,5 @@
+params = parseParams();
+
 let messageReceive = m => {
   if (typeof m.data == 'object') {
     switch (m.data.type) {

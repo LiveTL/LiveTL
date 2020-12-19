@@ -1,1 +1,1 @@
-Massive backend performance improvements, new user filter selection, left side chat toggle, Russian language support, various bugfixes, and more!
+HoloTools duplicate message fix and small bug fixes. If you are a Firefox user and LiveTL has not been working, please try reinstalling the extension. We are currently working on a fix.
