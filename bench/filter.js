@@ -77,6 +77,6 @@ function benchLangMatch () {
   return Date.now() - beg
 }
 
-console.log(`parseTranslation in ${benchParseTranslation()} ms`);
-console.log(`langMatch in ${benchLangMatch()} ms`)
+console.debug(`parseTranslation in ${benchParseTranslation()} ms`);
+console.debug(`langMatch in ${benchLangMatch()} ms`)
 

@@ -16,6 +16,7 @@
 
 <body>
 <div id="display">
+<!--<<<<<<< HEAD
     <div id="leftPanel">
         <div id="leftPanelContainer">
             <iframe src=""
@@ -25,21 +26,30 @@
             <div id="ltlcaptions"></div>
         </div>
         <div id="handleV" class="handle ui-resizable-handle ui-resizable-e"><span>&vellip;</span></div>
+=======-->
+    <div id="videoPanel">
+        <iframe src=""
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen id="stream"></iframe>
+        <div id="ltlcaptions"></div>
+<!-->>>>>>> develop-->
     </div>
-    <div id="rightPanel">
-        <div id="topRightPanel">
+    <div id="handleV" class="handle ui-resizable-handle ui-resizable-e"><span>&vellip;</span></div>
+    <div id="ltlPanel">
+        <div id="youtubeChatPanel">
             <div class="iframeWrapper">
                 <iframe id="chat"></iframe>
             </div>
             <div id="handleH" class="handle ui-resizable-handle ui-resizable-s"><span>&hellip;</span></div>
         </div>
-        <div id="bottomRightPanel">
+        <div id="outputPanel">
             <div class="iframeWrapper">
                 <iframe id="livetl-chat"></iframe>
             </div>
         </div>
     </div>
 </div>
+<script src='./js/frame.js'></script>
 <script src="./js/index.js"></script>
 </body>
 

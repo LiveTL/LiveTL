@@ -1,1 +1,1 @@
-Archived stream support, custom user filters, text direction and zoom options, saved preferences across sessions, complete HoloTools integration, message timestamps, moderator message whitelisting, animation/interface facelifts, and performance improvements!
+HoloTools duplicate message fix and small bug fixes. If you are a Firefox user and LiveTL has not been working, please try reinstalling the extension. We are currently working on a fix.

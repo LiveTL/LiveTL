@@ -28,24 +28,32 @@
     background-color: black;
 }
 
-#leftPanel {
-    width: 75%;
+#videoPanel {
+    --resizeable-width: calc(100% - 150px);
+    width: var(--resizeable-width);
     height: 100%;
-    top: 0;
-    left: 0;
+    order: 1;
 }
 
-#rightPanel {
+#ltlPanel {
     flex-grow: 1;
     height: 100%;
     flex-direction: column;
     display: flex;
+    order: 3;
 }
 
-#topRightPanel {
+#youtubeChatPanel {
     width: 100%;
     height: 80%;
     max-height: 100%;
+}
+
+#outputPanel {
+    width: 100%;
+    flex-grow: 1;
+    position: relative;
+    height: 0;
 }
 
 body {
@@ -63,6 +71,8 @@ body {
     align-items: center;
     justify-content: center;
     z-index: 2;
+    position: relative;
+    order: 2;
 }
 
 #handleH {
@@ -116,6 +126,7 @@ body {
     width: 100%;
 }
 
+/*<<<<<<< HEAD*/
 #bottomRightPanel {
     width: 100%;
     flex-grow: 1;
@@ -144,3 +155,5 @@ body {
     word-break: break-word;
     font-size: 20px;
 }
+/*=======
+>>>>>>> develop*/
