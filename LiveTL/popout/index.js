@@ -1,6 +1,6 @@
 params = parseParams();
 
-let messageReceive = m => {
+let messageReceive = (m, sender, callback) => {
   if (typeof m.data == 'object') {
     switch (m.data.type) {
       case 'messageChunk':
@@ -9,10 +9,11 @@ let messageReceive = m => {
         break;
     }
   }
+  callback();
+  return true;
 };
 
 window.addEventListener('message', messageReceive);
-
-chrome.runtime.onMessage.addListener((d) => messageReceive(d));
+chrome.runtime.onMessage.addListener(messageReceive);
 
 runLiveTL();

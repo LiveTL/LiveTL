@@ -7,6 +7,7 @@ const allTranslators = { byID: {}, byName: {} };
 let allTranslatorCheckbox = {};
 let showTimestamps = true;
 let textDirection = 'bottom';
+let mostRecentTimestamp = 0;
 
 async function addedByUser(id) {
   let s = (await getUserStatus(id, true)).checked != null;
@@ -261,11 +262,14 @@ async function insertLiveTLButtons(isHolotools = false) {
       async () => {
         params = parseParams();
         let tlwindow = await createWindow(`${await getWAR('popout/index.html')}?v=${params.v}&mode=chat${restOfURL()}`);
+        document.querySelector('#chatframe').contentWindow.addEventListener('message', d => {
+          d = d.data['yt-player-video-progress'];
+          if (d) {
+            mostRecentTimestamp = d;
+          }
+        });
         console.debug('Launched translation window with ID', tlwindow);
         if (!windowsWithBinds[tlwindow]) {
-          document.querySelector('#chatframe').contentWindow.addEventListener('message', d => {
-            sendToWindow(tlwindow, d.data);
-          });
           window.addEventListener('message', m => {
             if (typeof m.data == 'object') {
               switch (m.data.type) {
@@ -330,7 +334,11 @@ async function onMessageFromEmbeddedChat(m) {
 
 let params = {};
 let lastLocation = '';
-chrome.runtime.onMessage.addListener((d) => window.dispatchEvent(new CustomEvent('chromeMessage', { detail: d })));
+chrome.runtime.onMessage.addListener((d, sender, callback) => {
+  window.dispatchEvent(new CustomEvent('chromeMessage', { detail: d }));
+  callback();
+  return true;
+});
 
 async function loaded() {
   // window.removeEventListener('load', loaded);
@@ -391,7 +399,8 @@ async function loaded() {
           });
           window.parent.postMessage({
             type: 'messageChunk',
-            messages: messages
+            messages: messages,
+            videoTimestamp: mostRecentTimestamp
           }, '*');
         });
       }

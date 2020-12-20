@@ -50,7 +50,7 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
         type: 'popup',
         height: 300,
         width: 600
-      }).then(tab => {
+      }, tab => {
         console.debug('Created window', tab);
         callback(tab.id);
       });
@@ -99,10 +99,11 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
     if (!isLiveTL(details)) {
       try {
         let t = details.tabId;
-        console.log(`Sending data to tab ${t}`)
+        let payload = { url: details.url, headers: details.requestHeaders, body: mostRecentBodies[details.url] };
+        console.debug(`Sending data to tab ${t}`, payload);
         chrome.tabs.sendMessage(
-          t, { url: details.url, headers: details.requestHeaders, body: mostRecentBodies[details.url] },
-          {frameId: details.frameId}
+          t, payload,
+          { frameId: details.frameId }
         );
       } catch (e) {
         console.debug(e);

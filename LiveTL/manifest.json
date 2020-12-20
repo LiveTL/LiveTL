@@ -10,7 +10,8 @@
     "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat/*",
     "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay/*",
     "EMBED_DOMAIN/*",
-    "storage"
+    "storage",
+    "tabs"
   ],
   "content_scripts": [
     {
