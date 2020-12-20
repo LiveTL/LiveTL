@@ -14,7 +14,7 @@ params = parseParams();
 const v = params.v || '5qap5aO4i9A';
 // >>>>>>> develop
 const stream = document.querySelector('#stream');
-const leftPanelContainer = document.querySelector('#leftPanelContainer');
+const leftPanelContainer = document.querySelector('#videoPanel');
 const ltlchat = document.querySelector('#livetl-chat');
 const chat = document.querySelector('#chat');
 const videoPanel = document.querySelector('#videoPanel');
@@ -169,6 +169,11 @@ if (params.noVideo) {
   }
 }
 
+// Not working rn
+// $('#ltlcaptions').draggable({ start: function() {
+//     $(this).css({transform: "none", top: $(this).offset().top+"px", left:$(this).offset().left+"px"});
+// } });
+
 function createCaptionSegment(segment) {
   let caption = document.createElement('p');
   caption.className = 'captionSegment';
@@ -205,8 +210,9 @@ function clearCaptions() {
   captions.childNodes.forEach(node => node.remove());
 }
 
-window.addEventListener("message", (event) => {
-  if (event.data.action === "caption") {
+window.addEventListener('message', async (event) => {
+  let displayCaptions = await getStorage('captionMode');
+  if (displayCaptions && event.data.action === 'caption') {
     displayCaption(event.data.caption, 10000);
   }
 });

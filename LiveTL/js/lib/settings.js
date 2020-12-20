@@ -23,9 +23,32 @@ async function createSettings(container) {
   settings.appendChild(await createTimestampToggle());
   settings.appendChild(await createTextDirectionToggle(container));
   settings.appendChild(await createChatSideToggle());
+  settings.appendChild(await createCaptionDisplayToggle());
 
   await updateZoomLevel();
   return settings;
+}
+
+async function createCaptionDisplayToggle() {
+  await setupDefaultCaption();
+  const captionDispToggle = document.createElement('div');
+  captionDispToggle.appendChild(createCaptionDisplayToggleLabel());
+  captionDispToggle.appendChild(await createCaptionDisplayToggleCheckbox());
+  return captionDispToggle;
+}
+
+function createCaptionDisplayToggleLabel() {
+  return createCheckToggleLabel('Caption mode (beta)', 'captionMode');
+}
+
+async function createCaptionDisplayToggleCheckbox() {
+  return await createCheckToggleCheckbox(
+    'captionMode', 'captionMode', async () => {
+      // TODO features
+      // if displaying mode, display last message
+      // otherwise clear messages
+    }
+  );
 }
 
 function createModal(container) {
@@ -456,36 +479,59 @@ async function createChatSideToggle() {
   return chatSideToggle;
 }
 
-function createDisplayModMessageLabel() {
+function createCheckToggleLabel(labelName, labelFor) {
   const label = document.createElement('label');
   label.className = 'optionLabel';
-  label.htmlFor = 'displayModMessages';
-  label.textContent = 'Show Mod Messages: ';
-
+  label.htmlFor = labelFor;
+  label.textContent = labelName;
   return label;
 }
 
-async function createDisplayModMessageCheckbox() {
+async function createCheckToggleCheckbox(id, storageName, onchange) {
   const checkbox = document.createElement('input');
-  checkbox.id = 'displayModMessages';
+  checkbox.id = id;
   checkbox.type = 'checkbox';
   checkbox.style.padding = '4px';
   checkbox.style.verticalAlign = 'middle';
 
-  let display = await getStorage('displayModMessages');
+  let display = await getStorage(storageName);
   checkbox.checked = display != null ? display : true;
 
-  let changed = async () => {
-    const displayModMessages = checkbox.checked;
-    await setStorage('displayModMessages', displayModMessages);
-    document.querySelectorAll('.mod').forEach(el => el.parentElement.parentElement.style.display = displayModMessages ? 'block' : 'none');
+  const changed = async() => {
+    const toDisplay = checkbox.checked;
+    await setStorage(storageName, toDisplay);
+    await onchange();
   };
+
+  // let changed = async () => {
+  //   const displayModMessages = checkbox.checked;
+  //   await setStorage(storageName, displayModMessages);
+  //   document.querySelectorAll('.mod').forEach(el => el.parentElement.parentElement.style.display = displayModMessages ? 'block' : 'none');
+  // };
 
   checkbox.addEventListener('change', changed);
 
   await changed();
 
   return checkbox;
+}
+
+function createDisplayModMessageLabel() {
+  return createCheckToggleLabel('Show Mod Messages: ', 'displayModMessages');
+}
+
+async function createDisplayModMessageCheckbox() {
+  return await createCheckToggleCheckbox(
+    'displayModMessages', 'displayModMessages', async () => {
+      const displayModMessages = await getStorage('displayModMessages');
+      document.querySelectorAll('.mod').forEach(el => {
+        el.parentElement
+          .parentElement
+          .style
+          .display = displayModMessages ? 'block': 'none';
+      });
+    }
+  );
 }
 
 async function createDisplayModMessageToggle() {
