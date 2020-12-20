@@ -1,1 +1,1 @@
-HoloTools duplicate message fix and small bug fixes. If you are a Firefox user and LiveTL has not been working, please try reinstalling the extension. We are currently working on a fix.
+Caption display mode and small bug fixes. The Firefox version may still have issues displaying messages -- in the meantime, please try reinstalling or using the Chrome version! We are working hard to patch it as soon as possible.
