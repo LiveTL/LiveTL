@@ -119,3 +119,4 @@ common: init
 clean:
 	rm -rf dist/
 	rm -rf build/
+	rm -rf drivers/

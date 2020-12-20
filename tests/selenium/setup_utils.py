@@ -1,7 +1,9 @@
+import tarfile
 from pathlib import Path
 from zipfile import ZipFile
-import tarfile
+
 import requests
+
 
 def download(url: str, location: Path) -> None:
     __touch(location)
