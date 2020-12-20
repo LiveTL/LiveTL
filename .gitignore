@@ -2,6 +2,7 @@
 *.zone*
 build/
 dist/
+drivers/
 *.swp
 .DS_Store
 *.xcuserstate
