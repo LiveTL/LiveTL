@@ -1,7 +1,8 @@
 params = parseParams();
 
-let messageReceive = (m, sender, callback) => {
+let messageReceive = (m) => {
   if (typeof m.data == 'object') {
+    if (params.v != m.data.video) return;
     switch (m.data.type) {
       case 'messageChunk':
         console.debug('Received message chunk:', m.data);
@@ -9,8 +10,6 @@ let messageReceive = (m, sender, callback) => {
         break;
     }
   }
-  callback();
-  return true;
 };
 
 window.addEventListener('message', messageReceive);

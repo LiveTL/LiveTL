@@ -34,27 +34,24 @@ chrome.runtime.onInstalled.addListener(details => {
 
 chrome.runtime.onMessage.addListener((request, sender, callback) => {
   switch (request.type) {
-    case 'get_war':
+    case 'get_war': {
       callback(chrome.runtime.getURL(request.url));
       break;
-    case 'message':
+    } case 'message': {
       try {
         chrome.tabs.sendMessage(
-          request.id, request.data
+          undefined, request.data
         );
       } catch (e) { }
       break;
-    case 'window':
+    } case 'window': {
       (window.browser || window.chrome).windows.create({
         url: request.url,
-        type: 'popup',
+        type: 'panel',
         height: 300,
         width: 600
-      }, tab => {
-        console.debug('Created window', tab);
-        callback(tab.id);
       });
-      return true;
+    }
     // can't break here, callback breaks 
   }
 });

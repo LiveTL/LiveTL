@@ -209,7 +209,19 @@ getContinuation = (src) => {
   return parseParams('?' + src.split('?')[1]).continuation;
 };
 
+getV = (src) => {
+  return parseParams('?' + src.split('?')[1]).v;
+};
+
 let windowsWithBinds = {};
+
+const createWindow = async u => {
+  return new Promise((res, rej) => {
+    chrome.runtime.sendMessage({ type: 'window', url: u }, (d, a) => {
+      res(d);
+    });
+  });
+};
 
 async function insertLiveTLButtons(isHolotools = false) {
   console.debug('Inserting LiveTL Launcher Buttons');
@@ -227,13 +239,6 @@ async function insertLiveTLButtons(isHolotools = false) {
 
   const redirectTab = u => window.location.href = u;
   const createTab = u => window.open(u);
-  const createWindow = async u => {
-    return new Promise((res, rej) => {
-      chrome.runtime.sendMessage({ type: 'window', url: u }, d => {
-        res(d);
-      });
-    });
-  };
   getContinuationURL = (() => {
     let chatframe = document.querySelector('#chatframe');
     let src = chatframe.dataset.src;
@@ -250,9 +255,9 @@ async function insertLiveTLButtons(isHolotools = false) {
       redirectTab(`${await getWAR('index.html')}?v=${params.v}${restOfURL()}`);
     });
 
-    sendToWindow = (id, data) => {
+    sendToWindow = (data) => {
       try {
-        chrome.runtime.sendMessage({ type: 'message', data: data, id: id }, {});
+        chrome.runtime.sendMessage({ type: 'message', data: data }, {});
       } catch (e) {
         console.debug(e);
       }
@@ -261,26 +266,26 @@ async function insertLiveTLButtons(isHolotools = false) {
     makeButton('Pop Out Translations',
       async () => {
         params = parseParams();
-        let tlwindow = await createWindow(`${await getWAR('popout/index.html')}?v=${params.v}&mode=chat${restOfURL()}`);
+        await createWindow(`${await getWAR('popout/index.html')}?v=${params.v}&mode=chat${restOfURL()}`);
         document.querySelector('#chatframe').contentWindow.addEventListener('message', d => {
           d = d.data['yt-player-video-progress'];
           if (d) {
             mostRecentTimestamp = d;
           }
         });
-        console.debug('Launched translation window with ID', tlwindow);
-        if (!windowsWithBinds[tlwindow]) {
+        console.debug('Launched translation window for video', params.v);
+        if (!windowsWithBinds[params.v]) {
           window.addEventListener('message', m => {
             if (typeof m.data == 'object') {
               switch (m.data.type) {
                 case 'messageChunk':
-                  sendToWindow(tlwindow, m.data);
-                  console.debug('Sent', m.data, 'to', tlwindow);
+                  sendToWindow(m.data);
+                  console.debug('Sent', m.data, 'to', params.v);
                   break;
               }
             }
           });
-          windowsWithBinds[tlwindow] = true;
+          windowsWithBinds[params.v] = true;
         }
       },
       'rgb(143, 143, 143)');
@@ -400,7 +405,8 @@ async function loaded() {
           window.parent.postMessage({
             type: 'messageChunk',
             messages: messages,
-            videoTimestamp: mostRecentTimestamp
+            videoTimestamp: mostRecentTimestamp,
+            video: getV(window.location.href) || getV(window.parent.location.href)
           }, '*');
         });
       }
