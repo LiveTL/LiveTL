@@ -1,8 +1,13 @@
+import sys
 import tarfile
 from pathlib import Path
+from typing import Callable, Dict, List
 from zipfile import ZipFile
 
 import requests
+
+pwd = Path(".") / "drivers"
+platform = sys.platform.replace("32", "")
 
 
 def download(url: str, location: Path) -> None:
@@ -26,3 +31,20 @@ def untar(source: str, dest_folder: str) -> None:
 def __touch(location: Path) -> None:
     location.parent.mkdir(parents=True, exist_ok=True)
     location.touch()
+
+
+def setup_driver(platform_install, platform_drivers) -> Callable[[], None]:
+    def inner() -> None:
+        if not __is_present(platform_drivers):
+            __download_and_extract(*platform_install[platform])
+
+    return inner
+
+
+def __is_present(platform_drivers):
+    return platform_drivers[platform].exists()
+
+
+def __download_and_extract(url: str, extract: Callable[[str, str], None]) -> None:
+    download(url, pwd / "temp")
+    extract(pwd / "temp", pwd)
