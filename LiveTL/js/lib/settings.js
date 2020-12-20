@@ -29,28 +29,6 @@ async function createSettings(container) {
   return settings;
 }
 
-async function createCaptionDisplayToggle() {
-  await setupDefaultCaption();
-  const captionDispToggle = document.createElement('div');
-  captionDispToggle.appendChild(createCaptionDisplayToggleLabel());
-  captionDispToggle.appendChild(await createCaptionDisplayToggleCheckbox());
-  return captionDispToggle;
-}
-
-function createCaptionDisplayToggleLabel() {
-  return createCheckToggleLabel('Caption mode (beta)', 'captionMode');
-}
-
-async function createCaptionDisplayToggleCheckbox() {
-  return await createCheckToggleCheckbox(
-    'captionMode', 'captionMode', async () => {
-      // TODO features
-      // if displaying mode, display last message
-      // otherwise clear messages
-    }
-  );
-}
-
 function createModal(container) {
   const settingsButton = document.createElement('div');
   settingsGear(settingsButton);
@@ -503,12 +481,6 @@ async function createCheckToggleCheckbox(id, storageName, onchange) {
     await onchange();
   };
 
-  // let changed = async () => {
-  //   const displayModMessages = checkbox.checked;
-  //   await setStorage(storageName, displayModMessages);
-  //   document.querySelectorAll('.mod').forEach(el => el.parentElement.parentElement.style.display = displayModMessages ? 'block' : 'none');
-  // };
-
   checkbox.addEventListener('change', changed);
 
   await changed();
@@ -579,4 +551,26 @@ function createCustomUserButton(container) {
     }
   });
   return addButton;
+}
+
+async function createCaptionDisplayToggle() {
+  await setupDefaultCaption();
+  const captionDispToggle = document.createElement('div');
+  captionDispToggle.appendChild(createCaptionDisplayToggleLabel());
+  captionDispToggle.appendChild(await createCaptionDisplayToggleCheckbox());
+  return captionDispToggle;
+}
+
+function createCaptionDisplayToggleLabel() {
+  return createCheckToggleLabel('Caption mode (beta)', 'captionMode');
+}
+
+async function createCaptionDisplayToggleCheckbox() {
+  return await createCheckToggleCheckbox(
+    'captionMode', 'captionMode', async () => {
+      if (!(await getStorage('captionMode'))) {
+        window.parent.parent.postMessage({ action: 'clearCaption' }, '*');
+      }
+    }
+  );
 }

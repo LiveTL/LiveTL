@@ -215,6 +215,9 @@ window.addEventListener('message', async (event) => {
   if (displayCaptions && event.data.action === 'caption') {
     displayCaption(event.data.caption, 10000);
   }
+  if (event.data.action === 'clearCaption') {
+    clearCaptions();
+  }
 });
 
 // Demo call to displayCaption

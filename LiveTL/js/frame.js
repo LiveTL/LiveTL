@@ -101,12 +101,7 @@ async function runLiveTL() {
   prependE = el => translationDiv.prepend(el);
 
   let prependOrAppend = e => (textDirection == 'bottom' ? appendE : prependE)(e);
-  const sendToCaptions = caption => {
-    // console.log(window.parent);
-    // window.parent.parent.displayCaption(caption, 10000, true);
-    const captionWindow = window.parent.parent;
-    captionWindow.postMessage({ action: "caption", caption }, "*");
-  };
+  
 
   prependOrAppend(await createWelcome());
   const hrParent = document.createElement('div');
@@ -763,6 +758,11 @@ async function setFavicon() {
   faviconLink.href = await favicon;
   document.head.appendChild(faviconLink);
 }
+
+const sendToCaptions = caption => {
+  const captionWindow = window.parent.parent;
+  captionWindow.postMessage({ action: "caption", caption }, "*");
+};
 
 // MARK
 
