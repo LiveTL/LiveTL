@@ -1,3 +1,6 @@
+py = python3
+pip = ${py} -m pip
+pytest = ${py} -m pytest
 jquery = "./build/common/jquery.min.js"
 jquery-ui = "./build/common/jquery-ui.min.js"
 jquery-css = "./build/common/jquery-ui.css"
@@ -35,8 +38,12 @@ init:
 	cp $(sjquery-ui) $(jquery-ui)
 	cp $(sjquery-css) $(jquery-css)
 
-test:
+testinit:
+	$(pip) install -r requirements.txt
+
+test: firefox chrome testinit
 	@node tests/*.js
+	@$(pytest) tests/selenium
 
 bench:
 	@node bench/*.js

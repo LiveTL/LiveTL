@@ -56,10 +56,11 @@ def setup_driver() -> None:
 # FIXME --headless results in bugs
 def __get_options(display: bool) -> Options:
     options = Options()
-    options.add_extension(r"dist\chrome\LiveTL-integration.zip")
+    options.add_extension("dist/chrome/LiveTL-integration.zip")
     # options.add_extension(str(Path(".").resolve() / "dist" /"chrome" / "LiveTL.zip"))
     if enable_headless:
-        options.add_argument("--disable-gpu")
+        # options.add_argument("--disable-gpu")
+        options.add_argument("--no-sandbox")
         if not display:
             options.add_argument("--headless")
     return options
