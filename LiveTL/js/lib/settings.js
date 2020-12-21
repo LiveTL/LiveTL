@@ -568,8 +568,14 @@ function createCaptionDisplayToggleLabel() {
 async function createCaptionDisplayToggleCheckbox() {
   return await createCheckToggleCheckbox(
     'captionMode', 'captionMode', async () => {
-      if (!(await getStorage('captionMode'))) {
-        window.parent.parent.postMessage({ action: 'clearCaption' }, '*');
+      const postMessage = window.parent.parent.postMessage;
+      if ((await getStorage('captionMode'))) {
+        postMessage({
+          action: 'caption',
+          caption: 'Captions will appear here'
+        });
+      } else {
+        postMessage({ action: 'clearCaption' }, '*');
       }
     }
   );

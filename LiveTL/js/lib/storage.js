@@ -33,7 +33,7 @@ async function setDefaultLanguage(lang) {
 
 async function setupDefaultCaption() {
   if ((await getStorage('captionMode')) == null) {
-    return await setStorage('captionMode', false);
+    return await setStorage('captionMode', true);
   }
 };
 
