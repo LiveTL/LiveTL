@@ -37,6 +37,15 @@ class ChromeDriver(webdriver.Chrome):
         sb.Popen = Popen
         super().__init__(*args, **kwargs)
         sb.Popen = old_popen
+        self.has_quit = False
+
+    def quit(self):
+        if not self.has_quit:
+            self.has_quit = True
+            super().quit()
+
+    def __del__(self):
+        self.quit()
 
 
 def get_selenium(display: bool = False) -> webdriver.Chrome:
