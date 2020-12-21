@@ -173,12 +173,13 @@ function createCaptionSegment(segment) {
 }
 
 // Just here in case we need it later
-function splitCaptionIntoSegments(caption, maxLength=100) {
+function splitCaptionIntoSegments(caption, maxLength = 100) {
   return [caption];
 }
 
-function displayCaption(caption, persistFor=-1, clear=true) {
+function displayCaption(caption, persistFor = -1, clear = true) {
   const captions = document.querySelector('#ltlcaptions');
+  captions.style.display = 'block';
   if (clear) {
     clearCaptions();
   }
@@ -194,7 +195,7 @@ function displayCaption(caption, persistFor=-1, clear=true) {
 
 function clearCaptions() {
   const captions = document.querySelector('#ltlcaptions');
-  captions.childNodes.forEach(node => node.remove());
+  captions.querySelectorAll('.captionSegment').forEach(node => node.remove());
 }
 
 window.addEventListener('message', async (event) => {
@@ -209,3 +210,29 @@ window.addEventListener('message', async (event) => {
 
 // Demo call to displayCaption
 // displayCaption("Oi koroneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneone", 1000, false);
+
+let div = $(document.querySelector('#ltlcaptions'));
+div.resizable({
+  handles: 'e, w',
+  stop: function (event, ui) {
+    var top = getTop(ui.helper);
+    ui.helper.css('position', 'fixed');
+    ui.helper.css('top', top + "px");
+  }
+});
+
+div.draggable(
+  {
+    stop: function (event, ui) {
+      var top = getTop(ui.helper);
+      ui.helper.css('position', 'fixed');
+      ui.helper.css('top', top + 'px');
+    }
+  });
+
+function getTop(ele) {
+  var eTop = ele.offset().top;
+  var wTop = $(window).scrollTop();
+  var top = eTop - wTop;
+  return top;
+}
