@@ -39,7 +39,7 @@ init:
 	cp $(sjquery-css) $(jquery-css)
 
 testinit:
-	$(pip) install -r requirements.txt
+	cat requirements.txt | grep "#" | sed 's/#//g' | $(py) || $(pip) install -r requirements.txt
 
 test: firefox chrome testinit
 	@node tests/*.js
