@@ -101,6 +101,7 @@ async function runLiveTL() {
   prependE = el => translationDiv.prepend(el);
 
   let prependOrAppend = e => (textDirection == 'bottom' ? appendE : prependE)(e);
+  
 
   prependOrAppend(await createWelcome());
   const hrParent = document.createElement('div');
@@ -135,6 +136,7 @@ async function runLiveTL() {
       // Check to make sure we haven't blacklisted the mod, and if not, send the message
       // After send the message, we bail so we don't have to run all the translation related things below
       if (checked) {
+        sendToCaptions(messageInfo.message);
         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
         return;
       }
@@ -157,6 +159,7 @@ async function runLiveTL() {
       checked = (await isChecked(messageInfo.author.id));
       // Check to see if the sender is approved, and send the message if they are
       if (checked) {
+        sendToCaptions(translation.msg);
         prependOrAppend(createMessageEntry(messageInfo, translation.msg));
         return;
       }
@@ -168,8 +171,10 @@ async function runLiveTL() {
         await createCheckbox(messageInfo.author.name, messageInfo.author.id, true);
       }
       checked = (await isChecked(messageInfo.author.id));
-      if (checked)
+      if (checked) {
+        sendToCaptions(messageInfo.message);
         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
+      }
       return;
     }
   };
@@ -743,6 +748,11 @@ async function setFavicon() {
   faviconLink.href = await favicon;
   document.head.appendChild(faviconLink);
 }
+
+const sendToCaptions = caption => {
+  const captionWindow = window.parent.parent;
+  captionWindow.postMessage({ action: "caption", caption }, "*");
+};
 
 // MARK
 
