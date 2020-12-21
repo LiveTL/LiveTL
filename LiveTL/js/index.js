@@ -1,6 +1,20 @@
+// <<<<<<< HEAD
+// parseParams = () => {
+//   const s = decodeURI(location.search.substring(1))
+//     .replace(/"/g, '\\"')
+//     .replace(/&/g, '","')
+//     .replace(/=/g, '":"');
+//   return s == '' ? {} : JSON.parse('{"' + s + '"}');
+// };
+// 
+// const params = parseParams();
+// const v = params.v || '5qap5aO4i9A'; // ChilledCow
+// =======
 params = parseParams();
 const v = params.v || '5qap5aO4i9A';
+// >>>>>>> develop
 const stream = document.querySelector('#stream');
+const leftPanelContainer = document.querySelector('#videoPanel');
 const ltlchat = document.querySelector('#livetl-chat');
 const chat = document.querySelector('#chat');
 const videoPanel = document.querySelector('#videoPanel');
@@ -9,7 +23,10 @@ const outputPanel = document.querySelector('#outputPanel');
 const youtubeChatPanel = document.querySelector('#youtubeChatPanel');
 document.title = decodeURIComponent(params.title || 'LiveTL');
 const start = () => {
-  stream.style.display = 'none';
+  leftPanelContainer.querySelectorAll('*').forEach(node => {
+    node.style.display = 'none';
+  });
+  // stream.style.display = 'none';
   ltlchat.style.display = 'none';
   chat.style.display = 'none';
   videoPanel.style.backgroundColor = 'var(--accent)';
@@ -17,7 +34,10 @@ const start = () => {
   youtubeChatPanel.style.backgroundColor = 'var(--accent)';
 };
 const stop = () => {
-  stream.style.display = 'block';
+  // stream.style.display = 'block';
+  leftPanelContainer.querySelectorAll('*').forEach(node => {
+    node.style.display = 'block';
+  });
   ltlchat.style.display = 'block';
   chat.style.display = 'block';
   videoPanel.style.backgroundColor = 'black';
@@ -148,3 +168,57 @@ if (params.noVideo) {
     youtubeChatPanel.style.height = rightHeight;
   }
 }
+
+// Not working rn
+// $('#ltlcaptions').draggable({ start: function() {
+//     $(this).css({transform: "none", top: $(this).offset().top+"px", left:$(this).offset().left+"px"});
+// } });
+
+function createCaptionSegment(segment) {
+  let caption = document.createElement('p');
+  caption.className = 'captionSegment';
+  caption.textContent = segment;
+  // May add animations later
+  caption.removeSelf = () => {
+    caption.remove();
+  };
+  return caption;
+}
+
+// Just here in case we need it later
+function splitCaptionIntoSegments(caption, maxLength=100) {
+  return [caption];
+}
+
+function displayCaption(caption, persistFor=-1, clear=true) {
+  const captions = document.querySelector('#ltlcaptions');
+  if (clear) {
+    clearCaptions();
+  }
+  splitCaptionIntoSegments(caption)
+    .map(createCaptionSegment)
+    .map(caption => {
+      captions.appendChild(caption);
+      if (persistFor >= 0) {
+        setTimeout(() => caption.removeSelf(), persistFor);
+      }
+    });
+}
+
+function clearCaptions() {
+  const captions = document.querySelector('#ltlcaptions');
+  captions.childNodes.forEach(node => node.remove());
+}
+
+window.addEventListener('message', async (event) => {
+  let displayCaptions = await getStorage('captionMode');
+  if (displayCaptions && event.data.action === 'caption') {
+    displayCaption(event.data.caption, 10000);
+  }
+  if (event.data.action === 'clearCaption') {
+    clearCaptions();
+  }
+});
+
+// Demo call to displayCaption
+// displayCaption("Oi koroneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneone", 1000, false);

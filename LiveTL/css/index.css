@@ -126,3 +126,34 @@ body {
     width: 100%;
 }
 
+/*<<<<<<< HEAD*/
+#bottomRightPanel {
+    width: 100%;
+    flex-grow: 1;
+    position: relative;    
+    height: 0;
+}
+
+#leftPanelContainer {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+#ltlcaptions {
+    z-index: 100;
+    bottom: 10%;
+    left: 20%;
+    position: absolute;
+    color: #C5C5C5;
+    margin-right: 20%;
+}
+
+.captionSegment {
+    color: #E5E5E5;
+    word-wrap: break-word;
+    word-break: break-word;
+    font-size: 20px;
+}
+/*=======
+>>>>>>> develop*/
