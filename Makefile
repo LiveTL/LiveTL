@@ -73,6 +73,11 @@ firefox: common
 	cp ./LICENSE ./build/firefox/LiveTL/
 	grep -v incognito ./build/common/manifest.json > ./build/firefox/LiveTL/manifest.json
 	cd build/firefox/LiveTL && zip -9r ../../../dist/firefox/LiveTL.zip *
+	cp dist/firefox/LiveTL.zip dist/firefox/LiveTL.xpi
+	zip -d dist/firefox/LiveTL.xpi "css/"
+	zip -d dist/firefox/LiveTL.xpi "icons/"
+	zip -d dist/firefox/LiveTL.xpi "popout/"
+	zip -d dist/firefox/LiveTL.xpi "js/"
 	
 safari: common 
 	rm -rf dist/safari/

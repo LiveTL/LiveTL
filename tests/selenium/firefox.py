@@ -6,12 +6,21 @@ from selenium import webdriver
 pwd = Path(".") / "drivers"
 
 
+class FirefoxDriver(webdriver.Firefox):
+    def __del__(self):
+        self.quit()
+
+
 def setup_driver() -> None:
     __setup_driver()
 
 
+# FIXME display option doesn't do anything right now
 def get_selenium(display: bool = False) -> webdriver.Firefox:
-    browser = webdriver.Firefox(executable_path=__platform_drivers[su.platform])
+    fp = webdriver.FirefoxProfile()
+    fp.DEFAULT_PREFERENCES['frozen']["xpinstall.signatures.required"] = False
+    browser = FirefoxDriver(executable_path=__platform_drivers[su.platform], firefox_profile=fp)
+    browser.install_addon(str(Path(".").resolve() / "dist" / "firefox" / "LiveTL.xpi"), True)
     return browser
 
 
@@ -46,3 +55,4 @@ __setup_driver = su.setup_driver(
 
 if __name__ == "__main__":
     setup_driver()
+    web = get_selenium()
