@@ -200,7 +200,7 @@ function clearCaptions() {
 window.addEventListener('message', async (event) => {
   let displayCaptions = await getStorage('captionMode');
   if (displayCaptions && event.data.action === 'caption') {
-    displayCaption(event.data.caption, 10000);
+    displayCaption(event.data.caption);
   }
   if (event.data.action === 'clearCaption') {
     clearCaptions();
