@@ -10,3 +10,4 @@ LiveTL-Safari/LiveTL/LiveTL.xcodeproj/xcuserdata/
 .idea/
 __pycache__/
 *.pyc
+*.log

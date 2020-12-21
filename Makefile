@@ -56,6 +56,7 @@ chrome: common
 	grep -v all_urls ./build/common/manifest.json > ./build/chrome/LiveTL/manifest.json
 	cp ./LICENSE ./build/chrome/LiveTL/
 	cd build/chrome/ && zip -9r ../../dist/chrome/LiveTL.zip LiveTL/
+	cd build/chrome/LiveTL && zip -9r ../../../dist/chrome/LiveTL-integration.zip *
 
 firefox: common
 	rm -rf dist/firefox/

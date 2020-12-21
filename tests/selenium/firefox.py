@@ -1,12 +1,26 @@
 from pathlib import Path
 
 import setup_utils as su
+from selenium import webdriver
 
 pwd = Path(".") / "drivers"
 
 
 def setup_driver() -> None:
     __setup_driver()
+
+
+def get_selenium(display: bool = False) -> webdriver.Firefox:
+    browser = webdriver.Firefox(executable_path=__platform_drivers[su.platform])
+    return browser
+
+
+__platform_drivers = {
+    "win": pwd / "geckodriver.exe",
+    "darwin": pwd / "geckodriver",
+    "linux": pwd / "geckodriver",
+}
+
 
 __setup_driver = su.setup_driver(
     {
@@ -26,11 +40,7 @@ __setup_driver = su.setup_driver(
             su.untar,
         ],
     },
-    {
-        "win": pwd / "geckodriver.exe",
-        "darwin": pwd / "geckodriver",
-        "linux": pwd / "geckodriver",
-    },
+    __platform_drivers,
 )
 
 
