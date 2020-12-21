@@ -1,6 +1,8 @@
 import functools
+import os
 import time
 
+LEVEL = int(os.environ.get("LEVEL", "0"))
 
 def web_test(test):
     @functools.wraps(test)
@@ -24,4 +26,14 @@ def retry_every_interval(times_to_try=5, wait=1):
 
         return inner
 
+    return wrapper
+
+
+def level(lev):
+    def wrapper(func):
+        @functools.wraps(func)
+        def inner(*args, **kwargs):
+            if lev >= LEVEL:
+                return func(*args, **kwargs)
+        return inner
     return wrapper
