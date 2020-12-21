@@ -39,6 +39,7 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
       break;
     } case 'message': {
       try {
+        console.debug('Broadcasting message', request.data);
         chrome.tabs.sendMessage(
           undefined, request.data
         );
@@ -112,6 +113,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 
 chrome.webRequest.onBeforeRequest.addListener(
   details => {
+    console.debug('Caught request body');
     mostRecentBodies[details.url] = decodeURIComponent(String.fromCharCode.apply(null,
       new Uint8Array(details.requestBody.raw[0].bytes)));
   }, {

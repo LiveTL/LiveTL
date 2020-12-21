@@ -340,6 +340,7 @@ async function onMessageFromEmbeddedChat(m) {
 let params = {};
 let lastLocation = '';
 chrome.runtime.onMessage.addListener((d, sender, callback) => {
+  console.debug('Received a message from the browser', d);
   window.dispatchEvent(new CustomEvent('chromeMessage', { detail: d }));
   callback();
   return true;
@@ -402,12 +403,14 @@ async function loaded() {
               messages.push(item);
             } catch (e) { console.debug(e); }
           });
-          window.parent.postMessage({
+          let chunk = {
             type: 'messageChunk',
             messages: messages,
             videoTimestamp: mostRecentTimestamp,
             video: getV(window.location.href) || getV(window.parent.location.href)
-          }, '*');
+          };
+          console.debug('Sending chunk', chunk);
+          window.parent.postMessage(chunk, '*');
         });
       }
       if (params.embed_domain === 'hololive.jetri.co') {
