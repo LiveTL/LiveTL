@@ -1,18 +1,5 @@
-// <<<<<<< HEAD
-// parseParams = () => {
-//   const s = decodeURI(location.search.substring(1))
-//     .replace(/"/g, '\\"')
-//     .replace(/&/g, '","')
-//     .replace(/=/g, '":"');
-//   return s == '' ? {} : JSON.parse('{"' + s + '"}');
-// };
-// 
-// const params = parseParams();
-// const v = params.v || '5qap5aO4i9A'; // ChilledCow
-// =======
 params = parseParams();
 const v = params.v || '5qap5aO4i9A';
-// >>>>>>> develop
 const stream = document.querySelector('#stream');
 const leftPanelContainer = document.querySelector('#videoPanel');
 const ltlchat = document.querySelector('#livetl-chat');

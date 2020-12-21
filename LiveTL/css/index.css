@@ -126,7 +126,6 @@ body {
     width: 100%;
 }
 
-/*<<<<<<< HEAD*/
 #bottomRightPanel {
     width: 100%;
     flex-grow: 1;
@@ -155,5 +154,3 @@ body {
     word-break: break-word;
     font-size: 20px;
 }
-/*=======
->>>>>>> develop*/

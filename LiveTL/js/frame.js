@@ -136,15 +136,8 @@ async function runLiveTL() {
       // Check to make sure we haven't blacklisted the mod, and if not, send the message
       // After send the message, we bail so we don't have to run all the translation related things below
       if (checked) {
-        // TODO just a mark, next two lines are my merge
         sendToCaptions(messageInfo.message);
         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
-// <<<<<<< HEAD
-//         sendToCaptions(element.text);
-//         prependOrAppend(createMessageEntry(messageInfo, element.textContent));
-// =======
-//         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
-// >>>>>>> develop
         return;
       }
     }
@@ -182,12 +175,6 @@ async function runLiveTL() {
         sendToCaptions(messageInfo.message);
         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
       }
-// <<<<<<< HEAD
-//         sendToCaptions(element.text);
-//         prependOrAppend(createMessageEntry(messageInfo, element.textContent));
-// =======
-//         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
-// >>>>>>> develop
       return;
     }
   };
