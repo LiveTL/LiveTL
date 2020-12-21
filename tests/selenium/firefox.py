@@ -7,6 +7,15 @@ pwd = Path(".") / "drivers"
 
 
 class FirefoxDriver(webdriver.Firefox):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.has_quit = False
+
+    def quit(self):
+        if not self.has_quit:
+            self.has_quit = True
+            super().quit()
+
     def __del__(self):
         self.quit()
 
@@ -18,9 +27,17 @@ def setup_driver() -> None:
 # FIXME display option doesn't do anything right now
 def get_selenium(display: bool = False) -> webdriver.Firefox:
     fp = webdriver.FirefoxProfile()
-    fp.DEFAULT_PREFERENCES['frozen']["xpinstall.signatures.required"] = False
-    browser = FirefoxDriver(executable_path=__platform_drivers[su.platform], firefox_profile=fp)
-    browser.install_addon(str(Path(".").resolve() / "dist" / "firefox" / "LiveTL.xpi"), True)
+    fp.DEFAULT_PREFERENCES["frozen"]["xpinstall.signatures.required"] = False
+    options = webdriver.FirefoxOptions()
+    options.headless = True
+    browser = FirefoxDriver(
+        executable_path=__platform_drivers[su.platform],
+        firefox_profile=fp,
+        options=options,
+    )
+    browser.install_addon(
+        str(Path(".").resolve() / "dist" / "firefox" / "LiveTL.xpi"), True
+    )
     return browser
 
 

@@ -1,5 +1,7 @@
 import os
 import stat
+import subprocess as sb
+import sys
 from pathlib import Path
 
 import setup_utils as su
@@ -12,9 +14,34 @@ platform = su.platform
 enable_headless = False
 
 
+class Popen(sb.Popen):
+    """
+    Suppress chromedriver output on windows
+    """
+
+    def __init__(self, *args, **kwargs):
+        if sys.platform[:3] == "win":
+            kwargs = {
+                "stdin": sb.PIPE,
+                "stdout": sb.PIPE,
+                "stderr": sb.PIPE,
+                "shell": False,
+                "creationflags": 0x08000000,
+            }
+        super().__init__(*args, **kwargs)
+
+
+class ChromeDriver(webdriver.Chrome):
+    def __init__(self, *args, **kwargs):
+        old_popen = sb.Popen
+        sb.Popen = Popen
+        super().__init__(*args, **kwargs)
+        sb.Popen = old_popen
+
+
 def get_selenium(display: bool = False) -> webdriver.Chrome:
     options = __get_options(display)
-    browser = webdriver.Chrome(
+    browser = ChromeDriver(
         executable_path=__platform_drivers[su.platform], options=options
     )
     return browser
@@ -30,6 +57,7 @@ def setup_driver() -> None:
 def __get_options(display: bool) -> Options:
     options = Options()
     options.add_extension(r"dist\chrome\LiveTL-integration.zip")
+    # options.add_extension(str(Path(".").resolve() / "dist" /"chrome" / "LiveTL.zip"))
     if enable_headless:
         options.add_argument("--disable-gpu")
         if not display:
@@ -73,5 +101,4 @@ __setup_driver = su.setup_driver(
 
 if __name__ == "__main__":
     setup_driver()
-    get_selenium()
-    input("Press enter to exit")
+    web = get_selenium()
