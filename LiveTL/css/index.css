@@ -167,7 +167,7 @@ body {
 
 #ltlcaptions>.ui-resizable-handle {
     cursor: ew-resize;
-    background-color: var(--button-fill);
+    background-color: var(--primary);
     opacity: 0.5;
     width: 10px;
     height: calc(100% - 40px);
