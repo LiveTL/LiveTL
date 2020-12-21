@@ -1,7 +1,7 @@
 from wrappers import retry_every_interval, web_test
 
 chilled_cow = "https://www.youtube.com/watch?v=5qap5aO4i9A"
-peko_kiara = "https://www.youtube.com/watch?v=c747jYku6Eo&t=926"
+peko_kiara = "https://www.youtube.com/watch?t=926&v=c747jYku6Eo"
 
 
 class TestCases:
