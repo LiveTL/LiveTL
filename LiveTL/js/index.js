@@ -179,7 +179,7 @@ function splitCaptionIntoSegments(caption, maxLength = 100) {
 
 function displayCaption(caption, persistFor = -1, clear = true) {
   const captions = document.querySelector('#ltlcaptions');
-  captions.style.display = 'block';
+  captions.style.display = 'inline-table';
   if (clear) {
     clearCaptions();
   }
