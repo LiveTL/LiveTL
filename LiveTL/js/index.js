@@ -141,7 +141,7 @@ let leftWidth = localStorage.getItem('LTL:leftPanelWidth');
 let rightHeight = localStorage.getItem('LTL:rightPanelHeight');
 
 if (leftWidth) {
-  setPaneWidth(leftWidth);
+  setPaneWidth(propToPercent(leftWidth, false));
 } else {
   setPaneWidth(80);
   // setPaneWidth(Math.round(window.innerWidth * 0.8));
@@ -249,9 +249,9 @@ let capLeft = localStorage.getItem('LTL:captionSizeLeft');
 let capTop = localStorage.getItem('LTL:captionSizeTop');
 let capWidth = localStorage.getItem('LTL:captionSizeWidth');
 
-if (capLeft) nojdiv.style.left = capLeft;
-if (capTop) nojdiv.style.top = capTop;
-if (capWidth) nojdiv.style.width = capWidth;
+if (capLeft) nojdiv.style.left = propToPercent(capLeft, false);
+if (capTop) nojdiv.style.top = propToPercent(capTop, true);
+if (capWidth) nojdiv.style.width = propToPercent(capWidth, false);
 
 function getTop(ele) {
   var eTop = ele.offset().top;
