@@ -3,7 +3,7 @@ on:
   [push, pull_request]
 
 jobs:
-  build:
+  tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -14,4 +14,4 @@ jobs:
       - name: Set up Firefox
         run: sudo apt install -y firefox
       - name: Set up geckodriver and run tests
-        run: DISABLE_CHROME="true" make test
+        run: DISABLE_CHROME="true" RETRIES="10" make test
