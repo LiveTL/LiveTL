@@ -1,3 +1,4 @@
+import sys
 import time
 
 from wrappers import level, retry_every_interval, web_test
@@ -20,7 +21,6 @@ class TestCases:
     @web_test
     @retry_every_interval()
     def test_live_button_insertion(web):
-        return
         go_to_website(web, chilled_cow)
         ltlbuttons = web.find_elements_by_css_selector(".liveTLBotan")
         assert len(ltlbuttons) == 2, "LiveTL buttons not inserted in live"
@@ -29,7 +29,6 @@ class TestCases:
     @web_test
     @retry_every_interval()
     def test_vod_button_insertion(web):
-        return
         go_to_website(web, peko_kiara)
         ltlbuttons = web.find_elements_by_css_selector(".liveTLBotan")
         assert len(ltlbuttons) == 2, "LiveTL buttons not inserted in vod"
@@ -37,7 +36,6 @@ class TestCases:
     @level(1)
     @web_test
     def test_livetl_panel_layout(web):
-        return
         go_to_video_in_livetl(web, chilled_cow)
         iframes = web.find_elements_by_css_selector("iframe")
         assert len(iframes) == 3, "Should have 3 iframes"
@@ -61,10 +59,14 @@ class TestCases:
         web.set_window_size(ogx, ogy)
         time.sleep(1)
         iframes_new_sizes = [frame.size for frame in iframes]
+        assert_msg = (
+            "panels changed size on window size change "
+            f"{iframes_og_sizes} {iframes_new_sizes}"
+        )
         assert all(
             two_window_sizes_are_equal(i, j)
             for i, j in zip(iframes_og_sizes, iframes_new_sizes)
-        ), "panels changed size on window size change"
+        ), assert_msg
 
     @classmethod
     def teardown_class(cls):

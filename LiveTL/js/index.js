@@ -50,17 +50,17 @@ const getResizeableElement = () => document.getElementById('videoPanel');
 const getHandleElement = () => document.getElementById('handleV');
 
 const setPaneWidth = (width) => {
-  if (width > window.innerWidth - 150)
+  if (width * window.innerWidth / 100 > window.innerWidth - 150)
     return;
 
   getResizeableElement().style
-    .setProperty('--resizeable-width', `${width}px`);
+    .setProperty('--resizeable-width', `${width}%`);
 };
 
 const getPaneWidth = () => {
   const pxWidth = getComputedStyle(getResizeableElement())
     .getPropertyValue('--resizeable-width');
-  return parseInt(pxWidth, 10);
+  return parseFloat(pxWidth, 10);
 };
 
 const startDragging = (event) => {
@@ -86,7 +86,9 @@ const startDragging = (event) => {
     }
 
     const paneOriginAdjustment = await getStorage('chatSide') === 'left' ? 1 : -1;
-    setPaneWidth((xOffset - moveEvent.pageX) * paneOriginAdjustment + startingPaneWidth);
+    setPaneWidth(
+      (xOffset - moveEvent.pageX) * 100 * paneOriginAdjustment / window.innerWidth + startingPaneWidth
+    );
   };
 
   document.body.addEventListener('mousemove', mouseDragHandler);
@@ -105,11 +107,11 @@ getStorage('chatSide').then(side => {
 
 getHandleElement().addEventListener('mousedown', startDragging);
 
-window.addEventListener('resize', () => {
-  if (getPaneWidth() > window.innerWidth - 150) {
-    setPaneWidth(window.innerWidth - 150);
-  }
-})
+// window.addEventListener('resize', () => {
+//   if (getPaneWidth() > window.innerWidth - 150) {
+//     setPaneWidth(window.innerWidth - 150);
+//   }
+// })
 
 let c = params.continuation;
 let r = params.isReplay;
@@ -143,7 +145,8 @@ let rightHeight = localStorage.getItem('LTL:rightPanelHeight');
 if (leftWidth) {
   setPaneWidth(leftWidth);
 } else {
-  setPaneWidth(Math.round(window.innerWidth * 0.8));
+  setPaneWidth(80);
+  // setPaneWidth(Math.round(window.innerWidth * 0.8));
 }
 
 if (params.noVideo) {
