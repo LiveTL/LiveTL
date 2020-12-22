@@ -50,6 +50,9 @@ const getResizeableElement = () => document.getElementById('videoPanel');
 const getHandleElement = () => document.getElementById('handleV');
 
 const setPaneWidth = (width) => {
+  if (isNaN(width)) {
+    return setPaneWidth(80);
+  }
   if (width * window.innerWidth / 100 > window.innerWidth - 150)
     return;
 
@@ -60,7 +63,8 @@ const setPaneWidth = (width) => {
 const getPaneWidth = () => {
   const pxWidth = getComputedStyle(getResizeableElement())
     .getPropertyValue('--resizeable-width');
-  return parseFloat(pxWidth, 10);
+  const result = parseFloat(pxWidth, 10);
+  return result == NaN ? 80 : result
 };
 
 const startDragging = (event) => {
@@ -107,12 +111,6 @@ getStorage('chatSide').then(side => {
 
 getHandleElement().addEventListener('mousedown', startDragging);
 
-// window.addEventListener('resize', () => {
-//   if (getPaneWidth() > window.innerWidth - 150) {
-//     setPaneWidth(window.innerWidth - 150);
-//   }
-// })
-
 let c = params.continuation;
 let r = params.isReplay;
 r = r == null ? c : r;
@@ -158,11 +156,6 @@ if (params.noVideo) {
     youtubeChatPanel.style.height = rightHeight;
   }
 }
-
-// Not working rn
-// $('#ltlcaptions').draggable({ start: function() {
-//     $(this).css({transform: "none", top: $(this).offset().top+"px", left:$(this).offset().left+"px"});
-// } });
 
 function createCaptionSegment(segment) {
   let caption = document.createElement('p');
