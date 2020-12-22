@@ -207,6 +207,7 @@ window.addEventListener('message', async (event) => {
 // Demo call to displayCaption
 // displayCaption("Oi koroneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneone", 1000, false);
 
+let nojdiv = document.querySelector('#ltlcaptions');
 let div = $(document.querySelector('#ltlcaptions'));
 div.resizable({
   handles: 'e, w',
@@ -214,17 +215,27 @@ div.resizable({
     var top = getTop(ui.helper);
     ui.helper.css('position', 'fixed');
     ui.helper.css('top', top + "px");
+    localStorage.setItem('LTL:captionSizeWidth', nojdiv.style.width);
   }
 });
 
-div.draggable(
-  {
-    stop: function (event, ui) {
-      var top = getTop(ui.helper);
-      ui.helper.css('position', 'fixed');
-      ui.helper.css('top', top + 'px');
-    }
-  });
+div.draggable({
+  stop: function (event, ui) {
+    var top = getTop(ui.helper);
+    ui.helper.css('position', 'fixed');
+    ui.helper.css('top', top + 'px');
+    localStorage.setItem('LTL:captionSizeLeft', nojdiv.style.left);
+    localStorage.setItem('LTL:captionSizeTop', `${top}px`);
+  }
+});
+
+let capLeft = localStorage.getItem('LTL:captionSizeLeft');
+let capTop = localStorage.getItem('LTL:captionSizeTop');
+let capWidth = localStorage.getItem('LTL:captionSizeWidth');
+
+if (capLeft) nojdiv.style.left = capLeft;
+if (capTop) nojdiv.style.top = capTop;
+if (capWidth) nojdiv.style.width = capWidth;
 
 function getTop(ele) {
   var eTop = ele.offset().top;
