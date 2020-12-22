@@ -211,7 +211,7 @@ let nojdiv = document.querySelector('#ltlcaptions');
 let div = $(document.querySelector('#ltlcaptions'));
 div.resizable({
   handles: 'e, w',
-  stop: function (event, ui) {
+  stop: (event, ui) => {
     var top = getTop(ui.helper);
     ui.helper.css('position', 'fixed');
     let width = parseFloat(propToPercent(nojdiv.style.width, false));
@@ -223,7 +223,7 @@ div.resizable({
 });
 
 div.draggable({
-  stop: function (event, ui) {
+  stop: (event, ui) => {
     let top = getTop(ui.helper);
     ui.helper.css('position', 'fixed');
     top = parseFloat(propToPercent(top, true), 10);
