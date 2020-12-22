@@ -214,21 +214,34 @@ div.resizable({
   stop: function (event, ui) {
     var top = getTop(ui.helper);
     ui.helper.css('position', 'fixed');
-    // ui.helper.css('top', propToPercent(top, true));
-    ui.helper.css('width', propToPercent(nojdiv.style.width, false));
-    localStorage.setItem('LTL:captionSizeWidth', propToPercent(nojdiv.style.width, false));
+    let width = parseFloat(propToPercent(nojdiv.style.width, false));
+    let left = parseFloat(propToPercent(nojdiv.style.left, false));
+    let percent = `${left + width > 100 ? 100 - left : width}%`;
+    ui.helper.css('width', percent);
+    localStorage.setItem('LTL:captionSizeWidth', percent);
   }
 });
 
 div.draggable({
   stop: function (event, ui) {
-    var top = getTop(ui.helper);
+    let top = getTop(ui.helper);
     ui.helper.css('position', 'fixed');
-    ui.helper.css('top', propToPercent(top, true));
-    ui.helper.css('left', propToPercent(nojdiv.style.left, false));
-    // ui.helper.css('top', top + 'px');
-    localStorage.setItem('LTL:captionSizeLeft', propToPercent(nojdiv.style.left, false));
-    localStorage.setItem('LTL:captionSizeTop', propToPercent(top, true));
+    top = parseFloat(propToPercent(top, true), 10);
+    top = top < 5 ? 5 : top;
+    top = top > 90 ? 90 : top;
+    let topp = `${top}%`;
+    ui.helper.css('top', topp);
+    let width = parseFloat(propToPercent(nojdiv.style.width, false));
+    let left = parseFloat(propToPercent(nojdiv.style.left, false));
+    left = left < 0 ? 0 : left;
+    let sum = left + width;
+    let percent = `${sum > 100 ? 100 - left : width}%`;
+    left = `${left}%`;
+    ui.helper.css('width', propToPercent(percent, false));
+    ui.helper.css('left', left);
+    localStorage.setItem('LTL:captionSizeWidth', percent);
+    localStorage.setItem('LTL:captionSizeLeft', left);
+    localStorage.setItem('LTL:captionSizeTop', topp);
   }
 });
 
