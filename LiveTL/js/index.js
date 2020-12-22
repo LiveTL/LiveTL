@@ -214,8 +214,9 @@ div.resizable({
   stop: function (event, ui) {
     var top = getTop(ui.helper);
     ui.helper.css('position', 'fixed');
-    ui.helper.css('top', top + "px");
-    localStorage.setItem('LTL:captionSizeWidth', nojdiv.style.width);
+    // ui.helper.css('top', propToPercent(top, true));
+    ui.helper.css('width', propToPercent(nojdiv.style.width, false));
+    localStorage.setItem('LTL:captionSizeWidth', propToPercent(nojdiv.style.width, false));
   }
 });
 
@@ -223,9 +224,11 @@ div.draggable({
   stop: function (event, ui) {
     var top = getTop(ui.helper);
     ui.helper.css('position', 'fixed');
-    ui.helper.css('top', top + 'px');
-    localStorage.setItem('LTL:captionSizeLeft', nojdiv.style.left);
-    localStorage.setItem('LTL:captionSizeTop', `${top}px`);
+    ui.helper.css('top', propToPercent(top, true));
+    ui.helper.css('left', propToPercent(nojdiv.style.left, false));
+    // ui.helper.css('top', top + 'px');
+    localStorage.setItem('LTL:captionSizeLeft', propToPercent(nojdiv.style.left, false));
+    localStorage.setItem('LTL:captionSizeTop', propToPercent(top, true));
   }
 });
 
@@ -242,4 +245,22 @@ function getTop(ele) {
   var wTop = $(window).scrollTop();
   var top = eTop - wTop;
   return top;
+}
+
+function propToPercent(...args) {
+  let res = propToPercentt(...args);
+  return res;
+}
+
+function propToPercentt(prop, top=true) {
+  prop = `${prop}`;
+  if (prop.includes('%')) {
+    return prop;
+  }
+  let value = parseFloat(prop, 10);
+  let divBy = window.innerWidth;
+  if (top) {
+    divBy = window.innerHeight;
+  }
+  return `${100 * value / divBy}%`;
 }
