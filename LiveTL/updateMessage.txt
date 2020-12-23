@@ -1,1 +1,1 @@
-Massive backend performance improvements, new user filter selection, left side chat toggle, Russian language support, various bugfixes, and more!
+Caption display mode is here! FIREFOX USERS: We are hard at work to diagnose and fix issues on Firefox. Please hang tight!

@@ -1,5 +1,8 @@
-let messageReceive = m => {
+params = parseParams();
+
+let messageReceive = (m) => {
   if (typeof m.data == 'object') {
+    if (params.v != m.data.video) return;
     switch (m.data.type) {
       case 'messageChunk':
         console.debug('Received message chunk:', m.data);
@@ -10,7 +13,6 @@ let messageReceive = m => {
 };
 
 window.addEventListener('message', messageReceive);
-
-chrome.runtime.onMessage.addListener((d) => messageReceive(d));
+chrome.runtime.onMessage.addListener(messageReceive);
 
 runLiveTL();

@@ -36,7 +36,7 @@ on this [Discord server](https://discord.gg/uJrV3tmthg).**
 - Git ([Windows](https://git-scm.com/download/win) | [MacOS](https://git-scm.com/download/mac)
   | [Linux](https://git-scm.com/download/linux))
 - Node.js 10+ ([Windows, MacOS, and Linux](https://nodejs.org/en/download))
-- Chromium based browser ([Windows, MacOS, and Linux](https://www.google.com/chrome/))
+- Chrome ([Windows, MacOS, and Linux](https://www.google.com/chrome/))
 - Firefox ([Windows, MacOS, and Linux](https://www.mozilla.org/en-US/firefox/new/))
 
 ### Setting up the environment
@@ -59,6 +59,8 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 - `make` will build the firefox and chrome extensions
     - The unpacked extension for each browser will be in `build/` and the packed extensions will be in `dist/`
 - `make test` will run the available tests
+    - The environment variables `DISABLE_CHROME` and `LEVEL` can be set to control the testing behavior.
+    - The argument of `py` can be given to `make test` can change which python version is used.
 - `make clean` will clear the build
 - In firefox, use about:debuggging to load the extension.
 - In chromium-based browsers, load an unpacked extension in the extension menu.
@@ -69,6 +71,7 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 - folders are hyphen-cased
 - test files are cased according to the file that the test runs
 - follow the [semistandard style](https://github.com/standard/semistandard) for javascript
+- use [black](https://github.com/psf/black) and [isort](https://github.com/pycqa/isort/) for python
 
 ## Directory structure
 

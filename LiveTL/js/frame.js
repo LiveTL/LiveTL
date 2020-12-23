@@ -7,6 +7,7 @@ const allTranslators = { byID: {}, byName: {} };
 let allTranslatorCheckbox = {};
 let showTimestamps = true;
 let textDirection = 'bottom';
+let mostRecentTimestamp = 0;
 
 async function addedByUser(id) {
   let s = (await getUserStatus(id, true)).checked != null;
@@ -101,6 +102,7 @@ async function runLiveTL() {
 
   let prependOrAppend = e => (textDirection == 'bottom' ? appendE : prependE)(e);
 
+
   prependOrAppend(await createWelcome());
   const hrParent = document.createElement('div');
   const hr = document.createElement('hr');
@@ -134,6 +136,7 @@ async function runLiveTL() {
       // Check to make sure we haven't blacklisted the mod, and if not, send the message
       // After send the message, we bail so we don't have to run all the translation related things below
       if (checked) {
+        sendToCaptions(messageInfo.message);
         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
         return;
       }
@@ -156,6 +159,7 @@ async function runLiveTL() {
       checked = (await isChecked(messageInfo.author.id));
       // Check to see if the sender is approved, and send the message if they are
       if (checked) {
+        sendToCaptions(translation.msg);
         prependOrAppend(createMessageEntry(messageInfo, translation.msg));
         return;
       }
@@ -167,8 +171,10 @@ async function runLiveTL() {
         await createCheckbox(messageInfo.author.name, messageInfo.author.id, true);
       }
       checked = (await isChecked(messageInfo.author.id));
-      if (checked)
+      if (checked) {
+        sendToCaptions(messageInfo.message);
         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
+      }
       return;
     }
   };
@@ -208,7 +214,19 @@ getContinuation = (src) => {
   return parseParams('?' + src.split('?')[1]).continuation;
 };
 
+getV = (src) => {
+  return parseParams('?' + src.split('?')[1]).v;
+};
+
 let windowsWithBinds = {};
+
+const createWindow = async u => {
+  return new Promise((res, rej) => {
+    chrome.runtime.sendMessage({ type: 'window', url: u }, (d, a) => {
+      res(d);
+    });
+  });
+};
 
 async function insertLiveTLButtons(isHolotools = false) {
   console.debug('Inserting LiveTL Launcher Buttons');
@@ -226,13 +244,6 @@ async function insertLiveTLButtons(isHolotools = false) {
 
   const redirectTab = u => window.location.href = u;
   const createTab = u => window.open(u);
-  const createWindow = async u => {
-    return new Promise((res, rej) => {
-      chrome.runtime.sendMessage({ type: 'window', url: u }, d => {
-        res(d);
-      });
-    });
-  };
   getContinuationURL = (() => {
     let chatframe = document.querySelector('#chatframe');
     let src = chatframe.dataset.src;
@@ -249,9 +260,9 @@ async function insertLiveTLButtons(isHolotools = false) {
       redirectTab(`${await getWAR('index.html')}?v=${params.v}${restOfURL()}`);
     });
 
-    sendToWindow = (id, data) => {
+    sendToWindow = (data) => {
       try {
-        chrome.runtime.sendMessage({ type: 'message', data: data, id: id }, {});
+        chrome.runtime.sendMessage({ type: 'message', data: data }, {});
       } catch (e) {
         console.debug(e);
       }
@@ -260,23 +271,26 @@ async function insertLiveTLButtons(isHolotools = false) {
     makeButton('Pop Out Translations',
       async () => {
         params = parseParams();
-        let tlwindow = await createWindow(`${await getWAR('popout/index.html')}?v=${params.v}&mode=chat${restOfURL()}`);
-        console.debug('Launched translation window with ID', tlwindow);
-        if (!windowsWithBinds[tlwindow]) {
-          document.querySelector('#chatframe').contentWindow.addEventListener('message', d => {
-            sendToWindow(tlwindow, d.data);
-          });
+        await createWindow(`${await getWAR('popout/index.html')}?v=${params.v}&mode=chat${restOfURL()}`);
+        document.querySelector('#chatframe').contentWindow.addEventListener('message', d => {
+          d = d.data['yt-player-video-progress'];
+          if (d) {
+            mostRecentTimestamp = d;
+          }
+        });
+        console.debug('Launched translation window for video', params.v);
+        if (!windowsWithBinds[params.v]) {
           window.addEventListener('message', m => {
             if (typeof m.data == 'object') {
               switch (m.data.type) {
                 case 'messageChunk':
-                  sendToWindow(tlwindow, m.data);
-                  console.debug('Sent', m.data, 'to', tlwindow);
+                  sendToWindow(m.data);
+                  console.debug('Sent', m.data, 'to', params.v);
                   break;
               }
             }
           });
-          windowsWithBinds[tlwindow] = true;
+          windowsWithBinds[params.v] = true;
         }
       },
       'rgb(143, 143, 143)');
@@ -330,7 +344,13 @@ async function onMessageFromEmbeddedChat(m) {
 
 let params = {};
 let lastLocation = '';
-chrome.runtime.onMessage.addListener((d) => window.dispatchEvent(new CustomEvent('chromeMessage', { detail: d })));
+
+function injectScript(text) {
+  let e = document.createElement("script");
+  e.innerHTML = text;
+  document.head.appendChild(e);
+}
+
 
 async function loaded() {
   // window.removeEventListener('load', loaded);
@@ -347,50 +367,67 @@ async function loaded() {
         runLiveTL();
       } else {
         console.debug('Monitoring network events');
-        window.addEventListener('chromeMessage', async (d) => {
-          heads = {};
-          d.detail.headers.forEach(h => {
-            heads[h.name] = h.value;
-          });
-          heads.livetl = 1;
-          let response = await (await fetch(d.detail.url, {
-            method: 'POST',
-            headers: heads,
-            body: d.detail.body
-          })).json();
+        injectScript(`
+          window.oldFetch = window.oldFetch || window.fetch;
+          window.fetch = async (...args) => {
+            try {
+              let result = await window.oldFetch(...args);
+              if (args[0].url.startsWith('https://www.youtube.com/youtubei/v1/live_chat/get_live_chat')) {
+                let data = await (await result.clone()).json();
+                console.debug('Caught chunk', data);
+                window.dispatchEvent(new CustomEvent('chromeMessage', { detail: data }));
+              }
+              return result;
+            } catch(e) {
+              console.log(e);
+            }
+          }
+        `);
+        window.addEventListener('chromeMessage', async (response) => {
+          response = response.detail;
+          console.debug('chromeMessage event received', response);
           let messages = [];
-          if (!response.continuationContents) return;
+          if (!response.continuationContents) {
+            console.log('Response was invalid', response);
+            return;
+          }
           (response.continuationContents.liveChatContinuation.actions || []).forEach(action => {
-            let currentElement = (action.addChatItemAction ||
-              (action.replayChatItemAction != null ? action.replayChatItemAction.actions[0].addChatItemAction : null)
-              || {}).item;
-            if (!currentElement) return;
-            let messageItem = currentElement.liveChatTextMessageRenderer;
-            if (!messageItem) return;
-            messageItem.authorBadges = messageItem.authorBadges || [];
-            let authorTypes = [];
-            messageItem.authorBadges.forEach(badge =>
-              authorTypes.push(badge.liveChatAuthorBadgeRenderer.tooltip));
-            let messageText = '';
-            messageItem.message.runs.forEach(run => {
-              if (run.text) messageText += run.text;
-            });
-            if (!messageText) return;
-            item = {
-              author: {
-                name: messageItem.authorName.simpleText,
-                id: messageItem.authorExternalChannelId,
-                types: authorTypes
-              },
-              message: messageText,
-              timestamp: isReplayChat() ? messageItem.timestampText.simpleText : parseTimestamp(messageItem.timestampUsec)
-            };
-            messages.push(item);
+            try {
+              let currentElement = (action.addChatItemAction ||
+                (action.replayChatItemAction != null ? action.replayChatItemAction.actions[0].addChatItemAction : null)
+                || {}).item;
+              if (!currentElement) return;
+              let messageItem = currentElement.liveChatTextMessageRenderer;
+              if (!messageItem) return;
+              messageItem.authorBadges = messageItem.authorBadges || [];
+              let authorTypes = [];
+              messageItem.authorBadges.forEach(badge =>
+                authorTypes.push(badge.liveChatAuthorBadgeRenderer.tooltip));
+              let messageText = '';
+              messageItem.message.runs.forEach(run => {
+                if (run.text) messageText += run.text;
+              });
+              if (!messageText) return;
+              item = {
+                author: {
+                  name: messageItem.authorName.simpleText,
+                  id: messageItem.authorExternalChannelId,
+                  types: authorTypes
+                },
+                message: messageText,
+                timestamp: isReplayChat() ? messageItem.timestampText.simpleText : parseTimestamp(messageItem.timestampUsec)
+              };
+              messages.push(item);
+            } catch (e) { console.debug('Error while parsing:', e); }
           });
-          window.parent.postMessage({
+          let chunk = {
             type: 'messageChunk',
-            messages: messages
-          }, '*');
+            messages: messages,
+            videoTimestamp: mostRecentTimestamp,
+            video: getV(window.location.href) || getV(window.parent.location.href)
+          };
+          console.debug('Sending chunk', chunk);
+          window.parent.postMessage(chunk, '*');
         });
       }
       if (params.embed_domain === 'hololive.jetri.co') {
@@ -408,7 +445,9 @@ async function loaded() {
       } else {
         window.parent.postMessage('embeddedChatLoaded', '*');
       }
-    } catch (e) { }
+    } catch (e) {
+      console.debug(e);
+    }
   }
 }
 
@@ -723,6 +762,11 @@ async function setFavicon() {
   faviconLink.href = await favicon;
   document.head.appendChild(faviconLink);
 }
+
+const sendToCaptions = caption => {
+  const captionWindow = window.parent.parent;
+  captionWindow.postMessage({ action: "caption", caption }, "*");
+};
 
 // MARK
 

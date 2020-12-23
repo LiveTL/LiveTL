@@ -1,0 +1,4 @@
+#import pytest, requests, selenium
+pytest==5.4.3
+requests==2.24.0
+selenium==3.141.0
