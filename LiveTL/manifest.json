@@ -62,11 +62,5 @@
     "popout/*"
   ],
   "incognito": "split",
-  "content_security_policy": "script-src 'self' ; object-src 'self'",
-  "externally_connectable": {
-    "matches": [
-      "https://www.youtube.com/live_chat*",
-      "https://www.youtube.com/live_chat_replay*"
-    ]
-  }
+  "content_security_policy": "script-src 'self' ; object-src 'self'"
 }

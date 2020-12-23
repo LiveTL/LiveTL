@@ -5,6 +5,8 @@ const YT_URLS = [
 ];
 var requestString = "";
 
+var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && window['safari'].pushNotification));
+
 const changes = () => {
   let v = chrome.runtime.getManifest().version;
   chrome.tabs.create({ url: `https://kentonishi.github.io/LiveTL/changelogs?version=v${v}` });
@@ -28,8 +30,12 @@ chrome.runtime.onInstalled.addListener(details => {
     chrome.browserAction.onClicked.removeListener(launch);
     chrome.browserAction.onClicked.addListener(changes);
   } else {
-    console.debug("This is a first install!");
-    chrome.tabs.create({ url: 'https://kentonishi.github.io/LiveTL/about' });
+    if (isSafari) {
+      //Dont show if safari
+      console.debug("This is a first install!");
+      chrome.tabs.create({ url: 'https://kentonishi.github.io/LiveTL/about' });
+    }
+    
   }
 });
 
@@ -137,67 +143,3 @@ function parseParams(loc) {
     .replace(/=/g, '":"');
   return s === '' ? {} : JSON.parse('{"' + s + '"}');
 }
-
-function getContinuation() {
-  let message = "getContinuation"
-  browser.runtime.sendMessage(message)
-  browser.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    if (request.continuation) {
-      console.log(request.continuation)
-      return request.continuation;
-    }
-  });
-};
-
-browser.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
-    if (request.requestArray){
-      //console.log(request.requestArray)
-      let RA = request.requestArray
-      requestString = JSON.stringify({
-        "context":{
-           "client":{
-              "hl":RA[0], 
-              "gl":RA[1], 
-              "deviceMake":RA[2], 
-              "visitorData":RA[3], 
-              "userAgent":RA[4], 
-              "clientName":RA[5], 
-              "clientVersion":RA[6], 
-              "osName":RA[7], 
-              "osVersion":RA[8], 
-              "browserName":RA[9], 
-              "browserVersion":RA[10], 
-              "screenWidthPoints":RA[11], 
-              "screenHeightPoints":RA[12], 
-              "screenPixelDensity":RA[13], 
-              "screenDensityFloat":RA[14], 
-              "utcOffsetMinutes":RA[15], 
-              "userInterfaceTheme":"USER_INTERFACE_THEME_DARK", 
-              "mainAppWebInfo":{
-                 "graftUrl":RA[17]
-              },
-              "timeZone":RA[18] 
-           },
-           "request":{
-              "sessionId":RA[19], 
-              "internalExperimentFlags":[
-                 
-              ], 
-              "consistencyTokenJars":[
-                 
-              ] 
-           },
-           "user":{
-              "onBehalfOfUser":RA[20] 
-           },
-        },
-        "continuation":getContinuation(),
-        "webClientInfo":{
-           "isDocumentHidden":false
-        }
-     })
-     console.log(requestString)
-    }
-  });
-
