@@ -143,7 +143,6 @@ body {
 #ltlcaptions {
     z-index: 100;
     position: fixed;
-    bottom: 20px;
     left: 20px;
     color: #C5C5C5;
     font-family: "Roboto Light", sans-serif;
@@ -153,6 +152,8 @@ body {
     display: none;
     text-align: center;
     padding: 20px;
+    width: 25%;
+    bottom: 50px;
 }
 
 .captionSegment {

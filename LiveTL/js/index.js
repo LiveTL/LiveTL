@@ -208,8 +208,8 @@ window.addEventListener('message', async (event) => {
 // displayCaption("Oi koroneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneone", 1000, false);
 
 let nojdiv = document.querySelector('#ltlcaptions');
-let div = $(document.querySelector('#ltlcaptions'));
-div.resizable({
+let captionsDiv = $(document.querySelector('#ltlcaptions'));
+captionsDiv.resizable({
   handles: 'e, w',
   stop: (event, ui) => {
     var top = getTop(ui.helper);
@@ -222,35 +222,39 @@ div.resizable({
   }
 });
 
-div.draggable({
+captionsDiv.draggable({
   stop: (event, ui) => {
     let top = getTop(ui.helper);
     ui.helper.css('position', 'fixed');
     top = parseFloat(propToPercent(top, true), 10);
-    top = top < 5 ? 5 : top;
-    top = top > 90 ? 90 : top;
+    // top = top < 0 ? 0 : top;
+    // top = top > 100 ? 100 : top;
     let topp = `${top}%`;
-    ui.helper.css('top', topp);
+    ui.helper.css('top', getTopWithSafety(topp));
     let width = parseFloat(propToPercent(nojdiv.style.width, false));
     let left = parseFloat(propToPercent(nojdiv.style.left, false));
-    left = left < 0 ? 0 : left;
+    // left = left < 0 ? 0 : left;
     let sum = left + width;
     let percent = `${sum > 100 ? 100 - left : width}%`;
     left = `${left}%`;
     ui.helper.css('width', propToPercent(percent, false));
-    ui.helper.css('left', left);
+    ui.helper.css('left', getLeftWithSafety(left));
     localStorage.setItem('LTL:captionSizeWidth', percent);
     localStorage.setItem('LTL:captionSizeLeft', left);
     localStorage.setItem('LTL:captionSizeTop', topp);
   }
 });
 
+
 let capLeft = localStorage.getItem('LTL:captionSizeLeft');
 let capTop = localStorage.getItem('LTL:captionSizeTop');
 let capWidth = localStorage.getItem('LTL:captionSizeWidth');
 
-if (capLeft) nojdiv.style.left = propToPercent(capLeft, false);
-if (capTop) nojdiv.style.top = propToPercent(capTop, true);
+getTopWithSafety = d => `max(min(${d}, calc(100% - 50px)), -30px)`;
+getLeftWithSafety = d => `max(min(${d}, calc(100% - 50px)), -30px)`;
+
+if (capLeft) nojdiv.style.left = propToPercent(getLeftWithSafety(capLeft), false);
+if (capTop) nojdiv.style.top = getTopWithSafety(propToPercent(capTop, true));
 if (capWidth) nojdiv.style.width = propToPercent(capWidth, false);
 
 function getTop(ele) {
@@ -265,7 +269,7 @@ function propToPercent(...args) {
   return res;
 }
 
-function propToPercentt(prop, top=true) {
+function propToPercentt(prop, top = true) {
   prop = `${prop}`;
   if (prop.includes('%')) {
     return prop;

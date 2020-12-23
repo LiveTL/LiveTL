@@ -344,12 +344,13 @@ async function onMessageFromEmbeddedChat(m) {
 
 let params = {};
 let lastLocation = '';
-chrome.runtime.onMessage.addListener((d, sender, callback) => {
-  console.debug('Received a message from the browser', d);
-  window.dispatchEvent(new CustomEvent('chromeMessage', { detail: d }));
-  callback();
-  return true;
-});
+
+function injectScript(text) {
+  let e = document.createElement("script");
+  e.innerHTML = text;
+  document.head.appendChild(e);
+}
+
 
 async function loaded() {
   // window.removeEventListener('load', loaded);
@@ -366,19 +367,30 @@ async function loaded() {
         runLiveTL();
       } else {
         console.debug('Monitoring network events');
-        window.addEventListener('chromeMessage', async (d) => {
-          heads = {};
-          d.detail.headers.forEach(h => {
-            heads[h.name] = h.value;
-          });
-          heads.livetl = 1;
-          let response = await (await fetch(d.detail.url, {
-            method: 'POST',
-            headers: heads,
-            body: d.detail.body
-          })).json();
+        injectScript(`
+          window.oldFetch = window.oldFetch || window.fetch;
+          window.fetch = async (...args) => {
+            try {
+              let result = await window.oldFetch(...args);
+              if (args[0].url.startsWith('https://www.youtube.com/youtubei/v1/live_chat/get_live_chat')) {
+                let data = await (await result.clone()).json();
+                console.debug('Caught chunk', data);
+                window.dispatchEvent(new CustomEvent('chromeMessage', { detail: data }));
+              }
+              return result;
+            } catch(e) {
+              console.log(e);
+            }
+          }
+        `);
+        window.addEventListener('chromeMessage', async (response) => {
+          response = response.detail;
+          console.debug('chromeMessage event received', response);
           let messages = [];
-          if (!response.continuationContents) return;
+          if (!response.continuationContents) {
+            console.log('Response was invalid', response);
+            return;
+          }
           (response.continuationContents.liveChatContinuation.actions || []).forEach(action => {
             try {
               let currentElement = (action.addChatItemAction ||
@@ -406,7 +418,7 @@ async function loaded() {
                 timestamp: isReplayChat() ? messageItem.timestampText.simpleText : parseTimestamp(messageItem.timestampUsec)
               };
               messages.push(item);
-            } catch (e) { console.debug(e); }
+            } catch (e) { console.debug('Error while parsing:', e); }
           });
           let chunk = {
             type: 'messageChunk',
@@ -433,7 +445,9 @@ async function loaded() {
       } else {
         window.parent.postMessage('embeddedChatLoaded', '*');
       }
-    } catch (e) { }
+    } catch (e) {
+      console.debug(e);
+    }
   }
 }
 
