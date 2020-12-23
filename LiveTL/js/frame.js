@@ -101,7 +101,7 @@ async function runLiveTL() {
   prependE = el => translationDiv.prepend(el);
 
   let prependOrAppend = e => (textDirection == 'bottom' ? appendE : prependE)(e);
-  
+
 
   prependOrAppend(await createWelcome());
   const hrParent = document.createElement('div');

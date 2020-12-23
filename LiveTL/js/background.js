@@ -40,9 +40,11 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
     } case 'message': {
       try {
         console.debug('Broadcasting message', request.data);
-        chrome.tabs.sendMessage(
-          undefined, request.data
-        );
+        chrome.tabs.query({}, (tabs) => {
+          tabs.forEach(tab => {
+            chrome.tabs.sendMessage(tab.id, request.data);
+          });
+        });
       } catch (e) { }
       break;
     } case 'window': {
@@ -96,13 +98,14 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
   details => {
     if (!isLiveTL(details)) {
       try {
-        let t = details.tabId;
         let payload = { url: details.url, headers: details.requestHeaders, body: mostRecentBodies[details.url] };
-        console.debug(`Sending data to tab ${t}`, payload);
-        chrome.tabs.sendMessage(
-          t, payload,
-          { frameId: details.frameId }
-        );
+        chrome.tabs.query({}, (tabs) => {
+          tabs.forEach(tab => {
+            chrome.tabs.sendMessage(tab.id, payload,
+              { frameId: details.frameId }
+            );
+          });
+        });
       } catch (e) {
         console.debug(e);
       }
