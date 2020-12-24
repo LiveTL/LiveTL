@@ -101,8 +101,11 @@ function testLangMatch() {
     {
       testCase: ['英語／jp', langs.en],
       match: false
-    }
-
+    },
+    {
+      testCase: ['【Polka˽EN】', langs.en],
+      match: true
+    },
   ];
   testCases.forEach(({ testCase, match }) => {
     assert.equal(

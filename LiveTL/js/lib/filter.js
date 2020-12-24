@@ -5,7 +5,8 @@ const startLangTokens = langTokens.flatMap(e => e[0]);
 const tokenMap = Object.fromEntries(langTokens);
 
 const transDelimiters = ['-', ':'];
-const langSplitRe = /[^A-Za-z\/\ \-\:\.\|\／]/;
+const langSplitRe = /[^A-Za-z]/;
+// const langSplitRe = /[^A-Za-z\/\ \-\:\.\|\／]/;
 /**
  * Parses translation
  *
