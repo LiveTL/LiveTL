@@ -23,7 +23,7 @@ const start = () => {
 const stop = () => {
   // stream.style.display = 'block';
   leftPanelContainer.querySelectorAll('*').forEach(node => {
-    node.style.display = 'block';
+    node.style.display = node.id == 'ltlcaptions' ? 'inline-table' : 'block';
   });
   ltlchat.style.display = 'block';
   chat.style.display = 'block';
