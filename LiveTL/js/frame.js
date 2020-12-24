@@ -351,7 +351,6 @@ function injectScript(text) {
   document.head.appendChild(e);
 }
 
-
 async function loaded() {
   // window.removeEventListener('load', loaded);
   // window.removeEventListener('yt-navigate-finish', loaded);
@@ -418,7 +417,7 @@ async function loaded() {
                 timestamp: isReplayChat() ? messageItem.timestampText.simpleText : parseTimestamp(messageItem.timestampUsec)
               };
               messages.push(item);
-            } catch (e) { console.debug('Error while parsing:', e); }
+            } catch (e) { }
           });
           let chunk = {
             type: 'messageChunk',
@@ -448,8 +447,14 @@ async function loaded() {
     } catch (e) {
       console.debug(e);
     }
+  } else if (window.location.href.startsWith('https://www.youtube.com/embed')) {
+    document.querySelector('.ytp-fullscreen-button').addEventListener('click', () => {
+      window.parent.postMessage({ type: 'fullscreen' }, '*');
+    });
+    document.querySelector('#movie_player>.ytp-generic-popup').style.opacity = '0';
   }
 }
+
 
 function parseTimestamp(timestamp) {
   return (new Date(parseInt(timestamp) / 1000)).toLocaleTimeString(navigator.language,
