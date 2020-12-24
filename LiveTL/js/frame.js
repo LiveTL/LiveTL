@@ -259,14 +259,6 @@ async function insertLiveTLButtons(isHolotools = false) {
       redirectTab(`${await getWAR('index.html')}?v=${params.v}${restOfURL()}`);
     });
 
-    sendToWindow = (data) => {
-      try {
-        chrome.runtime.sendMessage({ type: 'message', data: data }, {});
-      } catch (e) {
-        console.debug(e);
-      }
-    };
-
     makeButton('Pop Out Translations',
       async () => {
         params = parseParams();
@@ -403,6 +395,14 @@ injectScript(`
     }
   }
 `);
+
+let sendToWindow = (data) => {
+  try {
+    chrome.runtime.sendMessage({ type: 'message', data: data }, {});
+  } catch (e) {
+    console.debug(e);
+  }
+};
 
 window.addEventListener('message', m => {
   if (typeof m.data == 'object') {
