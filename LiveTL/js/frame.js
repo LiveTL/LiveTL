@@ -227,6 +227,8 @@ const createWindow = async u => {
   });
 };
 
+let alreadyListening = false;
+
 async function insertLiveTLButtons(isHolotools = false) {
   console.debug('Inserting LiveTL Launcher Buttons');
   clearLiveTLButtons();
@@ -259,6 +261,14 @@ async function insertLiveTLButtons(isHolotools = false) {
       redirectTab(`${await getWAR('index.html')}?v=${params.v}${restOfURL()}`);
     });
 
+    sendToWindow = (data) => {
+      try {
+        chrome.runtime.sendMessage({ type: 'message', data: data }, {});
+      } catch (e) {
+        console.debug(e);
+      }
+    };
+
     makeButton('Pop Out Translations',
       async () => {
         params = parseParams();
@@ -270,6 +280,19 @@ async function insertLiveTLButtons(isHolotools = false) {
           }
         });
         console.debug('Launched translation window for video', params.v);
+        if (!alreadyListening) {
+          alreadyListening = true;
+          window.addEventListener('message', m => {
+            if (typeof m.data == 'object') {
+              switch (m.data.type) {
+                case 'messageChunk':
+                  sendToWindow(m.data);
+                  console.debug('Sent', m.data, 'to', params.v);
+                  break;
+              }
+            }
+          });
+        }
       },
       'rgb(143, 143, 143)');
   } else {
@@ -324,96 +347,10 @@ let params = {};
 let lastLocation = '';
 
 function injectScript(text) {
-  let script = document.createElement("script");
-  script.innerHTML = text;
-  document.head.appendChild(script);
+  let e = document.createElement("script");
+  e.innerHTML = text;
+  document.head.appendChild(e);
 }
-
-window.addEventListener('newMessageChunk', async (response) => {
-  response = response.detail;
-  response = JSON.parse(JSON.stringify(response));
-  console.debug('newMessageChunk event received', response);
-  let messages = [];
-  if (!response.continuationContents) {
-    console.log('Response was invalid', response);
-    return;
-  }
-  (response.continuationContents.liveChatContinuation.actions || []).forEach(action => {
-    try {
-      let currentElement = (action.addChatItemAction ||
-        (action.replayChatItemAction != null ? action.replayChatItemAction.actions[0].addChatItemAction : null)
-        || {}).item;
-      if (!currentElement) return;
-      let messageItem = currentElement.liveChatTextMessageRenderer;
-      if (!messageItem) return;
-      messageItem.authorBadges = messageItem.authorBadges || [];
-      let authorTypes = [];
-      messageItem.authorBadges.forEach(badge =>
-        authorTypes.push(badge.liveChatAuthorBadgeRenderer.tooltip));
-      let messageText = '';
-      messageItem.message.runs.forEach(run => {
-        if (run.text) messageText += run.text;
-      });
-      if (!messageText) return;
-      item = {
-        author: {
-          name: messageItem.authorName.simpleText,
-          id: messageItem.authorExternalChannelId,
-          types: authorTypes
-        },
-        message: messageText,
-        timestamp: isReplayChat() ? messageItem.timestampText.simpleText : parseTimestamp(messageItem.timestampUsec)
-      };
-      messages.push(item);
-    } catch (e) {
-      console.log('Error while parsing message.', { e });
-    }
-  });
-  let chunk = {
-    type: 'messageChunk',
-    messages: messages,
-    videoTimestamp: mostRecentTimestamp,
-    video: getV(window.location.href) || getV(window.parent.location.href)
-  };
-  console.debug('Sending chunk', chunk);
-  window.parent.postMessage(chunk, '*');
-});
-
-injectScript(`
-  window.oldFetch = window.oldFetch || window.fetch;
-  window.fetch = async (...args) => {
-    try {
-      let result = await window.oldFetch(...args);
-      if (args[0].url.startsWith('https://www.youtube.com/youtubei/v1/live_chat/get_live_chat')) {
-        let data = await (await result.clone()).json();
-        console.debug('Caught chunk', data);
-        window.dispatchEvent(new CustomEvent('newMessageChunk', { detail: data }));
-      }
-      return result;
-    } catch(e) {
-      console.log(e);
-    }
-  }
-`);
-
-let sendToWindow = (data) => {
-  try {
-    chrome.runtime.sendMessage({ type: 'message', data: data }, {});
-  } catch (e) {
-    console.debug(e);
-  }
-};
-
-window.addEventListener('message', m => {
-  if (typeof m.data == 'object') {
-    switch (m.data.type) {
-      case 'messageChunk':
-        sendToWindow(m.data);
-        console.debug('Sent', m.data, 'to', params.v);
-        break;
-    }
-  }
-});
 
 async function loaded() {
   // window.removeEventListener('load', loaded);
@@ -430,6 +367,71 @@ async function loaded() {
         runLiveTL();
       } else {
         console.debug('Monitoring network events');
+        injectScript(`
+          window.oldFetch = window.oldFetch || window.fetch;
+          window.fetch = async (...args) => {
+            try {
+              let result = await window.oldFetch(...args);
+              if (args[0].url.startsWith('https://www.youtube.com/youtubei/v1/live_chat/get_live_chat')) {
+                let data = await (await result.clone()).json();
+                console.debug('Caught chunk', data);
+                window.dispatchEvent(new CustomEvent('newMessageChunk', { detail: data }));
+              }
+              return result;
+            } catch(e) {
+              console.log(e);
+            }
+          }
+        `);
+        window.addEventListener('newMessageChunk', async (response) => {
+          response = response.detail;
+          response = JSON.parse(JSON.stringify(response));
+          console.debug('newMessageChunk event received', response);
+          let messages = [];
+          if (!response.continuationContents) {
+            console.log('Response was invalid', response);
+            return;
+          }
+          (response.continuationContents.liveChatContinuation.actions || []).forEach(action => {
+            try {
+              let currentElement = (action.addChatItemAction ||
+                (action.replayChatItemAction != null ? action.replayChatItemAction.actions[0].addChatItemAction : null)
+                || {}).item;
+              if (!currentElement) return;
+              let messageItem = currentElement.liveChatTextMessageRenderer;
+              if (!messageItem) return;
+              messageItem.authorBadges = messageItem.authorBadges || [];
+              let authorTypes = [];
+              messageItem.authorBadges.forEach(badge =>
+                authorTypes.push(badge.liveChatAuthorBadgeRenderer.tooltip));
+              let messageText = '';
+              messageItem.message.runs.forEach(run => {
+                if (run.text) messageText += run.text;
+              });
+              if (!messageText) return;
+              item = {
+                author: {
+                  name: messageItem.authorName.simpleText,
+                  id: messageItem.authorExternalChannelId,
+                  types: authorTypes
+                },
+                message: messageText,
+                timestamp: isReplayChat() ? messageItem.timestampText.simpleText : parseTimestamp(messageItem.timestampUsec)
+              };
+              messages.push(item);
+            } catch (e) {
+              console.log('Error while parsing message.', { e });
+            }
+          });
+          let chunk = {
+            type: 'messageChunk',
+            messages: messages,
+            videoTimestamp: mostRecentTimestamp,
+            video: getV(window.location.href) || getV(window.parent.location.href)
+          };
+          console.debug('Sending chunk', chunk);
+          window.parent.postMessage(chunk, '*');
+        });
       }
       if (params.embed_domain === 'hololive.jetri.co') {
         await insertLiveTLButtons(true);
