@@ -1,8 +1,4 @@
 const launch = () => chrome.tabs.create({ url: 'https://kentonishi.github.io/LiveTL/about' });
-const YT_URLS = [
-  "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat?*",
-  "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay?*"
-];
 
 const changes = () => {
   let v = chrome.runtime.getManifest().version;
@@ -34,27 +30,27 @@ chrome.runtime.onInstalled.addListener(details => {
 
 chrome.runtime.onMessage.addListener((request, sender, callback) => {
   switch (request.type) {
-    case 'get_war':
+    case 'get_war': {
       callback(chrome.runtime.getURL(request.url));
       break;
-    case 'message':
+    } case 'message': {
       try {
-        chrome.tabs.sendMessage(
-          request.id, request.data
-        );
+        console.debug('Broadcasting message', request.data);
+        chrome.tabs.query({}, (tabs) => {
+          tabs.forEach(tab => {
+            chrome.tabs.sendMessage(tab.id, request.data);
+          });
+        });
       } catch (e) { }
       break;
-    case 'window':
+    } case 'window': {
       (window.browser || window.chrome).windows.create({
         url: request.url,
-        type: 'popup',
+        type: 'panel',
         height: 300,
         width: 600
-      }).then(tab => {
-        console.debug('Created window', tab);
-        callback(tab.id);
       });
-      return true;
+    }
     // can't break here, callback breaks 
   }
 });
@@ -77,43 +73,3 @@ chrome.webRequest.onHeadersReceived.addListener(
     "<all_urls>"
   ]
 }, ["blocking", "responseHeaders"]);
-
-
-isLiveTL = details => {
-  let livetl = false;
-  details.requestHeaders = (details.requestHeaders || []).reduce((arr, h) => {
-    if (h.name == 'livetl') {
-      livetl = true;
-    } else if (h.name != 'X-Origin') {
-      arr.push(h);
-    }
-    return arr;
-  }, []);
-  return livetl;
-};
-
-let mostRecentBodies = {};
-
-chrome.webRequest.onBeforeSendHeaders.addListener(
-  details => {
-    if (!isLiveTL(details)) {
-      // console.debug(details.tabId);
-      try {
-        chrome.tabs.sendMessage(
-          details.tabId, { url: details.url, headers: details.requestHeaders, body: mostRecentBodies[details.url] }
-        );
-      } catch (e) {
-        console.debug(e);
-      }
-    }
-  }, {
-  urls: YT_URLS
-}, ["requestHeaders"]);
-
-chrome.webRequest.onBeforeRequest.addListener(
-  details => {
-    mostRecentBodies[details.url] = decodeURIComponent(String.fromCharCode.apply(null,
-      new Uint8Array(details.requestBody.raw[0].bytes)));
-  }, {
-  urls: YT_URLS
-}, ["requestBody"]);

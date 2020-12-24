@@ -1,1 +1,1 @@
-Massive backend performance improvements, new user filter selection, left side chat toggle, Russian language support, various bugfixes, and more!
+Issues for Firefox have been patched! The fix may also fix issues for other popular browsers. This update also includes small fixes for panel resizing and translation filtering, as well as a better fullscreen mode!

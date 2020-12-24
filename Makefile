@@ -1,3 +1,6 @@
+py = python3
+pip = ${py} -m pip
+pytest = ${py} -m pytest
 jquery = "./build/common/jquery.min.js"
 jquery-ui = "./build/common/jquery-ui.min.js"
 jquery-css = "./build/common/jquery-ui.css"
@@ -12,7 +15,7 @@ EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed
 endif
 
 ifndef VERSION
-VERSION=0.1.0
+VERSION=69.42.0
 endif
 
 replace-embed-domain=sed 's|EMBED_DOMAIN|"$(EMBED_DOMAIN)"|g'
@@ -35,8 +38,12 @@ init:
 	cp $(sjquery-ui) $(jquery-ui)
 	cp $(sjquery-css) $(jquery-css)
 
-test:
+testinit:
+	cat requirements.txt | grep "#" | sed 's/#//g' | $(py) || $(pip) install -r requirements.txt
+
+test: firefox chrome testinit
 	@node tests/*.js
+	@$(pytest) tests/selenium
 
 bench:
 	@node bench/*.js
@@ -56,6 +63,7 @@ chrome: common
 	grep -v all_urls ./build/common/manifest.json > ./build/chrome/LiveTL/manifest.json
 	cp ./LICENSE ./build/chrome/LiveTL/
 	cd build/chrome/ && zip -9r ../../dist/chrome/LiveTL.zip LiveTL/
+	cd build/chrome/LiveTL && zip -9r ../../../dist/chrome/LiveTL-integration.zip *
 
 firefox: common
 	rm -rf dist/firefox/
@@ -72,6 +80,11 @@ firefox: common
 	cp ./LICENSE ./build/firefox/LiveTL/
 	grep -v incognito ./build/common/manifest.json > ./build/firefox/LiveTL/manifest.json
 	cd build/firefox/LiveTL && zip -9r ../../../dist/firefox/LiveTL.zip *
+	cp dist/firefox/LiveTL.zip dist/firefox/LiveTL.xpi
+	zip -d dist/firefox/LiveTL.xpi "css/"
+	zip -d dist/firefox/LiveTL.xpi "icons/"
+	zip -d dist/firefox/LiveTL.xpi "popout/"
+	zip -d dist/firefox/LiveTL.xpi "js/"
 	
 safari: common 
 	rm -rf dist/safari/
@@ -119,3 +132,4 @@ common: init
 clean:
 	rm -rf dist/
 	rm -rf build/
+	rm -rf drivers/

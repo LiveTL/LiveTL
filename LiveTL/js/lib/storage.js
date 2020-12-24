@@ -31,6 +31,12 @@ async function setDefaultLanguage(lang) {
   return await setStorage('LTL:defaultLang', { lang });
 }
 
+async function setupDefaultCaption() {
+  if ((await getStorage('captionMode')) == null) {
+    return await setStorage('captionMode', true);
+  }
+};
+
 async function getStorage(key) {
   const result = await storage.get(key);
   return result ? result[key] : result;
