@@ -5,8 +5,8 @@ const startLangTokens = langTokens.flatMap(e => e[0]);
 const tokenMap = Object.fromEntries(langTokens);
 
 const transDelimiters = ['-', ':'];
-const langSplitRe = /[\/\ \-\:\.\|\／]/;
-
+const langSplitRe = /[^A-Za-z]/;
+// const langSplitRe = /[^A-Za-z\/\ \-\:\.\|\／]/;
 /**
  * Parses translation
  *
@@ -50,7 +50,7 @@ const parseTranslation = message => {
     const idx = trimmed.indexOf(delim);
 
     if (idx !== -1 && idx < MAX_LANG_TAG_LEN) {
-      const lang = trimmed.slice(0, idx).trim();
+      const lang = trimmed.slice(0, idx).trim().replace(/\W/g, '');
       const msg = trimmed.slice(idx + 1).trim();
 
       return {
