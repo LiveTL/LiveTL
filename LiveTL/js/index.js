@@ -89,7 +89,7 @@ const startDragging = (event) => {
 
     const paneOriginAdjustment = await getStorage('chatSide') === 'left' ? 1 : -1;
     setPaneWidth(
-      (xOffset - moveEvent.pageX) * 100 * paneOriginAdjustment / window.innerWidth + startingPaneWidth
+      Math.max((xOffset - moveEvent.pageX) * 100 * paneOriginAdjustment / window.innerWidth + startingPaneWidth, 0)
     );
   };
 
