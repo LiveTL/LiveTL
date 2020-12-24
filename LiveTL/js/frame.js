@@ -374,7 +374,7 @@ async function loaded() {
               if (args[0].url.startsWith('https://www.youtube.com/youtubei/v1/live_chat/get_live_chat')) {
                 let data = await (await result.clone()).json();
                 console.debug('Caught chunk', data);
-                window.dispatchEvent(new CustomEvent('chromeMessage', { detail: data }));
+                window.dispatchEvent(new CustomEvent('newMessageChunk', { detail: data }));
               }
               return result;
             } catch(e) {
@@ -382,9 +382,10 @@ async function loaded() {
             }
           }
         `);
-        window.addEventListener('chromeMessage', async (response) => {
+        window.addEventListener('newMessageChunk', async (response) => {
           response = response.detail;
-          console.debug('chromeMessage event received', response);
+          response = JSON.parse(JSON.stringify(response));
+          console.debug('newMessageChunk event received', response);
           let messages = [];
           if (!response.continuationContents) {
             console.log('Response was invalid', response);
@@ -417,7 +418,9 @@ async function loaded() {
                 timestamp: isReplayChat() ? messageItem.timestampText.simpleText : parseTimestamp(messageItem.timestampUsec)
               };
               messages.push(item);
-            } catch (e) { }
+            } catch (e) {
+              console.log('Error while parsing message.', { e });
+            }
           });
           let chunk = {
             type: 'messageChunk',
