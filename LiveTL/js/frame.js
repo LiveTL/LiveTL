@@ -352,6 +352,10 @@ function injectScript(text) {
   document.head.appendChild(e);
 }
 
+function isEmbed() {
+  return window.location.href.startsWith('https://www.youtube.com/embed');
+}
+
 async function loaded() {
   // window.removeEventListener('load', loaded);
   // window.removeEventListener('yt-navigate-finish', loaded);
@@ -451,7 +455,7 @@ async function loaded() {
     } catch (e) {
       console.debug(e);
     }
-  } else if (window.location.href.startsWith('https://www.youtube.com/embed')) {
+  } else if (isEmbed()) {
     document.querySelector('.ytp-fullscreen-button').addEventListener('click', () => {
       window.parent.postMessage({ type: 'fullscreen' }, '*');
     });
@@ -469,7 +473,7 @@ window.addEventListener('message', onMessageFromEmbeddedChat);
 window.addEventListener('load', loaded);
 window.addEventListener('yt-navigate-start', clearLiveTLButtons);
 
-if ((isVideo() || isChat()) && isFirefox) {
+if ((isVideo() || isChat() || isEmbed()) && isFirefox) {
   window.dispatchEvent(new Event('load'));
 }
 
