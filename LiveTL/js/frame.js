@@ -379,7 +379,7 @@ async function loaded() {
               }
               return result;
             } catch(e) {
-              console.log(e);
+              console.debug(e);
             }
           }
         `);
@@ -389,7 +389,7 @@ async function loaded() {
           console.debug('newMessageChunk event received', response);
           let messages = [];
           if (!response.continuationContents) {
-            console.log('Response was invalid', response);
+            console.debug('Response was invalid', response);
             return;
           }
           (response.continuationContents.liveChatContinuation.actions || []).forEach(action => {
@@ -420,7 +420,7 @@ async function loaded() {
               };
               messages.push(item);
             } catch (e) {
-              console.log('Error while parsing message.', { e });
+              console.debug('Error while parsing message.', { e });
             }
           });
           let chunk = {
