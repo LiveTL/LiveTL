@@ -53,8 +53,6 @@ const setPaneWidth = (width) => {
   if (isNaN(width)) {
     return setPaneWidth(80);
   }
-  if (width * window.innerWidth / 100 > window.innerWidth - 150)
-    return;
 
   getResizeableElement().style
     .setProperty('--resizeable-width', `${width}%`);
@@ -64,7 +62,7 @@ const getPaneWidth = () => {
   const pxWidth = getComputedStyle(getResizeableElement())
     .getPropertyValue('--resizeable-width');
   const result = parseFloat(pxWidth, 10);
-  return result == NaN ? 80 : result
+  return result == NaN ? 80 : Math.min(100, Math.max(result, 0));
 };
 
 const startDragging = (event) => {
