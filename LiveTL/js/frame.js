@@ -456,10 +456,15 @@ async function loaded() {
       console.debug(e);
     }
   } else if (isEmbed()) {
-    document.querySelector('.ytp-fullscreen-button').addEventListener('click', () => {
-      window.parent.postMessage({ type: 'fullscreen' }, '*');
-    });
-    document.querySelector('#movie_player>.ytp-generic-popup').style.opacity = '0';
+    let initFullscreenButton = () => {
+      document.querySelector('.ytp-fullscreen-button').addEventListener('click', () => {
+        window.parent.postMessage({ type: 'fullscreen' }, '*');
+      });
+      document.querySelector('#movie_player>.ytp-generic-popup').style.opacity = '0';
+      window.removeEventListener('mousedown', initFullscreenButton);
+    };
+    if (isFirefox) window.addEventListener('mousedown', initFullscreenButton);
+    else initFullscreenButton();
   }
 }
 
