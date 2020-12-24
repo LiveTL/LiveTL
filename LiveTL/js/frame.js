@@ -218,7 +218,6 @@ getV = (src) => {
   return parseParams('?' + src.split('?')[1]).v;
 };
 
-let windowsWithBinds = {};
 
 const createWindow = async u => {
   return new Promise((res, rej) => {
@@ -227,6 +226,8 @@ const createWindow = async u => {
     });
   });
 };
+
+let alreadyListening = false;
 
 async function insertLiveTLButtons(isHolotools = false) {
   console.debug('Inserting LiveTL Launcher Buttons');
@@ -279,7 +280,8 @@ async function insertLiveTLButtons(isHolotools = false) {
           }
         });
         console.debug('Launched translation window for video', params.v);
-        if (!windowsWithBinds[params.v]) {
+        if (!alreadyListening) {
+          alreadyListening = true;
           window.addEventListener('message', m => {
             if (typeof m.data == 'object') {
               switch (m.data.type) {
@@ -290,7 +292,6 @@ async function insertLiveTLButtons(isHolotools = false) {
               }
             }
           });
-          windowsWithBinds[params.v] = true;
         }
       },
       'rgb(143, 143, 143)');
