@@ -15,8 +15,9 @@ public class Utils {
     public static void updateGestureExclusion(AppCompatActivity activity) {
         if (Build.VERSION.SDK_INT < 29) return;
         exclusionRects.clear();
-        Rect rect = new Rect(0, 0, Utils.dpToPx(activity, 16), getScreenHeight(activity));
-        exclusionRects.add(rect);
+        int width = getScreenWidth(activity) + 1;
+        int height = getScreenHeight(activity) + 1;
+        exclusionRects.add(new Rect(0, 0, width, height));
 
         activity.findViewById(android.R.id.content).setSystemGestureExclusionRects(exclusionRects);
     }
@@ -28,7 +29,10 @@ public class Utils {
         return height;
     }
 
-    public static int dpToPx(Context context, int i) {
-        return (int) (((float) i) * context.getResources().getDisplayMetrics().density);
+    public static int getScreenWidth(AppCompatActivity activity) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels;
+        return width;
     }
 }

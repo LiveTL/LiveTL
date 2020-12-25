@@ -52,14 +52,15 @@ public class MainActivity extends AppCompatActivity {
         wv.setScrollBarStyle(WebView.SCROLLBARS_INSIDE_INSET);
         wv.setScrollbarFadingEnabled(false);
         wv.setWebContentsDebuggingEnabled(true);
-//        View root = wv.getRootView();
-//        ViewTreeObserver treeObserver = root.getViewTreeObserver();
-//        treeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//            @Override
-//            public void onGlobalLayout() {
-//                root.getRootView().getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//                Utils.updateGestureExclusion(MainActivity.this);
-//            }
-//        });
+        wv.setInitialScale(400);
+        View root = wv.getRootView();
+        ViewTreeObserver treeObserver = root.getViewTreeObserver();
+        treeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                root.getRootView().getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                Utils.updateGestureExclusion(MainActivity.this);
+            }
+        });
     }
 }

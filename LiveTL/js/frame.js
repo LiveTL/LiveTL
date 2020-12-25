@@ -35,6 +35,8 @@ const authorType = {
 };
 
 async function runLiveTL() {
+  monkeypatch();
+
   params = parseParams();
   await setFavicon();
 
@@ -384,15 +386,18 @@ function monkeypatch() {
   }
   window.fetch = async (...args) => {
     try {
-      if (args[0].url.startsWith('file:///android_asset')) {
-        let text = await fetchLocalResource(args[0]);
+      let url = '';
+      if (typeof args[0] == 'object') url = args[0].url;
+      else url = args[0];
+      if (url.startsWith('file:///android_asset')) {
+        let text = await fetchLocalResource(url);
         return {
           json: async () => JSON.parse(text),
           text: async () => text
         };
       }
       let result = await window.oldFetch(...args);
-      if (args[0].url.startsWith('https://www.youtube.com/youtubei/v1/live_chat/get_live_chat')) {
+      if (url.startsWith('https://www.youtube.com/youtubei/v1/live_chat/get_live_chat')) {
         let data = await (await result.clone()).json();
         console.debug('Caught chunk', data);
         window.dispatchEvent(new CustomEvent('newMessageChunk', { detail: data }));

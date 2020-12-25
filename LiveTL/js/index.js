@@ -18,10 +18,11 @@ const setPaneWidth = (width) => {
     return setPaneWidth(80);
   }
 
+  width = parseFloat(width);
   getResizableElement().style
     .setProperty('--resizable-width', `${width}%`);
-    getResizableElement().style
-      .setProperty('width', `var(--resizable-width)`);
+  getResizableElement().style
+    .setProperty('width', `var(--resizable-width)`);
 };
 
 const getPaneWidth = () => {

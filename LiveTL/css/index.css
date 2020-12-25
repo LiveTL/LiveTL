@@ -32,6 +32,7 @@
 #videoPanel {
     --resizable-width: calc(100% - 150px);
     width: var(--resizable-width);
+    min-width: 10px;
     height: 100%;
     order: 1;
 }
