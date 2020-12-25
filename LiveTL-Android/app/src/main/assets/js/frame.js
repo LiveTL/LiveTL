@@ -1,7 +1,28 @@
+const languages = [
+  { code: 'en', name: 'English', lang: 'English' },
+  { code: 'jp', name: 'Japanese', lang: '日本語' },
+  { code: 'es', name: 'Spanish', lang: 'Español' },
+  { code: 'id', name: 'Indonesian', lang: 'bahasa Indonesia' },
+  { code: 'kr', name: 'Korean', lang: '한국' },
+  { code: 'ch', name: 'Chinese', lang: '中文' },
+  { code: 'ru', name: 'Russian', lang: 'русский' }
+];
+
+const languageConversionTable = {};
+
+// WAR: web accessible resource
+async function getWAR(u) {
+  return new Promise((res, rej) => chrome.runtime.sendMessage({ type: 'get_war', url: u }, r => res(r)));
+}
+
+async function getFile(name, format) {
+  return await (await fetch(await getWAR(name)))[format]();
+}
+
 const isFirefox = !!/Firefox/.exec(navigator.userAgent);
 const isAndroid = !!/Android/.exec(navigator.userAgent);
 
-const embedDomain = EMBED_DOMAIN;
+const embedDomain = "https://kentonishi.github.io/LiveTL/embed";
 
 const allTranslators = { byID: {}, byName: {} };
 // byName is unused, always checking from storage
@@ -839,3 +860,783 @@ function getLiveTLButton(color) {
 }
 
 
+async function isNewUser(id) {
+  return allTranslators.byID[id] == null;
+}
+
+async function isChecked(userid) {
+  return (await getUserStatus(userid)).checked;
+}
+
+async function saveUserStatus(userid, checked, addedByUser, byname) {
+  return await setStorage(`user${(byname ? 'byname' : '')}_${userid}`, { checked, addedByUser });
+}
+
+async function getUserStatus(userid, byname) {
+  return (await getStorage(`user${(byname ? 'byname' : '')}_${userid}`)) || {};
+}
+
+async function getUserStatusAsBool(id) {
+  let status = await getUserStatus(id);
+  status = status.checked != null ? status.checked : allTranslatorCheckbox.checked;
+  return status;
+}
+
+async function getDefaultLanguage() {
+  let lang = await getStorage('LTL:defaultLang');
+  if (lang) {
+    return lang.lang;
+  }
+}
+
+async function setDefaultLanguage(lang) {
+  return await setStorage('LTL:defaultLang', { lang });
+}
+
+async function setupDefaultCaption() {
+  if ((await getStorage('captionMode')) == null) {
+    return await setStorage('captionMode', true);
+  }
+};
+
+async function getStorage(key) {
+  const result = await storage.get(key);
+  return result ? result[key] : result;
+}
+
+async function setStorage(key, value) {
+  let obj = {}
+  obj[key] = value;
+  return await storage.set(obj);
+}
+
+let storage = {
+  get: key => null,
+  set: obj => null
+};
+
+if (isFirefox) {
+  storage.get = async (key) => {
+    return await browser.storage.local.get(key);
+  };
+
+  storage.set = async (obj) => {
+    return await browser.storage.local.set(obj);
+  };
+} else if (isAndroid) {
+  storage.get = async key => localStorage[key];
+  storage.set = async obj => localStorage[Object.keys(obj)[0]] = obj[Object.keys(obj)[0]];
+} else {
+  storage.get = (key) => {
+    return new Promise((res, rej) => {
+      chrome.storage.local.get(key, res)
+    });
+  };
+
+  storage.set = (obj) => {
+    return new Promise((res, rej) => {
+      chrome.storage.local.set(obj, res);
+    })
+  };
+}
+
+const MAX_LANG_TAG_LEN = 7;
+
+const langTokens = [['[', ']'], ['{', '}'], ['(', ')'], ['|', '|'], ['<', '>'], ['【', '】'], ['「', '」'], ['『', '』'], ['〚', '〛'], ['（', '）'], ['〈', '〉'], ['⁽', '₎']];
+const startLangTokens = langTokens.flatMap(e => e[0]);
+const tokenMap = Object.fromEntries(langTokens);
+
+const transDelimiters = ['-', ':'];
+const langSplitRe = /[^A-Za-z]/;
+// const langSplitRe = /[^A-Za-z\/\ \-\:\.\|\／]/;
+/**
+ * Parses translation
+ *
+ * @param message the message to parse
+ * @return undefined or
+ * {
+ *    lang: lang code
+ *    msg: message
+ * }
+ */
+const parseTranslation = message => {
+  const trimmed = message.trim();
+
+  // try bracket trans blocks first - '[lang]', '[lang] -'
+  const leftToken = trimmed[0];
+  const rightToken = tokenMap[leftToken];
+
+  const righTokenIndex = trimmed.indexOf(rightToken);
+
+  if (righTokenIndex !== -1) {
+    const startsWithLeftToken = startLangTokens.includes(trimmed[0]);
+
+    if (startsWithLeftToken) {
+      const lang = trimmed.slice(1, righTokenIndex);
+      let msg = trimmed.slice(righTokenIndex + 1).trim();
+
+      // remove potential trailing dash
+      if (msg[0] === '-' || msg[0] === ':') {
+        msg = msg.slice(1).trim();
+      }
+
+      return {
+        lang,
+        msg
+      };
+    }
+  }
+
+  // try all delims
+  for (const delim of transDelimiters) {
+    const idx = trimmed.indexOf(delim);
+
+    if (idx !== -1 && idx < MAX_LANG_TAG_LEN) {
+      const lang = trimmed.slice(0, idx).trim().replace(/\W/g, '');
+      const msg = trimmed.slice(idx + 1).trim();
+
+      return {
+        lang,
+        msg
+      };
+    }
+  }
+
+  return undefined;
+};
+
+function isLangMatch(textLang, currentLang) {
+  textLang = textLang.toLowerCase().split(langSplitRe).filter(s => s !== '');
+  return textLang.length <= 2 && textLang.some(s => (
+    currentLang.name.toLowerCase().startsWith(s) ||
+    s === currentLang.code ||
+    currentLang.lang.toLowerCase().startsWith(s)
+  ));
+}
+
+/**
+ * Dependencies:
+ *
+ * constants.js
+ * css.js
+ * storage.js
+ * svgs.js
+ *
+ * Other:
+ *
+ * needs languageConversionTable = {} declared before this module
+ */
+
+const enableDarkModeToggle = false;
+
+async function createSettings(container) {
+  const settings = createModal(container);
+  settings.appendChild(createLanguageSelect());
+  settings.appendChild(createTranslatorSelect());
+  settings.appendChild(createCustomUserButton(container));
+  settings.appendChild(await createDisplayModMessageToggle());
+  settings.appendChild(await createZoomSlider());
+  settings.appendChild(await createTimestampToggle());
+  settings.appendChild(await createTextDirectionToggle(container));
+  settings.appendChild(await createChatSideToggle());
+  settings.appendChild(await createCaptionDisplayToggle());
+
+  await updateZoomLevel();
+  return settings;
+}
+
+function createModal(container) {
+  const settingsButton = document.createElement('div');
+  settingsGear(settingsButton);
+  settingsButton.id = 'settingsGear';
+  settingsButton.style.zIndex = 1000000;
+  settingsButton.style.padding = '5px';
+  settingsButton.style.width = '24px';
+
+  const modalContainer = document.createElement('div');
+  modalContainer.className = 'modal';
+  modalContainer.style.zIndex = 1000000;
+  modalContainer.style.width = 'calc(100% - 20px);';
+  modalContainer.style.display = 'none';
+
+  const modalContent = document.createElement('div');
+  modalContent.className = 'modal-content';
+
+  const nextStyle = {
+    contents: 'none',
+    none: 'contents'
+  };
+
+  const icon = {
+    contents: closeSVG,
+    none: settingsGear
+  };
+
+  settingsButton.addEventListener('click', async (e) => {
+    if (container.style.display == 'none') {
+      closeMessageSelector(container);
+      return;
+    }
+    const newDisplay = nextStyle[modalContainer.style.display];
+    modalContainer.style.display = newDisplay;
+    icon[newDisplay](settingsButton);
+    if (newDisplay === 'none') {
+      document.querySelector('.translationText').style.display = 'block';
+      modalContainer.style.height = 'auto';
+      window.updateDimensions(null, true, textDirection == 'top');
+    } else {
+      document.querySelector('.translationText').style.display = 'none';
+    }
+
+    if (enableDarkModeToggle) {
+      let previousTheme = await getStorage('theme');
+      let themeToggle = document.querySelector('#darkThemeToggle');
+      if (themeToggle.value != previousTheme) {
+        let dark = themeToggle.value == 'dark' ? 1 : 0;
+        await setStorage('theme', themeToggle.value);
+        window.parent.postMessage({ type: 'themeChange', 'darkTheme': dark }, '*');
+        changeThemeAndRedirect(dark);
+      }
+    }
+  });
+
+  modalContainer.appendChild(modalContent);
+
+  document.body.appendChild(settingsButton);
+  container.appendChild(modalContainer);
+
+  return modalContent;
+}
+
+function setSelectInputCallbacks(select, defaultValue) {
+  select.addEventListener('focus', () => select.value = '');
+  const updateSelect = async () => {
+    if (!(select.value in languageConversionTable)) {
+      select.value = defaultValue;
+    }
+    await setDefaultLanguage(select.value);
+    await getDefaultLanguage();
+  };
+  select.addEventListener('blur', updateSelect);
+  select.addEventListener('change', updateSelect);
+}
+
+function createLangSelectionName(lang) {
+  return `${lang.name} (${lang.lang})`;
+}
+
+function createLangSelectOption(lang) {
+  const opt = document.createElement('option');
+  opt.value = createLangSelectionName(lang);
+  return opt;
+}
+
+languages.forEach(i => languageConversionTable[createLangSelectionName(i)] = i);
+
+function createLangSelectLabel() {
+  const langSelectLabel = document.createElement('span');
+  langSelectLabel.className = 'optionLabel';
+  langSelectLabel.textContent = 'Language: ';
+  return langSelectLabel;
+}
+
+function createSelectInput() {
+  const select = document.createElement('input');
+  select.dataset.role = 'none';
+  select.setAttribute('list', 'languages');
+  select.setAttribute('autocomplete', 'off');
+  select.id = 'langSelect';
+  getDefaultLanguage().then(defaultLang => {
+    select.value = defaultLang || createLangSelectionName(languages[0]);
+    setSelectInputCallbacks(select, select.value);
+  });
+  return select;
+}
+
+function createLangSelectDatalist() {
+  const datalist = document.createElement('datalist');
+  datalist.id = 'languages';
+  const appendDatalist = e => datalist.appendChild(e);
+  languages.map(createLangSelectOption).map(appendDatalist);
+  return datalist;
+}
+
+function createLanguageSelect() {
+  const langSelectContainer = document.createElement('div');
+  langSelectContainer.appendChild(createLangSelectLabel());
+  langSelectContainer.appendChild(createSelectInput());
+  langSelectContainer.appendChild(createLangSelectDatalist());
+  return langSelectContainer;
+}
+
+function setChecklistOnclick(checklist) {
+  checklist.querySelector('.anchor').addEventListener('click', () => {
+    const items = checklist.querySelector('#items');
+    if (items.style.display !== 'block') {
+      checklist.classList.add('openList');
+      items.style.display = 'block';
+    } else {
+      checklist.classList.remove('openList');
+      items.style.display = 'none';
+    }
+  });
+  ;
+}
+
+function setChecklistOnblur(checklist) {
+  checklist.addEventListener('blur', e => {
+    const items = checklist.querySelector('#items');
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      checklist.classList.remove('openList');
+      items.style.display = 'none';
+    } else e.currentTarget.focus();
+  });
+}
+
+function setChecklistCallbacks(checklist) {
+  setChecklistOnclick(checklist);
+  setChecklistOnblur(checklist);
+}
+
+function createTranslatorSelect() {
+  const translatorSelectContainer = document.createElement('div');
+  translatorSelectContainer.appendChild(createTransSelectLabel());
+  translatorSelectContainer.appendChild(createTransSelectChecklist());
+  return translatorSelectContainer;
+}
+
+function createTransSelectDefaultText() {
+  const defaultText = document.createElement('span');
+  defaultText.className = 'anchor';
+  defaultText.textContent = 'View All';
+  return defaultText;
+}
+
+function createTransSelectChecklistItems() {
+  const items = document.createElement('ul');
+  items.id = 'items';
+  items.className = 'items';
+  return items;
+}
+
+function createTransSelectLabel() {
+  const translatorSelectLabel = document.createElement('span');
+  translatorSelectLabel.className = 'optionLabel';
+  translatorSelectLabel.innerHTML = 'User Filter:&nbsp';
+  return translatorSelectLabel;
+}
+
+function createTransSelectChecklist() {
+  const checklist = document.createElement('div');
+  checklist.className = 'dropdown-check-list';
+  checklist.id = 'transelectChecklist';
+  checklist.tabIndex = 1;
+  checklist.appendChild(createTransSelectDefaultText());
+  checklist.appendChild(createTransSelectChecklistItems());
+  checklist.style.border = '1px solid gray';
+  setChecklistCallbacks(checklist);
+  return checklist;
+}
+
+function createZoomLabel() {
+  const label = document.createElement('span');
+  label.className = 'optionLabel';
+  label.textContent = 'Zoom: ';
+  return label;
+}
+
+const zoomSliderInputId = 'zoomSliderInput';
+
+async function createZoomSliderInput() {
+  let zoomSlider = document.createElement('input');
+  zoomSlider.id = zoomSliderInputId;
+  zoomSlider.type = 'range';
+  zoomSlider.min = '0.5';
+  zoomSlider.max = '2';
+  zoomSlider.style.padding = '4px';
+  zoomSlider.step = '0.01';
+  zoomSlider.value = ((await getStorage('zoom')) || 1);
+  zoomSlider.style.verticalAlign = 'middle';
+  zoomSlider.addEventListener('change', () => updateZoomLevel());
+
+  return zoomSlider;
+}
+
+async function updateZoomLevel() {
+  let value = parseFloat(document.getElementById(zoomSliderInputId).value) || await getStorage('zoom') || 1;
+  let scale = Math.ceil(value * 100);
+  let container = document.body;// document.querySelector('.bodyWrapper');
+  container.style.transformOrigin = '0 0';
+  container.style.transform = `scale(${scale / 100})`;
+  let inverse = 10000 / scale;
+  container.style.width = `${inverse}%`;
+  container.style.height = `${inverse}%`;
+  await setStorage('zoom', scale / 100);
+}
+
+function createZoomResetButton() {
+  let resetButton = document.createElement('input');
+  resetButton.value = 'Reset';
+  resetButton.style.marginLeft = '4px';
+  resetButton.style.verticalAlign = 'middle';
+  resetButton.type = 'button';
+  resetButton.addEventListener('click', async () => {
+    document.getElementById(zoomSliderInputId).value = 1;
+    await updateZoomLevel();
+  });
+
+  return resetButton;
+}
+
+async function createZoomSlider() {
+  const zoomSettings = document.createElement('div');
+  const zoomSliderInput = await createZoomSliderInput();
+
+  zoomSettings.appendChild(createZoomLabel());
+  zoomSettings.appendChild(zoomSliderInput);
+  zoomSettings.appendChild(createZoomResetButton());
+
+  return zoomSettings;
+}
+
+function createTimestampLabel() {
+  const label = document.createElement('label');
+  label.className = 'optionLabel';
+  label.htmlFor = 'timestampToggle';
+  label.textContent = 'Show Timestamps: ';
+
+  return label;
+}
+
+async function createTimestampCheckbox() {
+  let timestampToggle = document.createElement('input');
+  timestampToggle.id = 'timestampToggle';
+  timestampToggle.type = 'checkbox';
+  timestampToggle.style.padding = '4px';
+  timestampToggle.style.verticalAlign = 'middle';
+
+  let display = await getStorage('timestamp');
+  display = display != null ? display : true;
+  timestampToggle.checked = display;
+
+  let changed = async () => {
+    showTimestamps = timestampToggle.checked;
+    await setStorage('timestamp', showTimestamps);
+    document.querySelectorAll('.timestampText').forEach(m => m.style.display = showTimestamps ? 'contents' : 'none');
+  };
+
+  timestampToggle.addEventListener('change', changed);
+
+  await changed();
+
+  return timestampToggle;
+}
+
+async function createTimestampToggle() {
+  const timestampSettings = document.createElement('div');
+  timestampSettings.appendChild(createTimestampLabel());
+  timestampSettings.appendChild(await createTimestampCheckbox());
+  return timestampSettings;
+}
+
+function createTextDirectionLabel() {
+  const label = document.createElement('label');
+  label.className = 'optionLabel';
+  label.htmlFor = 'textDirToggle';
+  label.textContent = 'Text Direction: ';
+
+  return label;
+}
+
+async function createTextDirectionSelect() {
+  let textDirSelect = document.createElement('select');
+  textDirSelect.innerHTML = `
+    <option id="top" value="top">Top</option>
+    <option id="bottom" value="bottom">Bottom</option>
+  `;
+
+  let data = (await getStorage('text_direction'));
+  data = (data == null ? 'bottom' : data);
+  textDirSelect.value = textDirection = data;
+
+  let changed = async () => {
+    textDirection = textDirSelect.value;
+    await setStorage('text_direction', textDirection);
+    let tt = document.querySelector('.translationText');
+    let sg = document.querySelector('#settingsGear');
+    tt.querySelectorAll('.line').forEach(m => prependE(m));
+    if (textDirection === 'top') {
+      tt.style.maxHeight = null;
+      tt.style.position = null;
+      tt.style.bottom = null;
+      sg.style.bottom = '5px';
+      sg.style.top = null;
+    } else {
+      tt.style.maxHeight = '100%';
+      tt.style.position = 'absolute';
+      tt.style.bottom = '0';
+      sg.style.top = '5px';
+      sg.style.bottom = null;
+    }
+  };
+
+  textDirSelect.addEventListener('change', changed);
+
+  await changed();
+  return textDirSelect;
+}
+
+async function createTextDirectionToggle(container) {
+  const textDirToggle = document.createElement('div');
+  textDirToggle.appendChild(createTextDirectionLabel());
+  textDirToggle.appendChild(await createTextDirectionSelect(container));
+  textDirToggle.style.marginTop = '10px';
+  return textDirToggle;
+}
+
+function createChatSideLabel() {
+  const label = document.createElement('label');
+  label.className = 'optionLabel';
+  label.textContent = 'Chat side: ';
+
+  return label;
+}
+
+async function createChatSideRadios() {
+  const left = document.createElement('input');
+  const right = document.createElement('input');
+
+  left.id = 'chatSideLeft';
+  right.id = 'chatSideRight';
+
+  left.type = right.type = 'radio';
+  left.name = right.name = 'chatSide';
+
+  const side = await getStorage('chatSide');
+
+  if (side === 'right') {
+    right.checked = true;
+  } else if (side === 'left') {
+    left.checked = true;
+  } else {
+    right.checked = true;
+  }
+
+  const onChange = async () => {
+    const videoPanel = parent.document.getElementById('videoPanel');
+    const liveTlPanel = parent.document.getElementById('ltlPanel');
+
+    if (right.checked === true) {
+      await setStorage('chatSide', 'right');
+
+      videoPanel.style.order = '1';
+      liveTlPanel.style.order = '3';
+    } else if (left.checked === true) {
+      await setStorage('chatSide', 'left');
+
+      videoPanel.style.order = '3';
+      liveTlPanel.style.order = '1';
+    }
+  };
+
+  left.addEventListener('change', onChange);
+  right.addEventListener('change', onChange);
+
+  return { left, right };
+}
+
+function createChatSideRadioLabels() {
+  const left = document.createElement('label');
+  const right = document.createElement('label');
+
+  left.htmlFor = 'chatSideLeft';
+  right.htmlFor = 'chatSideRight';
+
+  left.textContent = 'Left';
+  right.textContent = 'Right';
+
+  return { left, right };
+}
+
+async function createChatSideToggle() {
+  const chatSideToggle = document.createElement('div');
+  chatSideToggle.appendChild(createChatSideLabel());
+
+  const radios = await createChatSideRadios();
+  const labels = createChatSideRadioLabels();
+
+  chatSideToggle.appendChild(radios.left);
+  chatSideToggle.appendChild(labels.left);
+  chatSideToggle.appendChild(radios.right);
+  chatSideToggle.appendChild(labels.right);
+
+  return chatSideToggle;
+}
+
+function createCheckToggleLabel(labelName, labelFor) {
+  const label = document.createElement('label');
+  label.className = 'optionLabel';
+  label.htmlFor = labelFor;
+  label.textContent = labelName;
+  return label;
+}
+
+async function createCheckToggleCheckbox(id, storageName, onchange) {
+  const checkbox = document.createElement('input');
+  checkbox.id = id;
+  checkbox.type = 'checkbox';
+  checkbox.style.padding = '4px';
+  checkbox.style.verticalAlign = 'middle';
+
+  let display = await getStorage(storageName);
+  checkbox.checked = display != null ? display : true;
+
+  const changed = async() => {
+    const toDisplay = checkbox.checked;
+    await setStorage(storageName, toDisplay);
+    await onchange();
+  };
+
+  checkbox.addEventListener('change', changed);
+
+  await changed();
+
+  return checkbox;
+}
+
+function createDisplayModMessageLabel() {
+  return createCheckToggleLabel('Show Mod Messages: ', 'displayModMessages');
+}
+
+async function createDisplayModMessageCheckbox() {
+  return await createCheckToggleCheckbox(
+    'displayModMessages', 'displayModMessages', async () => {
+      const displayModMessages = await getStorage('displayModMessages');
+      document.querySelectorAll('.mod').forEach(el => {
+        el.parentElement
+          .parentElement
+          .style
+          .display = displayModMessages ? 'block': 'none';
+      });
+    }
+  );
+}
+
+async function createDisplayModMessageToggle() {
+  const displayModMessagesToggle = document.createElement('div');
+  displayModMessagesToggle.appendChild(createDisplayModMessageLabel());
+  displayModMessagesToggle.appendChild(await createDisplayModMessageCheckbox());
+
+  return displayModMessagesToggle;
+}
+
+function changeThemeAndRedirect(dark) {
+  var url = new URL(location.href);
+  url.searchParams.set('dark_theme', dark);
+  location.href = url.toString();
+}
+
+function closeMessageSelector(container) {
+  container.style.display = null;
+  document.querySelector('#chat').style.cursor = null;
+  document.querySelector('#settingsGear').classList.remove('pickUserDoneBtn');
+  scrollBackToBottomOfChat();
+}
+
+function findParent(e) {
+  while (e && e.tagName != 'YT-LIVE-CHAT-TEXT-MESSAGE-RENDERER') e = e.parentElement;
+  return e;
+}
+
+function scrollBackToBottomOfChat() {
+  document.querySelector('#show-more').dispatchEvent(new Event('click'));
+}
+
+function createCustomUserButton(container) {
+  let addButton = document.createElement('input');
+  addButton.value = 'Add User to Filter';
+  addButton.style.verticalAlign = 'middle';
+  addButton.type = 'button';
+  addButton.addEventListener('click', async () => {
+    let name = prompt('Enter a username:');
+    if (name) {
+      await saveUserStatus(name, true, undefined, true);
+      await createCheckbox(`(Custom) ${name}`, name, true, undefined, async (e) => {
+        await saveUserStatus(name, e.target.checked, undefined, true);
+      }, true);
+    }
+  });
+  return addButton;
+}
+
+async function createCaptionDisplayToggle() {
+  await setupDefaultCaption();
+  const captionDispToggle = document.createElement('div');
+  captionDispToggle.appendChild(createCaptionDisplayToggleLabel());
+  captionDispToggle.appendChild(await createCaptionDisplayToggleCheckbox());
+  return captionDispToggle;
+}
+
+function createCaptionDisplayToggleLabel() {
+  return createCheckToggleLabel('Caption mode (beta)', 'captionMode');
+}
+
+async function createCaptionDisplayToggleCheckbox() {
+  return await createCheckToggleCheckbox(
+    'captionMode', 'captionMode', async () => {
+      const postMessage = window.parent.parent.postMessage;
+      if ((await getStorage('captionMode'))) {
+        postMessage({
+          action: 'caption',
+          caption: 'Captions will appear here. Use your mouse to move and resize!'
+        });
+      } else {
+        postMessage({ action: 'clearCaption' }, '*');
+      }
+    }
+  );
+}
+/**
+ * Dependencies
+ *
+ * constants.js
+ */
+
+async function importFontAwesome() {
+  document.head.innerHTML += `
+    <link 
+     rel="stylesheet"
+     href="https://cdn.jsdelivr.net/npm/fork-awesome@1.1.7/css/fork-awesome.min.css"
+     integrity="sha256-gsmEoJAws/Kd3CjuOQzLie5Q3yshhvmo7YNtBG7aaEY="
+     crossorigin="anonymous">
+        `;
+}
+
+async function importCSS(url) {
+  const frameCSSURL = getWAR(url);
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = await frameCSSURL;
+  link.type = 'text/css';
+  document.head.appendChild(link);
+}
+
+async function importStyle() {
+  return await importCSS('css/frame.css');
+}
+function closeSVG (e) {
+  e.innerHTML = '<svg class="svgButton" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>';
+}
+
+function hideSVG (e) {
+  e.innerHTML = ' <svg class="hide" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 572.098 572.098" style="enable-background:new 0 0 572.098 572.098;" xml:space="preserve"> <g> <path d="M99.187,398.999l44.333-44.332c-24.89-15.037-47.503-33.984-66.763-56.379c29.187-33.941,66.053-60.018,106.947-76.426 c-6.279,14.002-9.853,29.486-9.853,45.827c0,16.597,3.696,32.3,10.165,46.476l35.802-35.797 c-5.698-5.594-9.248-13.36-9.248-21.977c0-17.02,13.801-30.82,30.82-30.82c8.611,0,16.383,3.55,21.971,9.248l32.534-32.534 l36.635-36.628l18.366-18.373c-21.206-4.186-42.896-6.469-64.848-6.469c-107.663,0-209.732,52.155-273.038,139.518L0,298.288 l13.011,17.957C36.83,349.116,66.151,376.999,99.187,398.999z"/> <path d="M459.208,188.998l-44.854,44.854c30.539,16.071,58.115,37.846,80.986,64.437 c-52.167,60.662-128.826,96.273-209.292,96.273c-10.3,0-20.533-0.6-30.661-1.744l-52.375,52.375 c26.903,6.887,54.762,10.57,83.036,10.57c107.663,0,209.738-52.154,273.038-139.523l13.011-17.957l-13.011-17.956 C532.023,242.995,497.844,212.15,459.208,188.998z"/> <path d="M286.049,379.888c61.965,0,112.198-50.234,112.198-112.199c0-5.588-0.545-11.035-1.335-16.402L269.647,378.56 C275.015,379.349,280.461,379.888,286.049,379.888z"/> <path d="M248.815,373.431L391.79,230.455l4.994-4.994l45.796-45.796l86.764-86.77c13.543-13.543,13.543-35.502,0-49.046 c-6.77-6.769-15.649-10.159-24.523-10.159s-17.754,3.384-24.522,10.159l-108.33,108.336l-22.772,22.772l-29.248,29.248 l-48.14,48.14l-34.456,34.456l-44.027,44.027l-33.115,33.115l-45.056,45.055l-70.208,70.203 c-13.543,13.543-13.543,35.502,0,49.045c6.769,6.77,15.649,10.16,24.523,10.16s17.754-3.385,24.523-10.16l88.899-88.898 l50.086-50.086L248.815,373.431z"/> </g> </svg> ';
+}
+
+function banSVG (e) {
+  e.innerHTML = ' <svg class="ban" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"> <g data-name="Layer 2"> <g data-name="person-delete"> <rect width="24" height="24" opacity="0" /> <path d="M20.47 7.5l.73-.73a1 1 0 0 0-1.47-1.47L19 6l-.73-.73a1 1 0 0 0-1.47 1.5l.73.73-.73.73a1 1 0 0 0 1.47 1.47L19 9l.73.73a1 1 0 0 0 1.47-1.5z" /> <path d="M10 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4z" /> <path d="M16 21a1 1 0 0 0 1-1 7 7 0 0 0-14 0 1 1 0 0 0 1 1z" /> </g> </g> </svg> ';
+}
+
+// From material design official website
+function settingsGear (e) {
+  e.innerHTML = '<svg class="svgButton" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98 0-.34-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.09-.16-.26-.25-.44-.25-.06 0-.12.01-.17.03l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.06-.02-.12-.03-.18-.03-.17 0-.34.09-.43.25l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98 0 .33.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.09.16.26.25.44.25.06 0 .12-.01.17-.03l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.06.02.12.03.18.03.17 0 .34-.09.43-.25l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zm-1.98-1.71c.04.31.05.52.05.73 0 .21-.02.43-.05.73l-.14 1.13.89.7 1.08.84-.7 1.21-1.27-.51-1.04-.42-.9.68c-.43.32-.84.56-1.25.73l-1.06.43-.16 1.13-.2 1.35h-1.4l-.19-1.35-.16-1.13-1.06-.43c-.43-.18-.83-.41-1.23-.71l-.91-.7-1.06.43-1.27.51-.7-1.21 1.08-.84.89-.7-.14-1.13c-.03-.31-.05-.54-.05-.74s.02-.43.05-.73l.14-1.13-.89-.7-1.08-.84.7-1.21 1.27.51 1.04.42.9-.68c.43-.32.84-.56 1.25-.73l1.06-.43.16-1.13.2-1.35h1.39l.19 1.35.16 1.13 1.06.43c.43.18.83.41 1.23.71l.91.7 1.06-.43 1.27-.51.7 1.21-1.07.85-.89.7.14 1.13zM12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>';
+}

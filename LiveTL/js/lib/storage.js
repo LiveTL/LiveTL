@@ -61,6 +61,9 @@ if (isFirefox) {
   storage.set = async (obj) => {
     return await browser.storage.local.set(obj);
   };
+} else if (isAndroid) {
+  storage.get = async key => localStorage[key];
+  storage.set = async obj => localStorage[Object.keys(obj)[0]] = obj[Object.keys(obj)[0]];
 } else {
   storage.get = (key) => {
     return new Promise((res, rej) => {

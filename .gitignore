@@ -11,3 +11,4 @@ LiveTL-Safari/LiveTL/LiveTL.xcodeproj/xcuserdata/
 __pycache__/
 *.pyc
 *.log
+LiveTL-Android/app/src/main/assets

@@ -1,0 +1,372 @@
+:root {
+    --button-transparent: #49deff4f;
+    --hovered-transparent: #ff49d89e;
+    --button-fill: #49deff;
+    --hovered-fill: #ff49d8;
+    --yt-live-chat-background-color: #181818;
+    --yt-live-chat-primary-text-color: #efefef;
+    --yt-live-chat-secondary-text-color: #aaaaaa;
+    color-scheme: light dark;
+}
+
+html {
+    overflow-y: hidden;
+}
+
+body {
+    margin: 0;
+    font-family: "Roboto Light", sans-serif;
+    overflow-y: none;
+}
+
+.livetl {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--yt-live-chat-background-color);
+    color: var(--yt-live-chat-primary-text-color);
+    z-index: 0;
+    word-wrap: break-word;
+    word-break: break-word;
+    font-size: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 0px;
+    min-height: 0px !important;
+    min-width: 0px !important;
+    scrollbar-width: thin;
+}
+
+.italics {
+    font-style: italic;
+}
+
+/* width */
+
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+/* Track */
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Handle */
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+a {
+    color: var(--yt-live-chat-primary-text-color);
+    text-decoration: none;
+}
+
+.livetl * {
+    vertical-align: baseline;
+}
+
+.navbar {
+    margin-top: 10px;
+    min-height: 25px;
+}
+
+input {
+    padding: 5px;
+}
+
+a {
+    text-decoration: underline;
+}
+
+.dropdown-check-list {
+    display: inline-block;
+    background-color: var(--yt-live-chat-background-color);
+    color: var(--yt-live-chat-primary-text-color);
+    font-size: 14px;
+}
+
+.dropdown-check-list .anchor {
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+    padding: 5px 50px 5px 10px;
+    width: calc(100% - 55px);
+}
+
+.dropdown-check-list .anchor:after {
+    position: absolute;
+    content: "";
+    border-left: 2px solid white;
+    border-top: 2px solid white;
+    padding: 5px;
+    right: 10px;
+    top: 20%;
+    -moz-transform: rotate(-135deg);
+    -ms-transform: rotate(-135deg);
+    -o-transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+    transform: rotate(-135deg);
+}
+
+.openList>.anchor:after {
+    border-right: 2px solid var(--yt-live-chat-primary-text-color) !important;
+    border-bottom: 2px solid var(--yt-live-chat-primary-text-color) !important;
+    border-left: 0 !important;
+    border-top: 0 !important;
+    margin-top: 5px !important;
+}
+
+.dropdown-check-list .anchor:active:after {
+    right: 8px;
+    top: 21%;
+}
+
+.dropdown-check-list ul.items {
+    padding: 2px;
+    display: none;
+    margin: 0;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+.dropdown-check-list ul.items li {
+    list-style: none;
+}
+
+.dropdown-check-list {
+    position: absolute;
+}
+
+.translationText {
+    z-index: -1;
+    width: 100%;
+    display: block;
+}
+
+.smallText {
+    font-size: 12px;
+    color: var(--yt-live-chat-secondary-text-color);
+    margin-left: 5px;
+    vertical-align: baseline;
+}
+
+label {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: -moz-none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.hide {
+    stroke-width: 0;
+    fill: #A0A0A0;
+    width: 12px;
+    height: 12px;
+}
+
+.hide:hover {
+    fill: cornflowerblue;
+}
+
+.ban {
+    stroke-width: 0;
+    fill: #A0A0A0;
+    width: 12px;
+    height: 12px;
+}
+
+.ban:hover {
+    fill: crimson;
+}
+
+.hasTooltip {
+    position: relative;
+    display: inline-block;
+    margin-left: 3px;
+}
+
+.tooltip {
+    visibility: hidden;
+    width: 6em;
+    font-size: 0.6em;
+    background-color: #2b2b2b;
+    color: #efefef;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    bottom: 125%;
+    margin-left: -42px;
+    transition: opacity 0.3s;
+}
+
+.hasTooltip .tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.hasTooltip:hover .tooltip {
+    visibility: visible;
+}
+
+.optionLabel {
+    position: absolute;
+    margin-left: 0;
+    display: contents !important;
+}
+
+.sepLine {
+    background-color: white;
+    height: 1px;
+    animation: none;
+}
+
+@keyframes splash {
+    from {
+        background-color: rgba(0, 119, 255, 0.466);
+    }
+    to {}
+}
+
+.line {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+    animation-iteration-count: 1;
+    animation: splash 1s normal forwards ease-in-out;
+}
+
+.line:last-child {
+    margin-bottom: 10px;
+}
+
+.message {
+    padding: 6px;
+    border-radius: 5px;
+}
+
+.message:nth-child(2n) {
+    background-color: #2b2b2b;
+}
+
+.message:nth-child(2n+1) {
+    background-color: #212121;
+}
+
+.moderator {
+    /* from youtube. !important so that if a user is a verified channel, or a member in the channel they're talking in,
+     mod colour takes precedence */
+    color: #5e84f1 !important;
+}
+
+.verified {
+    color: #EF6C00;
+}
+
+.distinguished {
+    color: #8E24AA;
+}
+
+.messageOptions {
+    margin-left: 1px;
+}
+
+.smallIcon {
+    margin-right: 5px;
+}
+
+.logo {
+    width: 18px;
+    height: 18px;
+    vertical-align: unset;
+    margin-top: 1px;
+    margin-right: 5px;
+}
+
+.svgButton {
+    stroke: var(--button-fill);
+    fill: var(--button-fill);
+}
+
+/* The Modal (background) */
+
+.modal .modal-content {
+    /* Hidden by default */
+    /* position: fixed; */
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* Full width */
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: var(--yt-live-chat-background-color);
+    color: var(--yt-live-chat-primary-text-color);
+}
+
+/* Modal Content/Box */
+
+.modal-content>* {
+    margin-left: 10px;
+}
+
+.modal-content>*:not(.dropdown-check-list) {
+    margin: 10px;
+}
+
+.modal-content {
+    justify-content: center;
+    display: inline-grid;
+    align-content: center;
+    min-height: 100%;
+}
+
+.modal {
+    justify-content: center;
+    display: none;
+}
+
+#settingsGear {
+    bottom: 0;
+    cursor: pointer;
+    position: fixed;
+    right: 5px;
+    z-index: 1000000;
+    height: 24px;
+}
+
+select {
+    margin-left: 2px;
+    padding: 5px;
+    vertical-align: middle;
+}
+
+yt-live-chat-text-message-renderer {
+    background-color: var(--button-transparent);
+    transition: 0.25s;
+}
+
+yt-live-chat-text-message-renderer:hover {
+    background-color: var(--hovered-transparent);
+}
