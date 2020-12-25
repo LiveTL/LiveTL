@@ -49,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
         s.setAllowContentAccess(true);
         s.setAllowFileAccessFromFileURLs(true);
         s.setAllowUniversalAccessFromFileURLs(true);
+        s.setUserAgentString(
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+            "(KHTML, like Gecko) Chrome/89.0.4346.0 Safari/537.36 Edg/89.0.731.0"
+        );
         wv.setScrollBarStyle(WebView.SCROLLBARS_INSIDE_INSET);
         wv.setScrollbarFadingEnabled(false);
         wv.setWebContentsDebuggingEnabled(true);
