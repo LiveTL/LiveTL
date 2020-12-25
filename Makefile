@@ -24,7 +24,7 @@ replace-version=sed 's|VERSION|$(VERSION)|g'
 
 all: chrome firefox
 
-.PHONY: init bench test chrome firefox clean
+.PHONY: init bench test chrome firefox android clean
 
 init:
 	mkdir -p dist/
@@ -120,6 +120,10 @@ safari-noBuild: common
 	rm -rf ./build/safari/LiveTL/js/lib/
 	cp ./LICENSE ./build/safari/LiveTL/
 	grep -v incognito ./build/common/manifest.json > ./build/safari/LiveTL/manifest.json
+
+android: chrome
+	mkdir -p LiveTL-Android/app/src/main/assets/
+	cp -r build/chrome/LiveTL/* LiveTL-Android/app/src/main/assets/
 
 common: init
 	cat $(lib)/constants.js $(lib)/../frame.js $(lib)/storage.js $(lib)/filter.js $(lib)/settings.js $(lib)/css.js $(lib)/svgs.js \
