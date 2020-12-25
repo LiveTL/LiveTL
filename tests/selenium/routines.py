@@ -1,3 +1,4 @@
+import os
 import sys
 import time
 
@@ -11,7 +12,7 @@ class TestCases:
     @classmethod
     def setup_class(cls):
         cls.browser.setup_driver()
-        cls.web = cls.browser.get_selenium()
+        cls.web = cls.browser.get_selenium(is_headless())
         try:
             cls.web.switch_to.window("1")
         except Exception:
@@ -72,6 +73,10 @@ class TestCases:
     def teardown_class(cls):
         cls.web.quit()
         del cls.web
+
+
+def is_headless():
+    return os.environ.get("HEADED") is not None
 
 
 def go_to_website(web, url):
