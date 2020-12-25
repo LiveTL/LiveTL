@@ -12,7 +12,6 @@ document.title = decodeURIComponent(params.title || 'LiveTL');
 
 // resizing yoinked and modified from https://spin.atomicobject.com/2019/11/21/creating-a-resizable-html-element/
 const getResizeableElement = () => document.getElementById('videoPanel');
-const getHandleElement = () => document.getElementById('handleV');
 
 const setPaneWidth = (width) => {
   if (isNaN(width)) {
@@ -28,16 +27,6 @@ const getPaneWidth = () => {
   let result = 100 * pxWidth / window.innerWidth;
   return result == NaN ? 80 : Math.min(100, Math.max(result, 0));
 };
-
-getStorage('chatSide').then(side => {
-  if (side === 'right') {
-    videoPanel.style.order = '1';
-    liveTLPanel.style.order = '3';
-  } else if (side === 'left') {
-    videoPanel.style.order = '3';
-    liveTLPanel.style.order = '1';
-  }
-});
 
 
 
@@ -79,7 +68,7 @@ if (leftWidth) {
 
 if (params.noVideo) {
   videoPanel.style.display = 'none';
-  document.querySelector('#handleV').style.display = 'none';
+  document.querySelectorAll('#handleV').style.display = 'none';
 } else {
   stream.src = `${embedDomain}?v=${v}&mode=video`;
   if (rightHeight) {
@@ -185,16 +174,49 @@ $('#youtubeChatPanel').resizable({
   stop: stop
 });
 
-$(videoPanel).resizable({
-  handles: {
-    e: '#handleV'
-  },
-  start: start,
-  stop: () => {
-    setPaneWidth(getPaneWidth());
-    stop();
+let stopFunc = () => {
+  setPaneWidth(getPaneWidth());
+  stop();
+};
+
+let leftHandle = document.querySelector('#leftHandle');
+let rightHandle = document.querySelector('#rightHandle');
+let handle = document.createElement('span');
+handle.innerHTML = `<div id="handleV" class="handle ui-resizable-handle ui-resizable-e"><span>&vellip;</span></div>`;
+
+getStorage('chatSide').then(side => {
+  try {
+    $(videoPanel).resizable('disable');
+  } catch (e) { }
+  side = side || 'right';
+  if (side === 'right') {
+    leftHandle.appendChild(handle);
+    videoPanel.style.order = '1';
+    liveTLPanel.style.order = '2';
+  } else if (side === 'left') {
+    leftHandle.appendChild(handle);
+    videoPanel.style.order = '2';
+    liveTLPanel.style.order = '1';
   }
+  $(videoPanel).resizable({
+    handles: {
+      e: $('#handleV')
+    },
+    start: start,
+    stop: stopFunc
+  });
 });
+
+getTopWithSafety = d => `max(min(${d}, calc(100% - 50px)), -30px)`;
+getLeftWithSafety = d => `max(min(${d}, calc(100% - 50px)), -30px)`;
+
+
+let capLeft = localStorage.getItem('LTL:captionSizeLeft');
+let capTop = localStorage.getItem('LTL:captionSizeTop');
+let capWidth = localStorage.getItem('LTL:captionSizeWidth');
+if (capLeft) nojdiv.style.left = propToPercent(getLeftWithSafety(capLeft), false);
+if (capTop) nojdiv.style.top = getTopWithSafety(propToPercent(capTop, true));
+if (capWidth) nojdiv.style.width = propToPercent(capWidth, false);
 
 $(captionsDiv).draggable({
   stop: (event, ui) => {
@@ -219,17 +241,6 @@ $(captionsDiv).draggable({
   }
 });
 
-
-let capLeft = localStorage.getItem('LTL:captionSizeLeft');
-let capTop = localStorage.getItem('LTL:captionSizeTop');
-let capWidth = localStorage.getItem('LTL:captionSizeWidth');
-
-getTopWithSafety = d => `max(min(${d}, calc(100% - 50px)), -30px)`;
-getLeftWithSafety = d => `max(min(${d}, calc(100% - 50px)), -30px)`;
-
-if (capLeft) nojdiv.style.left = propToPercent(getLeftWithSafety(capLeft), false);
-if (capTop) nojdiv.style.top = getTopWithSafety(propToPercent(capTop, true));
-if (capWidth) nojdiv.style.width = propToPercent(capWidth, false);
 
 function getTop(ele) {
   var eTop = ele.offset().top;

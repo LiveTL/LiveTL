@@ -9,7 +9,7 @@
     {
       "label": "build",
       "type": "shell",
-      "command": "export EMBED_DOMAIN=https://cranky-beaver-1d73c7.netlify.app/embed;export VERSION=0.3.0;make clean;make;",
+      "command": "export EMBED_DOMAIN=https://cranky-beaver-1d73c7.netlify.app/embed;export VERSION=0.3.0;make;",
       "problemMatcher": [],
       "group": {
         "kind": "build",
