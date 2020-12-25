@@ -1,5 +1,5 @@
 const isFirefox = !!/Firefox/.exec(navigator.userAgent);
-const isAndroid = !!/Android/.exec(navigator.userAgent);
+const isAndroid = window.chrome == null;
 
 if (isAndroid) {
   window.chrome = {
