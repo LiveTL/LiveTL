@@ -25,6 +25,12 @@ public class MainActivity extends AppCompatActivity {
         WebSettings s = wv.getSettings();
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
+        s.setJavaScriptEnabled(true);
+        s.setPluginState(WebSettings.PluginState.ON);
+        s.setAllowFileAccess(true);
+        s.setAllowContentAccess(true);
+        s.setAllowFileAccessFromFileURLs(true);
+        s.setAllowUniversalAccessFromFileURLs(true);
         wv.setScrollBarStyle(WebView.SCROLLBARS_INSIDE_INSET);
         wv.setScrollbarFadingEnabled(false);
         wv.setWebContentsDebuggingEnabled(true);

@@ -12,7 +12,13 @@ const languageConversionTable = {};
 
 // WAR: web accessible resource
 async function getWAR(u) {
-  return new Promise((res, rej) => chrome.runtime.sendMessage({ type: 'get_war', url: u }, r => res(r)));
+  return new Promise((res, rej) => {
+    if (isAndroid) {
+      res(`file:///android_asset/${u}`)
+    } else {
+      chrome.runtime.sendMessage({ type: 'get_war', url: u }, r => res(r));
+    }
+  });
 }
 
 async function getFile(name, format) {
@@ -22,7 +28,18 @@ async function getFile(name, format) {
 const isFirefox = !!/Firefox/.exec(navigator.userAgent);
 const isAndroid = !!/Android/.exec(navigator.userAgent);
 
-const embedDomain = "https://kentonishi.github.io/LiveTL/embed";
+if (isAndroid) {
+  window.chrome = {
+    runtime: {
+      sendMessage: () => { },
+      onMessage: {
+        addListener: () => { }
+      }
+    }
+  };
+}
+
+const embedDomain = "https://cranky-beaver-1d73c7.netlify.app/embed";
 
 const allTranslators = { byID: {}, byName: {} };
 // byName is unused, always checking from storage
@@ -378,6 +395,43 @@ function isEmbed() {
   return window.location.href.startsWith('https://www.youtube.com/embed');
 }
 
+
+let inject = `
+  window.oldFetch = window.oldFetch || window.fetch;
+  function fetchLocalResource(url) {
+    return new Promise((res, rej) => {
+      const req = new XMLHttpRequest();
+      req.onload = function () {
+        const text = req.responseText;
+        res(text);
+      };
+      req.open('GET', url);
+      req.send();
+    });
+  }
+  window.fetch = async (...args) => {
+    try {
+      if (args[0].startsWith('file:///android_asset')){
+        let text = await fetchLocalResource(args[0]);
+        return {
+          json: async () => JSON.parse(text),
+          text: async () => text
+        };
+      }
+      let result = await window.oldFetch(...args);
+      if (args[0].url.startsWith('https://www.youtube.com/youtubei/v1/live_chat/get_live_chat')) {
+        let data = await (await result.clone()).json();
+        console.debug('Caught chunk', data);
+        window.dispatchEvent(new CustomEvent('newMessageChunk', { detail: data }));
+      }
+      return result;
+    } catch(e) {
+      console.debug(e);
+    }
+  }
+`;
+eval(inject);
+
 async function loaded() {
   // window.removeEventListener('load', loaded);
   // window.removeEventListener('yt-navigate-finish', loaded);
@@ -393,22 +447,7 @@ async function loaded() {
         runLiveTL();
       } else {
         console.debug('Monitoring network events');
-        injectScript(`
-          window.oldFetch = window.oldFetch || window.fetch;
-          window.fetch = async (...args) => {
-            try {
-              let result = await window.oldFetch(...args);
-              if (args[0].url.startsWith('https://www.youtube.com/youtubei/v1/live_chat/get_live_chat')) {
-                let data = await (await result.clone()).json();
-                console.debug('Caught chunk', data);
-                window.dispatchEvent(new CustomEvent('newMessageChunk', { detail: data }));
-              }
-              return result;
-            } catch(e) {
-              console.debug(e);
-            }
-          }
-        `);
+        injectScript(inject);
         window.addEventListener('newMessageChunk', async (response) => {
           response = response.detail;
           response = JSON.parse(JSON.stringify(response));
