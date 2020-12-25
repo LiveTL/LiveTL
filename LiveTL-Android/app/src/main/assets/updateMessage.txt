@@ -1,1 +1,0 @@
-Issues for Firefox have been patched! The fix may also fix issues for other popular browsers. This update also includes small fixes for panel resizing and translation filtering, as well as a better fullscreen mode!
