@@ -9,7 +9,7 @@
     "https://www.youtube.com/*?*",
     "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat/*",
     "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay/*",
-    "https://kentonishi.github.io/LiveTL/embed/*",
+    "https://cranky-beaver-1d73c7.netlify.app/embed/*",
     "storage"
   ],
   "content_scripts": [
@@ -17,7 +17,7 @@
       "matches": [
         "https://www.youtube.com/*",
         "https://kentonishi.github.io/LiveTL/*",
-        "https://kentonishi.github.io/LiveTL/embed/*"
+        "https://cranky-beaver-1d73c7.netlify.app/embed/*"
       ],
       "js": [
         "./js/frame.js"

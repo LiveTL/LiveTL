@@ -22,7 +22,7 @@ async function getFile(name, format) {
 const isFirefox = !!/Firefox/.exec(navigator.userAgent);
 const isAndroid = !!/Android/.exec(navigator.userAgent);
 
-const embedDomain = "https://kentonishi.github.io/LiveTL/embed";
+const embedDomain = "https://cranky-beaver-1d73c7.netlify.app/embed";
 
 const allTranslators = { byID: {}, byName: {} };
 // byName is unused, always checking from storage

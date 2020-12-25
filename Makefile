@@ -137,3 +137,4 @@ clean:
 	rm -rf dist/
 	rm -rf build/
 	rm -rf drivers/
+	rm -rf LiveTL-Android/app/src/main/assets/*
