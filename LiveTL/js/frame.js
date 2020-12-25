@@ -369,7 +369,7 @@ function isEmbed() {
 }
 
 
-let inject = `
+function monkeypatch() {
   window.oldFetch = window.oldFetch || window.fetch;
   function fetchLocalResource(url) {
     return new Promise((res, rej) => {
@@ -384,7 +384,7 @@ let inject = `
   }
   window.fetch = async (...args) => {
     try {
-      if (args[0].startsWith('file:///android_asset')){
+      if (args[0].startsWith('file:///android_asset')) {
         let text = await fetchLocalResource(args[0]);
         return {
           json: async () => JSON.parse(text),
@@ -398,12 +398,11 @@ let inject = `
         window.dispatchEvent(new CustomEvent('newMessageChunk', { detail: data }));
       }
       return result;
-    } catch(e) {
+    } catch (e) {
       console.debug(e);
     }
   }
-`;
-eval(inject);
+}
 
 async function loaded() {
   // window.removeEventListener('load', loaded);
@@ -420,7 +419,7 @@ async function loaded() {
         runLiveTL();
       } else {
         console.debug('Monitoring network events');
-        injectScript(inject);
+        monkeypatch();
         window.addEventListener('newMessageChunk', async (response) => {
           response = response.detail;
           response = JSON.parse(JSON.stringify(response));
