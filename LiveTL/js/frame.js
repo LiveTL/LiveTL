@@ -133,10 +133,6 @@ async function runLiveTL() {
       await setStorage('displayModMessages', true);
     }
 
-    /********************************************
-     * TODO FIXME Messages need to be displayed at the appropriate time in the video, not whenever we receive them.
-     ********************************************/
-
     // Check to see if the sender is a mod, and we display mod messages
     if (messageInfo.author.types.includes(authorType.MOD) && displayModMessages) {
       // If the mod isn't in the sender list, add them
@@ -463,7 +459,6 @@ async function loaded() {
           let chunk = {
             type: 'messageChunk',
             messages: messages,
-            videoTimestamp: mostRecentTimestamp,
             video: getV(window.location.href) || getV(window.parent.location.href)
           };
           console.debug('Sending chunk', chunk);
