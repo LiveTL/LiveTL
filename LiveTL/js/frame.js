@@ -384,7 +384,7 @@ function monkeypatch() {
   }
   window.fetch = async (...args) => {
     try {
-      if (args[0].startsWith('file:///android_asset')) {
+      if (args[0].url.startsWith('file:///android_asset')) {
         let text = await fetchLocalResource(args[0]);
         return {
           json: async () => JSON.parse(text),
@@ -419,7 +419,7 @@ async function loaded() {
         runLiveTL();
       } else {
         console.debug('Monitoring network events');
-        monkeypatch();
+        injectScript(monkeypatch.toString() + 'monkeypatch();');
         window.addEventListener('newMessageChunk', async (response) => {
           response = response.detail;
           response = JSON.parse(JSON.stringify(response));
