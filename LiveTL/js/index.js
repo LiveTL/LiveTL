@@ -11,15 +11,17 @@ const youtubeChatPanel = document.querySelector('#youtubeChatPanel');
 document.title = decodeURIComponent(params.title || 'LiveTL');
 
 // resizing yoinked and modified from https://spin.atomicobject.com/2019/11/21/creating-a-resizable-html-element/
-const getResizeableElement = () => document.getElementById('videoPanel');
+const getResizableElement = () => document.getElementById('videoPanel');
 
 const setPaneWidth = (width) => {
   if (isNaN(width)) {
     return setPaneWidth(80);
   }
 
-  getResizeableElement().style
-    .setProperty('--resizeable-width', `${width}%`);
+  getResizableElement().style
+    .setProperty('--resizable-width', `${width}%`);
+    getResizableElement().style
+      .setProperty('width', `var(--resizable-width)`);
 };
 
 const getPaneWidth = () => {
