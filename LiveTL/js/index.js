@@ -72,6 +72,7 @@ window.addEventListener('message', d => {
     chat.contentWindow.postMessage(d, '*');
     if (d.type == 'zoom') {
       zoomObj = d.zoom;
+      document.querySelectorAll('.caption-segment').map(styleCaptionSegment);
     } else if (d.type = 'getZoom') {
       chat.contentWindow.postMessage({
         type: 'zoom',
@@ -160,11 +161,18 @@ function createCaptionSegment(segment) {
   let caption = document.createElement('p');
   caption.className = 'captionSegment';
   caption.textContent = segment;
+  styleCaptionSegment(caption);
   // May add animations later
   caption.removeSelf = () => {
     caption.remove();
   };
   return caption;
+}
+
+function styleCaptionSegment(caption) {
+  getStorage('zoom').then(zoom => {
+    if (zoom) caption.style.fontSize = `${20 * zoom}px`;
+  });
 }
 
 // Just here in case we need it later
