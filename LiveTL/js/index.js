@@ -72,7 +72,7 @@ window.addEventListener('message', d => {
     chat.contentWindow.postMessage(d, '*');
     if (d.type == 'zoom') {
       zoomObj = d.zoom;
-      document.querySelectorAll('.caption-segment').map(styleCaptionSegment);
+      document.querySelectorAll('.captionSegment').forEach(styleCaptionSegment);
     } else if (d.type = 'getZoom') {
       chat.contentWindow.postMessage({
         type: 'zoom',
