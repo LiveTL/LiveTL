@@ -33,8 +33,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE);
-        getWindow().getDecorView().setSystemUiVisibility(flags);
         onNewIntent(getIntent());
     }
 
@@ -47,9 +45,12 @@ public class MainActivity extends AppCompatActivity {
                 String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
                 String[] split = sharedText.split("/");
                 sharedText = split[split.length - 1];
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE);
+                getWindow().getDecorView().setSystemUiVisibility(flags);
                 loadWebview("file:///android_asset/index.html?v=" + sharedText);
             }
         } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);
             loadWebview("https://kentonishi.github.io/LiveTL/about");
         }
     }
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         wv.setOverScrollMode(View.OVER_SCROLL_NEVER);
         wv.setScrollbarFadingEnabled(false);
         wv.setWebContentsDebuggingEnabled(true);
-        wv.setInitialScale(getResources().getDisplayMetrics().densityDpi);
+        wv.setInitialScale((int)(getResources().getDisplayMetrics().densityDpi * 0.75));
         View root = wv.getRootView();
         ViewTreeObserver treeObserver = root.getViewTreeObserver();
         treeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -86,16 +87,5 @@ public class MainActivity extends AppCompatActivity {
                 Utils.updateGestureExclusion(MainActivity.this);
             }
         });
-    }
-
-    @SuppressLint("NewApi")
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus)
-    {
-        super.onWindowFocusChanged(hasFocus);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && hasFocus)
-        {
-            getWindow().getDecorView().setSystemUiVisibility(flags);
-        }
     }
 }
