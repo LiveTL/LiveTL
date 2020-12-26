@@ -1,5 +1,5 @@
 const isFirefox = !!/Firefox/.exec(navigator.userAgent);
-const isAndroid = window.chrome == null && !isFirefox;
+window.isAndroid = window.isAndroid || (window.chrome == null && !isFirefox);
 
 if (isAndroid) {
   window.chrome = {
@@ -188,7 +188,7 @@ async function runLiveTL() {
       return;
     }
   };
-  
+
   updateZoomLevel();
 }
 
@@ -503,6 +503,12 @@ async function loaded() {
     };
     if (isFirefox) window.addEventListener('mousedown', initFullscreenButton);
     else initFullscreenButton();
+  }
+
+  if (isAndroid) {
+    monkeypatch();
+    window.frameText = window.frameText || await (await fetch(await getWAR('js/frame.js'))).text();
+    insertContentScript();
   }
 }
 
@@ -889,4 +895,13 @@ function getLiveTLButton(color) {
   return a;
 }
 
-
+async function insertContentScript() {
+  document.querySelectorAll('iframe').forEach(async frame => {
+    try {
+      frame.contentWindow.frameText = window.frameText;
+      frame.contentWindow.isAndroid = true;
+      frame.contentWindow.eval(window.frameText);
+      frame.contentWindow.insertContentScript();
+    } catch (e) { console.debug(e) }
+  });
+}

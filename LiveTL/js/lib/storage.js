@@ -53,7 +53,12 @@ let storage = {
   set: obj => null
 };
 
-if (isFirefox) {
+if (isAndroid) {
+  console.log('ANDROID', window.location.href)
+  storage.get = async key => localStorage[key];
+  storage.set = async obj => localStorage[Object.keys(obj)[0]] = obj[Object.keys(obj)[0]];
+} else if (isFirefox) {
+  console.log('FIREFOX', window.location.href)
   storage.get = async (key) => {
     return await browser.storage.local.get(key);
   };
@@ -61,10 +66,8 @@ if (isFirefox) {
   storage.set = async (obj) => {
     return await browser.storage.local.set(obj);
   };
-} else if (isAndroid) {
-  storage.get = async key => localStorage[key];
-  storage.set = async obj => localStorage[Object.keys(obj)[0]] = obj[Object.keys(obj)[0]];
 } else {
+  console.log('CHROME', window.location.href)
   storage.get = (key) => {
     return new Promise((res, rej) => {
       chrome.storage.local.get(key, res)
