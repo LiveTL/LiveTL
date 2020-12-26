@@ -57,9 +57,9 @@ if (isAndroid) {
   storage.get = async key => {
     let data = {};
     try {
-      data[key] = JSON.parse(localStorage[key]) || null;
+      data[key] = JSON.parse(localStorage[key]);
     } catch (e) {
-      data[key] = localStorage[key] || null;
+      data[key] = localStorage[key];
     }
     return data;
   }
