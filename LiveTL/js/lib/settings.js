@@ -235,10 +235,10 @@ async function createZoomSliderInput() {
   zoomSlider.id = zoomSliderInputId;
   zoomSlider.type = 'range';
   zoomSlider.min = isAndroid ? '0.25' : '0.5';
-  zoomSlider.max = '2';
+  zoomSlider.max = isAndroid ? '1.5' : '2';;
   zoomSlider.style.padding = '4px';
   zoomSlider.step = '0.01';
-  zoomSlider.value = ((await getStorage('zoom')) || isAndroid ? 0.5 : 1);
+  zoomSlider.value = ((await getStorage('zoom')) || (isAndroid ? 0.5 : 1));
   zoomSlider.style.verticalAlign = 'middle';
   zoomSlider.addEventListener('change', () => updateZoomLevel());
 
