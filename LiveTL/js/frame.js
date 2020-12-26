@@ -1,5 +1,5 @@
 const isFirefox = !!/Firefox/.exec(navigator.userAgent);
-const isAndroid = window.chrome == null;
+const isAndroid = window.chrome == null && !isFirefox;
 
 if (isAndroid) {
   window.chrome = {
@@ -134,10 +134,6 @@ async function runLiveTL() {
       displayModMessages = true;
       await setStorage('displayModMessages', true);
     }
-
-    /********************************************
-     * TODO FIXME Messages need to be displayed at the appropriate time in the video, not whenever we receive them.
-     ********************************************/
 
     // Check to see if the sender is a mod, and we display mod messages
     if (messageInfo.author.types.includes(authorType.MOD) && displayModMessages) {
@@ -468,7 +464,6 @@ async function loaded() {
           let chunk = {
             type: 'messageChunk',
             messages: messages,
-            videoTimestamp: mostRecentTimestamp,
             video: getV(window.location.href) || getV(window.parent.location.href)
           };
           console.debug('Sending chunk', chunk);
