@@ -31,10 +31,18 @@ async function setDefaultLanguage(lang) {
   return await setStorage('LTL:defaultLang', { lang });
 }
 
-async function setupDefaultCaption() {
-  if ((await getStorage('captionMode')) == null) {
-    return await setStorage('captionMode', true);
+async function setDefaultSetting(setting, value) {
+  if (!await getStorage(setting)) {
+    return await setStorage(setting, value);
   }
+}
+
+async function setupDefaultCaption() {
+  await setDefaultSetting('captionMode', true);
+};
+
+async function setupDefaultCaptionDelay() {
+  await setDefaultSetting('captionDelay', -1);
 };
 
 async function getStorage(key) {

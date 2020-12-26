@@ -24,6 +24,7 @@ async function createSettings(container) {
   settings.appendChild(await createTextDirectionToggle(container));
   settings.appendChild(await createChatSideToggle());
   settings.appendChild(await createCaptionDisplayToggle());
+  settings.appendChild(await createCaptionDuration());
 
   return settings;
 }
@@ -585,4 +586,33 @@ async function createCaptionDisplayToggleCheckbox() {
       }
     }
   );
+}
+
+async function createCaptionDuration() {
+  const captionDuration = document.createElement('div');
+  captionDuration.appendChild(createCaptionDurationInputLabel());
+  captionDuration.appendChild(await createCaptionDurationInput());
+  return captionDuration;
+}
+
+function createCaptionDurationInputLabel() {
+  return createCheckToggleLabel('Caption duration', 'captionDuration');
+}
+
+async function createCaptionDurationInput() {
+  await setupDefaultCaptionDelay();
+  let delay = await getStorage('captionDelay');
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.min = -1;
+  input.value = delay;
+  input.addEventListener('change', async () => {
+    // Remove sticking perma captions if enabling
+    if (await getStorage('captionDelay') === -1) {
+      window.parent.parent.postMessage({ action: 'clearCaption' }, '*');
+    }
+    setStorage('captionDelay', input.value)
+  });
+
+  return input;
 }
