@@ -15,8 +15,8 @@ public class Utils {
     public static void updateGestureExclusion(AppCompatActivity activity) {
         if (Build.VERSION.SDK_INT < 29) return;
         exclusionRects.clear();
-        int width = getScreenWidth(activity) + 250;
-        int height = getScreenHeight(activity) + 250;
+        int width = getScreenWidth(activity);
+        int height = getScreenHeight(activity);
         exclusionRects.add(new Rect(0, 0, width, height));
 
         activity.findViewById(android.R.id.content).setSystemGestureExclusionRects(exclusionRects);
