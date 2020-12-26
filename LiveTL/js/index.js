@@ -285,3 +285,10 @@ function toggleFullScreen() {
     }
   }
 }
+
+if (isAndroid) {
+  chat.style.width = '200%';
+  chat.style.height = '200%';
+  chat.style.transformOrigin = '0 0';
+  chat.style.transform = 'scale(0.5)';
+}
