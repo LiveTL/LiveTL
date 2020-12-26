@@ -188,6 +188,8 @@ async function runLiveTL() {
       return;
     }
   };
+  
+  updateZoomLevel();
 }
 
 async function reinsertButtons() {
@@ -415,6 +417,9 @@ async function loaded() {
     console.debug('Using live chat');
     try {
       params = parseParams();
+      try {
+        window.parent.postMessage({ type: 'getZoom' }, '*');
+      } catch (e) { }
       if (params.useLiveTL) {
         console.debug('Running LiveTL!');
         runLiveTL();
@@ -517,6 +522,16 @@ if ((isVideo() || isChat() || isEmbed()) && isFirefox) {
 
 const aboutPage = 'https://kentonishi.github.io/LiveTL/about/';
 
+function setChatZoom(width, height, transform) {
+  let e = document.querySelector('yt-live-chat-app');
+  e.style.width = width;
+  e.style.height = height;
+  e.style.transformOrigin = '0 0';
+  e.style.transform = transform;
+  document.body.style.height = '100vh';
+  document.body.style.width = '100vw';
+}
+
 if (window.location.href.startsWith(aboutPage)) {
   window.addEventListener('load', () => {
     const e = document.querySelector('#actionMessage');
@@ -530,6 +545,10 @@ if (window.location.href.startsWith(aboutPage)) {
   });
 } else if (isChat()) {
   window.addEventListener('message', d => {
+    if (d.data.type == 'zoom') {
+      let z = d.data.zoom;
+      setChatZoom(z.width, z.height, z.transform);
+    }
     if (window.origin != d.origin) {
       postMessage(d.data);
     }

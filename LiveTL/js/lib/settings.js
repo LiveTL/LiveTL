@@ -25,7 +25,6 @@ async function createSettings(container) {
   settings.appendChild(await createChatSideToggle());
   settings.appendChild(await createCaptionDisplayToggle());
 
-  await updateZoomLevel();
   return settings;
 }
 
@@ -235,11 +234,11 @@ async function createZoomSliderInput() {
   let zoomSlider = document.createElement('input');
   zoomSlider.id = zoomSliderInputId;
   zoomSlider.type = 'range';
-  zoomSlider.min = '0.5';
+  zoomSlider.min = isAndroid ? '0.25' : '0.5';
   zoomSlider.max = '2';
   zoomSlider.style.padding = '4px';
   zoomSlider.step = '0.01';
-  zoomSlider.value = ((await getStorage('zoom')) || 1);
+  zoomSlider.value = ((await getStorage('zoom')) || isAndroid ? 0.5 : 1);
   zoomSlider.style.verticalAlign = 'middle';
   zoomSlider.addEventListener('change', () => updateZoomLevel());
 
@@ -256,6 +255,14 @@ async function updateZoomLevel() {
   container.style.width = `${inverse}%`;
   container.style.height = `${inverse}%`;
   await setStorage('zoom', scale / 100);
+  window.parent.postMessage({
+    type: 'zoom',
+    zoom: {
+      width: container.style.width,
+      height: container.style.height,
+      transform: container.style.transform
+    }
+  }, '*');
 }
 
 function createZoomResetButton() {
@@ -268,7 +275,6 @@ function createZoomResetButton() {
     document.getElementById(zoomSliderInputId).value = 1;
     await updateZoomLevel();
   });
-
   return resetButton;
 }
 
@@ -475,7 +481,7 @@ async function createCheckToggleCheckbox(id, storageName, onchange) {
   let display = await getStorage(storageName);
   checkbox.checked = display != null ? display : true;
 
-  const changed = async() => {
+  const changed = async () => {
     const toDisplay = checkbox.checked;
     await setStorage(storageName, toDisplay);
     await onchange();
@@ -500,7 +506,7 @@ async function createDisplayModMessageCheckbox() {
         el.parentElement
           .parentElement
           .style
-          .display = displayModMessages ? 'block': 'none';
+          .display = displayModMessages ? 'block' : 'none';
       });
     }
   );

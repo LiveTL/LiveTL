@@ -45,30 +45,40 @@ let progress = {
 let queued = new class QueuedMessages {
   next = null
   messages = {}
-  push (message, secs) {
+  push(message, secs) {
     if (!this.next) this.next = secs;
     if (!this.messages[secs]) this.messages[secs] = [];
     this.messages[secs].push(message);
   }
-  pop (secs) {
+  pop(secs) {
     if (!this.next || secs < this.next) return false;
     let m = [...this.messages[this.next]];
     delete this.messages[this.next];
     this.next = Object.keys(this.messages)[0]; // Assume order
     return m;
   }
-  clear () {
+  clear() {
     this.messages = {};
     this.next = null;
   }
 }
+
+let zoomObj = {};
 
 window.addEventListener('message', d => {
   d = JSON.parse(JSON.stringify(d.data));
 
   try {
     chat.contentWindow.postMessage(d, '*');
-  } catch {}
+    if (d.type == 'zoom') {
+      zoomObj = d.zoom;
+    } else if (d.type = 'getZoom') {
+      chat.contentWindow.postMessage({
+        type: 'zoom',
+        zoom: zoomObj
+      }, '*');
+    }
+  } catch { }
 
   if (params.isReplay) {
     // Enable queued message transfer
@@ -95,7 +105,7 @@ window.addEventListener('message', d => {
         d.messages = d.messages.filter(message => {
           let secs = Array.from(message.timestamp.split(':'), t => parseInt(t)).reverse();
           secs = secs[0] + (secs[1] ? secs[1] * 60 : 0)
-                         + (secs[2] ? secs[2] * 60*60 : 0);
+            + (secs[2] ? secs[2] * 60 * 60 : 0);
 
           let diff = progress.current - secs;
           if (diff < 0) { // Message from the future ✨🔮, queue
@@ -351,11 +361,4 @@ function toggleFullScreen() {
       document.webkitCancelFullScreen();
     }
   }
-}
-
-if (isAndroid) {
-  chat.style.width = '200%';
-  chat.style.height = '200%';
-  chat.style.transformOrigin = '0 0';
-  chat.style.transform = 'scale(0.5)';
 }
