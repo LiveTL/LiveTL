@@ -5,7 +5,8 @@ const languages = [
   { code: 'id', name: 'Indonesian', lang: 'bahasa Indonesia' },
   { code: 'kr', name: 'Korean', lang: '한국' },
   { code: 'ch', name: 'Chinese', lang: '中文' },
-  { code: 'ru', name: 'Russian', lang: 'русский' }
+  { code: 'ru', name: 'Russian', lang: 'русский' },
+  { code: 'fr', name: 'French', lang: 'Français' }
 ];
 
 const languageConversionTable = {};
