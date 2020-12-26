@@ -195,8 +195,9 @@ function clearCaptions() {
 
 window.addEventListener('message', async (event) => {
   let displayCaptions = await getStorage('captionMode');
+  let delay = await getStorage('captionDelay');
   if (displayCaptions && event.data.action === 'caption') {
-    displayCaption(event.data.caption);
+    displayCaption(event.data.caption, delay > 0 ? delay * 1000 : -1);
   }
   if (event.data.action === 'clearCaption') {
     clearCaptions();
