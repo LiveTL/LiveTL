@@ -54,21 +54,20 @@ let storage = {
 };
 
 if (isAndroid) {
-  console.log('ANDROID', window.location.href)
   storage.get = async key => {
+    let data = {};
     try {
-      return JSON.parse(localStorage[key]);
+      data[key] = JSON.parse(localStorage[key]) || null;
     } catch (e) {
-      return localStorage[key];
+      data[key] = localStorage[key] || null;
     }
+    return data;
   }
   storage.set = async obj => {
-    let item = {};
-    item[Object.keys(obj)[0]] = JSON.stringify(obj[Object.keys(obj)[0]])
-    localStorage[Object.keys(obj)[0]] = JSON.stringify(item);
+    let key = Object.keys(obj)[0];
+    localStorage[key] = JSON.stringify(obj[key]);
   }
 } else if (isFirefox) {
-  console.log('FIREFOX', window.location.href)
   storage.get = async (key) => {
     return await browser.storage.local.get(key);
   };
@@ -77,7 +76,6 @@ if (isAndroid) {
     return await browser.storage.local.set(obj);
   };
 } else {
-  console.log('CHROME', window.location.href)
   storage.get = (key) => {
     return new Promise((res, rej) => {
       chrome.storage.local.get(key, res)
