@@ -55,8 +55,18 @@ let storage = {
 
 if (isAndroid) {
   console.log('ANDROID', window.location.href)
-  storage.get = async key => localStorage[key];
-  storage.set = async obj => localStorage[Object.keys(obj)[0]] = obj[Object.keys(obj)[0]];
+  storage.get = async key => {
+    try {
+      return JSON.parse(localStorage[key]);
+    } catch (e) {
+      return localStorage[key];
+    }
+  }
+  storage.set = async obj => {
+    let item = {};
+    item[Object.keys(obj)[0]] = JSON.stringify(obj[Object.keys(obj)[0]])
+    localStorage[Object.keys(obj)[0]] = JSON.stringify(item);
+  }
 } else if (isFirefox) {
   console.log('FIREFOX', window.location.href)
   storage.get = async (key) => {
