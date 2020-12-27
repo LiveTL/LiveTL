@@ -9,117 +9,119 @@ const liveTLPanel = document.querySelector('#ltlPanel');
 const outputPanel = document.querySelector('#outputPanel');
 const youtubeChatPanel = document.querySelector('#youtubeChatPanel');
 document.title = decodeURIComponent(params.title || 'LiveTL');
-const start = () => {
-  leftPanelContainer.querySelectorAll('*').forEach(node => {
-    node.style.display = 'none';
-  });
-  // stream.style.display = 'none';
-  ltlchat.style.display = 'none';
-  chat.style.display = 'none';
-  videoPanel.style.backgroundColor = 'var(--accent)';
-  outputPanel.style.backgroundColor = 'var(--accent)';
-  youtubeChatPanel.style.backgroundColor = 'var(--accent)';
-};
-const stop = () => {
-  // stream.style.display = 'block';
-  leftPanelContainer.querySelectorAll('*').forEach(node => {
-    node.style.display = 'block';
-  });
-  ltlchat.style.display = 'block';
-  chat.style.display = 'block';
-  videoPanel.style.backgroundColor = 'black';
-  outputPanel.style.backgroundColor = 'black';
-  youtubeChatPanel.style.backgroundColor = 'black';
-  localStorage.setItem('LTL:rightPanelHeight', youtubeChatPanel.style.height);
-  const width = getPaneWidth();
-  if (isNaN(width) === false) {
-    localStorage.setItem('LTL:leftPanelWidth', width.toString());
-  }
-};
-
-$('#youtubeChatPanel').resizable({
-  handles: {
-    s: '#handleH'
-  },
-  start: start,
-  stop: stop
-});
 
 // resizing yoinked and modified from https://spin.atomicobject.com/2019/11/21/creating-a-resizable-html-element/
-const getResizeableElement = () => document.getElementById('videoPanel');
-const getHandleElement = () => document.getElementById('handleV');
+const getResizableElement = () => document.getElementById('videoPanel');
 
 const setPaneWidth = (width) => {
   if (isNaN(width)) {
     return setPaneWidth(80);
   }
 
-  getResizeableElement().style
-    .setProperty('--resizeable-width', `${width}%`);
+  width = parseFloat(width);
+  getResizableElement().style
+    .setProperty('--resizable-width', `${width}%`);
+  getResizableElement().style
+    .setProperty('width', `var(--resizable-width)`);
 };
 
 const getPaneWidth = () => {
-  const pxWidth = getComputedStyle(getResizeableElement())
-    .getPropertyValue('--resizeable-width');
-  const result = parseFloat(pxWidth, 10);
+  const pxWidth = videoPanel.clientWidth;
+  let result = 100 * pxWidth / window.innerWidth;
   return result == NaN ? 80 : Math.min(100, Math.max(result, 0));
 };
 
-const startDragging = (event) => {
-  event.preventDefault();
-  start();
-  getResizeableElement();
 
-  const startingPaneWidth = getPaneWidth();
-  const xOffset = event.pageX;
-
-  const mouseUp = () => {
-    setPaneWidth(getPaneWidth());
-    document.body.removeEventListener('mousemove', mouseDragHandler);
-    stop();
-  };
-
-  const mouseDragHandler = async (moveEvent) => {
-    moveEvent.preventDefault();
-
-    const primaryButtonPressed = moveEvent.buttons === 1;
-    if (!primaryButtonPressed) {
-      mouseUp();
-    }
-
-    const paneOriginAdjustment = await getStorage('chatSide') === 'left' ? 1 : -1;
-    setPaneWidth(
-      (xOffset - moveEvent.pageX) * 100 * paneOriginAdjustment / window.innerWidth + startingPaneWidth
-    );
-  };
-
-  document.body.addEventListener('mousemove', mouseDragHandler);
-  document.body.addEventListener('mouseup', mouseUp);
-};
-
-getStorage('chatSide').then(side => {
-  if (side === 'right') {
-    videoPanel.style.order = '1';
-    liveTLPanel.style.order = '3';
-  } else if (side === 'left') {
-    videoPanel.style.order = '3';
-    liveTLPanel.style.order = '1';
-  }
-});
-
-getHandleElement().addEventListener('mousedown', startDragging);
 
 let c = params.continuation;
 let r = params.isReplay;
 r = r == null ? c : r;
+
+let progress = {
+  current: null,
+  previous: null
+};
+
+let queued = new class QueuedMessages {
+  next = null
+  messages = {}
+  push(message, secs) {
+    if (!this.next) this.next = secs;
+    if (!this.messages[secs]) this.messages[secs] = [];
+    this.messages[secs].push(message);
+  }
+  pop(secs) {
+    if (!this.next || secs < this.next) return false;
+    let m = [...this.messages[this.next]];
+    delete this.messages[this.next];
+    this.next = Object.keys(this.messages)[0]; // Assume order
+    return m;
+  }
+  clear() {
+    this.messages = {};
+    this.next = null;
+  }
+}
+
+let zoomObj = {};
 
 window.addEventListener('message', d => {
   d = JSON.parse(JSON.stringify(d.data));
 
   try {
     chat.contentWindow.postMessage(d, '*');
+    if (d.type == 'zoom') {
+      zoomObj = d.zoom;
+      document.querySelectorAll('.captionSegment').forEach(styleCaptionSegment);
+    } else if (d.type = 'getZoom') {
+      chat.contentWindow.postMessage({
+        type: 'zoom',
+        zoom: zoomObj
+      }, '*');
+    }
+  } catch { }
+
+  if (params.isReplay) {
+    // Enable queued message transfer
+    // Dont block
+    setTimeout(() => {
+      if (d['yt-player-video-progress']) {
+        progress.current = d['yt-player-video-progress'];
+        if (!progress.previous) progress.previous = progress.current;
+        if (Math.abs(progress.previous - progress.current) > 1) {
+          // Difference in progress above a second, assume user scrubbed, clear.
+          queued.clear();
+        }
+        // Find queued messages for current timeframe
+        let m = queued.pop(progress.current);
+        if (m) {
+          ltlchat.contentWindow.postMessage({
+            type: 'messageChunk',
+            messages: m,
+            video: v
+          }, '*');
+        }
+        progress.previous = progress.current;
+      } else if (d.type === 'messageChunk') {
+        d.messages = d.messages.filter(message => {
+          let secs = Array.from(message.timestamp.split(':'), t => parseInt(t)).reverse();
+          secs = secs[0] + (secs[1] ? secs[1] * 60 : 0)
+            + (secs[2] ? secs[2] * 60 * 60 : 0);
+
+          let diff = progress.current - secs;
+          if (diff < 0) { // Message from the future ✨🔮, queue
+            queued.push(message, secs);
+            return false; // Remove from original event
+          } else return true;
+        });
+
+        // Send past and current messages
+        ltlchat.contentWindow.postMessage(d, '*');
+      }
+    }, 0);
+  } else {
     ltlchat.contentWindow.postMessage(d, '*');
-  } catch (e) { }
+  }
 });
 
 let q = `?isReplay=${(r ? 1 : '')}&v=${v}${(c ? `&continuation=${c}` : '')}`;
@@ -139,7 +141,7 @@ let leftWidth = localStorage.getItem('LTL:leftPanelWidth');
 let rightHeight = localStorage.getItem('LTL:rightPanelHeight');
 
 if (leftWidth) {
-  setPaneWidth(propToPercent(leftWidth, false));
+  setPaneWidth(parseFloat(leftWidth));
 } else {
   setPaneWidth(80);
   // setPaneWidth(Math.round(window.innerWidth * 0.8));
@@ -147,7 +149,7 @@ if (leftWidth) {
 
 if (params.noVideo) {
   videoPanel.style.display = 'none';
-  document.querySelector('#handleV').style.display = 'none';
+  document.querySelectorAll('#handleV').style.display = 'none';
 } else {
   stream.src = `${embedDomain}?v=${v}&mode=video`;
   if (rightHeight) {
@@ -159,11 +161,18 @@ function createCaptionSegment(segment) {
   let caption = document.createElement('p');
   caption.className = 'captionSegment';
   caption.textContent = segment;
+  styleCaptionSegment(caption);
   // May add animations later
   caption.removeSelf = () => {
     caption.remove();
   };
   return caption;
+}
+
+function styleCaptionSegment(caption) {
+  getStorage('zoom').then(zoom => {
+    if (zoom) caption.style.fontSize = `${20 * zoom}px`;
+  });
 }
 
 // Just here in case we need it later
@@ -194,8 +203,9 @@ function clearCaptions() {
 
 window.addEventListener('message', async (event) => {
   let displayCaptions = await getStorage('captionMode');
+  let delay = await getStorage('captionDelay');
   if (displayCaptions && event.data.action === 'caption') {
-    displayCaption(event.data.caption);
+    displayCaption(event.data.caption, delay > 0 ? delay * 1000 : -1);
   }
   if (event.data.action === 'clearCaption') {
     clearCaptions();
@@ -207,8 +217,8 @@ window.addEventListener('message', async (event) => {
 // displayCaption("Oi koroneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneone", 1000, false);
 
 let nojdiv = document.querySelector('#ltlcaptions');
-let captionsDiv = $(document.querySelector('#ltlcaptions'));
-captionsDiv.resizable({
+let captionsDiv = document.querySelector('#ltlcaptions');
+$(captionsDiv).resizable({
   handles: 'e, w',
   stop: (event, ui) => {
     var top = getTop(ui.helper);
@@ -221,7 +231,83 @@ captionsDiv.resizable({
   }
 });
 
-captionsDiv.draggable({
+const start = () => {
+  stream.style.display = 'none';
+  captionsDiv.style.display = 'none';
+  ltlchat.style.display = 'none';
+  chat.style.display = 'none';
+  videoPanel.style.backgroundColor = 'var(--accent)';
+  outputPanel.style.backgroundColor = 'var(--accent)';
+  youtubeChatPanel.style.backgroundColor = 'var(--accent)';
+};
+const stop = () => {
+  stream.style.display = 'block';
+  captionsDiv.style.display = 'inline-table';
+  ltlchat.style.display = 'block';
+  chat.style.display = 'block';
+  videoPanel.style.backgroundColor = 'black';
+  outputPanel.style.backgroundColor = 'black';
+  youtubeChatPanel.style.backgroundColor = 'black';
+  localStorage.setItem('LTL:rightPanelHeight', youtubeChatPanel.style.height);
+  const width = getPaneWidth();
+  if (isNaN(width) === false && !params.noVideo) {
+    localStorage.setItem('LTL:leftPanelWidth', width.toString() + '%');
+  }
+};
+
+$('#youtubeChatPanel').resizable({
+  handles: {
+    s: '#handleH'
+  },
+  start: start,
+  stop: stop
+});
+
+let stopFunc = () => {
+  setPaneWidth(getPaneWidth());
+  stop();
+};
+
+let leftHandle = document.querySelector('#leftHandle');
+let rightHandle = document.querySelector('#rightHandle');
+let handle = document.createElement('span');
+handle.innerHTML = `<div id="handleV" class="handle ui-resizable-handle ui-resizable-e"><span>&vellip;</span></div>`;
+
+getStorage('chatSide').then(side => {
+  try {
+    $(videoPanel).resizable('disable');
+  } catch (e) { }
+  side = side || 'right';
+  if (side === 'right') {
+    leftHandle.appendChild(handle);
+    videoPanel.style.order = '1';
+    liveTLPanel.style.order = '2';
+  } else if (side === 'left') {
+    leftHandle.appendChild(handle);
+    videoPanel.style.order = '2';
+    liveTLPanel.style.order = '1';
+  }
+  $(videoPanel).resizable({
+    handles: {
+      e: $('#handleV')
+    },
+    start: start,
+    stop: stopFunc
+  });
+});
+
+getTopWithSafety = d => `max(min(${d}, calc(100% - 50px)), -30px)`;
+getLeftWithSafety = d => `max(min(${d}, calc(100% - 50px)), -30px)`;
+
+
+let capLeft = localStorage.getItem('LTL:captionSizeLeft');
+let capTop = localStorage.getItem('LTL:captionSizeTop');
+let capWidth = localStorage.getItem('LTL:captionSizeWidth');
+if (capLeft) nojdiv.style.left = propToPercent(getLeftWithSafety(capLeft), false);
+if (capTop) nojdiv.style.top = getTopWithSafety(propToPercent(capTop, true));
+if (capWidth) nojdiv.style.width = propToPercent(capWidth, false);
+
+$(captionsDiv).draggable({
   stop: (event, ui) => {
     let top = getTop(ui.helper);
     ui.helper.css('position', 'fixed');
@@ -245,17 +331,6 @@ captionsDiv.draggable({
 });
 
 
-let capLeft = localStorage.getItem('LTL:captionSizeLeft');
-let capTop = localStorage.getItem('LTL:captionSizeTop');
-let capWidth = localStorage.getItem('LTL:captionSizeWidth');
-
-getTopWithSafety = d => `max(min(${d}, calc(100% - 50px)), -30px)`;
-getLeftWithSafety = d => `max(min(${d}, calc(100% - 50px)), -30px)`;
-
-if (capLeft) nojdiv.style.left = propToPercent(getLeftWithSafety(capLeft), false);
-if (capTop) nojdiv.style.top = getTopWithSafety(propToPercent(capTop, true));
-if (capWidth) nojdiv.style.width = propToPercent(capWidth, false);
-
 function getTop(ele) {
   var eTop = ele.offset().top;
   var wTop = $(window).scrollTop();
@@ -263,12 +338,7 @@ function getTop(ele) {
   return top;
 }
 
-function propToPercent(...args) {
-  let res = propToPercentt(...args);
-  return res;
-}
-
-function propToPercentt(prop, top = true) {
+function propToPercent(prop, top = true) {
   prop = `${prop}`;
   if (prop.includes('%')) {
     return prop;

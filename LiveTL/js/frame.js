@@ -1,4 +1,18 @@
 const isFirefox = !!/Firefox/.exec(navigator.userAgent);
+
+window.isAndroid = window.isAndroid || (window.chrome == null && !isFirefox);
+
+if (isAndroid) {
+  window.chrome = {
+    runtime: {
+      sendMessage: () => { },
+      onMessage: {
+        addListener: () => { }
+      }
+    }
+  };
+}
+
 const isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && window['safari'].pushNotification));
 
 
@@ -25,6 +39,8 @@ const authorType = {
 };
 
 async function runLiveTL() {
+  monkeypatch();
+
   params = parseParams();
   await setFavicon();
 
@@ -123,10 +139,6 @@ async function runLiveTL() {
       await setStorage('displayModMessages', true);
     }
 
-    /********************************************
-     * TODO FIXME Messages need to be displayed at the appropriate time in the video, not whenever we receive them.
-     ********************************************/
-
     // Check to see if the sender is a mod, and we display mod messages
     if (messageInfo.author.types.includes(authorType.MOD) && displayModMessages) {
       // If the mod isn't in the sender list, add them
@@ -180,6 +192,8 @@ async function runLiveTL() {
       return;
     }
   };
+
+  updateZoomLevel();
 }
 
 async function reinsertButtons() {
@@ -220,7 +234,6 @@ getV = (src) => {
   return parseParams('?' + src.split('?')[1]).v;
 };
 
-let windowsWithBinds = {};
 
 const createWindow = async u => {
   return new Promise((res, rej) => {
@@ -229,6 +242,8 @@ const createWindow = async u => {
     });
   });
 };
+
+let alreadyListening = false;
 
 async function insertLiveTLButtons(isHolotools = false) {
   console.debug('Inserting LiveTL Launcher Buttons');
@@ -281,7 +296,8 @@ async function insertLiveTLButtons(isHolotools = false) {
           }
         });
         console.debug('Launched translation window for video', params.v);
-        if (!windowsWithBinds[params.v]) {
+        if (!alreadyListening) {
+          alreadyListening = true;
           window.addEventListener('message', m => {
             if (typeof m.data == 'object') {
               switch (m.data.type) {
@@ -292,7 +308,6 @@ async function insertLiveTLButtons(isHolotools = false) {
               }
             }
           });
-          windowsWithBinds[params.v] = true;
         }
       },
       'rgb(143, 143, 143)');
@@ -353,6 +368,49 @@ function injectScript(text) {
   document.head.appendChild(e);
 }
 
+function isEmbed() {
+  return window.location.href.startsWith('https://www.youtube.com/embed');
+}
+
+
+function monkeypatch() {
+  window.oldFetch = window.oldFetch || window.fetch;
+  function fetchLocalResource(url) {
+    return new Promise((res, rej) => {
+      const req = new XMLHttpRequest();
+      req.onload = function () {
+        const text = req.responseText;
+        res(text);
+      };
+      req.open('GET', url);
+      req.send();
+    });
+  }
+  window.fetch = async (...args) => {
+    try {
+      let url = '';
+      if (typeof args[0] == 'object') url = args[0].url;
+      else url = args[0];
+      if (url.startsWith('file:///android_asset')) {
+        let text = await fetchLocalResource(url);
+        return {
+          json: async () => JSON.parse(text),
+          text: async () => text
+        };
+      }
+      let result = await window.oldFetch(...args);
+      if (url.startsWith('https://www.youtube.com/youtubei/v1/live_chat/get_live_chat')) {
+        let data = await (await result.clone()).json();
+        console.debug('Caught chunk', data);
+        window.dispatchEvent(new CustomEvent('newMessageChunk', { detail: data }));
+      }
+      return result;
+    } catch (e) {
+      console.debug(e);
+    }
+  }
+}
+
 async function loaded() {
   // window.removeEventListener('load', loaded);
   // window.removeEventListener('yt-navigate-finish', loaded);
@@ -363,33 +421,22 @@ async function loaded() {
     console.debug('Using live chat');
     try {
       params = parseParams();
+      try {
+        window.parent.postMessage({ type: 'getZoom' }, '*');
+      } catch (e) { }
       if (params.useLiveTL) {
         console.debug('Running LiveTL!');
         runLiveTL();
       } else {
         console.debug('Monitoring network events');
-        injectScript(`
-          window.oldFetch = window.oldFetch || window.fetch;
-          window.fetch = async (...args) => {
-            try {
-              let result = await window.oldFetch(...args);
-              if (args[0].url.startsWith('https://www.youtube.com/youtubei/v1/live_chat/get_live_chat')) {
-                let data = await (await result.clone()).json();
-                console.debug('Caught chunk', data);
-                window.dispatchEvent(new CustomEvent('chromeMessage', { detail: data }));
-              }
-              return result;
-            } catch(e) {
-              console.log(e);
-            }
-          }
-        `);
-        window.addEventListener('chromeMessage', async (response) => {
+        injectScript(monkeypatch.toString() + 'monkeypatch();');
+        window.addEventListener('newMessageChunk', async (response) => {
           response = response.detail;
-          console.debug('chromeMessage event received', response);
+          response = JSON.parse(JSON.stringify(response));
+          console.debug('newMessageChunk event received', response);
           let messages = [];
           if (!response.continuationContents) {
-            console.log('Response was invalid', response);
+            console.debug('Response was invalid', response);
             return;
           }
           (response.continuationContents.liveChatContinuation.actions || []).forEach(action => {
@@ -419,12 +466,13 @@ async function loaded() {
                 timestamp: isReplayChat() ? messageItem.timestampText.simpleText : parseTimestamp(messageItem.timestampUsec)
               };
               messages.push(item);
-            } catch (e) { }
+            } catch (e) {
+              console.debug('Error while parsing message.', { e });
+            }
           });
           let chunk = {
             type: 'messageChunk',
             messages: messages,
-            videoTimestamp: mostRecentTimestamp,
             video: getV(window.location.href) || getV(window.parent.location.href)
           };
           console.debug('Sending chunk', chunk);
@@ -449,11 +497,22 @@ async function loaded() {
     } catch (e) {
       console.debug(e);
     }
-  } else if (window.location.href.startsWith('https://www.youtube.com/embed')) {
-    document.querySelector('.ytp-fullscreen-button').addEventListener('click', () => {
-      window.parent.postMessage({ type: 'fullscreen' }, '*');
-    });
-    document.querySelector('#movie_player>.ytp-generic-popup').style.opacity = '0';
+  } else if (isEmbed()) {
+    let initFullscreenButton = () => {
+      document.querySelector('.ytp-fullscreen-button').addEventListener('click', () => {
+        window.parent.postMessage({ type: 'fullscreen' }, '*');
+      });
+      document.querySelector('#movie_player>.ytp-generic-popup').style.opacity = '0';
+      window.removeEventListener('mousedown', initFullscreenButton);
+    };
+    if (isFirefox) window.addEventListener('mousedown', initFullscreenButton);
+    else initFullscreenButton();
+  }
+
+  if (isAndroid) {
+    monkeypatch();
+    window.frameText = window.frameText || await (await fetch(await getWAR('js/frame.js'))).text();
+    insertContentScript();
   }
 }
 
@@ -467,11 +526,21 @@ window.addEventListener('message', onMessageFromEmbeddedChat);
 window.addEventListener('load', loaded);
 window.addEventListener('yt-navigate-start', clearLiveTLButtons);
 
-if ((isVideo() || isChat()) && isFirefox) {
+if ((isVideo() || isChat() || isEmbed()) && isFirefox) {
   window.dispatchEvent(new Event('load'));
 }
 
 const aboutPage = 'https://kentonishi.github.io/LiveTL/about/';
+
+function setChatZoom(width, height, transform) {
+  let e = document.querySelector('yt-live-chat-app');
+  e.style.width = width;
+  e.style.height = height;
+  e.style.transformOrigin = '0 0';
+  e.style.transform = transform;
+  document.body.style.height = '100vh';
+  document.body.style.width = '100vw';
+}
 
 if (window.location.href.startsWith(aboutPage)) {
   window.addEventListener('load', () => {
@@ -486,6 +555,10 @@ if (window.location.href.startsWith(aboutPage)) {
   });
 } else if (isChat()) {
   window.addEventListener('message', d => {
+    if (d.data.type == 'zoom') {
+      let z = d.data.zoom;
+      setChatZoom(z.width, z.height, z.transform);
+    }
     if (window.origin != d.origin) {
       postMessage(d.data);
     }
@@ -826,4 +899,13 @@ function getLiveTLButton(color) {
   return a;
 }
 
-
+async function insertContentScript() {
+  document.querySelectorAll('iframe').forEach(async frame => {
+    try {
+      frame.contentWindow.frameText = window.frameText;
+      frame.contentWindow.isAndroid = true;
+      frame.contentWindow.eval(window.frameText);
+      frame.contentWindow.insertContentScript();
+    } catch (e) { console.debug(e) }
+  });
+}
