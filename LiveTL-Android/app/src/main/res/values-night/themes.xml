@@ -12,7 +12,6 @@
 <!--        &lt;!&ndash; Status bar color. &ndash;&gt;-->
 <!--        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>-->
 <!--        &lt;!&ndash; Customize your theme here. &ndash;&gt;-->
-
-        <item name="android:windowBackground">@color/black</item>
+        <item name="android:windowBackground">@drawable/splash_screen_background</item>
     </style>
 </resources>

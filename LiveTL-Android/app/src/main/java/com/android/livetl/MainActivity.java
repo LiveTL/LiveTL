@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
                 loadWebview(sharedText, true);
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+                getWindow().getDecorView().setSystemUiVisibility(flags);
             }
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         WebView wv = (WebView) findViewById(R.id.mainWebview);
         wv.addJavascriptInterface(new JSObj(wv), "Android");
         wv.setWebViewClient(new WebViewClient() {
+
             public void onPageFinished(WebView view, String url) {
                 if (inject) {
                     wv.loadUrl("javascript:" +
@@ -77,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
                                  "document.body.appendChild(myScript);");
                 }
             }
-
 
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
@@ -109,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
                 return response;
             }
         });
+        wv.setBackgroundColor(Color.BLACK);
         wv.loadUrl(url);
         WebSettings s = wv.getSettings();
         s.setJavaScriptEnabled(true);

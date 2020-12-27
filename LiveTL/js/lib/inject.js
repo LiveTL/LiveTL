@@ -39,6 +39,12 @@ window.setTimeout(() => {
             transform: rotate(360deg);
         }
     }
+
+    body {
+        position: fixed;
+        top: 0px;
+        left: 0px;
+    }
     `;
     document.body.appendChild(style);
 }, 0);
