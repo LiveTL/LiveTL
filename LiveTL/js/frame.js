@@ -902,11 +902,15 @@ function getLiveTLButton(color) {
 async function insertContentScript() {
   document.querySelectorAll('iframe').forEach(async frame => {
     try {
-      frame.contentWindow.frameText = window.frameText;
-      frame.contentWindow.isAndroid = true;
-      frame.contentWindow.eval(window.frameText);
-      frame.contentWindow.loaded();
-      frame.contentWindow.insertContentScript();
+      if (!frame.contentWindow.location.href.startsWith(
+        await getWAR('popout/index.html')
+      )) {
+        frame.contentWindow.frameText = window.frameText;
+        frame.contentWindow.isAndroid = true;
+        frame.contentWindow.eval(window.frameText);
+        frame.contentWindow.loaded();
+        frame.contentWindow.insertContentScript();
+      }
     } catch (e) { console.debug(e) }
   });
 }
