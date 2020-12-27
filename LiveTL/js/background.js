@@ -1,5 +1,7 @@
 const launch = () => chrome.tabs.create({ url: 'https://kentonishi.github.io/LiveTL/about' });
 
+const isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && window['safari'].pushNotification));
+
 const changes = () => {
   let v = chrome.runtime.getManifest().version;
   chrome.tabs.create({ url: `https://kentonishi.github.io/LiveTL/changelogs?version=v${v}` });
@@ -23,8 +25,11 @@ chrome.runtime.onInstalled.addListener(details => {
     chrome.browserAction.onClicked.removeListener(launch);
     chrome.browserAction.onClicked.addListener(changes);
   } else {
-    console.debug("This is a first install!");
-    chrome.tabs.create({ url: 'https://kentonishi.github.io/LiveTL/about' });
+    if (isSafari) {
+      //don't show is safari
+      console.debug("This is a first install!");
+      chrome.tabs.create({ url: 'https://kentonishi.github.io/LiveTL/about' });
+    }
   }
 });
 
@@ -46,7 +51,7 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
     } case 'window': {
       (window.browser || window.chrome).windows.create({
         url: request.url,
-        type: 'panel',
+        type: 'popup',
         height: 300,
         width: 600
       });
