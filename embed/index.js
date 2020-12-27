@@ -73,4 +73,3 @@ window.addEventListener('load', () => {
       break;
   }
 });
-

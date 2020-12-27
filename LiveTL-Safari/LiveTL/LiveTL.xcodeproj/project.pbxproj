@@ -8,11 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		360AA7E6257E97CD008801EF /* updateMessage.txt in Resources */ = {isa = PBXBuildFile; fileRef = 360AA7E5257E97CD008801EF /* updateMessage.txt */; };
-		361F07E8258A6E050044E008 /* popout in Resources */ = {isa = PBXBuildFile; fileRef = 361F07E6258A6E050044E008 /* popout */; };
-		361F07E9258A6E050044E008 /* constants.js in Resources */ = {isa = PBXBuildFile; fileRef = 361F07E7258A6E050044E008 /* constants.js */; };
 		363C674525795AD8009020DE /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 363C674425795AD8009020DE /* Credits.rtf */; };
 		36F39D452578A47300BA3A6F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F39D442578A47300BA3A6F /* AppDelegate.swift */; };
 		36F39D482578A47300BA3A6F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36F39D462578A47300BA3A6F /* Main.storyboard */; };
+		36F39D4A2578A47300BA3A6F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F39D492578A47300BA3A6F /* ViewController.swift */; };
 		36F39D4C2578A47500BA3A6F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 36F39D4B2578A47500BA3A6F /* Assets.xcassets */; };
 		36F39D532578A47500BA3A6F /* LiveTl Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 36F39D522578A47500BA3A6F /* LiveTl Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		36F39D582578A47500BA3A6F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36F39D572578A47500BA3A6F /* Cocoa.framework */; };
@@ -25,7 +24,6 @@
 		36F39D752578A47600BA3A6F /* jquery.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 36F39D6D2578A47600BA3A6F /* jquery.min.js */; };
 		36F39D762578A47600BA3A6F /* icons in Resources */ = {isa = PBXBuildFile; fileRef = 36F39D6E2578A47600BA3A6F /* icons */; };
 		36F39D772578A47600BA3A6F /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = 36F39D6F2578A47600BA3A6F /* manifest.json */; };
-		36F5C8DF259172220069B544 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F5C8DE259172220069B544 /* ViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,13 +52,12 @@
 
 /* Begin PBXFileReference section */
 		360AA7E5257E97CD008801EF /* updateMessage.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = updateMessage.txt; path = ../../../build/safari/LiveTL/updateMessage.txt; sourceTree = "<group>"; };
-		361F07E6258A6E050044E008 /* popout */ = {isa = PBXFileReference; lastKnownFileType = folder; name = popout; path = ../../../build/safari/LiveTL/popout; sourceTree = "<group>"; };
-		361F07E7258A6E050044E008 /* constants.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = constants.js; path = ../../../build/safari/LiveTL/constants.js; sourceTree = "<group>"; };
 		363C674425795AD8009020DE /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		36F39D402578A47300BA3A6F /* LiveTl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiveTl.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		36F39D432578A47300BA3A6F /* LiveTl.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LiveTl.entitlements; sourceTree = "<group>"; };
 		36F39D442578A47300BA3A6F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		36F39D472578A47300BA3A6F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		36F39D492578A47300BA3A6F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		36F39D4B2578A47500BA3A6F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		36F39D4D2578A47500BA3A6F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		36F39D522578A47500BA3A6F /* LiveTl Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "LiveTl Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -76,7 +73,6 @@
 		36F39D6D2578A47600BA3A6F /* jquery.min.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = jquery.min.js; path = ../../../build/safari/LiveTL/jquery.min.js; sourceTree = "<group>"; };
 		36F39D6E2578A47600BA3A6F /* icons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = icons; path = ../../../build/safari/LiveTL/icons; sourceTree = "<group>"; };
 		36F39D6F2578A47600BA3A6F /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = ../../../build/safari/LiveTL/manifest.json; sourceTree = "<group>"; };
-		36F5C8DE259172220069B544 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = LiveTL/ViewController.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,11 +116,11 @@
 		36F39D422578A47300BA3A6F /* LiveTl */ = {
 			isa = PBXGroup;
 			children = (
-				36F5C8DE259172220069B544 /* ViewController.swift */,
 				363C674425795AD8009020DE /* Credits.rtf */,
 				36F39D432578A47300BA3A6F /* LiveTl.entitlements */,
 				36F39D442578A47300BA3A6F /* AppDelegate.swift */,
 				36F39D462578A47300BA3A6F /* Main.storyboard */,
+				36F39D492578A47300BA3A6F /* ViewController.swift */,
 				36F39D4B2578A47500BA3A6F /* Assets.xcassets */,
 				36F39D4D2578A47500BA3A6F /* Info.plist */,
 			);
@@ -153,8 +149,6 @@
 		36F39D672578A47600BA3A6F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				361F07E7258A6E050044E008 /* constants.js */,
-				361F07E6258A6E050044E008 /* popout */,
 				360AA7E5257E97CD008801EF /* updateMessage.txt */,
 				36F39D682578A47600BA3A6F /* jquery-ui.min.js */,
 				36F39D692578A47600BA3A6F /* index.html */,
@@ -261,12 +255,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				36F39D742578A47600BA3A6F /* js in Resources */,
-				361F07E9258A6E050044E008 /* constants.js in Resources */,
 				36F39D732578A47600BA3A6F /* css in Resources */,
 				36F39D722578A47600BA3A6F /* LICENSE in Resources */,
 				36F39D702578A47600BA3A6F /* jquery-ui.min.js in Resources */,
 				360AA7E6257E97CD008801EF /* updateMessage.txt in Resources */,
-				361F07E8258A6E050044E008 /* popout in Resources */,
 				36F39D772578A47600BA3A6F /* manifest.json in Resources */,
 				36F39D752578A47600BA3A6F /* jquery.min.js in Resources */,
 				36F39D762578A47600BA3A6F /* icons in Resources */,
@@ -293,7 +285,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $PROJECT_DIR\necho ${PROJECT_DIR}/${INFOPLIST_FILE}\ncd ../../\nmake safari-noBuild EMBED_DOMAIN=http://localhost:8000/embed VERSION=$(/usr/libexec/PlistBuddy -c \"Print CFBundleShortVersionString\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\")\n";
+			shellScript = "cd $PROJECT_DIR\necho ${PROJECT_DIR}/${INFOPLIST_FILE}\ncd ../../\nmake safari-noBuild EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed VERSION=$(/usr/libexec/PlistBuddy -c \"Print CFBundleShortVersionString\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\")\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -302,7 +294,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				36F5C8DF259172220069B544 /* ViewController.swift in Sources */,
+				36F39D4A2578A47300BA3A6F /* ViewController.swift in Sources */,
 				36F39D452578A47300BA3A6F /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

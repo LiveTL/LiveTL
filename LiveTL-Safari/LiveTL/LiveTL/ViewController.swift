@@ -9,7 +9,6 @@ import Cocoa
 import SafariServices.SFSafariApplication
 import SafariServices.SFSafariExtensionManager
 
-
 let appName = "LiveTl"
 let extensionBundleIdentifier = "com.candygoblen123.LiveTl.Extension"
 
@@ -19,7 +18,6 @@ class ViewController: NSViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
         self.appNameLabel.stringValue = appName
         SFSafariExtensionManager.getStateOfSafariExtension(withIdentifier: extensionBundleIdentifier) { (state, error) in
             guard let state = state, error == nil else {
@@ -48,19 +46,6 @@ class ViewController: NSViewController {
                 NSApplication.shared.terminate(nil)
             }
         }
-    }
-    
-
-    @IBAction func didClickGithub(_ sender: AnyObject?) {
-        NSWorkspace.shared.open(URL(string:"https://github.com/KentoNishi/LiveTL")!)
-    }
-    
-    @IBAction func didClickDiscord(sender: AnyObject) {
-        NSWorkspace.shared.open(URL(string: "https://discord.gg/uJrV3tmthg")!)
-    }
-    
-    @IBAction func didClickAbout(sender: AnyObject) {
-        NSWorkspace.shared.open(URL(string:"https://kentonishi.github.io/LiveTL/about/")!)
     }
 
 }
