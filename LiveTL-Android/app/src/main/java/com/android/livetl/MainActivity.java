@@ -15,10 +15,15 @@ import android.view.Window;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
     int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -43,22 +48,56 @@ public class MainActivity extends AppCompatActivity {
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("text/plain".equals(type)) {
                 String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-                String[] split = sharedText.split("/");
-                sharedText = split[split.length - 1];
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE);
-                getWindow().getDecorView().setSystemUiVisibility(flags);
-                loadWebview("file:///android_asset/index.html?v=" + sharedText);
+                loadWebview(sharedText, true);
+//                String[] split = sharedText.split("/");
+//                sharedText = split[split.length - 1];
+//                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE);
+//                getWindow().getDecorView().setSystemUiVisibility(flags);
+//                loadWebview("file:///android_asset/index.html?v=" + sharedText);
             }
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);
-            loadWebview("https://kentonishi.github.io/LiveTL/about");
+            loadWebview("https://kentonishi.github.io/LiveTL/about", false);
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    void loadWebview(String url){
+    void loadWebview(String url, boolean inject){
         WebView wv = (WebView) findViewById(R.id.mainWebview);
-        wv.setWebViewClient(new WebViewClient());
+        wv.addJavascriptInterface(new JSObj(wv), "Android");
+        wv.setWebViewClient(new WebViewClient() {
+            public void onPageFinished(WebView view, String url) {
+                if (inject) {
+                    wv.loadUrl("javascript:" +
+                                 "window.history.pushState('', '', '" + url + "');" +
+                                 "myScript = document.createElement('script');" +
+                                 "myScript.src = 'CUSTOMJS';" +
+                                 "document.body.appendChild(myScript);");
+//                    view.loadUrl("javascript:" + loadData("js/frame.js"));
+//                    view.loadUrl("javascript:window.location.href='https://www.bing.com';");
+                }
+            }
+
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+                String INJECTION_TOKEN = "CUSTOMJS";
+                WebResourceResponse response = super.shouldInterceptRequest(view, url);
+                if(url != null && url.contains(INJECTION_TOKEN)) {
+                    String assetPath = url.substring(url.indexOf(INJECTION_TOKEN) +
+                        INJECTION_TOKEN.length(), url.length());
+                    try {
+                        response = new WebResourceResponse(
+                            "application/javascript",
+                            "UTF8",
+                            getAssets().open("js/frame.js")
+                        );
+                    } catch (IOException e) {
+                        e.printStackTrace(); // Failed to load asset file
+                    }
+                }
+                return response;
+            }
+        });
         wv.loadUrl(url);
         WebSettings s = wv.getSettings();
         s.setJavaScriptEnabled(true);
@@ -87,5 +126,19 @@ public class MainActivity extends AppCompatActivity {
                 Utils.updateGestureExclusion(MainActivity.this);
             }
         });
+    }
+
+    class JSObj {
+        private WebView wv;
+
+        JSObj(WebView wv){
+            this.wv = wv;
+        }
+
+        @JavascriptInterface
+        public void receiveMessage(String data) {
+            Log.d("MYDATA", data);
+            this.wv.loadUrl("https://www.google.com");
+        }
     }
 }

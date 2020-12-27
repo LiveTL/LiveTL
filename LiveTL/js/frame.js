@@ -259,23 +259,31 @@ async function insertLiveTLButtons(isHolotools = false) {
     a.querySelector('yt-formatted-string').textContent = text;
   };
 
-  const redirectTab = u => window.location.href = u;
+  const redirectTab = u => {
+    if (isAndroid) {
+      window.Android.receiveMessage(u);
+    } else {
+      window.location.href = u;
+    }
+  }
   const createTab = u => window.open(u);
   getContinuationURL = (() => {
     let chatframe = document.querySelector('#chatframe');
-    let src = chatframe.dataset.src;
-    return '&continuation=' + getContinuation(chatframe.dataset.src);
+    let src = chatframe.dataset.src || chatframe.src;
+    return '&continuation=' + getContinuation(src);
   });
 
   getTitle = () => encodeURIComponent(document.querySelector('#container > .title').textContent);
 
   restOfURL = () => `&title=${getTitle()}&useLiveTL=1${getContinuationURL()}&isReplay=${(hasReplayChatOpen() ? 1 : '')}`;
 
+  window.watchInLiveTL = async () => {
+    params = parseParams();
+    redirectTab(`${await getWAR('index.html')}?v=${params.v}${restOfURL()}`);
+  };
+
   if (!isHolotools) {
-    makeButton('Watch in LiveTL', async () => {
-      params = parseParams();
-      redirectTab(`${await getWAR('index.html')}?v=${params.v}${restOfURL()}`);
-    });
+    makeButton('Watch in LiveTL', window.watchInLiveTL);
 
     sendToWindow = (data) => {
       try {
@@ -511,8 +519,15 @@ async function loaded() {
 
   if (isAndroid) {
     monkeypatch();
-    window.frameText = window.frameText || await (await fetch(await getWAR('js/frame.js'))).text();
-    insertContentScript();
+    if (isVideo()) {
+      setInterval(async () => {
+        await insertLiveTLButtons();
+        window.watchInLiveTL();
+      }, 100);
+    } else {
+      window.frameText = window.frameText || await (await fetch(await getWAR('js/frame.js'))).text();
+      insertContentScript();
+    }
   }
 }
 
@@ -913,4 +928,8 @@ async function insertContentScript() {
       }
     } catch (e) { console.debug(e) }
   });
+}
+
+if (isAndroid && isVideo()) {
+  loaded();
 }
