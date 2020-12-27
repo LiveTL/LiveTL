@@ -57,9 +57,15 @@ window.addEventListener('load', () => {
       embedVideo(v);
       window.addEventListener('message', d => {
         try {
-          d = JSON.parse(d.data);
-          if (d.event == "infoDelivery") {
-            parent.postMessage({ "yt-player-video-progress": d.info.currentTime }, "*");
+          if (typeof d.data == 'object') {
+            if (d.data.type == 'fullscreen') {
+              parent.postMessage(d.data, '*');
+            }
+          } else {
+            d = JSON.parse(d.data);
+            if (d.event == "infoDelivery") {
+              parent.postMessage({ "yt-player-video-progress": d.info.currentTime }, "*");
+            }
           }
         }
         catch (e) { }

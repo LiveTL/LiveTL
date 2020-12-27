@@ -101,13 +101,16 @@ function testLangMatch() {
     {
       testCase: ['英語／jp', langs.en],
       match: false
-    }
-
+    },
+    {
+      testCase: ['【Polka˽EN】', langs.en],
+      match: true
+    },
   ];
   testCases.forEach(({ testCase, match }) => {
     assert.equal(
       isLangMatch(...testCase), match,
-      `Incorrect language match between ${testCase[0]} and ${testCase[1]}`
+      `Incorrect language match between ${testCase[0]} and ${testCase[1].code}`
     );
   });
   process.stdout.write('.');
