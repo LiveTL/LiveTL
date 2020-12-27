@@ -32,7 +32,7 @@ async function setDefaultLanguage(lang) {
 }
 
 async function setDefaultSetting(setting, value) {
-  if (!await getStorage(setting)) {
+  if (await getStorage(setting) == null) {
     return await setStorage(setting, value);
   }
 }

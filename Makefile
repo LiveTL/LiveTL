@@ -133,6 +133,7 @@ safari-noBuild: common
 android: chrome
 	mkdir -p LiveTL-Android/app/src/main/assets/
 	cp -r build/chrome/LiveTL/* LiveTL-Android/app/src/main/assets/
+	cp LiveTL/js/lib/inject.js LiveTL-Android/app/src/main/assets/
 
 common: init
 	cat $(lib)/constants.js $(lib)/../frame.js $(lib)/storage.js $(lib)/filter.js $(lib)/settings.js $(lib)/css.js $(lib)/svgs.js \

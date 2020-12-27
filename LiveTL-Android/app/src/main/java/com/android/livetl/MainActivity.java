@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,8 +23,12 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 public class MainActivity extends AppCompatActivity {
     int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -49,14 +54,10 @@ public class MainActivity extends AppCompatActivity {
             if ("text/plain".equals(type)) {
                 String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
                 loadWebview(sharedText, true);
-//                String[] split = sharedText.split("/");
-//                sharedText = split[split.length - 1];
-//                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE);
-//                getWindow().getDecorView().setSystemUiVisibility(flags);
-//                loadWebview("file:///android_asset/index.html?v=" + sharedText);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
             }
         } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
             loadWebview("https://kentonishi.github.io/LiveTL/about", false);
         }
     }
@@ -73,13 +74,22 @@ public class MainActivity extends AppCompatActivity {
                                  "myScript = document.createElement('script');" +
                                  "myScript.src = 'CUSTOMJS';" +
                                  "document.body.appendChild(myScript);");
-//                    view.loadUrl("javascript:" + loadData("js/frame.js"));
-//                    view.loadUrl("javascript:window.location.href='https://www.bing.com';");
                 }
             }
 
+
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+                if (inject){
+                    try {
+                        String jsURL = "javascript:" + readFile("inject.js").replaceAll(
+                                "\n", ""
+                        );
+                        runOnUiThread(() -> wv.loadUrl(jsURL));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
                 String INJECTION_TOKEN = "CUSTOMJS";
                 WebResourceResponse response = super.shouldInterceptRequest(view, url);
                 if(url != null && url.contains(INJECTION_TOKEN)) {
@@ -92,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                             getAssets().open("js/frame.js")
                         );
                     } catch (IOException e) {
-                        e.printStackTrace(); // Failed to load asset file
+                        e.printStackTrace();
                     }
                 }
                 return response;
@@ -135,10 +145,21 @@ public class MainActivity extends AppCompatActivity {
             this.wv = wv;
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @JavascriptInterface
         public void receiveMessage(String data) {
-            Log.d("MYDATA", data);
-            this.wv.loadUrl("https://www.google.com");
+            MainActivity.this.runOnUiThread(() -> {
+                loadWebview(data, false);
+            });
         }
+    }
+
+    public String readFile(String filePath) throws IOException {
+        BufferedReader r = new BufferedReader(new InputStreamReader(getAssets().open(filePath)));
+        StringBuilder total = new StringBuilder();
+        for (String line; (line = r.readLine()) != null; ) {
+            total.append(line).append('\n');
+        }
+        return total.toString();
     }
 }

@@ -523,7 +523,7 @@ async function loaded() {
       setInterval(async () => {
         await insertLiveTLButtons();
         window.watchInLiveTL();
-      }, 100);
+      }, 0);
     } else {
       window.frameText = window.frameText || await (await fetch(await getWAR('js/frame.js'))).text();
       insertContentScript();
