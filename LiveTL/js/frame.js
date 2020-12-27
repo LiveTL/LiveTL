@@ -905,6 +905,7 @@ async function insertContentScript() {
       frame.contentWindow.frameText = window.frameText;
       frame.contentWindow.isAndroid = true;
       frame.contentWindow.eval(window.frameText);
+      frame.contentWindow.loaded();
       frame.contentWindow.insertContentScript();
     } catch (e) { console.debug(e) }
   });

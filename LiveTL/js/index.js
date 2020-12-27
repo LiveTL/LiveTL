@@ -68,18 +68,16 @@ let zoomObj = {};
 window.addEventListener('message', d => {
   d = JSON.parse(JSON.stringify(d.data));
 
-  try {
-    chat.contentWindow.postMessage(d, '*');
-    if (d.type == 'zoom') {
-      zoomObj = d.zoom;
-      document.querySelectorAll('.captionSegment').forEach(styleCaptionSegment);
-    } else if (d.type = 'getZoom') {
-      chat.contentWindow.postMessage({
-        type: 'zoom',
-        zoom: zoomObj
-      }, '*');
-    }
-  } catch { }
+  chat.contentWindow.postMessage(d, '*');
+  if (d.type == 'zoom') {
+    zoomObj = d.zoom;
+    document.querySelectorAll('.captionSegment').forEach(styleCaptionSegment);
+  } else if (d.type == 'getZoom') {
+    chat.contentWindow.postMessage({
+      type: 'zoom',
+      zoom: zoomObj
+    }, '*');
+  }
 
   if (params.isReplay) {
     // Enable queued message transfer
