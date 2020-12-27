@@ -23,16 +23,6 @@
         "./js/frame.js"
       ],
       "all_frames": true
-    },
-    {
-        "matches": [
-            "https://www.youtube.com/live_chat*",
-            "https://www.youtube.com/live_chat_replay*"
-        ],
-        "js": [
-            "./js/collect.js"
-        ],
-        "all_frames": true
     }
   ],
   "browser_action": {
