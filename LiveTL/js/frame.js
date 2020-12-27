@@ -150,7 +150,10 @@ async function runLiveTL() {
       // Check to make sure we haven't blacklisted the mod, and if not, send the message
       // After send the message, we bail so we don't have to run all the translation related things below
       if (checked) {
-        sendToCaptions(messageInfo.message);
+        if (!authorType.MOD){
+          //don't send caption if author is a mod #105
+          sendToCaptions(messageInfo.message);
+        }
         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
         return;
       }
