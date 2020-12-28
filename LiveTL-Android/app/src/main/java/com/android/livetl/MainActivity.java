@@ -53,10 +53,10 @@ public class MainActivity extends AppCompatActivity {
         String type = intent.getType();
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("text/plain".equals(type)) {
+                getWindow().getDecorView().setSystemUiVisibility(flags);
                 String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
                 loadWebview(sharedText, true);
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
-                getWindow().getDecorView().setSystemUiVisibility(flags);
             }
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
