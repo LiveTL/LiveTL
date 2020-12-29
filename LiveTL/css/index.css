@@ -113,7 +113,7 @@ body {
 }
 
 #rightHandle .ui-resizable-e {
-    right: calc(var(--resizable-width) - 10px);
+    left: 0;
 }
 
 body {
