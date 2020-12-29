@@ -170,6 +170,8 @@ public class MainActivity extends AppCompatActivity {
         s.setAllowFileAccessFromFileURLs(true);
         s.setAllowUniversalAccessFromFileURLs(true);
         s.setUserAgentString(UAS);
+        s.setSupportMultipleWindows(true);
+        s.setJavaScriptCanOpenWindowsAutomatically(true);
         wv.setScrollBarStyle(WebView.SCROLLBARS_INSIDE_INSET);
         wv.setOverScrollMode(View.OVER_SCROLL_NEVER);
         wv.setScrollbarFadingEnabled(false);
@@ -183,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
                 Utils.updateGestureExclusion(MainActivity.this);
             }
         });
+        Utils.updateGestureExclusion(MainActivity.this);
     }
 
     class JSObj {
