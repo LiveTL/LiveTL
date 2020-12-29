@@ -182,7 +182,7 @@ body {
 }
 
 #ltlcaptions>.ui-resizable-handle.ui-resizable-e {
-    transform: translateX(-15px);
+    transform: translateX(-20px);
 }
 
 #ltlcaptions>.ui-resizable-handle.ui-resizable-w {

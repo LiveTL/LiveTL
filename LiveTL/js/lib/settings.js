@@ -570,7 +570,10 @@ async function createCaptionDisplayToggleCheckbox() {
       if ((await getStorage('captionMode'))) {
         postMessage({
           action: 'caption',
-          caption: 'Captions will appear here. Use your mouse to move and resize!'
+          caption: `
+            Captions will appear here. Try moving and resizing!
+            You can also disable it in the settings menu.
+          `
         });
       } else {
         postMessage({ action: 'clearCaption' }, '*');
