@@ -414,20 +414,11 @@ async function createChatSideRadios() {
   }
 
   const onChange = async () => {
-    const videoPanel = parent.document.getElementById('videoPanel');
-    const liveTlPanel = parent.document.getElementById('ltlPanel');
-
-    if (right.checked === true) {
-      await setStorage('chatSide', 'right');
-
-      videoPanel.style.order = '1';
-      liveTlPanel.style.order = '3';
-    } else if (left.checked === true) {
-      await setStorage('chatSide', 'left');
-
-      videoPanel.style.order = '3';
-      liveTlPanel.style.order = '1';
-    }
+    let side = right.checked ? 'right' : 'left';
+    await setStorage('chatSide', side);
+    try {
+      await window.parent.sideChanged(side);
+    } catch (e) { }
   };
 
   left.addEventListener('change', onChange);

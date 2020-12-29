@@ -2,6 +2,7 @@
     --accent: #2c2c2c;
     --primary: #4d4d4d;
     --button-fill: #49deff;
+    --resizable-width: calc(100% - 150px);
     color-scheme: light dark;
 }
 
@@ -30,7 +31,6 @@
 }
 
 #videoPanel {
-    --resizable-width: calc(100% - 150px);
     width: var(--resizable-width);
     min-width: 10px;
     height: 100%;
@@ -60,6 +60,7 @@
 
 body {
     margin: 0;
+    width: 100vw;
 }
 
 .handle {
@@ -107,8 +108,12 @@ body {
     bottom: 0px !important;
 }
 
-.ui-resizable-e {
+#leftHandle .ui-resizable-e {
     right: 0px !important;
+}
+
+#rightHandle .ui-resizable-e {
+    right: calc(var(--resizable-width) - 10px);
 }
 
 body {

@@ -433,7 +433,7 @@ async function loaded() {
     try {
       params = parseParams();
       try {
-        window.parent.postMessage({ type: 'getZoom' }, '*');
+        window.parent.postMessage({ type: 'getInitData' }, '*');
       } catch (e) { }
       if (params.useLiveTL) {
         console.debug('Running LiveTL!');

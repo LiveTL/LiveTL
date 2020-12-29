@@ -8,6 +8,7 @@ const videoPanel = document.querySelector('#videoPanel');
 const liveTLPanel = document.querySelector('#ltlPanel');
 const outputPanel = document.querySelector('#outputPanel');
 const youtubeChatPanel = document.querySelector('#youtubeChatPanel');
+const root = document.documentElement.style;
 document.title = decodeURIComponent(params.title || 'LiveTL');
 
 // resizing yoinked and modified from https://spin.atomicobject.com/2019/11/21/creating-a-resizable-html-element/
@@ -19,10 +20,8 @@ const setPaneWidth = (width) => {
   }
 
   width = parseFloat(width);
-  getResizableElement().style
-    .setProperty('--resizable-width', `${width}%`);
-  getResizableElement().style
-    .setProperty('width', `var(--resizable-width)`);
+  root.setProperty('--resizable-width', `${width}%`);
+  root.setProperty('width', `var(--resizable-width)`);
 };
 
 const getPaneWidth = () => {
@@ -72,10 +71,13 @@ window.addEventListener('message', d => {
   if (d.type == 'zoom') {
     zoomObj = d.zoom;
     document.querySelectorAll('.captionSegment').forEach(styleCaptionSegment);
-  } else if (d.type == 'getZoom') {
+  } else if (d.type == 'getInitData') {
     chat.contentWindow.postMessage({
       type: 'zoom',
       zoom: zoomObj
+    }, '*');
+    chat.contentWindow.postMessage({
+      'yt-live-chat-set-dark-theme': true
     }, '*');
   }
 
@@ -251,6 +253,7 @@ const stop = () => {
   if (isNaN(width) === false && !params.noVideo) {
     localStorage.setItem('LTL:leftPanelWidth', width.toString() + '%');
   }
+  videoPanel.style.width = null;
 };
 
 $('#youtubeChatPanel').resizable({
@@ -269,30 +272,44 @@ let stopFunc = () => {
 let leftHandle = document.querySelector('#leftHandle');
 let rightHandle = document.querySelector('#rightHandle');
 let handle = document.createElement('span');
+let chatSide;
 handle.innerHTML = `<div id="handleV" class="handle ui-resizable-handle ui-resizable-e"><span>&vellip;</span></div>`;
 
-getStorage('chatSide').then(side => {
-  try {
-    $(videoPanel).resizable('disable');
-  } catch (e) { }
+window.sideChanged = async side => {
+  chatSide = await getStorage('chatSide');
   side = side || 'right';
   if (side === 'right') {
     leftHandle.appendChild(handle);
     videoPanel.style.order = '1';
     liveTLPanel.style.order = '2';
   } else if (side === 'left') {
-    leftHandle.appendChild(handle);
+    rightHandle.appendChild(handle);
     videoPanel.style.order = '2';
     liveTLPanel.style.order = '1';
   }
+};
+getStorage('chatSide').then(async (side) => {
+  await window.sideChanged(side);
+
   $(videoPanel).resizable({
     handles: {
       e: $('#handleV')
     },
     start: start,
-    stop: stopFunc
+    stop: stopFunc,
+    resize: (event, ui) => {
+      if (chatSide == 'left') {
+        let original = ui.originalSize.width;
+        let resized = ui.size.width;
+        let dWidth = (resized - original);
+        let newWidth = original - dWidth;
+        ui.element.css('width', newWidth);
+        root.setProperty('--resizable-width', newWidth + 'px');
+      }
+    }
   });
 });
+
 
 getTopWithSafety = d => `max(min(${d}, calc(100% - 50px)), -30px)`;
 getLeftWithSafety = d => `max(min(${d}, calc(100% - 50px)), -30px)`;
