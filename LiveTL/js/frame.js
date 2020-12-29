@@ -150,7 +150,7 @@ async function runLiveTL() {
       // Check to make sure we haven't blacklisted the mod, and if not, send the message
       // After send the message, we bail so we don't have to run all the translation related things below
       if (checked) {
-        if (!authorType.MOD){
+        if (!authorType.MOD) {
           //don't send caption if author is a mod #105
           sendToCaptions(messageInfo.message);
         }
@@ -934,5 +934,8 @@ async function insertContentScript() {
 }
 
 if (isAndroid && isVideo()) {
-  loaded();
+  setInterval(() => {
+    let chat = document.querySelector('#chatframe');
+    if (chat) loaded();
+  });
 }

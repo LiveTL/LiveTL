@@ -273,7 +273,7 @@ function createZoomResetButton() {
   resetButton.style.verticalAlign = 'middle';
   resetButton.type = 'button';
   resetButton.addEventListener('click', async () => {
-    document.getElementById(zoomSliderInputId).value = 1;
+    document.getElementById(zoomSliderInputId).value = (isAndroid ? 0.5 : 1);
     await updateZoomLevel();
   });
   return resetButton;

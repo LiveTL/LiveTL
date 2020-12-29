@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         "(KHTML, like Gecko) Chrome/89.0.4346.0 Safari/537.36 Edg/89.0.731.0"
     );
     int screenDensity = 0;
+    String action = "";
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -66,16 +67,18 @@ public class MainActivity extends AppCompatActivity {
         String type = intent.getType();
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("text/plain".equals(type)) {
-                getWindow().getDecorView().setSystemUiVisibility(flags);
                 String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
                 loadWebview(sharedText, true, screenDensity);
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+                this.action = "watch";
             }
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
             loadWebview("https://kentonishi.github.io/LiveTL/about",
                 false, (screenDensity * 3) / 4);
+            this.action = "launch";
         }
+        updateUI();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -211,5 +214,20 @@ public class MainActivity extends AppCompatActivity {
             total.append(line).append('\n');
         }
         return total.toString();
+    }
+
+    void updateUI(){
+        View v = getWindow().getDecorView();
+        if (this.action == "watch") {
+            v.setSystemUiVisibility(flags);
+        } else {
+            v.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
     }
 }
