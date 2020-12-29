@@ -49,11 +49,13 @@ public class MainActivity extends AppCompatActivity {
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
         "(KHTML, like Gecko) Chrome/89.0.4346.0 Safari/537.36 Edg/89.0.731.0"
     );
+    int screenDensity = 0;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        screenDensity = (getResources().getDisplayMetrics().densityDpi);
         setContentView(R.layout.activity_main);
         onNewIntent(getIntent());
     }
@@ -66,17 +68,18 @@ public class MainActivity extends AppCompatActivity {
             if ("text/plain".equals(type)) {
                 getWindow().getDecorView().setSystemUiVisibility(flags);
                 String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-                loadWebview(sharedText, true);
+                loadWebview(sharedText, true, screenDensity);
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
             }
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
-            loadWebview("https://kentonishi.github.io/LiveTL/about", false);
+            loadWebview("https://kentonishi.github.io/LiveTL/about",
+                false, (screenDensity * 3) / 4);
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    void loadWebview(String url, boolean inject){
+    void loadWebview(String url, boolean inject, int density){
         WebView wv = (WebView) findViewById(R.id.mainWebview);
         wv.addJavascriptInterface(new JSObj(wv), "Android");
         wv.setWebViewClient(new WebViewClient() {
@@ -156,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
         });
         wv.setBackgroundColor(Color.BLACK);
         wv.loadUrl(url);
+        wv.setInitialScale(density);
         WebSettings s = wv.getSettings();
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
@@ -170,7 +174,6 @@ public class MainActivity extends AppCompatActivity {
         wv.setOverScrollMode(View.OVER_SCROLL_NEVER);
         wv.setScrollbarFadingEnabled(false);
         wv.setWebContentsDebuggingEnabled(true);
-        wv.setInitialScale((int)(getResources().getDisplayMetrics().densityDpi * 0.75));
         View root = wv.getRootView();
         ViewTreeObserver treeObserver = root.getViewTreeObserver();
         treeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -193,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
         @JavascriptInterface
         public void receiveMessage(String data) {
             MainActivity.this.runOnUiThread(() -> {
-                loadWebview(data, false);
+                loadWebview(data, false, screenDensity);
             });
         }
     }

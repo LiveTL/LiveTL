@@ -1,5 +1,6 @@
 package com.android.livetl;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
@@ -17,7 +18,9 @@ public class Utils {
         exclusionRects.clear();
         int width = getScreenWidth(activity);
         int height = getScreenHeight(activity);
-        exclusionRects.add(new Rect(0, 0, width, height));
+        exclusionRects.add(new Rect(0, 0, width, dpToPx(activity, 200)));
+        exclusionRects.add(new Rect(0, height - dpToPx(activity, 200),
+            width, height));
 
         activity.findViewById(android.R.id.content).setSystemGestureExclusionRects(exclusionRects);
     }
@@ -34,5 +37,10 @@ public class Utils {
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int width = displayMetrics.widthPixels;
         return width;
+    }
+
+    public static int dpToPx(AppCompatActivity activity, int dp) {
+        DisplayMetrics displayMetrics = activity.getResources().getDisplayMetrics();
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 }
