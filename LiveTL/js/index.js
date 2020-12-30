@@ -37,32 +37,6 @@ let c = params.continuation;
 let r = params.isReplay;
 r = r == null ? c : r;
 
-let progress = {
-  current: null,
-  previous: null
-};
-
-let queued = new class QueuedMessages {
-  next = null
-  messages = {}
-  push(message, secs) {
-    if (!this.next) this.next = secs;
-    if (!this.messages[secs]) this.messages[secs] = [];
-    this.messages[secs].push(message);
-  }
-  pop(secs) {
-    if (!this.next || secs < this.next) return false;
-    let m = [...this.messages[this.next]];
-    delete this.messages[this.next];
-    this.next = Object.keys(this.messages)[0]; // Assume order
-    return m;
-  }
-  clear() {
-    this.messages = {};
-    this.next = null;
-  }
-}
-
 let zoomObj = {};
 
 window.addEventListener('message', d => {
@@ -82,50 +56,7 @@ window.addEventListener('message', d => {
     }, '*');
   }
 
-  if (params.isReplay) {
-    // Enable queued message transfer
-    // Dont block
-
-    // TODO: MOVE TO POPOUT
-    // setTimeout(() => {
-    //   if (d['yt-player-video-progress']) {
-    //     progress.current = d['yt-player-video-progress'];
-    //     if (!progress.previous) progress.previous = progress.current;
-    //     if (Math.abs(progress.previous - progress.current) > 1) {
-    //       // Difference in progress above a second, assume user scrubbed, clear.
-    //       queued.clear();
-    //     }
-    //     // Find queued messages for current timeframe
-    //     let m = queued.pop(progress.current);
-    //     if (m) {
-    //       ltlchat.contentWindow.postMessage({
-    //         type: 'messageChunk',
-    //         messages: m,
-    //         video: v
-    //       }, '*');
-    //     }
-    //     progress.previous = progress.current;
-    //   } else if (d.type === 'messageChunk') {
-    //     d.messages = d.messages.filter(message => {
-    //       let secs = Array.from(message.timestamp.split(':'), t => parseInt(t)).reverse();
-    //       secs = secs[0] + (secs[1] ? secs[1] * 60 : 0)
-    //         + (secs[2] ? secs[2] * 60 * 60 : 0);
-
-    //       let diff = progress.current - secs;
-    //       if (diff < 0) { // Message from the future ✨🔮, queue
-    //         queued.push(message, secs);
-    //         return false; // Remove from original event
-    //       } else return true;
-    //     });
-
-    //     // Send past and current messages
-    //     ltlchat.contentWindow.postMessage(d, '*');
-    //   }
-    // }, 0);
-    ltlchat.contentWindow.postMessage(d, '*');
-  } else {
-    ltlchat.contentWindow.postMessage(d, '*');
-  }
+  ltlchat.contentWindow.postMessage(d, '*');
 });
 
 let q = `?isReplay=${(r ? 1 : '')}&v=${v}${(c ? `&continuation=${c}` : '')}`;

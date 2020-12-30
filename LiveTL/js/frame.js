@@ -479,7 +479,7 @@ async function loaded() {
                   types: authorTypes
                 },
                 message: messageText,
-                timestamp: isReplayChat() ? messageItem.timestampText.simpleText : parseTimestamp(messageItem.timestampUsec)
+                timestamp: isReplayChat() ? messageItem.timestampText.simpleText : parseTimestamp(messageItem.timestampUsec),
               };
               messages.push(item);
             } catch (e) {

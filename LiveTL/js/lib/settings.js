@@ -192,7 +192,7 @@ function createTranslatorSelect() {
 function createTransSelectDefaultText() {
   const defaultText = document.createElement('span');
   defaultText.className = 'anchor';
-  defaultText.textContent = 'View All';
+  defaultText.innerHTML = `<i class="fa fa-users" aria-hidden="true"></i>`;
   return defaultText;
 }
 

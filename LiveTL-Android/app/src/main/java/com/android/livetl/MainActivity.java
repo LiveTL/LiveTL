@@ -228,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
 
             alert.setNegativeButton("Cancel",
                 (dialog, which) -> {
-                    runOnUiThread(() -> wv.loadUrl("javascript:window.promptCallback(\"\""));
+                    runOnUiThread(() -> wv.loadUrl("javascript:window.promptCallback(\"\")"));
                     return;
                 });
             alert.show();
