@@ -534,13 +534,24 @@ function scrollBackToBottomOfChat() {
   document.querySelector('#show-more').dispatchEvent(new Event('click'));
 }
 
+function asyncPrompt(text) {
+  if (!isAndroid) {
+    return prompt(text);
+  } else {
+    return new Promise((res, rej) => {
+      window.promptCallback = res;
+      window.Android.prompt(u);
+    });
+  }
+}
+
 function createCustomUserButton(container) {
   let addButton = document.createElement('input');
   addButton.value = 'Add User to Filter';
   addButton.style.verticalAlign = 'middle';
   addButton.type = 'button';
   addButton.addEventListener('click', async () => {
-    let name = prompt('Enter a username:');
+    let name = await asyncPrompt('Enter a username:');
     if (name) {
       await saveUserStatus(name, true, undefined, true);
       await createCheckbox(`(Custom) ${name}`, name, true, undefined, async (e) => {

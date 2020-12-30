@@ -24,8 +24,9 @@ const setPaneWidth = (width) => {
   root.setProperty('width', `var(--resizable-width)`);
 };
 
+let chatSide;
 const getPaneWidth = () => {
-  const pxWidth = videoPanel.clientWidth;
+  let pxWidth = videoPanel.clientWidth;
   let result = 100 * pxWidth / window.innerWidth;
   return result == NaN ? 80 : Math.min(100, Math.max(result, 0));
 };
@@ -256,14 +257,6 @@ const stop = () => {
   videoPanel.style.width = null;
 };
 
-$('#youtubeChatPanel').resizable({
-  handles: {
-    s: '#handleH'
-  },
-  start: start,
-  stop: stop
-});
-
 let stopFunc = () => {
   setPaneWidth(getPaneWidth());
   stop();
@@ -271,43 +264,77 @@ let stopFunc = () => {
 
 let leftHandle = document.querySelector('#leftHandle');
 let rightHandle = document.querySelector('#rightHandle');
-let handle = document.createElement('span');
-let chatSide;
-handle.innerHTML = `<div id="handleV" class="handle ui-resizable-handle ui-resizable-e"><span>&vellip;</span></div>`;
+let verticalHandle;
+let horizontalHandle;
 
 window.sideChanged = async side => {
+  if (verticalHandle) verticalHandle.remove();
+  if (horizontalHandle) horizontalHandle.remove();
+  try {
+    $(liveTLPanel).resizable('destroy');
+  } catch { }
+  try {
+    $(videoPanel).resizable('destroy');
+  } catch { }
+  try {
+    $(youtubeChatPanel).resizable('destroy');
+  } catch { }
+  verticalHandle = document.createElement('span');
+  verticalHandle.innerHTML = `
+    <div id="handleV" 
+      class="handle ui-resizable-handle ui-resizable-e">
+      <span>&vellip;</span>
+    </div>
+  `;
   chatSide = await getStorage('chatSide');
   side = side || 'right';
+  let handleSide = {};
   if (side === 'right') {
-    leftHandle.appendChild(handle);
+    leftHandle.appendChild(verticalHandle);
     videoPanel.style.order = '1';
     liveTLPanel.style.order = '2';
+    videoPanel.style.minWidth = '10px';
+    $(liveTLPanel).css('width', 'unset');
+    $(youtubeChatPanel).css('max-width', '100%');
+    $(outputPanel).css('max-width', '100%');
   } else if (side === 'left') {
-    rightHandle.appendChild(handle);
+    rightHandle.appendChild(verticalHandle);
     videoPanel.style.order = '2';
     liveTLPanel.style.order = '1';
+    videoPanel.style.minWidth = '0px';
+    $(youtubeChatPanel).css('max-width', 'calc(100% - 10px)');
+    $(outputPanel).css('max-width', 'calc(100% - 10px)');
   }
-};
-getStorage('chatSide').then(async (side) => {
-  await window.sideChanged(side);
-
-  $(videoPanel).resizable({
-    handles: {
-      e: $('#handleV')
-    },
+  $(side == 'left' ? liveTLPanel : videoPanel).resizable({
+    handles: { e: $(verticalHandle) },
     start: start,
     stop: stopFunc,
     resize: (event, ui) => {
       if (chatSide == 'left') {
-        let original = ui.originalSize.width;
-        let resized = ui.size.width;
-        let dWidth = (resized - original);
-        let newWidth = original - dWidth;
-        ui.element.css('width', newWidth);
+        let newWidth = window.innerWidth - ui.size.width;
+        $(videoPanel).css('width', newWidth + 'px');
         root.setProperty('--resizable-width', newWidth + 'px');
       }
     }
   });
+  horizontalHandle = document.createElement('span');
+  horizontalHandle.innerHTML = `
+    <div id="handleH" 
+      class="handle ui-resizable-handle ui-resizable-s">
+      <span>&hellip;</span>
+    </div>
+  `;
+  youtubeChatPanel.appendChild(horizontalHandle);
+  $(youtubeChatPanel).resizable({
+    handles: {
+      s: $(horizontalHandle)
+    },
+    start: start,
+    stop: stop
+  });
+};
+getStorage('chatSide').then(async (side) => {
+  await window.sideChanged(side);
 });
 
 

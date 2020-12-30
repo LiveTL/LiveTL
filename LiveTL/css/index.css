@@ -32,7 +32,6 @@
 
 #videoPanel {
     width: var(--resizable-width);
-    min-width: 10px;
     height: 100%;
     order: 1;
 }
@@ -113,7 +112,7 @@ body {
 }
 
 #rightHandle .ui-resizable-e {
-    left: 0;
+    right: 0 !important;
 }
 
 body {
