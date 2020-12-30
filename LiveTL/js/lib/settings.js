@@ -553,6 +553,7 @@ function createCustomUserButton(container) {
   addButton.addEventListener('click', async () => {
     let name = await asyncPrompt('Enter a username:');
     if (name) {
+      name = name.trim().toLowerCase();
       await saveUserStatus(name, true, undefined, true);
       await createCheckbox(`(Custom) ${name}`, name, true, undefined, async (e) => {
         await saveUserStatus(name, e.target.checked, undefined, true);
