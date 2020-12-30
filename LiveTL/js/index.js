@@ -153,18 +153,7 @@ window.addEventListener('message', async (event) => {
 
 let nojdiv = document.querySelector('#ltlcaptions');
 let captionsDiv = document.querySelector('#ltlcaptions');
-$(captionsDiv).resizable({
-  handles: 'e, w',
-  stop: (event, ui) => {
-    var top = getTop(ui.helper);
-    ui.helper.css('position', 'fixed');
-    let width = parseFloat(propToPercent(nojdiv.style.width, false));
-    let left = parseFloat(propToPercent(nojdiv.style.left, false));
-    let percent = `${left + width > 100 ? 100 - left : width}%`;
-    ui.helper.css('width', percent);
-    localStorage.setItem('LTL:captionSizeWidth', percent);
-  }
-});
+
 
 const start = () => {
   stream.style.display = 'none';
@@ -265,6 +254,18 @@ window.sideChanged = async side => {
     },
     start: start,
     stop: stop
+  });
+  $(captionsDiv).resizable({
+    handles: 'e, w',
+    stop: (event, ui) => {
+      var top = getTop(ui.helper);
+      ui.helper.css('position', 'fixed');
+      let width = parseFloat(propToPercent(nojdiv.style.width, false));
+      let left = parseFloat(propToPercent(nojdiv.style.left, false));
+      let percent = `${left + width > 100 ? 100 - left : width}%`;
+      ui.helper.css('width', percent);
+      localStorage.setItem('LTL:captionSizeWidth', percent);
+    }
   });
 };
 getStorage('chatSide').then(async (side) => {

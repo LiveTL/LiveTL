@@ -43,7 +43,7 @@ let messageReceive = (m) => {
           m.forEach(onNewMessage);
         }
         progress.previous = progress.current;
-        console.debug('Received timestamp update:', progress.current);
+        // console.debug('Received timestamp update:', progress.current);
       } else if (d.type === 'messageChunk') {
         if (params.isReplay) {
           if (params.v != d.video) return;

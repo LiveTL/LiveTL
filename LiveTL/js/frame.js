@@ -925,9 +925,7 @@ function getLiveTLButton(color) {
 async function insertContentScript() {
   document.querySelectorAll('iframe').forEach(async frame => {
     try {
-      if (!frame.contentWindow.location.href.startsWith(
-        await getWAR('popout/index.html')
-      )) {
+      if (frame.id != 'livetl-chat' && !frame.contentWindow.runLiveTL) {
         frame.contentWindow.frameText = window.frameText;
         frame.contentWindow.isAndroid = true;
         frame.contentWindow.eval(window.frameText);

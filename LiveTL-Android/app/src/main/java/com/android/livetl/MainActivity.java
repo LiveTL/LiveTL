@@ -132,8 +132,7 @@ public class MainActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                } else if (url.startsWith("https://www.youtube.com/live_chat") ||
-                           url.startsWith("https://www.youtube.com/embed")) {
+                } else if (url.startsWith("https://www.youtube.com/embed")) {
                     try {
                         WebResourceResponse cordovaResponse =
                             super.shouldInterceptRequest(view, request);
@@ -150,11 +149,11 @@ public class MainActivity extends AppCompatActivity {
                             .removeHeader("x-frame-options")
                             .removeHeader("frame-options")
                             .build();
+                        String s = "<script src=\"CUSTOMJS\"></script>";
                         return new WebResourceResponse("text/html",
                             modifiedResponse.header("content-encoding", "utf-8"),
                                 (InputStream) new ByteArrayInputStream(
-                                    (modifiedResponse.body().string() +
-                                     "<script src=\"CUSTOMJS\"></script>")
+                                    (modifiedResponse.body().string() + s)
                                 .getBytes(StandardCharsets.UTF_8))
                             );
 
