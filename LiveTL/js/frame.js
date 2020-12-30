@@ -363,6 +363,11 @@ async function onMessageFromEmbeddedChat(m) {
         let f = document.querySelector('#chatframe');
         f.dataset.src = f.contentWindow.location.href;
         await insertLiveTLButtons();
+        if (isVideo()) {
+          setInterval(async () => {
+            window.watchInLiveTL();
+          }, 0);
+        }
         break;
       case 'clearLiveTLButtons':
         clearLiveTLButtons();
@@ -505,6 +510,9 @@ async function loaded() {
       } else {
         window.parent.postMessage('embeddedChatLoaded', '*');
       }
+      if (isAndroid) {
+        document.querySelector('#input-panel').style.display = 'none';
+      }
     } catch (e) {
       console.debug(e);
     }
@@ -522,12 +530,7 @@ async function loaded() {
 
   if (isAndroid) {
     monkeypatch();
-    if (isVideo()) {
-      setInterval(async () => {
-        await insertLiveTLButtons();
-        window.watchInLiveTL();
-      }, 0);
-    } else {
+    if (!isVideo()) {
       window.frameText = window.frameText || await (await fetch(await getWAR('js/frame.js'))).text();
       insertContentScript();
     }
@@ -936,6 +939,8 @@ async function insertContentScript() {
 if (isAndroid && isVideo()) {
   setInterval(() => {
     let chat = document.querySelector('#chatframe');
-    if (chat) loaded();
-  });
+    if (chat && chat.src.startsWith('https://www.youtube.com/live_chat')) {
+      window.postMessage('embeddedChatLoaded');
+    }
+  }, 0);
 }

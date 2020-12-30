@@ -85,41 +85,44 @@ window.addEventListener('message', d => {
   if (params.isReplay) {
     // Enable queued message transfer
     // Dont block
-    setTimeout(() => {
-      if (d['yt-player-video-progress']) {
-        progress.current = d['yt-player-video-progress'];
-        if (!progress.previous) progress.previous = progress.current;
-        if (Math.abs(progress.previous - progress.current) > 1) {
-          // Difference in progress above a second, assume user scrubbed, clear.
-          queued.clear();
-        }
-        // Find queued messages for current timeframe
-        let m = queued.pop(progress.current);
-        if (m) {
-          ltlchat.contentWindow.postMessage({
-            type: 'messageChunk',
-            messages: m,
-            video: v
-          }, '*');
-        }
-        progress.previous = progress.current;
-      } else if (d.type === 'messageChunk') {
-        d.messages = d.messages.filter(message => {
-          let secs = Array.from(message.timestamp.split(':'), t => parseInt(t)).reverse();
-          secs = secs[0] + (secs[1] ? secs[1] * 60 : 0)
-            + (secs[2] ? secs[2] * 60 * 60 : 0);
 
-          let diff = progress.current - secs;
-          if (diff < 0) { // Message from the future ✨🔮, queue
-            queued.push(message, secs);
-            return false; // Remove from original event
-          } else return true;
-        });
+    // TODO: MOVE TO POPOUT
+    // setTimeout(() => {
+    //   if (d['yt-player-video-progress']) {
+    //     progress.current = d['yt-player-video-progress'];
+    //     if (!progress.previous) progress.previous = progress.current;
+    //     if (Math.abs(progress.previous - progress.current) > 1) {
+    //       // Difference in progress above a second, assume user scrubbed, clear.
+    //       queued.clear();
+    //     }
+    //     // Find queued messages for current timeframe
+    //     let m = queued.pop(progress.current);
+    //     if (m) {
+    //       ltlchat.contentWindow.postMessage({
+    //         type: 'messageChunk',
+    //         messages: m,
+    //         video: v
+    //       }, '*');
+    //     }
+    //     progress.previous = progress.current;
+    //   } else if (d.type === 'messageChunk') {
+    //     d.messages = d.messages.filter(message => {
+    //       let secs = Array.from(message.timestamp.split(':'), t => parseInt(t)).reverse();
+    //       secs = secs[0] + (secs[1] ? secs[1] * 60 : 0)
+    //         + (secs[2] ? secs[2] * 60 * 60 : 0);
 
-        // Send past and current messages
-        ltlchat.contentWindow.postMessage(d, '*');
-      }
-    }, 0);
+    //       let diff = progress.current - secs;
+    //       if (diff < 0) { // Message from the future ✨🔮, queue
+    //         queued.push(message, secs);
+    //         return false; // Remove from original event
+    //       } else return true;
+    //     });
+
+    //     // Send past and current messages
+    //     ltlchat.contentWindow.postMessage(d, '*');
+    //   }
+    // }, 0);
+    ltlchat.contentWindow.postMessage(d, '*');
   } else {
     ltlchat.contentWindow.postMessage(d, '*');
   }

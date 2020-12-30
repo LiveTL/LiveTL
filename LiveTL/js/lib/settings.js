@@ -539,8 +539,8 @@ function asyncPrompt(text) {
     return prompt(text);
   } else {
     return new Promise((res, rej) => {
-      window.promptCallback = res;
-      window.Android.prompt(u);
+      window.parent.promptCallback = d => res(decodeURIComponent(d));
+      window.Android.prompt(text);
     });
   }
 }
@@ -571,7 +571,7 @@ async function createCaptionDisplayToggle() {
 }
 
 function createCaptionDisplayToggleLabel() {
-  return createCheckToggleLabel('Caption mode (beta)', 'captionMode');
+  return createCheckToggleLabel('Caption Mode: ', 'captionMode');
 }
 
 async function createCaptionDisplayToggleCheckbox() {
@@ -601,7 +601,7 @@ async function createCaptionDuration() {
 }
 
 function createCaptionDurationInputLabel() {
-  return createCheckToggleLabel('Caption duration', 'captionDuration');
+  return createCheckToggleLabel('Caption Timeout: ', 'captionDuration');
 }
 
 async function createCaptionDurationInput() {

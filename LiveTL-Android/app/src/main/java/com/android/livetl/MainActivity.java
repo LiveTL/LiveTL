@@ -4,11 +4,14 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.DownloadManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +28,7 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.EditText;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -204,6 +208,30 @@ public class MainActivity extends AppCompatActivity {
             MainActivity.this.runOnUiThread(() -> {
                 loadWebview(data, false, screenDensity);
             });
+        }
+
+        @JavascriptInterface
+        public void prompt(String text) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(wv.getContext());
+            alert.setTitle("LiveTL");
+            alert.setMessage(text);
+
+            final EditText input = new EditText(wv.getContext());
+            alert.setView(input);
+
+            alert.setPositiveButton("OK", (dialog, whichButton) -> {
+                String value = input.getText().toString();
+                runOnUiThread(() ->
+                    wv.loadUrl("javascript:window.promptCallback(\"" + Uri.encode(value) + "\")"));
+                return;
+            });
+
+            alert.setNegativeButton("Cancel",
+                (dialog, which) -> {
+                    runOnUiThread(() -> wv.loadUrl("javascript:window.promptCallback(\"\""));
+                    return;
+                });
+            alert.show();
         }
     }
 
