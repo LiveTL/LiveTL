@@ -10,13 +10,14 @@ const outputPanel = document.querySelector('#outputPanel');
 const youtubeChatPanel = document.querySelector('#youtubeChatPanel');
 const root = document.documentElement.style;
 document.title = decodeURIComponent(params.title || 'LiveTL');
+let INITIAL_WIDTH = isAndroid ? 50 : 80;
 
 // resizing yoinked and modified from https://spin.atomicobject.com/2019/11/21/creating-a-resizable-html-element/
 const getResizableElement = () => document.getElementById('videoPanel');
 
 const setPaneWidth = (width) => {
   if (isNaN(width)) {
-    return setPaneWidth(80);
+    return setPaneWidth(INITIAL_WIDTH);
   }
 
   width = parseFloat(width);
@@ -28,7 +29,7 @@ let chatSide;
 const getPaneWidth = () => {
   let pxWidth = videoPanel.clientWidth;
   let result = 100 * pxWidth / window.innerWidth;
-  return result == NaN ? 80 : Math.min(100, Math.max(result, 0));
+  return result == NaN ? INITIAL_WIDTH : Math.min(100, Math.max(result, 0));
 };
 
 
@@ -78,7 +79,7 @@ let rightHeight = localStorage.getItem('LTL:rightPanelHeight');
 if (leftWidth) {
   setPaneWidth(parseFloat(leftWidth));
 } else {
-  setPaneWidth(80);
+  setPaneWidth(INITIAL_WIDTH);
   // setPaneWidth(Math.round(window.innerWidth * 0.8));
 }
 
@@ -283,6 +284,7 @@ let capWidth = localStorage.getItem('LTL:captionSizeWidth');
 if (capLeft) nojdiv.style.left = propToPercent(getLeftWithSafety(capLeft), false);
 if (capTop) nojdiv.style.top = getTopWithSafety(propToPercent(capTop, true));
 if (capWidth) nojdiv.style.width = propToPercent(capWidth, false);
+else if (isAndroid) nojdiv.style.width = '50%';
 
 $(captionsDiv).draggable({
   stop: (event, ui) => {
