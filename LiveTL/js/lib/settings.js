@@ -647,7 +647,7 @@ async function createSpeechSynthToggle() {
   const speechSynthToggle = document.createElement('div');
   speechSynthToggle.appendChild(createSpeechSynthToggleLabel());
   speechSynthToggle.appendChild(await createSpeechSynthToggleCheckbox());
-  return captionDispToggle;
+  return speechSynthToggle;
 }
 
 function createSpeechSynthToggleLabel() {
