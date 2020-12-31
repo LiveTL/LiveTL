@@ -10,7 +10,7 @@ const outputPanel = document.querySelector('#outputPanel');
 const youtubeChatPanel = document.querySelector('#youtubeChatPanel');
 const root = document.documentElement.style;
 document.title = decodeURIComponent(params.title || 'LiveTL');
-let INITIAL_WIDTH = isAndroid ? 50 : 80;
+let INITIAL_PANEL_PERCENT = isAndroid ? 50 : 80;
 
 // resizing yoinked and modified from https://spin.atomicobject.com/2019/11/21/creating-a-resizable-html-element/
 const getResizableElement = () => document.getElementById('videoPanel');
@@ -19,7 +19,7 @@ const setPaneWidth = (width) => {
   width = parseFloat(width);
 
   if (isNaN(width)) {
-    return setPaneWidth(INITIAL_WIDTH);
+    return setPaneWidth(INITIAL_PANEL_PERCENT);
   }
 
   root.setProperty('--resizable-width', `${width}%`);
@@ -30,7 +30,7 @@ const setPaneHeight = (height) => {
   height = parseFloat(height);
 
   if (isNaN(height)) {
-    return setPaneHeight(80);
+    return setPaneHeight(INITIAL_PANEL_PERCENT);
   }
 
   root.setProperty('--resizable-height', `${height}%`);
@@ -40,13 +40,13 @@ let chatSide;
 const getPaneWidth = () => {
   let pxWidth = videoPanel.clientWidth;
   let result = 100 * pxWidth / window.innerWidth;
-  return isNaN(result) ? INITIAL_WIDTH : Math.min(100, Math.max(result, 0));
+  return isNaN(result) ? INITIAL_PANEL_PERCENT : Math.min(100, Math.max(result, 0));
 };
 
 const getPaneHeight = () => {
   let pxHeight = youtubeChatPanel.clientHeight;
   let result = 100 * pxHeight / window.innerHeight;
-  return isNaN(result) ? 80 : Math.min(100, Math.max(result, 0));
+  return isNaN(result) ? INITIAL_PANEL_PERCENT : Math.min(100, Math.max(result, 0));
 };
 
 let c = params.continuation;
@@ -94,15 +94,14 @@ let rightHeight = localStorage.getItem('LTL:rightPanelHeight');
 if (leftWidth) {
   setPaneWidth(parseFloat(leftWidth));
 } else {
-  setPaneWidth(INITIAL_WIDTH);
+  setPaneWidth(INITIAL_PANEL_PERCENT);
   // setPaneWidth(Math.round(window.innerWidth * 0.8));
 }
 
 if (rightHeight) {
   setPaneHeight(parseFloat(rightHeight));
-}
-else {
-  setPaneHeight(80);
+} else {
+  setPaneHeight(INITIAL_PANEL_PERCENT);
 }
 
 if (params.noVideo) {

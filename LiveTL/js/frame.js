@@ -518,6 +518,7 @@ async function loaded() {
       console.debug(e);
     }
   } else if (isEmbed()) {
+    document.querySelector('.iv-branding').style.display='none';
     let initFullscreenButton = () => {
       document.querySelector('.ytp-fullscreen-button').addEventListener('click', () => {
         window.parent.postMessage({ type: 'fullscreen' }, '*');
