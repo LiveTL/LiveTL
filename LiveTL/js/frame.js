@@ -545,10 +545,16 @@ async function loaded() {
       window.frameText = window.frameText || await (await fetch(await getWAR('js/frame.js'))).text();
       insertContentScript();
     }
-    document.querySelectorAll('a').forEach(e => e.onclick = () => window.Android.open(e.href));
+    replaceLinks();
   }
 }
 
+function replaceLinks() {
+  document.querySelectorAll('a').forEach(e => e.onclick = (event) => {
+    window.Android.open(e.href);
+    event.preventDefault();
+  });
+}
 
 function parseTimestamp(timestamp) {
   return (new Date(parseInt(timestamp) / 1000)).toLocaleTimeString(navigator.language,
@@ -576,10 +582,15 @@ function setChatZoom(width, height, transform) {
 }
 
 if (window.location.href.startsWith(aboutPage)) {
-  window.addEventListener('load', () => {
+  let replaceMessage = () => {
     const e = document.querySelector('#actionMessage');
     e.textContent = 'Thank you for installing LiveTL!';
-  });
+  };
+  window.addEventListener('load', replaceMessage);
+  if (isAndroid) {
+    replaceMessage();
+    replaceLinks();
+  }
 } else if (window.location.href.startsWith('https://www.youtube.com/embed/')) {
   window.addEventListener('message', d => {
     try {

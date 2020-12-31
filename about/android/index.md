@@ -6,7 +6,7 @@ You must have <a href="https://kentonishi.github.io/LiveTL/">LiveTL</a> installe
 
 ## Launching LiveTL
 
-To get started, visit your favorite streamer on YouTube. Click the "share" button to open the stream or archive in LiveTL.
+To get started, visit your favorite streamer on YouTube. Tap the "share" button to open the stream or archive in LiveTL.
 
 ![](../../img/android-launcher.png)
 ![](../../img/android-launcher-2.png)
