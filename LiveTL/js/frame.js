@@ -24,6 +24,7 @@ let allTranslatorCheckbox = {};
 let showTimestamps = true;
 let textDirection = 'bottom';
 let mostRecentTimestamp = 0;
+const INTERVAL = 100;
 
 async function addedByUser(id) {
   id = id.trim().toLowerCase();
@@ -367,7 +368,7 @@ async function onMessageFromEmbeddedChat(m) {
         if (isAndroid && isVideo()) {
           setInterval(async () => {
             window.watchInLiveTL();
-          }, 0);
+          }, INTERVAL);
         }
         break;
       case 'clearLiveTLButtons':
@@ -529,13 +530,12 @@ async function loaded() {
     else initFullscreenButton();
 
     if (isAndroid) {
-      let iconChecker = setInterval(() => {
+      setInterval(() => {
         let icon = document.querySelector('.iv-branding');
         if (icon) {
           icon.style.display = 'none';
-          clearInterval(iconChecker);
         }
-      });
+      }, 100);
     }
   }
 
@@ -963,5 +963,5 @@ if (isAndroid && isVideo()) {
     if (chat && chat.src.startsWith('https://www.youtube.com/live_chat')) {
       window.postMessage('embeddedChatLoaded');
     }
-  }, 0);
+  }, INTERVAL);
 }
