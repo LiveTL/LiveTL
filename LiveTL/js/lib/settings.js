@@ -647,6 +647,7 @@ async function createSpeechSynthToggle() {
   const speechSynthToggle = document.createElement('div');
   speechSynthToggle.appendChild(createSpeechSynthToggleLabel());
   speechSynthToggle.appendChild(await createSpeechSynthToggleCheckbox());
+  unlockSpeech();
   return speechSynthToggle;
 }
 
@@ -657,7 +658,7 @@ function createSpeechSynthToggleLabel() {
 async function createSpeechSynthToggleCheckbox() {
   return await createCheckToggleCheckbox(
     'speechSynth', 'speechSynth', async () => {
-      if (await getStorage('speechSynth')) {
+      if (await shouldSpeak()) {
         speak('Speech Synthesis enabled');
       } else {
         speak('Speech Synthesis disabled');
