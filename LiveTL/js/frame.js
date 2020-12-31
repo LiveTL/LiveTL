@@ -518,7 +518,6 @@ async function loaded() {
       console.debug(e);
     }
   } else if (isEmbed()) {
-    document.querySelector('.iv-branding').style.display='none';
     let initFullscreenButton = () => {
       document.querySelector('.ytp-fullscreen-button').addEventListener('click', () => {
         window.parent.postMessage({ type: 'fullscreen' }, '*');
@@ -528,6 +527,16 @@ async function loaded() {
     };
     if (isFirefox) window.addEventListener('mousedown', initFullscreenButton);
     else initFullscreenButton();
+
+    if (isAndroid) {
+      let iconChecker = setInterval(() => {
+        let icon = document.querySelector('.iv-branding');
+        if (icon) {
+          icon.style.display = 'none';
+          clearInterval(iconChecker);
+        }
+      });
+    }
   }
 
   if (isAndroid) {
