@@ -152,11 +152,14 @@ async function runLiveTL() {
       // Check to make sure we haven't blacklisted the mod, and if not, send the message
       // After send the message, we bail so we don't have to run all the translation related things below
       if (checked) {
+        let speechFuture = (async () => null)();
         if (!authorType.MOD) {
           //don't send caption if author is a mod #105
           sendToCaptions(messageInfo.message);
+          speechFuture = checkAndSpeak(messageInfo.message);
         }
         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
+        await speechFuture;
         return;
       }
     }
@@ -178,8 +181,10 @@ async function runLiveTL() {
       checked = (await isChecked(messageInfo.author.id));
       // Check to see if the sender is approved, and send the message if they are
       if (checked) {
+        let speechFuture = checkAndSpeak(translation.msg);
         sendToCaptions(translation.msg);
         prependOrAppend(createMessageEntry(messageInfo, translation.msg));
+        await speechFuture;
         return;
       }
     }
@@ -191,8 +196,10 @@ async function runLiveTL() {
       }
       checked = (await isChecked(messageInfo.author.id));
       if (checked) {
+        let speechFuture = checkAndSpeak(messageInfo.message);
         sendToCaptions(messageInfo.message);
         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
+        await speechFuture;
       }
       return;
     }

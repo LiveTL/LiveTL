@@ -11,6 +11,12 @@ async function shouldSpeak() {
   return await getStorage('speechSynth');
 }
 
+async function checkAndSpeak(text) {
+  if (await shouldSpeak()) {
+    await speak(text);
+  }
+}
+
 function unlockSpeech() {
   speechUnlocked = true;
 }

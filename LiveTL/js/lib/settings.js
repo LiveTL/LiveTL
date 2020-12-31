@@ -659,9 +659,9 @@ async function createSpeechSynthToggleCheckbox() {
   return await createCheckToggleCheckbox(
     'speechSynth', 'speechSynth', async () => {
       if (await shouldSpeak()) {
-        speak('Speech Synthesis enabled');
+        await speak('Speech Synthesis enabled');
       } else {
-        speak('Speech Synthesis disabled');
+        await speak('Speech Synthesis disabled');
       }
     }
   );
