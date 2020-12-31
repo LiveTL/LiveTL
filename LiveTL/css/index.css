@@ -157,9 +157,11 @@ body {
     height: fit-content;
     display: none;
     text-align: center;
-    padding: 20px;
     width: 25%;
     bottom: 50px;
+    padding: 0px var(--padding);
+    z-index: 10000000;
+    --padding: 20px;
 }
 
 .captionSegment {
@@ -179,16 +181,18 @@ body {
     background-color: var(--primary);
     opacity: 0.5;
     width: 10px;
-    height: calc(100% - 40px);
-    top: 20px;
 }
 
 #ltlcaptions>.ui-resizable-handle.ui-resizable-e {
-    transform: translateX(-20px);
+    right: calc(var(--padding) - 5px);
+    height: 100%;
+    top: 0px;
 }
 
 #ltlcaptions>.ui-resizable-handle.ui-resizable-w {
-    transform: translateX(20px);
+    left: calc(var(--padding) - 5px);
+    height: 100%;
+    top: 0px;
 }
 
 @keyframes splash {
