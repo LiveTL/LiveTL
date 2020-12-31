@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
-            loadWebview("https://kentonishi.github.io/LiveTL/about",
+            loadWebview("https://kentonishi.github.io/LiveTL/about/android",
                 false, (screenDensity * 3) / 4);
             this.action = "launch";
         }
