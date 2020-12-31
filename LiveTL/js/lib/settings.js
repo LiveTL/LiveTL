@@ -25,6 +25,7 @@ async function createSettings(container) {
   settings.appendChild(await createChatSideToggle());
   settings.appendChild(await createCaptionDisplayToggle());
   settings.appendChild(await createCaptionDuration());
+  settings.appendChild(await createSpeechSynthToggle());
 
   return settings;
 }
@@ -639,3 +640,30 @@ async function createCaptionDurationInput() {
 
   return input;
 }
+
+
+async function createSpeechSynthToggle() {
+  await setupDefaultSpeechSynth();
+  const speechSynthToggle = document.createElement('div');
+  speechSynthToggle.appendChild(createSpeechSynthToggleLabel());
+  speechSynthToggle.appendChild(await createSpeechSynthToggleCheckbox());
+  unlockSpeech();
+  return speechSynthToggle;
+}
+
+function createSpeechSynthToggleLabel() {
+  return createCheckToggleLabel('Speech Synthesis', 'speechSynth');
+}
+
+async function createSpeechSynthToggleCheckbox() {
+  return await createCheckToggleCheckbox(
+    'speechSynth', 'speechSynth', async () => {
+      if (await shouldSpeak()) {
+        await speak('Speech Synthesis enabled');
+      } else {
+        await speak('Speech Synthesis disabled');
+      }
+    }
+  );
+}
+

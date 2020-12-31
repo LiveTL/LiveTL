@@ -45,6 +45,10 @@ async function setupDefaultCaptionDelay() {
   await setDefaultSetting('captionDelay', -1);
 };
 
+async function setupDefaultSpeechSynth() {
+  return await setDefaultSetting('speechSynth', speechSynthDefault);
+}
+
 async function getStorage(key) {
   const result = await storage.get(key);
   return result ? result[key] : result;
