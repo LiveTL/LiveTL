@@ -10,6 +10,7 @@ const outputPanel = document.querySelector('#outputPanel');
 const youtubeChatPanel = document.querySelector('#youtubeChatPanel');
 const root = document.documentElement.style;
 document.title = decodeURIComponent(params.title || 'LiveTL');
+let INITIAL_WIDTH = isAndroid ? 50 : 80;
 
 // resizing yoinked and modified from https://spin.atomicobject.com/2019/11/21/creating-a-resizable-html-element/
 const getResizableElement = () => document.getElementById('videoPanel');
@@ -18,7 +19,7 @@ const setPaneWidth = (width) => {
   width = parseFloat(width);
 
   if (isNaN(width)) {
-    return setPaneWidth(80);
+    return setPaneWidth(INITIAL_WIDTH);
   }
 
   root.setProperty('--resizable-width', `${width}%`);
@@ -39,7 +40,7 @@ let chatSide;
 const getPaneWidth = () => {
   let pxWidth = videoPanel.clientWidth;
   let result = 100 * pxWidth / window.innerWidth;
-  return isNaN(result) ? 80 : Math.min(100, Math.max(result, 0));
+  return isNaN(result) ? INITIAL_WIDTH : Math.min(100, Math.max(result, 0));
 };
 
 const getPaneHeight = () => {
@@ -93,7 +94,7 @@ let rightHeight = localStorage.getItem('LTL:rightPanelHeight');
 if (leftWidth) {
   setPaneWidth(parseFloat(leftWidth));
 } else {
-  setPaneWidth(80);
+  setPaneWidth(INITIAL_WIDTH);
   // setPaneWidth(Math.round(window.innerWidth * 0.8));
 }
 
@@ -175,18 +176,7 @@ window.addEventListener('message', async (event) => {
 
 let nojdiv = document.querySelector('#ltlcaptions');
 let captionsDiv = document.querySelector('#ltlcaptions');
-$(captionsDiv).resizable({
-  handles: 'e, w',
-  stop: (event, ui) => {
-    var top = getTop(ui.helper);
-    ui.helper.css('position', 'fixed');
-    let width = parseFloat(propToPercent(nojdiv.style.width, false));
-    let left = parseFloat(propToPercent(nojdiv.style.left, false));
-    let percent = `${left + width > 100 ? 100 - left : width}%`;
-    ui.helper.css('width', percent);
-    localStorage.setItem('LTL:captionSizeWidth', percent);
-  }
-});
+
 
 const start = () => {
   stream.style.display = 'none';
@@ -294,6 +284,18 @@ window.sideChanged = async side => {
     start: start,
     stop: stop
   });
+  $(captionsDiv).resizable({
+    handles: 'e, w',
+    stop: (event, ui) => {
+      var top = getTop(ui.helper);
+      ui.helper.css('position', 'fixed');
+      let width = parseFloat(propToPercent(nojdiv.style.width, false));
+      let left = parseFloat(propToPercent(nojdiv.style.left, false));
+      let percent = `${left + width > 100 ? 100 - left : width}%`;
+      ui.helper.css('width', percent);
+      localStorage.setItem('LTL:captionSizeWidth', percent);
+    }
+  });
 };
 getStorage('chatSide').then(async (side) => {
   await window.sideChanged(side);
@@ -310,6 +312,7 @@ let capWidth = localStorage.getItem('LTL:captionSizeWidth');
 if (capLeft) nojdiv.style.left = propToPercent(getLeftWithSafety(capLeft), false);
 if (capTop) nojdiv.style.top = getTopWithSafety(propToPercent(capTop, true));
 if (capWidth) nojdiv.style.width = propToPercent(capWidth, false);
+else if (isAndroid) nojdiv.style.width = '50%';
 
 $(captionsDiv).draggable({
   stop: (event, ui) => {
@@ -356,22 +359,26 @@ function propToPercent(prop, top = true) {
 }
 
 function toggleFullScreen() {
-  if ((document.fullScreenElement && document.fullScreenElement !== null) ||
-    (!document.mozFullScreen && !document.webkitIsFullScreen)) {
-    if (document.documentElement.requestFullScreen) {
-      document.documentElement.requestFullScreen();
-    } else if (document.documentElement.mozRequestFullScreen) {
-      document.documentElement.mozRequestFullScreen();
-    } else if (document.documentElement.webkitRequestFullScreen) {
-      document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-    }
+  if (isAndroid) {
+    window.Android.toggleFullScreen();
   } else {
-    if (document.cancelFullScreen) {
-      document.cancelFullScreen();
-    } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
-    } else if (document.webkitCancelFullScreen) {
-      document.webkitCancelFullScreen();
+    if ((document.fullScreenElement && document.fullScreenElement !== null) ||
+      (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+      if (document.documentElement.requestFullScreen) {
+        document.documentElement.requestFullScreen();
+      } else if (document.documentElement.mozRequestFullScreen) {
+        document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.webkitRequestFullScreen) {
+        document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+      }
+    } else {
+      if (document.cancelFullScreen) {
+        document.cancelFullScreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.webkitCancelFullScreen) {
+        document.webkitCancelFullScreen();
+      }
     }
   }
 }

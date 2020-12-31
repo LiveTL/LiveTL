@@ -111,7 +111,9 @@ function createLangSelectionName(lang) {
 
 function createLangSelectOption(lang) {
   const opt = document.createElement('option');
-  opt.value = createLangSelectionName(lang);
+  let langName = createLangSelectionName(lang);
+  opt.value = langName;
+  opt.innerText = langName;
   return opt;
 }
 
@@ -125,10 +127,10 @@ function createLangSelectLabel() {
 }
 
 function createSelectInput() {
-  const select = document.createElement('input');
-  select.dataset.role = 'none';
-  select.setAttribute('list', 'languages');
-  select.setAttribute('autocomplete', 'off');
+  const select = document.createElement('select');
+  // select.dataset.role = 'none';
+  // select.setAttribute('list', 'languages');
+  // select.setAttribute('autocomplete', 'off');
   select.id = 'langSelect';
   getDefaultLanguage().then(defaultLang => {
     select.value = defaultLang || createLangSelectionName(languages[0]);
@@ -137,9 +139,7 @@ function createSelectInput() {
   return select;
 }
 
-function createLangSelectDatalist() {
-  const datalist = document.createElement('datalist');
-  datalist.id = 'languages';
+function createLangSelectDatalist(datalist) {
   const appendDatalist = e => datalist.appendChild(e);
   languages.map(createLangSelectOption).map(appendDatalist);
   return datalist;
@@ -148,8 +148,9 @@ function createLangSelectDatalist() {
 function createLanguageSelect() {
   const langSelectContainer = document.createElement('div');
   langSelectContainer.appendChild(createLangSelectLabel());
-  langSelectContainer.appendChild(createSelectInput());
-  langSelectContainer.appendChild(createLangSelectDatalist());
+  let langInput = createSelectInput();
+  langSelectContainer.appendChild(langInput);
+  langSelectContainer.appendChild(createLangSelectDatalist(langInput));
   return langSelectContainer;
 }
 
@@ -553,6 +554,7 @@ function createCustomUserButton(container) {
   addButton.addEventListener('click', async () => {
     let name = await asyncPrompt('Enter a username:');
     if (name) {
+      name = name.trim().toLowerCase();
       await saveUserStatus(name, true, undefined, true);
       await createCheckbox(`(Custom) ${name}`, name, true, undefined, async (e) => {
         await saveUserStatus(name, e.target.checked, undefined, true);

@@ -31,12 +31,15 @@ import android.webkit.WebViewClient;
 import android.widget.EditText;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
+
 import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -101,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
@@ -128,7 +132,8 @@ public class MainActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                } else if (url.startsWith("https://www.youtube.com/live_chat")) {
+                } else if (url.startsWith("https://www.youtube.com/live_chat") ||
+                           url.startsWith("https://www.youtube.com/embed")) {
                     try {
                         WebResourceResponse cordovaResponse =
                             super.shouldInterceptRequest(view, request);
@@ -145,10 +150,14 @@ public class MainActivity extends AppCompatActivity {
                             .removeHeader("x-frame-options")
                             .removeHeader("frame-options")
                             .build();
+                        String s = url.startsWith("https://www.youtube.com/embed") ?
+                            "<script src=\"CUSTOMJS\"></script>" : "";
                         return new WebResourceResponse("text/html",
                             modifiedResponse.header("content-encoding", "utf-8"),
-                            modifiedResponse.body().byteStream()
-                        );
+                                (InputStream) new ByteArrayInputStream(
+                                    (modifiedResponse.body().string() + s)
+                                .getBytes(StandardCharsets.UTF_8))
+                            );
 
                     } catch(MalformedURLException e) {
                         e.printStackTrace();
@@ -170,7 +179,6 @@ public class MainActivity extends AppCompatActivity {
         WebSettings s = wv.getSettings();
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
-        s.setJavaScriptEnabled(true);
         s.setPluginState(WebSettings.PluginState.ON);
         s.setAllowFileAccess(true);
         s.setAllowContentAccess(true);
@@ -233,6 +241,24 @@ public class MainActivity extends AppCompatActivity {
                 });
             alert.show();
         }
+
+        @JavascriptInterface
+        public void open(String url){
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            wv.getContext().startActivity(intent);
+        }
+
+        @JavascriptInterface
+        public void toggleFullScreen() {
+            runOnUiThread(() -> {
+                View v = wv.getRootView();
+                if (v.getSystemUiVisibility() == View.SYSTEM_UI_FLAG_VISIBLE) {
+                    v.setSystemUiVisibility(flags);
+                } else {
+                    v.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                }
+            });
+        }
     }
 
     public String readFile(String filePath) throws IOException {
@@ -246,11 +272,11 @@ public class MainActivity extends AppCompatActivity {
 
     void updateUI(){
         View v = getWindow().getDecorView();
-        if (this.action == "watch") {
-            v.setSystemUiVisibility(flags);
-        } else {
-            v.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-        }
+//        if (this.action == "watch") {
+//            v.setSystemUiVisibility(flags);
+//        } else {
+        v.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+//        }
     }
 
     @Override

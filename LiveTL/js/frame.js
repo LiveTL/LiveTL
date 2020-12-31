@@ -26,6 +26,7 @@ let textDirection = 'bottom';
 let mostRecentTimestamp = 0;
 
 async function addedByUser(id) {
+  id = id.trim().toLowerCase();
   let s = (await getUserStatus(id, true)).checked != null;
   return s;
 }
@@ -363,7 +364,7 @@ async function onMessageFromEmbeddedChat(m) {
         let f = document.querySelector('#chatframe');
         f.dataset.src = f.contentWindow.location.href;
         await insertLiveTLButtons();
-        if (isVideo()) {
+        if (isAndroid && isVideo()) {
           setInterval(async () => {
             window.watchInLiveTL();
           }, 0);
@@ -534,6 +535,7 @@ async function loaded() {
       window.frameText = window.frameText || await (await fetch(await getWAR('js/frame.js'))).text();
       insertContentScript();
     }
+    document.querySelectorAll('a').forEach(e => e.onclick = () => window.Android.open(e.href));
   }
 }
 
@@ -923,9 +925,7 @@ function getLiveTLButton(color) {
 async function insertContentScript() {
   document.querySelectorAll('iframe').forEach(async frame => {
     try {
-      if (!frame.contentWindow.location.href.startsWith(
-        await getWAR('popout/index.html')
-      )) {
+      if (frame.id != 'livetl-chat' && !frame.contentWindow.runLiveTL) {
         frame.contentWindow.frameText = window.frameText;
         frame.contentWindow.isAndroid = true;
         frame.contentWindow.eval(window.frameText);

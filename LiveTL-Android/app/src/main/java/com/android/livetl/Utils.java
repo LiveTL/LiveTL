@@ -18,9 +18,7 @@ public class Utils {
         exclusionRects.clear();
         int width = getScreenWidth(activity);
         int height = getScreenHeight(activity);
-        exclusionRects.add(new Rect(0, 0, width, dpToPx(activity, 200)));
-        exclusionRects.add(new Rect(0, height - dpToPx(activity, 200),
-            width, height));
+        exclusionRects.add(new Rect(0, 0, width, height));
 
         activity.findViewById(android.R.id.content).setSystemGestureExclusionRects(exclusionRects);
     }
