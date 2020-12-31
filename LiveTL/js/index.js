@@ -196,10 +196,10 @@ const stop = () => {
   youtubeChatPanel.style.backgroundColor = 'black';
   const width = getPaneWidth();
   const height = getPaneHeight();
-  if (isNaN(width) === false && !params.noVideo) {
+  if (!isNaN(width) && !params.noVideo) {
     localStorage.setItem('LTL:leftPanelWidth', width.toString() + '%');
   }
-  if (isNaN(height) === false && !params.noVideo) {
+  if (!isNaN(height) && !params.noVideo) {
     localStorage.setItem('LTL:rightPanelWidth', height.toString() + '%');
     setPaneHeight(getPaneHeight());
   }
