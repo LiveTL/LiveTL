@@ -1,1 +1,1 @@
-Issues for Firefox have been patched! The fix may also fix issues for other popular browsers. This update also includes small fixes for panel resizing and translation filtering, as well as a better fullscreen mode!
+LiveTL for Android is here! You can download it straight from the Google Play store. This update also includes a read-aloud mode, touch support, and caption timeout options.

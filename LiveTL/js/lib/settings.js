@@ -652,16 +652,16 @@ async function createSpeechSynthToggle() {
 }
 
 function createSpeechSynthToggleLabel() {
-  return createCheckToggleLabel('Speech Synthesis', 'speechSynth');
+  return createCheckToggleLabel('Read Aloud TLs:', 'speechSynth');
 }
 
 async function createSpeechSynthToggleCheckbox() {
   return await createCheckToggleCheckbox(
     'speechSynth', 'speechSynth', async () => {
       if (await shouldSpeak()) {
-        await speak('Speech Synthesis enabled');
+        await speak('Read aloud enabled');
       } else {
-        await speak('Speech Synthesis disabled');
+        await speak('Read aloud disabled');
       }
     }
   );
