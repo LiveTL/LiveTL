@@ -31,10 +31,18 @@ async function setDefaultLanguage(lang) {
   return await setStorage('LTL:defaultLang', { lang });
 }
 
-async function setupDefaultCaption() {
-  if ((await getStorage('captionMode')) == null) {
-    return await setStorage('captionMode', true);
+async function setDefaultSetting(setting, value) {
+  if (await getStorage(setting) == null) {
+    return await setStorage(setting, value);
   }
+}
+
+async function setupDefaultCaption() {
+  await setDefaultSetting('captionMode', true);
+};
+
+async function setupDefaultCaptionDelay() {
+  await setDefaultSetting('captionDelay', -1);
 };
 
 async function getStorage(key) {
@@ -53,7 +61,21 @@ let storage = {
   set: obj => null
 };
 
-if (isFirefox) {
+if (isAndroid) {
+  storage.get = async key => {
+    let data = {};
+    try {
+      data[key] = JSON.parse(localStorage[key]);
+    } catch (e) {
+      data[key] = localStorage[key];
+    }
+    return data;
+  }
+  storage.set = async obj => {
+    let key = Object.keys(obj)[0];
+    localStorage[key] = JSON.stringify(obj[key]);
+  }
+} else if (isFirefox) {
   storage.get = async (key) => {
     return await browser.storage.local.get(key);
   };

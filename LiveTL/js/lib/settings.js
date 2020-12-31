@@ -24,8 +24,8 @@ async function createSettings(container) {
   settings.appendChild(await createTextDirectionToggle(container));
   settings.appendChild(await createChatSideToggle());
   settings.appendChild(await createCaptionDisplayToggle());
+  settings.appendChild(await createCaptionDuration());
 
-  await updateZoomLevel();
   return settings;
 }
 
@@ -111,7 +111,9 @@ function createLangSelectionName(lang) {
 
 function createLangSelectOption(lang) {
   const opt = document.createElement('option');
-  opt.value = createLangSelectionName(lang);
+  let langName = createLangSelectionName(lang);
+  opt.value = langName;
+  opt.innerText = langName;
   return opt;
 }
 
@@ -125,10 +127,10 @@ function createLangSelectLabel() {
 }
 
 function createSelectInput() {
-  const select = document.createElement('input');
-  select.dataset.role = 'none';
-  select.setAttribute('list', 'languages');
-  select.setAttribute('autocomplete', 'off');
+  const select = document.createElement('select');
+  // select.dataset.role = 'none';
+  // select.setAttribute('list', 'languages');
+  // select.setAttribute('autocomplete', 'off');
   select.id = 'langSelect';
   getDefaultLanguage().then(defaultLang => {
     select.value = defaultLang || createLangSelectionName(languages[0]);
@@ -137,9 +139,7 @@ function createSelectInput() {
   return select;
 }
 
-function createLangSelectDatalist() {
-  const datalist = document.createElement('datalist');
-  datalist.id = 'languages';
+function createLangSelectDatalist(datalist) {
   const appendDatalist = e => datalist.appendChild(e);
   languages.map(createLangSelectOption).map(appendDatalist);
   return datalist;
@@ -148,8 +148,9 @@ function createLangSelectDatalist() {
 function createLanguageSelect() {
   const langSelectContainer = document.createElement('div');
   langSelectContainer.appendChild(createLangSelectLabel());
-  langSelectContainer.appendChild(createSelectInput());
-  langSelectContainer.appendChild(createLangSelectDatalist());
+  let langInput = createSelectInput();
+  langSelectContainer.appendChild(langInput);
+  langSelectContainer.appendChild(createLangSelectDatalist(langInput));
   return langSelectContainer;
 }
 
@@ -192,7 +193,7 @@ function createTranslatorSelect() {
 function createTransSelectDefaultText() {
   const defaultText = document.createElement('span');
   defaultText.className = 'anchor';
-  defaultText.textContent = 'View All';
+  defaultText.innerHTML = `<i class="fa fa-users" aria-hidden="true"></i>`;
   return defaultText;
 }
 
@@ -235,11 +236,11 @@ async function createZoomSliderInput() {
   let zoomSlider = document.createElement('input');
   zoomSlider.id = zoomSliderInputId;
   zoomSlider.type = 'range';
-  zoomSlider.min = '0.5';
-  zoomSlider.max = '2';
+  zoomSlider.min = isAndroid ? '0.25' : '0.5';
+  zoomSlider.max = isAndroid ? '1.5' : '2';;
   zoomSlider.style.padding = '4px';
   zoomSlider.step = '0.01';
-  zoomSlider.value = ((await getStorage('zoom')) || 1);
+  zoomSlider.value = ((await getStorage('zoom')) || (isAndroid ? 0.5 : 1));
   zoomSlider.style.verticalAlign = 'middle';
   zoomSlider.addEventListener('change', () => updateZoomLevel());
 
@@ -256,6 +257,14 @@ async function updateZoomLevel() {
   container.style.width = `${inverse}%`;
   container.style.height = `${inverse}%`;
   await setStorage('zoom', scale / 100);
+  window.parent.postMessage({
+    type: 'zoom',
+    zoom: {
+      width: container.style.width,
+      height: container.style.height,
+      transform: container.style.transform
+    }
+  }, '*');
 }
 
 function createZoomResetButton() {
@@ -265,10 +274,9 @@ function createZoomResetButton() {
   resetButton.style.verticalAlign = 'middle';
   resetButton.type = 'button';
   resetButton.addEventListener('click', async () => {
-    document.getElementById(zoomSliderInputId).value = 1;
+    document.getElementById(zoomSliderInputId).value = (isAndroid ? 0.5 : 1);
     await updateZoomLevel();
   });
-
   return resetButton;
 }
 
@@ -407,20 +415,11 @@ async function createChatSideRadios() {
   }
 
   const onChange = async () => {
-    const videoPanel = parent.document.getElementById('videoPanel');
-    const liveTlPanel = parent.document.getElementById('ltlPanel');
-
-    if (right.checked === true) {
-      await setStorage('chatSide', 'right');
-
-      videoPanel.style.order = '1';
-      liveTlPanel.style.order = '3';
-    } else if (left.checked === true) {
-      await setStorage('chatSide', 'left');
-
-      videoPanel.style.order = '3';
-      liveTlPanel.style.order = '1';
-    }
+    let side = right.checked ? 'right' : 'left';
+    await setStorage('chatSide', side);
+    try {
+      await window.parent.sideChanged(side);
+    } catch (e) { }
   };
 
   left.addEventListener('change', onChange);
@@ -475,7 +474,7 @@ async function createCheckToggleCheckbox(id, storageName, onchange) {
   let display = await getStorage(storageName);
   checkbox.checked = display != null ? display : true;
 
-  const changed = async() => {
+  const changed = async () => {
     const toDisplay = checkbox.checked;
     await setStorage(storageName, toDisplay);
     await onchange();
@@ -500,7 +499,7 @@ async function createDisplayModMessageCheckbox() {
         el.parentElement
           .parentElement
           .style
-          .display = displayModMessages ? 'block': 'none';
+          .display = displayModMessages ? 'block' : 'none';
       });
     }
   );
@@ -536,14 +535,26 @@ function scrollBackToBottomOfChat() {
   document.querySelector('#show-more').dispatchEvent(new Event('click'));
 }
 
+function asyncPrompt(text, value) {
+  if (!isAndroid) {
+    return prompt(text, value);
+  } else {
+    return new Promise((res, rej) => {
+      window.parent.promptCallback = d => res(decodeURIComponent(d));
+      window.Android.prompt(text, value);
+    });
+  }
+}
+
 function createCustomUserButton(container) {
   let addButton = document.createElement('input');
   addButton.value = 'Add User to Filter';
   addButton.style.verticalAlign = 'middle';
   addButton.type = 'button';
   addButton.addEventListener('click', async () => {
-    let name = prompt('Enter a username:');
+    let name = await asyncPrompt('Enter a username:');
     if (name) {
+      name = name.trim().toLowerCase();
       await saveUserStatus(name, true, undefined, true);
       await createCheckbox(`(Custom) ${name}`, name, true, undefined, async (e) => {
         await saveUserStatus(name, e.target.checked, undefined, true);
@@ -562,7 +573,7 @@ async function createCaptionDisplayToggle() {
 }
 
 function createCaptionDisplayToggleLabel() {
-  return createCheckToggleLabel('Caption mode (beta)', 'captionMode');
+  return createCheckToggleLabel('Caption Mode: ', 'captionMode');
 }
 
 async function createCaptionDisplayToggleCheckbox() {
@@ -572,11 +583,59 @@ async function createCaptionDisplayToggleCheckbox() {
       if ((await getStorage('captionMode'))) {
         postMessage({
           action: 'caption',
-          caption: 'Captions will appear here. Use your mouse to move and resize!'
+          caption: `
+            Captions will appear here. Try moving and resizing!
+            You can also disable it in the settings menu.
+          `
         });
       } else {
         postMessage({ action: 'clearCaption' }, '*');
       }
     }
   );
+}
+
+async function createCaptionDuration() {
+  const captionDuration = document.createElement('div');
+  captionDuration.appendChild(createCaptionDurationInputLabel());
+  captionDuration.appendChild(await createCaptionDurationInput());
+  return captionDuration;
+}
+
+function createCaptionDurationInputLabel() {
+  return createCheckToggleLabel('Caption Timeout: ', 'captionDuration');
+}
+
+async function createCaptionDurationInput() {
+  await setupDefaultCaptionDelay();
+  let delay = await getStorage('captionDelay');
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.min = -1;
+  input.value = delay;
+
+  let callback = async () => {
+    // Remove sticking perma captions if enabling
+    if (await getStorage('captionDelay') <= -1) {
+      window.parent.parent.postMessage({ action: 'clearCaption' }, '*');
+    }
+    if (input.value <= -1) input.value = -1;
+    setStorage('captionDelay', input.value)
+  };
+
+  if (isAndroid) {
+    input.addEventListener('click', async (e) => {
+      e.preventDefault();
+      let val = await asyncPrompt('Caption timeout duration:', input.value.toString());
+      val = parseInt(val);
+      if (!isNaN(val)) {
+        input.value = val;
+        callback();
+      }
+    });
+  } else {
+    input.addEventListener('change', callback);
+  }
+
+  return input;
 }

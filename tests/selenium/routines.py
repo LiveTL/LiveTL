@@ -1,7 +1,8 @@
+import os
 import sys
 import time
 
-from wrappers import level, retry_every_interval, web_test
+from wrappers import cancel_after, level, retry_every_interval, web_test
 
 chilled_cow = "https://www.youtube.com/watch?v=5qap5aO4i9A"
 peko_kiara = "https://www.youtube.com/watch?t=926&v=c747jYku6Eo"
@@ -11,13 +12,14 @@ class TestCases:
     @classmethod
     def setup_class(cls):
         cls.browser.setup_driver()
-        cls.web = cls.browser.get_selenium()
+        cls.web = cls.browser.get_selenium(is_headless())
         try:
             cls.web.switch_to.window("1")
         except Exception:
             pass
 
     @level(0)
+    @cancel_after()
     @web_test
     @retry_every_interval()
     def test_live_button_insertion(web):
@@ -26,6 +28,7 @@ class TestCases:
         assert len(ltlbuttons) == 2, "LiveTL buttons not inserted in live"
 
     @level(0)
+    @cancel_after()
     @web_test
     @retry_every_interval()
     def test_vod_button_insertion(web):
@@ -34,6 +37,7 @@ class TestCases:
         assert len(ltlbuttons) == 2, "LiveTL buttons not inserted in vod"
 
     @level(1)
+    @cancel_after()
     @web_test
     def test_livetl_panel_layout(web):
         go_to_video_in_livetl(web, chilled_cow)
@@ -48,6 +52,7 @@ class TestCases:
         ), "livetl-chat hasn't loaded"
 
     @level(2)
+    @cancel_after()
     @web_test
     def test_livetl_window_size_change(web):
         go_to_video_in_livetl(web, chilled_cow)
@@ -72,6 +77,10 @@ class TestCases:
     def teardown_class(cls):
         cls.web.quit()
         del cls.web
+
+
+def is_headless():
+    return os.environ.get("HEADED") is not None
 
 
 def go_to_website(web, url):

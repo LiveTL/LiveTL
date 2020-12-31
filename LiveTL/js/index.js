@@ -8,118 +8,71 @@ const videoPanel = document.querySelector('#videoPanel');
 const liveTLPanel = document.querySelector('#ltlPanel');
 const outputPanel = document.querySelector('#outputPanel');
 const youtubeChatPanel = document.querySelector('#youtubeChatPanel');
+const root = document.documentElement.style;
 document.title = decodeURIComponent(params.title || 'LiveTL');
-const start = () => {
-  leftPanelContainer.querySelectorAll('*').forEach(node => {
-    node.style.display = 'none';
-  });
-  // stream.style.display = 'none';
-  ltlchat.style.display = 'none';
-  chat.style.display = 'none';
-  videoPanel.style.backgroundColor = 'var(--accent)';
-  outputPanel.style.backgroundColor = 'var(--accent)';
-  youtubeChatPanel.style.backgroundColor = 'var(--accent)';
-};
-const stop = () => {
-  // stream.style.display = 'block';
-  leftPanelContainer.querySelectorAll('*').forEach(node => {
-    node.style.display = 'block';
-  });
-  ltlchat.style.display = 'block';
-  chat.style.display = 'block';
-  videoPanel.style.backgroundColor = 'black';
-  outputPanel.style.backgroundColor = 'black';
-  youtubeChatPanel.style.backgroundColor = 'black';
-  localStorage.setItem('LTL:rightPanelHeight', youtubeChatPanel.style.height);
-  const width = getPaneWidth();
-  if (isNaN(width) === false) {
-    localStorage.setItem('LTL:leftPanelWidth', width.toString());
-  }
-};
-
-$('#youtubeChatPanel').resizable({
-  handles: {
-    s: '#handleH'
-  },
-  start: start,
-  stop: stop
-});
+let INITIAL_PANEL_PERCENT = isAndroid ? 50 : 80;
 
 // resizing yoinked and modified from https://spin.atomicobject.com/2019/11/21/creating-a-resizable-html-element/
-const getResizeableElement = () => document.getElementById('videoPanel');
-const getHandleElement = () => document.getElementById('handleV');
+const getResizableElement = () => document.getElementById('videoPanel');
 
 const setPaneWidth = (width) => {
+  width = parseFloat(width);
+
   if (isNaN(width)) {
-    return setPaneWidth(80);
+    return setPaneWidth(INITIAL_PANEL_PERCENT);
   }
 
-  getResizeableElement().style
-    .setProperty('--resizeable-width', `${width}%`);
+  root.setProperty('--resizable-width', `${width}%`);
+  root.setProperty('width', `var(--resizable-width)`);
 };
 
+const setPaneHeight = (height) => {
+  height = parseFloat(height);
+
+  if (isNaN(height)) {
+    return setPaneHeight(INITIAL_PANEL_PERCENT);
+  }
+
+  root.setProperty('--resizable-height', `${height}%`);
+};
+
+let chatSide;
 const getPaneWidth = () => {
-  const pxWidth = getComputedStyle(getResizeableElement())
-    .getPropertyValue('--resizeable-width');
-  const result = parseFloat(pxWidth, 10);
-  return result == NaN ? 80 : Math.min(100, Math.max(result, 0));
+  let pxWidth = videoPanel.clientWidth;
+  let result = 100 * pxWidth / window.innerWidth;
+  return isNaN(result) ? INITIAL_PANEL_PERCENT : Math.min(100, Math.max(result, 0));
 };
 
-const startDragging = (event) => {
-  event.preventDefault();
-  start();
-  getResizeableElement();
-
-  const startingPaneWidth = getPaneWidth();
-  const xOffset = event.pageX;
-
-  const mouseUp = () => {
-    setPaneWidth(getPaneWidth());
-    document.body.removeEventListener('mousemove', mouseDragHandler);
-    stop();
-  };
-
-  const mouseDragHandler = async (moveEvent) => {
-    moveEvent.preventDefault();
-
-    const primaryButtonPressed = moveEvent.buttons === 1;
-    if (!primaryButtonPressed) {
-      mouseUp();
-    }
-
-    const paneOriginAdjustment = await getStorage('chatSide') === 'left' ? 1 : -1;
-    setPaneWidth(
-      (xOffset - moveEvent.pageX) * 100 * paneOriginAdjustment / window.innerWidth + startingPaneWidth
-    );
-  };
-
-  document.body.addEventListener('mousemove', mouseDragHandler);
-  document.body.addEventListener('mouseup', mouseUp);
+const getPaneHeight = () => {
+  let pxHeight = youtubeChatPanel.clientHeight;
+  let result = 100 * pxHeight / window.innerHeight;
+  return isNaN(result) ? INITIAL_PANEL_PERCENT : Math.min(100, Math.max(result, 0));
 };
-
-getStorage('chatSide').then(side => {
-  if (side === 'right') {
-    videoPanel.style.order = '1';
-    liveTLPanel.style.order = '3';
-  } else if (side === 'left') {
-    videoPanel.style.order = '3';
-    liveTLPanel.style.order = '1';
-  }
-});
-
-getHandleElement().addEventListener('mousedown', startDragging);
 
 let c = params.continuation;
 let r = params.isReplay;
 r = r == null ? c : r;
 
+let zoomObj = {};
+
 window.addEventListener('message', d => {
   d = JSON.parse(JSON.stringify(d.data));
 
-  try {
-    chat.contentWindow.postMessage(d, '*');
-    ltlchat.contentWindow.postMessage(d, '*');
-  } catch (e) { }
+  chat.contentWindow.postMessage(d, '*');
+  if (d.type == 'zoom') {
+    zoomObj = d.zoom;
+    document.querySelectorAll('.captionSegment').forEach(styleCaptionSegment);
+  } else if (d.type == 'getInitData') {
+    chat.contentWindow.postMessage({
+      type: 'zoom',
+      zoom: zoomObj
+    }, '*');
+    chat.contentWindow.postMessage({
+      'yt-live-chat-set-dark-theme': true
+    }, '*');
+  }
+
+  ltlchat.contentWindow.postMessage(d, '*');
 });
 
 let q = `?isReplay=${(r ? 1 : '')}&v=${v}${(c ? `&continuation=${c}` : '')}`;
@@ -139,15 +92,21 @@ let leftWidth = localStorage.getItem('LTL:leftPanelWidth');
 let rightHeight = localStorage.getItem('LTL:rightPanelHeight');
 
 if (leftWidth) {
-  setPaneWidth(propToPercent(leftWidth, false));
+  setPaneWidth(parseFloat(leftWidth));
 } else {
-  setPaneWidth(80);
+  setPaneWidth(INITIAL_PANEL_PERCENT);
   // setPaneWidth(Math.round(window.innerWidth * 0.8));
+}
+
+if (rightHeight) {
+  setPaneHeight(parseFloat(rightHeight));
+} else {
+  setPaneHeight(INITIAL_PANEL_PERCENT);
 }
 
 if (params.noVideo) {
   videoPanel.style.display = 'none';
-  document.querySelector('#handleV').style.display = 'none';
+  document.querySelectorAll('#handleV').style.display = 'none';
 } else {
   stream.src = `${embedDomain}?v=${v}&mode=video`;
   if (rightHeight) {
@@ -159,11 +118,18 @@ function createCaptionSegment(segment) {
   let caption = document.createElement('p');
   caption.className = 'captionSegment';
   caption.textContent = segment;
+  styleCaptionSegment(caption);
   // May add animations later
   caption.removeSelf = () => {
     caption.remove();
   };
   return caption;
+}
+
+function styleCaptionSegment(caption) {
+  getStorage('zoom').then(zoom => {
+    if (zoom) caption.style.fontSize = `${20 * zoom}px`;
+  });
 }
 
 // Just here in case we need it later
@@ -194,8 +160,9 @@ function clearCaptions() {
 
 window.addEventListener('message', async (event) => {
   let displayCaptions = await getStorage('captionMode');
+  let delay = await getStorage('captionDelay');
   if (displayCaptions && event.data.action === 'caption') {
-    displayCaption(event.data.caption);
+    displayCaption(event.data.caption, delay > 0 ? delay * 1000 : -1);
   }
   if (event.data.action === 'clearCaption') {
     clearCaptions();
@@ -207,21 +174,146 @@ window.addEventListener('message', async (event) => {
 // displayCaption("Oi koroneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneone", 1000, false);
 
 let nojdiv = document.querySelector('#ltlcaptions');
-let captionsDiv = $(document.querySelector('#ltlcaptions'));
-captionsDiv.resizable({
-  handles: 'e, w',
-  stop: (event, ui) => {
-    var top = getTop(ui.helper);
-    ui.helper.css('position', 'fixed');
-    let width = parseFloat(propToPercent(nojdiv.style.width, false));
-    let left = parseFloat(propToPercent(nojdiv.style.left, false));
-    let percent = `${left + width > 100 ? 100 - left : width}%`;
-    ui.helper.css('width', percent);
-    localStorage.setItem('LTL:captionSizeWidth', percent);
+let captionsDiv = document.querySelector('#ltlcaptions');
+
+
+const start = () => {
+  stream.style.display = 'none';
+  captionsDiv.style.display = 'none';
+  ltlchat.style.display = 'none';
+  chat.style.display = 'none';
+  videoPanel.style.backgroundColor = 'var(--accent)';
+  outputPanel.style.backgroundColor = 'var(--accent)';
+  youtubeChatPanel.style.backgroundColor = 'var(--accent)';
+};
+const stop = () => {
+  stream.style.display = 'block';
+  captionsDiv.style.display = 'inline-table';
+  ltlchat.style.display = 'block';
+  chat.style.display = 'block';
+  videoPanel.style.backgroundColor = 'black';
+  outputPanel.style.backgroundColor = 'black';
+  youtubeChatPanel.style.backgroundColor = 'black';
+  const width = getPaneWidth();
+  const height = getPaneHeight();
+  if (!isNaN(width) && !params.noVideo) {
+    localStorage.setItem('LTL:leftPanelWidth', width.toString() + '%');
   }
+  if (!isNaN(height) && !params.noVideo) {
+    localStorage.setItem('LTL:rightPanelWidth', height.toString() + '%');
+    setPaneHeight(getPaneHeight());
+  }
+  videoPanel.style.width = null;
+  youtubeChatPanel.style.height = null;
+};
+
+let stopFunc = () => {
+  setPaneWidth(getPaneWidth());
+  setPaneHeight(getPaneHeight());
+  stop();
+};
+
+let leftHandle = document.querySelector('#leftHandle');
+let rightHandle = document.querySelector('#rightHandle');
+let verticalHandle;
+let horizontalHandle;
+
+window.sideChanged = async side => {
+  if (verticalHandle) verticalHandle.remove();
+  if (horizontalHandle) horizontalHandle.remove();
+  try {
+    $(liveTLPanel).resizable('destroy');
+  } catch { }
+  try {
+    $(videoPanel).resizable('destroy');
+  } catch { }
+  try {
+    $(youtubeChatPanel).resizable('destroy');
+  } catch { }
+  verticalHandle = document.createElement('span');
+  verticalHandle.innerHTML = `
+    <div id="handleV" 
+      class="handle ui-resizable-handle ui-resizable-e">
+      <span>&vellip;</span>
+    </div>
+  `;
+  chatSide = await getStorage('chatSide');
+  side = side || 'right';
+  let handleSide = {};
+  if (side === 'right') {
+    leftHandle.appendChild(verticalHandle);
+    videoPanel.style.order = '1';
+    liveTLPanel.style.order = '2';
+    videoPanel.style.minWidth = '10px';
+    $(liveTLPanel).css('width', 'unset');
+    $(youtubeChatPanel).css('max-width', '100%');
+    $(outputPanel).css('max-width', '100%');
+  } else if (side === 'left') {
+    rightHandle.appendChild(verticalHandle);
+    videoPanel.style.order = '2';
+    liveTLPanel.style.order = '1';
+    videoPanel.style.minWidth = '0px';
+    $(youtubeChatPanel).css('max-width', 'calc(100% - 10px)');
+    $(outputPanel).css('max-width', 'calc(100% - 10px)');
+  }
+  $(side == 'left' ? liveTLPanel : videoPanel).resizable({
+    handles: { e: $(verticalHandle) },
+    start: start,
+    stop: stopFunc,
+    resize: (event, ui) => {
+      if (chatSide == 'left') {
+        let newWidth = window.innerWidth - ui.size.width;
+        $(videoPanel).css('width', newWidth + 'px');
+        root.setProperty('--resizable-width', newWidth + 'px');
+      }
+    }
+  });
+  horizontalHandle = document.createElement('span');
+  horizontalHandle.innerHTML = `
+    <div id="handleH" 
+      class="handle ui-resizable-handle ui-resizable-s">
+      <span>&hellip;</span>
+    </div>
+  `;
+  youtubeChatPanel.appendChild(horizontalHandle);
+  $(youtubeChatPanel).resizable({
+    handles: {
+      s: $(horizontalHandle)
+    },
+    start: start,
+    stop: stop
+  });
+  $(captionsDiv).resizable({
+    handles: 'e, w',
+    stop: (event, ui) => {
+      var top = getTop(ui.helper);
+      ui.helper.css('position', 'fixed');
+      let width = parseFloat(propToPercent(nojdiv.style.width, false));
+      let left = parseFloat(propToPercent(nojdiv.style.left, false));
+      let percent = `${left + width > 100 ? 100 - left : width}%`;
+      ui.helper.css('width', percent);
+      localStorage.setItem('LTL:captionSizeWidth', percent);
+    }
+  });
+};
+getStorage('chatSide').then(async (side) => {
+  await window.sideChanged(side);
 });
 
-captionsDiv.draggable({
+
+getTopWithSafety = d => `max(min(${d}, calc(100% - 50px)), -30px)`;
+getLeftWithSafety = d => `max(min(${d}, calc(100% - 50px)), -30px)`;
+
+
+let capLeft = localStorage.getItem('LTL:captionSizeLeft');
+let capTop = localStorage.getItem('LTL:captionSizeTop');
+let capWidth = localStorage.getItem('LTL:captionSizeWidth');
+if (capLeft) nojdiv.style.left = propToPercent(getLeftWithSafety(capLeft), false);
+if (capTop) nojdiv.style.top = getTopWithSafety(propToPercent(capTop, true));
+if (capWidth) nojdiv.style.width = propToPercent(capWidth, false);
+else if (isAndroid) nojdiv.style.width = '50%';
+
+$(captionsDiv).draggable({
   stop: (event, ui) => {
     let top = getTop(ui.helper);
     ui.helper.css('position', 'fixed');
@@ -245,17 +337,6 @@ captionsDiv.draggable({
 });
 
 
-let capLeft = localStorage.getItem('LTL:captionSizeLeft');
-let capTop = localStorage.getItem('LTL:captionSizeTop');
-let capWidth = localStorage.getItem('LTL:captionSizeWidth');
-
-getTopWithSafety = d => `max(min(${d}, calc(100% - 50px)), -30px)`;
-getLeftWithSafety = d => `max(min(${d}, calc(100% - 50px)), -30px)`;
-
-if (capLeft) nojdiv.style.left = propToPercent(getLeftWithSafety(capLeft), false);
-if (capTop) nojdiv.style.top = getTopWithSafety(propToPercent(capTop, true));
-if (capWidth) nojdiv.style.width = propToPercent(capWidth, false);
-
 function getTop(ele) {
   var eTop = ele.offset().top;
   var wTop = $(window).scrollTop();
@@ -263,12 +344,7 @@ function getTop(ele) {
   return top;
 }
 
-function propToPercent(...args) {
-  let res = propToPercentt(...args);
-  return res;
-}
-
-function propToPercentt(prop, top = true) {
+function propToPercent(prop, top = true) {
   prop = `${prop}`;
   if (prop.includes('%')) {
     return prop;
@@ -282,22 +358,26 @@ function propToPercentt(prop, top = true) {
 }
 
 function toggleFullScreen() {
-  if ((document.fullScreenElement && document.fullScreenElement !== null) ||
-    (!document.mozFullScreen && !document.webkitIsFullScreen)) {
-    if (document.documentElement.requestFullScreen) {
-      document.documentElement.requestFullScreen();
-    } else if (document.documentElement.mozRequestFullScreen) {
-      document.documentElement.mozRequestFullScreen();
-    } else if (document.documentElement.webkitRequestFullScreen) {
-      document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-    }
+  if (isAndroid) {
+    window.Android.toggleFullScreen();
   } else {
-    if (document.cancelFullScreen) {
-      document.cancelFullScreen();
-    } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
-    } else if (document.webkitCancelFullScreen) {
-      document.webkitCancelFullScreen();
+    if ((document.fullScreenElement && document.fullScreenElement !== null) ||
+      (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+      if (document.documentElement.requestFullScreen) {
+        document.documentElement.requestFullScreen();
+      } else if (document.documentElement.mozRequestFullScreen) {
+        document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.webkitRequestFullScreen) {
+        document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+      }
+    } else {
+      if (document.cancelFullScreen) {
+        document.cancelFullScreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.webkitCancelFullScreen) {
+        document.webkitCancelFullScreen();
+      }
     }
   }
 }

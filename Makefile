@@ -1,12 +1,15 @@
+
 py = python3
 pip = ${py} -m pip
 pytest = ${py} -m pytest
 jquery = "./build/common/jquery.min.js"
 jquery-ui = "./build/common/jquery-ui.min.js"
 jquery-css = "./build/common/jquery-ui.css"
+jquery-ui-touch = "./build/common/jquery-ui-touch.css"
 sjquery = "./build/static/jquery.min.js"
 sjquery-ui = "./build/static/jquery-ui.min.js"
 sjquery-css = "./build/static/jquery-ui.css"
+sjquery-ui-touch = "./build/static/jquery-ui-touch.css"
 
 lib = "./LiveTL/js/lib"
 
@@ -24,7 +27,7 @@ replace-version=sed 's|VERSION|$(VERSION)|g'
 
 all: chrome firefox
 
-.PHONY: init bench test chrome firefox clean
+.PHONY: init bench test chrome firefox android clean
 
 init:
 	mkdir -p dist/
@@ -33,10 +36,12 @@ init:
 	@cp $(sjquery) $(jquery) || curl -s -o $(sjquery) https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js & \
 	cp $(sjquery-ui) $(jquery-ui) || curl -s -o $(sjquery-ui) https://ajax.aspnetcdn.com/ajax/jquery.ui/1.12.1/jquery-ui.min.js & \
 	cp $(sjquery-css) $(jquery-css) || curl -s -o $(sjquery-css) https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css & \
+	cp $(sjquery-ui-touch) $(jquery-ui-touch) || curl -s -o $(sjquery-ui-touch) https://raw.githubusercontent.com/furf/jquery-ui-touch-punch/master/jquery.ui.touch-punch.min.js & \
        	wait
 	cp $(sjquery) $(jquery)
 	cp $(sjquery-ui) $(jquery-ui)
 	cp $(sjquery-css) $(jquery-css)
+	cp $(sjquery-ui-touch) $(jquery-ui-touch)
 
 testinit:
 	cat requirements.txt | grep "#" | sed 's/#//g' | $(py) || $(pip) install -r requirements.txt
@@ -56,6 +61,7 @@ chrome: common
 	cp $(jquery) ./build/chrome/LiveTL/jquery.min.js
 	cp $(jquery-ui) ./build/chrome/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/chrome/LiveTL/css/jquery-ui.css
+	cp $(jquery-ui-touch) ./build/chrome/LiveTL/jquery-ui-touch.js
 	cp ./build/common/frame.js ./build/chrome/LiveTL/js/frame.js
 	cp ./build/common/index.js ./build/chrome/LiveTL/js/index.js
 	cp ./build/common/background.js ./build/chrome/LiveTL/js/background.js
@@ -73,6 +79,7 @@ firefox: common
 	cp $(jquery) ./build/firefox/LiveTL/jquery.min.js
 	cp $(jquery-ui) ./build/firefox/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/firefox/LiveTL/css/jquery-ui.css
+	cp $(jquery-ui-touch) ./build/firefox/LiveTL/jquery-ui-touch.js
 	cp ./build/common/frame.js ./build/firefox/LiveTL/js/frame.js
 	cp ./build/common/index.js ./build/firefox/LiveTL/js/index.js
 	cp ./build/common/background.js ./build/firefox/LiveTL/js/background.js
@@ -94,6 +101,7 @@ safari: common
 	cp $(jquery) ./build/safari/LiveTL/jquery.min.js
 	cp $(jquery-ui) ./build/safari/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/safari/LiveTL/css/jquery-ui.css
+	cp $(jquery-ui-touch) ./build/safari/LiveTL/jquery-ui-touch.js
 	cp ./build/common/frame.js ./build/safari/LiveTL/js/frame.js
 	cp ./build/common/index.js ./build/safari/LiveTL/js/index.js
 	cp ./build/common/background.js ./build/safari/LiveTL/js/background.js
@@ -114,12 +122,18 @@ safari-noBuild: common
 	cp $(jquery) ./build/safari/LiveTL/jquery.min.js
 	cp $(jquery-ui) ./build/safari/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/safari/LiveTL/css/jquery-ui.css
+	cp $(jquery-ui-touch) ./build/safari/LiveTL/jquery-ui-touch.js
 	cp ./build/common/frame.js ./build/safari/LiveTL/js/frame.js
 	cp ./build/common/index.js ./build/safari/LiveTL/js/index.js
 	cp ./build/common/background.js ./build/safari/LiveTL/js/background.js
 	rm -rf ./build/safari/LiveTL/js/lib/
 	cp ./LICENSE ./build/safari/LiveTL/
 	grep -v incognito ./build/common/manifest.json > ./build/safari/LiveTL/manifest.json
+
+android: chrome
+	mkdir -p LiveTL-Android/app/src/main/assets/
+	cp -r build/chrome/LiveTL/* LiveTL-Android/app/src/main/assets/
+	cp LiveTL/js/lib/inject.js LiveTL-Android/app/src/main/assets/
 
 common: init
 	cat $(lib)/constants.js $(lib)/../frame.js $(lib)/storage.js $(lib)/filter.js $(lib)/settings.js $(lib)/css.js $(lib)/svgs.js \
@@ -133,3 +147,4 @@ clean:
 	rm -rf dist/
 	rm -rf build/
 	rm -rf drivers/
+	rm -rf LiveTL-Android/app/src/main/assets/*

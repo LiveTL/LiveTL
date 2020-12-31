@@ -2,6 +2,8 @@
     --accent: #2c2c2c;
     --primary: #4d4d4d;
     --button-fill: #49deff;
+    --resizable-width: calc(100% - 150px);
+    --resizable-height: 80%;
     color-scheme: light dark;
 }
 
@@ -14,7 +16,7 @@
 
 #chat {
     width: 100%;
-    height: 100%;
+    height: calc(100% - 10px);
     min-height: 0px;
     border: none;
 }
@@ -30,8 +32,7 @@
 }
 
 #videoPanel {
-    --resizeable-width: calc(100% - 150px);
-    width: var(--resizeable-width);
+    width: var(--resizable-width);
     height: 100%;
     order: 1;
 }
@@ -46,7 +47,7 @@
 
 #youtubeChatPanel {
     width: 100%;
-    height: 80%;
+    height: var(--resizable-height);
     max-height: 100%;
 }
 
@@ -59,6 +60,7 @@
 
 body {
     margin: 0;
+    width: 100vw;
 }
 
 .handle {
@@ -72,7 +74,6 @@ body {
     align-items: center;
     justify-content: center;
     z-index: 2;
-    position: relative;
     order: 2;
 }
 
@@ -100,14 +101,19 @@ body {
     width: 100%;
     height: 100%;
     display: flex;
+    overflow: hidden;
 }
 
 .ui-resizable-s {
     bottom: 0px !important;
 }
 
-.ui-resizable-e {
+#leftHandle .ui-resizable-e {
     right: 0px !important;
+}
+
+#rightHandle .ui-resizable-e {
+    right: 0 !important;
 }
 
 body {
@@ -176,7 +182,7 @@ body {
 }
 
 #ltlcaptions>.ui-resizable-handle.ui-resizable-e {
-    transform: translateX(-15px);
+    transform: translateX(-20px);
 }
 
 #ltlcaptions>.ui-resizable-handle.ui-resizable-w {

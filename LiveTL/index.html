@@ -10,6 +10,7 @@
     <script src="./jquery.min.js"></script>
     <link rel="stylesheet" href="./css/jquery-ui.css" type="text/css" media="all" />
     <script src="./jquery-ui.min.js" type="text/javascript"></script>
+    <script src="./jquery-ui-touch.js" type="text/javascript"></script>
     <link rel="stylesheet" href="./css/index.css" type="text/css" />
     <link rel="icon" href="./icons/favicon.ico" type="image/x-icon" />
 </head>
@@ -17,24 +18,25 @@
 <body>
     <div id="display">
         <div id="videoPanel">
+            <div id='leftHandle'></div>
             <iframe src=""
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 id="stream"></iframe>
             <div id="ltlcaptions"></div>
         </div>
-        <div id="handleV" class="handle ui-resizable-handle ui-resizable-e"><span>&vellip;</span></div>
         <div id="ltlPanel">
             <div id="youtubeChatPanel">
                 <div class="iframeWrapper">
                     <iframe id="chat"></iframe>
                 </div>
-                <div id="handleH" class="handle ui-resizable-handle ui-resizable-s"><span>&hellip;</span></div>
+                <div id='horizontalHandle'></div>
             </div>
             <div id="outputPanel">
                 <div class="iframeWrapper">
                     <iframe id="livetl-chat"></iframe>
                 </div>
             </div>
+            <div id='rightHandle'></div>
         </div>
     </div>
     <script src='./js/frame.js'></script>

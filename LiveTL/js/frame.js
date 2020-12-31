@@ -1,5 +1,21 @@
 const isFirefox = !!/Firefox/.exec(navigator.userAgent);
 
+window.isAndroid = window.isAndroid || (window.chrome == null && !isFirefox);
+
+if (isAndroid) {
+  window.chrome = {
+    runtime: {
+      sendMessage: () => { },
+      onMessage: {
+        addListener: () => { }
+      }
+    }
+  };
+}
+
+const isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && window['safari'].pushNotification));
+
+
 const embedDomain = EMBED_DOMAIN;
 
 const allTranslators = { byID: {}, byName: {} };
@@ -10,6 +26,7 @@ let textDirection = 'bottom';
 let mostRecentTimestamp = 0;
 
 async function addedByUser(id) {
+  id = id.trim().toLowerCase();
   let s = (await getUserStatus(id, true)).checked != null;
   return s;
 }
@@ -23,6 +40,8 @@ const authorType = {
 };
 
 async function runLiveTL() {
+  monkeypatch();
+
   params = parseParams();
   await setFavicon();
 
@@ -121,10 +140,6 @@ async function runLiveTL() {
       await setStorage('displayModMessages', true);
     }
 
-    /********************************************
-     * TODO FIXME Messages need to be displayed at the appropriate time in the video, not whenever we receive them.
-     ********************************************/
-
     // Check to see if the sender is a mod, and we display mod messages
     if (messageInfo.author.types.includes(authorType.MOD) && displayModMessages) {
       // If the mod isn't in the sender list, add them
@@ -136,7 +151,10 @@ async function runLiveTL() {
       // Check to make sure we haven't blacklisted the mod, and if not, send the message
       // After send the message, we bail so we don't have to run all the translation related things below
       if (checked) {
-        sendToCaptions(messageInfo.message);
+        if (!authorType.MOD) {
+          //don't send caption if author is a mod #105
+          sendToCaptions(messageInfo.message);
+        }
         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
         return;
       }
@@ -178,6 +196,8 @@ async function runLiveTL() {
       return;
     }
   };
+
+  updateZoomLevel();
 }
 
 async function reinsertButtons() {
@@ -243,23 +263,31 @@ async function insertLiveTLButtons(isHolotools = false) {
     a.querySelector('yt-formatted-string').textContent = text;
   };
 
-  const redirectTab = u => window.location.href = u;
+  const redirectTab = u => {
+    if (isAndroid) {
+      window.Android.receiveMessage(u);
+    } else {
+      window.location.href = u;
+    }
+  }
   const createTab = u => window.open(u);
   getContinuationURL = (() => {
     let chatframe = document.querySelector('#chatframe');
-    let src = chatframe.dataset.src;
-    return '&continuation=' + getContinuation(chatframe.dataset.src);
+    let src = chatframe.dataset.src || chatframe.src;
+    return '&continuation=' + getContinuation(src);
   });
 
   getTitle = () => encodeURIComponent(document.querySelector('#container > .title').textContent);
 
   restOfURL = () => `&title=${getTitle()}&useLiveTL=1${getContinuationURL()}&isReplay=${(hasReplayChatOpen() ? 1 : '')}`;
 
+  window.watchInLiveTL = async () => {
+    params = parseParams();
+    redirectTab(`${await getWAR('index.html')}?v=${params.v}${restOfURL()}`);
+  };
+
   if (!isHolotools) {
-    makeButton('Watch in LiveTL', async () => {
-      params = parseParams();
-      redirectTab(`${await getWAR('index.html')}?v=${params.v}${restOfURL()}`);
-    });
+    makeButton('Watch in LiveTL', window.watchInLiveTL);
 
     sendToWindow = (data) => {
       try {
@@ -336,6 +364,11 @@ async function onMessageFromEmbeddedChat(m) {
         let f = document.querySelector('#chatframe');
         f.dataset.src = f.contentWindow.location.href;
         await insertLiveTLButtons();
+        if (isAndroid && isVideo()) {
+          setInterval(async () => {
+            window.watchInLiveTL();
+          }, 0);
+        }
         break;
       case 'clearLiveTLButtons':
         clearLiveTLButtons();
@@ -352,6 +385,49 @@ function injectScript(text) {
   document.head.appendChild(e);
 }
 
+function isEmbed() {
+  return window.location.href.startsWith('https://www.youtube.com/embed');
+}
+
+
+function monkeypatch() {
+  window.oldFetch = window.oldFetch || window.fetch;
+  function fetchLocalResource(url) {
+    return new Promise((res, rej) => {
+      const req = new XMLHttpRequest();
+      req.onload = function () {
+        const text = req.responseText;
+        res(text);
+      };
+      req.open('GET', url);
+      req.send();
+    });
+  }
+  window.fetch = async (...args) => {
+    try {
+      let url = '';
+      if (typeof args[0] == 'object') url = args[0].url;
+      else url = args[0];
+      if (url.startsWith('file:///android_asset')) {
+        let text = await fetchLocalResource(url);
+        return {
+          json: async () => JSON.parse(text),
+          text: async () => text
+        };
+      }
+      let result = await window.oldFetch(...args);
+      if (url.startsWith('https://www.youtube.com/youtubei/v1/live_chat/get_live_chat')) {
+        let data = await (await result.clone()).json();
+        console.debug('Caught chunk', data);
+        window.dispatchEvent(new CustomEvent('newMessageChunk', { detail: data }));
+      }
+      return result;
+    } catch (e) {
+      console.debug(e);
+    }
+  }
+}
+
 async function loaded() {
   // window.removeEventListener('load', loaded);
   // window.removeEventListener('yt-navigate-finish', loaded);
@@ -362,34 +438,22 @@ async function loaded() {
     console.debug('Using live chat');
     try {
       params = parseParams();
+      try {
+        window.parent.postMessage({ type: 'getInitData' }, '*');
+      } catch (e) { }
       if (params.useLiveTL) {
         console.debug('Running LiveTL!');
         runLiveTL();
       } else {
         console.debug('Monitoring network events');
-        injectScript(`
-          window.oldFetch = window.oldFetch || window.fetch;
-          window.fetch = async (...args) => {
-            try {
-              let result = await window.oldFetch(...args);
-              if (args[0].url.startsWith('https://www.youtube.com/youtubei/v1/live_chat/get_live_chat')) {
-                let data = await (await result.clone()).json();
-                console.debug('Caught chunk', data);
-                window.dispatchEvent(new CustomEvent('newMessageChunk', { detail: data }));
-              }
-              return result;
-            } catch(e) {
-              console.log(e);
-            }
-          }
-        `);
+        injectScript(monkeypatch.toString() + 'monkeypatch();');
         window.addEventListener('newMessageChunk', async (response) => {
           response = response.detail;
           response = JSON.parse(JSON.stringify(response));
           console.debug('newMessageChunk event received', response);
           let messages = [];
           if (!response.continuationContents) {
-            console.log('Response was invalid', response);
+            console.debug('Response was invalid', response);
             return;
           }
           (response.continuationContents.liveChatContinuation.actions || []).forEach(action => {
@@ -416,17 +480,16 @@ async function loaded() {
                   types: authorTypes
                 },
                 message: messageText,
-                timestamp: isReplayChat() ? messageItem.timestampText.simpleText : parseTimestamp(messageItem.timestampUsec)
+                timestamp: isReplayChat() ? messageItem.timestampText.simpleText : parseTimestamp(messageItem.timestampUsec),
               };
               messages.push(item);
             } catch (e) {
-              console.log('Error while parsing message.', { e });
+              console.debug('Error while parsing message.', { e });
             }
           });
           let chunk = {
             type: 'messageChunk',
             messages: messages,
-            videoTimestamp: mostRecentTimestamp,
             video: getV(window.location.href) || getV(window.parent.location.href)
           };
           console.debug('Sending chunk', chunk);
@@ -448,14 +511,41 @@ async function loaded() {
       } else {
         window.parent.postMessage('embeddedChatLoaded', '*');
       }
+      if (isAndroid) {
+        document.querySelector('#input-panel').style.display = 'none';
+      }
     } catch (e) {
       console.debug(e);
     }
-  } else if (window.location.href.startsWith('https://www.youtube.com/embed')) {
-    document.querySelector('.ytp-fullscreen-button').addEventListener('click', () => {
-      window.parent.postMessage({ type: 'fullscreen' }, '*');
-    });
-    document.querySelector('#movie_player>.ytp-generic-popup').style.opacity = '0';
+  } else if (isEmbed()) {
+    let initFullscreenButton = () => {
+      document.querySelector('.ytp-fullscreen-button').addEventListener('click', () => {
+        window.parent.postMessage({ type: 'fullscreen' }, '*');
+      });
+      document.querySelector('#movie_player>.ytp-generic-popup').style.opacity = '0';
+      window.removeEventListener('mousedown', initFullscreenButton);
+    };
+    if (isFirefox) window.addEventListener('mousedown', initFullscreenButton);
+    else initFullscreenButton();
+
+    if (isAndroid) {
+      let iconChecker = setInterval(() => {
+        let icon = document.querySelector('.iv-branding');
+        if (icon) {
+          icon.style.display = 'none';
+          clearInterval(iconChecker);
+        }
+      });
+    }
+  }
+
+  if (isAndroid) {
+    monkeypatch();
+    if (!isVideo()) {
+      window.frameText = window.frameText || await (await fetch(await getWAR('js/frame.js'))).text();
+      insertContentScript();
+    }
+    document.querySelectorAll('a').forEach(e => e.onclick = () => window.Android.open(e.href));
   }
 }
 
@@ -469,11 +559,21 @@ window.addEventListener('message', onMessageFromEmbeddedChat);
 window.addEventListener('load', loaded);
 window.addEventListener('yt-navigate-start', clearLiveTLButtons);
 
-if ((isVideo() || isChat()) && isFirefox) {
+if ((isVideo() || isChat() || isEmbed()) && isFirefox) {
   window.dispatchEvent(new Event('load'));
 }
 
 const aboutPage = 'https://kentonishi.github.io/LiveTL/about/';
+
+function setChatZoom(width, height, transform) {
+  let e = document.querySelector('yt-live-chat-app');
+  e.style.width = width;
+  e.style.height = height;
+  e.style.transformOrigin = '0 0';
+  e.style.transform = transform;
+  document.body.style.height = '100vh';
+  document.body.style.width = '100vw';
+}
 
 if (window.location.href.startsWith(aboutPage)) {
   window.addEventListener('load', () => {
@@ -488,6 +588,10 @@ if (window.location.href.startsWith(aboutPage)) {
   });
 } else if (isChat()) {
   window.addEventListener('message', d => {
+    if (d.data.type == 'zoom') {
+      let z = d.data.zoom;
+      setChatZoom(z.width, z.height, z.transform);
+    }
     if (window.origin != d.origin) {
       postMessage(d.data);
     }
@@ -828,4 +932,25 @@ function getLiveTLButton(color) {
   return a;
 }
 
+async function insertContentScript() {
+  document.querySelectorAll('iframe').forEach(async frame => {
+    try {
+      if (frame.id != 'livetl-chat' && !frame.contentWindow.runLiveTL) {
+        frame.contentWindow.frameText = window.frameText;
+        frame.contentWindow.isAndroid = true;
+        frame.contentWindow.eval(window.frameText);
+        frame.contentWindow.loaded();
+        frame.contentWindow.insertContentScript();
+      }
+    } catch (e) { console.debug(e) }
+  });
+}
 
+if (isAndroid && isVideo()) {
+  setInterval(() => {
+    let chat = document.querySelector('#chatframe');
+    if (chat && chat.src.startsWith('https://www.youtube.com/live_chat')) {
+      window.postMessage('embeddedChatLoaded');
+    }
+  }, 0);
+}
