@@ -13,28 +13,14 @@
 
 Get live translations for YouTube streams, crowdsourced from multilingual viewers!
 
-### [Download LiveTL for your Browser](https://kentonishi.github.io/LiveTL/)
+### [Download LiveTL](https://kentonishi.github.io/LiveTL/)
 
-or...
-
-[Download for Free from the Chrome Web Store](https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg)
-
-[Download for Free from the Firefox Add-on Store](https://addons.mozilla.org/en-US/firefox/addon/livetl/)
-
-[Download for Safari (currently in beta and not signed by Apple)](https://github.com/KentoNishi/LiveTL/releases/latest/)
-
-![Demo](./img/cover.png)
-
-## FAQ
-[Find some answers to common questions in our FAQ!](https://kentonishi.github.io/LiveTL/about/#frequently-asked-questions)
+![Demo](./img/cover-android.png)
 
 ## Feedback and Contributing
 
 We have a Discord server for those who would like to give feedback or discuss new
 features! [Here is the invite](https://discord.gg/uJrV3tmthg).
-
-## Progress
-Development progress is managed in the [repo's project page](https://github.com/KentoNishi/LiveTL/projects/1).
 
 If you are interested in helping us solve any issues and/or add features, please let us know in the Discord server and
 submit a Pull Request!

@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         onNewIntent(getIntent());
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onNewIntent(Intent intent){
         String action = intent.getAction();
@@ -75,27 +76,27 @@ public class MainActivity extends AppCompatActivity {
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("text/plain".equals(type)) {
                 String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-                loadWebview(sharedText, true, screenDensity);
+                loadWebview(sharedText, "loader", screenDensity);
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
                 this.action = "watch";
             }
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
-            loadWebview("https://kentonishi.github.io/LiveTL/about",
-                false, (screenDensity * 3) / 4);
+            loadWebview("https://kentonishi.github.io/LiveTL/about/android",
+                "frame", (screenDensity * 3) / 4);
             this.action = "launch";
         }
         updateUI();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    void loadWebview(String url, boolean inject, int density){
+    void loadWebview(String url, String inject, int density){
         WebView wv = (WebView) findViewById(R.id.mainWebview);
         wv.addJavascriptInterface(new JSObj(wv), "Android");
         wv.setWebViewClient(new WebViewClient() {
 
             public void onPageFinished(WebView view, String url) {
-                if (inject) {
+                if (inject.equals("frame") || inject.equals("loader")) {
                     wv.loadUrl("javascript:" +
                                  "window.history.pushState('', '', '" + url + "');" +
                                  "myScript = document.createElement('script');" +
@@ -108,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
-                if (inject){
+                if (inject.equals("loader")) {
                     try {
                         String jsURL = "javascript:" + readFile("inject.js").replaceAll(
                                 "\n", ""
@@ -120,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 String INJECTION_TOKEN = "CUSTOMJS";
                 WebResourceResponse response = null;
-                if(url.contains(INJECTION_TOKEN)) {
+                if (url.contains(INJECTION_TOKEN)) {
                     String assetPath = url.substring(url.indexOf(INJECTION_TOKEN) +
                         INJECTION_TOKEN.length(), url.length());
                     try {
@@ -214,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
         @JavascriptInterface
         public void receiveMessage(String data) {
             MainActivity.this.runOnUiThread(() -> {
-                loadWebview(data, false, screenDensity);
+                loadWebview(data, "", screenDensity);
             });
         }
 
@@ -289,5 +290,10 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         updateUI();
+    }
+
+    @Override
+    public void onBackPressed() {
+        return;
     }
 }
