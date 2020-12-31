@@ -3,6 +3,7 @@
     --primary: #4d4d4d;
     --button-fill: #49deff;
     --resizable-width: calc(100% - 150px);
+    --resizable-height: 80%;
     color-scheme: light dark;
 }
 
@@ -46,7 +47,7 @@
 
 #youtubeChatPanel {
     width: 100%;
-    height: 80%;
+    height: var(--resizable-height);
     max-height: 100%;
 }
 

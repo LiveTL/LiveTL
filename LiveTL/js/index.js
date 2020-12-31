@@ -15,23 +15,38 @@ document.title = decodeURIComponent(params.title || 'LiveTL');
 const getResizableElement = () => document.getElementById('videoPanel');
 
 const setPaneWidth = (width) => {
+  width = parseFloat(width);
+
   if (isNaN(width)) {
     return setPaneWidth(80);
   }
 
-  width = parseFloat(width);
   root.setProperty('--resizable-width', `${width}%`);
   root.setProperty('width', `var(--resizable-width)`);
+};
+
+const setPaneHeight = (height) => {
+  height = parseFloat(height);
+
+  if (isNaN(height)) {
+    return setPaneHeight(80);
+  }
+
+  root.setProperty('--resizable-height', `${height}%`);
 };
 
 let chatSide;
 const getPaneWidth = () => {
   let pxWidth = videoPanel.clientWidth;
   let result = 100 * pxWidth / window.innerWidth;
-  return result == NaN ? 80 : Math.min(100, Math.max(result, 0));
+  return isNaN(result) ? 80 : Math.min(100, Math.max(result, 0));
 };
 
-
+const getPaneHeight = () => {
+  let pxHeight = youtubeChatPanel.clientHeight;
+  let result = 100 * pxHeight / window.innerHeight;
+  return isNaN(result) ? 80 : Math.min(100, Math.max(result, 0));
+};
 
 let c = params.continuation;
 let r = params.isReplay;
@@ -80,6 +95,13 @@ if (leftWidth) {
 } else {
   setPaneWidth(80);
   // setPaneWidth(Math.round(window.innerWidth * 0.8));
+}
+
+if (rightHeight) {
+  setPaneHeight(parseFloat(rightHeight));
+}
+else {
+  setPaneHeight(80);
 }
 
 if (params.noVideo) {
@@ -183,16 +205,22 @@ const stop = () => {
   videoPanel.style.backgroundColor = 'black';
   outputPanel.style.backgroundColor = 'black';
   youtubeChatPanel.style.backgroundColor = 'black';
-  localStorage.setItem('LTL:rightPanelHeight', youtubeChatPanel.style.height);
   const width = getPaneWidth();
+  const height = getPaneHeight();
   if (isNaN(width) === false && !params.noVideo) {
     localStorage.setItem('LTL:leftPanelWidth', width.toString() + '%');
   }
+  if (isNaN(height) === false && !params.noVideo) {
+    localStorage.setItem('LTL:rightPanelWidth', height.toString() + '%');
+    setPaneHeight(getPaneHeight());
+  }
   videoPanel.style.width = null;
+  youtubeChatPanel.style.height = null;
 };
 
 let stopFunc = () => {
   setPaneWidth(getPaneWidth());
+  setPaneHeight(getPaneHeight());
   stop();
 };
 
