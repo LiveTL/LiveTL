@@ -291,4 +291,9 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         updateUI();
     }
+
+    @Override
+    public void onBackPressed() {
+        return;
+    }
 }
