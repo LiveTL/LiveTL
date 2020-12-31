@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @JavascriptInterface
-        public void prompt(String text) {
+        public void prompt(String text, String def) {
             AlertDialog.Builder alert = new AlertDialog.Builder(wv.getContext());
             alert.setTitle("LiveTL");
             alert.setMessage(text);
@@ -238,7 +238,13 @@ public class MainActivity extends AppCompatActivity {
                 (dialog, which) -> {
                     runOnUiThread(() -> wv.loadUrl("javascript:window.promptCallback(\"\")"));
                     return;
-                });
+                }
+            );
+
+            if(def != null){
+                input.setText(def);
+            }
+
             alert.show();
         }
 

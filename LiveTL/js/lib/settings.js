@@ -535,13 +535,13 @@ function scrollBackToBottomOfChat() {
   document.querySelector('#show-more').dispatchEvent(new Event('click'));
 }
 
-function asyncPrompt(text) {
+function asyncPrompt(text, value) {
   if (!isAndroid) {
-    return prompt(text);
+    return prompt(text, value);
   } else {
     return new Promise((res, rej) => {
       window.parent.promptCallback = d => res(decodeURIComponent(d));
-      window.Android.prompt(text);
+      window.Android.prompt(text, value);
     });
   }
 }
@@ -613,13 +613,29 @@ async function createCaptionDurationInput() {
   input.type = 'number';
   input.min = -1;
   input.value = delay;
-  input.addEventListener('change', async () => {
+
+  let callback = async () => {
     // Remove sticking perma captions if enabling
-    if (await getStorage('captionDelay') === -1) {
+    if (await getStorage('captionDelay') <= -1) {
       window.parent.parent.postMessage({ action: 'clearCaption' }, '*');
     }
+    if (input.value <= -1) input.value = -1;
     setStorage('captionDelay', input.value)
-  });
+  };
+
+  if (isAndroid) {
+    input.addEventListener('click', async (e) => {
+      e.preventDefault();
+      let val = await asyncPrompt('Caption timeout duration:', input.value.toString());
+      val = parseInt(val);
+      if (!isNaN(val)) {
+        input.value = val;
+        callback();
+      }
+    });
+  } else {
+    input.addEventListener('change', callback);
+  }
 
   return input;
 }
