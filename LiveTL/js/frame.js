@@ -24,8 +24,10 @@ let allTranslatorCheckbox = {};
 let showTimestamps = true;
 let textDirection = 'bottom';
 let mostRecentTimestamp = 0;
+const INTERVAL = 100;
 
 async function addedByUser(id) {
+  id = id.trim().toLowerCase();
   let s = (await getUserStatus(id, true)).checked != null;
   return s;
 }
@@ -129,8 +131,11 @@ async function runLiveTL() {
   hrParent.appendChild(hr);
   prependOrAppend(hrParent);
 
+  let lastMessage = '';
   window.onNewMessage = async messageInfo => {
     if (!messageInfo) return;
+
+    if (`${messageInfo.author.id} ${messageInfo.message}` == lastMessage) return;
 
     // Determine whether we should display mod messages (if not set, default to yes)
     let displayModMessages = await getStorage('displayModMessages');
@@ -150,11 +155,14 @@ async function runLiveTL() {
       // Check to make sure we haven't blacklisted the mod, and if not, send the message
       // After send the message, we bail so we don't have to run all the translation related things below
       if (checked) {
-        if (!authorType.MOD){
+        let speechFuture = (async () => null)();
+        if (!authorType.MOD) {
           //don't send caption if author is a mod #105
           sendToCaptions(messageInfo.message);
+          speechFuture = checkAndSpeak(messageInfo.message);
         }
         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
+        await speechFuture;
         return;
       }
     }
@@ -176,8 +184,10 @@ async function runLiveTL() {
       checked = (await isChecked(messageInfo.author.id));
       // Check to see if the sender is approved, and send the message if they are
       if (checked) {
+        let speechFuture = checkAndSpeak(translation.msg);
         sendToCaptions(translation.msg);
         prependOrAppend(createMessageEntry(messageInfo, translation.msg));
+        await speechFuture;
         return;
       }
     }
@@ -189,8 +199,10 @@ async function runLiveTL() {
       }
       checked = (await isChecked(messageInfo.author.id));
       if (checked) {
+        let speechFuture = checkAndSpeak(messageInfo.message);
         sendToCaptions(messageInfo.message);
         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
+        await speechFuture;
       }
       return;
     }
@@ -262,23 +274,31 @@ async function insertLiveTLButtons(isHolotools = false) {
     a.querySelector('yt-formatted-string').textContent = text;
   };
 
-  const redirectTab = u => window.location.href = u;
+  const redirectTab = u => {
+    if (isAndroid) {
+      window.Android.receiveMessage(u);
+    } else {
+      window.location.href = u;
+    }
+  }
   const createTab = u => window.open(u);
   getContinuationURL = (() => {
     let chatframe = document.querySelector('#chatframe');
-    let src = chatframe.dataset.src;
-    return '&continuation=' + getContinuation(chatframe.dataset.src);
+    let src = chatframe.dataset.src || chatframe.src;
+    return '&continuation=' + getContinuation(src);
   });
 
   getTitle = () => encodeURIComponent(document.querySelector('#container > .title').textContent);
 
   restOfURL = () => `&title=${getTitle()}&useLiveTL=1${getContinuationURL()}&isReplay=${(hasReplayChatOpen() ? 1 : '')}`;
 
+  window.watchInLiveTL = async () => {
+    params = parseParams();
+    redirectTab(`${await getWAR('index.html')}?v=${params.v}${restOfURL()}`);
+  };
+
   if (!isHolotools) {
-    makeButton('Watch in LiveTL', async () => {
-      params = parseParams();
-      redirectTab(`${await getWAR('index.html')}?v=${params.v}${restOfURL()}`);
-    });
+    makeButton('Watch in LiveTL', window.watchInLiveTL);
 
     sendToWindow = (data) => {
       try {
@@ -355,6 +375,11 @@ async function onMessageFromEmbeddedChat(m) {
         let f = document.querySelector('#chatframe');
         f.dataset.src = f.contentWindow.location.href;
         await insertLiveTLButtons();
+        if (isAndroid && isVideo()) {
+          setInterval(async () => {
+            window.watchInLiveTL();
+          }, INTERVAL);
+        }
         break;
       case 'clearLiveTLButtons':
         clearLiveTLButtons();
@@ -425,7 +450,7 @@ async function loaded() {
     try {
       params = parseParams();
       try {
-        window.parent.postMessage({ type: 'getZoom' }, '*');
+        window.parent.postMessage({ type: 'getInitData' }, '*');
       } catch (e) { }
       if (params.useLiveTL) {
         console.debug('Running LiveTL!');
@@ -466,7 +491,7 @@ async function loaded() {
                   types: authorTypes
                 },
                 message: messageText,
-                timestamp: isReplayChat() ? messageItem.timestampText.simpleText : parseTimestamp(messageItem.timestampUsec)
+                timestamp: isReplayChat() ? messageItem.timestampText.simpleText : parseTimestamp(messageItem.timestampUsec),
               };
               messages.push(item);
             } catch (e) {
@@ -497,28 +522,52 @@ async function loaded() {
       } else {
         window.parent.postMessage('embeddedChatLoaded', '*');
       }
+      if (isAndroid) {
+        document.querySelector('#input-panel').style.display = 'none';
+      }
     } catch (e) {
       console.debug(e);
     }
   } else if (isEmbed()) {
     let initFullscreenButton = () => {
-      document.querySelector('.ytp-fullscreen-button').addEventListener('click', () => {
+      let fsButton = document.querySelector('.ytp-fullscreen-button');
+      fsButton.ariaDisabled = false;
+      fsButton.addEventListener('click', () => {
         window.parent.postMessage({ type: 'fullscreen' }, '*');
       });
+      document.querySelector('.ytp-youtube-button').style.display = 'none';
       document.querySelector('#movie_player>.ytp-generic-popup').style.opacity = '0';
       window.removeEventListener('mousedown', initFullscreenButton);
     };
     if (isFirefox) window.addEventListener('mousedown', initFullscreenButton);
     else initFullscreenButton();
+
+    if (isAndroid) {
+      setInterval(() => {
+        let icon = document.querySelector('.iv-branding');
+        if (icon) {
+          icon.style.display = 'none';
+        }
+      }, 100);
+    }
   }
 
   if (isAndroid) {
     monkeypatch();
-    window.frameText = window.frameText || await (await fetch(await getWAR('js/frame.js'))).text();
-    insertContentScript();
+    if (!isVideo()) {
+      window.frameText = window.frameText || await (await fetch(await getWAR('js/frame.js'))).text();
+      insertContentScript();
+    }
+    replaceLinks();
   }
 }
 
+function replaceLinks() {
+  document.querySelectorAll('a').forEach(e => e.onclick = (event) => {
+    window.Android.open(e.href);
+    event.preventDefault();
+  });
+}
 
 function parseTimestamp(timestamp) {
   return (new Date(parseInt(timestamp) / 1000)).toLocaleTimeString(navigator.language,
@@ -546,10 +595,15 @@ function setChatZoom(width, height, transform) {
 }
 
 if (window.location.href.startsWith(aboutPage)) {
-  window.addEventListener('load', () => {
+  let replaceMessage = () => {
     const e = document.querySelector('#actionMessage');
     e.textContent = 'Thank you for installing LiveTL!';
-  });
+  };
+  window.addEventListener('load', replaceMessage);
+  if (isAndroid) {
+    replaceMessage();
+    replaceLinks();
+  }
 } else if (window.location.href.startsWith('https://www.youtube.com/embed/')) {
   window.addEventListener('message', d => {
     try {
@@ -905,10 +959,22 @@ function getLiveTLButton(color) {
 async function insertContentScript() {
   document.querySelectorAll('iframe').forEach(async frame => {
     try {
-      frame.contentWindow.frameText = window.frameText;
-      frame.contentWindow.isAndroid = true;
-      frame.contentWindow.eval(window.frameText);
-      frame.contentWindow.insertContentScript();
+      if (frame.id != 'livetl-chat' && !frame.contentWindow.runLiveTL) {
+        frame.contentWindow.frameText = window.frameText;
+        frame.contentWindow.isAndroid = true;
+        frame.contentWindow.eval(window.frameText);
+        frame.contentWindow.loaded();
+        frame.contentWindow.insertContentScript();
+      }
     } catch (e) { console.debug(e) }
   });
+}
+
+if (isAndroid && isVideo()) {
+  setInterval(() => {
+    let chat = document.querySelector('#chatframe');
+    if (chat && chat.src.startsWith('https://www.youtube.com/live_chat')) {
+      window.postMessage('embeddedChatLoaded');
+    }
+  }, INTERVAL);
 }

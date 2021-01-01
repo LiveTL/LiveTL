@@ -8,120 +8,84 @@ const videoPanel = document.querySelector('#videoPanel');
 const liveTLPanel = document.querySelector('#ltlPanel');
 const outputPanel = document.querySelector('#outputPanel');
 const youtubeChatPanel = document.querySelector('#youtubeChatPanel');
+const root = document.documentElement.style;
+const display = document.querySelector('#display');
+let screenMode = '';
 document.title = decodeURIComponent(params.title || 'LiveTL');
+let INITIAL_PANEL_PERCENT = isAndroid ? 50 : 80;
 
 // resizing yoinked and modified from https://spin.atomicobject.com/2019/11/21/creating-a-resizable-html-element/
 const getResizableElement = () => document.getElementById('videoPanel');
 
 const setPaneWidth = (width) => {
+  width = parseFloat(width);
+
   if (isNaN(width)) {
-    return setPaneWidth(80);
+    return setPaneWidth(INITIAL_PANEL_PERCENT);
   }
 
-  width = parseFloat(width);
-  getResizableElement().style
-    .setProperty('--resizable-width', `${width}%`);
-  getResizableElement().style
-    .setProperty('width', `var(--resizable-width)`);
+  root.setProperty('--resizable-width', `${width}%`);
+  if (screenMode == 'portrait') {
+    $(videoPanel).css('height', `var(--resizable-width)`);
+    $(videoPanel).css('width', `100%`);
+  } else {
+    $(videoPanel).css('width', `var(--resizable-width)`);
+    $(videoPanel).css('height', `100%`);
+  }
 };
+
+const setPaneHeight = (height) => {
+  height = parseFloat(height);
+
+  if (isNaN(height)) {
+    return setPaneHeight(INITIAL_PANEL_PERCENT);
+  }
+
+  root.setProperty('--resizable-height', `${height}%`);
+};
+
+let chatSide;
 
 const getPaneWidth = () => {
-  const pxWidth = videoPanel.clientWidth;
-  let result = 100 * pxWidth / window.innerWidth;
-  return result == NaN ? 80 : Math.min(100, Math.max(result, 0));
+  let pxWidth = videoPanel.clientWidth;
+  let result = 100 * pxWidth / display.clientWidth;
+  if (screenMode == 'portrait') {
+    pxWidth = videoPanel.clientHeight;
+    result = 100 * pxWidth / display.clientHeight;
+  }
+  return isNaN(result) ? INITIAL_PANEL_PERCENT : Math.min(100, Math.max(result, 0));
 };
 
-
+const getPaneHeight = () => {
+  let pxHeight = youtubeChatPanel.clientHeight;
+  let result = 100 * pxHeight / liveTLPanel.clientHeight;
+  return isNaN(result) ? INITIAL_PANEL_PERCENT : Math.min(100, Math.max(result, 0));
+};
 
 let c = params.continuation;
 let r = params.isReplay;
 r = r == null ? c : r;
-
-let progress = {
-  current: null,
-  previous: null
-};
-
-let queued = new class QueuedMessages {
-  next = null
-  messages = {}
-  push(message, secs) {
-    if (!this.next) this.next = secs;
-    if (!this.messages[secs]) this.messages[secs] = [];
-    this.messages[secs].push(message);
-  }
-  pop(secs) {
-    if (!this.next || secs < this.next) return false;
-    let m = [...this.messages[this.next]];
-    delete this.messages[this.next];
-    this.next = Object.keys(this.messages)[0]; // Assume order
-    return m;
-  }
-  clear() {
-    this.messages = {};
-    this.next = null;
-  }
-}
 
 let zoomObj = {};
 
 window.addEventListener('message', d => {
   d = JSON.parse(JSON.stringify(d.data));
 
-  try {
-    chat.contentWindow.postMessage(d, '*');
-    if (d.type == 'zoom') {
-      zoomObj = d.zoom;
-      document.querySelectorAll('.captionSegment').forEach(styleCaptionSegment);
-    } else if (d.type = 'getZoom') {
-      chat.contentWindow.postMessage({
-        type: 'zoom',
-        zoom: zoomObj
-      }, '*');
-    }
-  } catch { }
-
-  if (params.isReplay) {
-    // Enable queued message transfer
-    // Dont block
-    setTimeout(() => {
-      if (d['yt-player-video-progress']) {
-        progress.current = d['yt-player-video-progress'];
-        if (!progress.previous) progress.previous = progress.current;
-        if (Math.abs(progress.previous - progress.current) > 1) {
-          // Difference in progress above a second, assume user scrubbed, clear.
-          queued.clear();
-        }
-        // Find queued messages for current timeframe
-        let m = queued.pop(progress.current);
-        if (m) {
-          ltlchat.contentWindow.postMessage({
-            type: 'messageChunk',
-            messages: m,
-            video: v
-          }, '*');
-        }
-        progress.previous = progress.current;
-      } else if (d.type === 'messageChunk') {
-        d.messages = d.messages.filter(message => {
-          let secs = Array.from(message.timestamp.split(':'), t => parseInt(t)).reverse();
-          secs = secs[0] + (secs[1] ? secs[1] * 60 : 0)
-            + (secs[2] ? secs[2] * 60 * 60 : 0);
-
-          let diff = progress.current - secs;
-          if (diff < 0) { // Message from the future ✨🔮, queue
-            queued.push(message, secs);
-            return false; // Remove from original event
-          } else return true;
-        });
-
-        // Send past and current messages
-        ltlchat.contentWindow.postMessage(d, '*');
-      }
-    }, 0);
-  } else {
-    ltlchat.contentWindow.postMessage(d, '*');
+  chat.contentWindow.postMessage(d, '*');
+  if (d.type == 'zoom') {
+    zoomObj = d.zoom;
+    document.querySelectorAll('.captionSegment').forEach(styleCaptionSegment);
+  } else if (d.type == 'getInitData') {
+    chat.contentWindow.postMessage({
+      type: 'zoom',
+      zoom: zoomObj
+    }, '*');
+    chat.contentWindow.postMessage({
+      'yt-live-chat-set-dark-theme': true
+    }, '*');
   }
+
+  ltlchat.contentWindow.postMessage(d, '*');
 });
 
 let q = `?isReplay=${(r ? 1 : '')}&v=${v}${(c ? `&continuation=${c}` : '')}`;
@@ -143,8 +107,14 @@ let rightHeight = localStorage.getItem('LTL:rightPanelHeight');
 if (leftWidth) {
   setPaneWidth(parseFloat(leftWidth));
 } else {
-  setPaneWidth(80);
+  setPaneWidth(INITIAL_PANEL_PERCENT);
   // setPaneWidth(Math.round(window.innerWidth * 0.8));
+}
+
+if (rightHeight) {
+  setPaneHeight(parseFloat(rightHeight));
+} else {
+  setPaneHeight(INITIAL_PANEL_PERCENT);
 }
 
 if (params.noVideo) {
@@ -218,18 +188,7 @@ window.addEventListener('message', async (event) => {
 
 let nojdiv = document.querySelector('#ltlcaptions');
 let captionsDiv = document.querySelector('#ltlcaptions');
-$(captionsDiv).resizable({
-  handles: 'e, w',
-  stop: (event, ui) => {
-    var top = getTop(ui.helper);
-    ui.helper.css('position', 'fixed');
-    let width = parseFloat(propToPercent(nojdiv.style.width, false));
-    let left = parseFloat(propToPercent(nojdiv.style.left, false));
-    let percent = `${left + width > 100 ? 100 - left : width}%`;
-    ui.helper.css('width', percent);
-    localStorage.setItem('LTL:captionSizeWidth', percent);
-  }
-});
+
 
 const start = () => {
   stream.style.display = 'none';
@@ -248,56 +207,136 @@ const stop = () => {
   videoPanel.style.backgroundColor = 'black';
   outputPanel.style.backgroundColor = 'black';
   youtubeChatPanel.style.backgroundColor = 'black';
-  localStorage.setItem('LTL:rightPanelHeight', youtubeChatPanel.style.height);
   const width = getPaneWidth();
-  if (isNaN(width) === false && !params.noVideo) {
+  const height = getPaneHeight();
+  if (!isNaN(width) && !params.noVideo) {
     localStorage.setItem('LTL:leftPanelWidth', width.toString() + '%');
   }
+  if (!isNaN(height) && !params.noVideo) {
+    localStorage.setItem('LTL:rightPanelHeight', height.toString() + '%');
+    setPaneHeight(getPaneHeight());
+  }
+  if (screenMode != 'portrait') {
+    videoPanel.style.width = null;
+  }
+  youtubeChatPanel.style.height = null;
 };
-
-$('#youtubeChatPanel').resizable({
-  handles: {
-    s: '#handleH'
-  },
-  start: start,
-  stop: stop
-});
 
 let stopFunc = () => {
   setPaneWidth(getPaneWidth());
+  setPaneHeight(getPaneHeight());
   stop();
 };
 
 let leftHandle = document.querySelector('#leftHandle');
 let rightHandle = document.querySelector('#rightHandle');
-let handle = document.createElement('span');
-handle.innerHTML = `<div id="handleV" class="handle ui-resizable-handle ui-resizable-e"><span>&vellip;</span></div>`;
+let verticalHandle;
+let horizontalHandle;
 
-getStorage('chatSide').then(side => {
+window.sideChanged = async (side) => {
+  if (verticalHandle) verticalHandle.remove();
+  if (horizontalHandle) horizontalHandle.remove();
   try {
-    $(videoPanel).resizable('disable');
-  } catch (e) { }
+    $(liveTLPanel).resizable('destroy');
+  } catch { }
+  try {
+    $(videoPanel).resizable('destroy');
+  } catch { }
+  try {
+    $(youtubeChatPanel).resizable('destroy');
+  } catch { }
+  let horizontalHandleCode = `
+    <div class="handle handleH ui-resizable-handle ui-resizable-s">
+      <span>&hellip;</span>
+    </div>
+  `;
+  verticalHandle = document.createElement('span');
+  verticalHandle.innerHTML = `
+    <div id="handleV" 
+      class="handle ui-resizable-handle ui-resizable-e">
+      <span>&vellip;</span>
+    </div>
+  `;
+  chatSide = await getStorage('chatSide');
   side = side || 'right';
+  let handleObj = { e: $(verticalHandle) };
+  if (screenMode == 'portrait') {
+    verticalHandle = document.createElement('span');
+    verticalHandle.innerHTML = horizontalHandleCode;
+    videoPanel.style.height = `var(--resizable-width)`;
+    videoPanel.style.width = `100%`;
+    videoPanel.style.maxHeight = 'calc(100% - 10px)';
+    handleObj = { s: $(verticalHandle) };
+  } else {
+    videoPanel.style.width = `var(--resizable-width)`;
+    videoPanel.style.height = `100%`;
+    videoPanel.style.maxHeight = 'unset';
+  }
   if (side === 'right') {
-    leftHandle.appendChild(handle);
+    leftHandle.appendChild(verticalHandle);
     videoPanel.style.order = '1';
     liveTLPanel.style.order = '2';
+    videoPanel.style.minWidth = '10px';
+    $(liveTLPanel).css('width', 'unset');
+    $(youtubeChatPanel).css('max-width', '100%');
+    $(outputPanel).css('max-width', '100%');
   } else if (side === 'left') {
-    leftHandle.appendChild(handle);
+    rightHandle.appendChild(verticalHandle);
     videoPanel.style.order = '2';
     liveTLPanel.style.order = '1';
+    videoPanel.style.minWidth = '0px';
+    $(youtubeChatPanel).css('max-width', 'calc(100% - 10px)');
+    $(outputPanel).css('max-width', 'calc(100% - 10px)');
   }
-  $(videoPanel).resizable({
+  $(side == 'left' ? liveTLPanel : videoPanel).resizable({
+    handles: handleObj,
+    start: start,
+    stop: stopFunc,
+    resize: (event, ui) => {
+      if (chatSide == 'left') {
+        let newWidth = window.innerWidth - ui.size.width;
+        $(videoPanel).css('width', newWidth + 'px');
+        root.setProperty('--resizable-width', newWidth + 'px');
+      }
+    },
+    containment: '#bounding'
+  });
+  horizontalHandle = document.createElement('span');
+  horizontalHandle.innerHTML = horizontalHandleCode;
+  horizontalHandle.id = 'handleH';
+  youtubeChatPanel.appendChild(horizontalHandle);
+  $(youtubeChatPanel).resizable({
     handles: {
-      e: $('#handleV')
+      s: $(horizontalHandle)
     },
     start: start,
-    stop: stopFunc
+    stop: stop
   });
+  $(captionsDiv).resizable({
+    handles: 'e, w',
+    stop: (event, ui) => {
+      var top = getTop(ui.helper);
+      ui.helper.css('position', 'fixed');
+      let width = parseFloat(propToPercent(nojdiv.style.width, false));
+      let left = parseFloat(propToPercent(nojdiv.style.left, false));
+      let percent = `${left + width > 100 ? 100 - left : width}%`;
+      ui.helper.css('width', percent);
+      localStorage.setItem('LTL:captionSizeWidth', percent);
+    }
+  });
+};
+getStorage('chatSide').then(async (side) => {
+  await window.orientationChanged(side);
 });
 
-getTopWithSafety = d => `max(min(${d}, calc(100% - 50px)), -30px)`;
-getLeftWithSafety = d => `max(min(${d}, calc(100% - 50px)), -30px)`;
+window.orientationChanged = async mode => {
+  screenMode = mode;
+  display.style.flexDirection = screenMode == 'portrait' ? 'column' : 'row';
+  await window.sideChanged(screenMode == 'portrait' ? 'right' : await getStorage('chatSide'));
+};
+
+getTopWithSafety = d => `max(min(${d}, calc(100% - 50px)), -50px)`;
+getLeftWithSafety = d => `max(min(${d}, calc(100% - 50px)), -50px)`;
 
 
 let capLeft = localStorage.getItem('LTL:captionSizeLeft');
@@ -306,28 +345,27 @@ let capWidth = localStorage.getItem('LTL:captionSizeWidth');
 if (capLeft) nojdiv.style.left = propToPercent(getLeftWithSafety(capLeft), false);
 if (capTop) nojdiv.style.top = getTopWithSafety(propToPercent(capTop, true));
 if (capWidth) nojdiv.style.width = propToPercent(capWidth, false);
+else if (isAndroid) nojdiv.style.width = '50%';
 
 $(captionsDiv).draggable({
   stop: (event, ui) => {
     let top = getTop(ui.helper);
     ui.helper.css('position', 'fixed');
     top = parseFloat(propToPercent(top, true), 10);
-    // top = top < 0 ? 0 : top;
-    // top = top > 100 ? 100 : top;
     let topp = `${top}%`;
-    ui.helper.css('top', getTopWithSafety(topp));
+    ui.helper.css('top', topp);
     let width = parseFloat(propToPercent(nojdiv.style.width, false));
     let left = parseFloat(propToPercent(nojdiv.style.left, false));
-    // left = left < 0 ? 0 : left;
     let sum = left + width;
-    let percent = `${sum > 100 ? 100 - left : width}%`;
+    let percent = `${width}%`;
     left = `${left}%`;
     ui.helper.css('width', propToPercent(percent, false));
-    ui.helper.css('left', getLeftWithSafety(left));
+    ui.helper.css('left', left);
     localStorage.setItem('LTL:captionSizeWidth', percent);
     localStorage.setItem('LTL:captionSizeLeft', left);
     localStorage.setItem('LTL:captionSizeTop', topp);
-  }
+  },
+  containment: '#bounding'
 });
 
 
@@ -352,22 +390,26 @@ function propToPercent(prop, top = true) {
 }
 
 function toggleFullScreen() {
-  if ((document.fullScreenElement && document.fullScreenElement !== null) ||
-    (!document.mozFullScreen && !document.webkitIsFullScreen)) {
-    if (document.documentElement.requestFullScreen) {
-      document.documentElement.requestFullScreen();
-    } else if (document.documentElement.mozRequestFullScreen) {
-      document.documentElement.mozRequestFullScreen();
-    } else if (document.documentElement.webkitRequestFullScreen) {
-      document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-    }
+  if (isAndroid) {
+    window.Android.toggleFullScreen();
   } else {
-    if (document.cancelFullScreen) {
-      document.cancelFullScreen();
-    } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
-    } else if (document.webkitCancelFullScreen) {
-      document.webkitCancelFullScreen();
+    if ((document.fullScreenElement && document.fullScreenElement !== null) ||
+      (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+      if (document.documentElement.requestFullScreen) {
+        document.documentElement.requestFullScreen();
+      } else if (document.documentElement.mozRequestFullScreen) {
+        document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.webkitRequestFullScreen) {
+        document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+      }
+    } else {
+      if (document.cancelFullScreen) {
+        document.cancelFullScreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.webkitCancelFullScreen) {
+        document.webkitCancelFullScreen();
+      }
     }
   }
 }

@@ -1,5 +1,6 @@
 package com.android.livetl;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
@@ -34,5 +35,10 @@ public class Utils {
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int width = displayMetrics.widthPixels;
         return width;
+    }
+
+    public static int dpToPx(AppCompatActivity activity, int dp) {
+        DisplayMetrics displayMetrics = activity.getResources().getDisplayMetrics();
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 }

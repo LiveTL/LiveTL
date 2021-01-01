@@ -32,7 +32,7 @@ async function setDefaultLanguage(lang) {
 }
 
 async function setDefaultSetting(setting, value) {
-  if (!await getStorage(setting)) {
+  if (await getStorage(setting) == null) {
     return await setStorage(setting, value);
   }
 }
@@ -44,6 +44,10 @@ async function setupDefaultCaption() {
 async function setupDefaultCaptionDelay() {
   await setDefaultSetting('captionDelay', -1);
 };
+
+async function setupDefaultSpeechSynth() {
+  return await setDefaultSetting('speechSynth', speechSynthDefault);
+}
 
 async function getStorage(key) {
   const result = await storage.get(key);

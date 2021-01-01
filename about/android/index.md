@@ -1,4 +1,4 @@
-# Getting Started with LiveTL (Desktop)
+# Getting Started with LiveTL (Android)
 
 <span id="actionMessage">
 You must have <a href="https://kentonishi.github.io/LiveTL/">LiveTL</a> installed to use LiveTL features.
@@ -6,14 +6,14 @@ You must have <a href="https://kentonishi.github.io/LiveTL/">LiveTL</a> installe
 
 ## Launching LiveTL
 
-To get started, visit your favorite streamer on YouTube. The chat should have some new buttons for launching LiveTL!
+To get started, visit your favorite streamer on YouTube. Tap the "share" button to open the stream or archive in LiveTL.
 
-![](../img/launcher-ui.png)
-![](../img/launcher-buttons.png)
+![](../../img/android-launcher.png)
+![](../../img/android-launcher-2.png)
 
-Alternatively, you can open LiveTL from within HoloTools!
+The stream should now be loaded automatically.
 
-![](../img/holotools-launcher.png)
+![](../../img/cover-android.png)
 
 ## Other Info
 
@@ -33,36 +33,11 @@ star! [Here is our repository](https://github.com/KentoNishi/LiveTL).
 ### How does LiveTL work?
 LiveTL is, at its core, a chat filter for YouTube streams. It helps foreign viewers better catch translations that other viewers are providing in the live chat. LiveTL does not automatically translate streams -- instead, it picks up translations found in the chat.
 
-### I installed LiveTL but I don't see any buttons. 
-Once you install the extension, you must reload the YouTube stream for LiveTL to take effect.
+### I shared my stream with LiveTL but it isn't loading.
+The stream chat may be temporarily unavailable. LiveTL will only load if the stream has a valid live chat or chat replay. 
 
 ### I don't see any translations in the translations panel.
 If there are no translators in chat, LiveTL is unable to provide translations. Any messages properly tagged with a language (ex. `[en]`, `ESP:`, etc.) will appear when they are available.
 
 ### A translator is using their own style of language tags.
 You can manually select additional users to filter in the settings.
-
-### I'm a Safari user, and I can't use the chat.
-You must disable the `Prevent Cross-site tracking` option in Safari privacy settings.
-
-## Screenshots
-
-### LiveTL Viewer
-
-![](../img/cover.png)
-
-### Options
-
-![](../img/options.png)
-
-### Pop-out Translations
-
-![](../img/popout.png)
-
-<script>
-    document.head.innerHTML += `
-        <head>
-            <link rel="icon" href="../icons/favicon.ico" type="image/x-icon" />
-        </head>
-    `
-</script>

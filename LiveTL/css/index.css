@@ -2,6 +2,9 @@
     --accent: #2c2c2c;
     --primary: #4d4d4d;
     --button-fill: #49deff;
+    --resizable-width: calc(100% - 150px);
+    --resizable-height: 80%;
+    --padding: 20px;
     color-scheme: light dark;
 }
 
@@ -14,7 +17,7 @@
 
 #chat {
     width: 100%;
-    height: 100%;
+    height: calc(100% - 10px);
     min-height: 0px;
     border: none;
 }
@@ -30,16 +33,14 @@
 }
 
 #videoPanel {
-    --resizable-width: calc(100% - 150px);
     width: var(--resizable-width);
-    min-width: 10px;
     height: 100%;
     order: 1;
 }
 
 #ltlPanel {
     flex-grow: 1;
-    height: 100%;
+    height: auto;
     flex-direction: column;
     display: flex;
     order: 3;
@@ -47,7 +48,7 @@
 
 #youtubeChatPanel {
     width: 100%;
-    height: 80%;
+    height: var(--resizable-height);
     max-height: 100%;
 }
 
@@ -60,6 +61,7 @@
 
 body {
     margin: 0;
+    width: 100vw;
 }
 
 .handle {
@@ -76,7 +78,7 @@ body {
     order: 2;
 }
 
-#handleH {
+.handleH {
     height: 10px;
     width: 100%;
     display: flex;
@@ -85,7 +87,7 @@ body {
     z-index: 1;
 }
 
-#handleH>span {
+.handleH>span {
     margin-bottom: -1px;
     font-size: 20px;
 }
@@ -96,19 +98,32 @@ body {
     background-color: transparent;
 }
 
+#bounding {
+    width: calc(100% + calc(2 * var(--padding)));
+    position: fixed;
+    top: calc(var(--padding) * -1);
+    left: calc(var(--padding) * -1);
+    height: calc(100% + calc(2 * var(--padding)));
+}
+
 #display {
-    width: 100%;
-    height: 100%;
+    width: calc(100% - calc(2 * var(--padding)));
+    height: calc(100% - calc(2 * var(--padding)));
     display: flex;
     overflow: hidden;
+    margin: var(--padding);
 }
 
 .ui-resizable-s {
     bottom: 0px !important;
 }
 
-.ui-resizable-e {
+#leftHandle .ui-resizable-e {
     right: 0px !important;
+}
+
+#rightHandle .ui-resizable-e {
+    right: 0 !important;
 }
 
 body {
@@ -152,9 +167,10 @@ body {
     height: fit-content;
     display: none;
     text-align: center;
-    padding: 20px;
     width: 25%;
     bottom: 50px;
+    padding: var(--padding);
+    z-index: 10000000;
 }
 
 .captionSegment {
@@ -165,6 +181,8 @@ body {
     background-color: rgba(0, 0, 0, 0.8);
     margin: 0;
     padding: 5px 10px;
+    animation-iteration-count: 1;
+    animation: splash 1s normal forwards ease-in-out;
 }
 
 #ltlcaptions>.ui-resizable-handle {
@@ -172,14 +190,21 @@ body {
     background-color: var(--primary);
     opacity: 0.5;
     width: 10px;
-    height: calc(100% - 40px);
-    top: 20px;
+    height: calc(100% - 2 * var(--padding));
+    top: var(--padding);
 }
 
 #ltlcaptions>.ui-resizable-handle.ui-resizable-e {
-    transform: translateX(-15px);
+    right: calc(var(--padding) - 5px);
 }
 
 #ltlcaptions>.ui-resizable-handle.ui-resizable-w {
-    transform: translateX(20px);
+    left: calc(var(--padding) - 5px);
+}
+
+@keyframes splash {
+    from {
+        background-color: rgba(0, 119, 255, 0.8);
+    }
+    to {}
 }
