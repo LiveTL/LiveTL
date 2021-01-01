@@ -26,3 +26,20 @@ jobs:
           asset_name: LiveTL-Firefox.zip
           tag: ${{ github.ref }}
           overwrite: true
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build debug APK
+        run: |
+          cd LiveTL-Android
+          bash ./gradlew assembleDebug --stacktrace
+          cd ..
+      - name: Upload Android APK to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: LiveTL-Android/app/build/outputs/apk/debug/app-debug.apk
+          asset_name: LiveTL-Android.apk
+          tag: ${{ github.ref }}
+          overwrite: true
