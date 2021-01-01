@@ -131,8 +131,11 @@ async function runLiveTL() {
   hrParent.appendChild(hr);
   prependOrAppend(hrParent);
 
+  let lastMessage = '';
   window.onNewMessage = async messageInfo => {
     if (!messageInfo) return;
+
+    if (`${messageInfo.author.id} ${messageInfo.message}` == lastMessage) return;
 
     // Determine whether we should display mod messages (if not set, default to yes)
     let displayModMessages = await getStorage('displayModMessages');
