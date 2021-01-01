@@ -135,7 +135,8 @@ android: chrome
 	cp LiveTL/js/lib/inject.js LiveTL-Android/app/src/main/assets/
 
 android-release: android
-	VERSION=$(VERSION) python3 scripts/update_gradle_versions.py 
+	echo "import requests" | $(py) || $(pip) install requests
+	VERSION=$(VERSION) $(py) scripts/update_gradle_versions.py 
 
 common: init
 	cat $(lib)/constants.js $(lib)/../frame.js $(lib)/storage.js $(lib)/filter.js $(lib)/settings.js $(lib)/speech.js \

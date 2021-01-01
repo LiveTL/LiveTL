@@ -4,35 +4,13 @@ on:
     types:
       - released
 jobs:
-  bumpver:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ github.ref }}
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-      - name: Prepare repository
-        run: git checkout "$(echo ${{ github.ref }} | sed -E 's|refs/[a-zA-Z]+/||')"
-      - name: Bump gradle version
-        run: make android-release EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed VERSION=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g')
-      - name: Auto-commit bumped
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add .
-          git commit -m "bump android version"
-          git push
-
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Package extensions
         run: make EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed VERSION=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g') all
-      - name: Bump gradle version
+      - name: Set gradle version
         run: make android-release EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed VERSION=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g')
       - name: Upload Chrome package to release
         uses: svenstaro/upload-release-action@v2
