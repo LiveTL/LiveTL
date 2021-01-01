@@ -37,22 +37,30 @@ jobs:
           cd LiveTL-Android
           bash ./gradlew assemble
           cd ..
-      - uses: r0adkll/sign-android-release@v1
-        name: Sign app APK
-        id: sign_app
-        with:
-          releaseDirectory: LiveTL-Android/app/build/outputs/app/release
-          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
-          alias: ${{ secrets.ALIAS }}
-          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: "30.0.3"
+      # - uses: r0adkll/sign-android-release@v1
+      #   name: Sign app APK
+      #   id: sign_app
+      #   with:
+      #     releaseDirectory: LiveTL-Android/app/build/outputs/app/release
+      #     signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+      #     alias: ${{ secrets.ALIAS }}
+      #     keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+      #     keyPassword: ${{ secrets.KEY_PASSWORD }}
+      #   env:
+      #     BUILD_TOOLS_VERSION: "30.0.3"
+      # - name: Upload Android APK to release
+      #   uses: svenstaro/upload-release-action@v2
+      #   with:
+      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
+      #     file: ${{ steps.sign_app.outputs.signedReleaseFile }}
+      #     asset_name: LiveTL-Android.apk
+      #     tag: ${{ github.ref }}
+      #     overwrite: true
       - name: Upload Android APK to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ steps.sign_app.outputs.signedReleaseFile }}
+          file: LiveTL-Android/app/build/outputs/app/release/app-release-unsigned.apk
           asset_name: LiveTL-Android.apk
           tag: ${{ github.ref }}
           overwrite: true
