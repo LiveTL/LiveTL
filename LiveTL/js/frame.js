@@ -135,7 +135,8 @@ async function runLiveTL() {
   window.onNewMessage = async messageInfo => {
     if (!messageInfo) return;
 
-    if (`${messageInfo.author.id} ${messageInfo.message}` == lastMessage) return;
+    let messageString = `${messageInfo.author.id} ${messageInfo.message}`;
+    if (messageString == lastMessage) return;
 
     // Determine whether we should display mod messages (if not set, default to yes)
     let displayModMessages = await getStorage('displayModMessages');
@@ -162,6 +163,7 @@ async function runLiveTL() {
           speechFuture = checkAndSpeak(messageInfo.message);
         }
         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
+        lastMessage = messageString;
         await speechFuture;
         return;
       }
@@ -187,6 +189,7 @@ async function runLiveTL() {
         let speechFuture = checkAndSpeak(translation.msg);
         sendToCaptions(translation.msg);
         prependOrAppend(createMessageEntry(messageInfo, translation.msg));
+        lastMessage = messageString;
         await speechFuture;
         return;
       }
@@ -202,6 +205,7 @@ async function runLiveTL() {
         let speechFuture = checkAndSpeak(messageInfo.message);
         sendToCaptions(messageInfo.message);
         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
+        lastMessage = messageString;
         await speechFuture;
       }
       return;
@@ -209,6 +213,10 @@ async function runLiveTL() {
   };
 
   updateZoomLevel();
+
+  if (isAndroid) {
+    window.Android.getOrientation();
+  }
 }
 
 async function reinsertButtons() {

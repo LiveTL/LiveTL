@@ -418,13 +418,12 @@ async function createChatSideRadios() {
   }
 
   const onChange = async () => {
-    let side = right.checked ? 'right' : portrait.checked ? 'portrait' : 'left';
+    let side = right.checked ? 'right' : 'left';
     await setStorage('chatSide', side);
     try {
-      if (side == 'portrait') {
-        await window.parent.orientationChanged(side);
-      }
-      else {
+      if (portrait.checked) {
+        await window.parent.orientationChanged('portrait');
+      } else {
         await window.parent.orientationChanged('landscape');
       }
     } catch (e) { }
