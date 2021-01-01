@@ -209,6 +209,10 @@ async function runLiveTL() {
   };
 
   updateZoomLevel();
+
+  if (isAndroid) {
+    window.Android.getOrientation();
+  }
 }
 
 async function reinsertButtons() {

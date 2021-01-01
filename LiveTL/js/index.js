@@ -326,13 +326,26 @@ window.sideChanged = async (side) => {
   });
 };
 getStorage('chatSide').then(async (side) => {
-  await window.orientationChanged(side);
+  if (side != 'right' && side != 'left') await setStorage('chatSide', 'right');
+  await window.sideChanged(side);
 });
 
 window.orientationChanged = async mode => {
   screenMode = mode;
   display.style.flexDirection = screenMode == 'portrait' ? 'column' : 'row';
   await window.sideChanged(screenMode == 'portrait' ? 'right' : await getStorage('chatSide'));
+};
+
+window.onAndroidOrientationChange = async (orientation) => {
+  let doc = ltlchat.contentWindow.document;
+  let radio;
+  if (orientation == 'portrait') {
+    radio = doc.querySelector("#chatSidePortrait");
+  } else {
+    radio = doc.querySelector("#chatSide" + (await getStorage('chatSide') == 'left' ? 'Left' : 'Right'));
+  }
+  radio.checked = true;
+  radio.dispatchEvent(new Event('change'));
 };
 
 getTopWithSafety = d => `max(min(${d}, calc(100% - 50px)), -50px)`;

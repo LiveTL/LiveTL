@@ -49,4 +49,4 @@ window.setTimeout(() => {
     }
     `;
     document.body.appendChild(style);
-}, 0);
+}, 100);
