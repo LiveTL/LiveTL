@@ -7,9 +7,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - name: Package extensions
         run: make EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed VERSION=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g') all
+      - name: Set gradle version
+        run: make android-release EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed VERSION=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g')
       - name: Upload Chrome package to release
         uses: svenstaro/upload-release-action@v2
         with:
