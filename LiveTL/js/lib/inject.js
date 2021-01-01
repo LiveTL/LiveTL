@@ -9,6 +9,10 @@ window.setTimeout(() => {
     loader.className = 'loader';
     loading.appendChild(loader);
     document.body.appendChild(loading);
+    let text = document.createElement('span');
+    text.id = 'text';
+    text.innerText = `Waiting for YouTube to respond. This may take a while...`;
+    loading.appendChild(text);
     let style = document.createElement('style');
     style.innerHTML = `
     #loadingOverlay {
@@ -18,10 +22,18 @@ window.setTimeout(() => {
         z-index: 10000;
         top: 0px;
         left: 0px;
-        display: flex;
+        display: grid;
         justify-content: center;
-        align-items: center;
         position: fixed;
+        color: white;
+        margin: auto;
+    }
+
+    #text {
+        width: 75%;
+        text-align: center;
+        margin: auto;
+        user-select: none;
     }
 
     .loader {
@@ -31,6 +43,7 @@ window.setTimeout(() => {
         width: min(25vh, 25vw);
         height: min(25vh, 25vw);
         animation: spin 2s linear infinite;
+        margin: auto;
     }
 
     @keyframes spin {

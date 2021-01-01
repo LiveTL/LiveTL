@@ -68,6 +68,17 @@ r = r == null ? c : r;
 
 let zoomObj = {};
 
+let setStreamZoom = () => {
+  if (isAndroid) {
+    let s = stream.contentWindow.document.body.style;
+    s.transformOrigin = '0px 0px';
+    s.width = zoomObj.width;
+    s.height = zoomObj.height;
+    s.transform = zoomObj.transform;
+    s.overflow = 'hidden';
+  }
+};
+
 window.addEventListener('message', d => {
   d = JSON.parse(JSON.stringify(d.data));
 
@@ -75,6 +86,7 @@ window.addEventListener('message', d => {
   if (d.type == 'zoom') {
     zoomObj = d.zoom;
     document.querySelectorAll('.captionSegment').forEach(styleCaptionSegment);
+    setStreamZoom();
   } else if (d.type == 'getInitData') {
     chat.contentWindow.postMessage({
       type: 'zoom',
@@ -83,6 +95,7 @@ window.addEventListener('message', d => {
     chat.contentWindow.postMessage({
       'yt-live-chat-set-dark-theme': true
     }, '*');
+    setStreamZoom();
   }
 
   ltlchat.contentWindow.postMessage(d, '*');
@@ -277,6 +290,8 @@ window.sideChanged = async (side) => {
     youtubeChatPanel.style.height = 'var(--resizable-height)';
     verticalHandle.querySelector('.handle').style.zIndex = `1`;
   }
+  $(stream).css('max-width', '100%');
+  $(stream).css('max-height', '100%');
   if (side === 'right') {
     leftHandle.appendChild(verticalHandle);
     videoPanel.style.order = '1';
@@ -285,6 +300,11 @@ window.sideChanged = async (side) => {
     $(liveTLPanel).css('width', 'unset');
     $(youtubeChatPanel).css('max-width', '100%');
     $(outputPanel).css('max-width', '100%');
+    if (screenMode != 'portrait') {
+      $(stream).css('max-width', 'calc(100% - 10px)');
+    } else {
+      $(stream).css('max-height', 'calc(100% - 10px)');
+    }
   } else if (side === 'left') {
     rightHandle.appendChild(verticalHandle);
     videoPanel.style.order = '2';
@@ -292,6 +312,7 @@ window.sideChanged = async (side) => {
     videoPanel.style.minWidth = '0px';
     $(youtubeChatPanel).css('max-width', 'calc(100% - 10px)');
     $(outputPanel).css('max-width', 'calc(100% - 10px)');
+    $(stream).css('max-width', '100%');
   }
   $(side == 'left' ? liveTLPanel : videoPanel).resizable({
     handles: handleObj,
@@ -364,7 +385,7 @@ let capWidth = localStorage.getItem('LTL:captionSizeWidth');
 if (capLeft) nojdiv.style.left = propToPercent(getLeftWithSafety(capLeft), false);
 if (capTop) nojdiv.style.top = getTopWithSafety(propToPercent(capTop, true));
 if (capWidth) nojdiv.style.width = propToPercent(capWidth, false);
-else if (isAndroid) nojdiv.style.width = '50%';
+// else if (isAndroid) nojdiv.style.width = '50%';
 
 $(captionsDiv).draggable({
   stop: (event, ui) => {
@@ -410,7 +431,7 @@ function propToPercent(prop, top = true) {
 
 function toggleFullScreen() {
   if (isAndroid) {
-    window.Android.toggleFullScreen();
+    ltlchat.contentWindow.Android.toggleFullScreen();
   } else {
     if ((document.fullScreenElement && document.fullScreenElement !== null) ||
       (!document.mozFullScreen && !document.webkitIsFullScreen)) {
