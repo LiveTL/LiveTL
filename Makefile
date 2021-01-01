@@ -1,4 +1,3 @@
-
 py = python3
 pip = ${py} -m pip
 pytest = ${py} -m pytest
@@ -134,6 +133,9 @@ android: chrome
 	mkdir -p LiveTL-Android/app/src/main/assets/
 	cp -r build/chrome/LiveTL/* LiveTL-Android/app/src/main/assets/
 	cp LiveTL/js/lib/inject.js LiveTL-Android/app/src/main/assets/
+
+android-release: android
+	VERSION=$(VERSION) python3 scripts/update_gradle_versions.py 
 
 common: init
 	cat $(lib)/constants.js $(lib)/../frame.js $(lib)/storage.js $(lib)/filter.js $(lib)/settings.js $(lib)/speech.js \
