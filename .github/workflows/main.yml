@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: 3.8
       - name: Prepare repository
-        run: git checkout "${GITHUB_REF:11}"
+        run: git checkout "$(echo ${{ github.ref }} | sed -E 's|refs/[a-zA-Z]+/||')"
       - name: Bump gradle version
         run: make android-release EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed VERSION=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g')
       - name: Auto-commit bumped
