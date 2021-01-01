@@ -1,5 +1,5 @@
 function closeSVG (e) {
-  e.innerHTML = '<svg class="svgButton" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>';
+  e.innerHTML = '<svg class="svgButton" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="m15.00001,0l2.99999,2.39999l-12,9.60001l12,9.6l-2.99999,2.4l-15.00001,-12l15.00001,-12z" class="arrow"/></svg>';
 }
 
 function hideSVG (e) {
