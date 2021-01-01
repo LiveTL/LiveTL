@@ -398,12 +398,14 @@ function createChatSideLabel() {
 async function createChatSideRadios() {
   const left = document.createElement('input');
   const right = document.createElement('input');
+  const portrait = document.createElement('input');
 
   left.id = 'chatSideLeft';
   right.id = 'chatSideRight';
+  portrait.id = 'chatSidePortrait';
 
-  left.type = right.type = 'radio';
-  left.name = right.name = 'chatSide';
+  left.type = right.type = portrait.type = 'radio';
+  left.name = right.name = portrait.name = 'chatSide';
 
   const side = await getStorage('chatSide');
 
@@ -416,30 +418,39 @@ async function createChatSideRadios() {
   }
 
   const onChange = async () => {
-    let side = right.checked ? 'right' : 'left';
+    let side = right.checked ? 'right' : portrait.checked ? 'portrait' : 'left';
     await setStorage('chatSide', side);
     try {
-      await window.parent.sideChanged(side);
+      if (side == 'portrait') {
+        await window.parent.orientationChanged(side);
+      }
+      else {
+        await window.parent.orientationChanged('landscape');
+      }
     } catch (e) { }
   };
 
   left.addEventListener('change', onChange);
   right.addEventListener('change', onChange);
+  portrait.addEventListener('change', onChange);
 
-  return { left, right };
+  return { left, right, portrait };
 }
 
 function createChatSideRadioLabels() {
   const left = document.createElement('label');
   const right = document.createElement('label');
+  const portrait = document.createElement('label');
 
   left.htmlFor = 'chatSideLeft';
   right.htmlFor = 'chatSideRight';
+  portrait.htmlFor = 'chatSidePortrait';
 
   left.textContent = 'Left';
   right.textContent = 'Right';
+  portrait.textContent = 'Portrait';
 
-  return { left, right };
+  return { left, right, portrait };
 }
 
 async function createChatSideToggle() {
@@ -453,6 +464,8 @@ async function createChatSideToggle() {
   chatSideToggle.appendChild(labels.left);
   chatSideToggle.appendChild(radios.right);
   chatSideToggle.appendChild(labels.right);
+  chatSideToggle.appendChild(radios.portrait);
+  chatSideToggle.appendChild(labels.portrait);
 
   return chatSideToggle;
 }

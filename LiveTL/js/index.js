@@ -10,6 +10,7 @@ const outputPanel = document.querySelector('#outputPanel');
 const youtubeChatPanel = document.querySelector('#youtubeChatPanel');
 const root = document.documentElement.style;
 const display = document.querySelector('#display');
+let screenMode = '';
 document.title = decodeURIComponent(params.title || 'LiveTL');
 let INITIAL_PANEL_PERCENT = isAndroid ? 50 : 80;
 
@@ -24,7 +25,13 @@ const setPaneWidth = (width) => {
   }
 
   root.setProperty('--resizable-width', `${width}%`);
-  root.setProperty('width', `var(--resizable-width)`);
+  if (screenMode == 'portrait') {
+    $(videoPanel).css('height', `var(--resizable-width)`);
+    $(videoPanel).css('width', `100%`);
+  } else {
+    $(videoPanel).css('width', `var(--resizable-width)`);
+    $(videoPanel).css('height', `100%`);
+  }
 };
 
 const setPaneHeight = (height) => {
@@ -42,12 +49,16 @@ let chatSide;
 const getPaneWidth = () => {
   let pxWidth = videoPanel.clientWidth;
   let result = 100 * pxWidth / display.clientWidth;
+  if (screenMode == 'portrait') {
+    pxWidth = videoPanel.clientHeight;
+    result = 100 * pxWidth / display.clientHeight;
+  }
   return isNaN(result) ? INITIAL_PANEL_PERCENT : Math.min(100, Math.max(result, 0));
 };
 
 const getPaneHeight = () => {
   let pxHeight = youtubeChatPanel.clientHeight;
-  let result = 100 * pxHeight / display.clientHeight;
+  let result = 100 * pxHeight / liveTLPanel.clientHeight;
   return isNaN(result) ? INITIAL_PANEL_PERCENT : Math.min(100, Math.max(result, 0));
 };
 
@@ -202,10 +213,12 @@ const stop = () => {
     localStorage.setItem('LTL:leftPanelWidth', width.toString() + '%');
   }
   if (!isNaN(height) && !params.noVideo) {
-    localStorage.setItem('LTL:rightPanelWidth', height.toString() + '%');
+    localStorage.setItem('LTL:rightPanelHeight', height.toString() + '%');
     setPaneHeight(getPaneHeight());
   }
-  videoPanel.style.width = null;
+  if (screenMode != 'portrait') {
+    videoPanel.style.width = null;
+  }
   youtubeChatPanel.style.height = null;
 };
 
@@ -220,7 +233,7 @@ let rightHandle = document.querySelector('#rightHandle');
 let verticalHandle;
 let horizontalHandle;
 
-window.sideChanged = async side => {
+window.sideChanged = async (side) => {
   if (verticalHandle) verticalHandle.remove();
   if (horizontalHandle) horizontalHandle.remove();
   try {
@@ -232,6 +245,11 @@ window.sideChanged = async side => {
   try {
     $(youtubeChatPanel).resizable('destroy');
   } catch { }
+  let horizontalHandleCode = `
+    <div class="handle handleH ui-resizable-handle ui-resizable-s">
+      <span>&hellip;</span>
+    </div>
+  `;
   verticalHandle = document.createElement('span');
   verticalHandle.innerHTML = `
     <div id="handleV" 
@@ -241,7 +259,19 @@ window.sideChanged = async side => {
   `;
   chatSide = await getStorage('chatSide');
   side = side || 'right';
-  let handleSide = {};
+  let handleObj = { e: $(verticalHandle) };
+  if (screenMode == 'portrait') {
+    verticalHandle = document.createElement('span');
+    verticalHandle.innerHTML = horizontalHandleCode;
+    videoPanel.style.height = `var(--resizable-width)`;
+    videoPanel.style.width = `100%`;
+    videoPanel.style.maxHeight = 'calc(100% - 10px)';
+    handleObj = { s: $(verticalHandle) };
+  } else {
+    videoPanel.style.width = `var(--resizable-width)`;
+    videoPanel.style.height = `100%`;
+    videoPanel.style.maxHeight = 'unset';
+  }
   if (side === 'right') {
     leftHandle.appendChild(verticalHandle);
     videoPanel.style.order = '1';
@@ -259,7 +289,7 @@ window.sideChanged = async side => {
     $(outputPanel).css('max-width', 'calc(100% - 10px)');
   }
   $(side == 'left' ? liveTLPanel : videoPanel).resizable({
-    handles: { e: $(verticalHandle) },
+    handles: handleObj,
     start: start,
     stop: stopFunc,
     resize: (event, ui) => {
@@ -272,12 +302,8 @@ window.sideChanged = async side => {
     containment: '#bounding'
   });
   horizontalHandle = document.createElement('span');
-  horizontalHandle.innerHTML = `
-    <div id="handleH" 
-      class="handle ui-resizable-handle ui-resizable-s">
-      <span>&hellip;</span>
-    </div>
-  `;
+  horizontalHandle.innerHTML = horizontalHandleCode;
+  horizontalHandle.id = 'handleH';
   youtubeChatPanel.appendChild(horizontalHandle);
   $(youtubeChatPanel).resizable({
     handles: {
@@ -300,9 +326,14 @@ window.sideChanged = async side => {
   });
 };
 getStorage('chatSide').then(async (side) => {
-  await window.sideChanged(side);
+  await window.orientationChanged(side);
 });
 
+window.orientationChanged = async mode => {
+  screenMode = mode;
+  display.style.flexDirection = screenMode == 'portrait' ? 'column' : 'row';
+  await window.sideChanged(screenMode == 'portrait' ? 'right' : await getStorage('chatSide'));
+};
 
 getTopWithSafety = d => `max(min(${d}, calc(100% - 50px)), -50px)`;
 getLeftWithSafety = d => `max(min(${d}, calc(100% - 50px)), -50px)`;

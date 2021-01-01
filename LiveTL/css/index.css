@@ -40,7 +40,7 @@
 
 #ltlPanel {
     flex-grow: 1;
-    height: 100%;
+    height: auto;
     flex-direction: column;
     display: flex;
     order: 3;
@@ -78,7 +78,7 @@ body {
     order: 2;
 }
 
-#handleH {
+.handleH {
     height: 10px;
     width: 100%;
     display: flex;
@@ -87,7 +87,7 @@ body {
     z-index: 1;
 }
 
-#handleH>span {
+.handleH>span {
     margin-bottom: -1px;
     font-size: 20px;
 }
