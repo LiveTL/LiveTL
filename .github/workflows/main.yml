@@ -33,13 +33,13 @@ jobs:
       - name: Build debug APK
         run: |
           cd LiveTL-Android
-          bash ./gradlew assembleDebug --stacktrace
+          bash ./gradlew assemble
           cd ..
       - uses: r0adkll/sign-android-release@v1
         name: Sign app APK
         id: LiveTL
         with:
-          releaseDirectory: app/build/outputs/apk/release
+          releaseDirectory: LiveTL-Android/app/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
@@ -50,7 +50,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: LiveTL-Android/app/build/outputs/apk/debug/app-debug.apk
+          file: LiveTL-Android/app/build/outputs/apk/release/app-release-unsigned.apk
           asset_name: LiveTL-Android.apk
           tag: ${{ github.ref }}
           overwrite: true
