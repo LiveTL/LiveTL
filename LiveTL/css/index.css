@@ -4,6 +4,7 @@
     --button-fill: #49deff;
     --resizable-width: calc(100% - 150px);
     --resizable-height: 80%;
+    --padding: 20px;
     color-scheme: light dark;
 }
 
@@ -97,11 +98,20 @@ body {
     background-color: transparent;
 }
 
+#bounding {
+    width: calc(100% + calc(2 * var(--padding)));
+    position: fixed;
+    top: calc(var(--padding) * -1);
+    left: calc(var(--padding) * -1);
+    height: calc(100% + calc(2 * var(--padding)));
+}
+
 #display {
-    width: 100%;
-    height: 100%;
+    width: calc(100% - calc(2 * var(--padding)));
+    height: calc(100% - calc(2 * var(--padding)));
     display: flex;
     overflow: hidden;
+    margin: var(--padding);
 }
 
 .ui-resizable-s {
@@ -159,9 +169,8 @@ body {
     text-align: center;
     width: 25%;
     bottom: 50px;
-    padding: 0px var(--padding);
+    padding: var(--padding);
     z-index: 10000000;
-    --padding: 20px;
 }
 
 .captionSegment {
@@ -181,18 +190,16 @@ body {
     background-color: var(--primary);
     opacity: 0.5;
     width: 10px;
+    height: calc(100% - 2 * var(--padding));
+    top: var(--padding);
 }
 
 #ltlcaptions>.ui-resizable-handle.ui-resizable-e {
     right: calc(var(--padding) - 5px);
-    height: 100%;
-    top: 0px;
 }
 
 #ltlcaptions>.ui-resizable-handle.ui-resizable-w {
     left: calc(var(--padding) - 5px);
-    height: 100%;
-    top: 0px;
 }
 
 @keyframes splash {

@@ -269,7 +269,7 @@ window.sideChanged = async side => {
         root.setProperty('--resizable-width', newWidth + 'px');
       }
     },
-    containment: '#display'
+    containment: '#bounding'
   });
   horizontalHandle = document.createElement('span');
   horizontalHandle.innerHTML = `
@@ -334,7 +334,7 @@ $(captionsDiv).draggable({
     localStorage.setItem('LTL:captionSizeLeft', left);
     localStorage.setItem('LTL:captionSizeTop', topp);
   },
-  containment: '#display'
+  containment: '#bounding'
 });
 
 
