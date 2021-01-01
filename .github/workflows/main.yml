@@ -35,6 +35,18 @@ jobs:
           cd LiveTL-Android
           bash ./gradlew assembleDebug --stacktrace
           cd ..
+      - uses: r0adkll/sign-android-release@v1
+        name: Sign app APK
+        id: LiveTL
+        with:
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+        env:
+          // override default build-tools version (29.0.3) -- optional
+          BUILD_TOOLS_VERSION: "30.0.2"
       - name: Upload Android APK to release
         uses: svenstaro/upload-release-action@v2
         with:
