@@ -60,7 +60,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: LiveTL-Android/app/build/outputs/app/release/app-release-unsigned.apk
+          file: LiveTL-Android/app/build/outputs/apk/release/app-release-unsigned.apk
           asset_name: LiveTL-Android.apk
           tag: ${{ github.ref }}
           overwrite: true
