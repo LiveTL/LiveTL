@@ -289,7 +289,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $PROJECT_DIR\necho ${PROJECT_DIR}/${INFOPLIST_FILE}\ncd ../../\nmake safari-noBuild EMBED_DOMAIN=http://localhost:8000/embed VERSION=$(/usr/libexec/PlistBuddy -c \"Print CFBundleShortVersionString\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\")\n";
+			shellScript = "cd $PROJECT_DIR\necho ${PROJECT_DIR}/${INFOPLIST_FILE}\ncd ../../\nmake safari-noBuild EMBED_DOMAIN=https://cranky-beaver-1d73c7.netlify.app/embed VERSION=$(/usr/libexec/PlistBuddy -c \"Print CFBundleShortVersionString\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\")\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
