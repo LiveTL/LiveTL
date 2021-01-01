@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ github.head_ref }}
       - name: Package extensions
         run: make EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed VERSION=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g') all
       - name: Bump gradle version
