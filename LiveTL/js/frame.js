@@ -24,6 +24,7 @@ let allTranslatorCheckbox = {};
 let showTimestamps = true;
 let textDirection = 'bottom';
 let mostRecentTimestamp = 0;
+const INTERVAL = 100;
 
 async function addedByUser(id) {
   id = id.trim().toLowerCase();
@@ -151,11 +152,14 @@ async function runLiveTL() {
       // Check to make sure we haven't blacklisted the mod, and if not, send the message
       // After send the message, we bail so we don't have to run all the translation related things below
       if (checked) {
+        let speechFuture = (async () => null)();
         if (!authorType.MOD) {
           //don't send caption if author is a mod #105
           sendToCaptions(messageInfo.message);
+          speechFuture = checkAndSpeak(messageInfo.message);
         }
         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
+        await speechFuture;
         return;
       }
     }
@@ -177,8 +181,10 @@ async function runLiveTL() {
       checked = (await isChecked(messageInfo.author.id));
       // Check to see if the sender is approved, and send the message if they are
       if (checked) {
+        let speechFuture = checkAndSpeak(translation.msg);
         sendToCaptions(translation.msg);
         prependOrAppend(createMessageEntry(messageInfo, translation.msg));
+        await speechFuture;
         return;
       }
     }
@@ -190,8 +196,10 @@ async function runLiveTL() {
       }
       checked = (await isChecked(messageInfo.author.id));
       if (checked) {
+        let speechFuture = checkAndSpeak(messageInfo.message);
         sendToCaptions(messageInfo.message);
         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
+        await speechFuture;
       }
       return;
     }
@@ -367,7 +375,7 @@ async function onMessageFromEmbeddedChat(m) {
         if (isAndroid && isVideo()) {
           setInterval(async () => {
             window.watchInLiveTL();
-          }, 0);
+          }, INTERVAL);
         }
         break;
       case 'clearLiveTLButtons':
@@ -519,9 +527,12 @@ async function loaded() {
     }
   } else if (isEmbed()) {
     let initFullscreenButton = () => {
-      document.querySelector('.ytp-fullscreen-button').addEventListener('click', () => {
+      let fsButton = document.querySelector('.ytp-fullscreen-button');
+      fsButton.ariaDisabled = false;
+      fsButton.addEventListener('click', () => {
         window.parent.postMessage({ type: 'fullscreen' }, '*');
       });
+      document.querySelector('.ytp-youtube-button').style.display = 'none';
       document.querySelector('#movie_player>.ytp-generic-popup').style.opacity = '0';
       window.removeEventListener('mousedown', initFullscreenButton);
     };
@@ -529,13 +540,12 @@ async function loaded() {
     else initFullscreenButton();
 
     if (isAndroid) {
-      let iconChecker = setInterval(() => {
+      setInterval(() => {
         let icon = document.querySelector('.iv-branding');
         if (icon) {
           icon.style.display = 'none';
-          clearInterval(iconChecker);
         }
-      });
+      }, 100);
     }
   }
 
@@ -963,5 +973,5 @@ if (isAndroid && isVideo()) {
     if (chat && chat.src.startsWith('https://www.youtube.com/live_chat')) {
       window.postMessage('embeddedChatLoaded');
     }
-  }, 0);
+  }, INTERVAL);
 }

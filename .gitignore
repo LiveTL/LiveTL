@@ -12,3 +12,4 @@ __pycache__/
 *.pyc
 *.log
 LiveTL-Android/app/src/main/assets
+release

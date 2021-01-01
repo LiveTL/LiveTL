@@ -9,6 +9,7 @@ const liveTLPanel = document.querySelector('#ltlPanel');
 const outputPanel = document.querySelector('#outputPanel');
 const youtubeChatPanel = document.querySelector('#youtubeChatPanel');
 const root = document.documentElement.style;
+const display = document.querySelector('#display');
 document.title = decodeURIComponent(params.title || 'LiveTL');
 let INITIAL_PANEL_PERCENT = isAndroid ? 50 : 80;
 
@@ -37,15 +38,16 @@ const setPaneHeight = (height) => {
 };
 
 let chatSide;
+
 const getPaneWidth = () => {
   let pxWidth = videoPanel.clientWidth;
-  let result = 100 * pxWidth / window.innerWidth;
+  let result = 100 * pxWidth / display.clientWidth;
   return isNaN(result) ? INITIAL_PANEL_PERCENT : Math.min(100, Math.max(result, 0));
 };
 
 const getPaneHeight = () => {
   let pxHeight = youtubeChatPanel.clientHeight;
-  let result = 100 * pxHeight / window.innerHeight;
+  let result = 100 * pxHeight / display.clientHeight;
   return isNaN(result) ? INITIAL_PANEL_PERCENT : Math.min(100, Math.max(result, 0));
 };
 
@@ -266,7 +268,8 @@ window.sideChanged = async side => {
         $(videoPanel).css('width', newWidth + 'px');
         root.setProperty('--resizable-width', newWidth + 'px');
       }
-    }
+    },
+    containment: '#bounding'
   });
   horizontalHandle = document.createElement('span');
   horizontalHandle.innerHTML = `
@@ -301,8 +304,8 @@ getStorage('chatSide').then(async (side) => {
 });
 
 
-getTopWithSafety = d => `max(min(${d}, calc(100% - 50px)), -30px)`;
-getLeftWithSafety = d => `max(min(${d}, calc(100% - 50px)), -30px)`;
+getTopWithSafety = d => `max(min(${d}, calc(100% - 50px)), -50px)`;
+getLeftWithSafety = d => `max(min(${d}, calc(100% - 50px)), -50px)`;
 
 
 let capLeft = localStorage.getItem('LTL:captionSizeLeft');
@@ -318,22 +321,20 @@ $(captionsDiv).draggable({
     let top = getTop(ui.helper);
     ui.helper.css('position', 'fixed');
     top = parseFloat(propToPercent(top, true), 10);
-    // top = top < 0 ? 0 : top;
-    // top = top > 100 ? 100 : top;
     let topp = `${top}%`;
-    ui.helper.css('top', getTopWithSafety(topp));
+    ui.helper.css('top', topp);
     let width = parseFloat(propToPercent(nojdiv.style.width, false));
     let left = parseFloat(propToPercent(nojdiv.style.left, false));
-    // left = left < 0 ? 0 : left;
     let sum = left + width;
-    let percent = `${sum > 100 ? 100 - left : width}%`;
+    let percent = `${width}%`;
     left = `${left}%`;
     ui.helper.css('width', propToPercent(percent, false));
-    ui.helper.css('left', getLeftWithSafety(left));
+    ui.helper.css('left', left);
     localStorage.setItem('LTL:captionSizeWidth', percent);
     localStorage.setItem('LTL:captionSizeLeft', left);
     localStorage.setItem('LTL:captionSizeTop', topp);
-  }
+  },
+  containment: '#bounding'
 });
 
 
