@@ -527,9 +527,12 @@ async function loaded() {
     }
   } else if (isEmbed()) {
     let initFullscreenButton = () => {
-      document.querySelector('.ytp-fullscreen-button').addEventListener('click', () => {
+      let fsButton = document.querySelector('.ytp-fullscreen-button');
+      fsButton.ariaDisabled = false;
+      fsButton.addEventListener('click', () => {
         window.parent.postMessage({ type: 'fullscreen' }, '*');
       });
+      document.querySelector('.ytp-youtube-button').style.display = 'none';
       document.querySelector('#movie_player>.ytp-generic-popup').style.opacity = '0';
       window.removeEventListener('mousedown', initFullscreenButton);
     };
