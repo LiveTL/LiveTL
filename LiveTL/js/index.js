@@ -9,6 +9,7 @@ const liveTLPanel = document.querySelector('#ltlPanel');
 const outputPanel = document.querySelector('#outputPanel');
 const youtubeChatPanel = document.querySelector('#youtubeChatPanel');
 const root = document.documentElement.style;
+const display = document.querySelector('#display');
 document.title = decodeURIComponent(params.title || 'LiveTL');
 let INITIAL_PANEL_PERCENT = isAndroid ? 50 : 80;
 
@@ -37,15 +38,16 @@ const setPaneHeight = (height) => {
 };
 
 let chatSide;
+
 const getPaneWidth = () => {
   let pxWidth = videoPanel.clientWidth;
-  let result = 100 * pxWidth / window.innerWidth;
+  let result = 100 * pxWidth / display.clientWidth;
   return isNaN(result) ? INITIAL_PANEL_PERCENT : Math.min(100, Math.max(result, 0));
 };
 
 const getPaneHeight = () => {
   let pxHeight = youtubeChatPanel.clientHeight;
-  let result = 100 * pxHeight / window.innerHeight;
+  let result = 100 * pxHeight / display.clientHeight;
   return isNaN(result) ? INITIAL_PANEL_PERCENT : Math.min(100, Math.max(result, 0));
 };
 
