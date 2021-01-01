@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     void loadWebview(String url, String inject, int density){
         wv = (WebView) findViewById(R.id.mainWebview);
-        wv.addJavascriptInterface(new JSObj(wv), "Android");
         wv.setWebViewClient(new WebViewClient() {
 
             public void onPageFinished(WebView view, String url) {
@@ -195,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
         wv.setOverScrollMode(View.OVER_SCROLL_NEVER);
         wv.setScrollbarFadingEnabled(false);
         wv.setWebContentsDebuggingEnabled(true);
+        wv.addJavascriptInterface(new JSObj(wv), "Android");
         View root = wv.getRootView();
         ViewTreeObserver treeObserver = root.getViewTreeObserver();
         treeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {

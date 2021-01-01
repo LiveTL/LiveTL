@@ -265,7 +265,8 @@ window.sideChanged = async (side) => {
     verticalHandle.innerHTML = horizontalHandleCode;
     videoPanel.style.height = `var(--resizable-width)`;
     videoPanel.style.width = `100%`;
-    videoPanel.style.maxHeight = 'calc(100% - 10px)';
+    videoPanel.style.maxHeight = '100%';
+    verticalHandle.querySelector('.handle').style.zIndex = `3`;
     youtubeChatPanel.style.height = 'min(var(--resizable-height), calc(100% - var(--resizable-width)))';
     handleObj = { s: $(verticalHandle) };
     chatSide = 'right';
@@ -274,6 +275,7 @@ window.sideChanged = async (side) => {
     videoPanel.style.height = `100%`;
     videoPanel.style.maxHeight = 'unset';
     youtubeChatPanel.style.height = 'var(--resizable-height)';
+    verticalHandle.querySelector('.handle').style.zIndex = `1`;
   }
   if (side === 'right') {
     leftHandle.appendChild(verticalHandle);

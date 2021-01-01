@@ -135,7 +135,9 @@ async function runLiveTL() {
   window.onNewMessage = async messageInfo => {
     if (!messageInfo) return;
 
-    if (`${messageInfo.author.id} ${messageInfo.message}` == lastMessage) return;
+    let messageString = `${messageInfo.author.id} ${messageInfo.message}`;
+    if (messageString == lastMessage) return;
+    lastMessage = messageString;
 
     // Determine whether we should display mod messages (if not set, default to yes)
     let displayModMessages = await getStorage('displayModMessages');
