@@ -36,6 +36,7 @@
     width: var(--resizable-width);
     height: 100%;
     order: 1;
+    min-height: 10px;
 }
 
 #ltlPanel {

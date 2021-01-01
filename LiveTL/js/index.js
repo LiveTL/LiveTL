@@ -266,11 +266,14 @@ window.sideChanged = async (side) => {
     videoPanel.style.height = `var(--resizable-width)`;
     videoPanel.style.width = `100%`;
     videoPanel.style.maxHeight = 'calc(100% - 10px)';
+    youtubeChatPanel.style.height = 'min(var(--resizable-height), calc(100% - var(--resizable-width)))';
     handleObj = { s: $(verticalHandle) };
+    chatSide = 'right';
   } else {
     videoPanel.style.width = `var(--resizable-width)`;
     videoPanel.style.height = `100%`;
     videoPanel.style.maxHeight = 'unset';
+    youtubeChatPanel.style.height = 'var(--resizable-height)';
   }
   if (side === 'right') {
     leftHandle.appendChild(verticalHandle);
@@ -299,7 +302,7 @@ window.sideChanged = async (side) => {
         root.setProperty('--resizable-width', newWidth + 'px');
       }
     },
-    containment: '#bounding'
+    containment: '#display'
   });
   horizontalHandle = document.createElement('span');
   horizontalHandle.innerHTML = horizontalHandleCode;
@@ -310,7 +313,8 @@ window.sideChanged = async (side) => {
       s: $(horizontalHandle)
     },
     start: start,
-    stop: stop
+    stop: stop,
+    containment: '#ltlPanel'
   });
   $(captionsDiv).resizable({
     handles: 'e, w',
