@@ -39,11 +39,11 @@ async function setDefaultSetting(setting, value) {
 
 async function setupDefaultCaption() {
   await setDefaultSetting('captionMode', true);
-};
+}
 
 async function setupDefaultCaptionDelay() {
   await setDefaultSetting('captionDelay', -1);
-};
+}
 
 async function setupDefaultSpeechSynth() {
   return await setDefaultSetting('speechSynth', speechSynthDefault);
@@ -51,6 +51,14 @@ async function setupDefaultSpeechSynth() {
 
 async function setupDefaultTranslatorMode() {
   return await setDefaultSetting('translatorMode', TranslatorMode.defaultt);
+}
+
+async function getCaptionZoom() {
+  return await getStorage('captionZoom');
+}
+
+async function setCaptionZoom(value) {
+  return await setStorage('captionZoom', value);
 }
 
 async function getStorage(key) {

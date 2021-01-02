@@ -25,6 +25,7 @@ async function createSettings(container) {
   settings.appendChild(await createChatSideToggle());
   settings.appendChild(await createCaptionDisplayToggle());
   settings.appendChild(await createCaptionDuration());
+  settings.appendChild(await createCaptionZoomSlider());
   if (!isAndroid) {
     settings.appendChild(await createSpeechSynthToggle());
     settings.appendChild(await createTranslatorModeToggle());
@@ -239,7 +240,7 @@ function createSliderLabel(labelText) {
 
 async function createSliderInput(id, min, max,
                                  getSliderValue, setSliderValue,
-                                 onchange)
+                                 onchange, toScale)
 {
   let slider = document.createElement('input');
   slider.id = id;
@@ -254,22 +255,28 @@ async function createSliderInput(id, min, max,
   slider.value = (await getSliderValue()) || (isAndroid ? 0.5 : 1);
   slider.style.verticalAlign = 'middle';
   slider.addEventListener('change', async () => {
-    const s = await updateSliderLevel(id, getSliderValue, setSliderValue);
+    const s = await updateSliderLevel(id, getSliderValue, setSliderValue, toScale);
     await onchange(s);
   });
 
   return slider;
 }
 
-async function updateSliderLevel(id, getSliderValue, setSliderValue) {
+async function updateSliderLevel(id, getSliderValue,
+                                 setSliderValue, toScale=true) {
   let value = parseFloat(document.getElementById(id).value) || await getSliderValue() || 1;
   let scale = Math.ceil(value * 100);
   let container = document.body;// document.querySelector('.bodyWrapper');
-  container.style.transformOrigin = '0 0';
-  container.style.transform = `scale(${scale / 100})`;
-  let inverse = 10000 / scale;
-  container.style.width = `${inverse}%`;
-  container.style.height = `${inverse}%`;
+  const transform = `scale(${scale / 100})`;
+  const inverse = 10000 / scale;
+  const newWidth = `${inverse}%`;
+  const newHeight = `${inverse}%`;
+  if (toScale) {
+    container.style.transformOrigin = '0 0';
+    container.style.width = newWidth;
+    container.style.height = newHeight;
+    container.style.transform = transform;
+  }
   await setSliderValue(scale / 100);
   // window.parent.postMessage({
   return {
@@ -284,7 +291,8 @@ async function updateSliderLevel(id, getSliderValue, setSliderValue) {
 }
 
 function createSliderResetButton(id, getSliderValue,
-                                 setSliderValue, onchange)
+                                 setSliderValue, onchange,
+                                 toScale)
 {
   let resetButton = document.createElement('input');
   resetButton.value = 'Reset';
@@ -293,7 +301,7 @@ function createSliderResetButton(id, getSliderValue,
   resetButton.type = 'button';
   resetButton.addEventListener('click', async () => {
     document.getElementById(id).value = (isAndroid ? 0.5 : 1);
-    const s = await updateSliderLevel(id, getSliderValue, setSliderValue);
+    const s = await updateSliderLevel(id, getSliderValue, setSliderValue, toScale);
     await onchange(s);
   });
   return resetButton;
@@ -301,28 +309,30 @@ function createSliderResetButton(id, getSliderValue,
 
 async function createSlider(id, min, max, labelText,
                             getSliderValue, setSliderValue,
-                            onchange)
+                            onchange, toScale=true)
 {
   const settings = document.createElement('div');
 
   settings.appendChild(createSliderLabel(labelText));
   settings.appendChild(await createSliderInput(
-    id, min, max, getSliderValue, setSliderValue, onchange
+    id, min, max, getSliderValue, setSliderValue, onchange, toScale
   ));
   settings.appendChild(createSliderResetButton(
-    id, getSliderValue, setSliderValue, onchange
+    id, getSliderValue, setSliderValue, onchange, toScale
   ));
 
   return settings;
 }
 
-function zoomSliderOnchange(s) {
+function captionZoomSliderOnchange(s) {
   window.parent.postMessage(s, '*');
 }
 
 async function createGenericZoomSlider(id, labelText,
                                        getSliderValue,
-                                       setSliderValue) 
+                                       setSliderValue,
+                                       onchange,
+                                       toScale=true)
 {
   return createSlider(
     id,
@@ -331,7 +341,8 @@ async function createGenericZoomSlider(id, labelText,
     labelText,
     getSliderValue,
     setSliderValue,
-    zoomSliderOnchange
+    onchange,
+    toScale
   );
 }
 
@@ -341,7 +352,28 @@ async function createZoomSlider() {
     'Zoom: ',
     () => getStorage('zoom'),
     (value) => setStorage('zoom', value),
+    (s) => { }
   );
+}
+
+// Needed for compatibility issues in frame.js
+async function updateZoomLevel() {
+  await updateSliderLevel(
+    'zoomSliderInput',
+    () => getStorage('zoom'),
+    (value) => setStorage('zoom', value)
+  );
+}
+
+async function createCaptionZoomSlider() {
+  return createGenericZoomSlider(
+    'captionZoomSliderInput',
+    'Caption Zoom: ',
+    getCaptionZoom,
+    setCaptionZoom,
+    captionZoomSliderOnchange,
+    false
+  )
 }
 
 // ZOOM REFACTOR END
