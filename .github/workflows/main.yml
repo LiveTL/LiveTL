@@ -12,6 +12,8 @@ jobs:
         run: make EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed VERSION=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g') all
       - name: Set gradle version
         run: make android-release EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed VERSION=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g')
+      - name: Install zipalign and apksigner
+        run: sudo apt install zipalign apksigner
       - name: Upload Chrome package to release
         uses: svenstaro/upload-release-action@v2
         with:
