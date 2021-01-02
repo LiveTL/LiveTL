@@ -227,32 +227,42 @@ function createTransSelectChecklist() {
   return checklist;
 }
 
-function createZoomLabel() {
+// ZOOM REFACTOR START
+function createSliderLabel(labelText) {
   const label = document.createElement('span');
   label.className = 'optionLabel';
-  label.textContent = 'Zoom: ';
+  label.textContent = labelText;
   return label;
 }
 
-const zoomSliderInputId = 'zoomSliderInput';
+// const zoomSliderInputId = 'zoomSliderInput';
 
-async function createZoomSliderInput() {
-  let zoomSlider = document.createElement('input');
-  zoomSlider.id = zoomSliderInputId;
-  zoomSlider.type = 'range';
-  zoomSlider.min = isAndroid ? '0.25' : '0.5';
-  zoomSlider.max = isAndroid ? '1.5' : '2';;
-  zoomSlider.style.padding = '4px';
-  zoomSlider.step = '0.01';
-  zoomSlider.value = ((await getStorage('zoom')) || (isAndroid ? 0.5 : 1));
-  zoomSlider.style.verticalAlign = 'middle';
-  zoomSlider.addEventListener('change', () => updateZoomLevel());
+async function createSliderInput(id, min, max,
+                                 getSliderValue, setSliderValue,
+                                 onchange)
+{
+  let slider = document.createElement('input');
+  slider.id = id;
+  slider.type = 'range';
+  // zoomSlider.min = isAndroid ? '0.25' : '0.5';
+  // zoomSlider.max = isAndroid ? '1.5' : '2';;
+  slider.min = min;
+  slider.max = max;
+  slider.style.padding = '4px';
+  slider.step = '0.01';
+  // zoomSlider.value = ((await getStorage('zoom')) || (isAndroid ? 0.5 : 1));
+  slider.value = (await getSliderValue()) || (isAndroid ? 0.5 : 1);
+  slider.style.verticalAlign = 'middle';
+  slider.addEventListener('change', async () => {
+    const s = await updateSliderLevel(id, getSliderValue, setSliderValue);
+    await onchange(s);
+  });
 
-  return zoomSlider;
+  return slider;
 }
 
-async function updateZoomLevel() {
-  let value = parseFloat(document.getElementById(zoomSliderInputId).value) || await getStorage('zoom') || 1;
+async function updateSliderLevel(id, getSliderValue, setSliderValue) {
+  let value = parseFloat(document.getElementById(id).value) || await getSliderValue() || 1;
   let scale = Math.ceil(value * 100);
   let container = document.body;// document.querySelector('.bodyWrapper');
   container.style.transformOrigin = '0 0';
@@ -260,40 +270,149 @@ async function updateZoomLevel() {
   let inverse = 10000 / scale;
   container.style.width = `${inverse}%`;
   container.style.height = `${inverse}%`;
-  await setStorage('zoom', scale / 100);
-  window.parent.postMessage({
+  await setSliderValue(scale / 100);
+  // window.parent.postMessage({
+  return {
     type: 'zoom',
     zoom: {
       width: container.style.width,
       height: container.style.height,
       transform: container.style.transform
     }
-  }, '*');
+  }
+  // }, '*');
 }
 
-function createZoomResetButton() {
+function createSliderResetButton(id, getSliderValue,
+                                 setSliderValue, onchange)
+{
   let resetButton = document.createElement('input');
   resetButton.value = 'Reset';
   resetButton.style.marginLeft = '4px';
   resetButton.style.verticalAlign = 'middle';
   resetButton.type = 'button';
   resetButton.addEventListener('click', async () => {
-    document.getElementById(zoomSliderInputId).value = (isAndroid ? 0.5 : 1);
-    await updateZoomLevel();
+    document.getElementById(id).value = (isAndroid ? 0.5 : 1);
+    const s = await updateSliderLevel(id, getSliderValue, setSliderValue);
+    await onchange(s);
   });
   return resetButton;
 }
 
-async function createZoomSlider() {
-  const zoomSettings = document.createElement('div');
-  const zoomSliderInput = await createZoomSliderInput();
+async function createSlider(id, min, max, labelText,
+                            getSliderValue, setSliderValue,
+                            onchange)
+{
+  const settings = document.createElement('div');
 
-  zoomSettings.appendChild(createZoomLabel());
-  zoomSettings.appendChild(zoomSliderInput);
-  zoomSettings.appendChild(createZoomResetButton());
+  settings.appendChild(createSliderLabel(labelText));
+  settings.appendChild(await createSliderInput(
+    id, min, max, getSliderValue, setSliderValue, onchange
+  ));
+  settings.appendChild(createSliderResetButton(
+    id, getSliderValue, setSliderValue, onchange
+  ));
 
-  return zoomSettings;
+  return settings;
 }
+
+function zoomSliderOnchange(s) {
+  window.parent.postMessage(s, '*');
+}
+
+async function createGenericZoomSlider(id, labelText,
+                                       getSliderValue,
+                                       setSliderValue) 
+{
+  return createSlider(
+    id,
+    isAndroid ? '0.25' : '0.5', 
+    isAndroid ? '1.5' : '2',
+    labelText,
+    getSliderValue,
+    setSliderValue,
+    zoomSliderOnchange
+  );
+}
+
+async function createZoomSlider() {
+  return createGenericZoomSlider(
+    'zoomSliderInput',
+    'Zoom: ',
+    () => getStorage('zoom'),
+    (value) => setStorage('zoom', value),
+  );
+}
+
+// ZOOM REFACTOR END
+
+// function createZoomLabel() {
+//   const label = document.createElement('span');
+//   label.className = 'optionLabel';
+//   label.textContent = 'Zoom: ';
+//   return label;
+// }
+// 
+// const zoomSliderInputId = 'zoomSliderInput';
+// 
+// async function createZoomSliderInput() {
+//   let zoomSlider = document.createElement('input');
+//   zoomSlider.id = zoomSliderInputId;
+//   zoomSlider.type = 'range';
+//   zoomSlider.min = isAndroid ? '0.25' : '0.5';
+//   zoomSlider.max = isAndroid ? '1.5' : '2';;
+//   zoomSlider.style.padding = '4px';
+//   zoomSlider.step = '0.01';
+//   zoomSlider.value = ((await getStorage('zoom')) || (isAndroid ? 0.5 : 1));
+//   zoomSlider.style.verticalAlign = 'middle';
+//   zoomSlider.addEventListener('change', () => updateZoomLevel());
+// 
+//   return zoomSlider;
+// }
+// 
+// async function updateZoomLevel() {
+//   let value = parseFloat(document.getElementById(zoomSliderInputId).value) || await getStorage('zoom') || 1;
+//   let scale = Math.ceil(value * 100);
+//   let container = document.body;// document.querySelector('.bodyWrapper');
+//   container.style.transformOrigin = '0 0';
+//   container.style.transform = `scale(${scale / 100})`;
+//   let inverse = 10000 / scale;
+//   container.style.width = `${inverse}%`;
+//   container.style.height = `${inverse}%`;
+//   await setStorage('zoom', scale / 100);
+//   window.parent.postMessage({
+//     type: 'zoom',
+//     zoom: {
+//       width: container.style.width,
+//       height: container.style.height,
+//       transform: container.style.transform
+//     }
+//   }, '*');
+// }
+// 
+// function createZoomResetButton() {
+//   let resetButton = document.createElement('input');
+//   resetButton.value = 'Reset';
+//   resetButton.style.marginLeft = '4px';
+//   resetButton.style.verticalAlign = 'middle';
+//   resetButton.type = 'button';
+//   resetButton.addEventListener('click', async () => {
+//     document.getElementById(zoomSliderInputId).value = (isAndroid ? 0.5 : 1);
+//     await updateZoomLevel();
+//   });
+//   return resetButton;
+// }
+// 
+// async function createZoomSlider() {
+//   const zoomSettings = document.createElement('div');
+//   const zoomSliderInput = await createZoomSliderInput();
+// 
+//   zoomSettings.appendChild(createZoomLabel());
+//   zoomSettings.appendChild(zoomSliderInput);
+//   zoomSettings.appendChild(createZoomResetButton());
+// 
+//   return zoomSettings;
+// }
 
 function createTimestampLabel() {
   const label = document.createElement('label');
