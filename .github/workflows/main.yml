@@ -12,6 +12,8 @@ jobs:
         run: make EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed VERSION=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g') all
       - name: Set gradle version
         run: make android-release EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed VERSION=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g')
+      - name: Install zipalign and apksigner
+        run: sudo apt install zipalign apksigner
       - name: Upload Chrome package to release
         uses: svenstaro/upload-release-action@v2
         with:
@@ -34,25 +36,18 @@ jobs:
           java-version: 1.8
       - name: Build release APK
         run: |
-          cd LiveTL-Android
-          bash ./gradlew assemble
-          cd ..
-      - uses: r0adkll/sign-android-release@v1
-        name: Sign app APK
-        id: sign_app
-        with:
-          releaseDirectory: LiveTL-Android/app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
-          alias: ${{ secrets.ALIAS }}
-          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: "30.0.3"
+          pushd LiveTL-Android
+          bash ./gradlew assembleRelease
+          popd
+          pushd LiveTL-Android/app/build/outputs/apk/release
+          echo ${{ secrets.KEY_B64 }} | base64 -d > my-release-key.jks
+          java -jar /usr/bin/apksigner sign --ks my-release-key.jks --out app-release-signed.apk --key-pass pass:${{ secrets.PASSWORD }} --ks-pass pass:${{ secrets.PASSWORD }} app-release-unsigned.apk
+          popd
       - name: Upload Android APK to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ steps.sign_app.outputs.signedReleaseFile }}
+          file: LiveTL-Android/app/build/outputs/apk/release/app-release-signed.apk
           asset_name: LiveTL-Android.apk
           tag: ${{ github.ref }}
           overwrite: true
