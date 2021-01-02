@@ -316,7 +316,7 @@ async function createSlider(id, min, max, labelText,
   return settings;
 }
 
-function captionZoomSliderOnchange(s) {
+function postToParent(s) {
   window.parent.postMessage(s, '*');
 }
 
@@ -344,7 +344,7 @@ async function createZoomSlider() {
     'Zoom: ',
     () => getStorage('zoom'),
     (value) => setStorage('zoom', value),
-    (s) => { }
+    postToParent,
   );
 }
 
@@ -353,7 +353,8 @@ async function updateZoomLevel() {
   await updateSliderLevel(
     'zoomSliderInput',
     () => getStorage('zoom'),
-    (value) => setStorage('zoom', value)
+    (value) => setStorage('zoom', value),
+    postToParent
   );
 }
 
@@ -363,7 +364,7 @@ async function createCaptionZoomSlider() {
     'Caption Zoom: ',
     getCaptionZoom,
     setCaptionZoom,
-    captionZoomSliderOnchange,
+    postToParent,
     false
   )
 }
