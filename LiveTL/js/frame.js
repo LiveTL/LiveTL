@@ -466,6 +466,7 @@ async function loaded() {
       } else {
         console.debug('Monitoring network events');
         injectScript(monkeypatch.toString() + 'monkeypatch();');
+        runTranslatorModeYTC();
         window.addEventListener('newMessageChunk', async (response) => {
           response = response.detail;
           response = JSON.parse(JSON.stringify(response));
