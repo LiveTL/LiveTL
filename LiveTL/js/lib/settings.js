@@ -700,7 +700,7 @@ function createTranslatorModeToggle() {
 }
 
 function createTranslatorModeToggleLabel() {
-  return createCheckToggleLabel('Translator Mode:', 'translatorMode');
+  return createCheckToggleLabel('Auto-Prefix Chat Messages:', 'translatorMode');
 }
 
 async function createTranslatorModeToggleCheckbox() {
