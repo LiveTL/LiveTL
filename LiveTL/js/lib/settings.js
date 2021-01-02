@@ -228,15 +228,12 @@ function createTransSelectChecklist() {
   return checklist;
 }
 
-// ZOOM REFACTOR START
 function createSliderLabel(labelText) {
   const label = document.createElement('span');
   label.className = 'optionLabel';
   label.textContent = labelText;
   return label;
 }
-
-// const zoomSliderInputId = 'zoomSliderInput';
 
 async function createSliderInput(id, min, max,
                                  getSliderValue, setSliderValue,
@@ -245,13 +242,10 @@ async function createSliderInput(id, min, max,
   let slider = document.createElement('input');
   slider.id = id;
   slider.type = 'range';
-  // zoomSlider.min = isAndroid ? '0.25' : '0.5';
-  // zoomSlider.max = isAndroid ? '1.5' : '2';;
   slider.min = min;
   slider.max = max;
   slider.style.padding = '4px';
   slider.step = '0.01';
-  // zoomSlider.value = ((await getStorage('zoom')) || (isAndroid ? 0.5 : 1));
   slider.value = (await getSliderValue()) || (isAndroid ? 0.5 : 1);
   slider.style.verticalAlign = 'middle';
   slider.addEventListener('change', async () => {
@@ -278,7 +272,6 @@ async function updateSliderLevel(id, getSliderValue,
     container.style.transform = transform;
   }
   await setSliderValue(scale / 100);
-  // window.parent.postMessage({
   return {
     type: 'zoom',
     zoom: {
@@ -287,7 +280,6 @@ async function updateSliderLevel(id, getSliderValue,
       transform: container.style.transform
     }
   }
-  // }, '*');
 }
 
 function createSliderResetButton(id, getSliderValue,
@@ -375,76 +367,6 @@ async function createCaptionZoomSlider() {
     false
   )
 }
-
-// ZOOM REFACTOR END
-
-// function createZoomLabel() {
-//   const label = document.createElement('span');
-//   label.className = 'optionLabel';
-//   label.textContent = 'Zoom: ';
-//   return label;
-// }
-// 
-// const zoomSliderInputId = 'zoomSliderInput';
-// 
-// async function createZoomSliderInput() {
-//   let zoomSlider = document.createElement('input');
-//   zoomSlider.id = zoomSliderInputId;
-//   zoomSlider.type = 'range';
-//   zoomSlider.min = isAndroid ? '0.25' : '0.5';
-//   zoomSlider.max = isAndroid ? '1.5' : '2';;
-//   zoomSlider.style.padding = '4px';
-//   zoomSlider.step = '0.01';
-//   zoomSlider.value = ((await getStorage('zoom')) || (isAndroid ? 0.5 : 1));
-//   zoomSlider.style.verticalAlign = 'middle';
-//   zoomSlider.addEventListener('change', () => updateZoomLevel());
-// 
-//   return zoomSlider;
-// }
-// 
-// async function updateZoomLevel() {
-//   let value = parseFloat(document.getElementById(zoomSliderInputId).value) || await getStorage('zoom') || 1;
-//   let scale = Math.ceil(value * 100);
-//   let container = document.body;// document.querySelector('.bodyWrapper');
-//   container.style.transformOrigin = '0 0';
-//   container.style.transform = `scale(${scale / 100})`;
-//   let inverse = 10000 / scale;
-//   container.style.width = `${inverse}%`;
-//   container.style.height = `${inverse}%`;
-//   await setStorage('zoom', scale / 100);
-//   window.parent.postMessage({
-//     type: 'zoom',
-//     zoom: {
-//       width: container.style.width,
-//       height: container.style.height,
-//       transform: container.style.transform
-//     }
-//   }, '*');
-// }
-// 
-// function createZoomResetButton() {
-//   let resetButton = document.createElement('input');
-//   resetButton.value = 'Reset';
-//   resetButton.style.marginLeft = '4px';
-//   resetButton.style.verticalAlign = 'middle';
-//   resetButton.type = 'button';
-//   resetButton.addEventListener('click', async () => {
-//     document.getElementById(zoomSliderInputId).value = (isAndroid ? 0.5 : 1);
-//     await updateZoomLevel();
-//   });
-//   return resetButton;
-// }
-// 
-// async function createZoomSlider() {
-//   const zoomSettings = document.createElement('div');
-//   const zoomSliderInput = await createZoomSliderInput();
-// 
-//   zoomSettings.appendChild(createZoomLabel());
-//   zoomSettings.appendChild(zoomSliderInput);
-//   zoomSettings.appendChild(createZoomResetButton());
-// 
-//   return zoomSettings;
-// }
 
 function createTimestampLabel() {
   const label = document.createElement('label');
