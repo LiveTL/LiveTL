@@ -25,8 +25,10 @@ async function createSettings(container) {
   settings.appendChild(await createChatSideToggle());
   settings.appendChild(await createCaptionDisplayToggle());
   settings.appendChild(await createCaptionDuration());
-  if (!isAndroid) settings.appendChild(await createSpeechSynthToggle());
-  settings.appendChild(await createTranslatorModeToggle());
+  if (!isAndroid) {
+    settings.appendChild(await createSpeechSynthToggle());
+    settings.appendChild(await createTranslatorModeToggle());
+  }
 
   return settings;
 }
