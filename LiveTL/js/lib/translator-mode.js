@@ -4,12 +4,12 @@
 const TranslatorMode = (() => {
 
 const [container, chatbox] = document.querySelectorAll('#input');
-const defaultt = false; // FIXME Change to false before pr
+const defaultt = false;
 let observer = null;
 const postMessage = window.parent.postMessage;
 
 async function init() {
-  setupDefaultTranslatorMode();
+  await setupDefaultTranslatorMode();
   if (!is_ytc()) {
     ltl_run();
   }
@@ -38,7 +38,6 @@ async function enabled() {
 }
 
 function disable() {
-  console.log("Clearing text from ytc");
   clearTextFromYTC();
   if (observer) {
     observer.disconnect();
@@ -52,7 +51,6 @@ function reload() {
 
 function ltl_run() {
   TranslatorMode.disable = () => {
-    console.log("POSTING MESSAGE");
     postMessage({ type: 'translatorMode', fn: 'disable' });
   };
   TranslatorMode.reload = () => {
@@ -68,9 +66,20 @@ function clearTextFromYTC() {
 }
 
 async function checkAndAddTLTag() {
+  const langTag = await getLangTag();
   if (chatbox.textContent === '' && await enabled()) {
-    addTextToYTC('[en] ');
+    addTextToYTC(`[${langTag}] `);
   }
+}
+
+async function getLangTag() {
+  const current = await getDefaultLanguage();
+  if (current) {
+    return languageConversionTable[current].code;
+  } else {
+    return 'en';
+  }
+  return 'en';
 }
 
 function addTextToYTC(text) {
