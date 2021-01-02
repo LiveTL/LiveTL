@@ -650,7 +650,7 @@ function wrapIconWithLink(icon, link) {
 
 async function createLogo() {
   const a = document.createElement('a');
-  a.href = aboutPage;
+  a.href = 'https://kentonishi.github.io/LiveTL';
   a.target = 'about:blank';
   const logo = document.createElement('img');
   logo.className = 'logo';
