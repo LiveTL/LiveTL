@@ -153,7 +153,7 @@ function createCaptionSegment(segment) {
 }
 
 function styleCaptionSegment(caption) {
-  getStorage('zoom').then(zoom => {
+  getCaptionZoom().then(zoom => {
     if (zoom) caption.style.fontSize = `${20 * zoom}px`;
   });
 }
