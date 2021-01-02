@@ -7,7 +7,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.android.livetl"
+        applicationId "com.livetl.android"
         minSdkVersion 16
         targetSdkVersion 30
         versionCode 1

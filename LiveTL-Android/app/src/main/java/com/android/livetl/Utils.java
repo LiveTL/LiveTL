@@ -1,4 +1,4 @@
-package com.android.livetl;
+package com.livetl.android;
 
 import android.app.Activity;
 import android.content.Context;
