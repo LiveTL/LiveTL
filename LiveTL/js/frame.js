@@ -466,7 +466,6 @@ async function loaded() {
       } else {
         console.debug('Monitoring network events');
         injectScript(monkeypatch.toString() + 'monkeypatch();');
-        console.log("OI OI", window.location.href);
         setTimeout(() => TranslatorMode.run(), 0)
         window.addEventListener('newMessageChunk', async (response) => {
           response = response.detail;

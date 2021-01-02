@@ -3,22 +3,41 @@
 
 const TranslatorMode = (() => {
 
+const [container, chatbox] = document.querySelectorAll('#input');
+
 async function run() {
-  addTextToYTC('[en] ');
+  createObserver();
+}
+
+function checkAndAddTLTag() {
+  if (chatbox.textContent === '') {
+    addTextToYTC('[en] ');
+  }
 }
 
 function addTextToYTC(text) {
-  let [container, chatbox] = document.querySelectorAll('#input');
   container.setAttribute('has-text', '');
   chatbox.textContent = text;
 }
 
-function observeYTC(observer) {
-  observer.observe(document.querySelector('#input'), { attributes: true });
+function createObserver() {
+  let observer = new MutationObserver((mutations, _observer) => {
+    mutations.forEach(observerCallback);
+  });
+  observeYTC(observer);
+  return observer;
 }
 
-function observerCallback(attributeChanged) {
-  console.log(attributeChanged);
+function observeYTC(observer) {
+  observer.observe(container, { attributes: true });
+}
+
+function observerCallback(mutation) {
+  const { attributeName } = mutation;
+  const focused = container.getAttribute('focused');
+  if (attributeName === 'focused' && focused === '') {
+    checkAndAddTLTag();
+  }
 }
 
 return { run };
