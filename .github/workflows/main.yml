@@ -37,7 +37,7 @@ jobs:
       - name: Build release APK
         run: |
           pushd LiveTL-Android
-          bash ./gradlew assemble
+          bash ./gradlew assembleRelease
           popd
           pushd LiveTL-Android/app/build/outputs/apk/release
           echo ${{ secrets.KEY_B64 }} | base64 -d > my-release-key.jks
