@@ -140,7 +140,7 @@ android-release: android
 
 common: init
 	cat $(lib)/constants.js $(lib)/../frame.js $(lib)/storage.js $(lib)/filter.js $(lib)/settings.js $(lib)/speech.js \
-	       	$(lib)/css.js $(lib)/svgs.js \
+	       	$(lib)/translator-mode.js $(lib)/css.js $(lib)/svgs.js \
 		| grep -v module.export | $(replace-embed-domain) \
 		> ./build/common/frame.js
 	$(replace-embed-domain) $(lib)/../index.js > ./build/common/index.js
