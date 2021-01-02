@@ -630,6 +630,13 @@ if (window.location.href.startsWith(aboutPage)) {
     }
   });
   switchChat();
+} 
+if (isLiveChat()) {
+  window.addEventListener('message', d => {
+    if (d.data.type === 'translatorMode') {
+      TranslatorMode[d.data.fn]();
+    }
+  });
 }
 
 function wrapIconWithLink(icon, link) {

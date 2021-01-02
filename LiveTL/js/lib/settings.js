@@ -26,6 +26,11 @@ async function createSettings(container) {
   settings.appendChild(await createCaptionDisplayToggle());
   settings.appendChild(await createCaptionDuration());
   settings.appendChild(await createSpeechSynthToggle());
+  try {
+    settings.appendChild(await createTranslatorModeToggle());
+  } catch (e) {
+    console.error("BAD BAD", e);
+  }
 
   return settings;
 }
@@ -674,6 +679,39 @@ async function createSpeechSynthToggleCheckbox() {
         await speak('Read aloud enabled');
       } else {
         await speak('Read aloud disabled');
+      }
+    }
+  );
+}
+
+// still asyncronous so await the result
+function createTranslatorModeToggle() {
+  return new Promise((res, rej) => {
+    setTimeout(async () => {
+      try {
+        await setupDefaultTranslatorMode();
+        const transModeToggle = document.createElement('div');
+        transModeToggle.appendChild(createTranslatorModeToggleLabel());
+        transModeToggle.appendChild(await createTranslatorModeToggleCheckbox());
+        res(transModeToggle);
+      } catch (e) {
+        rej(e);
+      }
+    }, 0);
+  });
+}
+
+function createTranslatorModeToggleLabel() {
+  return createCheckToggleLabel('Translator Mode:', 'translatorMode');
+}
+
+async function createTranslatorModeToggleCheckbox() {
+  return await createCheckToggleCheckbox(
+    'translatorMode', 'translatorMode', async () => {
+      if (await TranslatorMode.enabled()) {
+        TranslatorMode.reload();
+      } else {
+        TranslatorMode.disable();
       }
     }
   );
