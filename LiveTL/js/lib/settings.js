@@ -25,12 +25,8 @@ async function createSettings(container) {
   settings.appendChild(await createChatSideToggle());
   settings.appendChild(await createCaptionDisplayToggle());
   settings.appendChild(await createCaptionDuration());
-  settings.appendChild(await createSpeechSynthToggle());
-  try {
-    settings.appendChild(await createTranslatorModeToggle());
-  } catch (e) {
-    console.error("BAD BAD", e);
-  }
+  if (!isAndroid) settings.appendChild(await createSpeechSynthToggle());
+  settings.appendChild(await createTranslatorModeToggle());
 
   return settings;
 }
@@ -423,7 +419,7 @@ async function createChatSideRadios() {
   }
 
   const onChange = async () => {
-    let side = right.checked ? 'right' : 'left';
+    let side = left.checked ? 'left' : 'right';
     await setStorage('chatSide', side);
     try {
       if (portrait.checked) {

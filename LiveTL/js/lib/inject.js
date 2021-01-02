@@ -62,4 +62,7 @@ window.setTimeout(() => {
     }
     `;
     document.body.appendChild(style);
+    setTimeout(()=>{
+        window.Android.startedLoading();
+    }, 500);
 }, 100);

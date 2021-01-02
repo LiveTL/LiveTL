@@ -228,13 +228,14 @@ async function reinsertButtons() {
 }
 
 async function switchChat() {
-  let count = 2;
-  document.querySelectorAll('.yt-dropdown-menu').forEach((e) => {
-    if (/Live chat/.exec(e.innerText) && count > 0) {
-      e.click();
-      count--;
-    }
-  });
+  // let count = 2;
+  // document.querySelectorAll('.yt-dropdown-menu').forEach((e) => {
+  //   if (/Live chat/.exec(e.innerText) && count > 0) {
+  //     e.click();
+  //     count--;
+  //   }
+  // });
+  // turned off chat switch for performance
 }
 
 function parseParams(loc) {
