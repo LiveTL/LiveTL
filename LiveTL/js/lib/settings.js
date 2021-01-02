@@ -418,7 +418,7 @@ async function createChatSideRadios() {
   }
 
   const onChange = async () => {
-    let side = right.checked ? 'right' : 'left';
+    let side = left.checked ? 'left' : 'right';
     await setStorage('chatSide', side);
     try {
       if (portrait.checked) {

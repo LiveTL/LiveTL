@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 loadWebview(sharedText, "loader", screenDensity);
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
                 this.action = "watch";
+                wv.setVisibility(View.GONE);
             }
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
@@ -116,7 +117,9 @@ public class MainActivity extends AppCompatActivity {
                         String jsURL = "javascript:" + readFile("inject.js").replaceAll(
                                 "\n", ""
                         );
-                        runOnUiThread(() -> wv.loadUrl(jsURL));
+                        runOnUiThread(() -> {
+                            wv.loadUrl(jsURL);
+                        });
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -275,6 +278,13 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(() -> onConfigurationChanged(
                 wv.getRootView().getResources().getConfiguration())
             );
+        }
+
+        @JavascriptInterface
+        public void startedLoading() {
+            runOnUiThread(() -> {
+                wv.setVisibility(View.VISIBLE);
+            });
         }
     }
 
