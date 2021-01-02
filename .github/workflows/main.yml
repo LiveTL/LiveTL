@@ -39,15 +39,15 @@ jobs:
           pushd LiveTL-Android
           bash ./gradlew assemble
           popd
-          pushd LiveTL-Android/app/release
+          pushd LiveTL-Android/app/build/outputs/apk/release
           echo ${{ secrets.KEY_B64 }} | base64 -d > my-release-key.jks
-          java -jar /usr/bin/apksigner sign --ks my-release-key.jks --out app-release-signed.apk --key-pass pass:${{ secrets.PASSWORD }} --ks-pass pass:${{ secrets.PASSWORD }} app-release.apk
+          java -jar /usr/bin/apksigner sign --ks my-release-key.jks --out app-release-signed.apk --key-pass pass:${{ secrets.PASSWORD }} --ks-pass pass:${{ secrets.PASSWORD }} app-release-unsigned.apk
           popd
       - name: Upload Android APK to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: LiveTL-Android/app/release/app-release-signed.apk
+          file: LiveTL-Android/app/build/outputs/apk/release/app-release-signed.apk
           asset_name: LiveTL-Android.apk
           tag: ${{ github.ref }}
           overwrite: true
