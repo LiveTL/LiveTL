@@ -623,6 +623,7 @@ function scrollBackToBottomOfChat() {
 }
 
 function asyncPrompt(text, value) {
+  value = value || '';
   if (!isAndroid) {
     return prompt(text, value);
   } else {
