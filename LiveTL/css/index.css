@@ -33,6 +33,10 @@
     background-color: black;
 }
 
+input {
+    color: black;
+}
+
 #videoPanel {
     width: var(--resizable-width);
     height: 100%;
