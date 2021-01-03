@@ -1,6 +1,6 @@
 window.setTimeout(() => {
     let vid = document.querySelector('video');
-    if (vid) vid.muted = true;
+    if (vid) vid.pause();
     let loading = document.querySelector('#loadingOverlay');
     if (loading) return;
     loading = document.createElement('div');
