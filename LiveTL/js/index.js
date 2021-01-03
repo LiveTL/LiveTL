@@ -288,7 +288,7 @@ window.sideChanged = async (side) => {
     videoPanel.style.height = `100%`;
     videoPanel.style.maxHeight = 'unset';
     youtubeChatPanel.style.height = 'var(--resizable-height)';
-    verticalHandle.querySelector('.handle').style.zIndex = `1`;
+    verticalHandle.querySelector('.handle').style.zIndex = `2`;
   }
   $(stream).css('max-width', '100%');
   $(stream).css('max-height', '100%');
