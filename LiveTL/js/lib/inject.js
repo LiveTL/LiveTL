@@ -1,6 +1,9 @@
 window.setTimeout(() => {
     let vid = document.querySelector('video');
-    if (vid) vid.pause();
+    if (vid) {
+        vid.muted = true;
+        vid.pause();
+    }
     let loading = document.querySelector('#loadingOverlay');
     if (loading) return;
     loading = document.createElement('div');
@@ -62,7 +65,7 @@ window.setTimeout(() => {
     }
     `;
     document.body.appendChild(style);
-    setTimeout(()=>{
+    setTimeout(() => {
         window.Android.startedLoading();
     }, 500);
 }, 100);
