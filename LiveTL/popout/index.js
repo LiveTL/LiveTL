@@ -28,8 +28,7 @@ let queued = new class QueuedMessages {
 
 let lastChunk = '';
 let messageReceive = (m) => {
-  let str = JSON.stringify(m.data);
-  d = JSON.parse(str);
+  d = JSON.parse(JSON.stringify(m.data));
   if (typeof d == 'object') {
     setTimeout(() => {
       if (d['yt-player-video-progress']) {
@@ -47,9 +46,10 @@ let messageReceive = (m) => {
         progress.previous = progress.current;
         // console.debug('Received timestamp update:', progress.current);
       } else if (d.type === 'messageChunk') {
+        let str = JSON.stringify(d.messages);
         if (str == lastChunk) return;
         lastChunk = str;
-        
+
         if (params.isReplay) {
           if (params.v != d.video) return;
           d.messages = d.messages.filter(message => {
