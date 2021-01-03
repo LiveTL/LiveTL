@@ -625,11 +625,8 @@ if (window.location.href.startsWith(aboutPage)) {
       setChatZoom(z.width, z.height, z.transform);
     }
     if (window.origin != d.origin) {
-      let i = 0;
-      let timespam = setInterval(() => {
-        postMessage(d.data);
-        if (++i >= 5) clearInterval(timespam);
-      }, 50);
+      postMessage(d.data);
+      postMessage({ 'yt-player-state-change': 1 });
     }
   });
   switchChat();
