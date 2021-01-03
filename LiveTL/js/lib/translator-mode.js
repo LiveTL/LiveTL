@@ -22,10 +22,12 @@ const TranslatorMode = (() => {
   }
 
   async function ytc_run() {
-    chatbox.style.whiteSpace = `pre-wrap`;
-    chatbox.addEventListener('keydown', checkAndAddTLTag);
-    sendButton.addEventListener('mouseup', checkAndAddTLTag);
-    chatbox.addEventListener('focus', checkAndAddTLTag);
+    if (chatbox) {
+      chatbox.style.whiteSpace = `pre-wrap`;
+      chatbox.addEventListener('keydown', checkAndAddTLTag);
+      sendButton.addEventListener('mouseup', checkAndAddTLTag);
+      chatbox.addEventListener('focus', checkAndAddTLTag);
+    }
   }
 
   function is_ytc() {
