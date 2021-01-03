@@ -554,9 +554,11 @@ async function loaded() {
 
     if (isAndroid) {
       setInterval(() => {
+        // can't clear interval because youtube just randomly re-adds it
         let icon = document.querySelector('.iv-branding');
         if (icon) {
           icon.style.display = 'none';
+          document.querySelector('.ytp-pause-overlay').style.display = 'none';
         }
       }, 100);
     }
@@ -631,7 +633,7 @@ if (window.location.href.startsWith(aboutPage)) {
     }
   });
   switchChat();
-} 
+}
 if (isLiveChat()) {
   window.addEventListener('message', d => {
     if (d.data.type === 'translatorMode') {
