@@ -1,4 +1,4 @@
-package com.android.livetl;
+package com.livetl.android;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.android.livetl", appContext.getPackageName());
+        assertEquals("com.livetl.android", appContext.getPackageName());
     }
 }

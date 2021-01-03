@@ -1,4 +1,4 @@
-package com.android.livetl;
+package com.livetl.android;
 
 import org.junit.Test;
 

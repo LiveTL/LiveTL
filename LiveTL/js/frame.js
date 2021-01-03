@@ -131,8 +131,12 @@ async function runLiveTL() {
   hrParent.appendChild(hr);
   prependOrAppend(hrParent);
 
+  let lastMessage = '';
   window.onNewMessage = async messageInfo => {
     if (!messageInfo) return;
+
+    let messageString = `${messageInfo.author.id} ${messageInfo.message}`;
+    if (messageString == lastMessage) return;
 
     // Determine whether we should display mod messages (if not set, default to yes)
     let displayModMessages = await getStorage('displayModMessages');
@@ -159,6 +163,7 @@ async function runLiveTL() {
           speechFuture = checkAndSpeak(messageInfo.message);
         }
         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
+        lastMessage = messageString;
         await speechFuture;
         return;
       }
@@ -184,6 +189,7 @@ async function runLiveTL() {
         let speechFuture = checkAndSpeak(translation.msg);
         sendToCaptions(translation.msg);
         prependOrAppend(createMessageEntry(messageInfo, translation.msg));
+        lastMessage = messageString;
         await speechFuture;
         return;
       }
@@ -199,6 +205,7 @@ async function runLiveTL() {
         let speechFuture = checkAndSpeak(messageInfo.message);
         sendToCaptions(messageInfo.message);
         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
+        lastMessage = messageString;
         await speechFuture;
       }
       return;
@@ -206,6 +213,10 @@ async function runLiveTL() {
   };
 
   updateZoomLevel();
+
+  if (isAndroid) {
+    window.Android.getOrientation();
+  }
 }
 
 async function reinsertButtons() {
@@ -217,13 +228,14 @@ async function reinsertButtons() {
 }
 
 async function switchChat() {
-  let count = 2;
-  document.querySelectorAll('.yt-dropdown-menu').forEach((e) => {
-    if (/Live chat/.exec(e.innerText) && count > 0) {
-      e.click();
-      count--;
-    }
-  });
+  // let count = 2;
+  // document.querySelectorAll('.yt-dropdown-menu').forEach((e) => {
+  //   if (/Live chat/.exec(e.innerText) && count > 0) {
+  //     e.click();
+  //     count--;
+  //   }
+  // });
+  // turned off chat switch for performance
 }
 
 function parseParams(loc) {
@@ -455,6 +467,7 @@ async function loaded() {
       } else {
         console.debug('Monitoring network events');
         injectScript(monkeypatch.toString() + 'monkeypatch();');
+        setTimeout(() => TranslatorMode.run(), 0)
         window.addEventListener('newMessageChunk', async (response) => {
           response = response.detail;
           response = JSON.parse(JSON.stringify(response));
@@ -541,9 +554,11 @@ async function loaded() {
 
     if (isAndroid) {
       setInterval(() => {
+        // can't clear interval because youtube just randomly re-adds it
         let icon = document.querySelector('.iv-branding');
         if (icon) {
           icon.style.display = 'none';
+          document.querySelector('.ytp-pause-overlay').style.display = 'none';
         }
       }, 100);
     }
@@ -619,6 +634,13 @@ if (window.location.href.startsWith(aboutPage)) {
   });
   switchChat();
 }
+if (isLiveChat()) {
+  window.addEventListener('message', d => {
+    if (d.data.type === 'translatorMode') {
+      TranslatorMode[d.data.fn]();
+    }
+  });
+}
 
 function wrapIconWithLink(icon, link) {
   const wrapper = document.createElement('a');
@@ -630,7 +652,7 @@ function wrapIconWithLink(icon, link) {
 
 async function createLogo() {
   const a = document.createElement('a');
-  a.href = aboutPage;
+  a.href = 'https://kentonishi.github.io/LiveTL';
   a.target = 'about:blank';
   const logo = document.createElement('img');
   logo.className = 'logo';

@@ -25,7 +25,11 @@ async function createSettings(container) {
   settings.appendChild(await createChatSideToggle());
   settings.appendChild(await createCaptionDisplayToggle());
   settings.appendChild(await createCaptionDuration());
-  settings.appendChild(await createSpeechSynthToggle());
+  settings.appendChild(await createCaptionZoomSlider());
+  if (!isAndroid) {
+    settings.appendChild(await createSpeechSynthToggle());
+    settings.appendChild(await createTranslatorModeToggle());
+  }
 
   return settings;
 }
@@ -224,72 +228,146 @@ function createTransSelectChecklist() {
   return checklist;
 }
 
-function createZoomLabel() {
+function createSliderLabel(labelText) {
   const label = document.createElement('span');
   label.className = 'optionLabel';
-  label.textContent = 'Zoom: ';
+  label.textContent = labelText;
   return label;
 }
 
-const zoomSliderInputId = 'zoomSliderInput';
+async function createSliderInput(id, min, max,
+                                 getSliderValue, setSliderValue,
+                                 onchange, toScale)
+{
+  let slider = document.createElement('input');
+  slider.id = id;
+  slider.type = 'range';
+  slider.min = min;
+  slider.max = max;
+  slider.style.padding = '4px';
+  slider.step = '0.01';
+  slider.value = (await getSliderValue()) || (isAndroid ? 0.5 : 1);
+  slider.style.verticalAlign = 'middle';
+  slider.addEventListener('change', async () => {
+    const s = await updateSliderLevel(id, getSliderValue, setSliderValue, toScale);
+    await onchange(s);
+  });
 
-async function createZoomSliderInput() {
-  let zoomSlider = document.createElement('input');
-  zoomSlider.id = zoomSliderInputId;
-  zoomSlider.type = 'range';
-  zoomSlider.min = isAndroid ? '0.25' : '0.5';
-  zoomSlider.max = isAndroid ? '1.5' : '2';;
-  zoomSlider.style.padding = '4px';
-  zoomSlider.step = '0.01';
-  zoomSlider.value = ((await getStorage('zoom')) || (isAndroid ? 0.5 : 1));
-  zoomSlider.style.verticalAlign = 'middle';
-  zoomSlider.addEventListener('change', () => updateZoomLevel());
-
-  return zoomSlider;
+  return slider;
 }
 
-async function updateZoomLevel() {
-  let value = parseFloat(document.getElementById(zoomSliderInputId).value) || await getStorage('zoom') || 1;
+async function updateSliderLevel(id, getSliderValue,
+                                 setSliderValue, toScale=true) {
+  let value = parseFloat(document.getElementById(id).value) || await getSliderValue() || 1;
   let scale = Math.ceil(value * 100);
   let container = document.body;// document.querySelector('.bodyWrapper');
-  container.style.transformOrigin = '0 0';
-  container.style.transform = `scale(${scale / 100})`;
-  let inverse = 10000 / scale;
-  container.style.width = `${inverse}%`;
-  container.style.height = `${inverse}%`;
-  await setStorage('zoom', scale / 100);
-  window.parent.postMessage({
+  const transform = `scale(${scale / 100})`;
+  const inverse = 10000 / scale;
+  const newWidth = `${inverse}%`;
+  const newHeight = `${inverse}%`;
+  if (toScale) {
+    container.style.transformOrigin = '0 0';
+    container.style.width = newWidth;
+    container.style.height = newHeight;
+    container.style.transform = transform;
+  }
+  await setSliderValue(scale / 100);
+  return {
     type: 'zoom',
     zoom: {
       width: container.style.width,
       height: container.style.height,
       transform: container.style.transform
     }
-  }, '*');
+  }
 }
 
-function createZoomResetButton() {
+function createSliderResetButton(id, getSliderValue,
+                                 setSliderValue, onchange,
+                                 toScale)
+{
   let resetButton = document.createElement('input');
   resetButton.value = 'Reset';
   resetButton.style.marginLeft = '4px';
   resetButton.style.verticalAlign = 'middle';
   resetButton.type = 'button';
   resetButton.addEventListener('click', async () => {
-    document.getElementById(zoomSliderInputId).value = (isAndroid ? 0.5 : 1);
-    await updateZoomLevel();
+    document.getElementById(id).value = (isAndroid ? 0.5 : 1);
+    const s = await updateSliderLevel(id, getSliderValue, setSliderValue, toScale);
+    await onchange(s);
   });
   return resetButton;
 }
 
+async function createSlider(id, min, max, labelText,
+                            getSliderValue, setSliderValue,
+                            onchange, toScale=true)
+{
+  const settings = document.createElement('div');
+
+  settings.appendChild(createSliderLabel(labelText));
+  settings.appendChild(await createSliderInput(
+    id, min, max, getSliderValue, setSliderValue, onchange, toScale
+  ));
+  settings.appendChild(createSliderResetButton(
+    id, getSliderValue, setSliderValue, onchange, toScale
+  ));
+
+  return settings;
+}
+
+function postToParent(s) {
+  window.parent.postMessage(s, '*');
+}
+
+async function createGenericZoomSlider(id, labelText,
+                                       getSliderValue,
+                                       setSliderValue,
+                                       onchange,
+                                       toScale=true)
+{
+  return createSlider(
+    id,
+    isAndroid ? '0.25' : '0.5', 
+    isAndroid ? '1.5' : '2',
+    labelText,
+    getSliderValue,
+    setSliderValue,
+    onchange,
+    toScale
+  );
+}
+
 async function createZoomSlider() {
-  const zoomSettings = document.createElement('div');
-  const zoomSliderInput = await createZoomSliderInput();
+  return createGenericZoomSlider(
+    'zoomSliderInput',
+    'Zoom: ',
+    () => getStorage('zoom'),
+    (value) => setStorage('zoom', value),
+    postToParent,
+  );
+}
 
-  zoomSettings.appendChild(createZoomLabel());
-  zoomSettings.appendChild(zoomSliderInput);
-  zoomSettings.appendChild(createZoomResetButton());
+// Needed for compatibility issues in frame.js
+async function updateZoomLevel() {
+  postToParent(
+    await updateSliderLevel(
+      'zoomSliderInput',
+      () => getStorage('zoom'),
+      (value) => setStorage('zoom', value),
+    )
+  );
+}
 
-  return zoomSettings;
+async function createCaptionZoomSlider() {
+  return createGenericZoomSlider(
+    'captionZoomSliderInput',
+    'Caption Zoom: ',
+    getCaptionZoom,
+    setCaptionZoom,
+    postToParent,
+    false
+  )
 }
 
 function createTimestampLabel() {
@@ -398,12 +476,14 @@ function createChatSideLabel() {
 async function createChatSideRadios() {
   const left = document.createElement('input');
   const right = document.createElement('input');
+  const portrait = document.createElement('input');
 
   left.id = 'chatSideLeft';
   right.id = 'chatSideRight';
+  portrait.id = 'chatSidePortrait';
 
-  left.type = right.type = 'radio';
-  left.name = right.name = 'chatSide';
+  left.type = right.type = portrait.type = 'radio';
+  left.name = right.name = portrait.name = 'chatSide';
 
   const side = await getStorage('chatSide');
 
@@ -416,30 +496,38 @@ async function createChatSideRadios() {
   }
 
   const onChange = async () => {
-    let side = right.checked ? 'right' : 'left';
+    let side = left.checked ? 'left' : 'right';
     await setStorage('chatSide', side);
     try {
-      await window.parent.sideChanged(side);
+      if (portrait.checked) {
+        await window.parent.orientationChanged('portrait');
+      } else {
+        await window.parent.orientationChanged('landscape');
+      }
     } catch (e) { }
   };
 
   left.addEventListener('change', onChange);
   right.addEventListener('change', onChange);
+  portrait.addEventListener('change', onChange);
 
-  return { left, right };
+  return { left, right, portrait };
 }
 
 function createChatSideRadioLabels() {
   const left = document.createElement('label');
   const right = document.createElement('label');
+  const portrait = document.createElement('label');
 
   left.htmlFor = 'chatSideLeft';
   right.htmlFor = 'chatSideRight';
+  portrait.htmlFor = 'chatSidePortrait';
 
   left.textContent = 'Left';
   right.textContent = 'Right';
+  portrait.textContent = 'Portrait';
 
-  return { left, right };
+  return { left, right, portrait };
 }
 
 async function createChatSideToggle() {
@@ -453,6 +541,8 @@ async function createChatSideToggle() {
   chatSideToggle.appendChild(labels.left);
   chatSideToggle.appendChild(radios.right);
   chatSideToggle.appendChild(labels.right);
+  chatSideToggle.appendChild(radios.portrait);
+  chatSideToggle.appendChild(labels.portrait);
 
   return chatSideToggle;
 }
@@ -662,6 +752,39 @@ async function createSpeechSynthToggleCheckbox() {
         await speak('Read aloud enabled');
       } else {
         await speak('Read aloud disabled');
+      }
+    }
+  );
+}
+
+// still asyncronous so await the result
+function createTranslatorModeToggle() {
+  return new Promise((res, rej) => {
+    setTimeout(async () => {
+      try {
+        await setupDefaultTranslatorMode();
+        const transModeToggle = document.createElement('div');
+        transModeToggle.appendChild(createTranslatorModeToggleLabel());
+        transModeToggle.appendChild(await createTranslatorModeToggleCheckbox());
+        res(transModeToggle);
+      } catch (e) {
+        rej(e);
+      }
+    }, 0);
+  });
+}
+
+function createTranslatorModeToggleLabel() {
+  return createCheckToggleLabel('Auto-Prefix Chat Messages:', 'translatorMode');
+}
+
+async function createTranslatorModeToggleCheckbox() {
+  return await createCheckToggleCheckbox(
+    'translatorMode', 'translatorMode', async () => {
+      if (await TranslatorMode.enabled()) {
+        TranslatorMode.reload();
+      } else {
+        TranslatorMode.disable();
       }
     }
   );

@@ -1,14 +1,16 @@
-package com.android.livetl;
+package com.livetl.android;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     );
     int screenDensity = 0;
     String action = "";
+    WebView wv;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -79,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 loadWebview(sharedText, "loader", screenDensity);
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
                 this.action = "watch";
+                wv.setVisibility(View.GONE);
             }
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
@@ -91,8 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     void loadWebview(String url, String inject, int density){
-        WebView wv = (WebView) findViewById(R.id.mainWebview);
-        wv.addJavascriptInterface(new JSObj(wv), "Android");
+        wv = (WebView) findViewById(R.id.mainWebview);
         wv.setWebViewClient(new WebViewClient() {
 
             public void onPageFinished(WebView view, String url) {
@@ -114,7 +117,9 @@ public class MainActivity extends AppCompatActivity {
                         String jsURL = "javascript:" + readFile("inject.js").replaceAll(
                                 "\n", ""
                         );
-                        runOnUiThread(() -> wv.loadUrl(jsURL));
+                        runOnUiThread(() -> {
+                            wv.loadUrl(jsURL);
+                        });
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -192,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
         wv.setOverScrollMode(View.OVER_SCROLL_NEVER);
         wv.setScrollbarFadingEnabled(false);
         wv.setWebContentsDebuggingEnabled(true);
+        wv.addJavascriptInterface(new JSObj(wv), "Android");
         View root = wv.getRootView();
         ViewTreeObserver treeObserver = root.getViewTreeObserver();
         treeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -266,6 +272,20 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+        @JavascriptInterface
+        public void getOrientation() {
+            runOnUiThread(() -> onConfigurationChanged(
+                wv.getRootView().getResources().getConfiguration())
+            );
+        }
+
+        @JavascriptInterface
+        public void startedLoading() {
+            runOnUiThread(() -> {
+                wv.setVisibility(View.VISIBLE);
+            });
+        }
     }
 
     public String readFile(String filePath) throws IOException {
@@ -295,5 +315,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         return;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        runOnUiThread(() -> wv.loadUrl("javascript:onAndroidOrientationChange('" +
+            getOrientation(newConfig) +
+        "')"));
+    }
+
+    private String getOrientation(Configuration newConfig) {
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            return "landscape";
+        }
+        return "portrait";
     }
 }
