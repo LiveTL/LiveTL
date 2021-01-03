@@ -133,7 +133,7 @@ async function runLiveTL() {
 
   window.onNewMessage = async messageInfo => {
     if (!messageInfo) return;
-    
+
     // Determine whether we should display mod messages (if not set, default to yes)
     let displayModMessages = await getStorage('displayModMessages');
     if (displayModMessages == null) {
@@ -551,7 +551,10 @@ async function loaded() {
         let icon = document.querySelector('.iv-branding');
         if (icon) {
           icon.style.display = 'none';
-          document.querySelector('.ytp-pause-overlay').style.display = 'none';
+        }
+        let suggestions = document.querySelector('.ytp-pause-overlay');
+        if (suggestions) {
+          suggestions.style.display = 'none';
         }
       }, 100);
     }
