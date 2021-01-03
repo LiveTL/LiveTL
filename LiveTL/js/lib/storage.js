@@ -54,6 +54,7 @@ async function setupDefaultTranslatorMode() {
 }
 
 async function getCaptionZoom() {
+  await setDefaultSetting('captionZoom', isAndroid ? 0.5 : 1);
   return await getStorage('captionZoom');
 }
 

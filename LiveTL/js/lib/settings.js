@@ -350,11 +350,12 @@ async function createZoomSlider() {
 
 // Needed for compatibility issues in frame.js
 async function updateZoomLevel() {
-  await updateSliderLevel(
-    'zoomSliderInput',
-    () => getStorage('zoom'),
-    (value) => setStorage('zoom', value),
-    postToParent
+  postToParent(
+    await updateSliderLevel(
+      'zoomSliderInput',
+      () => getStorage('zoom'),
+      (value) => setStorage('zoom', value),
+    )
   );
 }
 
