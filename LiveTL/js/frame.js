@@ -338,17 +338,13 @@ async function insertLiveTLButtons(isHolotools = false) {
         }
       },
       'rgb(143, 143, 143)');
+  } else {
+    makeButton('Expand Translations',
+      async () => {
+        params = parseParams();
+        window.location.href = `${await getWAR('index.html')}?v=${params.v}&mode=chat&useLiveTL=1&noVideo=1`;
+      });
   }
-  makeButton('Expand Translations',
-    async () => {
-      params = parseParams();
-      let tlurl = `${await getWAR('index.html')}?v=${params.v}&mode=chat&useLiveTL=1&noVideo=1`;
-      if (!isHolotools) {
-        document.querySelector('#chatframe').src = tlurl;
-      } else {
-        window.location.href = tlurl;
-      }
-    }, `var(--paper-indigo-300)`);
 }
 
 function isReplayChat() {
