@@ -348,7 +348,7 @@ async function insertLiveTLButtons(isHolotools = false) {
       } else {
         window.location.href = tlurl;
       }
-    }, `var(--paper-indigo-300)`);
+    }, isHolotools ? undefined : `var(--paper-indigo-300)`);
 }
 
 function isReplayChat() {
