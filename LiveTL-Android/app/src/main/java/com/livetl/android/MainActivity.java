@@ -307,8 +307,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        wv.onPause();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
+        wv.onResume();
         updateUI();
     }
 

@@ -1,5 +1,5 @@
 {
-  "name": "LiveTL - Live Translations for Streams",
+  "name": "LiveTL - Translation Filter for Streams",
   "description": "Get live translations for YouTube streams, crowdsourced from bilingual viewers!",
   "version": "VERSION",
   "manifest_version": 2,

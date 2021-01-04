@@ -98,6 +98,7 @@ window.addEventListener('message', d => {
     setStreamZoom();
   }
 
+  d.video = params.v;
   ltlchat.contentWindow.postMessage(d, '*');
 });
 
@@ -288,7 +289,7 @@ window.sideChanged = async (side) => {
     videoPanel.style.height = `100%`;
     videoPanel.style.maxHeight = 'unset';
     youtubeChatPanel.style.height = 'var(--resizable-height)';
-    verticalHandle.querySelector('.handle').style.zIndex = `1`;
+    verticalHandle.querySelector('.handle').style.zIndex = `2`;
   }
   $(stream).css('max-width', '100%');
   $(stream).css('max-height', '100%');
@@ -298,6 +299,7 @@ window.sideChanged = async (side) => {
     liveTLPanel.style.order = '2';
     videoPanel.style.minWidth = '10px';
     $(liveTLPanel).css('width', 'unset');
+    $(liveTLPanel).css('flex-grow', '1');
     $(youtubeChatPanel).css('max-width', '100%');
     $(outputPanel).css('max-width', '100%');
     if (screenMode != 'portrait') {
@@ -310,6 +312,8 @@ window.sideChanged = async (side) => {
     videoPanel.style.order = '2';
     liveTLPanel.style.order = '1';
     videoPanel.style.minWidth = '0px';
+    $(liveTLPanel).css('flex-grow', 0);
+    $(liveTLPanel).css('width', '100%');
     $(youtubeChatPanel).css('max-width', 'calc(100% - 10px)');
     $(outputPanel).css('max-width', 'calc(100% - 10px)');
     $(stream).css('max-width', '100%');

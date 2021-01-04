@@ -2,9 +2,11 @@ async function isNewUser(id) {
   return allTranslators.byID[id] == null;
 }
 
-async function isChecked(userid) {
-  return (await getUserStatus(userid)).checked;
-}
+// async function isChecked(userid) {
+//   return (await getUserStatus(userid)).checked;
+// }
+let isChecked = getUserStatusAsBool;
+// same function, deprecated and should be moved
 
 async function saveUserStatus(userid, checked, addedByUser, byname) {
   return await setStorage(`user${(byname ? 'byname' : '')}_${userid}`, { checked, addedByUser });

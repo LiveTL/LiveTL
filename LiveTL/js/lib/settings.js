@@ -236,9 +236,8 @@ function createSliderLabel(labelText) {
 }
 
 async function createSliderInput(id, min, max,
-                                 getSliderValue, setSliderValue,
-                                 onchange, toScale)
-{
+  getSliderValue, setSliderValue,
+  onchange, toScale) {
   let slider = document.createElement('input');
   slider.id = id;
   slider.type = 'range';
@@ -257,7 +256,7 @@ async function createSliderInput(id, min, max,
 }
 
 async function updateSliderLevel(id, getSliderValue,
-                                 setSliderValue, toScale=true) {
+  setSliderValue, toScale = true) {
   let value = parseFloat(document.getElementById(id).value) || await getSliderValue() || 1;
   let scale = Math.ceil(value * 100);
   let container = document.body;// document.querySelector('.bodyWrapper');
@@ -283,9 +282,8 @@ async function updateSliderLevel(id, getSliderValue,
 }
 
 function createSliderResetButton(id, getSliderValue,
-                                 setSliderValue, onchange,
-                                 toScale)
-{
+  setSliderValue, onchange,
+  toScale) {
   let resetButton = document.createElement('input');
   resetButton.value = 'Reset';
   resetButton.style.marginLeft = '4px';
@@ -300,9 +298,8 @@ function createSliderResetButton(id, getSliderValue,
 }
 
 async function createSlider(id, min, max, labelText,
-                            getSliderValue, setSliderValue,
-                            onchange, toScale=true)
-{
+  getSliderValue, setSliderValue,
+  onchange, toScale = true) {
   const settings = document.createElement('div');
 
   settings.appendChild(createSliderLabel(labelText));
@@ -321,14 +318,13 @@ function postToParent(s) {
 }
 
 async function createGenericZoomSlider(id, labelText,
-                                       getSliderValue,
-                                       setSliderValue,
-                                       onchange,
-                                       toScale=true)
-{
+  getSliderValue,
+  setSliderValue,
+  onchange,
+  toScale = true) {
   return createSlider(
     id,
-    isAndroid ? '0.25' : '0.5', 
+    isAndroid ? '0.25' : '0.5',
     isAndroid ? '1.5' : '2',
     labelText,
     getSliderValue,
@@ -627,6 +623,7 @@ function scrollBackToBottomOfChat() {
 }
 
 function asyncPrompt(text, value) {
+  value = value || '';
   if (!isAndroid) {
     return prompt(text, value);
   } else {
@@ -643,7 +640,11 @@ function createCustomUserButton(container) {
   addButton.style.verticalAlign = 'middle';
   addButton.type = 'button';
   addButton.addEventListener('click', async () => {
-    let name = await asyncPrompt('Enter a username:');
+    let name = await asyncPrompt(
+      'Please enter a username. ' +
+      'Users you add will be filtered automatically in all future streams if they are present. ' +
+      'Otherwise, they will not be displayed in the user list.'
+    );
     if (name) {
       name = name.trim().toLowerCase();
       await saveUserStatus(name, true, undefined, true);

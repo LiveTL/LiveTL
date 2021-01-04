@@ -33,6 +33,10 @@
     background-color: black;
 }
 
+input {
+    color: black;
+}
+
 #videoPanel {
     width: var(--resizable-width);
     height: 100%;
@@ -41,7 +45,6 @@
 }
 
 #ltlPanel {
-    flex-grow: 1;
     height: auto;
     flex-direction: column;
     display: flex;

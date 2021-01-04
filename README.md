@@ -1,4 +1,4 @@
-# LiveTL - Live Translations for Streams
+# LiveTL - Translation Filter for Streams
 
 ![Latest Release Build](https://github.com/KentoNishi/LiveTL/workflows/Latest%20Release%20Build/badge.svg)
 ![Tests](https://github.com/KentoNishi/LiveTL/workflows/Tests/badge.svg)
