@@ -98,6 +98,7 @@ window.addEventListener('message', d => {
     setStreamZoom();
   }
 
+  d.video = params.v;
   ltlchat.contentWindow.postMessage(d, '*');
 });
 

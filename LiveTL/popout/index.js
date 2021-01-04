@@ -5,47 +5,81 @@ let progress = {
   previous: null
 };
 
-let queued = new class QueuedMessages {
-  next = null
-  messages = {}
-  push(message, secs) {
-    if (!this.next) this.next = secs;
-    if (!this.messages[secs]) this.messages[secs] = [];
-    this.messages[secs].push(message);
+class Queue {
+  constructor() {
+    this.clear();
   }
-  pop(secs) {
-    if (!this.next || secs < this.next) return false;
-    let m = [...this.messages[this.next]];
-    delete this.messages[this.next];
-    this.next = Object.keys(this.messages)[0]; // Assume order
-    return m;
-  }
+
   clear() {
-    this.messages = {};
-    this.next = null;
+    this.top = null;
+    this.last = this.top;
   }
-}
+
+  pop() {
+    let front = this.top;
+    this.top = this.top.next;
+    if (front == this.last) {
+      this.last = null;
+    }
+    return front;
+  }
+
+  push(item) {
+    let newItem = { data: item };
+    if (this.last == null) {
+      this.top = newItem;
+      this.last = this.top;
+    } else {
+      this.last.next = newItem;
+      this.last = newItem;
+    }
+  }
+};
+
+let queued = new Queue();
 
 let lastChunk = '';
 let messageReceive = (m) => {
-  d = JSON.parse(JSON.stringify(m.data));
+  try {
+    d = JSON.parse(JSON.stringify(m.data));
+  } catch (e) { return; }
   if (typeof d == 'object') {
     setTimeout(() => {
-      // if (d['yt-player-video-progress']) {
-      //   progress.current = d['yt-player-video-progress'];
-      //   if (!progress.previous) progress.previous = progress.current;
-      //   if (Math.abs(progress.previous - progress.current) > 1) {
-      //     // Difference in progress above a second, assume user scrubbed, clear.
-      //     queued.clear();
-      //   }
-      //   // Find queued messages for current timeframe
-      //   let m = queued.pop(progress.current);
-      //   if (m) {
-      //     m.forEach(onNewMessage);
-      //   }
-      //   progress.previous = progress.current;
-      //   // console.debug('Received timestamp update:', progress.current);
-      // } else if (d.type === 'messageChunk') {
+      if (params.v != d.video) return;
+      if (d['yt-player-video-progress']) {
+        progress.current = d['yt-player-video-progress'];
+        if (Math.abs(progress.previous - progress.current) > 1 || progress.current == null) {
+          // Difference in progress above a second, assume user scrubbed, clear.
+          // queued.clear();
+          while (queued.top) {
+            onNewMessage(queued.pop().data.message);
+          }
+        } else {
+          while (queued.top != null && queued.top.data.timestamp <= progress.current) {
+            onNewMessage(queued.pop().data.message);
+          }
+        }
+        progress.previous = progress.current;
+      } else if (d.type === 'messageChunk') {
+        let str = JSON.stringify(d.messages);
+        if (str == lastChunk) return;
+        lastChunk = str;
+        if (params.isReplay) {
+          d.messages.forEach(message => {
+            let secs = Array.from(message.timestamp.split(':'), t => parseInt(t)).reverse();
+            secs = secs[0] + (secs[1] ? secs[1] * 60 : 0)
+              + (secs[2] ? secs[2] * 60 * 60 : 0);
+            queued.push({
+              timestamp: secs,
+              message: message
+            });
+          });
+        } else {
+          d.messages.forEach(onNewMessage);
+        }
+        console.debug('Received message chunk:', d);
+      }
+      //  else if (d.type === 'messageChunk') {
       //   let str = JSON.stringify(d.messages);
       //   if (str == lastChunk) return;
       //   lastChunk = str;
@@ -69,13 +103,14 @@ let messageReceive = (m) => {
       // Send past and current messages
       // }
 
-      if (d.type === 'messageChunk') {
-        let str = JSON.stringify(d.messages);
-        if (str == lastChunk) return;
-        lastChunk = str;
-        d.messages.forEach(onNewMessage);
-        console.debug('Received message chunk:', d);
-      }
+      // uncomment if the queueing code is too buggy
+      // if (d.type === 'messageChunk') {
+      //   let str = JSON.stringify(d.messages);
+      //   if (str == lastChunk) return;
+      //   lastChunk = str;
+      //   d.messages.forEach(onNewMessage);
+      //   console.debug('Received message chunk:', d);
+      // }
     }, 0);
   }
 };
