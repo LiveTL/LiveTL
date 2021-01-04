@@ -301,7 +301,7 @@ async function insertLiveTLButtons(isHolotools = false) {
 
   getTitle = () => encodeURIComponent(document.querySelector('#container > .title').textContent);
 
-  restOfURL = () => `&title=${getTitle()}&useLiveTL=1${getContinuationURL()}&isReplay=${(hasReplayChatOpen() ? 1 : '')}`;
+  restOfURL = () => `&title=${getTitle()}&useLiveTL=1${getContinuationURL()}&isReplay=${(hasReplayChatOpen() ? 1 : '')}&${Marine.holniParam()}`;
 
   window.watchInLiveTL = async () => {
     params = parseParams();
