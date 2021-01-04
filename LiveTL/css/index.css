@@ -45,7 +45,6 @@ input {
 }
 
 #ltlPanel {
-    flex-grow: 1;
     height: auto;
     flex-direction: column;
     display: flex;
