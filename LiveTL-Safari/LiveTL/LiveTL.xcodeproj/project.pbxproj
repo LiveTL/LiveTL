@@ -55,6 +55,7 @@
 		360AA7E5257E97CD008801EF /* updateMessage.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = updateMessage.txt; path = ../../../build/safari/LiveTL/updateMessage.txt; sourceTree = "<group>"; };
 		361F07E6258A6E050044E008 /* popout */ = {isa = PBXFileReference; lastKnownFileType = folder; name = popout; path = ../../../build/safari/LiveTL/popout; sourceTree = "<group>"; };
 		363C674425795AD8009020DE /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
+		36862EFF25A385E900C85120 /* LiveTL */ = {isa = PBXFileReference; lastKnownFileType = folder; name = LiveTL; path = ../..; sourceTree = "<group>"; };
 		36F39D402578A47300BA3A6F /* LiveTl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiveTl.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		36F39D432578A47300BA3A6F /* LiveTl.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LiveTl.entitlements; sourceTree = "<group>"; };
 		36F39D442578A47300BA3A6F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -99,6 +100,7 @@
 		36F39D372578A47200BA3A6F = {
 			isa = PBXGroup;
 			children = (
+				36862EFF25A385E900C85120 /* LiveTL */,
 				36F39D422578A47300BA3A6F /* LiveTl */,
 				36F39D592578A47500BA3A6F /* LiveTl Extension */,
 				36F39D562578A47500BA3A6F /* Frameworks */,
