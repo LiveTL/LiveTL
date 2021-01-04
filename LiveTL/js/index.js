@@ -98,6 +98,7 @@ window.addEventListener('message', d => {
     setStreamZoom();
   }
 
+  d.video = params.v;
   ltlchat.contentWindow.postMessage(d, '*');
 });
 
@@ -132,7 +133,7 @@ if (rightHeight) {
 
 if (params.noVideo) {
   videoPanel.style.display = 'none';
-  document.querySelectorAll('#handleV').style.display = 'none';
+  // document.querySelectorAll('#handleV').style.display = 'none';
 } else {
   stream.src = `${embedDomain}?v=${v}&mode=video`;
   if (rightHeight) {
@@ -225,7 +226,7 @@ const stop = () => {
   if (!isNaN(width) && !params.noVideo) {
     localStorage.setItem('LTL:leftPanelWidth', width.toString() + '%');
   }
-  if (!isNaN(height) && !params.noVideo) {
+  if (!isNaN(height)) {
     localStorage.setItem('LTL:rightPanelHeight', height.toString() + '%');
     setPaneHeight(getPaneHeight());
   }
@@ -298,6 +299,7 @@ window.sideChanged = async (side) => {
     liveTLPanel.style.order = '2';
     videoPanel.style.minWidth = '10px';
     $(liveTLPanel).css('width', 'unset');
+    $(liveTLPanel).css('flex-grow', '1');
     $(youtubeChatPanel).css('max-width', '100%');
     $(outputPanel).css('max-width', '100%');
     if (screenMode != 'portrait') {
@@ -310,6 +312,8 @@ window.sideChanged = async (side) => {
     videoPanel.style.order = '2';
     liveTLPanel.style.order = '1';
     videoPanel.style.minWidth = '0px';
+    $(liveTLPanel).css('flex-grow', 0);
+    $(liveTLPanel).css('width', '100%');
     $(youtubeChatPanel).css('max-width', 'calc(100% - 10px)');
     $(outputPanel).css('max-width', 'calc(100% - 10px)');
     $(stream).css('max-width', '100%');
