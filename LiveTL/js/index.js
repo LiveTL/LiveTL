@@ -133,7 +133,7 @@ if (rightHeight) {
 
 if (params.noVideo) {
   videoPanel.style.display = 'none';
-  document.querySelectorAll('#handleV').style.display = 'none';
+  // document.querySelectorAll('#handleV').style.display = 'none';
 } else {
   stream.src = `${embedDomain}?v=${v}&mode=video`;
   if (rightHeight) {
@@ -226,7 +226,7 @@ const stop = () => {
   if (!isNaN(width) && !params.noVideo) {
     localStorage.setItem('LTL:leftPanelWidth', width.toString() + '%');
   }
-  if (!isNaN(height) && !params.noVideo) {
+  if (!isNaN(height)) {
     localStorage.setItem('LTL:rightPanelHeight', height.toString() + '%');
     setPaneHeight(getPaneHeight());
   }
