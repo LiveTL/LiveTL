@@ -693,11 +693,16 @@ async function createCaptionDuration() {
   const captionDuration = document.createElement('div');
   captionDuration.appendChild(createCaptionDurationInputLabel());
   captionDuration.appendChild(await createCaptionDurationInput());
+  captionDuration.appendChild(createCaptionTimeoutDesc());
   return captionDuration;
 }
 
 function createCaptionDurationInputLabel() {
   return createCheckToggleLabel('Caption Timeout: ', 'captionDuration');
+}
+
+function createCaptionTimeoutDesc() {
+  return createCheckToggleLabel(' secs. (-1 = disable)');
 }
 
 async function createCaptionDurationInput() {
@@ -707,6 +712,7 @@ async function createCaptionDurationInput() {
   input.type = 'number';
   input.min = -1;
   input.value = delay;
+  input.style.width = '50px';
 
   let callback = async () => {
     // Remove sticking perma captions if enabling
