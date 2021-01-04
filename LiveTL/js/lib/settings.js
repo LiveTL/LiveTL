@@ -24,10 +24,10 @@ async function createSettings(container) {
   settings.appendChild(await createTextDirectionToggle(container));
   if (!parseParams(window.parent.location.href).noVideo) {
     settings.appendChild(await createChatSideToggle());
+    settings.appendChild(await createCaptionDisplayToggle());
+    settings.appendChild(await createCaptionDuration());
+    settings.appendChild(await createCaptionZoomSlider());
   }
-  settings.appendChild(await createCaptionDisplayToggle());
-  settings.appendChild(await createCaptionDuration());
-  settings.appendChild(await createCaptionZoomSlider());
   if (!isAndroid) {
     settings.appendChild(await createSpeechSynthToggle());
     settings.appendChild(await createTranslatorModeToggle());
