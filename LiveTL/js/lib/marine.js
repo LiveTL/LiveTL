@@ -40,8 +40,10 @@ const Marine = (() => {
   return { holniParam, isHolni, makeFaviconBL, resetFavicon };
 })();
 
-if (Marine.isHolni()) {
-  Marine.makeFaviconBL();
-} else {
-  Marine.resetFavicon();
+if (!isAndroid) {
+  if (Marine.isHolni()) {
+    Marine.makeFaviconBL();
+  } else {
+    Marine.resetFavicon();
+  }
 }
