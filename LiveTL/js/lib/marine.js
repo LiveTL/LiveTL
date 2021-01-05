@@ -30,7 +30,7 @@ const Marine = (() => {
   }
 
   function faviconElement() {
-    return document.querySelector("link[rel*='icon']");
+    return document.querySelector("link[rel*='icon']") || {};
   }
 
   async function getMarineFaviconURL() {

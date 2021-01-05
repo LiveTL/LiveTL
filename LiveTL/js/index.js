@@ -97,10 +97,13 @@ window.addEventListener('message', d => {
     }, '*');
     setStreamZoom();
   }
+});
 
+window.addEventListener('message', d => {
+  d = JSON.parse(JSON.stringify(d.data));
   d.video = params.v;
   ltlchat.contentWindow.postMessage(d, '*');
-});
+})
 
 let q = `?isReplay=${(r ? 1 : '')}&v=${v}${(c ? `&continuation=${c}` : '')}`;
 
