@@ -5,7 +5,8 @@ async function isNewUser(id) {
 // async function isChecked(userid) {
 //   return (await getUserStatus(userid)).checked;
 // }
-let isChecked = getUserStatusAsBool;
+// Not sure how the next line worked
+// let isChecked = getUserStatusAsBool;
 // same function, deprecated and should be moved
 
 async function saveUserStatus(userid, checked, addedByUser, byname) {
@@ -75,6 +76,8 @@ async function setStorage(key, value) {
   return await storage.set(obj);
 }
 
+let isChecked = getUserStatusAsBool;
+
 let storage = {
   get: key => null,
   set: obj => null
@@ -116,3 +119,4 @@ if (isAndroid) {
   };
 }
 
+module.exports = { isNewUser, saveUserStatus, getUserStatus, getUserStatusAsBool, getDefaultLanguage, setDefaultLanguage, setDefaultSetting, setupDefaultCaption, setupDefaultCaptionDelay, setupDefaultSpeechSynth, setupDefaultTranslatorMode, getCaptionZoom, setCaptionZoom, setCaptionZoom, getStorage, setStorage, isChecked, storage };

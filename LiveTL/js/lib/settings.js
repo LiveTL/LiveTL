@@ -799,3 +799,4 @@ async function createTranslatorModeToggleCheckbox() {
   );
 }
 
+module.exports = { createSettings };

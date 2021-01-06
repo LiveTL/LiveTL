@@ -47,3 +47,5 @@ if (!isAndroid) {
     Marine.resetFavicon();
   }
 }
+
+module.exports = { Marine };

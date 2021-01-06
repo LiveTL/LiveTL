@@ -100,3 +100,5 @@ const TranslatorMode = (() => {
 })();
 
 TranslatorMode.init();
+
+module.exports = { TranslatorMode };

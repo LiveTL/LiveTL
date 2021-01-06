@@ -24,3 +24,4 @@ function unlockSpeech() {
 const speechSynthDefault = false;
 let speechUnlocked = false;
 
+module.exports = { checkAndSpeak, shouldSpeak, speak, unlockSpeech };
