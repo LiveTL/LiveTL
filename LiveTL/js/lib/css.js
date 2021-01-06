@@ -26,3 +26,5 @@ async function importCSS(url) {
 async function importStyle() {
   return await importCSS('css/frame.css');
 }
+
+module.exports = { importCSS, importFontAwesome, importStyle };

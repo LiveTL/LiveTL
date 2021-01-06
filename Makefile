@@ -142,7 +142,7 @@ android-release: android
 common: init
 	cat $(lib)/constants.js $(lib)/../frame.js $(lib)/storage.js $(lib)/filter.js $(lib)/settings.js $(lib)/speech.js \
 	       	$(lib)/translator-mode.js $(lib)/marine.js $(lib)/css.js $(lib)/svgs.js \
-		| grep -v module.export | $(replace-embed-domain) \
+		| grep -v module.export | grep -v "import.*from" | $(replace-embed-domain) \
 		> ./build/common/frame.js
 	$(replace-embed-domain) $(lib)/../index.js > ./build/common/index.js
 	$(replace-embed-domain-noquote) LiveTL/manifest.json | $(replace-version) > ./build/common/manifest.json
