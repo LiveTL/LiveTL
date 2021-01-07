@@ -1,20 +1,25 @@
 {
-  "name": "LiveTL - Live Translations for Streams",
+  "name": "LiveTL - Translation Filter for Streams",
   "description": "Get live translations for YouTube streams, crowdsourced from bilingual viewers!",
-  "version": "0.1.11",
+  "version": "VERSION",
   "manifest_version": 2,
   "permissions": [
     "webRequest",
     "webRequestBlocking",
-    "https://www.youtube.com/live_chat_replay*"
+    "https://www.youtube.com/*?*",
+    "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat/*",
+    "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay/*",
+    "EMBED_DOMAIN/*",
+    "storage"
   ],
   "content_scripts": [
     {
       "matches": [
         "https://www.youtube.com/*",
-        "https://hololive.jetri.co/*",
         "https://kentonishi.github.io/LiveTL/*",
-        "http://localhost:8000/*"
+        "EMBED_DOMAIN/*",
+        "https://www.youtube.com/live_chat*",
+        "https://www.youtube.com/live_chat_replay*"
       ],
       "js": [
         "./js/frame.js"
@@ -22,7 +27,9 @@
       "all_frames": true
     }
   ],
-  "browser_action": {},
+  "browser_action": {
+    "default_icon": "./icons/128x128.png"
+  },
   "background": {
     "scripts": [
       "./js/background.js"
@@ -41,7 +48,10 @@
     "css/*",
     "jquery.min.js",
     "jquery-ui.min.js",
-    "manifest.json"
+    "jquery-ui-touch.js",
+    "manifest.json",
+    "updateMessage.txt",
+    "popout/*"
   ],
   "incognito": "split",
   "content_security_policy": "script-src 'self' ; object-src 'self'"

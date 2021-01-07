@@ -14,7 +14,9 @@ jobs:
         with:
             certificate-data: ${{ secrets.DEVELOPMENT_CERTIFICATE_DATA }}
             certificate-passphrase: ${{ secrets.DEVELOPMENT_CERTIFICATE_PASSPHRASE }}
-            keychain-password: ${{ secrets.KEYCHAIN_PASSWORD }
+            keychain-password: ${{ secrets.KEYCHAIN_PASSWORD }}
+      - name: Set Version Number
+        run: /usr/libexec/PlistBuddy -c "Set CFBundleShortVersionString $(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g')" LiveTL-Safari/LiveTl/LiveTL\ Extension/Info.plist && /usr/libexec/PlistBuddy -c "Set CFBundleShortVersionString $(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g')" LiveTL-Safari/LiveTl/LiveTL/info.plist 
       - name: Archive
         uses: devbotsxyz/xcode-archive@v1
         with:
@@ -23,10 +25,13 @@ jobs:
         uses: devbotsxyz/xcode-export-archive@master
         with:
           export-method: development
-      - name: Create Disk Image
-        run: hdiutil create -volname LiveTL-Safari -srcfolder ./Export/ -ov -format UDZO LiveTL-Safari.dmg
+          project: LiveTL-Safari/LiveTl/LiveTl.xcodeproj
+      - name: Prep disk image folder
+        run: mkdir ./image/ && cp -r ./Export/*.app ./image/LiveTL.app && ln -s /Applications ./image/
+      - name: Create Disk Image 
+        run: hdiutil create -volname LiveTL-Safari -srcfolder ./image/ -ov -format UDZO LiveTL-Safari.dmg
         
-      - name: Upload Firefox package to release
+      - name: Upload Safari package to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}

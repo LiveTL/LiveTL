@@ -12,7 +12,9 @@ embedVideo = v => {
   tag.src = "https://www.youtube.com/iframe_api";
   let firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
+  let frameDiv = document.createElement('div');
+  frameDiv.id = "frame_div";
+  document.body.appendChild(frameDiv);
 
   // https://developers.google.com/youtube/iframe_api_reference
   window.onYouTubeIframeAPIReady = () => {
@@ -35,35 +37,40 @@ embedVideo = v => {
   }
 }
 
-let params = parseParams()
-let v = params.v || '5qap5aO4i9A'
-let c = params.continuation
-let mode = params.mode || "chat"
-let ltl = params.useLiveTL || "";
-let frame = document.querySelector('iframe')
-switch (mode) {
-  case "chat":
-    if (c) {
-      frame.src = `https://www.youtube.com/live_chat_replay?continuation=${c}&useLiveTL=${ltl}`
-    } else {
-      frame.src = `https://www.youtube.com/live_chat?v=${v}&embed_domain=${document.domain}&useLiveTL=${ltl}`
-    }
-    window.onmessage = d => {
-      frame.contentWindow.postMessage(d.data, "*");
-    }
-    break;
+window.addEventListener('load', () => {
+  let params = parseParams()
+  let v = params.v || '5qap5aO4i9A';
+  let c = params.continuation;
+  let r = params.isReplay;
+  r = r == null ? c : r;
+  let replay = (r ? '_replay' : '');
+  let mode = params.mode || "chat";
+  let ltl = params.useLiveTL || "";
+  document.title = decodeURIComponent(params.title || "LiveTL");
+  switch (mode) {
+    case "chat":
+      let cont = c ? `continuation=${c}&` : '';
+      window.location.href = `https://www.youtube.com/live_chat${replay}?${cont}v=${v}&embed_domain=${document.domain}&dark_theme=1&useLiveTL=${ltl}`;
+      break;
 
-  case "video":
-    embedVideo(v);
-
-    window.onmessage = d => {
-      try {
-        d = JSON.parse(d.data);
-        if (d.event == "infoDelivery") {
-          parent.postMessage({ "yt-player-video-progress": d.info.currentTime }, "*");
+    case "video":
+      embedVideo(v);
+      window.addEventListener('message', d => {
+        try {
+          if (typeof d.data == 'object') {
+            if (d.data.type == 'fullscreen') {
+              parent.postMessage(d.data, '*');
+            }
+          } else {
+            d = JSON.parse(d.data);
+            if (d.event == "infoDelivery") {
+              parent.postMessage({ "yt-player-video-progress": d.info.currentTime }, "*");
+            }
+          }
         }
-      }
-      catch (e) { }
-    }
-    break;
-}
+        catch (e) { }
+      });
+      break;
+  }
+});
+

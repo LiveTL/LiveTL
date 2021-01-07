@@ -8,7 +8,7 @@ languages.forEach(lang => {
   langs[lang.code] = lang
 })
 
-function benchParseTranslation () {
+function benchParseTranslation() {
   const testCases = [
     {
       msg: '(en) Hello there',
@@ -22,6 +22,9 @@ function benchParseTranslation () {
     {
       msg: 'Still no translation',
     },
+    {
+      msg: '[EN]➡ Kiara: There was alot going on my mindbefore we start this stream!'
+    }
   ]
 
   const beg = Date.now()
@@ -35,7 +38,7 @@ function benchParseTranslation () {
   return Date.now() - beg
 }
 
-function benchLangMatch () {
+function benchLangMatch() {
   const testCases = [
     {
       testCase: ['En', langs.en],
@@ -70,13 +73,13 @@ function benchLangMatch () {
 
   for (let i = 0; i < benchAmount; ++i) {
     testCases.forEach(({ testCase }) => {
-        let res = isLangMatch(...testCase)
+      let res = isLangMatch(...testCase)
     })
   }
 
   return Date.now() - beg
 }
 
-console.log(`parseTranslation in ${benchParseTranslation()} ms`);
-console.log(`langMatch in ${benchLangMatch()} ms`)
+console.debug(`parseTranslation in ${benchParseTranslation()} ms`);
+console.debug(`langMatch in ${benchLangMatch()} ms`)
 

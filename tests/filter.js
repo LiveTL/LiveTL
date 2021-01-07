@@ -41,6 +41,10 @@ function testParseTranslation() {
       correct: { lang: 'en', msg: 'Test translation' }
     },
     {
+      msg: '[en]: test translation',
+      correct: { lang: 'en', msg: 'test translation' }
+    },
+    {
       msg: 'No translation',
       correct: undefined
     }
@@ -97,13 +101,16 @@ function testLangMatch() {
     {
       testCase: ['英語／jp', langs.en],
       match: false
-    }
-
+    },
+    {
+      testCase: ['【Polka˽EN】', langs.en],
+      match: true
+    },
   ];
   testCases.forEach(({ testCase, match }) => {
     assert.equal(
       isLangMatch(...testCase), match,
-      `Incorrect language match between ${testCase[0]} and ${testCase[1]}`
+      `Incorrect language match between ${testCase[0]} and ${testCase[1].code}`
     );
   });
   process.stdout.write('.');
@@ -113,4 +120,4 @@ function testLangMatch() {
 testParseTranslation();
 testLangMatch();
 
-console.log(`Finished ${tests.value} unit tests for filter.js`);
+console.debug(`Finished ${tests.value} unit tests for filter.js`);

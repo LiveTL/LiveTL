@@ -1,51 +1,72 @@
 :root {
     --accent: #2c2c2c;
     --primary: #4d4d4d;
+    --button-fill: #49deff;
+    --resizable-width: calc(100% - 150px);
+    --resizable-height: 80%;
+    --padding: 20px;
+    color-scheme: light dark;
 }
 
 #livetl-chat {
     width: 100%;
     min-height: 0px;
     height: 100%;
+    border: none;
 }
 
 #chat {
     width: 100%;
-    height: 100%;
+    height: calc(100% - 10px);
     min-height: 0px;
+    border: none;
 }
 
 #stream {
     width: 100%;
     height: 100%;
+    border: none;
+    transform-origin: 0px 0px;
 }
 
 * {
     background-color: black;
 }
 
-#leftPanel {
-    width: 75%;
-    height: 100%;
-    top: 0;
-    left: 0;
+input {
+    color: black;
 }
 
-#rightPanel {
-    flex-grow: 1;
+#videoPanel {
+    width: var(--resizable-width);
     height: 100%;
+    order: 1;
+    min-height: 10px;
+}
+
+#ltlPanel {
+    height: auto;
     flex-direction: column;
     display: flex;
+    order: 3;
 }
 
-#topRightPanel {
+#youtubeChatPanel {
     width: 100%;
-    height: 80%;
+    height: var(--resizable-height);
     max-height: 100%;
+}
+
+#outputPanel {
+    width: 100%;
+    flex-grow: 1;
+    position: relative;
+    height: 0;
 }
 
 body {
     margin: 0;
+    width: 100vw;
 }
 
 .handle {
@@ -59,9 +80,10 @@ body {
     align-items: center;
     justify-content: center;
     z-index: 2;
+    order: 2;
 }
 
-#handleH {
+.handleH {
     height: 10px;
     width: 100%;
     display: flex;
@@ -70,29 +92,43 @@ body {
     z-index: 1;
 }
 
-#handleH > span {
+.handleH>span {
     margin-bottom: -1px;
     font-size: 20px;
 }
 
-.handle > span {
+.handle>span {
     color: lightgray;
     font-size: 19px;
     background-color: transparent;
 }
 
+#bounding {
+    width: calc(100% + calc(2 * var(--padding)));
+    position: fixed;
+    top: calc(var(--padding) * -1);
+    left: calc(var(--padding) * -1);
+    height: calc(100% + calc(2 * var(--padding)));
+}
+
 #display {
-    width: 100%;
-    height: 100%;
+    width: calc(100% - calc(2 * var(--padding)));
+    height: calc(100% - calc(2 * var(--padding)));
     display: flex;
+    overflow: hidden;
+    margin: var(--padding);
 }
 
 .ui-resizable-s {
     bottom: 0px !important;
 }
 
-.ui-resizable-e {
+#leftHandle .ui-resizable-e {
     right: 0px !important;
+}
+
+#rightHandle .ui-resizable-e {
+    right: 0 !important;
 }
 
 body {
@@ -105,7 +141,7 @@ body {
     background-color: transparent;
 }
 
-.iframeWrapper > iframe {
+.iframeWrapper>iframe {
     min-width: 0px !important;
     position: absolute;
     height: 100%;
@@ -116,4 +152,62 @@ body {
     width: 100%;
     flex-grow: 1;
     position: relative;
+    height: 0;
+}
+
+#leftPanelContainer {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+#ltlcaptions {
+    position: fixed;
+    color: #C5C5C5;
+    font-family: "Roboto Light", sans-serif;
+    background-color: transparent;
+    cursor: move;
+    height: fit-content;
+    display: none;
+    text-align: center;
+    width: calc(100% - 40px);
+    bottom: 0px;
+    padding: var(--padding);
+    z-index: 200;
+}
+
+.captionSegment {
+    color: #E5E5E5;
+    word-wrap: break-word;
+    word-break: break-word;
+    font-size: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+    margin: 0;
+    padding: 5px 10px;
+    animation-iteration-count: 1;
+    animation: splash 1s normal forwards ease-in-out;
+}
+
+#ltlcaptions>.ui-resizable-handle {
+    cursor: ew-resize;
+    background-color: var(--primary);
+    opacity: 0.5;
+    width: 10px;
+    height: calc(100% - 2 * var(--padding));
+    top: var(--padding);
+}
+
+#ltlcaptions>.ui-resizable-handle.ui-resizable-e {
+    right: calc(var(--padding) - 5px);
+}
+
+#ltlcaptions>.ui-resizable-handle.ui-resizable-w {
+    left: calc(var(--padding) - 5px);
+}
+
+@keyframes splash {
+    from {
+        background-color: rgba(0, 119, 255, 0.8);
+    }
+    to {}
 }

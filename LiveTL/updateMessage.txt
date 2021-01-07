@@ -1,0 +1,1 @@
+LiveTL for Android is here! You can download it straight from the Google Play store. This update also includes perfect message syncing for replays, a read-aloud mode, touch support, caption timeout and zoom options, auto message prefixing for translators, and fixes for messages being missed!
