@@ -13,7 +13,7 @@
 
 const enableDarkModeToggle = false;
 
-async function createSettings(container) {
+async function createSettings (container) {
   const settings = createModal(container);
   settings.appendChild(createLanguageSelect());
   settings.appendChild(createTranslatorSelect());
@@ -36,7 +36,7 @@ async function createSettings(container) {
   return settings;
 }
 
-function createModal(container) {
+function createModal (container) {
   const settingsButton = document.createElement('div');
   settingsGear(settingsButton);
   settingsButton.id = 'settingsGear';
@@ -80,12 +80,12 @@ function createModal(container) {
     }
 
     if (enableDarkModeToggle) {
-      let previousTheme = await getStorage('theme');
-      let themeToggle = document.querySelector('#darkThemeToggle');
+      const previousTheme = await getStorage('theme');
+      const themeToggle = document.querySelector('#darkThemeToggle');
       if (themeToggle.value != previousTheme) {
-        let dark = themeToggle.value == 'dark' ? 1 : 0;
+        const dark = themeToggle.value == 'dark' ? 1 : 0;
         await setStorage('theme', themeToggle.value);
-        window.parent.postMessage({ type: 'themeChange', 'darkTheme': dark }, '*');
+        window.parent.postMessage({ type: 'themeChange', darkTheme: dark }, '*');
         changeThemeAndRedirect(dark);
       }
     }
@@ -99,7 +99,7 @@ function createModal(container) {
   return modalContent;
 }
 
-function setSelectInputCallbacks(select, defaultValue) {
+function setSelectInputCallbacks (select, defaultValue) {
   select.addEventListener('focus', () => select.value = '');
   const updateSelect = async () => {
     if (!(select.value in languageConversionTable)) {
@@ -112,13 +112,13 @@ function setSelectInputCallbacks(select, defaultValue) {
   select.addEventListener('change', updateSelect);
 }
 
-function createLangSelectionName(lang) {
+function createLangSelectionName (lang) {
   return `${lang.name} (${lang.lang})`;
 }
 
-function createLangSelectOption(lang) {
+function createLangSelectOption (lang) {
   const opt = document.createElement('option');
-  let langName = createLangSelectionName(lang);
+  const langName = createLangSelectionName(lang);
   opt.value = langName;
   opt.innerText = langName;
   return opt;
@@ -126,14 +126,14 @@ function createLangSelectOption(lang) {
 
 languages.forEach(i => languageConversionTable[createLangSelectionName(i)] = i);
 
-function createLangSelectLabel() {
+function createLangSelectLabel () {
   const langSelectLabel = document.createElement('span');
   langSelectLabel.className = 'optionLabel';
   langSelectLabel.textContent = 'Language: ';
   return langSelectLabel;
 }
 
-function createSelectInput() {
+function createSelectInput () {
   const select = document.createElement('select');
   // select.dataset.role = 'none';
   // select.setAttribute('list', 'languages');
@@ -146,22 +146,22 @@ function createSelectInput() {
   return select;
 }
 
-function createLangSelectDatalist(datalist) {
+function createLangSelectDatalist (datalist) {
   const appendDatalist = e => datalist.appendChild(e);
   languages.map(createLangSelectOption).map(appendDatalist);
   return datalist;
 }
 
-function createLanguageSelect() {
+function createLanguageSelect () {
   const langSelectContainer = document.createElement('div');
   langSelectContainer.appendChild(createLangSelectLabel());
-  let langInput = createSelectInput();
+  const langInput = createSelectInput();
   langSelectContainer.appendChild(langInput);
   langSelectContainer.appendChild(createLangSelectDatalist(langInput));
   return langSelectContainer;
 }
 
-function setChecklistOnclick(checklist) {
+function setChecklistOnclick (checklist) {
   checklist.querySelector('.anchor').addEventListener('click', () => {
     const items = checklist.querySelector('#items');
     if (items.style.display !== 'block') {
@@ -172,10 +172,10 @@ function setChecklistOnclick(checklist) {
       items.style.display = 'none';
     }
   });
-  ;
+  
 }
 
-function setChecklistOnblur(checklist) {
+function setChecklistOnblur (checklist) {
   checklist.addEventListener('blur', e => {
     const items = checklist.querySelector('#items');
     if (!e.currentTarget.contains(e.relatedTarget)) {
@@ -185,40 +185,40 @@ function setChecklistOnblur(checklist) {
   });
 }
 
-function setChecklistCallbacks(checklist) {
+function setChecklistCallbacks (checklist) {
   setChecklistOnclick(checklist);
   setChecklistOnblur(checklist);
 }
 
-function createTranslatorSelect() {
+function createTranslatorSelect () {
   const translatorSelectContainer = document.createElement('div');
   translatorSelectContainer.appendChild(createTransSelectLabel());
   translatorSelectContainer.appendChild(createTransSelectChecklist());
   return translatorSelectContainer;
 }
 
-function createTransSelectDefaultText() {
+function createTransSelectDefaultText () {
   const defaultText = document.createElement('span');
   defaultText.className = 'anchor';
-  defaultText.innerHTML = `<i class="fa fa-users" aria-hidden="true"></i>`;
+  defaultText.innerHTML = '<i class="fa fa-users" aria-hidden="true"></i>';
   return defaultText;
 }
 
-function createTransSelectChecklistItems() {
+function createTransSelectChecklistItems () {
   const items = document.createElement('ul');
   items.id = 'items';
   items.className = 'items';
   return items;
 }
 
-function createTransSelectLabel() {
+function createTransSelectLabel () {
   const translatorSelectLabel = document.createElement('span');
   translatorSelectLabel.className = 'optionLabel';
   translatorSelectLabel.innerHTML = 'User Filter:&nbsp';
   return translatorSelectLabel;
 }
 
-function createTransSelectChecklist() {
+function createTransSelectChecklist () {
   const checklist = document.createElement('div');
   checklist.className = 'dropdown-check-list';
   checklist.id = 'transelectChecklist';
@@ -230,17 +230,17 @@ function createTransSelectChecklist() {
   return checklist;
 }
 
-function createSliderLabel(labelText) {
+function createSliderLabel (labelText) {
   const label = document.createElement('span');
   label.className = 'optionLabel';
   label.textContent = labelText;
   return label;
 }
 
-async function createSliderInput(id, min, max,
+async function createSliderInput (id, min, max,
   getSliderValue, setSliderValue,
   onchange, toScale) {
-  let slider = document.createElement('input');
+  const slider = document.createElement('input');
   slider.id = id;
   slider.type = 'range';
   slider.min = min;
@@ -257,11 +257,11 @@ async function createSliderInput(id, min, max,
   return slider;
 }
 
-async function updateSliderLevel(id, getSliderValue,
+async function updateSliderLevel (id, getSliderValue,
   setSliderValue, toScale = true) {
-  let value = parseFloat(document.getElementById(id).value) || await getSliderValue() || 1;
-  let scale = Math.ceil(value * 100);
-  let container = document.body;// document.querySelector('.bodyWrapper');
+  const value = parseFloat(document.getElementById(id).value) || await getSliderValue() || 1;
+  const scale = Math.ceil(value * 100);
+  const container = document.body;// document.querySelector('.bodyWrapper');
   const transform = `scale(${scale / 100})`;
   const inverse = 10000 / scale;
   const newWidth = `${inverse}%`;
@@ -280,13 +280,13 @@ async function updateSliderLevel(id, getSliderValue,
       height: container.style.height,
       transform: container.style.transform
     }
-  }
+  };
 }
 
-function createSliderResetButton(id, getSliderValue,
+function createSliderResetButton (id, getSliderValue,
   setSliderValue, onchange,
   toScale) {
-  let resetButton = document.createElement('input');
+  const resetButton = document.createElement('input');
   resetButton.value = 'Reset';
   resetButton.style.marginLeft = '4px';
   resetButton.style.verticalAlign = 'middle';
@@ -299,7 +299,7 @@ function createSliderResetButton(id, getSliderValue,
   return resetButton;
 }
 
-async function createSlider(id, min, max, labelText,
+async function createSlider (id, min, max, labelText,
   getSliderValue, setSliderValue,
   onchange, toScale = true) {
   const settings = document.createElement('div');
@@ -315,11 +315,11 @@ async function createSlider(id, min, max, labelText,
   return settings;
 }
 
-function postToParent(s) {
+function postToParent (s) {
   window.parent.postMessage(s, '*');
 }
 
-async function createGenericZoomSlider(id, labelText,
+async function createGenericZoomSlider (id, labelText,
   getSliderValue,
   setSliderValue,
   onchange,
@@ -336,28 +336,28 @@ async function createGenericZoomSlider(id, labelText,
   );
 }
 
-async function createZoomSlider() {
+async function createZoomSlider () {
   return createGenericZoomSlider(
     'zoomSliderInput',
     'Zoom: ',
     () => getStorage('zoom'),
     (value) => setStorage('zoom', value),
-    postToParent,
+    postToParent
   );
 }
 
 // Needed for compatibility issues in frame.js
-async function updateZoomLevel() {
+async function updateZoomLevel () {
   postToParent(
     await updateSliderLevel(
       'zoomSliderInput',
       () => getStorage('zoom'),
-      (value) => setStorage('zoom', value),
+      (value) => setStorage('zoom', value)
     )
   );
 }
 
-async function createCaptionZoomSlider() {
+async function createCaptionZoomSlider () {
   return createGenericZoomSlider(
     'captionZoomSliderInput',
     'Caption Zoom: ',
@@ -365,10 +365,10 @@ async function createCaptionZoomSlider() {
     setCaptionZoom,
     postToParent,
     false
-  )
+  );
 }
 
-function createTimestampLabel() {
+function createTimestampLabel () {
   const label = document.createElement('label');
   label.className = 'optionLabel';
   label.htmlFor = 'timestampToggle';
@@ -377,8 +377,8 @@ function createTimestampLabel() {
   return label;
 }
 
-async function createTimestampCheckbox() {
-  let timestampToggle = document.createElement('input');
+async function createTimestampCheckbox () {
+  const timestampToggle = document.createElement('input');
   timestampToggle.id = 'timestampToggle';
   timestampToggle.type = 'checkbox';
   timestampToggle.style.padding = '4px';
@@ -388,7 +388,7 @@ async function createTimestampCheckbox() {
   display = display != null ? display : true;
   timestampToggle.checked = display;
 
-  let changed = async () => {
+  const changed = async () => {
     showTimestamps = timestampToggle.checked;
     await setStorage('timestamp', showTimestamps);
     document.querySelectorAll('.timestampText').forEach(m => m.style.display = showTimestamps ? 'contents' : 'none');
@@ -401,14 +401,14 @@ async function createTimestampCheckbox() {
   return timestampToggle;
 }
 
-async function createTimestampToggle() {
+async function createTimestampToggle () {
   const timestampSettings = document.createElement('div');
   timestampSettings.appendChild(createTimestampLabel());
   timestampSettings.appendChild(await createTimestampCheckbox());
   return timestampSettings;
 }
 
-function createTextDirectionLabel() {
+function createTextDirectionLabel () {
   const label = document.createElement('label');
   label.className = 'optionLabel';
   label.htmlFor = 'textDirToggle';
@@ -417,8 +417,8 @@ function createTextDirectionLabel() {
   return label;
 }
 
-async function createTextDirectionSelect() {
-  let textDirSelect = document.createElement('select');
+async function createTextDirectionSelect () {
+  const textDirSelect = document.createElement('select');
   textDirSelect.innerHTML = `
     <option id="top" value="top">Top</option>
     <option id="bottom" value="bottom">Bottom</option>
@@ -428,11 +428,11 @@ async function createTextDirectionSelect() {
   data = (data == null ? 'bottom' : data);
   textDirSelect.value = textDirection = data;
 
-  let changed = async () => {
+  const changed = async () => {
     textDirection = textDirSelect.value;
     await setStorage('text_direction', textDirection);
-    let tt = document.querySelector('.translationText');
-    let sg = document.querySelector('#settingsGear');
+    const tt = document.querySelector('.translationText');
+    const sg = document.querySelector('#settingsGear');
     tt.querySelectorAll('.line').forEach(m => prependE(m));
     if (textDirection === 'top') {
       tt.style.maxHeight = null;
@@ -455,7 +455,7 @@ async function createTextDirectionSelect() {
   return textDirSelect;
 }
 
-async function createTextDirectionToggle(container) {
+async function createTextDirectionToggle (container) {
   const textDirToggle = document.createElement('div');
   textDirToggle.appendChild(createTextDirectionLabel());
   textDirToggle.appendChild(await createTextDirectionSelect(container));
@@ -463,7 +463,7 @@ async function createTextDirectionToggle(container) {
   return textDirToggle;
 }
 
-function createChatSideLabel() {
+function createChatSideLabel () {
   const label = document.createElement('label');
   label.className = 'optionLabel';
   label.textContent = 'Chat side: ';
@@ -471,7 +471,7 @@ function createChatSideLabel() {
   return label;
 }
 
-async function createChatSideRadios() {
+async function createChatSideRadios () {
   const left = document.createElement('input');
   const right = document.createElement('input');
   const portrait = document.createElement('input');
@@ -494,7 +494,7 @@ async function createChatSideRadios() {
   }
 
   const onChange = async () => {
-    let side = left.checked ? 'left' : 'right';
+    const side = left.checked ? 'left' : 'right';
     await setStorage('chatSide', side);
     try {
       if (portrait.checked) {
@@ -512,7 +512,7 @@ async function createChatSideRadios() {
   return { left, right, portrait };
 }
 
-function createChatSideRadioLabels() {
+function createChatSideRadioLabels () {
   const left = document.createElement('label');
   const right = document.createElement('label');
   const portrait = document.createElement('label');
@@ -528,7 +528,7 @@ function createChatSideRadioLabels() {
   return { left, right, portrait };
 }
 
-async function createChatSideToggle() {
+async function createChatSideToggle () {
   const chatSideToggle = document.createElement('div');
   chatSideToggle.appendChild(createChatSideLabel());
 
@@ -545,7 +545,7 @@ async function createChatSideToggle() {
   return chatSideToggle;
 }
 
-function createCheckToggleLabel(labelName, labelFor) {
+function createCheckToggleLabel (labelName, labelFor) {
   const label = document.createElement('label');
   label.className = 'optionLabel';
   label.htmlFor = labelFor;
@@ -553,14 +553,14 @@ function createCheckToggleLabel(labelName, labelFor) {
   return label;
 }
 
-async function createCheckToggleCheckbox(id, storageName, onchange) {
+async function createCheckToggleCheckbox (id, storageName, onchange) {
   const checkbox = document.createElement('input');
   checkbox.id = id;
   checkbox.type = 'checkbox';
   checkbox.style.padding = '4px';
   checkbox.style.verticalAlign = 'middle';
 
-  let display = await getStorage(storageName);
+  const display = await getStorage(storageName);
   checkbox.checked = display != null ? display : true;
 
   const changed = async () => {
@@ -576,11 +576,11 @@ async function createCheckToggleCheckbox(id, storageName, onchange) {
   return checkbox;
 }
 
-function createDisplayModMessageLabel() {
+function createDisplayModMessageLabel () {
   return createCheckToggleLabel('Show Mod Messages: ', 'displayModMessages');
 }
 
-async function createDisplayModMessageCheckbox() {
+async function createDisplayModMessageCheckbox () {
   return await createCheckToggleCheckbox(
     'displayModMessages', 'displayModMessages', async () => {
       const displayModMessages = await getStorage('displayModMessages');
@@ -594,7 +594,7 @@ async function createDisplayModMessageCheckbox() {
   );
 }
 
-async function createDisplayModMessageToggle() {
+async function createDisplayModMessageToggle () {
   const displayModMessagesToggle = document.createElement('div');
   displayModMessagesToggle.appendChild(createDisplayModMessageLabel());
   displayModMessagesToggle.appendChild(await createDisplayModMessageCheckbox());
@@ -602,29 +602,29 @@ async function createDisplayModMessageToggle() {
   return displayModMessagesToggle;
 }
 
-function changeThemeAndRedirect(dark) {
-  var url = new URL(location.href);
+function changeThemeAndRedirect (dark) {
+  let url = new URL(location.href);
   url.searchParams.set('dark_theme', dark);
   location.href = url.toString();
 }
 
-function closeMessageSelector(container) {
+function closeMessageSelector (container) {
   container.style.display = null;
   document.querySelector('#chat').style.cursor = null;
   document.querySelector('#settingsGear').classList.remove('pickUserDoneBtn');
   scrollBackToBottomOfChat();
 }
 
-function findParent(e) {
+function findParent (e) {
   while (e && e.tagName != 'YT-LIVE-CHAT-TEXT-MESSAGE-RENDERER') e = e.parentElement;
   return e;
 }
 
-function scrollBackToBottomOfChat() {
+function scrollBackToBottomOfChat () {
   document.querySelector('#show-more').dispatchEvent(new Event('click'));
 }
 
-function asyncPrompt(text, value) {
+function asyncPrompt (text, value) {
   value = value || '';
   if (!isAndroid) {
     return prompt(text, value);
@@ -636,8 +636,8 @@ function asyncPrompt(text, value) {
   }
 }
 
-function createCustomUserButton(container) {
-  let addButton = document.createElement('input');
+function createCustomUserButton (container) {
+  const addButton = document.createElement('input');
   addButton.value = 'Add User to Filter';
   addButton.style.verticalAlign = 'middle';
   addButton.type = 'button';
@@ -658,7 +658,7 @@ function createCustomUserButton(container) {
   return addButton;
 }
 
-async function createCaptionDisplayToggle() {
+async function createCaptionDisplayToggle () {
   await setupDefaultCaption();
   const captionDispToggle = document.createElement('div');
   captionDispToggle.appendChild(createCaptionDisplayToggleLabel());
@@ -666,11 +666,11 @@ async function createCaptionDisplayToggle() {
   return captionDispToggle;
 }
 
-function createCaptionDisplayToggleLabel() {
+function createCaptionDisplayToggleLabel () {
   return createCheckToggleLabel('Caption Mode: ', 'captionMode');
 }
 
-async function createCaptionDisplayToggleCheckbox() {
+async function createCaptionDisplayToggleCheckbox () {
   return await createCheckToggleCheckbox(
     'captionMode', 'captionMode', async () => {
       const postMessage = window.parent.parent.postMessage;
@@ -689,7 +689,7 @@ async function createCaptionDisplayToggleCheckbox() {
   );
 }
 
-async function createCaptionDuration() {
+async function createCaptionDuration () {
   const captionDuration = document.createElement('div');
   captionDuration.appendChild(createCaptionDurationInputLabel());
   captionDuration.appendChild(await createCaptionDurationInput());
@@ -697,30 +697,30 @@ async function createCaptionDuration() {
   return captionDuration;
 }
 
-function createCaptionDurationInputLabel() {
+function createCaptionDurationInputLabel () {
   return createCheckToggleLabel('Caption Timeout: ', 'captionDuration');
 }
 
-function createCaptionTimeoutDesc() {
+function createCaptionTimeoutDesc () {
   return createCheckToggleLabel(' secs. (-1 = disable)');
 }
 
-async function createCaptionDurationInput() {
+async function createCaptionDurationInput () {
   await setupDefaultCaptionDelay();
-  let delay = await getStorage('captionDelay');
+  const delay = await getStorage('captionDelay');
   const input = document.createElement('input');
   input.type = 'number';
   input.min = -1;
   input.value = delay;
   input.style.width = '50px';
 
-  let callback = async () => {
+  const callback = async () => {
     // Remove sticking perma captions if enabling
     if (await getStorage('captionDelay') <= -1) {
       window.parent.parent.postMessage({ action: 'clearCaption' }, '*');
     }
     if (input.value <= -1) input.value = -1;
-    setStorage('captionDelay', input.value)
+    setStorage('captionDelay', input.value);
   };
 
   if (isAndroid) {
@@ -740,8 +740,7 @@ async function createCaptionDurationInput() {
   return input;
 }
 
-
-async function createSpeechSynthToggle() {
+async function createSpeechSynthToggle () {
   await setupDefaultSpeechSynth();
   const speechSynthToggle = document.createElement('div');
   speechSynthToggle.appendChild(createSpeechSynthToggleLabel());
@@ -750,11 +749,11 @@ async function createSpeechSynthToggle() {
   return speechSynthToggle;
 }
 
-function createSpeechSynthToggleLabel() {
+function createSpeechSynthToggleLabel () {
   return createCheckToggleLabel('Read Aloud TLs:', 'speechSynth');
 }
 
-async function createSpeechSynthToggleCheckbox() {
+async function createSpeechSynthToggleCheckbox () {
   return await createCheckToggleCheckbox(
     'speechSynth', 'speechSynth', async () => {
       if (await shouldSpeak()) {
@@ -767,7 +766,7 @@ async function createSpeechSynthToggleCheckbox() {
 }
 
 // still asyncronous so await the result
-function createTranslatorModeToggle() {
+function createTranslatorModeToggle () {
   return new Promise((res, rej) => {
     setTimeout(async () => {
       try {
@@ -783,11 +782,11 @@ function createTranslatorModeToggle() {
   });
 }
 
-function createTranslatorModeToggleLabel() {
+function createTranslatorModeToggleLabel () {
   return createCheckToggleLabel('Auto-Prefix Chat Messages:', 'translatorMode');
 }
 
-async function createTranslatorModeToggleCheckbox() {
+async function createTranslatorModeToggleCheckbox () {
   return await createCheckToggleCheckbox(
     'translatorMode', 'translatorMode', async () => {
       if (await TranslatorMode.enabled()) {
@@ -798,4 +797,3 @@ async function createTranslatorModeToggleCheckbox() {
     }
   );
 }
-
