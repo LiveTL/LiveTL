@@ -503,7 +503,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MARKETING_VERSION = "dev build";
-				PRODUCT_BUNDLE_IDENTIFIER = com.candygoblen123.LiveTl.Extension;
+				PRODUCT_BUNDLE_IDENTIFIER = app.livetl.Safari.Extension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -527,7 +527,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MARKETING_VERSION = "dev build";
-				PRODUCT_BUNDLE_IDENTIFIER = com.candygoblen123.LiveTl.Extension;
+				PRODUCT_BUNDLE_IDENTIFIER = app.livetl.Safari.Extension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -554,7 +554,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MARKETING_VERSION = "dev build";
-				PRODUCT_BUNDLE_IDENTIFIER = com.candygoblen123.LiveTl;
+				PRODUCT_BUNDLE_IDENTIFIER = app.livetl.Safari;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -580,7 +580,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MARKETING_VERSION = "dev build";
-				PRODUCT_BUNDLE_IDENTIFIER = com.candygoblen123.LiveTl;
+				PRODUCT_BUNDLE_IDENTIFIER = app.livetl.Safari;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
