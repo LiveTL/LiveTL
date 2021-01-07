@@ -11,7 +11,19 @@
  */
 
 import { languages, languageConversionTable } from './constants.js';
-import { saveUserStatus, getDefaultLanguage, setDefaultLanguage, setupDefaultCaption, setupDefaultCaptionDelay, setupDefaultSpeechSynth, setupDefaultTranslatorMode, getCaptionZoom, setCaptionZoom, getStorage, setStorage } from './storage.js';
+import {
+  saveUserStatus,
+  getDefaultLanguage,
+  setDefaultLanguage,
+  setupDefaultCaption,
+  setupDefaultCaptionDelay,
+  setupDefaultSpeechSynth,
+  setupDefaultTranslatorMode,
+  getCaptionZoom,
+  setCaptionZoom,
+  getStorage,
+  setStorage
+} from './storage.js';
 import { closeSVG, settingsGear } from './svgs.js';
 
 

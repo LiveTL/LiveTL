@@ -4,7 +4,15 @@ import { isLangMatch, parseTranslation } from './lib/filter.js';
 import { Marine } from './lib/marine.js';
 import { createSettings } from './lib/settings.js';
 import { checkAndSpeak } from './lib/speech.js';
-import { isNewUser, saveUserStatus, getUserStatus, getUserStatusAsBool, getStorage, setStorage, isChecked } from './lib/storage.js';
+import {
+  isNewUser,
+  saveUserStatus,
+  getUserStatus,
+  getUserStatusAsBool,
+  getStorage,
+  setStorage,
+  isChecked
+} from './lib/storage.js';
 import { hideSVG, banSVG } from './lib/svgs.js';
 import { TranslatorMode } from './lib/translator-mode.js';
 

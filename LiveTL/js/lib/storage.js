@@ -119,4 +119,22 @@ if (isAndroid) {
   };
 }
 
-module.exports = { isNewUser, saveUserStatus, getUserStatus, getUserStatusAsBool, getDefaultLanguage, setDefaultLanguage, setDefaultSetting, setupDefaultCaption, setupDefaultCaptionDelay, setupDefaultSpeechSynth, setupDefaultTranslatorMode, getCaptionZoom, setCaptionZoom, getStorage, setStorage, isChecked, storage };
+module.exports = {
+  isNewUser,
+  saveUserStatus,
+  getUserStatus,
+  getUserStatusAsBool,
+  getDefaultLanguage,
+  setDefaultLanguage,
+  setDefaultSetting,
+  setupDefaultCaption,
+  setupDefaultCaptionDelay,
+  setupDefaultSpeechSynth,
+  setupDefaultTranslatorMode,
+  getCaptionZoom,
+  setCaptionZoom,
+  getStorage,
+  setStorage,
+  isChecked,
+  storage
+};
