@@ -143,7 +143,8 @@ common: init
 	cat $(lib)/constants.js $(lib)/../frame.js $(lib)/storage.js $(lib)/filter.js $(lib)/settings.js $(lib)/speech.js \
 	       	$(lib)/translator-mode.js $(lib)/marine.js $(lib)/css.js $(lib)/svgs.js \
 		| sed 'H;1h;$$!d;x;s/import {[^}]*} from//g; N' \
-		| grep -v module.export | $(replace-embed-domain) \
+		| sed 'H;1h;$$!d;x;s/module\.exports \= {[^}]*}//g; N' \
+		| $(replace-embed-domain) \
 		> ./build/common/frame.js
 	$(replace-embed-domain) $(lib)/../index.js > ./build/common/index.js
 	$(replace-embed-domain-noquote) LiveTL/manifest.json | $(replace-version) > ./build/common/manifest.json
