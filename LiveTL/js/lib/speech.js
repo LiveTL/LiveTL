@@ -1,3 +1,5 @@
+import { getStorage } from './storage.js';
+
 // There is no current way to fire a callback on the end of tts
 // The async declaration is there for future possible support
 async function speak (text) {
@@ -23,3 +25,5 @@ function unlockSpeech () {
 
 const speechSynthDefault = false;
 let speechUnlocked = false;
+
+module.exports = { checkAndSpeak, shouldSpeak, speak, unlockSpeech };

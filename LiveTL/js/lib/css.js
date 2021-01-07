@@ -1,8 +1,4 @@
-/**
- * Dependencies
- *
- * constants.js
- */
+import { getWAR } from './constants.js';
 
 async function importFontAwesome () {
   document.head.innerHTML += `
@@ -26,3 +22,5 @@ async function importCSS (url) {
 async function importStyle () {
   return await importCSS('css/frame.css');
 }
+
+module.exports = { importCSS, importFontAwesome, importStyle };

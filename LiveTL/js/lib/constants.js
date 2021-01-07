@@ -26,4 +26,4 @@ async function getFile (name, format) {
   return await (await fetch(await getWAR(name)))[format]();
 }
 
-module.exports = { languages };
+module.exports = { getFile, getWAR, languages };

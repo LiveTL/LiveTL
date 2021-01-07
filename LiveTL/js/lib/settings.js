@@ -2,7 +2,6 @@
  * Dependencies:
  *
  * constants.js
- * css.js
  * storage.js
  * svgs.js
  *
@@ -10,6 +9,23 @@
  *
  * needs languageConversionTable = {} declared before this module
  */
+
+import { languages, languageConversionTable } from './constants.js';
+import {
+  saveUserStatus,
+  getDefaultLanguage,
+  setDefaultLanguage,
+  setupDefaultCaption,
+  setupDefaultCaptionDelay,
+  setupDefaultSpeechSynth,
+  setupDefaultTranslatorMode,
+  getCaptionZoom,
+  setCaptionZoom,
+  getStorage,
+  setStorage
+} from './storage.js';
+import { closeSVG, settingsGear } from './svgs.js';
+
 
 const enableDarkModeToggle = false;
 
@@ -797,3 +813,5 @@ async function createTranslatorModeToggleCheckbox () {
     }
   );
 }
+
+module.exports = { createSettings };
