@@ -1,33 +1,33 @@
 const launch = () => chrome.tabs.create({ url: 'https://kentonishi.github.io/LiveTL/about' });
 
-const isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && window['safari'].pushNotification));
+const isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === '[object SafariRemoteNotification]'; })(!window.safari || (typeof safari !== 'undefined' && window.safari.pushNotification));
 
 const changes = () => {
-  let v = chrome.runtime.getManifest().version;
+  const v = chrome.runtime.getManifest().version;
   chrome.tabs.create({ url: `https://kentonishi.github.io/LiveTL/changelogs?version=v${v}` });
   chrome.browserAction.onClicked.addListener(launch);
   chrome.browserAction.setIcon({
-    path: "./icons/128x128.png"
+    path: './icons/128x128.png'
   });
   chrome.browserAction.onClicked.removeListener(changes);
-}
+};
 
 chrome.browserAction.onClicked.addListener(launch);
 
 chrome.runtime.onInstalled.addListener(details => {
-  if (details.reason == "update") {
-    //didUpdate = true;
-    let thisVersion = chrome.runtime.getManifest().version;
-    console.debug("Updated from " + details.previousVersion + " to " + thisVersion + "!");
+  if (details.reason == 'update') {
+    // didUpdate = true;
+    const thisVersion = chrome.runtime.getManifest().version;
+    console.debug('Updated from ' + details.previousVersion + ' to ' + thisVersion + '!');
     chrome.browserAction.setIcon({
-      path: "./icons/notification_128x128.png"
+      path: './icons/notification_128x128.png'
     });
     chrome.browserAction.onClicked.removeListener(launch);
     chrome.browserAction.onClicked.addListener(changes);
   } else {
     if (isSafari) {
-      //don't show is safari
-      console.debug("This is a first install!");
+      // don't show is safari
+      console.debug('This is a first install!');
       chrome.tabs.create({ url: 'https://kentonishi.github.io/LiveTL/about' });
     }
   }
@@ -56,16 +56,16 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
         width: 600
       });
     }
-    // can't break here, callback breaks 
+    // can't break here, callback breaks
   }
 });
 
-function stripHeaders(headers) {
+function stripHeaders (headers) {
   return headers.filter(header => {
-    let headerName = header.name.toLowerCase();
-    return !(headerName === 'content-security-policy'
-      || headerName === 'x-frame-options');
-  })
+    const headerName = header.name.toLowerCase();
+    return !(headerName === 'content-security-policy' ||
+      headerName === 'x-frame-options');
+  });
 }
 
 chrome.webRequest.onHeadersReceived.addListener(
@@ -74,7 +74,7 @@ chrome.webRequest.onHeadersReceived.addListener(
       responseHeaders: stripHeaders(details.responseHeaders)
     };
   }, {
-  urls: [
-    "<all_urls>"
-  ]
-}, ["blocking", "responseHeaders"]);
+    urls: [
+      '<all_urls>'
+    ]
+  }, ['blocking', 'responseHeaders']);

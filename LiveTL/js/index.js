@@ -12,7 +12,7 @@ const root = document.documentElement.style;
 const display = document.querySelector('#display');
 let screenMode = '';
 document.title = decodeURIComponent(params.title || 'LiveTL');
-let INITIAL_PANEL_PERCENT = isAndroid ? 50 : 80;
+const INITIAL_PANEL_PERCENT = isAndroid ? 50 : 80;
 
 // resizing yoinked and modified from https://spin.atomicobject.com/2019/11/21/creating-a-resizable-html-element/
 const getResizableElement = () => document.getElementById('videoPanel');
@@ -26,11 +26,11 @@ const setPaneWidth = (width) => {
 
   root.setProperty('--resizable-width', `${width}%`);
   if (screenMode == 'portrait') {
-    $(videoPanel).css('height', `var(--resizable-width)`);
-    $(videoPanel).css('width', `100%`);
+    $(videoPanel).css('height', 'var(--resizable-width)');
+    $(videoPanel).css('width', '100%');
   } else {
-    $(videoPanel).css('width', `var(--resizable-width)`);
-    $(videoPanel).css('height', `100%`);
+    $(videoPanel).css('width', 'var(--resizable-width)');
+    $(videoPanel).css('height', '100%');
   }
 };
 
@@ -57,20 +57,20 @@ const getPaneWidth = () => {
 };
 
 const getPaneHeight = () => {
-  let pxHeight = youtubeChatPanel.clientHeight;
-  let result = 100 * pxHeight / liveTLPanel.clientHeight;
+  const pxHeight = youtubeChatPanel.clientHeight;
+  const result = 100 * pxHeight / liveTLPanel.clientHeight;
   return isNaN(result) ? INITIAL_PANEL_PERCENT : Math.min(100, Math.max(result, 0));
 };
 
-let c = params.continuation;
+const c = params.continuation;
 let r = params.isReplay;
 r = r == null ? c : r;
 
 let zoomObj = {};
 
-let setStreamZoom = () => {
+const setStreamZoom = () => {
   if (isAndroid) {
-    let s = stream.contentWindow.document.body.style;
+    const s = stream.contentWindow.document.body.style;
     s.transformOrigin = '0px 0px';
     s.width = zoomObj.width;
     s.height = zoomObj.height;
@@ -103,13 +103,13 @@ window.addEventListener('message', d => {
   d = JSON.parse(JSON.stringify(d.data));
   d.video = params.v;
   ltlchat.contentWindow.postMessage(d, '*');
-})
+});
 
-let q = `?isReplay=${(r ? 1 : '')}&v=${v}${(c ? `&continuation=${c}` : '')}`;
+const q = `?isReplay=${(r ? 1 : '')}&v=${v}${(c ? `&continuation=${c}` : '')}`;
 
 (async () => {
-  let main = await getWAR('index.html');
-  let pop = await getWAR('popout/index.html');
+  const main = await getWAR('index.html');
+  const pop = await getWAR('popout/index.html');
   ltlchat.src = `${pop}${q}&useLiveTL=1&isReplay=${(r ? 1 : '')}`;
   if (window.location.href.startsWith(main)) {
     ltlchat.src = `${pop}${q}&useLiveTL=1`;
@@ -118,8 +118,8 @@ let q = `?isReplay=${(r ? 1 : '')}&v=${v}${(c ? `&continuation=${c}` : '')}`;
 
 chat.src = embedDomain + q;
 
-let leftWidth = localStorage.getItem('LTL:leftPanelWidth');
-let rightHeight = localStorage.getItem('LTL:rightPanelHeight');
+const leftWidth = localStorage.getItem('LTL:leftPanelWidth');
+const rightHeight = localStorage.getItem('LTL:rightPanelHeight');
 
 if (leftWidth) {
   setPaneWidth(parseFloat(leftWidth));
@@ -144,8 +144,8 @@ if (params.noVideo) {
   }
 }
 
-function createCaptionSegment(segment) {
-  let caption = document.createElement('p');
+function createCaptionSegment (segment) {
+  const caption = document.createElement('p');
   caption.className = 'captionSegment';
   caption.textContent = segment;
   styleCaptionSegment(caption);
@@ -156,18 +156,18 @@ function createCaptionSegment(segment) {
   return caption;
 }
 
-function styleCaptionSegment(caption) {
+function styleCaptionSegment (caption) {
   getCaptionZoom().then(zoom => {
     if (zoom) caption.style.fontSize = `${20 * zoom}px`;
   });
 }
 
 // Just here in case we need it later
-function splitCaptionIntoSegments(caption, maxLength = 100) {
+function splitCaptionIntoSegments (caption, maxLength = 100) {
   return [caption];
 }
 
-function displayCaption(caption, persistFor = -1, clear = true) {
+function displayCaption (caption, persistFor = -1, clear = true) {
   const captions = document.querySelector('#ltlcaptions');
   captions.style.display = 'inline-table';
   if (clear) {
@@ -183,14 +183,14 @@ function displayCaption(caption, persistFor = -1, clear = true) {
     });
 }
 
-function clearCaptions() {
+function clearCaptions () {
   const captions = document.querySelector('#ltlcaptions');
   captions.querySelectorAll('.captionSegment').forEach(node => node.remove());
 }
 
 window.addEventListener('message', async (event) => {
-  let displayCaptions = await getStorage('captionMode');
-  let delay = await getStorage('captionDelay');
+  const displayCaptions = await getStorage('captionMode');
+  const delay = await getStorage('captionDelay');
   if (displayCaptions && event.data.action === 'caption') {
     displayCaption(event.data.caption, delay > 0 ? delay * 1000 : -1);
   }
@@ -203,9 +203,8 @@ window.addEventListener('message', async (event) => {
 // Demo call to displayCaption
 // displayCaption("Oi koroneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneone", 1000, false);
 
-let nojdiv = document.querySelector('#ltlcaptions');
-let captionsDiv = document.querySelector('#ltlcaptions');
-
+const nojdiv = document.querySelector('#ltlcaptions');
+const captionsDiv = document.querySelector('#ltlcaptions');
 
 const start = () => {
   stream.style.display = 'none';
@@ -239,14 +238,14 @@ const stop = () => {
   youtubeChatPanel.style.height = null;
 };
 
-let stopFunc = () => {
+const stopFunc = () => {
   setPaneWidth(getPaneWidth());
   setPaneHeight(getPaneHeight());
   stop();
 };
 
-let leftHandle = document.querySelector('#leftHandle');
-let rightHandle = document.querySelector('#rightHandle');
+const leftHandle = document.querySelector('#leftHandle');
+const rightHandle = document.querySelector('#rightHandle');
 let verticalHandle;
 let horizontalHandle;
 
@@ -262,7 +261,7 @@ window.sideChanged = async (side) => {
   try {
     $(youtubeChatPanel).resizable('destroy');
   } catch { }
-  let horizontalHandleCode = `
+  const horizontalHandleCode = `
     <div class="handle handleH ui-resizable-handle ui-resizable-s">
       <span>&hellip;</span>
     </div>
@@ -280,19 +279,19 @@ window.sideChanged = async (side) => {
   if (screenMode == 'portrait') {
     verticalHandle = document.createElement('span');
     verticalHandle.innerHTML = horizontalHandleCode;
-    videoPanel.style.height = `var(--resizable-width)`;
-    videoPanel.style.width = `100%`;
+    videoPanel.style.height = 'var(--resizable-width)';
+    videoPanel.style.width = '100%';
     videoPanel.style.maxHeight = '100%';
-    verticalHandle.querySelector('.handle').style.zIndex = `3`;
+    verticalHandle.querySelector('.handle').style.zIndex = '3';
     youtubeChatPanel.style.height = 'min(var(--resizable-height), calc(100% - var(--resizable-width)))';
     handleObj = { s: $(verticalHandle) };
     chatSide = 'right';
   } else {
-    videoPanel.style.width = `var(--resizable-width)`;
-    videoPanel.style.height = `100%`;
+    videoPanel.style.width = 'var(--resizable-width)';
+    videoPanel.style.height = '100%';
     videoPanel.style.maxHeight = 'unset';
     youtubeChatPanel.style.height = 'var(--resizable-height)';
-    verticalHandle.querySelector('.handle').style.zIndex = `2`;
+    verticalHandle.querySelector('.handle').style.zIndex = '2';
   }
   $(stream).css('max-width', '100%');
   $(stream).css('max-height', '100%');
@@ -327,7 +326,7 @@ window.sideChanged = async (side) => {
     stop: stopFunc,
     resize: (event, ui) => {
       if (chatSide == 'left') {
-        let newWidth = window.innerWidth - ui.size.width;
+        const newWidth = window.innerWidth - ui.size.width;
         $(videoPanel).css('width', newWidth + 'px');
         root.setProperty('--resizable-width', newWidth + 'px');
       }
@@ -349,11 +348,11 @@ window.sideChanged = async (side) => {
   $(captionsDiv).resizable({
     handles: 'e, w',
     stop: (event, ui) => {
-      var top = getTop(ui.helper);
+      const top = getTop(ui.helper);
       ui.helper.css('position', 'fixed');
-      let width = parseFloat(propToPercent(nojdiv.style.width, false));
-      let left = parseFloat(propToPercent(nojdiv.style.left, false));
-      let percent = `${left + width > 100 ? 100 - left : width}%`;
+      const width = parseFloat(propToPercent(nojdiv.style.width, false));
+      const left = parseFloat(propToPercent(nojdiv.style.left, false));
+      const percent = `${left + width > 100 ? 100 - left : width}%`;
       ui.helper.css('width', percent);
       localStorage.setItem('LTL:captionSizeWidth', percent);
     }
@@ -371,12 +370,12 @@ window.orientationChanged = async mode => {
 };
 
 window.onAndroidOrientationChange = async (orientation) => {
-  let doc = ltlchat.contentWindow.document;
+  const doc = ltlchat.contentWindow.document;
   let radio;
   if (orientation == 'portrait') {
-    radio = doc.querySelector("#chatSidePortrait");
+    radio = doc.querySelector('#chatSidePortrait');
   } else {
-    radio = doc.querySelector("#chatSide" + (await getStorage('chatSide') == 'left' ? 'Left' : 'Right'));
+    radio = doc.querySelector('#chatSide' + (await getStorage('chatSide') == 'left' ? 'Left' : 'Right'));
   }
   radio.checked = true;
   radio.dispatchEvent(new Event('change'));
@@ -385,10 +384,9 @@ window.onAndroidOrientationChange = async (orientation) => {
 getTopWithSafety = d => `max(min(${d}, calc(100% - 50px)), -50px)`;
 getLeftWithSafety = d => `max(min(${d}, calc(100% - 50px)), -50px)`;
 
-
-let capLeft = localStorage.getItem('LTL:captionSizeLeft');
-let capTop = localStorage.getItem('LTL:captionSizeTop');
-let capWidth = localStorage.getItem('LTL:captionSizeWidth');
+const capLeft = localStorage.getItem('LTL:captionSizeLeft');
+const capTop = localStorage.getItem('LTL:captionSizeTop');
+const capWidth = localStorage.getItem('LTL:captionSizeWidth');
 if (capLeft) nojdiv.style.left = propToPercent(getLeftWithSafety(capLeft), false);
 if (capTop) nojdiv.style.top = getTopWithSafety(propToPercent(capTop, true));
 if (capWidth) nojdiv.style.width = propToPercent(capWidth, false);
@@ -399,12 +397,12 @@ $(captionsDiv).draggable({
     let top = getTop(ui.helper);
     ui.helper.css('position', 'fixed');
     top = parseFloat(propToPercent(top, true), 10);
-    let topp = `${top}%`;
+    const topp = `${top}%`;
     ui.helper.css('top', topp);
-    let width = parseFloat(propToPercent(nojdiv.style.width, false));
+    const width = parseFloat(propToPercent(nojdiv.style.width, false));
     let left = parseFloat(propToPercent(nojdiv.style.left, false));
-    let sum = left + width;
-    let percent = `${width}%`;
+    const sum = left + width;
+    const percent = `${width}%`;
     left = `${left}%`;
     ui.helper.css('width', propToPercent(percent, false));
     ui.helper.css('left', left);
@@ -415,20 +413,19 @@ $(captionsDiv).draggable({
   containment: '#bounding'
 });
 
-
-function getTop(ele) {
-  var eTop = ele.offset().top;
-  var wTop = $(window).scrollTop();
-  var top = eTop - wTop;
+function getTop (ele) {
+  const eTop = ele.offset().top;
+  const wTop = $(window).scrollTop();
+  const top = eTop - wTop;
   return top;
 }
 
-function propToPercent(prop, top = true) {
+function propToPercent (prop, top = true) {
   prop = `${prop}`;
   if (prop.includes('%')) {
     return prop;
   }
-  let value = parseFloat(prop, 10);
+  const value = parseFloat(prop, 10);
   let divBy = window.innerWidth;
   if (top) {
     divBy = window.innerHeight;
@@ -436,7 +433,7 @@ function propToPercent(prop, top = true) {
   return `${100 * value / divBy}%`;
 }
 
-function toggleFullScreen() {
+function toggleFullScreen () {
   if (isAndroid) {
     ltlchat.contentWindow.Android.toggleFullScreen();
   } else {

@@ -1,23 +1,23 @@
 window.setTimeout(() => {
-    let vid = document.querySelector('video');
-    if (vid) {
-        vid.muted = true;
-        vid.pause();
-    }
-    let loading = document.querySelector('#loadingOverlay');
-    if (loading) return;
-    loading = document.createElement('div');
-    loading.id = 'loadingOverlay';
-    let loader = document.createElement('div');
-    loader.className = 'loader';
-    loading.appendChild(loader);
-    document.body.appendChild(loading);
-    let text = document.createElement('span');
-    text.id = 'text';
-    text.innerText = `Waiting for YouTube to respond. This may take a while...`;
-    loading.appendChild(text);
-    let style = document.createElement('style');
-    style.innerHTML = `
+  const vid = document.querySelector('video');
+  if (vid) {
+    vid.muted = true;
+    vid.pause();
+  }
+  let loading = document.querySelector('#loadingOverlay');
+  if (loading) return;
+  loading = document.createElement('div');
+  loading.id = 'loadingOverlay';
+  const loader = document.createElement('div');
+  loader.className = 'loader';
+  loading.appendChild(loader);
+  document.body.appendChild(loading);
+  const text = document.createElement('span');
+  text.id = 'text';
+  text.innerText = 'Waiting for YouTube to respond. This may take a while...';
+  loading.appendChild(text);
+  const style = document.createElement('style');
+  style.innerHTML = `
     #loadingOverlay {
         width: 100vw;
         height: 100vh;
@@ -64,8 +64,8 @@ window.setTimeout(() => {
         left: 0px;
     }
     `;
-    document.body.appendChild(style);
-    setTimeout(() => {
-        window.Android.startedLoading();
-    }, 500);
+  document.body.appendChild(style);
+  setTimeout(() => {
+    window.Android.startedLoading();
+  }, 500);
 }, 100);
