@@ -47,6 +47,7 @@ let messageReceive = (m) => {
     setTimeout(() => {
       if (params.v != d.video) return;
       if (d['yt-player-video-progress']) {
+        console.debug('Received timestamp');
         progress.current = d['yt-player-video-progress'];
         if (Math.abs(progress.previous - progress.current) > 1 || progress.current == null) {
           // Difference in progress above a second, assume user scrubbed, clear.

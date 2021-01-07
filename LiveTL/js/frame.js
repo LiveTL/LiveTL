@@ -315,13 +315,6 @@ async function insertLiveTLButtons(isHolotools = false) {
       async () => {
         params = parseParams();
         await createWindow(`${await getWAR('popout/index.html')}?v=${params.v}&mode=chat${restOfURL()}`);
-        document.querySelector('#chatframe').contentWindow.addEventListener('message', d => {
-          d = d.data;
-          if (d['yt-player-video-progress']) {
-            d.video = params.v;
-            sendToWindow(d);
-          }
-        });
         console.debug('Launched translation window for video', params.v);
         if (!alreadyListening) {
           alreadyListening = true;
@@ -637,6 +630,12 @@ if (isLiveChat()) {
   window.addEventListener('message', d => {
     if (d.data.type === 'translatorMode') {
       TranslatorMode[d.data.fn]();
+    }
+    d = d.data;
+    if (d['yt-player-video-progress']) {
+      d.video = getV(window.parent.location.href);
+      sendToWindow(d);
+      console.debug('Sent timestamp');
     }
   });
 }
