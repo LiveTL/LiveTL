@@ -1,8 +1,4 @@
-/**
- * Dependencies
- *
- * constants.js
- */
+import { getWAR } from './constants.js';
 
 async function importFontAwesome() {
   document.head.innerHTML += `

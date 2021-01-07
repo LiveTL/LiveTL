@@ -1006,3 +1006,5 @@ if (isAndroid && isVideo()) {
     }
   }, INTERVAL);
 }
+
+module.exports = { isAndroid, parseParams };

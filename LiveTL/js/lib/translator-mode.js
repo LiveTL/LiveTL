@@ -1,3 +1,5 @@
+import { getStorage, setupDefaultTranslatorMode } from './storage.js';
+
 // TranslatorMode.run()
 // Make sure to setTimeout when running at initialization
 
