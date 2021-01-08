@@ -1,6 +1,6 @@
 import { getWAR } from './constants.js';
 
-async function importFontAwesome () {
+async function importFontAwesome() {
   document.head.innerHTML += `
     <link 
      rel="stylesheet"
@@ -10,7 +10,7 @@ async function importFontAwesome () {
         `;
 }
 
-async function importCSS (url) {
+async function importCSS(url) {
   const frameCSSURL = getWAR(url);
   const link = document.createElement('link');
   link.rel = 'stylesheet';
@@ -19,7 +19,7 @@ async function importCSS (url) {
   document.head.appendChild(link);
 }
 
-async function importStyle () {
+async function importStyle() {
   return await importCSS('css/frame.css');
 }
 

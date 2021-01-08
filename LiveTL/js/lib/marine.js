@@ -4,39 +4,39 @@ import { getWAR } from './constants.js';
 const Marine = (() => {
   let oldFaviconURL = null;
 
-  function isHolni () {
+  function isHolni() {
     return isHolniParam() || isHolniYT();
   }
 
-  function isHolniParam () {
+  function isHolniParam() {
     const params = parseParams(window.location.href);
     return params.marine == 'holni';
   }
 
-  function isHolniYT () {
+  function isHolniYT() {
     return document
       .querySelectorAll('a[href="/channel/UCCzUftO8KOVkV4wQG1vkUvg"]')
       .length > 0;
   }
 
-  function holniParam () {
+  function holniParam() {
     return isHolni() ? 'marine=holni' : 'marine=not_holni';
   }
 
-  async function makeFaviconBL () {
+  async function makeFaviconBL() {
     oldFaviconURL = oldFaviconURL || faviconElement().href;
     faviconElement().href = await getMarineFaviconURL();
   }
 
-  function resetFavicon () {
+  function resetFavicon() {
     faviconElement().href = oldFaviconURL;
   }
 
-  function faviconElement () {
+  function faviconElement() {
     return document.querySelector("link[rel*='icon']") || {};
   }
 
-  async function getMarineFaviconURL () {
+  async function getMarineFaviconURL() {
     return await getWAR('icons/blfavicon.ico');
   }
 

@@ -1,22 +1,22 @@
 params = parseParams();
 
-const progress = {
+let progress = {
   current: null,
   previous: null
 };
 
 class Queue {
-  constructor () {
+  constructor() {
     this.clear();
   }
 
-  clear () {
+  clear() {
     this.top = null;
     this.last = this.top;
   }
 
-  pop () {
-    const front = this.top;
+  pop() {
+    let front = this.top;
     this.top = this.top.next;
     if (front == this.last) {
       this.last = null;
@@ -24,8 +24,8 @@ class Queue {
     return front;
   }
 
-  push (item) {
-    const newItem = { data: item };
+  push(item) {
+    let newItem = { data: item };
     if (this.last == null) {
       this.top = newItem;
       this.last = this.top;
@@ -34,16 +34,16 @@ class Queue {
       this.last = newItem;
     }
   }
-}
+};
 
-const queued = new Queue();
+let queued = new Queue();
 
 let lastChunk = '';
-const messageReceive = (m) => {
+let messageReceive = (m) => {
   try {
     d = JSON.parse(JSON.stringify(m.data));
   } catch (e) { return; }
-  if (typeof d === 'object') {
+  if (typeof d == 'object') {
     setTimeout(() => {
       if (params.v != d.video) return;
       if (d['yt-player-video-progress']) {
@@ -62,14 +62,14 @@ const messageReceive = (m) => {
         }
         progress.previous = progress.current;
       } else if (d.type === 'messageChunk') {
-        const str = JSON.stringify(d.messages);
+        let str = JSON.stringify(d.messages);
         if (str == lastChunk) return;
         lastChunk = str;
         if (params.isReplay) {
           d.messages.forEach(message => {
             let secs = Array.from(message.timestamp.split(':'), t => parseInt(t)).reverse();
-            secs = secs[0] + (secs[1] ? secs[1] * 60 : 0) +
-              (secs[2] ? secs[2] * 60 * 60 : 0);
+            secs = secs[0] + (secs[1] ? secs[1] * 60 : 0)
+              + (secs[2] ? secs[2] * 60 * 60 : 0);
             queued.push({
               timestamp: secs,
               message: message

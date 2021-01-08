@@ -33,7 +33,8 @@ if (isAndroid) {
   };
 }
 
-const isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === '[object SafariRemoteNotification]'; })(!window.safari || (typeof safari !== 'undefined' && window.safari.pushNotification));
+const isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && window['safari'].pushNotification));
+
 
 const embedDomain = EMBED_DOMAIN;
 
@@ -44,9 +45,9 @@ let showTimestamps = true;
 let textDirection = 'bottom';
 const INTERVAL = 100;
 
-async function addedByUser (id) {
+async function addedByUser(id) {
   id = id.trim().toLowerCase();
-  const s = (await getUserStatus(id, true)).checked != null;
+  let s = (await getUserStatus(id, true)).checked != null;
   return s;
 }
 
@@ -58,7 +59,7 @@ const authorType = {
   STANDARD: 'Standard'
 };
 
-async function runLiveTL () {
+async function runLiveTL() {
   monkeypatch();
 
   params = parseParams();
@@ -114,7 +115,7 @@ async function runLiveTL () {
 
   await createSettings(livetlContainer);
 
-  const allUsersVal = (await isChecked('allUsers'));
+  let allUsersVal = (await isChecked('allUsers'));
   allTranslatorCheckbox = await createCheckbox('Automatically Detect', undefined,
     allUsersVal == null ? true : allUsersVal
     , false, async () => {
@@ -138,7 +139,8 @@ async function runLiveTL () {
 
   prependE = el => translationDiv.prepend(el);
 
-  const prependOrAppend = e => (textDirection == 'bottom' ? appendE : prependE)(e);
+  let prependOrAppend = e => (textDirection == 'bottom' ? appendE : prependE)(e);
+
 
   prependOrAppend(await createWelcome());
   const hrParent = document.createElement('div');
@@ -218,7 +220,7 @@ async function runLiveTL () {
         prependOrAppend(createMessageEntry(messageInfo, messageInfo.message));
         await speechFuture;
       }
-      
+      return;
     }
   };
 
@@ -229,7 +231,7 @@ async function runLiveTL () {
   }
 }
 
-async function reinsertButtons () {
+async function reinsertButtons() {
   params = parseParams();
   if (params.embed_domain === 'hololive.jetri.co') {
     await insertLiveTLButtons(true);
@@ -237,7 +239,7 @@ async function reinsertButtons () {
   }
 }
 
-async function switchChat () {
+async function switchChat() {
   // let count = 2;
   // document.querySelectorAll('.yt-dropdown-menu').forEach((e) => {
   //   if (/Live chat/.exec(e.innerText) && count > 0) {
@@ -248,7 +250,7 @@ async function switchChat () {
   // turned off chat switch for performance
 }
 
-function parseParams (loc) {
+function parseParams(loc) {
   const s = decodeURI((loc || location.search).substring(1))
     .replace(/"/g, '\\"')
     .replace(/&/g, '","')
@@ -256,7 +258,7 @@ function parseParams (loc) {
   return s === '' ? {} : JSON.parse('{"' + s + '"}');
 }
 
-function clearLiveTLButtons () {
+function clearLiveTLButtons() {
   document.querySelectorAll('.liveTLBotan').forEach(b => b.remove());
 }
 
@@ -268,6 +270,7 @@ getV = (src) => {
   return parseParams('?' + src.split('?')[1]).v;
 };
 
+
 const createWindow = async u => {
   return new Promise((res, rej) => {
     chrome.runtime.sendMessage({ type: 'window', url: u }, (d, a) => {
@@ -278,20 +281,20 @@ const createWindow = async u => {
 
 let alreadyListening = false;
 
-const sendToWindow = (data) => {
+let sendToWindow = (data) => {
   try {
-    chrome.runtime.sendMessage({ type: 'message', data: data }, {});
+    chrome.runtime.sendMessage({ type: 'message', data: data, }, {});
   } catch (e) {
     console.debug(e);
   }
 };
 
-async function insertLiveTLButtons (isHolotools = false) {
+async function insertLiveTLButtons(isHolotools = false) {
   console.debug('Inserting LiveTL Launcher Buttons');
   clearLiveTLButtons();
   params = parseParams();
   const makeButton = (text, callback, color) => {
-    const a = document.createElement('span');
+    let a = document.createElement('span');
     a.appendChild(getLiveTLButton(color));
     a.className = 'liveTLBotan';
     const e = isHolotools ? document.querySelector('#input-panel') : document.querySelector('ytd-live-chat-frame');
@@ -306,13 +309,13 @@ async function insertLiveTLButtons (isHolotools = false) {
     } else {
       window.location.href = u;
     }
-  };
+  }
   const createTab = u => window.open(u);
-  getContinuationURL = () => {
+  getContinuationURL = (() => {
     let chatframe = document.querySelector('#chatframe');
     let src = chatframe.dataset.src || chatframe.src;
     return '&continuation=' + getContinuation(src);
-  };
+  });
 
   getTitle = () => encodeURIComponent(document.querySelector('#container > .title').textContent);
 
@@ -334,7 +337,7 @@ async function insertLiveTLButtons (isHolotools = false) {
         if (!alreadyListening) {
           alreadyListening = true;
           window.addEventListener('message', m => {
-            if (typeof m.data === 'object') {
+            if (typeof m.data == 'object') {
               switch (m.data.type) {
                 case 'messageChunk':
                   sendToWindow(m.data);
@@ -355,36 +358,36 @@ async function insertLiveTLButtons (isHolotools = false) {
   }
 }
 
-function isReplayChat () {
+function isReplayChat() {
   return window.location.href.startsWith('https://www.youtube.com/live_chat_replay');
 }
 
-function hasReplayChatOpen () {
+function hasReplayChatOpen() {
   return document.querySelector('#chatframe').contentWindow.location.href.startsWith('https://www.youtube.com/live_chat_replay');
 }
 
-function isLiveChat () {
+function isLiveChat() {
   return window.location.href.startsWith('https://www.youtube.com/live_chat');
 }
 
-function isChat () {
+function isChat() {
   return isLiveChat() || isReplayChat();
 }
 
-function isVideo () {
+function isVideo() {
   return window.location.href.startsWith('https://www.youtube.com/watch');
 }
 
-async function onMessageFromEmbeddedChat (m) {
+async function onMessageFromEmbeddedChat(m) {
   if (!isVideo()) {
     // I think this fixes the firefox no button issue
     // removeEventListener('message', onMessageFromEmbeddedChat);
     return;
   }
-  if (typeof m.data === 'string') {
+  if (typeof m.data == 'string') {
     switch (m.data) {
       case 'embeddedChatLoaded':
-        const f = document.querySelector('#chatframe');
+        let f = document.querySelector('#chatframe');
         f.dataset.src = f.contentWindow.location.href;
         await insertLiveTLButtons();
         if (isAndroid && isVideo()) {
@@ -402,19 +405,20 @@ async function onMessageFromEmbeddedChat (m) {
 let params = {};
 let lastLocation = '';
 
-function injectScript (text) {
-  const e = document.createElement('script');
+function injectScript(text) {
+  let e = document.createElement("script");
   e.innerHTML = text;
   document.head.appendChild(e);
 }
 
-function isEmbed () {
+function isEmbed() {
   return window.location.href.startsWith('https://www.youtube.com/embed');
 }
 
-function monkeypatch () {
+
+function monkeypatch() {
   window.oldFetch = window.oldFetch || window.fetch;
-  function fetchLocalResource (url) {
+  function fetchLocalResource(url) {
     return new Promise((res, rej) => {
       const req = new XMLHttpRequest();
       req.onload = function () {
@@ -428,18 +432,18 @@ function monkeypatch () {
   window.fetch = async (...args) => {
     try {
       let url = '';
-      if (typeof args[0] === 'object') url = args[0].url;
+      if (typeof args[0] == 'object') url = args[0].url;
       else url = args[0];
       if (url.startsWith('file:///android_asset')) {
-        const text = await fetchLocalResource(url);
+        let text = await fetchLocalResource(url);
         return {
           json: async () => JSON.parse(text),
           text: async () => text
         };
       }
-      const result = await window.oldFetch(...args);
+      let result = await window.oldFetch(...args);
       if (url.startsWith('https://www.youtube.com/youtubei/v1/live_chat/get_live_chat')) {
-        const data = await (await result.clone()).json();
+        let data = await (await result.clone()).json();
         console.debug('Caught chunk', data);
         window.dispatchEvent(new CustomEvent('newMessageChunk', { detail: data }));
       }
@@ -447,10 +451,10 @@ function monkeypatch () {
     } catch (e) {
       console.debug(e);
     }
-  };
+  }
 }
 
-async function loaded () {
+async function loaded() {
   // window.removeEventListener('load', loaded);
   // window.removeEventListener('yt-navigate-finish', loaded);
   // window.addEventListener('yt-navigate-finish', loaded);
@@ -469,26 +473,26 @@ async function loaded () {
       } else {
         console.debug('Monitoring network events');
         injectScript(monkeypatch.toString() + 'monkeypatch();');
-        setTimeout(() => TranslatorMode.run(), 0);
+        setTimeout(() => TranslatorMode.run(), 0)
         window.addEventListener('newMessageChunk', async (response) => {
           response = response.detail;
           response = JSON.parse(JSON.stringify(response));
           console.debug('newMessageChunk event received', response);
-          const messages = [];
+          let messages = [];
           if (!response.continuationContents) {
             console.debug('Response was invalid', response);
             return;
           }
           (response.continuationContents.liveChatContinuation.actions || []).forEach(action => {
             try {
-              const currentElement = (action.addChatItemAction ||
-                (action.replayChatItemAction != null ? action.replayChatItemAction.actions[0].addChatItemAction : null) ||
-                {}).item;
+              let currentElement = (action.addChatItemAction ||
+                (action.replayChatItemAction != null ? action.replayChatItemAction.actions[0].addChatItemAction : null)
+                || {}).item;
               if (!currentElement) return;
-              const messageItem = currentElement.liveChatTextMessageRenderer;
+              let messageItem = currentElement.liveChatTextMessageRenderer;
               if (!messageItem) return;
               messageItem.authorBadges = messageItem.authorBadges || [];
-              const authorTypes = [];
+              let authorTypes = [];
               messageItem.authorBadges.forEach(badge =>
                 authorTypes.push(badge.liveChatAuthorBadgeRenderer.tooltip));
               let messageText = '';
@@ -504,14 +508,14 @@ async function loaded () {
                   types: authorTypes
                 },
                 message: messageText,
-                timestamp: isReplayChat() ? messageItem.timestampText.simpleText : parseTimestamp(messageItem.timestampUsec)
+                timestamp: isReplayChat() ? messageItem.timestampText.simpleText : parseTimestamp(messageItem.timestampUsec),
               };
               messages.push(item);
             } catch (e) {
               console.debug('Error while parsing message.', { e });
             }
           });
-          const chunk = {
+          let chunk = {
             type: 'messageChunk',
             messages: messages,
             video: getV(window.location.href) || getV(window.parent.location.href)
@@ -531,7 +535,7 @@ async function loaded () {
             reinsertButtons();
           }
         }).observe(document.querySelector('#view-selector').querySelector('#label-text'),
-          { characterData: true, attributes: false, childList: false, subtree: true }));
+          { 'characterData': true, 'attributes': false, 'childList': false, 'subtree': true }));
       } else {
         window.parent.postMessage('embeddedChatLoaded', '*');
       }
@@ -542,8 +546,8 @@ async function loaded () {
       console.debug(e);
     }
   } else if (isEmbed()) {
-    const initFullscreenButton = () => {
-      const fsButton = document.querySelector('.ytp-fullscreen-button');
+    let initFullscreenButton = () => {
+      let fsButton = document.querySelector('.ytp-fullscreen-button');
       fsButton.ariaDisabled = false;
       fsButton.addEventListener('click', () => {
         window.parent.postMessage({ type: 'fullscreen' }, '*');
@@ -558,11 +562,11 @@ async function loaded () {
     if (isAndroid) {
       setInterval(() => {
         // can't clear interval because youtube just randomly re-adds it
-        const icon = document.querySelector('.iv-branding');
+        let icon = document.querySelector('.iv-branding');
         if (icon) {
           icon.style.display = 'none';
         }
-        const suggestions = document.querySelector('.ytp-pause-overlay');
+        let suggestions = document.querySelector('.ytp-pause-overlay');
         if (suggestions) {
           suggestions.style.display = 'none';
         }
@@ -580,14 +584,14 @@ async function loaded () {
   }
 }
 
-function replaceLinks () {
+function replaceLinks() {
   document.querySelectorAll('a').forEach(e => e.onclick = (event) => {
     window.Android.open(e.href);
     event.preventDefault();
   });
 }
 
-function parseTimestamp (timestamp) {
+function parseTimestamp(timestamp) {
   return (new Date(parseInt(timestamp) / 1000)).toLocaleTimeString(navigator.language,
     { hour: '2-digit', minute: '2-digit' });
 }
@@ -602,8 +606,8 @@ if ((isVideo() || isChat() || isEmbed()) && isFirefox) {
 
 const aboutPage = 'https://kentonishi.github.io/LiveTL/about/';
 
-function setChatZoom (width, height, transform) {
-  const e = document.querySelector('yt-live-chat-app');
+function setChatZoom(width, height, transform) {
+  let e = document.querySelector('yt-live-chat-app');
   e.style.width = width;
   e.style.height = height;
   e.style.transformOrigin = '0 0';
@@ -613,7 +617,7 @@ function setChatZoom (width, height, transform) {
 }
 
 if (window.location.href.startsWith(aboutPage)) {
-  const replaceMessage = () => {
+  let replaceMessage = () => {
     const e = document.querySelector('#actionMessage');
     e.textContent = 'Thank you for installing LiveTL!';
   };
@@ -631,7 +635,7 @@ if (window.location.href.startsWith(aboutPage)) {
 } else if (isChat()) {
   window.addEventListener('message', d => {
     if (d.data.type == 'zoom') {
-      const z = d.data.zoom;
+      let z = d.data.zoom;
       setChatZoom(z.width, z.height, z.transform);
     }
     if (window.origin != d.origin) {
@@ -654,7 +658,7 @@ if (isLiveChat()) {
   });
 }
 
-function wrapIconWithLink (icon, link) {
+function wrapIconWithLink(icon, link) {
   const wrapper = document.createElement('a');
   wrapper.href = link;
   wrapper.target = 'about:blank';
@@ -662,7 +666,7 @@ function wrapIconWithLink (icon, link) {
   return wrapper;
 }
 
-async function createLogo () {
+async function createLogo() {
   const a = document.createElement('a');
   a.href = 'https://kentonishi.github.io/LiveTL';
   a.target = 'about:blank';
@@ -673,14 +677,14 @@ async function createLogo () {
   return a;
 }
 
-function createIcon (faName, link, addSpace) {
+function createIcon(faName, link, addSpace) {
   const icon = document.createElement('i');
   ['fa', 'smallIcon', faName].forEach(c => icon.classList.add(c));
   const wrapped = wrapIconWithLink(icon, link);
   return wrapped;
 }
 
-async function shareExtension (e) {
+async function shareExtension(e) {
   const details = await getFile('manifest.json', 'json');
   if (navigator.share) {
     navigator.share({
@@ -692,7 +696,7 @@ async function shareExtension (e) {
   }
 }
 
-async function createWelcomeText () {
+async function createWelcomeText() {
   const welcomeText = document.createElement('span');
   welcomeText.textContent = 'Welcome to LiveTL! Translations picked up from the chat will appear here.';
   const buttons = document.createElement('div');
@@ -726,7 +730,7 @@ async function createWelcomeText () {
   return welcomeText;
 }
 
-async function createWelcome () {
+async function createWelcome() {
   const welcome = document.createElement('div');
   welcome.className = 'line';
   welcome.appendChild(await createLogo());
@@ -736,15 +740,15 @@ async function createWelcome () {
   return welcome;
 }
 
-function getChecklist () {
+function getChecklist() {
   return document.querySelector('#transelectChecklist');
 }
 
-function getChecklistItems () {
+function getChecklistItems() {
   return getChecklist().querySelector('#items');
 }
 
-function createCheckmark (authorID, checked, addedByUser, onchange) {
+function createCheckmark(authorID, checked, addedByUser, onchange) {
   const checkmark = document.createElement('input');
   checkmark.type = 'checkbox';
   checkmark.dataset.id = authorID;
@@ -758,23 +762,23 @@ function createCheckmark (authorID, checked, addedByUser, onchange) {
   return checkmark;
 }
 
-function createCheckboxPerson (name, authorID) {
+function createCheckboxPerson(name, authorID) {
   const person = document.createElement('label');
   person.setAttribute('for', authorID);
   person.textContent = name;
   return person;
 }
 
-async function createCheckbox (name, authorID = 'allUsers', checked = false, addedByUser = false, callback = null, customFilter = false) {
+async function createCheckbox(name, authorID = 'allUsers', checked = false, addedByUser = false, callback = null, customFilter = false) {
   const items = getChecklistItems();
   const checkbox = createCheckmark(authorID, checked, addedByUser, callback || checkboxUpdate);
   const selectTranslatorMessage = document.createElement('li');
   selectTranslatorMessage.appendChild(checkbox);
-  const nameElement = createCheckboxPerson(name, authorID);
+  let nameElement = createCheckboxPerson(name, authorID);
   selectTranslatorMessage.appendChild(nameElement);
   selectTranslatorMessage.style.marginRight = '4px';
   items.appendChild(selectTranslatorMessage);
-  const b = customFilter ? 'byName' : 'byID';
+  let b = customFilter ? 'byName' : 'byID';
   await saveUserStatus(authorID, checked, addedByUser, customFilter);
   if (customFilter || authorID == 'allUsers') {
     nameElement.classList.add('italics');
@@ -787,7 +791,7 @@ async function createCheckbox (name, authorID = 'allUsers', checked = false, add
   return checkbox;
 }
 
-function filterBoxes (boxes) {
+function filterBoxes(boxes) {
   boxes.forEach((box) => {
     if (box.dataset.customFilter) return;
     allTranslators.byID[box.dataset.id] = allTranslators.byID[box.dataset.id] || {};
@@ -799,12 +803,12 @@ function filterBoxes (boxes) {
   });
 }
 
-function checkAll () {
+function checkAll() {
   const boxes = getChecklist().querySelectorAll('input:not(:checked)');
   boxes.forEach(box => box.checked = true);
 }
 
-function removeBadTranslations () {
+function removeBadTranslations() {
   document.querySelectorAll('.line').forEach((translation, i) => {
     const author = translation.querySelector('.smallText');
     if (author && author.dataset.id && !allTranslators.byID[author.dataset.id].checked) {
@@ -813,7 +817,7 @@ function removeBadTranslations () {
   });
 }
 
-function checkboxUpdate () {
+function checkboxUpdate() {
   const boxes = getChecklist().querySelectorAll('input');
   filterBoxes(boxes);
   // if (allTranslatorCheckbox.checked) {
@@ -822,8 +826,8 @@ function checkboxUpdate () {
   removeBadTranslations();
 }
 
-function createTimestampElement (timestamp) {
-  const timestampElement = document.createElement('span');
+function createTimestampElement(timestamp) {
+  let timestampElement = document.createElement('span');
   timestampElement.textContent = ` (${timestamp})`;
   timestampElement.className = 'timestampText smallText';
   timestampElement.style.display = showTimestamps ? 'contents' : 'none';
@@ -831,7 +835,7 @@ function createTimestampElement (timestamp) {
   return timestampElement;
 }
 
-function createAuthorNameElement (messageInfo) {
+function createAuthorNameElement(messageInfo) {
   const authorName = document.createElement('span');
   authorName.textContent = `${messageInfo.author.name}`;
   authorName.dataset.id = messageInfo.author.id;
@@ -846,7 +850,7 @@ function createAuthorNameElement (messageInfo) {
   return authorName;
 }
 
-function createTooltip (text) {
+function createTooltip(text) {
   const tooltip = document.createElement('span');
   tooltip.className = 'tooltip';
   tooltip.textContent = text;
@@ -854,7 +858,7 @@ function createTooltip (text) {
   return tooltip;
 }
 
-function createAuthorHideButton (translation) {
+function createAuthorHideButton(translation) {
   const hide = document.createElement('span');
   hide.className = 'hasTooltip';
   hide.style.cursor = 'pointer';
@@ -866,7 +870,7 @@ function createAuthorHideButton (translation) {
   return hide;
 }
 
-function createAuthorBanButton (authorID) {
+function createAuthorBanButton(authorID) {
   const ban = document.createElement('span');
   ban.className = 'hasTooltip';
   ban.style.cursor = 'pointer';
@@ -882,7 +886,7 @@ function createAuthorBanButton (authorID) {
   return ban;
 }
 
-function createAuthorInfoOptions (authorID, line) {
+function createAuthorInfoOptions(authorID, line) {
   const options = document.createElement('span');
   options.appendChild(createAuthorHideButton(line));
   options.appendChild(createAuthorBanButton(authorID));
@@ -891,7 +895,7 @@ function createAuthorInfoOptions (authorID, line) {
   return options;
 }
 
-function createAuthorInfoElement (messageInfo, line) {
+function createAuthorInfoElement(messageInfo, line) {
   const authorInfo = document.createElement('span');
   authorInfo.appendChild(createAuthorNameElement(messageInfo));
   authorInfo.appendChild(createTimestampElement(messageInfo.timestamp));
@@ -899,12 +903,12 @@ function createAuthorInfoElement (messageInfo, line) {
   return authorInfo;
 }
 
-function setTranslationElementCallbacks (line) {
+function setTranslationElementCallbacks(line) {
   line.addEventListener('mouseover', () => line.querySelector('.messageOptions').style.display = 'inline-block');
   line.addEventListener('mouseleave', () => line.querySelector('.messageOptions').style.display = 'none');
 }
 
-function createMessageEntry (messageInfo, message) {
+function createMessageEntry(messageInfo, message) {
   const line = document.createElement('div');
   line.className = 'line message';
   line.textContent = message;
@@ -913,7 +917,7 @@ function createMessageEntry (messageInfo, message) {
   return line;
 }
 
-function createSettingsProjection (add) {
+function createSettingsProjection(add) {
   let settingsProjection = document.querySelector('#settingsProjection');
   if (settingsProjection) settingsProjection.remove();
   settingsProjection = document.createElement('div');
@@ -922,7 +926,7 @@ function createSettingsProjection (add) {
   add(settingsProjection);
 }
 
-async function setFavicon () {
+async function setFavicon() {
   const favicon = getWAR('icons/favicon.ico');
   const faviconLink = document.createElement('link');
   faviconLink.rel = 'icon';
@@ -933,12 +937,12 @@ async function setFavicon () {
 
 const sendToCaptions = caption => {
   const captionWindow = window.parent.parent;
-  captionWindow.postMessage({ action: 'caption', caption }, '*');
+  captionWindow.postMessage({ action: "caption", caption }, "*");
 };
 
 // MARK
 
-function styleLiveTLButton (a, color) {
+function styleLiveTLButton(a, color) {
   a.style.backgroundColor = `${color || 'rgb(0, 153, 255)'}`;
   a.style.font = 'inherit';
   a.style.fontSize = '11px';
@@ -948,7 +952,7 @@ function styleLiveTLButton (a, color) {
   a.style.textAlign = 'center';
 }
 
-function setLiveTLButtonAttributes (a) {
+function setLiveTLButtonAttributes(a) {
   [
     'yt-simple-endpoint',
     'style-scope',
@@ -957,7 +961,7 @@ function setLiveTLButtonAttributes (a) {
   a.tabindex = '-1';
 }
 
-function getLiveTLButton (color) {
+function getLiveTLButton(color) {
   const a = document.createElement('a');
   setLiveTLButtonAttributes(a);
   styleLiveTLButton(a, color);
@@ -987,7 +991,7 @@ function getLiveTLButton (color) {
   return a;
 }
 
-async function insertContentScript () {
+async function insertContentScript() {
   document.querySelectorAll('iframe').forEach(async frame => {
     try {
       if (frame.id != 'livetl-chat' && !frame.contentWindow.runLiveTL) {
@@ -997,13 +1001,13 @@ async function insertContentScript () {
         frame.contentWindow.loaded();
         frame.contentWindow.insertContentScript();
       }
-    } catch (e) { console.debug(e); }
+    } catch (e) { console.debug(e) }
   });
 }
 
 if (isAndroid && isVideo()) {
   setInterval(() => {
-    const chat = document.querySelector('#chatframe');
+    let chat = document.querySelector('#chatframe');
     if (chat && chat.src.startsWith('https://www.youtube.com/live_chat')) {
       window.postMessage('embeddedChatLoaded');
     }
