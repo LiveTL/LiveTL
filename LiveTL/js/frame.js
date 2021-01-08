@@ -40,8 +40,8 @@ const embedDomain = EMBED_DOMAIN;
 const allTranslators = { byID: {}, byName: {} };
 // byName is unused, always checking from storage
 let allTranslatorCheckbox = {};
-const showTimestamps = true;
-const textDirection = 'bottom';
+let showTimestamps = true;
+let textDirection = 'bottom';
 const INTERVAL = 100;
 
 async function addedByUser (id) {
