@@ -1,3 +1,16 @@
+// Sometimes, localStorage is set to null by privacy browsers
+const bruhStorage = localStorage || {
+  state: {},
+
+  getItem(name) {
+    return this.state[name];
+  },
+
+  setItem(name, value) {
+    this.state[name] = value;
+  }
+};
+
 params = parseParams();
 const v = params.v || '5qap5aO4i9A';
 const stream = document.querySelector('#stream');
@@ -118,8 +131,8 @@ let q = `?isReplay=${(r ? 1 : '')}&v=${v}${(c ? `&continuation=${c}` : '')}`;
 
 chat.src = embedDomain + q;
 
-let leftWidth = localStorage.getItem('LTL:leftPanelWidth');
-let rightHeight = localStorage.getItem('LTL:rightPanelHeight');
+let leftWidth = bruhStorage.getItem('LTL:leftPanelWidth');
+let rightHeight = bruhStorage.getItem('LTL:rightPanelHeight');
 
 if (leftWidth) {
   setPaneWidth(parseFloat(leftWidth));
@@ -227,10 +240,10 @@ const stop = () => {
   const width = getPaneWidth();
   const height = getPaneHeight();
   if (!isNaN(width) && !params.noVideo) {
-    localStorage.setItem('LTL:leftPanelWidth', width.toString() + '%');
+    bruhStorage.setItem('LTL:leftPanelWidth', width.toString() + '%');
   }
   if (!isNaN(height)) {
-    localStorage.setItem('LTL:rightPanelHeight', height.toString() + '%');
+    bruhStorage.setItem('LTL:rightPanelHeight', height.toString() + '%');
     setPaneHeight(getPaneHeight());
   }
   if (screenMode != 'portrait') {
@@ -355,7 +368,7 @@ window.sideChanged = async (side) => {
       let left = parseFloat(propToPercent(nojdiv.style.left, false));
       let percent = `${left + width > 100 ? 100 - left : width}%`;
       ui.helper.css('width', percent);
-      localStorage.setItem('LTL:captionSizeWidth', percent);
+      bruhStorage.setItem('LTL:captionSizeWidth', percent);
     }
   });
 };
@@ -386,9 +399,9 @@ getTopWithSafety = d => `max(min(${d}, calc(100% - 50px)), -50px)`;
 getLeftWithSafety = d => `max(min(${d}, calc(100% - 50px)), -50px)`;
 
 
-let capLeft = localStorage.getItem('LTL:captionSizeLeft');
-let capTop = localStorage.getItem('LTL:captionSizeTop');
-let capWidth = localStorage.getItem('LTL:captionSizeWidth');
+let capLeft = bruhStorage.getItem('LTL:captionSizeLeft');
+let capTop = bruhStorage.getItem('LTL:captionSizeTop');
+let capWidth = bruhStorage.getItem('LTL:captionSizeWidth');
 if (capLeft) nojdiv.style.left = propToPercent(getLeftWithSafety(capLeft), false);
 if (capTop) nojdiv.style.top = getTopWithSafety(propToPercent(capTop, true));
 if (capWidth) nojdiv.style.width = propToPercent(capWidth, false);
@@ -408,9 +421,9 @@ $(captionsDiv).draggable({
     left = `${left}%`;
     ui.helper.css('width', propToPercent(percent, false));
     ui.helper.css('left', left);
-    localStorage.setItem('LTL:captionSizeWidth', percent);
-    localStorage.setItem('LTL:captionSizeLeft', left);
-    localStorage.setItem('LTL:captionSizeTop', topp);
+    bruhStorage.setItem('LTL:captionSizeWidth', percent);
+    bruhStorage.setItem('LTL:captionSizeLeft', left);
+    bruhStorage.setItem('LTL:captionSizeTop', topp);
   },
   containment: '#bounding'
 });
