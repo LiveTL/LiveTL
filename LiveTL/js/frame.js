@@ -335,8 +335,13 @@ async function insertLiveTLButtons(isHolotools = false) {
     redirectTab(`${await getWAR('index.html')}?v=${params.v}${restOfURL()}`);
   };
 
+  var isReplay = hasReplayChatOpen()
+
   if (!isHolotools) {
-    makeButton('Watch in LiveTL', window.watchInLiveTL);
+    if (!(isSafari && isReplay)){
+      //Archives don't work in ltl view on safari
+      makeButton('Watch in LiveTL', window.watchInLiveTL);
+    }
 
     makeButton('Pop Out Translations',
       async () => {
