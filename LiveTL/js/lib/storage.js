@@ -56,6 +56,14 @@ async function setupDefaultTranslatorMode() {
   return await setDefaultSetting('translatorMode', TranslatorMode.defaultt);
 }
 
+async function getSpeechVolume() {
+  return await getStorage('speechVolume');
+}
+
+async function setSpeechVolume(volume) {
+  return await setSpeechVolume('speechVolume', volume);
+}
+
 async function getCaptionZoom() {
   await setDefaultSetting('captionZoom', isAndroid ? 0.5 : 1);
   return await getStorage('captionZoom');
