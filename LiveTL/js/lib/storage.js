@@ -61,7 +61,7 @@ async function getSpeechVolume() {
 }
 
 async function setSpeechVolume(volume) {
-  return await setSpeechVolume('speechVolume', volume);
+  return await setStorage('speechVolume', volume);
 }
 
 async function getCaptionZoom() {

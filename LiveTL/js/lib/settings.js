@@ -818,10 +818,6 @@ async function createTranslatorModeToggleCheckbox() {
   );
 }
 
-// async function createSlider(id, min, max, labelText,
-// getSliderValue, setSliderValue,
-// onchange, toScale = true) {
-
 async function createSpeechVolumeSlider() {
   return createSlider(
     'synthVolume',
@@ -830,9 +826,7 @@ async function createSpeechVolumeSlider() {
     'Read Aloud Volume: ',
     getSpeechVolume,
     setSpeechVolume,
-    async () => {
-      ;
-    },
+    () => { },
     false
   );
 }
