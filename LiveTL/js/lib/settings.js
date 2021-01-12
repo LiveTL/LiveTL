@@ -22,7 +22,9 @@ import {
   getCaptionZoom,
   setCaptionZoom,
   getStorage,
-  setStorage
+  setStorage,
+  getSpeechVolume,
+  setSpeechVolume
 } from './storage.js';
 import { closeSVG, settingsGear } from './svgs.js';
 
@@ -46,6 +48,7 @@ async function createSettings(container) {
   }
   if (!isAndroid) {
     settings.appendChild(await createSpeechSynthToggle());
+    settings.appendChild(await createSpeechVolumeSlider());
     settings.appendChild(await createTranslatorModeToggle());
   }
 
@@ -812,6 +815,25 @@ async function createTranslatorModeToggleCheckbox() {
         TranslatorMode.disable();
       }
     }
+  );
+}
+
+// async function createSlider(id, min, max, labelText,
+// getSliderValue, setSliderValue,
+// onchange, toScale = true) {
+
+async function createSpeechVolumeSlider() {
+  return createSlider(
+    'synthVolume',
+    0,
+    1,
+    'Read Aloud Volume: ',
+    getSpeechVolume,
+    setSpeechVolume,
+    async () => {
+      ;
+    },
+    false
   );
 }
 
