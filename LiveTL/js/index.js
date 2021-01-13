@@ -371,6 +371,11 @@ window.sideChanged = async (side) => {
       bruhStorage.setItem('LTL:captionSizeWidth', percent);
     }
   });
+  if (chatSide === 'right') {
+    liveTLPanel.style.width = null;
+  } else {
+    liveTLPanel.style.width = `calc(100% - var(--resizable-width))`;
+  }
 };
 getStorage('chatSide').then(async (side) => {
   if (side != 'right' && side != 'left') await setStorage('chatSide', 'right');
