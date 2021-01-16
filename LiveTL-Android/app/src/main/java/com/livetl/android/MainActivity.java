@@ -1,30 +1,17 @@
 package com.livetl.android;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DownloadManager;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.Window;
-import android.view.WindowInsets;
-import android.view.WindowInsetsController;
-import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
-import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
@@ -32,17 +19,17 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 
-import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -96,8 +83,13 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     void loadWebview(String url, String inject, int density){
         wv = (WebView) findViewById(R.id.mainWebview);
-        wv.setWebViewClient(new WebViewClient() {
 
+        // Debug mode (chrome://inspect/#devices)
+        if (BuildConfig.DEBUG && (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
+
+        wv.setWebViewClient(new WebViewClient() {
             public void onPageFinished(WebView view, String url) {
                 if (inject.equals("frame") || inject.equals("loader")) {
                     wv.loadUrl("javascript:" +
