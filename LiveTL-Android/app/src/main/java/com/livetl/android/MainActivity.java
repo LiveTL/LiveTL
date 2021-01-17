@@ -38,20 +38,20 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ActivityMainBinding binding;
-
-    int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+    private static final int UI_FLAGS = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         | View.SYSTEM_UI_FLAG_FULLSCREEN
         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-    String UAS = (
+    private static final String USER_AGENT = (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
         "(KHTML, like Gecko) Chrome/89.0.4346.0 Safari/537.36 Edg/89.0.731.0"
     );
-    int screenDensity = 0;
-    String action = "";
+
+    private ActivityMainBinding binding;
+    private int screenDensity = 0;
+    private String action = "";
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        screenDensity = (getResources().getDisplayMetrics().densityDpi);
+        screenDensity = getResources().getDisplayMetrics().densityDpi;
         onNewIntent(getIntent());
     }
 
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         OkHttpClient httpClient = new OkHttpClient();
                         Request okRequest = new Request.Builder()
-                            .header("User-Agent", UAS)
+                            .header("User-Agent", USER_AGENT)
                             .url(url)
                             .build();
                         Response modifiedResponse = httpClient.newCall(okRequest)
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
         s.setAllowContentAccess(true);
         s.setAllowFileAccessFromFileURLs(true);
         s.setAllowUniversalAccessFromFileURLs(true);
-        s.setUserAgentString(UAS);
+        s.setUserAgentString(USER_AGENT);
         s.setSupportMultipleWindows(true);
         s.setJavaScriptCanOpenWindowsAutomatically(true);
         binding.webview.setScrollBarStyle(WebView.SCROLLBARS_INSIDE_INSET);
@@ -200,10 +200,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onGlobalLayout() {
                 root.getRootView().getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                Utils.updateGestureExclusion(MainActivity.this);
+                GestureExclusionUtil.updateGestureExclusion(MainActivity.this);
             }
         });
-        Utils.updateGestureExclusion(MainActivity.this);
+        GestureExclusionUtil.updateGestureExclusion(MainActivity.this);
     }
 
     class JSObj {
@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 View v = wv.getRootView();
                 if (v.getSystemUiVisibility() == View.SYSTEM_UI_FLAG_VISIBLE) {
-                    v.setSystemUiVisibility(flags);
+                    v.setSystemUiVisibility(UI_FLAGS);
                 } else {
                     v.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
                 }
