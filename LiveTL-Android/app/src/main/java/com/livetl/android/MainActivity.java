@@ -39,14 +39,14 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     private static final int UI_FLAGS = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-        | View.SYSTEM_UI_FLAG_FULLSCREEN
-        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            | View.SYSTEM_UI_FLAG_FULLSCREEN
+            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
     private static final String USER_AGENT = (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
-        "(KHTML, like Gecko) Chrome/89.0.4346.0 Safari/537.36 Edg/89.0.731.0"
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+                    "(KHTML, like Gecko) Chrome/89.0.4346.0 Safari/537.36 Edg/89.0.731.0"
     );
 
     private ActivityMainBinding binding;
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
-    protected void onNewIntent(Intent intent){
+    protected void onNewIntent(Intent intent) {
         String action = intent.getAction();
         String type = intent.getType();
         if (Intent.ACTION_SEND.equals(action) && type != null) {
@@ -80,14 +80,14 @@ public class MainActivity extends AppCompatActivity {
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
             loadWebview("https://kentonishi.github.io/LiveTL/about/android",
-                "frame", (screenDensity * 3) / 4);
+                    "frame", (screenDensity * 3) / 4);
             this.action = "launch";
         }
         updateUI();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    void loadWebview(String url, String inject, int density){
+    void loadWebview(String url, String inject, int density) {
         // Debug mode (chrome://inspect/#devices)
         if (BuildConfig.DEBUG && (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
             WebView.setWebContentsDebuggingEnabled(true);
@@ -97,10 +97,10 @@ public class MainActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
                 if (inject.equals("frame") || inject.equals("loader")) {
                     view.loadUrl("javascript:" +
-                                 "window.history.pushState('', '', '" + url + "');" +
-                                 "myScript = document.createElement('script');" +
-                                 "myScript.src = 'CUSTOMJS';" +
-                                 "document.body.appendChild(myScript);");
+                            "window.history.pushState('', '', '" + url + "');" +
+                            "myScript = document.createElement('script');" +
+                            "myScript.src = 'CUSTOMJS';" +
+                            "document.body.appendChild(myScript);");
                 }
             }
 
@@ -124,48 +124,47 @@ public class MainActivity extends AppCompatActivity {
                 WebResourceResponse response = null;
                 if (url.contains(INJECTION_TOKEN)) {
                     String assetPath = url.substring(url.indexOf(INJECTION_TOKEN) +
-                        INJECTION_TOKEN.length(), url.length());
+                            INJECTION_TOKEN.length());
                     try {
                         response = new WebResourceResponse(
-                            "application/javascript",
-                            "UTF8",
-                            getAssets().open("js/frame.js")
+                                "application/javascript",
+                                "UTF8",
+                                getAssets().open("js/frame.js")
                         );
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 } else if (url.startsWith("https://www.youtube.com/live_chat") ||
-                           url.startsWith("https://www.youtube.com/embed")) {
+                        url.startsWith("https://www.youtube.com/embed")) {
                     try {
                         WebResourceResponse cordovaResponse =
-                            super.shouldInterceptRequest(view, request);
-                        if(cordovaResponse != null) {
+                                super.shouldInterceptRequest(view, request);
+                        if (cordovaResponse != null) {
                             return cordovaResponse;
                         }
                         OkHttpClient httpClient = new OkHttpClient();
                         Request okRequest = new Request.Builder()
-                            .header("User-Agent", USER_AGENT)
-                            .url(url)
-                            .build();
+                                .header("User-Agent", USER_AGENT)
+                                .url(url)
+                                .build();
                         Response modifiedResponse = httpClient.newCall(okRequest)
-                            .execute().newBuilder()
-                            .removeHeader("x-frame-options")
-                            .removeHeader("frame-options")
-                            .build();
+                                .execute().newBuilder()
+                                .removeHeader("x-frame-options")
+                                .removeHeader("frame-options")
+                                .build();
                         String s = url.startsWith("https://www.youtube.com/embed") ?
-                            "<script src=\"CUSTOMJS\"></script>" : "";
+                                "<script src=\"CUSTOMJS\"></script>" : "";
                         return new WebResourceResponse("text/html",
-                            modifiedResponse.header("content-encoding", "utf-8"),
+                                modifiedResponse.header("content-encoding", "utf-8"),
                                 (InputStream) new ByteArrayInputStream(
-                                    (modifiedResponse.body().string() + s)
-                                .getBytes(StandardCharsets.UTF_8))
-                            );
+                                        (modifiedResponse.body().string() + s)
+                                                .getBytes(StandardCharsets.UTF_8))
+                        );
 
-                    } catch(MalformedURLException e) {
+                    } catch (MalformedURLException e) {
                         e.printStackTrace();
                         return null;
-                    }
-                    catch (IOException e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
                         return null;
                     }
@@ -192,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
         binding.webview.setScrollBarStyle(WebView.SCROLLBARS_INSIDE_INSET);
         binding.webview.setOverScrollMode(View.OVER_SCROLL_NEVER);
         binding.webview.setScrollbarFadingEnabled(false);
-        binding.webview.setWebContentsDebuggingEnabled(true);
+        WebView.setWebContentsDebuggingEnabled(true);
         binding.webview.addJavascriptInterface(new JSObj(binding.webview), "Android");
         View root = binding.webview.getRootView();
         ViewTreeObserver treeObserver = root.getViewTreeObserver();
@@ -206,82 +205,6 @@ public class MainActivity extends AppCompatActivity {
         GestureExclusionUtil.updateGestureExclusion(MainActivity.this);
     }
 
-    class JSObj {
-        private WebView wv;
-
-        JSObj(WebView wv){
-            this.wv = wv;
-        }
-
-        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-        @JavascriptInterface
-        public void receiveMessage(String data) {
-            MainActivity.this.runOnUiThread(() -> {
-                loadWebview(data, "", screenDensity);
-            });
-        }
-
-        @JavascriptInterface
-        public void prompt(String text, String def) {
-            AlertDialog.Builder alert = new AlertDialog.Builder(wv.getContext());
-            alert.setTitle("LiveTL");
-            alert.setMessage(text);
-
-            final EditText input = new EditText(wv.getContext());
-            alert.setView(input);
-
-            alert.setPositiveButton("OK", (dialog, whichButton) -> {
-                String value = input.getText().toString();
-                runOnUiThread(() ->
-                        wv.loadUrl("javascript:window.promptCallback(\"" + Uri.encode(value) + "\")"));
-            });
-
-            alert.setNegativeButton("Cancel",
-                (dialog, which) -> {
-                    runOnUiThread(() -> wv.loadUrl("javascript:window.promptCallback(\"\")"));
-                }
-            );
-
-            if(def != null){
-                input.setText(def);
-            }
-
-            alert.show();
-        }
-
-        @JavascriptInterface
-        public void open(String url){
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            wv.getContext().startActivity(intent);
-        }
-
-        @JavascriptInterface
-        public void toggleFullScreen() {
-            runOnUiThread(() -> {
-                View v = wv.getRootView();
-                if (v.getSystemUiVisibility() == View.SYSTEM_UI_FLAG_VISIBLE) {
-                    v.setSystemUiVisibility(UI_FLAGS);
-                } else {
-                    v.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-                }
-            });
-        }
-
-        @JavascriptInterface
-        public void getOrientation() {
-            runOnUiThread(() -> onConfigurationChanged(
-                    wv.getRootView().getResources().getConfiguration())
-            );
-        }
-
-        @JavascriptInterface
-        public void startedLoading() {
-            runOnUiThread(() -> {
-                wv.setVisibility(View.VISIBLE);
-            });
-        }
-    }
-
     public String readFile(String filePath) throws IOException {
         BufferedReader r = new BufferedReader(new InputStreamReader(getAssets().open(filePath)));
         StringBuilder total = new StringBuilder();
@@ -291,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
         return total.toString();
     }
 
-    void updateUI(){
+    void updateUI() {
         View v = getWindow().getDecorView();
 //        if (this.action == "watch") {
 //            v.setSystemUiVisibility(flags);
@@ -322,8 +245,8 @@ public class MainActivity extends AppCompatActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         runOnUiThread(() -> binding.webview.loadUrl("javascript:onAndroidOrientationChange('" +
-            getOrientation(newConfig) +
-        "')"));
+                getOrientation(newConfig) +
+                "')"));
     }
 
     private String getOrientation(Configuration newConfig) {
@@ -331,5 +254,81 @@ public class MainActivity extends AppCompatActivity {
             return "landscape";
         }
         return "portrait";
+    }
+
+    class JSObj {
+        private final WebView wv;
+
+        JSObj(WebView wv) {
+            this.wv = wv;
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        @JavascriptInterface
+        public void receiveMessage(String data) {
+            MainActivity.this.runOnUiThread(() -> {
+                loadWebview(data, "", screenDensity);
+            });
+        }
+
+        @JavascriptInterface
+        public void prompt(String text, String def) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(wv.getContext());
+            alert.setTitle("LiveTL");
+            alert.setMessage(text);
+
+            final EditText input = new EditText(wv.getContext());
+            alert.setView(input);
+
+            alert.setPositiveButton("OK", (dialog, whichButton) -> {
+                String value = input.getText().toString();
+                runOnUiThread(() ->
+                        wv.loadUrl("javascript:window.promptCallback(\"" + Uri.encode(value) + "\")"));
+            });
+
+            alert.setNegativeButton("Cancel",
+                    (dialog, which) -> {
+                        runOnUiThread(() -> wv.loadUrl("javascript:window.promptCallback(\"\")"));
+                    }
+            );
+
+            if (def != null) {
+                input.setText(def);
+            }
+
+            alert.show();
+        }
+
+        @JavascriptInterface
+        public void open(String url) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            wv.getContext().startActivity(intent);
+        }
+
+        @JavascriptInterface
+        public void toggleFullScreen() {
+            runOnUiThread(() -> {
+                View v = wv.getRootView();
+                if (v.getSystemUiVisibility() == View.SYSTEM_UI_FLAG_VISIBLE) {
+                    v.setSystemUiVisibility(UI_FLAGS);
+                } else {
+                    v.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void getOrientation() {
+            runOnUiThread(() -> onConfigurationChanged(
+                    wv.getRootView().getResources().getConfiguration())
+            );
+        }
+
+        @JavascriptInterface
+        public void startedLoading() {
+            runOnUiThread(() -> {
+                wv.setVisibility(View.VISIBLE);
+            });
+        }
     }
 }
