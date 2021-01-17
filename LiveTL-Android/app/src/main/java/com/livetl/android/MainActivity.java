@@ -1,5 +1,6 @@
 package com.livetl.android;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -53,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
     private int screenDensity = 0;
     private String action = "";
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,29 +64,34 @@ public class MainActivity extends AppCompatActivity {
         onNewIntent(getIntent());
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onNewIntent(Intent intent) {
         String action = intent.getAction();
         String type = intent.getType();
-        if (Intent.ACTION_SEND.equals(action) && type != null) {
-            if ("text/plain".equals(type)) {
-                String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-                loadWebview(sharedText, "loader", screenDensity);
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
-                this.action = "watch";
-                binding.webview.setVisibility(View.GONE);
-            }
+
+        if (Intent.ACTION_VIEW.equals(action)) {
+            handleVideoIntent(intent.getDataString());
+        } else if (Intent.ACTION_SEND.equals(action) && "text/plain".equals(type)) {
+            handleVideoIntent(intent.getStringExtra(Intent.EXTRA_TEXT));
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
             loadWebview("https://kentonishi.github.io/LiveTL/about/android",
                     "frame", (screenDensity * 3) / 4);
             this.action = "launch";
         }
+
         updateUI();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private void handleVideoIntent(String url) {
+        loadWebview(url, "loader", screenDensity);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+        this.action = "watch";
+        binding.webview.setVisibility(View.GONE);
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     void loadWebview(String url, String inject, int density) {
         // Debug mode (chrome://inspect/#devices)
         if (BuildConfig.DEBUG && (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
