@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                 loadWebview(sharedText, "loader", screenDensity);
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
                 this.action = "watch";
-                binding.mainWebview.setVisibility(View.GONE);
+                binding.webview.setVisibility(View.GONE);
             }
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
             WebView.setWebContentsDebuggingEnabled(true);
         }
 
-        binding.mainWebview.setWebViewClient(new WebViewClient() {
+        binding.webview.setWebViewClient(new WebViewClient() {
             public void onPageFinished(WebView view, String url) {
                 if (inject.equals("frame") || inject.equals("loader")) {
                     view.loadUrl("javascript:" +
@@ -175,10 +175,10 @@ public class MainActivity extends AppCompatActivity {
                 return response;
             }
         });
-        binding.mainWebview.setBackgroundColor(Color.BLACK);
-        binding.mainWebview.loadUrl(url);
-        binding.mainWebview.setInitialScale(density);
-        WebSettings s = binding.mainWebview.getSettings();
+        binding.webview.setBackgroundColor(Color.BLACK);
+        binding.webview.loadUrl(url);
+        binding.webview.setInitialScale(density);
+        WebSettings s = binding.webview.getSettings();
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
         s.setPluginState(WebSettings.PluginState.ON);
@@ -189,12 +189,12 @@ public class MainActivity extends AppCompatActivity {
         s.setUserAgentString(UAS);
         s.setSupportMultipleWindows(true);
         s.setJavaScriptCanOpenWindowsAutomatically(true);
-        binding.mainWebview.setScrollBarStyle(WebView.SCROLLBARS_INSIDE_INSET);
-        binding.mainWebview.setOverScrollMode(View.OVER_SCROLL_NEVER);
-        binding.mainWebview.setScrollbarFadingEnabled(false);
-        binding.mainWebview.setWebContentsDebuggingEnabled(true);
-        binding.mainWebview.addJavascriptInterface(new JSObj(binding.mainWebview), "Android");
-        View root = binding.mainWebview.getRootView();
+        binding.webview.setScrollBarStyle(WebView.SCROLLBARS_INSIDE_INSET);
+        binding.webview.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        binding.webview.setScrollbarFadingEnabled(false);
+        binding.webview.setWebContentsDebuggingEnabled(true);
+        binding.webview.addJavascriptInterface(new JSObj(binding.webview), "Android");
+        View root = binding.webview.getRootView();
         ViewTreeObserver treeObserver = root.getViewTreeObserver();
         treeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -303,13 +303,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        binding.mainWebview.onPause();
+        binding.webview.onPause();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        binding.mainWebview.onResume();
+        binding.webview.onResume();
         updateUI();
     }
 
@@ -321,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        runOnUiThread(() -> binding.mainWebview.loadUrl("javascript:onAndroidOrientationChange('" +
+        runOnUiThread(() -> binding.webview.loadUrl("javascript:onAndroidOrientationChange('" +
             getOrientation(newConfig) +
         "')"));
     }
