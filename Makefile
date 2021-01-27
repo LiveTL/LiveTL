@@ -155,7 +155,7 @@ common: init
 	$(replace-embed-domain-noquote) LiveTL/manifest.json | $(replace-version) > ./build/common/manifest.json
 	$(replace-embed-domain-noquote) LiveTL/js/background.js > ./build/common/background.js
 	cp LiveTL/submodules/chat/scripts/chat.js ./build/common/chat.js
-	sed -i "1s/.*/isLiveTL = true;/" ./build/common/chat.js
+	sed -i "1s/.*/window\.isLiveTL = true;/" ./build/common/chat.js
 
 clean:
 	rm -rf dist/
