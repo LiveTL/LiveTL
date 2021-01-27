@@ -25,6 +25,16 @@
         "./js/frame.js"
       ],
       "all_frames": true
+    },
+    {
+      "matches": [
+        "https://www.youtube.com/live_chat*",
+        "https://www.youtube.com/live_chat_replay*"
+      ],
+      "js": [
+        "./js/chat.js"
+      ],
+      "all_frames": true
     }
   ],
   "browser_action": {
@@ -51,8 +61,9 @@
     "jquery-ui-touch.js",
     "manifest.json",
     "updateMessage.txt",
-    "popout/*"
+    "popout/*",
+    "hyperchat/*"
   ],
   "incognito": "split",
-  "content_security_policy": "script-src 'self' ; object-src 'self'"
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net; object-src 'self'"
 }

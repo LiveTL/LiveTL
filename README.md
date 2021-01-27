@@ -31,7 +31,8 @@ To build from scratch, execute the following commands in a bash terminal. The re
 dist/. The unpacked extension will be in build/
 
 ```bash
-git clone https://github.com/KentoNishi/LiveTL.git
+git clone https://github.com/KentoNishi/LiveTL.git --recursive
+# you must clone recursively because the repository uses submodules
 cd LiveTL/
 make
 ```

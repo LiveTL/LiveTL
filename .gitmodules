@@ -1,0 +1,3 @@
+[submodule "LiveTL/submodules/chat"]
+	path = LiveTL/submodules/chat
+	url = https://github.com/livetl/chat/

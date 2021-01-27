@@ -14,8 +14,9 @@ const Marine = (() => {
   }
 
   function isHolniYT() {
-    return document
+    return (document
       .querySelector('#meta-contents .ytd-channel-name a.yt-formatted-string[href="/channel/UCCzUftO8KOVkV4wQG1vkUvg"]')
+      || [])
       .length > 0;
   }
 
