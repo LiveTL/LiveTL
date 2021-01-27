@@ -118,7 +118,7 @@ window.addEventListener('message', d => {
   ltlchat.contentWindow.postMessage(d, '*');
 })
 
-let q = `?isReplay=${(r ? 1 : '')}&v=${v}${(c ? `&continuation=${c}` : '')}`;
+let q = `?isReplay=${(r ? 1 : '')}&v=${v}${(c ? `&continuation=${encodeURIComponent(c)}` : '')}`;
 
 (async () => {
   let main = await getWAR('index.html');
