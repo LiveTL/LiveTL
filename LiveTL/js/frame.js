@@ -668,7 +668,7 @@ if (isLiveChat()) {
       try {
         d.video = getV(window.parent.location.href);
         sendToWindow(d);
-        console.debug('Sent timestamp');
+        // console.debug('Sent timestamp');
       } catch (e) { }
     }
   });
