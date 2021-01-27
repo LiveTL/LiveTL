@@ -105,9 +105,10 @@ window.addEventListener('message', d => {
       type: 'zoom',
       zoom: zoomObj
     }, '*');
-    chat.contentWindow.postMessage({
-      'yt-live-chat-set-dark-theme': true
-    }, '*');
+    // TODO: GET USER THEME HERE
+    // chat.contentWindow.postMessage({
+    //   'yt-live-chat-set-dark-theme': true
+    // }, '*');
     setStreamZoom();
   }
 });

@@ -338,7 +338,7 @@ async function insertLiveTLButtons(isHolotools = false) {
   var isReplay = hasReplayChatOpen()
 
   if (!isHolotools) {
-    if (!(isSafari && isReplay)){
+    if (!(isSafari && isReplay)) {
       //Archives don't work in ltl view on safari
       makeButton('Watch in LiveTL', window.watchInLiveTL);
     }
@@ -665,9 +665,11 @@ if (isLiveChat()) {
     }
     d = d.data;
     if (d['yt-player-video-progress']) {
-      d.video = getV(window.parent.location.href);
-      sendToWindow(d);
-      console.debug('Sent timestamp');
+      try {
+        d.video = getV(window.parent.location.href);
+        sendToWindow(d);
+        console.debug('Sent timestamp');
+      } catch (e) { }
     }
   });
 }
