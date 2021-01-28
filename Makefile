@@ -67,6 +67,7 @@ chrome: common
 	cp ./build/common/background.js ./build/chrome/LiveTL/js/background.js
 	cp ./build/common/chat.js ./build/chrome/LiveTL/js/chat.js
 	rm -rf ./build/chrome/LiveTL/js/lib
+	rm -rf ./build/chrome/LiveTL/submodules/
 	grep -v all_urls ./build/common/manifest.json > ./build/chrome/LiveTL/manifest.json
 	cp ./LICENSE ./build/chrome/LiveTL/
 	cd build/chrome/ && zip -9r ../../dist/chrome/LiveTL.zip LiveTL/
@@ -86,6 +87,7 @@ firefox: common
 	cp ./build/common/background.js ./build/firefox/LiveTL/js/background.js
 	cp ./build/common/chat.js ./build/firefox/LiveTL/js/chat.js
 	rm -rf ./build/firefox/LiveTL/js/lib/
+	rm -rf ./build/firefox/LiveTL/submodules/
 	cp ./LICENSE ./build/firefox/LiveTL/
 	grep -v incognito ./build/common/manifest.json > ./build/firefox/LiveTL/manifest.json
 	cd build/firefox/LiveTL && zip -9r ../../../dist/firefox/LiveTL.zip *
@@ -109,6 +111,7 @@ safari: common
 	cp ./build/common/background.js ./build/safari/LiveTL/js/background.js
 	cp ./build/common/chat.js ./build/safari/LiveTL/js/chat.js
 	rm -rf ./build/safari/LiveTL/js/lib/
+	rm -rf ./build/safari/LiveTL/submodules/
 	cp ./LICENSE ./build/safari/LiveTL/
 	grep -v incognito ./build/common/manifest.json > ./build/safari/LiveTL/manifest.json
 	mkdir dist/safari/tmp/
@@ -131,6 +134,7 @@ safari-noBuild: common
 	cp ./build/common/background.js ./build/safari/LiveTL/js/background.js
 	cp ./build/common/chat.js ./build/safari/LiveTL/js/chat.js
 	rm -rf ./build/safari/LiveTL/js/lib/
+	rm -rf ./build/safari/LiveTL/submodules/
 	cp ./LICENSE ./build/safari/LiveTL/
 	grep -v incognito ./build/common/manifest.json > ./build/safari/LiveTL/manifest.json
 
