@@ -9,6 +9,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@master
+        with: 
+          submodules: 'recursive'
       - name: Import Code-Signing Certificates
         uses: devbotsxyz/xcode-import-certificate@master
         with:
