@@ -37,6 +37,8 @@ cd LiveTL/
 make
 ```
 
+> ⚠ WARNING: On MacOS, you must install GNU-SED for the Makefile to function properly.
+
 ## Developers
 
 LiveTL was developed by [Kento Nishi](https://github.com/KentoNishi) and [Ronak Badhe](https://github.com/r2dev2bb8/).
