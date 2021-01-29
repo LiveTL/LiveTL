@@ -20,7 +20,11 @@ ifndef VERSION
 VERSION=69.42.0
 endif
 
-ifeq ($(UNAME_S),DARWIN)
+ifeq ($(shell uname), Darwin)
+IS_GSED_INSTALLED := $(shell gsed --version 2>/dev/null)
+ifndef IS_GSED_INSTALLED
+$(error "gsed not found. You can install it using brew with `brew install gnu-sed`")
+endif
 sed=gsed
 else
 sed=sed
@@ -102,8 +106,8 @@ firefox: common
 	zip -d dist/firefox/LiveTL.xpi "icons/"
 	zip -d dist/firefox/LiveTL.xpi "popout/"
 	zip -d dist/firefox/LiveTL.xpi "js/"
-	
-safari: common 
+
+safari: common
 	rm -rf dist/safari/
 	mkdir -p dist/safari/
 	mkdir -p build/safari/
@@ -126,7 +130,7 @@ safari: common
 	rm -r dist/safari/tmp/
 	rm -r LiveTL-Safari/LiveTL/build/
 
-safari-noBuild: common 
+safari-noBuild: common
 	rm -rf dist/safari/
 	mkdir -p dist/safari/
 	mkdir -p build/safari/
@@ -152,7 +156,7 @@ android: chrome
 
 android-release: android
 	echo "import requests" | $(py) || $(pip) install requests
-	VERSION=$(VERSION) $(py) scripts/update_gradle_versions.py 
+	VERSION=$(VERSION) $(py) scripts/update_gradle_versions.py
 
 common: init
 	cat $(lib)/constants.js $(lib)/../frame.js $(lib)/storage.js $(lib)/filter.js $(lib)/settings.js $(lib)/speech.js \
@@ -165,8 +169,7 @@ common: init
 	$(replace-embed-domain-noquote) LiveTL/manifest.json | $(replace-version) > ./build/common/manifest.json
 	$(replace-embed-domain-noquote) LiveTL/js/background.js > ./build/common/background.js
 	cp LiveTL/submodules/chat/scripts/chat.js ./build/common/chat.js
-	$(sed) -i "1s/.*/window\.isLiveTL = true;/" ./build/common/chat.js;\
-
+	$(sed) -i "1s/.*/window\.isLiveTL = true;/" ./build/common/chat.js;
 
 clean:
 	rm -rf dist/
