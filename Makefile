@@ -47,7 +47,7 @@ init:
 	cp $(sjquery-ui) $(jquery-ui) || curl -s -o $(sjquery-ui) https://ajax.aspnetcdn.com/ajax/jquery.ui/1.12.1/jquery-ui.min.js & \
 	cp $(sjquery-css) $(jquery-css) || curl -s -o $(sjquery-css) https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css & \
 	cp $(sjquery-ui-touch) $(jquery-ui-touch) || curl -s -o $(sjquery-ui-touch) https://raw.githubusercontent.com/furf/jquery-ui-touch-punch/master/jquery.ui.touch-punch.min.js & \
-       	wait
+	   	wait
 	cp $(sjquery) $(jquery)
 	cp $(sjquery-ui) $(jquery-ui)
 	cp $(sjquery-css) $(jquery-css)
@@ -67,7 +67,8 @@ chrome: common
 	rm -rf dist/chrome/
 	mkdir -p dist/chrome/
 	mkdir -p build/chrome/LiveTL/
-	cp -r LiveTL build/chrome/
+	rsync -a LiveTL build/chrome/ --exclude LiveTL/submodules/chat/
+	rsync -a LiveTL/submodules/chat/dist/ build/chrome/LiveTL/hyperchat
 	cp $(jquery) ./build/chrome/LiveTL/jquery.min.js
 	cp $(jquery-ui) ./build/chrome/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/chrome/LiveTL/css/jquery-ui.css
@@ -87,7 +88,8 @@ firefox: common
 	rm -rf dist/firefox/
 	mkdir -p dist/firefox/
 	mkdir -p build/firefox/
-	cp -r LiveTL build/firefox/
+	rsync -a LiveTL build/firefox/ --exclude LiveTL/submodules/chat/
+	rsync -a LiveTL/submodules/chat/dist/ build/firefox/LiveTL/hyperchat
 	cp $(jquery) ./build/firefox/LiveTL/jquery.min.js
 	cp $(jquery-ui) ./build/firefox/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/firefox/LiveTL/css/jquery-ui.css
@@ -111,7 +113,8 @@ safari: common
 	rm -rf dist/safari/
 	mkdir -p dist/safari/
 	mkdir -p build/safari/
-	cp -r LiveTL build/safari/
+	rsync -a LiveTL build/safari/ --exclude LiveTL/submodules/chat/
+	rsync -a LiveTL/submodules/chat/dist/ build/safari/LiveTL/hyperchat
 	cp $(jquery) ./build/safari/LiveTL/jquery.min.js
 	cp $(jquery-ui) ./build/safari/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/safari/LiveTL/css/jquery-ui.css
@@ -134,7 +137,8 @@ safari-noBuild: common
 	rm -rf dist/safari/
 	mkdir -p dist/safari/
 	mkdir -p build/safari/
-	cp -r LiveTL build/safari/
+	rsync -a LiveTL build/safari/ --exclude LiveTL/submodules/chat/
+	rsync -a LiveTL/submodules/chat/dist/ build/safari/LiveTL/hyperchat
 	cp $(jquery) ./build/safari/LiveTL/jquery.min.js
 	cp $(jquery-ui) ./build/safari/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/safari/LiveTL/css/jquery-ui.css
@@ -158,9 +162,15 @@ android-release: android
 	echo "import requests" | $(py) || $(pip) install requests
 	VERSION=$(VERSION) $(py) scripts/update_gradle_versions.py
 
-common: init
+LiveTL/submodules/chat/node_modules: LiveTL/submodules/chat/package.json
+	cd LiveTL/submodules/chat/ && npm install
+
+LiveTL/submodules/chat/dist: LiveTL/submodules/chat/node_modules LiveTL/submodules/chat/*
+	cd LiveTL/submodules/chat/ && npm run publish
+
+common: init LiveTL/submodules/chat/dist
 	cat $(lib)/constants.js $(lib)/../frame.js $(lib)/storage.js $(lib)/filter.js $(lib)/settings.js $(lib)/speech.js \
-	       	$(lib)/translator-mode.js $(lib)/marine.js $(lib)/css.js $(lib)/svgs.js \
+		   	$(lib)/translator-mode.js $(lib)/marine.js $(lib)/css.js $(lib)/svgs.js \
 		| $(sed) 'H;1h;$$!d;x;s/import {[^}]*} from//g; N' \
 		| $(sed) 'H;1h;$$!d;x;s/module\.exports \= {[^}]*}//g; N' \
 		| $(replace-embed-domain) \
@@ -176,3 +186,5 @@ clean:
 	rm -rf build/
 	rm -rf drivers/
 	rm -rf LiveTL-Android/app/src/main/assets/*
+	rm -rf LiveTL/submodules/chat/node_modules/
+	rm -rf LiveTL/submodules/chat/dist/

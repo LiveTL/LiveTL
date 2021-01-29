@@ -37,7 +37,10 @@ cd LiveTL/
 make
 ```
 
-> ⚠ WARNING: On MacOS, you must install GNU-SED for the Makefile to function properly. `brew install gsed` will install GNU-SED if you have `brew` installed
+### ⚠ Build Dependencies ⚠
+- rsync
+- npm (Note that the version installed by apt on Ubuntu 18.04 is too old and will not work, you'll have to upgrade npm manually)
+- gnu-sed (MacOS -- `brew install gsed` will install GNU-SED if you have `brew` installed)
 
 ## Developers
 
