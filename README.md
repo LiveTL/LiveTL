@@ -37,8 +37,8 @@ cd LiveTL/
 make
 ```
 
-> ⚠ WARNING: On MacOS, you must install GNU-SED for the Makefile to function properly.
+> ⚠ WARNING: On MacOS, you must install GNU-SED for the Makefile to function properly. `brew install gsed` will install GNU-SED if you have `brew` installed
 
 ## Developers
 
-LiveTL was developed by [Kento Nishi](https://github.com/KentoNishi) and [Ronak Badhe](https://github.com/r2dev2bb8/).
+LiveTL was developed by [these fine people](https://github.com/KentoNishi/LiveTL/graphs/contributors).
