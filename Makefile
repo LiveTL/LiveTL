@@ -57,7 +57,8 @@ chrome: common
 	rm -rf dist/chrome/
 	mkdir -p dist/chrome/
 	mkdir -p build/chrome/LiveTL/
-	cp -r LiveTL build/chrome/
+	rsync -a LiveTL build/chrome/ --exclude LiveTL/submodules/chat/
+	rsync -a LiveTL/submodules/chat/test/hyperchat/dist/ build/chrome/LiveTL/hyperchat
 	cp $(jquery) ./build/chrome/LiveTL/jquery.min.js
 	cp $(jquery-ui) ./build/chrome/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/chrome/LiveTL/css/jquery-ui.css
@@ -77,7 +78,8 @@ firefox: common
 	rm -rf dist/firefox/
 	mkdir -p dist/firefox/
 	mkdir -p build/firefox/
-	cp -r LiveTL build/firefox/
+	rsync -a LiveTL build/firefox/ --exclude LiveTL/submodules/chat/
+	rsync -a LiveTL/submodules/chat/test/hyperchat/dist/ build/firefox/LiveTL/hyperchat
 	cp $(jquery) ./build/firefox/LiveTL/jquery.min.js
 	cp $(jquery-ui) ./build/firefox/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/firefox/LiveTL/css/jquery-ui.css
@@ -96,12 +98,13 @@ firefox: common
 	zip -d dist/firefox/LiveTL.xpi "icons/"
 	zip -d dist/firefox/LiveTL.xpi "popout/"
 	zip -d dist/firefox/LiveTL.xpi "js/"
-	
-safari: common 
+
+safari: common
 	rm -rf dist/safari/
 	mkdir -p dist/safari/
 	mkdir -p build/safari/
-	cp -r LiveTL build/safari/
+	rsync -a LiveTL build/safari/ --exclude LiveTL/submodules/chat/
+	rsync -a LiveTL/submodules/chat/test/hyperchat/dist/ build/safari/LiveTL/hyperchat
 	cp $(jquery) ./build/safari/LiveTL/jquery.min.js
 	cp $(jquery-ui) ./build/safari/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/safari/LiveTL/css/jquery-ui.css
@@ -120,11 +123,12 @@ safari: common
 	rm -r dist/safari/tmp/
 	rm -r LiveTL-Safari/LiveTL/build/
 
-safari-noBuild: common 
+safari-noBuild: common
 	rm -rf dist/safari/
 	mkdir -p dist/safari/
 	mkdir -p build/safari/
-	cp -r LiveTL build/safari/
+	rsync -a LiveTL build/safari/ --exclude LiveTL/submodules/chat/
+	rsync -a LiveTL/submodules/chat/test/hyperchat/dist/ build/safari/LiveTL/hyperchat
 	cp $(jquery) ./build/safari/LiveTL/jquery.min.js
 	cp $(jquery-ui) ./build/safari/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/safari/LiveTL/css/jquery-ui.css
@@ -146,7 +150,7 @@ android: chrome
 
 android-release: android
 	echo "import requests" | $(py) || $(pip) install requests
-	VERSION=$(VERSION) $(py) scripts/update_gradle_versions.py 
+	VERSION=$(VERSION) $(py) scripts/update_gradle_versions.py
 
 common: init
 	cat $(lib)/constants.js $(lib)/../frame.js $(lib)/storage.js $(lib)/filter.js $(lib)/settings.js $(lib)/speech.js \
@@ -160,6 +164,7 @@ common: init
 	$(replace-embed-domain-noquote) LiveTL/js/background.js > ./build/common/background.js
 	cp LiveTL/submodules/chat/scripts/chat.js ./build/common/chat.js
 	sed -i "1s/.*/window\.isLiveTL = true;/" ./build/common/chat.js;\
+	cd LiveTL/submodules/chat/ && npm install
 
 
 clean:
