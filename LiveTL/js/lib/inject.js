@@ -65,6 +65,7 @@ window.setTimeout(async () => {
     }
   `;
   document.body.appendChild(style);
+  setTimeout(() => window.Android.startedLoading(), 100);
   try {
     const VIDEO = (new URLSearchParams(location.search)).get('v');
     const res = (await
@@ -78,5 +79,4 @@ window.setTimeout(async () => {
   } catch (e) {
     text.innerText = `Stream could not be loaded. ${e.toString()}.`;
   }
-  setTimeout(() => window.Android.startedLoading(), 100);
 }, 100);
