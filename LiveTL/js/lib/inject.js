@@ -72,8 +72,8 @@ window.setTimeout(async () => {
     const temp = res.split('"continuation":"');
     window.fetchedContinuationToken = temp[temp.length - 1].split('"')[0];
     console.log(window.fetchedContinuationToken);
-    window.fetchedIsReplay = 'true' == res
-      .split('"isReplay":')[1].split(',')[0];
+    window.fetchedIsReplay = 'true' == (res
+      .split('"isReplay":')[1] || '').split(',')[0];
     window.watchInLiveTL();
   } catch (e) {
     text.innerText = `Stream could not be loaded. ${e.toString()}.`;
