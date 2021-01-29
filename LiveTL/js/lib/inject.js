@@ -78,5 +78,5 @@ window.setTimeout(async () => {
   } catch (e) {
     text.innerText = `Stream could not be loaded. ${e.toString()}.`;
   }
-  window.Android.startedLoading();
+  setTimeout(() => window.Android.startedLoading(), 100);
 }, 100);
