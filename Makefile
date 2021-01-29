@@ -47,7 +47,7 @@ init:
 	cp $(sjquery-ui) $(jquery-ui) || curl -s -o $(sjquery-ui) https://ajax.aspnetcdn.com/ajax/jquery.ui/1.12.1/jquery-ui.min.js & \
 	cp $(sjquery-css) $(jquery-css) || curl -s -o $(sjquery-css) https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css & \
 	cp $(sjquery-ui-touch) $(jquery-ui-touch) || curl -s -o $(sjquery-ui-touch) https://raw.githubusercontent.com/furf/jquery-ui-touch-punch/master/jquery.ui.touch-punch.min.js & \
-       	wait
+	   	wait
 	cp $(sjquery) $(jquery)
 	cp $(sjquery-ui) $(jquery-ui)
 	cp $(sjquery-css) $(jquery-css)
@@ -162,9 +162,15 @@ android-release: android
 	echo "import requests" | $(py) || $(pip) install requests
 	VERSION=$(VERSION) $(py) scripts/update_gradle_versions.py
 
-common: init
+LiveTL/submodules/chat/node_modules: LiveTL/submodules/chat/package.json
+	cd LiveTL/submodules/chat/ && npm install
+
+LiveTL/submodules/chat/dist: LiveTL/submodules/chat/node_modules LiveTL/submodules/chat/*
+	cd LiveTL/submodules/chat/ && npm run publish
+
+common: init LiveTL/submodules/chat/dist
 	cat $(lib)/constants.js $(lib)/../frame.js $(lib)/storage.js $(lib)/filter.js $(lib)/settings.js $(lib)/speech.js \
-	       	$(lib)/translator-mode.js $(lib)/marine.js $(lib)/css.js $(lib)/svgs.js \
+		   	$(lib)/translator-mode.js $(lib)/marine.js $(lib)/css.js $(lib)/svgs.js \
 		| $(sed) 'H;1h;$$!d;x;s/import {[^}]*} from//g; N' \
 		| $(sed) 'H;1h;$$!d;x;s/module\.exports \= {[^}]*}//g; N' \
 		| $(replace-embed-domain) \
@@ -174,10 +180,11 @@ common: init
 	$(replace-embed-domain-noquote) LiveTL/js/background.js > ./build/common/background.js
 	cp LiveTL/submodules/chat/scripts/chat.js ./build/common/chat.js
 	$(sed) -i "1s/.*/window\.isLiveTL = true;/" ./build/common/chat.js;
-	cd LiveTL/submodules/chat/ && npm install && npm run publish
-  
+
 clean:
 	rm -rf dist/
 	rm -rf build/
 	rm -rf drivers/
 	rm -rf LiveTL-Android/app/src/main/assets/*
+	rm -rf LiveTL/submodules/chat/node_modules/
+	rm -rf LiveTL/submodules/chat/dist/
