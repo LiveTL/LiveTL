@@ -298,6 +298,36 @@ let sendToWindow = (data) => {
   }
 };
 
+const redirectTab = u => {
+  if (isAndroid) {
+    window.Android.receiveMessage(u);
+  } else {
+    window.location.href = u;
+  }
+}
+
+const createTab = u => window.open(u);
+const getContinuationURL = (() => {
+  let chatframe = document.querySelector('#chatframe');
+  let cont = window.fetchedContinuationToken;
+  if (chatframe) {
+    cont = getContinuation(chatframe.dataset.src || chatframe.src)
+  }
+  return '&continuation=' + cont;
+});
+
+const getTitle = () => {
+  const e = document.querySelector('#container > .title');
+  return e ? encodeURIComponent(e.textContent) : '';
+}
+
+const restOfURL = () => `&title=${getTitle()}&useLiveTL=1${getContinuationURL()}&isReplay=${(hasReplayChatOpen() ? 1 : '')}&${Marine.holniParam()}`;
+
+window.watchInLiveTL = async () => {
+  params = parseParams();
+  redirectTab(`${await getWAR('index.html')}?v=${params.v}${restOfURL()}`);
+};
+
 async function insertLiveTLButtons(isHolotools = false) {
   console.debug('Inserting LiveTL Launcher Buttons');
   clearLiveTLButtons();
@@ -310,29 +340,6 @@ async function insertLiveTLButtons(isHolotools = false) {
     e.appendChild(a);
     a.querySelector('a').addEventListener('click', callback);
     a.querySelector('yt-formatted-string').textContent = text;
-  };
-
-  const redirectTab = u => {
-    if (isAndroid) {
-      window.Android.receiveMessage(u);
-    } else {
-      window.location.href = u;
-    }
-  }
-  const createTab = u => window.open(u);
-  getContinuationURL = (() => {
-    let chatframe = document.querySelector('#chatframe');
-    let src = chatframe.dataset.src || chatframe.src;
-    return '&continuation=' + getContinuation(src);
-  });
-
-  getTitle = () => encodeURIComponent(document.querySelector('#container > .title').textContent);
-
-  restOfURL = () => `&title=${getTitle()}&useLiveTL=1${getContinuationURL()}&isReplay=${(hasReplayChatOpen() ? 1 : '')}&${Marine.holniParam()}`;
-
-  window.watchInLiveTL = async () => {
-    params = parseParams();
-    redirectTab(`${await getWAR('index.html')}?v=${params.v}${restOfURL()}`);
   };
 
   var isReplay = hasReplayChatOpen()
@@ -377,7 +384,8 @@ function isReplayChat() {
 }
 
 function hasReplayChatOpen() {
-  return document.querySelector('#chatframe').contentWindow.location.href.startsWith('https://www.youtube.com/live_chat_replay');
+  return window.fetchedIsReplay != null ? fetchedIsReplay :
+    document.querySelector('#chatframe').contentWindow.location.href.startsWith('https://www.youtube.com/live_chat_replay');
 }
 
 function isLiveChat() {

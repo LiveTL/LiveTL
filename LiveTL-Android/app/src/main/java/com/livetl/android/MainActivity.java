@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
         String action = intent.getAction();
         String type = intent.getType();
 
@@ -85,7 +86,9 @@ public class MainActivity extends AppCompatActivity {
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private void handleVideoIntent(String url) {
-        loadWebview(url, "loader", screenDensity);
+        String[] split = url.split("/");
+        String video = split[split.length - 1];
+        loadWebview("https://www.youtube.com/404.html?v=" + video, "loader", screenDensity);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
         this.action = "watch";
         binding.webview.setVisibility(View.GONE);

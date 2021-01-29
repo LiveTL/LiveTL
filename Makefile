@@ -20,9 +20,19 @@ ifndef VERSION
 VERSION=69.42.0
 endif
 
-replace-embed-domain=sed 's|EMBED_DOMAIN|"$(EMBED_DOMAIN)"|g'
-replace-embed-domain-noquote=sed 's|EMBED_DOMAIN|$(EMBED_DOMAIN)|g'
-replace-version=sed 's|VERSION|$(VERSION)|g'
+ifeq ($(shell uname), Darwin)
+IS_GSED_INSTALLED := $(shell gsed --version 2>/dev/null)
+ifndef IS_GSED_INSTALLED
+$(error "gsed not found. You can install it using brew with `brew install gnu-sed`")
+endif
+sed=gsed
+else
+sed=sed
+endif
+
+replace-embed-domain=${sed} 's|EMBED_DOMAIN|"${EMBED_DOMAIN}"|g'
+replace-embed-domain-noquote=${sed} 's|EMBED_DOMAIN|${EMBED_DOMAIN}|g'
+replace-version=${sed} 's|VERSION|${VERSION}|g'
 
 all: chrome firefox android
 
@@ -44,7 +54,7 @@ init:
 	cp $(sjquery-ui-touch) $(jquery-ui-touch)
 
 testinit:
-	cat requirements.txt | grep "#" | sed 's/#//g' | $(py) || $(pip) install -r requirements.txt
+	cat requirements.txt | grep "#" | $(sed) 's/#//g' | $(py) || $(pip) install -r requirements.txt
 
 test: firefox chrome testinit
 	@node tests/*.js
@@ -155,18 +165,17 @@ android-release: android
 common: init
 	cat $(lib)/constants.js $(lib)/../frame.js $(lib)/storage.js $(lib)/filter.js $(lib)/settings.js $(lib)/speech.js \
 	       	$(lib)/translator-mode.js $(lib)/marine.js $(lib)/css.js $(lib)/svgs.js \
-		| sed 'H;1h;$$!d;x;s/import {[^}]*} from//g; N' \
-		| sed 'H;1h;$$!d;x;s/module\.exports \= {[^}]*}//g; N' \
+		| $(sed) 'H;1h;$$!d;x;s/import {[^}]*} from//g; N' \
+		| $(sed) 'H;1h;$$!d;x;s/module\.exports \= {[^}]*}//g; N' \
 		| $(replace-embed-domain) \
 		> ./build/common/frame.js
 	$(replace-embed-domain) $(lib)/../index.js > ./build/common/index.js
 	$(replace-embed-domain-noquote) LiveTL/manifest.json | $(replace-version) > ./build/common/manifest.json
 	$(replace-embed-domain-noquote) LiveTL/js/background.js > ./build/common/background.js
 	cp LiveTL/submodules/chat/scripts/chat.js ./build/common/chat.js
-	sed -i "1s/.*/window\.isLiveTL = true;/" ./build/common/chat.js;\
+	$(sed) -i "1s/.*/window\.isLiveTL = true;/" ./build/common/chat.js;
 	cd LiveTL/submodules/chat/ && npm install && npm run publish
-
-
+  
 clean:
 	rm -rf dist/
 	rm -rf build/

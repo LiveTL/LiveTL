@@ -40,9 +40,8 @@ make
 ### ⚠ Build Dependencies ⚠
 - rsync
 - npm (Note that the version installed by apt on Ubuntu 18.04 is too old and will not work, you'll have to upgrade npm manually)
-- gnu-sed (MacOS)
-
+- gnu-sed (MacOS -- `brew install gsed` will install GNU-SED if you have `brew` installed)
 
 ## Developers
 
-LiveTL was developed by [Kento Nishi](https://github.com/KentoNishi) and [Ronak Badhe](https://github.com/r2dev2bb8/).
+LiveTL was developed by [these fine people](https://github.com/KentoNishi/LiveTL/graphs/contributors).
