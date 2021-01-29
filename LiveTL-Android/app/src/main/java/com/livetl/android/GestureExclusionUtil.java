@@ -1,10 +1,9 @@
 package com.livetl.android;
 
+import android.app.Activity;
 import android.graphics.Rect;
 import android.os.Build;
 import android.util.DisplayMetrics;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.List;
 public class GestureExclusionUtil {
     private static final List<Rect> exclusionRects = new ArrayList<>();
 
-    public static void updateGestureExclusion(AppCompatActivity activity) {
+    public static void updateGestureExclusion(Activity activity) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return;
 
         exclusionRects.clear();
@@ -23,13 +22,13 @@ public class GestureExclusionUtil {
         activity.findViewById(android.R.id.content).setSystemGestureExclusionRects(exclusionRects);
     }
 
-    private static int getScreenHeight(AppCompatActivity activity) {
+    private static int getScreenHeight(Activity activity) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.heightPixels;
     }
 
-    private static int getScreenWidth(AppCompatActivity activity) {
+    private static int getScreenWidth(Activity activity) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.widthPixels;
