@@ -159,11 +159,7 @@ common: init
 	$(replace-embed-domain-noquote) LiveTL/manifest.json | $(replace-version) > ./build/common/manifest.json
 	$(replace-embed-domain-noquote) LiveTL/js/background.js > ./build/common/background.js
 	cp LiveTL/submodules/chat/scripts/chat.js ./build/common/chat.js
-	@if [[ "$OSTYPE" == "darwin"* ]]; then\
-		sed -i "" -e "1s/.*/window\.isLiveTL = true;/" ./build/common/chat.js;\
-	else\
-		sed -i "1s/.*/window\.isLiveTL = true;/" ./build/common/chat.js;\
-	fi
+	sed -i "1s/.*/window\.isLiveTL = true;/" ./build/common/chat.js;\
 
 
 clean:
