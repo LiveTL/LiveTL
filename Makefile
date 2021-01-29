@@ -58,7 +58,7 @@ chrome: common
 	mkdir -p dist/chrome/
 	mkdir -p build/chrome/LiveTL/
 	rsync -a LiveTL build/chrome/ --exclude LiveTL/submodules/chat/
-	rsync -a LiveTL/submodules/chat/test/hyperchat/dist/ build/chrome/LiveTL/hyperchat
+	rsync -a LiveTL/submodules/chat/dist/ build/chrome/LiveTL/hyperchat
 	cp $(jquery) ./build/chrome/LiveTL/jquery.min.js
 	cp $(jquery-ui) ./build/chrome/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/chrome/LiveTL/css/jquery-ui.css
@@ -79,7 +79,7 @@ firefox: common
 	mkdir -p dist/firefox/
 	mkdir -p build/firefox/
 	rsync -a LiveTL build/firefox/ --exclude LiveTL/submodules/chat/
-	rsync -a LiveTL/submodules/chat/test/hyperchat/dist/ build/firefox/LiveTL/hyperchat
+	rsync -a LiveTL/submodules/chat/dist/ build/firefox/LiveTL/hyperchat
 	cp $(jquery) ./build/firefox/LiveTL/jquery.min.js
 	cp $(jquery-ui) ./build/firefox/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/firefox/LiveTL/css/jquery-ui.css
@@ -104,7 +104,7 @@ safari: common
 	mkdir -p dist/safari/
 	mkdir -p build/safari/
 	rsync -a LiveTL build/safari/ --exclude LiveTL/submodules/chat/
-	rsync -a LiveTL/submodules/chat/test/hyperchat/dist/ build/safari/LiveTL/hyperchat
+	rsync -a LiveTL/submodules/chat/dist/ build/safari/LiveTL/hyperchat
 	cp $(jquery) ./build/safari/LiveTL/jquery.min.js
 	cp $(jquery-ui) ./build/safari/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/safari/LiveTL/css/jquery-ui.css
@@ -128,7 +128,7 @@ safari-noBuild: common
 	mkdir -p dist/safari/
 	mkdir -p build/safari/
 	rsync -a LiveTL build/safari/ --exclude LiveTL/submodules/chat/
-	rsync -a LiveTL/submodules/chat/test/hyperchat/dist/ build/safari/LiveTL/hyperchat
+	rsync -a LiveTL/submodules/chat/dist/ build/safari/LiveTL/hyperchat
 	cp $(jquery) ./build/safari/LiveTL/jquery.min.js
 	cp $(jquery-ui) ./build/safari/LiveTL/jquery-ui.min.js
 	cp $(jquery-css) ./build/safari/LiveTL/css/jquery-ui.css
@@ -164,7 +164,7 @@ common: init
 	$(replace-embed-domain-noquote) LiveTL/js/background.js > ./build/common/background.js
 	cp LiveTL/submodules/chat/scripts/chat.js ./build/common/chat.js
 	sed -i "1s/.*/window\.isLiveTL = true;/" ./build/common/chat.js;\
-	cd LiveTL/submodules/chat/ && npm install
+	cd LiveTL/submodules/chat/ && npm install && npm run publish
 
 
 clean:
