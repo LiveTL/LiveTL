@@ -109,30 +109,6 @@ firefox: common
 	zip -d dist/firefox/LiveTL.xpi "popout/"
 	zip -d dist/firefox/LiveTL.xpi "js/"
 
-safari: common
-	rm -rf dist/safari/
-	mkdir -p dist/safari/
-	mkdir -p build/safari/
-	rsync -a LiveTL build/safari/ --exclude LiveTL/submodules/chat/
-	rsync -a LiveTL/submodules/chat/dist/ build/safari/LiveTL/hyperchat
-	cp $(jquery) ./build/safari/LiveTL/jquery.min.js
-	cp $(jquery-ui) ./build/safari/LiveTL/jquery-ui.min.js
-	cp $(jquery-css) ./build/safari/LiveTL/css/jquery-ui.css
-	cp $(jquery-ui-touch) ./build/safari/LiveTL/jquery-ui-touch.js
-	cp ./build/common/frame.js ./build/safari/LiveTL/js/frame.js
-	cp ./build/common/index.js ./build/safari/LiveTL/js/index.js
-	cp ./build/common/background.js ./build/safari/LiveTL/js/background.js
-	cp ./build/common/chat.js ./build/safari/LiveTL/js/chat.js
-	rm -rf ./build/safari/LiveTL/js/lib/
-	rm -rf ./build/safari/LiveTL/submodules/
-	cp ./LICENSE ./build/safari/LiveTL/
-	grep -v incognito ./build/common/manifest.json > ./build/safari/LiveTL/manifest.json
-	mkdir dist/safari/tmp/
-	xcodebuild -project LiveTL-Safari/LiveTL/LiveTL.xcodeproj CONFIGURATION_BUILD_DIR=../../dist/safari/tmp/
-	cp -r dist/safari/tmp/LiveTL.app dist/safari/LiveTL.app
-	rm -r dist/safari/tmp/
-	rm -r LiveTL-Safari/LiveTL/build/
-
 safari-noBuild: common
 	rm -rf dist/safari/
 	mkdir -p dist/safari/
