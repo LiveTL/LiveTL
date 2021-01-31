@@ -1,6 +1,6 @@
 /*
 all lines are squished to one line!
-requires ; at the end of each statement 
+requires ; at the end of each statement
 one line comments will not work
 */
 window.setTimeout(async () => {
@@ -65,7 +65,7 @@ window.setTimeout(async () => {
     }
   `;
   document.body.appendChild(style);
-  setTimeout(window.Android.startedLoading, 100);
+  setTimeout(() => window.Android.startedLoading(), 250);
   try {
     const VIDEO = (new URLSearchParams(location.search)).get('v');
     const res = (await
@@ -75,7 +75,7 @@ window.setTimeout(async () => {
     console.log(window.fetchedContinuationToken);
     window.fetchedIsReplay = 'true' == (res
       .split('"isReplay":')[1] || '').split(',')[0];
-    setTimeout(window.watchInLiveTL, 100);
+    setTimeout(() => window.watchInLiveTL(), 100);
   } catch (e) {
     text.innerText = `Stream could not be loaded. ${e.toString()}.`;
   }
