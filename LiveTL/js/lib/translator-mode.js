@@ -5,7 +5,7 @@ import { getStorage, setupDefaultTranslatorMode } from './storage.js';
 
 const TranslatorMode = (() => {
 
-  const [container, chatbox] = document.querySelectorAll('#input');
+  let [container, chatbox] = document.querySelectorAll('#input');
   const defaultt = false;
   let sendButton = document.querySelector('#send-button');
   const postMessage = window.parent.postMessage;
@@ -20,7 +20,33 @@ const TranslatorMode = (() => {
   async function run() {
     if (is_ytc()) {
       await ytc_run();
+      window.addEventListener('click', e => {
+        if (switchedChat(e)) {
+          rebindChatbox();
+        }
+      });
     }
+  }
+
+  function switchedChat(e) {
+    e = e.target;
+    while (e.parentElement) {
+      if (e.tagName === 'A' && e.getAttribute('aria-selected')) {
+        return true;
+      }
+      e = e.parentElement;
+    }
+    return false;
+  }
+
+  function rebindChatbox() {
+    setTimeout(async () => {
+      chatbox.removeEventListener('keydown', checkAndAddTLTag);
+      sendButton.removeEventListener('mouseup', checkAndAddTLTag);
+      chatbox.removeEventListener('focus', checkAndAddTLTag);
+      [container, chatbox] = document.querySelectorAll('#input');
+      await ytc_run();
+    }, 1000);
   }
 
   async function ytc_run() {
