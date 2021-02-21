@@ -35,6 +35,12 @@ if (isAndroid) {
 
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
+function decodeURIComponentSafe(s) {
+  if (!s) {
+    return s;
+  }
+  return decodeURIComponent(s.replace(/%(?![0-9][0-9a-fA-F]+)/g, '%25'));
+}
 
 const embedDomain = EMBED_DOMAIN;
 
@@ -66,7 +72,7 @@ async function runLiveTL() {
   await setFavicon();
 
   await switchChat();
-  document.title = decodeURIComponent(params.title) || 'LiveTL Chat';
+  document.title = decodeURIComponentSafe(params.title) || 'LiveTL Chat';
 
   await Promise.all([importFontAwesome(), importStyle()]);
 
@@ -728,8 +734,8 @@ async function createWelcomeText() {
   buttons.style.marginLeft = '0px';
   buttons.innerHTML = `
     Please consider
-    <a id="shareExtension" href="https://kentonishi.github.io/LiveTL" target="about:blank">sharing LiveTL with your friends</a>, 
-    <a href="https://kentonishi.github.io/LiveTL/about/review" target="about:blank">giving us a 5-star review</a>, 
+    <a id="shareExtension" href="https://kentonishi.github.io/LiveTL" target="about:blank">sharing LiveTL with your friends</a>,
+    <a href="https://kentonishi.github.io/LiveTL/about/review" target="about:blank">giving us a 5-star review</a>,
     <a href="https://discord.gg/uJrV3tmthg" target="about:blank">joining our Discord server</a>, and
     <a href="https://github.com/KentoNishi/LiveTL" target="about:blank">starring our GitHub repository</a>!
   `;
