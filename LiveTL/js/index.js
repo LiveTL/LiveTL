@@ -24,7 +24,7 @@ const youtubeChatPanel = document.querySelector('#youtubeChatPanel');
 const root = document.documentElement.style;
 const display = document.querySelector('#display');
 let screenMode = '';
-document.title = decodeURIComponent(params.title || 'LiveTL');
+document.title = decodeURIComponentSafe(params.title || 'LiveTL');
 let INITIAL_PANEL_PERCENT = isAndroid ? 50 : 80;
 
 // resizing yoinked and modified from https://spin.atomicobject.com/2019/11/21/creating-a-resizable-html-element/
@@ -283,7 +283,7 @@ window.sideChanged = async (side) => {
   `;
   verticalHandle = document.createElement('span');
   verticalHandle.innerHTML = `
-    <div id="handleV" 
+    <div id="handleV"
       class="handle ui-resizable-handle ui-resizable-e">
       <span>&vellip;</span>
     </div>

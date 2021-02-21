@@ -46,7 +46,7 @@ window.addEventListener('load', () => {
   let replay = (r ? '_replay' : '');
   let mode = params.mode || "chat";
   let ltl = params.useLiveTL || "";
-  document.title = decodeURIComponent(params.title || "LiveTL");
+  document.title = decodeURIComponentSafe(params.title || "LiveTL");
   switch (mode) {
     case "chat":
       let cont = c ? `continuation=${c}&` : '';
