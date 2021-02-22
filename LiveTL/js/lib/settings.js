@@ -693,7 +693,9 @@ async function createCaptionDisplayToggleCheckbox() {
   return await createCheckToggleCheckbox(
     'captionMode', 'captionMode', async () => {
       const postMessage = window.parent.parent.postMessage;
+      const captionElement = window.parent.document.getElementById('ltlcaptions');
       if ((await getStorage('captionMode'))) {
+        captionElement.style.display = 'inline-table';
         postMessage({
           action: 'caption',
           caption: `
@@ -703,6 +705,7 @@ async function createCaptionDisplayToggleCheckbox() {
         });
       } else {
         postMessage({ action: 'clearCaption' }, '*');
+        captionElement.style.display = 'none';
       }
     }
   );
