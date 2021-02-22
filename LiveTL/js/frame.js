@@ -390,8 +390,9 @@ function isReplayChat() {
 }
 
 function hasReplayChatOpen() {
+  const e = document.querySelector('#chatframe');
   return window.fetchedIsReplay != null ? fetchedIsReplay :
-    document.querySelector('#chatframe').contentWindow.location.href.startsWith('https://www.youtube.com/live_chat_replay');
+    e ? e.contentWindow.location.href.startsWith('https://www.youtube.com/live_chat_replay') : false;
 }
 
 function isLiveChat() {
@@ -552,7 +553,7 @@ async function loaded() {
           window.parent.postMessage(chunk, '*');
         });
       }
-      if (params.embed_domain === 'hololive.jetri.co') {
+      if (params.embed_domain && params.embed_domain != 'kentonishi.github.io') {
         await insertLiveTLButtons(true);
         scrollBackToBottomOfChat();
         document.querySelector('#view-selector').querySelectorAll('a').forEach(a => {
