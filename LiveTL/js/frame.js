@@ -286,12 +286,8 @@ getV = (src) => {
 };
 
 
-const createWindow = async u => {
-  return new Promise((res, rej) => {
-    chrome.runtime.sendMessage({ type: 'window', url: u }, (d, a) => {
-      res(d);
-    });
-  });
+const createWindow = u => {
+  chrome.runtime.sendMessage({ type: 'window', url: u });
 };
 
 let alreadyListening = false;
@@ -359,7 +355,7 @@ async function insertLiveTLButtons(isHolotools = false) {
     makeButton('Pop Out Translations',
       async () => {
         params = parseParams();
-        await createWindow(`${await getWAR('popout/index.html')}?v=${params.v}&mode=chat${restOfURL()}`);
+        createWindow(`${await getWAR('popout/index.html')}?v=${params.v}&mode=chat${restOfURL()}`);
         console.debug('Launched translation window for video', params.v);
         if (!alreadyListening) {
           alreadyListening = true;

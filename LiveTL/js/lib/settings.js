@@ -40,7 +40,7 @@ async function createSettings(container) {
   settings.appendChild(await createZoomSlider());
   settings.appendChild(await createTimestampToggle());
   settings.appendChild(await createTextDirectionToggle(container));
-  if (!parseParams(window.parent.location.href).noVideo) {
+  if (!parseParams(window.parent.location.href).noVideo && window.parent != window) {
     settings.appendChild(await createChatSideToggle());
     settings.appendChild(await createCaptionDisplayToggle());
     settings.appendChild(await createCaptionDuration());
