@@ -50,7 +50,7 @@ getWAR('icons/favicon.ico').then(ico => {
     if (Marine.isHolni()) {
       Marine.makeFaviconBL();
     } else {
-      Marine.resetFavicon(ico);
+      if(!document.domain.includes('youtube')) Marine.resetFavicon(ico);
     }
   }
 })
