@@ -7,6 +7,13 @@ parseParams = () => {
   return s == '' ? {} : JSON.parse('{"' + s + '"}')
 }
 
+decodeURIComponentSafe = (s) => {
+  if (!s) {
+    return s;
+  }
+  return decodeURIComponent(s.replace(/%(?![0-9][0-9a-fA-F]+)/g, '%25'));
+}
+
 embedVideo = v => {
   let tag = document.createElement('script');
   tag.src = "https://www.youtube.com/iframe_api";
