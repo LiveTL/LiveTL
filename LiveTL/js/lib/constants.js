@@ -26,4 +26,11 @@ async function getFile(name, format) {
   return await (await fetch(await getWAR(name)))[format]();
 }
 
+function decodeURIComponentSafe(s) {
+  if (!s) {
+    return s;
+  }
+  return decodeURIComponent(s.replace(/%(?![0-9][0-9a-fA-F]+)/g, '%25'));
+}
+
 module.exports = { getFile, getWAR, languages };

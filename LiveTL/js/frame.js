@@ -35,13 +35,6 @@ if (isAndroid) {
 
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
-function decodeURIComponentSafe(s) {
-  if (!s) {
-    return s;
-  }
-  return decodeURIComponent(s.replace(/%(?![0-9][0-9a-fA-F]+)/g, '%25'));
-}
-
 const embedDomain = EMBED_DOMAIN;
 
 const allTranslators = { byID: {}, byName: {} };
