@@ -70,11 +70,14 @@ function removeEmojis(str) {
 }
 
 function isLangMatch(textLang, currentLang) {
+  console.log(textLang);
   textLang = textLang.toLowerCase().split(langSplitRe).filter(s => s !== '');
-  return textLang.length <= 2 && textLang.some(s => (
-    currentLang.name.toLowerCase().startsWith(s) ||
-    s === currentLang.code ||
-    currentLang.lang.toLowerCase().startsWith(s)
+  return textLang.some(s => (
+    s && s.length >= 2 && (
+      currentLang.name.toLowerCase().startsWith(s) ||
+      s === currentLang.code ||
+      currentLang.lang.toLowerCase().startsWith(s)
+    )
   ));
 }
 

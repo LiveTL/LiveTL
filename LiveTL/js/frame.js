@@ -1,4 +1,4 @@
-import { getWAR, getFile, languages } from './lib/constants.js';
+import { getWAR, getFile, languages, decodeURIComponentSafe } from './lib/constants.js';
 import { importFontAwesome, importStyle } from './lib/css.js';
 import { isLangMatch, parseTranslation } from './lib/filter.js';
 import { Marine } from './lib/marine.js';
@@ -542,7 +542,7 @@ async function loaded() {
           window.parent.postMessage(chunk, '*');
         });
       }
-      if (params.embed_domain && params.embed_domain != 'kentonishi.github.io') {
+      if (params.embed_domain && !EMBED_DOMAIN.includes(params.embed_domain)) {
         await insertLiveTLButtons(true);
         scrollBackToBottomOfChat();
         document.querySelector('#view-selector').querySelectorAll('a').forEach(a => {
@@ -947,7 +947,7 @@ function createSettingsProjection(add) {
 }
 
 async function setFavicon() {
-  const favicon = getWAR('icons/favicon.ico');
+  const favicon = await getWAR('icons/favicon.ico');
   const faviconLink = document.createElement('link');
   faviconLink.rel = 'icon';
   faviconLink.type = 'image/x-icon';

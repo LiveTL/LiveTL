@@ -29,7 +29,8 @@ const Marine = (() => {
     faviconElement().href = await getMarineFaviconURL();
   }
 
-  function resetFavicon() {
+  function resetFavicon(ico) {
+    if (ico) oldFaviconURL = ico;
     faviconElement().href = oldFaviconURL;
   }
 
@@ -44,12 +45,14 @@ const Marine = (() => {
   return { holniParam, isHolni, makeFaviconBL, resetFavicon };
 })();
 
-if (!isAndroid) {
-  if (Marine.isHolni()) {
-    Marine.makeFaviconBL();
-  } else {
-    Marine.resetFavicon();
+getWAR('icons/favicon.ico').then(ico => {
+  if (!isAndroid) {
+    if (Marine.isHolni()) {
+      Marine.makeFaviconBL();
+    } else {
+      Marine.resetFavicon(ico);
+    }
   }
-}
+})
 
 module.exports = { Marine };
