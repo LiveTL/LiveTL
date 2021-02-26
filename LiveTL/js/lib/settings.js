@@ -716,7 +716,7 @@ function createCustomFilterButtons(container) {
   addUserButton.type = addFilterButton.type = 'button';
   addUserButton.addEventListener('click', async () => {
     let name = await asyncPrompt(
-      'Enter a username to add to the whitelist for this LiveTL session: '
+      'Enter a username to add to the whitelist (case insensitive): '
     );
     if (name) {
       displayName(name);
@@ -724,7 +724,7 @@ function createCustomFilterButtons(container) {
   });
   addFilterButton.addEventListener('click', async () => {
     let tag = (await asyncPrompt(
-      'Enter a custom filter tag to add for future LiveTL sessions (ex. [trans]): '
+      'Enter a custom filter tag to add (ex. [trans], case sensitive): '
     ) || '').trim();
     if (tag) {
       await updateJSON('customTags', d => {
