@@ -10,7 +10,7 @@
  * needs languageConversionTable = {} declared before this module
  */
 
-import { languages, languageConversionTable } from './constants.js';
+import { languages, languageConversionTable, customTags } from './constants.js';
 import {
   saveUserStatus,
   getDefaultLanguage,
@@ -24,7 +24,10 @@ import {
   getStorage,
   setStorage,
   getSpeechVolume,
-  setSpeechVolume
+  setSpeechVolume,
+  getJSON,
+  setJSON,
+  updateJSON
 } from './storage.js';
 import { closeSVG, settingsGear } from './svgs.js';
 
@@ -35,7 +38,7 @@ async function createSettings(container) {
   const settings = createModal(container);
   settings.appendChild(createLanguageSelect());
   settings.appendChild(createTranslatorSelect());
-  settings.appendChild(createCustomUserButton(container));
+  settings.appendChild(createCustomFilterButtons(container));
   settings.appendChild(await createDisplayModMessageToggle());
   settings.appendChild(await createZoomSlider());
   settings.appendChild(await createTimestampToggle());
@@ -219,7 +222,7 @@ function createTranslatorSelect() {
 function createTransSelectDefaultText() {
   const defaultText = document.createElement('span');
   defaultText.className = 'anchor';
-  defaultText.innerHTML = `<i class="fa fa-users" aria-hidden="true"></i>`;
+  defaultText.innerHTML = `<i class="fa fa-users" aria-hidden="true"></i> <i class="fa fa-filter" aria-hidden="true"></i>`;
   return defaultText;
 }
 
@@ -233,7 +236,7 @@ function createTransSelectChecklistItems() {
 function createTransSelectLabel() {
   const translatorSelectLabel = document.createElement('span');
   translatorSelectLabel.className = 'optionLabel';
-  translatorSelectLabel.innerHTML = 'User Filter:&nbsp';
+  translatorSelectLabel.innerHTML = 'User Whitelist & Filters:&nbsp';
   return translatorSelectLabel;
 }
 
@@ -655,26 +658,86 @@ function asyncPrompt(text, value) {
   }
 }
 
-function createCustomUserButton(container) {
-  let addButton = document.createElement('input');
-  addButton.value = 'Add User to Filter';
-  addButton.style.verticalAlign = 'middle';
-  addButton.type = 'button';
-  addButton.addEventListener('click', async () => {
+async function createCustomTagCheckbox(title, tag, callback, deleteCallback, checked = true) {
+  const items = getChecklistItems();
+  const checkbox = createCheckmark(tag, true, undefined, callback, true);
+  const selectTagMessage = document.createElement('li');
+  selectTagMessage.appendChild(checkbox);
+  let nameElement = createCheckboxPerson(title, tag);
+  const deleteButton = document.createElement('span');
+  deleteButton.innerHTML = `<i class="fa fa-close" aria-hidden="true"></i>`;
+  deleteButton.style.marginRight = '2px';
+  deleteButton.style.cursor = 'pointer';
+  deleteButton.onclick = async () => {
+    await deleteCallback();
+    selectTagMessage.remove();
+  };
+  selectTagMessage.appendChild(deleteButton);
+  selectTagMessage.appendChild(nameElement);
+  selectTagMessage.style.marginRight = '4px';
+  items.appendChild(selectTagMessage);
+  nameElement.classList.add('italics');
+  checkbox.checked = checked;
+  return checkbox;
+}
+
+const displayTag = async (tag, checked = true) => {
+  await createCustomTagCheckbox(`(Custom TL Tag) ${tag}`, tag,
+    async (e) => {
+    await updateJSON('customTags', d => {
+      d[tag] = {
+        enabled: e.target.checked
+      };
+    });
+  }, 
+  async (e) => {
+    await updateJSON('customTags', d => {
+      delete d[tag];
+    });
+  }, checked);
+};
+
+const displayName = async (name, checked = true) => {
+  name = name.trim().toLowerCase();
+  await saveUserStatus(name, checked, undefined, true);
+  await createCheckbox(`(Custom Username) ${name}`, name, checked, undefined, async (e) => {
+    await saveUserStatus(name, e.target.checked, undefined, true);
+  }, true);
+}
+
+function createCustomFilterButtons(container) {
+  let buttons = document.createElement('div');
+  let addUserButton = document.createElement('input');
+  let addFilterButton = document.createElement('input');
+  addUserButton.value = 'Add Username Filter';
+  addFilterButton.value = 'Add Translation Tag';
+  addUserButton.style.verticalAlign = addFilterButton.style.verticalAlign = 'middle';
+  addUserButton.style.marginRight = addFilterButton.style.marginRight = '10px';
+  addUserButton.type = addFilterButton.type = 'button';
+  addUserButton.addEventListener('click', async () => {
     let name = await asyncPrompt(
-      'Please enter a username. ' +
-      'Users you add will be filtered automatically in all future streams if they are present. ' +
-      'Otherwise, they will not be displayed in the user list.'
+      'Enter a username to add to the whitelist for this LiveTL session: '
     );
     if (name) {
-      name = name.trim().toLowerCase();
-      await saveUserStatus(name, true, undefined, true);
-      await createCheckbox(`(Custom) ${name}`, name, true, undefined, async (e) => {
-        await saveUserStatus(name, e.target.checked, undefined, true);
-      }, true);
+      displayName(name);
     }
   });
-  return addButton;
+  addFilterButton.addEventListener('click', async () => {
+    let tag = (await asyncPrompt(
+      'Enter a custom filter tag to add for future LiveTL sessions (ex. [trans]): '
+    ) || '').trim();
+    if (tag) {
+      await updateJSON('customTags', d => {
+        d[tag] = {
+          enabled: true
+        };
+      });
+      displayTag(tag);
+    }
+  });
+  buttons.appendChild(addUserButton);
+  buttons.appendChild(addFilterButton);
+  return buttons;
 }
 
 async function createCaptionDisplayToggle() {

@@ -10,7 +10,19 @@ async function isNewUser(id) {
 // same function, deprecated and should be moved
 
 async function saveUserStatus(userid, checked, addedByUser, byname) {
+  if (byname) updateJSON('customUsers', d => {
+    d[userid] = {
+      enabled: true
+    };
+  });
   return await setStorage(`user${(byname ? 'byname' : '')}_${userid}`, { checked, addedByUser });
+}
+
+async function resetUserStatus(userid, byname) {
+  if (byname) updateJSON('customUsers', d => {
+    d[userid] = undefined;
+  });
+  return await setStorage(`user${(byname ? 'byname' : '')}_${userid}`, { checked: null, addedByUser: null });
 }
 
 async function getUserStatus(userid, byname) {
@@ -84,6 +96,23 @@ async function setStorage(key, value) {
   return await storage.set(obj);
 }
 
+async function getJSON(name) {
+  window[name] = await JSON.parse((await getStorage(name)) || '{}');
+  return window[name];
+}
+
+async function setJSON(name, value) {
+  window[name] = value;
+  const val = JSON.stringify(value);
+  return await setStorage(name, val);
+}
+
+async function updateJSON(name, callback) {
+  let data = await getJSON(name);
+  await callback(data);
+  await setJSON(name, data);
+}
+
 const isChecked = getUserStatusAsBool;
 
 const storage = {
@@ -144,5 +173,9 @@ module.exports = {
   getStorage,
   setStorage,
   isChecked,
+  getJSON,
+  setJSON,
+  updateJSON,
+  resetUserStatus,
   storage
 };

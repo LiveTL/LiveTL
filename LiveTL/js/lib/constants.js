@@ -9,6 +9,9 @@ const languages = [
   { code: 'fr', name: 'French', lang: 'Français' }
 ];
 
+customTags = window.customTags || {};
+customUsers = window.customUsers || {};
+
 const languageConversionTable = {};
 
 // WAR: web accessible resource
@@ -33,4 +36,4 @@ function decodeURIComponentSafe(s) {
   return decodeURIComponent(s.replace(/%(?![0-9][0-9a-fA-F]+)/g, '%25'));
 }
 
-module.exports = { getFile, getWAR, languages, decodeURIComponentSafe };
+module.exports = { getFile, getWAR, languages, decodeURIComponentSafe, customTags };

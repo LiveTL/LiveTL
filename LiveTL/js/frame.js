@@ -1,4 +1,4 @@
-import { getWAR, getFile, languages, decodeURIComponentSafe } from './lib/constants.js';
+import { getWAR, getFile, languages, decodeURIComponentSafe, customTags, customUsers } from './lib/constants.js';
 import { importFontAwesome, importStyle } from './lib/css.js';
 import { isLangMatch, parseTranslation } from './lib/filter.js';
 import { Marine } from './lib/marine.js';
@@ -11,7 +11,9 @@ import {
   getUserStatusAsBool,
   getStorage,
   setStorage,
-  isChecked
+  isChecked,
+  resetUserStatus,
+  getJSON
 } from './lib/storage.js';
 import { hideSVG, banSVG } from './lib/svgs.js';
 import { TranslatorMode } from './lib/translator-mode.js';
@@ -128,7 +130,20 @@ async function runLiveTL() {
       //   box.saveStatus();
       // }
       checkboxUpdate();
+    }
+  );
+  
+  getJSON('customTags').then(obj => {
+    Object.keys(obj).forEach(item => {
+      displayTag(item, customTags[item].enabled);
     });
+  });
+
+  getJSON('customUsers').then(obj => {
+    Object.keys(obj).forEach(async item => {
+      displayName(item, (await getUserStatus(item, true)).checked);
+    });
+  });
 
   appendE = el => {
     dimsBefore = getDimensions();
@@ -188,8 +203,19 @@ async function runLiveTL() {
 
     // Make sure we parsed the message into a translation, and if so, check to see if it matches our desired language
     if (
-      translation != null &&
-      isLangMatch(translation.lang.toLowerCase(), languageConversionTable[selectedLanguage])) {
+      (
+        translation == null &&
+        Object.keys(customTags).some(key => {
+          const res = customTags[key].enabled && messageInfo.message.includes(key);
+          console.log(messageInfo.message, res);
+          if (res) translation = { msg: messageInfo.message };
+          return res;
+        })
+      ) ||
+      (
+        translation != null &&
+        isLangMatch(translation.lang.toLowerCase(), languageConversionTable[selectedLanguage])
+      )) {
       // If the author isn't in the senders list, add them
       if (await isNewUser(messageInfo.author.id)) {
         await createCheckbox(messageInfo.author.name, messageInfo.author.id,
@@ -768,7 +794,7 @@ function getChecklistItems() {
   return getChecklist().querySelector('#items');
 }
 
-function createCheckmark(authorID, checked, addedByUser, onchange) {
+function createCheckmark(authorID, checked, addedByUser, onchange, customSave = false) {
   const checkmark = document.createElement('input');
   checkmark.type = 'checkbox';
   checkmark.dataset.id = authorID;
@@ -778,7 +804,7 @@ function createCheckmark(authorID, checked, addedByUser, onchange) {
     await saveUserStatus(checkmark.dataset.id, checkmark.checked, addedByUser);
     checkboxUpdate();
   };
-  checkmark.addEventListener('change', checkmark.saveStatus);
+  if(!customSave) checkmark.addEventListener('change', checkmark.saveStatus);
   return checkmark;
 }
 
@@ -795,6 +821,17 @@ async function createCheckbox(name, authorID = 'allUsers', checked = false, adde
   const selectTranslatorMessage = document.createElement('li');
   selectTranslatorMessage.appendChild(checkbox);
   let nameElement = createCheckboxPerson(name, authorID);
+  if (authorID != 'allUsers') {
+    const deleteButton = document.createElement('span');
+    deleteButton.innerHTML = `<i class="fa fa-close" aria-hidden="true"></i>`;
+    deleteButton.style.marginRight = '2px';
+    deleteButton.style.cursor = 'pointer';
+    deleteButton.onclick = async () => {
+      await resetUserStatus(authorID, customFilter);
+      selectTranslatorMessage.remove();
+    };
+    selectTranslatorMessage.appendChild(deleteButton);
+  }
   selectTranslatorMessage.appendChild(nameElement);
   selectTranslatorMessage.style.marginRight = '4px';
   items.appendChild(selectTranslatorMessage);
@@ -857,7 +894,7 @@ function createTimestampElement(timestamp) {
 
 function createAuthorNameElement(messageInfo) {
   const authorName = document.createElement('span');
-  authorName.textContent = `${messageInfo.author.name}`;
+  authorName.textContent = ` ${messageInfo.author.name}`;
   authorName.dataset.id = messageInfo.author.id;
   authorName.className = `smallText ${messageInfo.author.types.join(' ').toLowerCase()}`;
 

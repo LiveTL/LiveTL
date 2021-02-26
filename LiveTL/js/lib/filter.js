@@ -6,6 +6,7 @@ const tokenMap = Object.fromEntries(langTokens);
 
 const transDelimiters = ['-', ':'];
 const langSplitRe = /[^A-Za-z]/;
+
 // const langSplitRe = /[^A-Za-z\/\ \-\:\.\|\／]/;
 /**
  * Parses translation
@@ -70,7 +71,6 @@ function removeEmojis(str) {
 }
 
 function isLangMatch(textLang, currentLang) {
-  console.log(textLang);
   textLang = textLang.toLowerCase().split(langSplitRe).filter(s => s !== '');
   return textLang.some(s => (
     s && s.length >= 2 && (
