@@ -9,8 +9,10 @@ const languages = [
   { code: 'fr', name: 'French', lang: 'Français' }
 ];
 
-customTags = window.customTags || {};
-customUsers = window.customUsers || {};
+try {
+  window.customTags = window.customTags || {};
+  window.customUsers = window.customUsers || {};
+} catch (e) { }
 
 const languageConversionTable = {};
 
