@@ -10,7 +10,7 @@
  * needs languageConversionTable = {} declared before this module
  */
 
-import { languages, languageConversionTable, customTags } from './constants.js';
+import { languages, languageConversionTable } from './constants.js';
 import {
   saveUserStatus,
   getDefaultLanguage,

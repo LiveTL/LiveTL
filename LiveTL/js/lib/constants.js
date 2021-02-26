@@ -38,4 +38,4 @@ function decodeURIComponentSafe(s) {
   return decodeURIComponent(s.replace(/%(?![0-9][0-9a-fA-F]+)/g, '%25'));
 }
 
-module.exports = { getFile, getWAR, languages, decodeURIComponentSafe, customTags };
+module.exports = { getFile, getWAR, languages, decodeURIComponentSafe };
