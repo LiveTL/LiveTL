@@ -19,3 +19,4 @@ jobs:
         git clone --bare git@github.com:LiveTL/LiveTL.git
         cd LiveTL.git
         git push -f --mirror git@github.com:KentoNishi/LiveTL.git
+        exit 0
