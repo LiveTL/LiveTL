@@ -13,10 +13,11 @@ jobs:
       with:
         key: ${{ secrets.SSH_KEY }}
         known_hosts: ${{ secrets.KNOWN_HOSTS }}
-    - run: |
+    - name: Sync repos
+      continue-on-error: true 
+      run: |
         mkdir repo
         cd repo
         git clone --bare git@github.com:LiveTL/LiveTL.git
         cd LiveTL.git
         git push -f --mirror git@github.com:KentoNishi/LiveTL.git
-        exit 0
