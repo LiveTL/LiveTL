@@ -6,7 +6,7 @@
     <a href="https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg"><img src="./img/install-chrome.png" /></a>
     <a href="https://addons.mozilla.org/en-US/firefox/addon/livetl/"><img src="./img/install-firefox.png" /></a>
 </span>
-<h4 style="width: 100%;text-align:center;">... or <a href="https://github.com/KentoNishi/LiveTL/releases">download the latest Android APK or ZIP manually</a>!</h4>
+<h4 style="width: 100%;text-align:center;">... or <a href="https://github.com/LiveTL/LiveTL/releases">download the latest Android APK or ZIP manually</a>!</h4>
 <br />
 
 
