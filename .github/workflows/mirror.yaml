@@ -1,0 +1,21 @@
+name: Push to Mirror
+on: [push, workflow_dispatch]
+jobs:
+  repo-sync:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+        ref: 'master'
+    - name: Install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.SSH_KEY }}
+        known_hosts: ${{ secrets.KNOWN_HOSTS }}
+    - run: |
+        mkdir repo
+        cd repo
+        git clone --bare git@github.com:KentoNishi/LiveTL.git
+        cd LiveTL.git
+        git push -f --mirror
