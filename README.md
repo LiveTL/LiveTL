@@ -1,7 +1,5 @@
 # LiveTL - Translation Filter for Streams
 
-## THIS REPO HAS BEEN MIGRATED TO https://github.com/LiveTL/LiveTL
-
 ![Latest Release Build](https://github.com/LiveTL/LiveTL/workflows/Latest%20Release%20Build/badge.svg)
 ![Tests](https://github.com/LiveTL/LiveTL/workflows/Tests/badge.svg)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
