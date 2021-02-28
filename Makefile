@@ -56,8 +56,11 @@ init:
 testinit:
 	cat requirements.txt | grep "#" | $(sed) 's/#//g' | $(py) || $(pip) install -r requirements.txt
 
+buildinit:
+	cat requirements-build.txt | grep "#" | $(sed) 's/#//g' | $(py) || $(pip) install -r requirements-build.txt
+
 test: firefox chrome testinit
-	@node tests/*.js
+	@same tests/filter.js | node
 	@$(pytest) tests/selenium
 
 bench:
@@ -144,7 +147,7 @@ LiveTL/submodules/chat/node_modules: LiveTL/submodules/chat/package.json
 LiveTL/submodules/chat/dist: LiveTL/submodules/chat/node_modules LiveTL/submodules/chat/*
 	cd LiveTL/submodules/chat/ && npm run publish
 
-common: init LiveTL/submodules/chat/dist
+common: init buildinit LiveTL/submodules/chat/dist
 	same $(lib)/../frame.js | $(replace-embed-domain) | \
 	       $(sed) 'H;1h;$$!d;x;s/module\.exports \= {[^}]*}//g; N' \
        	       > ./build/common/frame.js
