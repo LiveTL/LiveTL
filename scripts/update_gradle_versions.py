@@ -13,7 +13,7 @@ listed_releases = [0]
 page = 1
 while listed_releases:
     listed_releases = requests.get(
-        "https://api.github.com/repos/KentoNishi/LiveTL/releases",
+        "https://api.github.com/repos/LiveTL/LiveTL/releases",
         params={"per_page": 100, "page": page},
     ).json()
     releases += len(listed_releases)
