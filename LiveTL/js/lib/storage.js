@@ -1,4 +1,6 @@
-async function isNewUser(id) {
+import { isAndroid, isFirefox } from './web-constants.js';
+
+export async function isNewUser(id) {
   return allTranslators.byID[id] == null;
 }
 
@@ -9,7 +11,7 @@ async function isNewUser(id) {
 // let isChecked = getUserStatusAsBool;
 // same function, deprecated and should be moved
 
-async function saveUserStatus(userid, checked, addedByUser, byname) {
+export async function saveUserStatus(userid, checked, addedByUser, byname) {
   if (byname) updateJSON('customUsers', d => {
     d[userid] = {
       enabled: true
@@ -18,104 +20,104 @@ async function saveUserStatus(userid, checked, addedByUser, byname) {
   return await setStorage(`user${(byname ? 'byname' : '')}_${userid}`, { checked, addedByUser });
 }
 
-async function resetUserStatus(userid, byname) {
+export async function resetUserStatus(userid, byname) {
   if (byname) updateJSON('customUsers', d => {
     d[userid] = undefined;
   });
   return await setStorage(`user${(byname ? 'byname' : '')}_${userid}`, { checked: null, addedByUser: null });
 }
 
-async function getUserStatus(userid, byname) {
+export async function getUserStatus(userid, byname) {
   return (await getStorage(`user${(byname ? 'byname' : '')}_${userid}`)) || {};
 }
 
-async function getUserStatusAsBool(id) {
+export async function getUserStatusAsBool(id) {
   let status = await getUserStatus(id);
   status = status.checked != null ? status.checked : allTranslatorCheckbox.checked;
   return status;
 }
 
-async function getDefaultLanguage() {
+export async function getDefaultLanguage() {
   let lang = await getStorage('LTL:defaultLang');
   if (lang) {
     return lang.lang;
   }
 }
 
-async function setDefaultLanguage(lang) {
+export async function setDefaultLanguage(lang) {
   return await setStorage('LTL:defaultLang', { lang });
 }
 
-async function setDefaultSetting(setting, value) {
+export async function setDefaultSetting(setting, value) {
   if (await getStorage(setting) == null) {
     return await setStorage(setting, value);
   }
 }
 
-async function setupDefaultCaption() {
+export async function setupDefaultCaption() {
   await setDefaultSetting('captionMode', true);
 }
 
-async function setupDefaultCaptionDelay() {
+export async function setupDefaultCaptionDelay() {
   await setDefaultSetting('captionDelay', -1);
 }
 
-async function setupDefaultSpeechSynth() {
+export async function setupDefaultSpeechSynth() {
   return await setDefaultSetting('speechSynth', speechSynthDefault);
 }
 
-async function setupDefaultTranslatorMode() {
+export async function setupDefaultTranslatorMode() {
   return await setDefaultSetting('translatorMode', TranslatorMode.defaultt);
 }
 
-async function getSpeechVolume() {
+export async function getSpeechVolume() {
   return await getStorage('speechVolume');
 }
 
-async function setSpeechVolume(volume) {
+export async function setSpeechVolume(volume) {
   return await setStorage('speechVolume', volume);
 }
 
-async function getCaptionZoom() {
+export async function getCaptionZoom() {
   await setDefaultSetting('captionZoom', isAndroid ? 0.5 : 1);
   return await getStorage('captionZoom');
 }
 
-async function setCaptionZoom(value) {
+export async function setCaptionZoom(value) {
   return await setStorage('captionZoom', value);
 }
 
-async function getStorage(key) {
+export async function getStorage(key) {
   const result = await storage.get(key);
   return result ? result[key] : result;
 }
 
-async function setStorage(key, value) {
+export async function setStorage(key, value) {
   let obj = {}
   obj[key] = value;
   return await storage.set(obj);
 }
 
-async function getJSON(name) {
+export async function getJSON(name) {
   window[name] = await JSON.parse((await getStorage(name)) || '{}');
   return window[name];
 }
 
-async function setJSON(name, value) {
+export async function setJSON(name, value) {
   window[name] = value;
   const val = JSON.stringify(value);
   return await setStorage(name, val);
 }
 
-async function updateJSON(name, callback) {
+export async function updateJSON(name, callback) {
   let data = await getJSON(name);
   await callback(data);
   await setJSON(name, data);
 }
 
-const isChecked = getUserStatusAsBool;
+export const isChecked = getUserStatusAsBool;
 
-const storage = {
+export const storage = {
   get: key => null,
   set: obj => null
 };
@@ -156,6 +158,7 @@ if (isAndroid) {
   };
 }
 
+/*
 module.exports = {
   isNewUser,
   saveUserStatus,
@@ -179,3 +182,4 @@ module.exports = {
   resetUserStatus,
   storage
 };
+*/

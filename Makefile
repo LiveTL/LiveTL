@@ -145,12 +145,9 @@ LiveTL/submodules/chat/dist: LiveTL/submodules/chat/node_modules LiveTL/submodul
 	cd LiveTL/submodules/chat/ && npm run publish
 
 common: init LiveTL/submodules/chat/dist
-	cat $(lib)/constants.js $(lib)/../frame.js $(lib)/storage.js $(lib)/filter.js $(lib)/settings.js $(lib)/speech.js \
-		   	$(lib)/translator-mode.js $(lib)/marine.js $(lib)/css.js $(lib)/svgs.js \
-		| $(sed) 'H;1h;$$!d;x;s/import {[^}]*} from//g; N' \
-		| $(sed) 'H;1h;$$!d;x;s/module\.exports \= {[^}]*}//g; N' \
-		| $(replace-embed-domain) \
-		> ./build/common/frame.js
+	same $(lib)/../frame.js | $(replace-embed-domain) | \
+	       $(sed) 'H;1h;$$!d;x;s/module\.exports \= {[^}]*}//g; N' \
+       	       > ./build/common/frame.js
 	$(replace-embed-domain) $(lib)/../index.js > ./build/common/index.js
 	$(replace-embed-domain-noquote) LiveTL/manifest.json | $(replace-version) > ./build/common/manifest.json
 	$(replace-embed-domain-noquote) LiveTL/js/background.js > ./build/common/background.js

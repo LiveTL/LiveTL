@@ -3,7 +3,7 @@ import { getStorage, setupDefaultTranslatorMode } from './storage.js';
 // TranslatorMode.run()
 // Make sure to setTimeout when running at initialization
 
-const TranslatorMode = (() => {
+export const TranslatorMode = (() => {
 
   let [container, chatbox] = document.querySelectorAll('#input');
   const defaultt = false;
@@ -129,4 +129,4 @@ const TranslatorMode = (() => {
 
 TranslatorMode.init();
 
-module.exports = { TranslatorMode };
+// module.exports = { TranslatorMode };

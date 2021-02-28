@@ -1,7 +1,7 @@
 import { isAndroid, parseParams } from '../frame.js';
 import { getWAR } from './constants.js';
 
-const Marine = (() => {
+export const Marine = (() => {
   let oldFaviconURL = null;
 
   function isHolni() {
@@ -55,4 +55,4 @@ getWAR('icons/favicon.ico').then(ico => {
   }
 })
 
-module.exports = { Marine };
+// module.exports = { Marine };

@@ -34,7 +34,7 @@ import { closeSVG, settingsGear } from './svgs.js';
 
 const enableDarkModeToggle = false;
 
-async function createSettings(container) {
+export async function createSettings(container) {
   const settings = createModal(container);
   settings.appendChild(createLanguageSelect());
   settings.appendChild(createTranslatorSelect());
@@ -897,4 +897,4 @@ async function createSpeechVolumeSlider() {
   );
 }
 
-module.exports = { createSettings };
+// module.exports = { createSettings };
