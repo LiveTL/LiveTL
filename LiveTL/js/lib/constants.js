@@ -9,13 +9,19 @@ export const languages = [
   { code: 'fr', name: 'French', lang: 'Français' }
 ];
 
+export const languageConversionTable = {};
+
+function createLangSelectionName(lang) {
+  return `${lang.name} (${lang.lang})`;
+}
+
+languages.forEach(i => languageConversionTable[createLangSelectionName(i)] = i);
+
 try {
   window.customTags = window.customTags || {};
   window.customUsers = window.customUsers || {};
   window.getWAR = getWAR
 } catch (e) { }
-
-const languageConversionTable = {};
 
 // WAR: web accessible resource
 export async function getWAR(u) {

@@ -1,4 +1,4 @@
-import { getStorage, setupDefaultTranslatorMode } from './storage.js';
+import { getStorage, setDefaultSetting } from './storage.js';
 
 // TranslatorMode.run()
 // Make sure to setTimeout when running at initialization
@@ -124,7 +124,11 @@ export const TranslatorMode = (() => {
     el.focus();
   }
 
-  return { defaultt, disable, enabled, init, reload, run };
+  async function setupDefaultTranslatorMode() {
+    return await setDefaultSetting('translatorMode', defaultt);
+  }
+
+  return { defaultt, disable, enabled, init, reload, run, setupDefaultTranslatorMode };
 })();
 
 TranslatorMode.init();

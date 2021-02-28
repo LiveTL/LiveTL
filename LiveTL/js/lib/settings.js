@@ -10,7 +10,6 @@
  * needs languageConversionTable = {} declared before this module
  */
 
-import { languages, languageConversionTable } from './constants.js';
 import {
   saveUserStatus,
   getDefaultLanguage,
@@ -18,7 +17,6 @@ import {
   setupDefaultCaption,
   setupDefaultCaptionDelay,
   setupDefaultSpeechSynth,
-  setupDefaultTranslatorMode,
   getCaptionZoom,
   setCaptionZoom,
   getStorage,
@@ -30,7 +28,7 @@ import {
   updateJSON
 } from './storage.js';
 import { closeSVG, settingsGear } from './svgs.js';
-
+import { TranslatorMode } from './translator-mode.js';
 
 const enableDarkModeToggle = false;
 
@@ -145,8 +143,6 @@ function createLangSelectOption(lang) {
   opt.innerText = langName;
   return opt;
 }
-
-languages.forEach(i => languageConversionTable[createLangSelectionName(i)] = i);
 
 function createLangSelectLabel() {
   const langSelectLabel = document.createElement('span');
@@ -856,7 +852,7 @@ function createTranslatorModeToggle() {
   return new Promise((res, rej) => {
     setTimeout(async () => {
       try {
-        await setupDefaultTranslatorMode();
+        await TranslatorMode.setupDefaultTranslatorMode();
         const transModeToggle = document.createElement('div');
         transModeToggle.appendChild(createTranslatorModeToggleLabel());
         transModeToggle.appendChild(await createTranslatorModeToggleCheckbox());

@@ -66,9 +66,11 @@ export async function setupDefaultSpeechSynth() {
   return await setDefaultSetting('speechSynth', speechSynthDefault);
 }
 
-export async function setupDefaultTranslatorMode() {
+/*
+async function setupDefaultTranslatorMode() {
   return await setDefaultSetting('translatorMode', TranslatorMode.defaultt);
 }
+ */
 
 export async function getSpeechVolume() {
   return await getStorage('speechVolume');

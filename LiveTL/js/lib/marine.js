@@ -1,5 +1,6 @@
-import { isAndroid, parseParams } from '../frame.js';
+import { isAndroid, parseParams } from './web-constants.js';
 import { getWAR } from './constants.js';
+
 
 export const Marine = (() => {
   let oldFaviconURL = null;
