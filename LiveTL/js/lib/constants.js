@@ -18,9 +18,13 @@ const languageConversionTable = {};
 
 // WAR: web accessible resource
 async function getWAR(u) {
-  return new Promise((res, rej) => {
+  return await new Promise((res, rej) => {
     if (isAndroid) {
-      res(`file:///android_asset/${u}`)
+      if(window.isChat && window.isChat()) {
+        res(`CUSTOMJS/${u}`);
+      } else {
+        res(`file:///android_asset/${u}`);
+      }
     } else {
       chrome.runtime.sendMessage({ type: 'get_war', url: u }, r => res(r));
     }

@@ -61,7 +61,7 @@ public class LiveTLWebView {
                     view.loadUrl("javascript:" +
                             "window.history.pushState('', '', '" + url + "');" +
                             "myScript = document.createElement('script');" +
-                            "myScript.src = 'CUSTOMJS';" +
+                            "myScript.src = 'CUSTOMJS/js/frame.js';" +
                             "document.body.appendChild(myScript);");
                 }
             }
@@ -82,16 +82,18 @@ public class LiveTLWebView {
                         e.printStackTrace();
                     }
                 }
-                String INJECTION_TOKEN = "CUSTOMJS";
+                String INJECTION_TOKEN = "CUSTOMJS/";
                 WebResourceResponse response = null;
                 if (url.contains(INJECTION_TOKEN)) {
                     String assetPath = url.substring(url.indexOf(INJECTION_TOKEN) +
                             INJECTION_TOKEN.length());
+                    String[] spliced = assetPath.split(".");
                     try {
                         response = new WebResourceResponse(
-                                "application/javascript",
+                                (spliced.length > 0 && spliced[spliced.length - 1].equals("js") ?
+                                    "application/javascript" : ""),
                                 "UTF8",
-                                activity.getAssets().open("js/frame.js")
+                                activity.getAssets().open(assetPath)
                         );
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -115,7 +117,7 @@ public class LiveTLWebView {
                                 .removeHeader("frame-options")
                                 .build();
                         String s = url.startsWith("https://www.youtube.com/embed") ?
-                                "<script src=\"CUSTOMJS\"></script>" : "";
+                                "<script src=\"CUSTOMJS/js/frame.js\"></script>" : "";
                         return new WebResourceResponse("text/html",
                                 modifiedResponse.header("content-encoding", "utf-8"),
                                 new ByteArrayInputStream(

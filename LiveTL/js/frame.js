@@ -621,6 +621,11 @@ async function loaded() {
   if (isAndroid) {
     monkeypatch();
     if (!isVideo()) {
+      window.hyperchatInjector = window.hyperchatInjector || await (await fetch(await getWAR('js/chat.js'))).text();
+      const chatElem = document.querySelector('#chat');
+      if (chatElem) {
+        chatElem.contentWindow.eval(window.hyperchatInjector);
+      }
       window.frameText = window.frameText || await (await fetch(await getWAR('js/frame.js'))).text();
       insertContentScript();
     }
@@ -1053,6 +1058,7 @@ async function insertContentScript() {
     try {
       if (frame.id != 'livetl-chat' && !frame.contentWindow.runLiveTL) {
         frame.contentWindow.frameText = window.frameText;
+        frame.contentWindow.hyperchatInjector = window.hyperchatInjector;
         frame.contentWindow.isAndroid = true;
         frame.contentWindow.eval(window.frameText);
         frame.contentWindow.loaded();
