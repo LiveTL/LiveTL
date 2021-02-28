@@ -1,6 +1,7 @@
+import { parseTranslation, isLangMatch } from '../LiveTL/js/lib/filter.js';
+import { languages } from '../LiveTL/js/lib/constants.js';
+
 const assert = require('assert').strict;
-const { parseTranslation, isLangMatch } = require('../LiveTL/js/lib/filter.js');
-const { languages } = require('../LiveTL/js/lib/constants.js');
 
 const langs = {};
 languages.forEach(lang => {

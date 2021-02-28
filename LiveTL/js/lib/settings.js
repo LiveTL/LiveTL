@@ -10,7 +10,6 @@
  * needs languageConversionTable = {} declared before this module
  */
 
-import { languages, languageConversionTable } from './constants.js';
 import {
   saveUserStatus,
   getDefaultLanguage,
@@ -18,7 +17,6 @@ import {
   setupDefaultCaption,
   setupDefaultCaptionDelay,
   setupDefaultSpeechSynth,
-  setupDefaultTranslatorMode,
   getCaptionZoom,
   setCaptionZoom,
   getStorage,
@@ -30,11 +28,12 @@ import {
   updateJSON
 } from './storage.js';
 import { closeSVG, settingsGear } from './svgs.js';
-
+import { TranslatorMode } from './translator-mode.js';
+import { shouldSpeak, speak, unlockSpeech } from './speech.js';
 
 const enableDarkModeToggle = false;
 
-async function createSettings(container) {
+export async function createSettings(container) {
   const settings = createModal(container);
   settings.appendChild(createLanguageSelect());
   settings.appendChild(createTranslatorSelect());
@@ -145,8 +144,6 @@ function createLangSelectOption(lang) {
   opt.innerText = langName;
   return opt;
 }
-
-languages.forEach(i => languageConversionTable[createLangSelectionName(i)] = i);
 
 function createLangSelectLabel() {
   const langSelectLabel = document.createElement('span');
@@ -369,7 +366,7 @@ async function createZoomSlider() {
 }
 
 // Needed for compatibility issues in frame.js
-async function updateZoomLevel() {
+export async function updateZoomLevel() {
   postToParent(
     await updateSliderLevel(
       'zoomSliderInput',
@@ -856,7 +853,7 @@ function createTranslatorModeToggle() {
   return new Promise((res, rej) => {
     setTimeout(async () => {
       try {
-        await setupDefaultTranslatorMode();
+        await TranslatorMode.setupDefaultTranslatorMode();
         const transModeToggle = document.createElement('div');
         transModeToggle.appendChild(createTranslatorModeToggleLabel());
         transModeToggle.appendChild(await createTranslatorModeToggleCheckbox());
@@ -897,4 +894,4 @@ async function createSpeechVolumeSlider() {
   );
 }
 
-module.exports = { createSettings };
+// module.exports = { createSettings };

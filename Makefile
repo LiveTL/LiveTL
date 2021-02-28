@@ -56,8 +56,11 @@ init:
 testinit:
 	cat requirements.txt | grep "#" | $(sed) 's/#//g' | $(py) || $(pip) install -r requirements.txt
 
+buildinit:
+	cat requirements-build.txt | grep "#" | $(sed) 's/#//g' | $(py) || $(pip) install -r requirements-build.txt
+
 test: firefox chrome testinit
-	@node tests/*.js
+	@same tests/filter.js | node
 	@$(pytest) tests/selenium
 
 bench:
@@ -144,13 +147,10 @@ LiveTL/submodules/chat/node_modules: LiveTL/submodules/chat/package.json
 LiveTL/submodules/chat/dist: LiveTL/submodules/chat/node_modules LiveTL/submodules/chat/*
 	cd LiveTL/submodules/chat/ && npm run publish
 
-common: init LiveTL/submodules/chat/dist
-	cat $(lib)/constants.js $(lib)/../frame.js $(lib)/storage.js $(lib)/filter.js $(lib)/settings.js $(lib)/speech.js \
-		   	$(lib)/translator-mode.js $(lib)/marine.js $(lib)/css.js $(lib)/svgs.js \
-		| $(sed) 'H;1h;$$!d;x;s/import {[^}]*} from//g; N' \
-		| $(sed) 'H;1h;$$!d;x;s/module\.exports \= {[^}]*}//g; N' \
-		| $(replace-embed-domain) \
-		> ./build/common/frame.js
+common: init buildinit LiveTL/submodules/chat/dist
+	same $(lib)/../frame.js | $(replace-embed-domain) | \
+	       $(sed) 'H;1h;$$!d;x;s/module\.exports \= {[^}]*}//g; N' \
+       	       > ./build/common/frame.js
 	$(replace-embed-domain) $(lib)/../index.js > ./build/common/index.js
 	$(replace-embed-domain-noquote) LiveTL/manifest.json | $(replace-version) > ./build/common/manifest.json
 	$(replace-embed-domain-noquote) LiveTL/js/background.js > ./build/common/background.js
