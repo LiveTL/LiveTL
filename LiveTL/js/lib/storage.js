@@ -1,4 +1,4 @@
-import { isAndroid, isFirefox } from './web-constants.js';
+import { isAndroid, isFirefox, speechSynthDefault } from './web-constants.js';
 
 export async function isNewUser(id) {
   return allTranslators.byID[id] == null;

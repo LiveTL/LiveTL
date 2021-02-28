@@ -20,3 +20,5 @@ function parseParamsLegacy(loc) {
     .replace(/=/g, '":"');
   return s === '' ? {} : JSON.parse('{"' + s + '"}');
 }
+
+export const speechSynthDefault = false;

@@ -29,6 +29,7 @@ import {
 } from './storage.js';
 import { closeSVG, settingsGear } from './svgs.js';
 import { TranslatorMode } from './translator-mode.js';
+import { shouldSpeak, speak, unlockSpeech } from './speech.js';
 
 const enableDarkModeToggle = false;
 
@@ -365,7 +366,7 @@ async function createZoomSlider() {
 }
 
 // Needed for compatibility issues in frame.js
-async function updateZoomLevel() {
+export async function updateZoomLevel() {
   postToParent(
     await updateSliderLevel(
       'zoomSliderInput',
