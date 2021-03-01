@@ -1,6 +1,7 @@
 py = python3
 pip = ${py} -m pip
 pytest = ${py} -m pytest
+same = ${py} -m samepack
 jquery = "./build/common/jquery.min.js"
 jquery-ui = "./build/common/jquery-ui.min.js"
 jquery-css = "./build/common/jquery-ui.css"
@@ -60,7 +61,7 @@ buildinit:
 	cat requirements-build.txt | grep "#" | $(sed) 's/#//g' | $(py) || $(pip) install -r requirements-build.txt
 
 test: firefox chrome testinit
-	@same tests/filter.js | node
+	@$(same) tests/filter.js | node
 	@$(pytest) tests/selenium
 
 bench:
@@ -148,7 +149,7 @@ LiveTL/submodules/chat/dist: LiveTL/submodules/chat/node_modules LiveTL/submodul
 	cd LiveTL/submodules/chat/ && npm run publish
 
 common: init buildinit LiveTL/submodules/chat/dist
-	same $(lib)/../frame.js | $(replace-embed-domain) | \
+	$(same) $(lib)/../frame.js | $(replace-embed-domain) | \
 	       $(sed) 'H;1h;$$!d;x;s/module\.exports \= {[^}]*}//g; N' \
        	       > ./build/common/frame.js
 	$(replace-embed-domain) $(lib)/../index.js > ./build/common/index.js
