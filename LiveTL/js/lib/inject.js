@@ -75,7 +75,12 @@ window.setTimeout(async () => {
     console.log(window.fetchedContinuationToken);
     window.fetchedIsReplay = 'true' == (res
       .split('"isReplay":')[1] || '').split(',')[0];
-    setTimeout(() => window.watchInLiveTL(), 100);
+    const poller = setInterval(() => {
+      if (window.watchInLiveTL) {
+        clearInterval(poller);
+        window.watchInLiveTL();
+      }
+    }, 100);
   } catch (e) {
     text.innerText = `Stream could not be loaded. ${e.toString()}.`;
   }

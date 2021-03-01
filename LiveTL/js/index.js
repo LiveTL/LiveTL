@@ -81,9 +81,17 @@ r = r == null ? c : r;
 
 let zoomObj = {};
 
-let setStreamZoom = () => {
+let setStreamZoom = async () => {
   if (isAndroid) {
-    let s = stream.contentWindow.document.body.style;
+    let s = (await new Promise((res, rej) => {
+      const poller = setInterval(() => {
+        const e = stream.contentWindow.document.body;
+        if (e) {
+          clearInterval(poller);
+          res(e);
+        }
+      }, 100);
+    })).style;
     s.transformOrigin = '0px 0px';
     s.width = zoomObj.width;
     s.height = zoomObj.height;
