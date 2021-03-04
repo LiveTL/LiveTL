@@ -4,6 +4,7 @@
 ![Tests](https://github.com/LiveTL/LiveTL/workflows/Tests/badge.svg)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg)](https://github.com/standard/semistandard)
+[![Bundler: samepack](https://img.shields.io/badge/bundler-samepack-brightgreen)](https://github.com/r2dev2/samepack)
 [![Contributors](https://img.shields.io/github/contributors/LiveTL/LiveTL)](https://github.com/LiveTL/LiveTL/contributors)
 [![Issues](https://img.shields.io/github/issues/LiveTL/LiveTL)](https://github.com/LiveTL/LiveTL/issues)
 ![Total Lines](https://img.shields.io/tokei/lines/github/LiveTL/LiveTL)
@@ -41,7 +42,8 @@ make
 - rsync
 - npm (Note that the version installed by apt on Ubuntu 18.04 is too old and will not work, you'll have to upgrade npm manually)
 - gnu-sed (MacOS -- `brew install gsed` will install GNU-SED if you have `brew` installed)
+- python >= 3.6
 
 ## Developers
 
-LiveTL was developed by [these fine people](https://github.com/LiveTL/LiveTL/graphs/contributors).
+LiveTL is developed by [these fine people](https://github.com/LiveTL/LiveTL/graphs/contributors).
