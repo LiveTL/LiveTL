@@ -1,7 +1,7 @@
 # Getting Started with LiveTL (Desktop)
 
 <span id="actionMessage">
-You must have <a href="https://kentonishi.github.io/LiveTL/">LiveTL</a> installed to use LiveTL features.
+You must have <a href="https://livetl.github.io/LiveTL/">LiveTL</a> installed to use LiveTL features.
 </span>
 
 ## Launching LiveTL
@@ -17,8 +17,8 @@ Alternatively, you can open LiveTL from within HoloTools!
 
 ## Other Info
 
-If you like LiveTL, don't forget to <a href="https://kentonishi.github.io/LiveTL/" target="about:blank">share it with your friends</a>
-and <a href="https://kentonishi.github.io/LiveTL/about/review">give
+If you like LiveTL, don't forget to <a href="https://livetl.github.io/LiveTL/" target="about:blank">share it with your friends</a>
+and <a href="https://livetl.github.io/LiveTL/about/review">give
 us a 5-star review</a>!
 
 Please feel free to give us feedback or suggestions through the LiveTL Discord
@@ -26,14 +26,14 @@ server! [Here is the invite](https://discord.gg/uJrV3tmthg).
 [![Discord](https://img.shields.io/discord/780938154437640232.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/uJrV3tmthg)
 
 Our code is completely open source on GitHub. We would appreciate if you could drop a
-star! [Here is our repository](https://github.com/KentoNishi/LiveTL).
+star! [Here is our repository](https://github.com/LiveTL/LiveTL).
 
 ## Frequently Asked Questions
 
 ### How does LiveTL work?
 LiveTL is, at its core, a chat filter for YouTube streams. It helps foreign viewers better catch translations that other viewers are providing in the live chat. LiveTL does not automatically translate streams -- instead, it picks up translations found in the chat.
 
-### I installed LiveTL but I don't see any buttons. 
+### I installed LiveTL but I don't see any buttons.
 Once you install the extension, you must reload the YouTube stream for LiveTL to take effect.
 
 ### I don't see any translations in the translations panel.

@@ -14,7 +14,7 @@
 
 Get live translations for YouTube streams, crowdsourced from multilingual viewers!
 
-### [Download LiveTL](https://kentonishi.github.io/LiveTL/)
+### [Download LiveTL](https://livetl.github.io/LiveTL/)
 
 ![Demo](./img/cover-android.png)
 

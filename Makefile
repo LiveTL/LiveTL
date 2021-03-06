@@ -14,7 +14,7 @@ sjquery-ui-touch = "./build/static/jquery-ui-touch.css"
 lib = "./LiveTL/js/lib"
 
 ifndef EMBED_DOMAIN
-EMBED_DOMAIN=https://kentonishi.github.io/LiveTL/embed
+EMBED_DOMAIN=https://livetl.github.io/LiveTL/embed
 endif
 
 ifndef VERSION

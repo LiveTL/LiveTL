@@ -25,7 +25,7 @@ to essentially "wing it" should you wish to contribute.
 ## Set up a local development environment
 
 **Refer
-to '[Starting up a local development environment](https://github.com/KentoNishi/LiveTL/blob/develop/CONTRIBUTING.md#starting-up-a-local-development-environment)'
+to '[Starting up a local development environment](https://github.com/LiveTL/LiveTL/blob/develop/CONTRIBUTING.md#starting-up-a-local-development-environment)'
 if you have already set up a local development environment**
 
 **If you have difficulty setting up this environment, do _not_ open an issue. Message one of the admins or ask for help
@@ -41,7 +41,7 @@ on this [Discord server](https://discord.gg/uJrV3tmthg).**
 
 ### Setting up the environment
 
-1. Clone this repo (`git clone https://github.com/KentoNishi/LiveTL.git`)
+1. Clone this repo (`git clone https://github.com/LiveTL/LiveTL.git`)
 2. Change directory `cd` to the newly created `LiveTL` repo.
 3. Switch to the `develop` branch (`git checkout develop`)
 
@@ -50,7 +50,7 @@ on this [Discord server](https://discord.gg/uJrV3tmthg).**
 ## Starting up a local development environment
 
 **Refer
-to '[Set up a local development environment](https://github.com/KentoNishi/LiveTL/blob/develop/CONTRIBUTING.md#set-up-a-local-development-environment)'
+to '[Set up a local development environment](https://github.com/LiveTL/LiveTL/blob/develop/CONTRIBUTING.md#set-up-a-local-development-environment)'
 if you have not yet set up a local development environment with the instructions provided above.**
 
 **If you have difficulty starting up your environments, do _not_ open an issue. Message one of the admins or ask for
