@@ -42,8 +42,8 @@ If there are no translators in chat, LiveTL is unable to provide translations. A
 ### A translator is using their own style of language tags.
 You can manually select additional users to filter in the settings.
 
-### I'm a Safari user, and I can't use the chat.
-You must disable the `Prevent Cross-site tracking` option in Safari privacy settings.
+### The YouTube video isn’t loading in Firefox.
+You must manually allow video and audio autoplay in Firefox’s website preferences.
 
 ## Screenshots
 
