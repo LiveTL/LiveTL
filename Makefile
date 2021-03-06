@@ -54,13 +54,13 @@ init:
 	cp $(sjquery-css) $(jquery-css)
 	cp $(sjquery-ui-touch) $(jquery-ui-touch)
 
-testinit:
-	cat requirements.txt | grep "#" | $(sed) 's/#//g' | $(py) || $(pip) install -r requirements.txt
+# This just updates whenever requirements-build changes
+.gitignore: requirements-build.txt requirements.txt
+	$(py) -m pip install -r requirements.txt
+	$(py) -m pip install -r requirements-build.txt
+	@touch .gitignore
 
-buildinit:
-	cat requirements-build.txt | grep "#" | $(sed) 's/#//g' | $(py) || $(pip) install -r requirements-build.txt
-
-test: firefox chrome testinit
+test: firefox chrome .gitignore
 	@$(same) tests/filter.js | node
 	@$(pytest) tests/selenium
 
@@ -148,7 +148,7 @@ LiveTL/submodules/chat/node_modules: LiveTL/submodules/chat/package.json
 LiveTL/submodules/chat/dist: LiveTL/submodules/chat/node_modules LiveTL/submodules/chat/*
 	cd LiveTL/submodules/chat/ && npm run publish
 
-common: init buildinit LiveTL/submodules/chat/dist
+common: init .gitignore LiveTL/submodules/chat/dist
 	$(same) $(lib)/../frame.js | $(replace-embed-domain) | \
 	       $(sed) 'H;1h;$$!d;x;s/module\.exports \= {[^}]*}//g; N' \
        	       > ./build/common/frame.js
