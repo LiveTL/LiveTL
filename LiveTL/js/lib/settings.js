@@ -28,7 +28,7 @@ import {
   updateJSON
 } from './storage.js';
 import { closeSVG, settingsGear } from './svgs.js';
-import { TranslatorMode } from './translator-mode.js';
+import * as TranslatorMode from './translator-mode.js';
 import { shouldSpeak, speak, unlockSpeech } from './speech.js';
 
 const enableDarkModeToggle = false;

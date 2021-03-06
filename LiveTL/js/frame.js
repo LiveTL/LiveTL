@@ -16,7 +16,7 @@ import {
   getJSON
 } from './lib/storage.js';
 import { hideSVG, banSVG } from './lib/svgs.js';
-import { TranslatorMode } from './lib/translator-mode.js';
+import * as TranslatorMode from './lib/translator-mode.js';
 import { isFirefox, isAndroid, parseParams } from './lib/web-constants.js';
 import { languageConversionTable } from './lib/constants.js';
 
