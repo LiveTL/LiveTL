@@ -233,7 +233,7 @@ function createTransSelectChecklistItems() {
 function createTransSelectLabel() {
   const translatorSelectLabel = document.createElement('span');
   translatorSelectLabel.className = 'optionLabel';
-  translatorSelectLabel.innerHTML = 'User Whitelist & Filters:&nbsp';
+  translatorSelectLabel.innerHTML = 'Filters:&nbsp';
   return translatorSelectLabel;
 }
 
