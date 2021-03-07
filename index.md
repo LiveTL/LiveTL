@@ -13,8 +13,8 @@
 ![](./img/cover-android.png)
 
 More information is available here:
-* [Getting Started with LiveTL (Desktop)](https://kentonishi.github.io/LiveTL/about)
-* [Getting Started with LiveTL (Android)](https://kentonishi.github.io/LiveTL/about/android)
+* [Getting Started with LiveTL (Desktop)](https://livetl.github.io/LiveTL/about)
+* [Getting Started with LiveTL (Android)](https://livetl.github.io/LiveTL/about/android)
 
 <style>
     .flex {

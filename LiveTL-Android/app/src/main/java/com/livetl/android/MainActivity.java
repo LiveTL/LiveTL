@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
             handleVideoIntent(intent.getStringExtra(Intent.EXTRA_TEXT));
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
-            webview.load("https://kentonishi.github.io/LiveTL/about/android", "frame", (screenDensity * 3) / 4);
+            webview.load("https://livetl.github.io/LiveTL/about/android", "frame", (screenDensity * 3) / 4);
         }
 
         updateUI();

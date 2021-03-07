@@ -130,7 +130,7 @@ async function runLiveTL() {
       checkboxUpdate();
     }
   );
-  
+
   getJSON('customTags').then(obj => {
     Object.keys(obj).forEach(item => {
       displayTag(item, customTags[item].enabled);
@@ -634,7 +634,7 @@ if ((isVideo() || isChat() || isEmbed()) && isFirefox) {
   window.dispatchEvent(new Event('load'));
 }
 
-const aboutPage = 'https://kentonishi.github.io/LiveTL/about/';
+const aboutPage = 'https://livetl.github.io/LiveTL/about/';
 
 function setChatZoom(width, height, transform) {
   let e = document.querySelector('yt-live-chat-app');
@@ -700,7 +700,7 @@ function wrapIconWithLink(icon, link) {
 
 async function createLogo() {
   const a = document.createElement('a');
-  a.href = 'https://kentonishi.github.io/LiveTL';
+  a.href = 'https://livetl.github.io/LiveTL';
   a.target = 'about:blank';
   const logo = document.createElement('img');
   logo.className = 'logo';
@@ -722,7 +722,7 @@ async function shareExtension(e) {
     navigator.share({
       title: details.name,
       text: details.description,
-      url: 'https://kentonishi.github.io/LiveTL'
+      url: 'https://livetl.github.io/LiveTL'
     });
     e.preventDefault();
   }
@@ -736,10 +736,10 @@ async function createWelcomeText() {
   buttons.style.marginLeft = '0px';
   buttons.innerHTML = `
     Please consider
-    <a id="shareExtension" href="https://kentonishi.github.io/LiveTL" target="about:blank">sharing LiveTL with your friends</a>,
-    <a href="https://kentonishi.github.io/LiveTL/about/review" target="about:blank">giving us a 5-star review</a>,
+    <a id="shareExtension" href="https://livetl.github.io/LiveTL" target="about:blank">sharing LiveTL with your friends</a>,
+    <a href="https://livetl.github.io/LiveTL/about/review" target="about:blank">giving us a 5-star review</a>,
     <a href="https://discord.gg/uJrV3tmthg" target="about:blank">joining our Discord server</a>, and
-    <a href="https://github.com/KentoNishi/LiveTL" target="about:blank">starring our GitHub repository</a>!
+    <a href="https://github.com/LiveTL/LiveTL" target="about:blank">starring our GitHub repository</a>!
   `;
   welcomeText.appendChild(buttons);
   welcomeText.querySelector('#shareExtension').addEventListener('click', shareExtension);
@@ -753,7 +753,7 @@ async function createWelcomeText() {
   versionInfo.querySelector('#updateInfo').textContent = update;
   const learnMore = document.createElement('a');
   learnMore.textContent = 'Learn More';
-  learnMore.href = `https://kentonishi.github.io/LiveTL/changelogs?version=v${details.version}`;
+  learnMore.href = `https://livetl.github.io/LiveTL/changelogs?version=v${details.version}`;
   learnMore.target = 'about:blank';
   versionInfo.appendChild(learnMore);
   versionInfo.style.marginTop = '10px';
@@ -767,7 +767,7 @@ async function createWelcome() {
   welcome.className = 'line';
   welcome.appendChild(await createLogo());
   welcome.appendChild(createIcon('fa-discord', 'https://discord.gg/uJrV3tmthg', false));
-  welcome.appendChild(createIcon('fa-github', 'https://github.com/KentoNishi/LiveTL', true));
+  welcome.appendChild(createIcon('fa-github', 'https://github.com/LiveTL/LiveTL', true));
   welcome.appendChild(await createWelcomeText());
   return welcome;
 }
