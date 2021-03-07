@@ -1,7 +1,7 @@
 {
   // See https://go.microsoft.com/fwlink/?LinkId=733558
   // for the documentation about the tasks.json format
-  // https://kentonishi.github.io/LiveTL/embed
+  // https://livetl.github.io/LiveTL/embed
   // https://cranky-beaver-1d73c7.netlify.app/embed
   // http://localhost:8000/embed
   "version": "2.0.0",
