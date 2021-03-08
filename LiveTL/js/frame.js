@@ -738,8 +738,9 @@ async function createWelcomeText() {
     Please consider
     <a id="shareExtension" href="https://livetl.github.io/LiveTL" target="about:blank">sharing LiveTL with your friends</a>,
     <a href="https://livetl.github.io/LiveTL/about/review" target="about:blank">giving us a 5-star review</a>,
-    <a href="https://discord.gg/uJrV3tmthg" target="about:blank">joining our Discord server</a>, and
-    <a href="https://github.com/LiveTL/LiveTL" target="about:blank">starring our GitHub repository</a>!
+    <a href="https://discord.gg/uJrV3tmthg" target="about:blank">joining our Discord server</a>,
+    <a href="https://github.com/LiveTL/LiveTL" target="about:blank">starring our GitHub repository</a>, and 
+    <a href="https://opencollective.com/livetl" target="about:blank">chipping in a few dollars to help fund future projects (stay tuned)</a>!
   `;
   welcomeText.appendChild(buttons);
   welcomeText.querySelector('#shareExtension').addEventListener('click', shareExtension);
