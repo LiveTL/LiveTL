@@ -1,12 +1,20 @@
-import { getStorage, setDefaultSetting } from './storage.js';
-
-// TranslatorMode.run()
-// Make sure to setTimeout when running at initialization
+import { languageConversionTable } from './constants.js';
+import { getStorage, getDefaultLanguage, setDefaultSetting } from './storage.js';
 
 let [container, chatbox] = document.querySelectorAll('#input');
 const defaultt = false;
 let sendButton = document.querySelector('#send-button');
 const postMessage = window.parent.postMessage;
+
+const utils = {
+  disable() {
+    clearTextFromYTC();
+  },
+  reload() {
+    clearTextFromYTC();
+    run();
+  }
+};
 
 async function init() {
   await setupDefaultTranslatorMode();
@@ -69,19 +77,18 @@ export async function enabled() {
 }
 
 export function disable() {
-  clearTextFromYTC();
+  return utils.disable();
 }
 
 export function reload() {
-  clearTextFromYTC();
-  run();
+  return utils.reload();
 }
 
 function ltl_run() {
-  TranslatorMode.disable = () => {
+  utils.disable = () => {
     postMessage({ type: 'translatorMode', fn: 'disable' });
   };
-  TranslatorMode.reload = () => {
+  utils.reload = () => {
     postMessage({ type: 'translatorMode', fn: 'reload' });
   };
 }
