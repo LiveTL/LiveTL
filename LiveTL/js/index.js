@@ -1,3 +1,5 @@
+import { getCaptionZoom } from './lib/storage.js';
+
 // Sometimes, localStorage is set to null by privacy browsers
 const bruhStorage = localStorage || {
   state: {},

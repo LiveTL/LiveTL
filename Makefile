@@ -152,7 +152,7 @@ common: init .gitignore LiveTL/submodules/chat/dist
 	$(same) $(lib)/../frame.js | $(replace-embed-domain) | \
 	       $(sed) 'H;1h;$$!d;x;s/module\.exports \= {[^}]*}//g; N' \
        	       > ./build/common/frame.js
-	$(replace-embed-domain) $(lib)/../index.js > ./build/common/index.js
+	$(same) $(lib)/../index.js | $(replace-embed-domain) > ./build/common/index.js
 	$(replace-embed-domain-noquote) LiveTL/manifest.json | $(replace-version) > ./build/common/manifest.json
 	$(replace-embed-domain-noquote) LiveTL/js/background.js > ./build/common/background.js
 	cp LiveTL/submodules/chat/scripts/chat.js ./build/common/chat.js
