@@ -1,3 +1,4 @@
+import { allTranslators, allTranslatorCheckbox } from './constants.js';
 import { isAndroid, isFirefox, speechSynthDefault } from './web-constants.js';
 
 export async function isNewUser(id) {
@@ -33,7 +34,7 @@ export async function getUserStatus(userid, byname) {
 
 export async function getUserStatusAsBool(id) {
   let status = await getUserStatus(id);
-  status = status.checked != null ? status.checked : allTranslatorCheckbox.checked;
+  status = status.checked != null ? status.checked : allTranslatorCheckbox.value.checked;
   return status;
 }
 

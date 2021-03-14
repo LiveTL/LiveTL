@@ -49,4 +49,9 @@ export function decodeURIComponentSafe(s) {
   return decodeURIComponent(s.replace(/%(?![0-9][0-9a-fA-F]+)/g, '%25'));
 }
 
+// byName is unused, always checking from storage
+export const allTranslators = { byID: {}, byName: {} };
+
+export const allTranslatorCheckbox = { value: {} };
+
 // module.exports = { getFile, getWAR, languages, decodeURIComponentSafe };
