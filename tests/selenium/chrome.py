@@ -81,8 +81,7 @@ __platform_drivers = {
     "linux": pwd / "chromedriver",
 }
 
-# 88.0.4324.27 in beta
-version = "87.0.4280.88"
+version = "89.0.4389.23"
 
 __setup_driver = su.setup_driver(
     {
