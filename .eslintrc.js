@@ -1,20 +1,39 @@
 module.exports = {
-  root: true,
-  env: {
-    node: true,
-    webextensions: true
+  'env': {
+    'browser': true,
+    'es2021': true,
+    'node': true
   },
-  'extends': [
-    'plugin:vue/essential',
-    '@vue/standard'
+  'extends': 'eslint:recommended',
+  'parserOptions': {
+    'ecmaVersion': 12,
+    'sourceType': 'module'
+  },
+  'plugins': [
+    'svelte3'
   ],
-  parserOptions: {
-    parser: 'babel-eslint'
-  },
-  rules: {
-    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    semi: [2, 'always'],
-    'space-before-function-paren': [2, 'never']
+  'overrides': [
+    {
+      'files': ['*.svelte'],
+      'processor': 'svelte3/svelte3'
+    }
+  ],
+  'rules': {
+    'indent': [
+      'error',
+      2
+    ],
+    'linebreak-style': [
+      'error',
+      'unix'
+    ],
+    'quotes': [
+      'error',
+      'single'
+    ],
+    'semi': [
+      'error',
+      'always'
+    ]
   }
-}
+};
