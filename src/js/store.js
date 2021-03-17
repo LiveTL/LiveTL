@@ -4,7 +4,7 @@ const SS = (n, d) => new SettingStore(n, d);
 
 export const
   language = SS('language', 'en'),
-  displayModMessage = SS('displayModMessage', true),
+  showModMessage = SS('showModMessage', true),
   chatZoom = SS('chatZoom', /* TODO default */),
   showTimestamp = SS('showTimestamp', /* TODO default */),
   textDirection = SS('textDirection', /* TODO default */),
