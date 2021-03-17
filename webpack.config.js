@@ -1,3 +1,4 @@
+/* eslint-disable */
 var webpack = require('webpack'),
   path = require('path'),
   fileSystem = require('fs'),
