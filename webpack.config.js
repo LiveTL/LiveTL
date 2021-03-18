@@ -10,6 +10,7 @@ var webpack = require('webpack'),
 
 const { preprocess } = require('./svelte.config');
 const mode = process.env.NODE_ENV || 'development';
+process.env.NODE_ENV = mode;
 
 // load the secrets
 var alias = {};
