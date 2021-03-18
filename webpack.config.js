@@ -8,6 +8,8 @@ var webpack = require('webpack'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   WriteFilePlugin = require('write-file-webpack-plugin');
 
+const { preprocess } = require('./svelte.config');
+
 // load the secrets
 var alias = {};
 
@@ -53,7 +55,8 @@ var options = {
           loader: 'svelte-loader',
           options: {
             emitCss: false,
-            hotReload: false
+            hotReload: false,
+            preprocess
           }
         }
       }
