@@ -14,6 +14,7 @@
   }
 
   $: group = $store;
+  $: store.set(group);
 </script>
 
 <div class="container d-flex justify-space-around">
@@ -22,7 +23,6 @@
     <Radio bind:group value={opt} {color}>{transformOpt(opt)}</Radio>
   {/each}
 </div>
-<br />
 
 <style>
   /* TODO figure out what the actual name of label class is */
@@ -41,6 +41,6 @@
   }
 
   .container {
-    padding-bottom: 5px;
+    padding-bottom: 10px;
   }
 </style>
