@@ -10,6 +10,6 @@
   let value = store.get();
 </script>
 
-<Slider thumb bind:value min={min} max={max} inverseLabel>
+<Slider bind:value min={min} max={max} color="blue">
   {name}
 </Slider>
