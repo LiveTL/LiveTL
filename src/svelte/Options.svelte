@@ -21,12 +21,15 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    width: fit-content;
+    min-width: 100%;
   }
 
   .app {
     padding: 20px !important;
     display: grid;
     justify-content: center;
+    min-width: max-content;
   }
   :global(body) {
     margin: 0px 0px;
