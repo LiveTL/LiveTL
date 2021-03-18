@@ -15,7 +15,7 @@
 </script>
 
 <div class="flex vertical">
-  <div class="tile" />
+  <div class="tile" style="width: 50%;" />
   <div class="tile">
     <div class="flex horizontal">
       <div class="tile" />
@@ -43,7 +43,7 @@
   .flex {
     display: flex;
     height: 100%;
-    /* width: 100%; */
+    width: 100%;
   }
   :global(body) {
     height: 100%;
