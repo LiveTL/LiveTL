@@ -1,4 +1,5 @@
-import { Browser, BROWSER, TextDirection, VideoSide } from './web-constants';
+import { Browser, BROWSER } from './web-constants';
+import { TextDirection, VideoSide } from './constants.js';
 import { SettingStore } from './storage.js';
 
 const SS = (n, d) => new SettingStore(n, d);
