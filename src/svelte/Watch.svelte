@@ -2,6 +2,7 @@
   import * as j from "jquery";
   import "jquery-ui-bundle";
   import "jquery-ui-bundle/jquery-ui.css";
+  import Options from "./Options.svelte";
   window.j = j;
   window.addEventListener("load", () => {
     j(document.querySelector(".vertical .resizable")).resizable({
@@ -26,7 +27,9 @@
   <div class="tile autoscale">
     <div class="flex horizontal">
       <div class="tile resizable" />
-      <div class="tile autoscale" />
+      <div class="tile autoscale">
+        <Options />
+      </div>
     </div>
   </div>
 </div>
@@ -54,6 +57,7 @@
     background-color: red;
     /* border: 5px solid blue; */
     display: flex;
+    overflow: auto;
   }
   .flex {
     display: flex;
