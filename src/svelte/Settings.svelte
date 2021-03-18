@@ -16,7 +16,7 @@
 <CheckOption name="Show timestamps" store={showTimestamp} />
 <CheckOption name="Show captions" store={showCaption} />
 <CheckOption name="Read-aloud mode" store={doSpeechSynth} />
-<CheckOption name="Auto-prefix Chat Messages" store={doTranslatorMode} />
+<CheckOption name="Auto-prefix chat messages" store={doTranslatorMode} />
 
 <style>
 </style>
