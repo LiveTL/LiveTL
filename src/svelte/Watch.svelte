@@ -6,22 +6,30 @@
   import { videoSide } from "../js/store.js";
   import { VideoSide } from "../js/constants.js";
   window.j = j;
-  window.addEventListener("load", () => {
-    j(document.querySelector(".vertical .resizable")).resizable({
-      handles: "e",
+  function resizable(selector, info) {
+    try {
+      j(document.querySelector(selector)).resizable("destroy");
+    } catch (e) {}
+    j(document.querySelector(selector)).resizable(info);
+  }
+  const changeSide = (side) => {
+    resizable(".vertical .resizable", {
+      handles: side === VideoSide.LEFT ? "e" : "w",
       start: () => {},
       stop: () => {},
       resize: (event, ui) => {},
       containment: "body",
     });
-    j(document.querySelector(".vertical .autoscale .resizable")).resizable({
+    resizable(".vertical .autoscale .resizable", {
       handles: "s",
       start: () => {},
       stop: () => {},
       resize: (event, ui) => {},
       containment: "body",
     });
-  });
+  };
+  $: changeSide($videoSide);
+  window.addEventListener("load", () => changeSide($videoSide));
 </script>
 
 <div class="flex vertical {$videoSide == VideoSide.RIGHT ? 'reversed' : ''}">
