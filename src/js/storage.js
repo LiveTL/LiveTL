@@ -46,7 +46,7 @@ export async function getStorage(key) {
 }
 
 export async function setStorage(key, value) {
-  let obj = {}
+  let obj = {};
   obj[key] = value;
   return await storage.set(obj);
 }
