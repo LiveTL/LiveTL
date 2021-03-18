@@ -16,6 +16,6 @@
 
 <style>
   :global(.s-slider) {
-    max-width: 20em !important;
+    max-width: 100% !important;
   }
 </style>
