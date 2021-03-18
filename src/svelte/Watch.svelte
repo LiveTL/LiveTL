@@ -27,7 +27,7 @@
 <style>
   .tile {
     background-color: red;
-    border: 5px solid blue;
+    /* border: 5px solid blue; */
     /* flex: 1; */
     display: flex;
   }
