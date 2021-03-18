@@ -111,7 +111,8 @@ var options = {
       chunks: ['background']
     }),
     new WriteFilePlugin()
-  ]
+  ],
+  mode: env.NODE_ENV
 };
 
 if (env.NODE_ENV === 'development') {
