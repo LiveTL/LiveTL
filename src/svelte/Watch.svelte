@@ -15,8 +15,8 @@
 </script>
 
 <div class="flex vertical">
-  <div class="tile" style="width: 50%;" />
-  <div class="tile">
+  <div class="tile resizable" />
+  <div class="tile autoscale">
     <div class="flex horizontal">
       <div class="tile" />
       <div class="tile" />
@@ -25,14 +25,19 @@
 </div>
 
 <style>
+  :root {
+    --bar: 10px;
+  }
+  .resizable {
+    width: 50%;
+  }
+  .autoscale {
+    flex: 1;
+  }
   .tile {
     background-color: red;
     /* border: 5px solid blue; */
-    /* flex: 1; */
     display: flex;
-  }
-  .flex > .tile:last-child {
-    flex-grow: 1;
   }
   .horizontal {
     flex-direction: column;
@@ -53,8 +58,13 @@
     margin: 0px;
   }
   :global(.ui-resizable-e) {
-    width: 10px;
+    width: var(--bar);
     right: 0px;
+    background-color: black;
+  }
+  :global(.ui-resizable-s) {
+    height: var(--bar);
+    bottom: 0px;
     background-color: black;
   }
 </style>
