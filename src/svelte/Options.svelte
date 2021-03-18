@@ -1,7 +1,17 @@
 <script>
-  import Settings from "./Settings.svelte";
+  import { MaterialApp } from 'svelte-materialify';
 
-  export let name;
+  import Settings from "./Settings.svelte";
 </script>
 
-<Settings />
+<div class="options">
+<MaterialApp>
+  <Settings />
+</MaterialApp>
+</div>
+
+<style>
+  .options {
+    margin: 20px;
+  }
+</style>

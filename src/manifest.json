@@ -1,6 +1,7 @@
 {
   "name": "Chrome Extension Svelte",
   "options_page": "options.html",
+  "permissions": ["storage"],
   "background": {
     "page": "background.html"
   },

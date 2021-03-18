@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
 import { Browser, BROWSER } from './web-constants.js';
 
 export const storage = new Storage();
@@ -9,35 +9,46 @@ export class SettingStore {
     this.defaultValue = defaultValue;
     const store = writable(defaultValue);
     this._store = store;
-    storage.get(name).then(value => {
+    getStorage(name).then(value => {
       if (value != null) {
-        store.set(name, value);
+        store.set(value);
       }
     });
   }
 
   get() {
-    return this._store.get();
+    return get(this._store);
   }
 
   set(value) {
     this._store.set(value);
-    storage.set(this.name, value);
+    setStorage(this.name, value);
   }
 
   update(callback) {
     this._store.update(callback);
-    storage.set(this.name, this._store.get());
+    setStorage(this.name, get(this._store));
   }
 
   reset() {
     this._store.set(this.defaultValue);
-    storage.set(this.name, this.defaultValue);
+    setStorage(this.name, this.defaultValue);
   }
 
   subscribe(callback) {
     return this._store.subscribe(callback);
   }
+}
+
+export async function getStorage(key) {
+  const result = await storage.get(key);
+  return result ? result[key] : result;
+}
+
+export async function setStorage(key, value) {
+  let obj = {}
+  obj[key] = value;
+  return await storage.set(obj);
 }
 
 function Storage() {

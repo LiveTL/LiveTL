@@ -22,5 +22,8 @@
     "webpack": "4.33.0",
     "webpack-dev-server": "3.7.1",
     "write-file-webpack-plugin": "4.5.0"
+  },
+  "dependencies": {
+    "svelte-materialify": "^0.3.6"
   }
 }
