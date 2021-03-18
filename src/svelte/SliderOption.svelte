@@ -15,7 +15,7 @@
   $: store.set(scaledBack);
 </script>
 
-<Slider thumb bind:value {color} thumbClass={color}>
+<Slider bind:value {color}>
   {name}:
 </Slider>
 
