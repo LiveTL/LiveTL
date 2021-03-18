@@ -14,11 +14,11 @@
   }
   const changeSide = (side) => {
     resizable(".vertical .resizable", {
-      handles: side === VideoSide.LEFT ? "e" : "w",
+      handles: "w, e",
       start: () => {},
       stop: () => {},
       resize: (event, ui) => {},
-      containment: "body",
+      // containment: "body",
     });
     resizable(".vertical .autoscale .resizable", {
       handles: "s",
@@ -74,6 +74,7 @@
     /* border: 5px solid blue; */
     display: flex;
     overflow: auto;
+    left: 0px !important;
   }
   .flex {
     display: flex;
