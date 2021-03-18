@@ -4,15 +4,22 @@
   import Settings from "./Settings.svelte";
 </script>
 
-<div class="options">
+<div class="wrapper">
   <MaterialApp theme="dark">
-    <Settings />
+    <div class="app">
+      <Settings />
+    </div>
   </MaterialApp>
 </div>
 
 <style>
-  .options {
-    margin: 20px;
+  .wrapper {
+    height: 100%;
+    width: 100%;
+  }
+
+  .app {
+    padding: 20px !important;
   }
   :global(body) {
     margin: 0px 0px;
