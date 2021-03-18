@@ -4,8 +4,15 @@
   import "jquery-ui-bundle/jquery-ui.css";
   window.j = j;
   window.addEventListener("load", () => {
-    j(document.querySelectorAll(".tile")[0]).resizable({
+    j(document.querySelector(".vertical .resizable")).resizable({
       handles: "e",
+      start: () => {},
+      stop: () => {},
+      resize: (event, ui) => {},
+      containment: "body",
+    });
+    j(document.querySelector(".vertical .autoscale .resizable")).resizable({
+      handles: "s",
       start: () => {},
       stop: () => {},
       resize: (event, ui) => {},
@@ -18,18 +25,27 @@
   <div class="tile resizable" />
   <div class="tile autoscale">
     <div class="flex horizontal">
-      <div class="tile" />
-      <div class="tile" />
+      <div class="tile resizable" />
+      <div class="tile autoscale" />
     </div>
   </div>
 </div>
 
 <style>
+  .horizontal {
+    flex-direction: column;
+  }
+  .vertical {
+    flex-direction: row;
+  }
   :root {
     --bar: 10px;
   }
-  .resizable {
+  .vertical > .resizable {
     width: 50%;
+  }
+  .horizontal > .resizable {
+    height: 50%;
   }
   .autoscale {
     flex: 1;
@@ -38,12 +54,6 @@
     background-color: red;
     /* border: 5px solid blue; */
     display: flex;
-  }
-  .horizontal {
-    flex-direction: column;
-  }
-  .vertical {
-    flex-direction: row;
   }
   .flex {
     display: flex;
@@ -57,14 +67,23 @@
     width: 100%;
     margin: 0px;
   }
+  :global(.ui-resizable-handle) {
+    background-color: black;
+  }
   :global(.ui-resizable-e) {
     width: var(--bar);
     right: 0px;
-    background-color: black;
+  }
+  :global(.ui-resizable-w) {
+    width: var(--bar);
+    left: 0px;
   }
   :global(.ui-resizable-s) {
     height: var(--bar);
     bottom: 0px;
-    background-color: black;
+  }
+  :global(.ui-resizable-n) {
+    height: var(--bar);
+    top: 0px;
   }
 </style>
