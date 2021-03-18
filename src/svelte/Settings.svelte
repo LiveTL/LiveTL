@@ -25,14 +25,18 @@
 <EnumOption
   name="Text direction:"
   options={Object.keys(TextDirection)}
-  store={textDirection} />
+  store={textDirection}
+/>
 <EnumOption
   name="Video side:"
   options={Object.keys(VideoSide)}
-  store={videoSide} />
+  store={videoSide}
+/>
 <CheckOption name="Show captions" store={showCaption} />
-<SliderOption name="Caption duration" min={-1} store={captionDuration} />
-<SliderOption name="Caption zoom" store={captionZoom} />
+{#if $showCaption}
+  <SliderOption name="Caption duration" min={-1} store={captionDuration} />
+  <SliderOption name="Caption zoom" store={captionZoom} />
+{/if}
 <CheckOption name="Read-aloud mode" store={doSpeechSynth} />
 <SliderOption name="Speech volume" store={speechVolume} />
 <CheckOption name="Auto-prefix chat messages" store={doTranslatorMode} />
