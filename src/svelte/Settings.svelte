@@ -12,7 +12,7 @@
     speechVolume,
     textDirection,
   } from "../js/store.js";
-  import { TextDirection, VideoSide } from "../js/web-constants.js";
+  import { TextDirection, VideoSide } from "../js/constants.js";
   import CheckOption from "./CheckOption.svelte";
   import SliderOption from "./SliderOption.svelte";
   import EnumOption from "./EnumOption.svelte";

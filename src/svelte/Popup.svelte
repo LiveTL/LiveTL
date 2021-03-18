@@ -1,14 +1,20 @@
 <script>
+  import { MaterialApp } from "svelte-materialify";
   import Settings from "./Settings.svelte";
 
   export let name;
 </script>
 
-<h1>Hello {name}!</h1>
-<img alt="logo" src="/icon-128.png" />
+<div class="wrapper">
+  <MaterialApp theme="dark">
+    <Settings />
+  </MaterialApp>
+</div>
 
 <style>
-  h1 {
-    color: blue;
+  .app {
+    padding: 20px !important;
+    display: grid;
+    justify-content: center;
   }
 </style>

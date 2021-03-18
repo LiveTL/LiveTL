@@ -4,7 +4,7 @@
   import "jquery-ui-bundle/jquery-ui.css";
   import Options from "./Options.svelte";
   import { videoSide } from "../js/store.js";
-  import { VideoSide } from "../js/web-constants.js";
+  import { VideoSide } from "../js/constants.js";
   window.j = j;
   window.addEventListener("load", () => {
     j(document.querySelector(".vertical .resizable")).resizable({

@@ -1,20 +1,14 @@
+/**
+ * Constants that depend on browser js apis
+ */
+
 // Js enum omegalul
-export const 
-  Browser = {
-    FIREFOX: 0,
-    CHROME: 1,
-    SAFARI: 2,
-    ANDROID: 3
-  },
-  VideoSide = {
-    LEFT: 'LEFT',
-    RIGHT: 'RIGHT',
-    TOP: 'TOP'
-  },
-  TextDirection = {
-    TOP: 'TOP',
-    BOTTOM: 'BOTTOM'
-  };
+export const Browser = {
+  FIREFOX: 0,
+  CHROME: 1,
+  SAFARI: 2,
+  ANDROID: 3
+};
 
 export const BROWSER = (() => {
   if (/Firefox/.exec(navigator.userAgent)) {
