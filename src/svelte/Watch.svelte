@@ -7,14 +7,14 @@
   import { VideoSide } from "../js/constants.js";
   window.j = j;
   function resizable(selector, info) {
-    try {
-      j(document.querySelector(selector)).resizable("destroy");
-    } catch (e) {}
     j(document.querySelector(selector)).resizable(info);
   }
   const changeSide = (side) => {
+    document.querySelectorAll(".ui-resizable-handle").forEach((elem) => {
+      elem.remove();
+    });
     resizable(".vertical .resizable", {
-      handles: "w, e",
+      handles: $videoSide == VideoSide.RIGHT ? "w" : "e",
       start: () => {},
       stop: () => {},
       resize: (event, ui) => {},
