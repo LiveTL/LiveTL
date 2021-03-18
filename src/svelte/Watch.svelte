@@ -43,7 +43,7 @@
   .flex {
     display: flex;
     height: 100%;
-    width: 100%;
+    /* width: 100%; */
   }
   :global(body) {
     height: 100%;
@@ -51,5 +51,10 @@
     margin: 0;
     width: 100%;
     margin: 0px;
+  }
+  :global(.ui-resizable-e) {
+    width: 10px;
+    right: 0px;
+    background-color: black;
   }
 </style>
