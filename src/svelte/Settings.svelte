@@ -1,7 +1,14 @@
 <script>
-  import { chatZoom, doSpeechSynth, doTranslatorMode, showCaption, showModMessage, showTimestamp } from '../js/store.js';
-  import CheckOption from './CheckOption.svelte';
-  import SliderOption from './SliderOption.svelte';
+  import {
+    chatZoom,
+    doSpeechSynth,
+    doTranslatorMode,
+    showCaption,
+    showModMessage,
+    showTimestamp,
+  } from "../js/store.js";
+  import CheckOption from "./CheckOption.svelte";
+  import SliderOption from "./SliderOption.svelte";
 </script>
 
 <CheckOption name="Show Moderator Messages" store={showModMessage} />
