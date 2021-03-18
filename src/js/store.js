@@ -1,17 +1,19 @@
+import { Browser, BROWSER } from './web-constants';
 import { SettingStore } from './storage.js';
 
 const SS = (n, d) => new SettingStore(n, d);
+const defaultZoom = BROWSER == Browser.ANDROID ? 0.5 : 1;
 
 export const
   language = SS('language', 'en'),
   showModMessage = SS('showModMessage', true),
-  chatZoom = SS('chatZoom', /* TODO default */),
-  showTimestamp = SS('showTimestamp', /* TODO default */),
-  textDirection = SS('textDirection', /* TODO default */),
+  chatZoom = SS('chatZoom', defaultZoom),
+  showTimestamp = SS('showTimestamp', true),
+  textDirection = SS('textDirection', 'TOP'),
   chatSide = SS('chatSide', 'RIGHT'),
   showCaption = SS('showCaption', true),
   captionDuration = SS('captionDuration', -1),
-  captionZoom = SS('captionZoom', /* TODO default */),
+  captionZoom = SS('captionZoom', defaultZoom),
   doSpeechSynth = SS('doSpeechSynth', false),
-  speechVolume = SS('speechVolume', /* TODO default */),
+  speechVolume = SS('speechVolume', 1),
   doTranslatorMode = SS('doTranslatorMode', false);
