@@ -4,6 +4,7 @@
   export let name = "";
   export let store = null;
 
+  let checked = store ? $store : false;
 </script>
 
-<Switch on:change={store.update(n => !n)} color="blue" checked={$store} inset>{name} value: {$store}</Switch>
+<Switch bind:checked on:change={() => store.set(checked)} color="blue" dense>{name}</Switch>

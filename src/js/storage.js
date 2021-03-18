@@ -27,7 +27,14 @@ export class SettingStore {
 
   update(callback) {
     this._store.update(callback);
-    setStorage(this.name, get(this._store));
+    (async () => {
+      try  {
+        await setStorage(this.name, get(this._store));
+        console.log(await getStorage(this.name));
+      }
+      catch (e) { console.log('BAD', e); }
+    })();
+    // setStorage(this.name, get(this._store));
   }
 
   reset() {
