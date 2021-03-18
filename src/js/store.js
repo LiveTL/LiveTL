@@ -10,7 +10,7 @@ export const
   showModMessage = SS('showModMessage', true),
   chatZoom = SS('chatZoom', defaultZoom),
   showTimestamp = SS('showTimestamp', true),
-  textDirection = SS('textDirection', TextDirection.TOP),
+  textDirection = SS('textDirection', TextDirection.BOTTOM),
   videoSide = SS('videoSide', VideoSide.LEFT),
   showCaption = SS('showCaption', true),
   captionDuration = SS('captionDuration', -1),
