@@ -5,7 +5,7 @@
 </script>
 
 <div class="options">
-  <MaterialApp>
+  <MaterialApp theme="dark">
     <Settings />
   </MaterialApp>
 </div>
