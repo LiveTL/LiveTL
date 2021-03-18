@@ -18,7 +18,7 @@
 </script>
 
 <div class="container d-flex justify-space-around">
-  <span class="enum-label">{name}</span>
+  <span class="option-label">{name}</span>
   {#each options as opt}
     <Radio bind:group value={opt} {color}>{transformOpt(opt)}</Radio>
   {/each}
@@ -32,7 +32,6 @@
     white-space: nowrap;
     margin-right: 12px;
     color: var(--theme-text-secondary);
-    /* font-size: 16px; */
     padding-left: 2px;
   }
 

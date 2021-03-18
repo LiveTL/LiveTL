@@ -35,4 +35,18 @@
 <CheckOption name="Auto-prefix chat messages" store={doTranslatorMode} />
 
 <style>
+  :global(label > .option-label) {
+    padding-top: 0px;
+    top: 0px;
+  }
+
+  :global(.option-label) {
+    height: 20px;
+    line-height: 20px;
+    white-space: nowrap;
+    margin-right: 12px;
+    color: var(--theme-text-secondary);
+    font-size: 16px;
+    padding-left: 2px;
+  }
 </style>

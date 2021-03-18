@@ -4,7 +4,7 @@ export const
     FIREFOX: 0,
     CHROME: 1,
     SAFARI: 2,
-    ANDROID: 3,
+    ANDROID: 3
   },
   VideoSide = {
     LEFT: 'LEFT',
