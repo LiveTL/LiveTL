@@ -17,9 +17,16 @@
     height: 100%;
     width: 100%;
   }
+  :global(.s-app) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 
   .app {
     padding: 20px !important;
+    display: grid;
+    justify-content: center;
   }
   :global(body) {
     margin: 0px 0px;
