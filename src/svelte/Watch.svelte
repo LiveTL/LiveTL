@@ -3,6 +3,8 @@
   import "jquery-ui-bundle";
   import "jquery-ui-bundle/jquery-ui.css";
   import Options from "./Options.svelte";
+  import { videoSide } from "../js/store.js";
+  import { VideoSide } from "../js/web-constants.js";
   window.j = j;
   window.addEventListener("load", () => {
     j(document.querySelector(".vertical .resizable")).resizable({
@@ -22,7 +24,7 @@
   });
 </script>
 
-<div class="flex vertical">
+<div class="flex vertical {$videoSide == VideoSide.RIGHT ? 'reversed' : ''}">
   <div class="tile resizable" />
   <div class="tile autoscale">
     <div class="flex horizontal">
@@ -40,6 +42,12 @@
   }
   .vertical {
     flex-direction: row;
+  }
+  .vertical.reversed {
+    flex-direction: row-reverse;
+  }
+  .horizontal.reversed {
+    flex-direction: column-reverse;
   }
   :root {
     --bar: 10px;

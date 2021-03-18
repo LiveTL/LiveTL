@@ -1,4 +1,4 @@
-import { Browser, BROWSER } from './web-constants';
+import { Browser, BROWSER, VideoSide } from './web-constants';
 import { SettingStore } from './storage.js';
 
 const SS = (n, d) => new SettingStore(n, d);
@@ -10,7 +10,7 @@ export const
   chatZoom = SS('chatZoom', defaultZoom),
   showTimestamp = SS('showTimestamp', true),
   textDirection = SS('textDirection', 'TOP'),
-  chatSide = SS('chatSide', 'RIGHT'),
+  videoSide = SS('videoSide', VideoSide.LEFT),
   showCaption = SS('showCaption', true),
   captionDuration = SS('captionDuration', -1),
   captionZoom = SS('captionZoom', defaultZoom),

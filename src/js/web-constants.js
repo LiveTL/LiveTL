@@ -1,10 +1,15 @@
 // Js enum omegalul
-export const Browser = {
-  FIREFOX: 0,
-  CHROME: 1,
-  SAFARI: 2,
-  ANDROID: 3,
-};
+export const 
+  Browser = {
+    FIREFOX: 0,
+    CHROME: 1,
+    SAFARI: 2,
+    ANDROID: 3,
+  },
+  VideoSide = {
+    LEFT: 'LEFT',
+    RIGHT: 'RIGHT'
+  };
 
 export const BROWSER = (() => {
   if (/Firefox/.exec(navigator.userAgent)) {
