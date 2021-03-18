@@ -2,6 +2,7 @@
   import {
     captionDuration,
     captionZoom,
+    chatSide,
     chatZoom,
     doSpeechSynth,
     doTranslatorMode,
@@ -12,6 +13,7 @@
   } from "../js/store.js";
   import CheckOption from "./CheckOption.svelte";
   import SliderOption from "./SliderOption.svelte";
+  import EnumOption from "./EnumOption.svelte";
 </script>
 
 <!--TODO language select-->
@@ -19,7 +21,7 @@
 <SliderOption name="Chat zoom" store={chatZoom} />
 <CheckOption name="Show timestamps" store={showTimestamp} />
 <!--TODO text direction enum-->
-<!--TODO chat side enum-->
+<EnumOption name="Chat side:" options={['LEFT', 'RIGHT']} store={chatSide} />
 <CheckOption name="Show captions" store={showCaption} />
 <SliderOption name="Caption duration" min={-1} store={captionDuration} />
 <SliderOption name="Caption zoom" store={captionZoom} />
