@@ -8,7 +8,12 @@ export const
   },
   VideoSide = {
     LEFT: 'LEFT',
-    RIGHT: 'RIGHT'
+    RIGHT: 'RIGHT',
+    TOP: 'TOP'
+  },
+  TextDirection = {
+    TOP: 'TOP',
+    BOTTOM: 'BOTTOM'
   };
 
 export const BROWSER = (() => {

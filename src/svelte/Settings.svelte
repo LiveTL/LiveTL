@@ -10,23 +10,26 @@
     showModMessage,
     showTimestamp,
     speechVolume,
+    textDirection,
   } from "../js/store.js";
+  import { TextDirection, VideoSide } from "../js/web-constants.js";
   import CheckOption from "./CheckOption.svelte";
   import SliderOption from "./SliderOption.svelte";
   import EnumOption from "./EnumOption.svelte";
-  import { VideoSide } from "../js/web-constants.js";
 </script>
 
 <!--TODO language select-->
 <CheckOption name="Show moderator messages" store={showModMessage} />
 <SliderOption name="Chat zoom" store={chatZoom} />
 <CheckOption name="Show timestamps" store={showTimestamp} />
-<!--TODO text direction enum-->
+<EnumOption
+  name="Text direction:"
+  options={Object.keys(TextDirection)}
+  store={textDirection} />
 <EnumOption
   name="Video side:"
   options={Object.keys(VideoSide)}
-  store={videoSide}
-/>
+  store={videoSide} />
 <CheckOption name="Show captions" store={showCaption} />
 <SliderOption name="Caption duration" min={-1} store={captionDuration} />
 <SliderOption name="Caption zoom" store={captionZoom} />
@@ -44,9 +47,7 @@
     height: 20px;
     line-height: 20px;
     white-space: nowrap;
-    margin-right: 12px;
     color: var(--theme-text-secondary);
     font-size: 16px;
-    padding-left: 2px;
   }
 </style>

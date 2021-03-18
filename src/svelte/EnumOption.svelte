@@ -17,11 +17,13 @@
   $: store.set(group);
 </script>
 
-<div class="container d-flex justify-space-around">
+<div class="container">
   <span class="option-label">{name}</span>
-  {#each options as opt}
-    <Radio bind:group value={opt} {color}>{transformOpt(opt)}</Radio>
-  {/each}
+  <div class="buttons d-flex justify-space-around">
+    {#each options as opt}
+      <Radio bind:group value={opt} {color}>{transformOpt(opt)}</Radio>
+    {/each}
+  </div>
 </div>
 
 <style>
@@ -41,5 +43,11 @@
 
   .container {
     padding-bottom: 10px;
+    margin-left: 0px;
+    padding-left: 0px;
+  }
+
+  .option-label {
+    float: left;
   }
 </style>
