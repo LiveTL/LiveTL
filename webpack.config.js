@@ -28,7 +28,11 @@ var options = {
     popup: path.join(__dirname, 'src', 'js', 'pages', 'popup.js'),
     options: path.join(__dirname, 'src', 'js', 'pages', 'options.js'),
     background: path.join(__dirname, 'src', 'js', 'pages', 'background.js'),
-    watch: path.join(__dirname, 'src', 'js', 'pages', 'watch.js')
+    watch: path.join(__dirname, 'src', 'js', 'pages', 'watch.js'),
+    injector: path.join(__dirname, 'src', 'js', 'content_scripts', 'injector.js'),
+  },
+  chromeExtensionBoilerplate: {
+    notHotReload: ['injector']
   },
   output: {
     path: path.join(__dirname, 'build'),
