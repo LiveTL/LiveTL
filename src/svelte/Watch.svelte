@@ -62,9 +62,11 @@
   }
   .vertical > .resizable {
     width: 50%;
+    height: 100%;
   }
   .horizontal > .resizable {
     height: 50%;
+    width: 100%;
   }
   .autoscale {
     flex: 1;
