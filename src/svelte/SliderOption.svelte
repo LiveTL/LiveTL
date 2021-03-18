@@ -1,9 +1,9 @@
 <script>
   import { Slider } from 'svelte-materialify';
-  import { isAndroid } from '../js/web-constants.js';
+  import { Browser, BROWSER } from '../js/web-constants.js';
 
-  export let min = isAndroid ? 0.25 : 0.5;
-  export let max = isAndroid ? 1.5 : 2;
+  export let min = BROWSER == Browser.ANDROID ? 0.25 : 0.5;
+  export let max = BROWSER == Browser.ANDROID ? 1.5 : 2;
   export let name = "";
   export let store = null;
 

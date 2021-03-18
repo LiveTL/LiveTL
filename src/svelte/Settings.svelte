@@ -5,7 +5,7 @@
 </script>
 
 <CheckOption name="Show Moderator Messages" store={showModMessage} />
-<SliderOption name="Chat Zoom" store={chatZoom} />
+<!--<SliderOption name="Chat Zoom" store={chatZoom} />-->
 <CheckOption name="Show Timestamp" store={showTimestamp} />
 <CheckOption name="Show Captions" store={showCaption} />
 <CheckOption name="Read aloud mode" store={doSpeechSynth} />
