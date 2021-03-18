@@ -14,7 +14,10 @@
   .options {
     margin: 20px;
   }
-  :global(html body) {
-    height: auto !important;
+  :global(body) {
+    margin: 0px 0px;
+    width: 100%;
+    height: 100%;
+    position: absolute;
   }
 </style>
