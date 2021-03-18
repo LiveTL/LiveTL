@@ -34,18 +34,22 @@ var options = {
   },
   module: {
     rules: [
-      {
-        loader: 'cache-loader'
-      },
+      // {
+      //   test: /.*/,
+      //   loader: 'cache-loader',
+      //   include: /.*/
+      // },
       {
         test: /\.css$/,
         loader: 'style-loader!css-loader',
-        exclude: /node_modules/
+        // include: /.*/
+        // exclude: /node_modules/
       },
       {
         test: new RegExp('\.(' + fileExtensions.join('|') + ')$'),
         loader: 'file-loader?name=[name].[ext]',
-        exclude: /node_modules/
+        // include: /.*/
+        // exclude: /node_modules/
       },
       {
         test: /\.html$/,
