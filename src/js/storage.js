@@ -1,7 +1,8 @@
 import { get, writable } from 'svelte/store';
 import { Browser, BROWSER } from './web-constants.js';
+import { storageVersion } from './constants.js';
 
-export const storage = new Storage();
+export const storage = new Storage(storageVersion);
 
 export class SettingStore {
   constructor(name, defaultValue) {
@@ -9,7 +10,7 @@ export class SettingStore {
     this.defaultValue = defaultValue;
     const store = writable(defaultValue);
     this._store = store;
-    getStorage(name).then(value => {
+    storage.get(name).then(value => {
       if (value != null) {
         store.set(value);
       }
@@ -22,17 +23,17 @@ export class SettingStore {
 
   set(value) {
     this._store.set(value);
-    setStorage(this.name, value);
+    storage.set(this.name, value);
   }
 
   update(callback) {
     this._store.update(callback);
-    setStorage(this.name, get(this._store));
+    storage.set(this.name, get(this._store));
   }
 
   reset() {
     this._store.set(this.defaultValue);
-    setStorage(this.name, this.defaultValue);
+    storage.set(this.name, this.defaultValue);
   }
 
   subscribe(callback) {
@@ -40,21 +41,28 @@ export class SettingStore {
   }
 }
 
-export async function getStorage(key) {
-  const result = await storage.get(key);
-  return result ? result[key] : result;
+async function getStorage(key, version='') {
+  const versionKey = `${version || this.version}$$${key}`;
+  const result = await this.rawGet(versionKey);
+  return result ? result[versionKey] : result;
 }
 
-export async function setStorage(key, value) {
+async function setStorage(key, value, version='') {
+  const versionKey = `${version || this.version}$$${key}`;
   let obj = {};
-  obj[key] = value;
-  return await storage.set(obj);
+  obj[versionKey] = value;
+  return await this.rawSet(obj);
 }
 
-function Storage() {
+Storage.prototype.get = getStorage;
+Storage.prototype.set = setStorage;
+
+export function Storage(version) {
+  this.version = version;
+
   switch (BROWSER) {
   case Browser.ANDROID:
-    this.get = async key => {
+    this.rawGet = async key => {
       let data = {};
       try {
         data[key] = JSON.parse(localStorage[key]);
@@ -64,31 +72,31 @@ function Storage() {
       return data;
     };
 
-    this.set = async obj => {
+    this.rawSet = async obj => {
       let key = Object.keys(obj)[0];
       localStorage[key] = JSON.stringify(obj[key]);
     };
     break;
   case Browser.FIREFOX:
-    this.get = async (key) => {
+    this.rawGet = async (key) => {
     // eslint-disable-next-line no-undef
       return await browser.storage.local.get(key);
     };
 
-    this.set = async (obj) => {
+    this.rawSet = async (obj) => {
     // eslint-disable-next-line no-undef
       return await browser.storage.local.set(obj);
     };
     break;
   default:
-    this.get = (key) => {
+    this.rawGet = (key) => {
       return new Promise((res) => {
         // eslint-disable-next-line no-undef
         chrome.storage.local.get(key, res);
       });
     };
 
-    this.set = (obj) => {
+    this.rawSet = (obj) => {
       return new Promise((res) => {
       // eslint-disable-next-line no-undef
         chrome.storage.local.set(obj, res);

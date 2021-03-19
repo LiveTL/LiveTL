@@ -2,6 +2,8 @@
  * Constants that do not depend on browser apis
  */
 
+export const storageVersion = 'v0-alpha';
+
 // JS enums
 export const
   VideoSide = {
