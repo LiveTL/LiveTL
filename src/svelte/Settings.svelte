@@ -12,12 +12,12 @@
     speechVolume,
     textDirection,
     language,
-  } from "../js/store.js";
-  import { languageNameValues, TextDirection, VideoSide } from "../js/constants.js";
-  import CheckOption from "./CheckOption.svelte";
-  import SliderOption from "./SliderOption.svelte";
-  import EnumOption from "./EnumOption.svelte";
-  import SelectOption from "./SelectOption.svelte";
+  } from '../js/store.js';
+  import { languageNameValues, TextDirection, VideoSide } from '../js/constants.js';
+  import CheckOption from './CheckOption.svelte';
+  import SliderOption from './SliderOption.svelte';
+  import EnumOption from './EnumOption.svelte';
+  import SelectOption from './SelectOption.svelte';
 </script>
 
 <SelectOption name="Language" store={language} items={languageNameValues} />

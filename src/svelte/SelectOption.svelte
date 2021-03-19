@@ -1,5 +1,5 @@
 <script>
-  import { Select } from "svelte-materialify/src";
+  import { Select } from 'svelte-materialify/src';
 
   export let name = '';
   export let store = null;

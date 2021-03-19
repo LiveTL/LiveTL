@@ -1,6 +1,6 @@
 <script>
   import { Switch } from 'svelte-materialify/src';
-  export let name = "";
+  export let name = '';
   export let store = null;
 </script>
 

@@ -1,10 +1,10 @@
 <script>
-  import YouTubeIframeLoader from "youtube-iframe";
+  import YouTubeIframeLoader from 'youtube-iframe';
   export let videoId;
   YouTubeIframeLoader.load((YT) => {
-    new YT.Player("player", {
-      height: "100%",
-      width: "100%",
+    new YT.Player('player', {
+      height: '100%',
+      width: '100%',
       videoId,
       autoplay: 1,
       playerVars: {

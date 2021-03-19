@@ -1,7 +1,7 @@
 <script>
-  import { MaterialApp } from "svelte-materialify/src";
+  import { MaterialApp } from 'svelte-materialify/src';
 
-  import Settings from "./Settings.svelte";
+  import Settings from './Settings.svelte';
 </script>
 
 <div class="wrapper">
