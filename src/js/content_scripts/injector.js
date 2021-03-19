@@ -71,3 +71,7 @@ window.addEventListener('load', () => {
   // eslint-disable-next-line no-empty
   } catch(e) { }
 });
+
+window.addEventListener('message', packet=>{
+  if (packet.origin !== window.origin) window.postMessage(packet.data);
+});
