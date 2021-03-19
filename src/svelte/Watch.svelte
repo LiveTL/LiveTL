@@ -6,7 +6,12 @@
   import Options from "./Options.svelte";
   import VideoEmbed from "./VideoEmbed.svelte";
   import Wrapper from "./Wrapper.svelte";
-  import { videoSide, videoPanelSize, chatSize } from "../js/store.js";
+  import {
+    videoSide,
+    videoPanelSize,
+    chatSize,
+    chatZoom,
+  } from "../js/store.js";
   import { VideoSide } from "../js/constants.js";
   import ChatEmbed from "./ChatEmbed.svelte";
   document.title = "LiveTL";
@@ -86,7 +91,7 @@
         style="height: {$chatSize}%"
         bind:this={chatElem}
       >
-        <Wrapper {isResizing}>
+        <Wrapper {isResizing} zoom={$chatZoom} position="absolute">
           <ChatEmbed {videoId} {continuation} {isReplay} />
         </Wrapper>
       </div>

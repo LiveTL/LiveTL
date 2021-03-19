@@ -57,6 +57,11 @@ const makeButton = (text, callback, color='rgb(0, 153, 255)') => {
 };
 
 window.addEventListener('load', () => {
+  const elem = document.querySelector('yt-live-chat-app');
+  elem.style.minWidth = '0px';
+  elem.style.minHeight = '0px';
+  elem.style.maxWidth = undefined;
+  elem.style.maxHeight = undefined;
   try{
     const params = new URLSearchParams(window.location.search);
     params.get('embed_domain') || window.parent.location.href;
@@ -69,7 +74,8 @@ window.addEventListener('load', () => {
       }
     });
   // eslint-disable-next-line no-empty
-  } catch(e) { }
+  } catch(e) {
+  }
 });
 
 window.addEventListener('message', packet=>{

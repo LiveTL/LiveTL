@@ -1,5 +1,12 @@
 <script>
   export let isResizing;
+  export let zoom = NaN;
+  export let position = "relative";
+  let factor;
+  $: factor = zoom || 1;
+  let inverse;
+  $: inverse = 100 / factor;
+  $: console.log(zoom, factor, inverse);
 </script>
 
 <div
@@ -7,9 +14,12 @@
 display: {isResizing
     ? 'none'
     : 'block'};
-width: 100%;
-height: 100%;
+width: {inverse}%;
+height: {inverse}%;
+transform-origin: 0px 0px;
+transform: scale({factor});
 overflow: auto;
+position: {position};
 "
 >
   <slot />
