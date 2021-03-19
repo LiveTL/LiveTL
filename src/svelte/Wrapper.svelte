@@ -6,7 +6,6 @@
   $: factor = zoom || 1;
   let inverse;
   $: inverse = 100 / factor;
-  $: console.log(zoom, factor, inverse);
 </script>
 
 <div
