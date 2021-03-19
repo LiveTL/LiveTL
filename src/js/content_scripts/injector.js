@@ -56,4 +56,10 @@ const makeButton = (text, callback, color='rgb(0, 153, 255)') => {
   a.querySelector('yt-formatted-string').textContent = text;
 };
 
-window.addEventListener('load', () => makeButton('Watch in LiveTL'));
+window.addEventListener('load', () => makeButton('Watch in LiveTL', () => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('continuation')) {
+    // eslint-disable-next-line no-undef
+    window.parent.location.href = `chrome-extension://${chrome.runtime.id}/watch.html?${params.toString()}`;
+  }
+}));
