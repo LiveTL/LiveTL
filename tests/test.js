@@ -4,10 +4,10 @@ import '@testing-library/jest-dom/extend-expect';
 
 import { render /*, fireEvent*/ } from '@testing-library/svelte';
 
-import Wrapper from '../src/svelte/Wrapper.svelte';
+import CheckOption from '../src/svelte/CheckOption.svelte';
 
 test('shows proper heading when rendered', () => {
-  /* const { getByText } =*/ render(Wrapper, );
+  /* const { getByText } =*/ render(CheckOption, );
 //   expect(getByText('Hello World!')).toBeInTheDocument();
 });
 

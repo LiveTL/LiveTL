@@ -9,6 +9,7 @@
     "test:watch": "npm run test -- --watch"
   },
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.13.8",
     "@babel/preset-env": "^7.13.10",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/svelte": "^3.0.3",
@@ -53,6 +54,10 @@
     ],
     "setupFilesAfterEnv": [
       "@testing-library/jest-dom/extend-expect"
-    ]
+    ],
+    "transformIgnorePatterns": [],
+    "moduleNameMapper": {
+      "^.+\\.(css|less|scss)$": "babel-jest"
+    }
   }
 }
