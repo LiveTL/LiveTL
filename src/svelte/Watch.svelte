@@ -10,24 +10,51 @@
   import { VideoSide } from "../js/constants.js";
   window.j = j;
   let isResizing = false;
-  function resizable(selector, info) {
+  let chatElem, vidElem, ltlElem;
+  const resizable = (selector, info) => {
     j(document.querySelector(selector)).resizable(info);
-  }
+  };
+  const convertToPx = () => {
+    [
+      [chatElem, "height", chatSize],
+      [vidElem, "width", videoPanelSize],
+    ].forEach((item) => {
+      const [elem, prop, store] = item;
+      if (isResizing) {
+        elem.style.width = elem.clientWidth;
+        elem.style.height = elem.clientHeight;
+      } else {
+        let percent;
+        if (prop === "height") {
+          percent = (100 * elem.clientHeight) / window.innerHeight;
+          elem.style.height = `${percent}%`;
+        } else if (prop === "width") {
+          percent = (100 * elem.clientWidth) / window.innerWidth;
+          elem.style.width = `${percent}%`;
+        }
+        store.set(percent);
+      }
+    });
+  };
+  const resizeCallback = () => {
+    isResizing = !isResizing;
+    convertToPx();
+  };
   const changeSide = (side) => {
     document.querySelectorAll(".ui-resizable-handle").forEach((elem) => {
       elem.remove();
     });
     resizable(".vertical .resizable", {
       handles: $videoSide == VideoSide.RIGHT ? "w" : "e",
-      start: () => (isResizing = true),
-      stop: () => (isResizing = false),
+      start: resizeCallback,
+      stop: resizeCallback,
       resize: (event, ui) => {},
       // containment: "body",
     });
     resizable(".vertical .autoscale .resizable", {
       handles: "s",
-      start: () => (isResizing = true),
-      stop: () => (isResizing = false),
+      start: resizeCallback,
+      stop: resizeCallback,
       resize: (event, ui) => {},
       // containment: "body",
     });
@@ -37,19 +64,27 @@
 </script>
 
 <div class="flex vertical {$videoSide == VideoSide.RIGHT ? 'reversed' : ''}">
-  <div class="tile resizable" style="width: {videoPanelSize}%">
+  <div
+    class="tile resizable"
+    style="width: {$videoPanelSize}%;"
+    bind:this={vidElem}
+  >
     <Wrapper {isResizing}>
       <VideoEmbed videoId="M7lc1UVf-VE" />
     </Wrapper>
   </div>
   <div class="tile autoscale">
     <div class="flex horizontal">
-      <div class="tile resizable" style="height: {chatSize}%">
+      <div
+        class="tile resizable"
+        style="height: {$chatSize}%"
+        bind:this={chatElem}
+      >
         <Wrapper {isResizing}>
           <Options />
         </Wrapper>
       </div>
-      <div class="tile autoscale">
+      <div class="tile autoscale" bind:this={ltlElem}>
         <Wrapper {isResizing}>
           <Options />
         </Wrapper>
