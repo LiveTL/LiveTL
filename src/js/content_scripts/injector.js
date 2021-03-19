@@ -56,10 +56,18 @@ const makeButton = (text, callback, color='rgb(0, 153, 255)') => {
   a.querySelector('yt-formatted-string').textContent = text;
 };
 
-window.addEventListener('load', () => makeButton('Watch in LiveTL', () => {
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('continuation')) {
-    // eslint-disable-next-line no-undef
-    window.parent.location.href = `chrome-extension://${chrome.runtime.id}/watch.html?${params.toString()}`;
-  }
-}));
+window.addEventListener('load', () => {
+  try{
+    const params = new URLSearchParams(window.location.search);
+    params.get('embed_domain') || window.parent.location.href;
+    makeButton('Watch in LiveTL', () => {
+      if (params.get('continuation')) {
+        params.set('video', new URLSearchParams(window.parent.location.search).get('v'));
+        if(window.location.pathname.includes('live_chat_replay')) params.set('isReplay', true);
+        // eslint-disable-next-line no-undef
+        window.parent.location.href = `chrome-extension://${chrome.runtime.id}/watch.html?${params.toString()}`;
+      }
+    });
+  // eslint-disable-next-line no-empty
+  } catch(e) { }
+});

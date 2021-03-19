@@ -2,11 +2,15 @@
   export let isResizing;
 </script>
 
-<div style="
-display: {isResizing ? 'none' : 'block'};
+<div
+  style="
+display: {isResizing
+    ? 'none'
+    : 'block'};
 width: 100%;
 height: 100%;
 overflow: auto;
-">
+"
+>
   <slot />
 </div>

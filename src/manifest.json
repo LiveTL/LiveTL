@@ -2,10 +2,16 @@
   "name": "Chrome Extension Svelte",
   "options_page": "options.html",
   "permissions": [
-    "storage"
+    "storage",
+    "webRequest",
+    "webRequestBlocking",
+    "https://www.youtube.com/*?*",
+    "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat/*",
+    "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay/*"
   ],
   "background": {
-    "page": "background.html"
+    "page": "background.html",
+    "persistent": true
   },
   "browser_action": {
     "default_popup": "popup.html",
