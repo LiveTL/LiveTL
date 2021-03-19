@@ -9,6 +9,7 @@
   import { videoSide, videoPanelSize, chatSize } from "../js/store.js";
   import { VideoSide } from "../js/constants.js";
   import ChatEmbed from "./ChatEmbed.svelte";
+  document.title = "LiveTL";
   window.j = j;
   let isResizing = false;
   let chatElem, vidElem, ltlElem;

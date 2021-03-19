@@ -18,6 +18,7 @@
             "*"
           );
         }
+        if (data.info.videoData) document.title = data.info.videoData.title;
       } catch (e) {}
     });
   } else if (videoId) {
