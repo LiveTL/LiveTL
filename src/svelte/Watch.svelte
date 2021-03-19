@@ -21,8 +21,8 @@
     ].forEach((item) => {
       const [elem, prop, store] = item;
       if (isResizing) {
-        elem.style.width = elem.clientWidth;
-        elem.style.height = elem.clientHeight;
+        // elem.style.width = elem.clientWidth;
+        // elem.style.height = elem.clientHeight;
       } else {
         let percent;
         if (prop === "height") {
