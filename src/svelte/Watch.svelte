@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from "svelte";
   import * as j from "jquery";
   import "jquery-ui-bundle";
   import "jquery-ui-bundle/jquery-ui.css";
@@ -32,8 +33,7 @@
     });
   };
   $: changeSide($videoSide);
-  window.addEventListener("load", () => changeSide($videoSide));
-  $: console.log(isResizing);
+  onMount(() => changeSide($videoSide));
 </script>
 
 <div class="flex vertical {$videoSide == VideoSide.RIGHT ? 'reversed' : ''}">
