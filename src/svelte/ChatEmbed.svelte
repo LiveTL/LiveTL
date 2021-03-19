@@ -6,24 +6,24 @@
   let src;
   if (isReplay) {
     src = `https://www.youtube.com/live_chat_replay?continuation=${continuation}`;
-    window.addEventListener("message", (packet) => {
-      try {
-        const data = JSON.parse(packet.data);
-        if (data.event === "infoDelivery") {
-          const time = data.info.currentTime;
-          iframe.contentWindow.postMessage(
-            {
-              "yt-player-video-progress": time,
-            },
-            "*"
-          );
-        }
-        if (data.info.videoData) document.title = data.info.videoData.title;
-      } catch (e) {}
-    });
   } else if (videoId) {
     src = `https://www.youtube.com/live_chat?v=${videoId}`;
   }
+  window.addEventListener("message", (packet) => {
+    try {
+      const data = JSON.parse(packet.data);
+      if (data.event === "infoDelivery") {
+        const time = data.info.currentTime;
+        iframe.contentWindow.postMessage(
+          {
+            "yt-player-video-progress": time,
+          },
+          "*"
+        );
+      }
+      if (data.info.videoData) document.title = data.info.videoData.title;
+    } catch (e) {}
+  });
 </script>
 
 <div class="wrapper">
