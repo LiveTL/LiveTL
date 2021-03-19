@@ -4,13 +4,14 @@ import { storageVersion } from './constants.js';
 
 export const storage = new Storage(storageVersion);
 
-export class SettingStore {
-  constructor(name, defaultValue) {
+export class SyncStore {
+  constructor(name, defaultValue, storageBackend=null) {
     this.name = name;
     this.defaultValue = defaultValue;
     const store = writable(defaultValue);
     this._store = store;
-    storage.get(name).then(value => {
+    this._storage = storage || storageBackend;
+    this._storage.get(name).then(value => {
       if (value != null) {
         store.set(value);
       }
@@ -23,17 +24,17 @@ export class SettingStore {
 
   set(value) {
     this._store.set(value);
-    storage.set(this.name, value);
+    this._storage.set(this.name, value);
   }
 
   update(callback) {
     this._store.update(callback);
-    storage.set(this.name, get(this._store));
+    this._storage.set(this.name, get(this._store));
   }
 
   reset() {
     this._store.set(this.defaultValue);
-    storage.set(this.name, this.defaultValue);
+    this._storage.set(this.name, this.defaultValue);
   }
 
   subscribe(callback) {

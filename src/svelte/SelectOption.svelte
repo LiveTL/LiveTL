@@ -6,14 +6,17 @@
   export let items = [];
 
   function correctValue() {
+    if (value == null) {
+      value = $store;
+    }
     if (typeof value != "string") {
       value = value[0];
     }
   }
 
   $: value = $store;
-  $: store.set(typeof value == "string" ? value : value[0]);
   $: correctValue(value);
+  $: store.set(value);
 </script>
 
 <Select bind:value {items} solo>{name}</Select>
