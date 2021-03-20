@@ -10,7 +10,7 @@ export class SyncStore {
     this.defaultValue = defaultValue;
     const store = writable(defaultValue);
     this._store = store;
-    this._storage = storage || storageBackend;
+    this._storage = storageBackend || storage;
     this._storage.get(name).then(value => {
       if (value != null) {
         store.set(value);
