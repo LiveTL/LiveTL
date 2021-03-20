@@ -1,13 +1,16 @@
 <script>
+  import { MaterialApp } from 'svelte-materialify/src';
   import Settings from "./Settings.svelte";
 </script>
 
-<div class="wrapper">
-  <div class="app">
-    <Settings />
+<MaterialApp theme="dark">
+  <div class="wrapper">
+    <div class="app">
+      <Settings />
+    </div>
+    <slot />
   </div>
-  <slot />
-</div>
+</MaterialApp>
 
 <style>
   .wrapper {

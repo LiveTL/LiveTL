@@ -6,7 +6,7 @@
   import Options from "./Options.svelte";
   import VideoEmbed from "./VideoEmbed.svelte";
   import Wrapper from "./Wrapper.svelte";
-  import { Button, Icon, MaterialApp } from "svelte-materialify";
+  import { Button, Icon, MaterialApp } from "svelte-materialify/src";
   import { mdiClose, mdiCogOutline } from "@mdi/js";
   import {
     videoSide,
@@ -71,8 +71,7 @@
       // containment: 'body',
     });
   };
-  $: changeSide($videoSide);
-  onMount(() => changeSide($videoSide));
+  $: setTimeout(() => changeSide($videoSide), 0);
   const params = new URLSearchParams(window.location.search);
   const videoId = params.get("video");
   const continuation = params.get("continuation");
