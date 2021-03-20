@@ -120,9 +120,10 @@
   .message {
     --margin: 2.5px;
     margin: var(--margin);
-    padding: 2.5px;
+    padding: calc(1.5 * var(--margin));
     width: calc(100% - 2 * var(--margin));
     animation: splash 1s normal forwards ease-in-out;
+    border-radius: var(--margin);
   }
 
   .author {
@@ -130,7 +131,7 @@
   }
 
   .message:nth-child(odd) {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.075);
   }
   .message:nth-child(even) {
     background-color: rgba(255, 255, 255, 0.2);
