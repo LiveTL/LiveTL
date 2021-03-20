@@ -1,3 +1,7 @@
+for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) {
+  window.addEventListener(eventName, e => e.stopImmediatePropagation(), true);
+}
+
 const styleLiveTLButton = (a, color) => {
   a.style.backgroundColor = `${color || 'rgb(0, 153, 255)'}`;
   a.style.font = 'inherit';

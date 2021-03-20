@@ -29,7 +29,8 @@
         "https://www.youtube.com/live_chat_replay*"
       ],
       "js": [
-        "injector.bundle.js"
+        "injector.bundle.js",
+        "interceptor.bundle.js"
       ],
       "all_frames": true
     }

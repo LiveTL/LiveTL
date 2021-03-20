@@ -9,7 +9,6 @@
       text: "Test entry 2",
     },
   ];
-  $: console.log(direction);
 </script>
 
 <div class="messageDisplayWrapper">

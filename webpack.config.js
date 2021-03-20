@@ -30,9 +30,10 @@ var options = {
     background: path.join(__dirname, 'src', 'js', 'pages', 'background.js'),
     watch: path.join(__dirname, 'src', 'js', 'pages', 'watch.js'),
     injector: path.join(__dirname, 'src', 'js', 'content_scripts', 'injector.js'),
+    interceptor: path.join(__dirname, 'src', 'js', 'content_scripts', 'interceptor.js'),
   },
   chromeExtensionBoilerplate: {
-    notHotReload: ['injector']
+    notHotReload: []
   },
   output: {
     path: path.join(__dirname, 'build'),
