@@ -127,7 +127,8 @@
   }
 
   .author {
-    font-size: 0.75em;
+    font-size: 0.6em;
+    color: lightgray;
   }
 
   .message:nth-child(odd) {
