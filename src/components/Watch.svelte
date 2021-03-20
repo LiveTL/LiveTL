@@ -107,6 +107,7 @@
             class="settingsButton {$textDirection === TextDirection.TOP
               ? 'bottom'
               : 'top'}Float"
+            style="display: {isResizing ? 'none' : 'unset'};"
           >
             <Button
               fab
