@@ -42,22 +42,5 @@
     "jquery": "^3.6.0",
     "jquery-ui-bundle": "^1.12.1-migrate",
     "youtube-iframe": "^1.0.3"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.js$": "babel-jest",
-      "^.+\\.svelte$": "svelte-jester"
-    },
-    "moduleFileExtensions": [
-      "js",
-      "svelte"
-    ],
-    "setupFilesAfterEnv": [
-      "@testing-library/jest-dom/extend-expect"
-    ],
-    "transformIgnorePatterns": [],
-    "moduleNameMapper": {
-      "^.+\\.(css|less|scss)$": "babel-jest"
-    }
   }
 }

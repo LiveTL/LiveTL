@@ -4,10 +4,10 @@ import '@testing-library/jest-dom/extend-expect';
 
 import { render /*, fireEvent*/ } from '@testing-library/svelte';
 
-import CheckOption from '../src/svelte/CheckOption.svelte';
+import Toggle from '../src/components/options/Toggle.svelte';
 
 test('shows proper heading when rendered', () => {
-  /* const { getByText } =*/ render(CheckOption, );
+  /* const { getByText } =*/ render(Toggle, );
 //   expect(getByText('Hello World!')).toBeInTheDocument();
 });
 

@@ -4,7 +4,7 @@ module.exports = {
     '^utils(.*)$': '<rootDir>/src/utils$1',
     '^.+\\.(css|less|scss)$': 'babel-jest'
   },
-  transformIgnorePatterns: ['node_modules/(?!(@svelte-materialify)/)'],
+  transformIgnorePatterns: ['/node_modules/(?!svelte-materialify)'],
   testPathIgnorePatterns: ['/node_modules/'],
   setupFilesAfterEnv: [
     // '<rootDir>/jest.setup.js',
@@ -13,15 +13,7 @@ module.exports = {
   transform: {
     // '^.+\\.tsx?$': 'ts-jest',
     '^.+\\.js$': 'babel-jest',
-    '^.+\\.svelte$': ['svelte-jester', { preprocess: false }],
-  },
-  collectCoverageFrom: [
-    // '!./src/client.js',
-    // '!./src/server.js',
-    // '!./src/service-worker.js',
-    // './src/**/*.svelte',
-    // './src/**/*.ts',
-    // './src/**/*.js',
-  ],
+    '^.+\\.svelte$': ['svelte-jester', { preprocess: true }],
+  }
 };
   
