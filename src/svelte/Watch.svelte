@@ -6,7 +6,7 @@
   import Options from "./Options.svelte";
   import VideoEmbed from "./VideoEmbed.svelte";
   import Wrapper from "./Wrapper.svelte";
-  import { Button, Icon } from "svelte-materialify";
+  import { Button, Icon, MaterialApp } from "svelte-materialify";
   import { mdiClose, mdiCogOutline } from "@mdi/js";
   import {
     videoSide,
@@ -18,6 +18,7 @@
   } from "../js/store.js";
   import { VideoSide, TextDirection } from "../js/constants.js";
   import ChatEmbed from "./ChatEmbed.svelte";
+  import MessageDisplay from "./MessageDisplay.svelte";
   document.title = "LiveTL";
   window.j = j;
   let isResizing = false;
@@ -79,49 +80,55 @@
   let settingsOpen = false;
 </script>
 
-<div class="flex vertical {$videoSide == VideoSide.RIGHT ? 'reversed' : ''}">
-  <div
-    class="tile resizable"
-    style="width: {$videoPanelSize}%;"
-    bind:this={vidElem}
-  >
-    <Wrapper {isResizing}>
-      <VideoEmbed {videoId} />
-    </Wrapper>
-  </div>
-  <div class="tile autoscale">
-    <div class="flex horizontal">
-      <div
-        class="tile resizable"
-        style="height: {$chatSize}%"
-        bind:this={chatElem}
-      >
-        <Wrapper {isResizing} zoom={$chatZoom}>
-          <ChatEmbed {videoId} {continuation} {isReplay} />
-        </Wrapper>
-      </div>
-      <div class="tile autoscale" bind:this={ltlElem}>
-        <Wrapper {isResizing} zoom={$livetlZoom}>
-          <Options open={settingsOpen} />
-        </Wrapper>
+<MaterialApp theme="dark">
+  <div class="flex vertical {$videoSide == VideoSide.RIGHT ? 'reversed' : ''}">
+    <div
+      class="tile resizable"
+      style="width: {$videoPanelSize}%;"
+      bind:this={vidElem}
+    >
+      <Wrapper {isResizing}>
+        <VideoEmbed {videoId} />
+      </Wrapper>
+    </div>
+    <div class="tile autoscale">
+      <div class="flex horizontal">
         <div
-          class="settingsButton {$textDirection === TextDirection.TOP
-            ? 'bottom'
-            : 'top'}Float"
+          class="tile resizable"
+          style="height: {$chatSize}%"
+          bind:this={chatElem}
         >
-          <Button
-            fab
-            size="small"
-            class="blue white-text"
-            on:click={() => (settingsOpen = !settingsOpen)}
+          <Wrapper {isResizing} zoom={$chatZoom}>
+            <ChatEmbed {videoId} {continuation} {isReplay} />
+          </Wrapper>
+        </div>
+        <div class="tile autoscale" bind:this={ltlElem}>
+          <div
+            class="settingsButton {$textDirection === TextDirection.TOP
+              ? 'bottom'
+              : 'top'}Float"
           >
-            <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
-          </Button>
+            <Button
+              fab
+              size="small"
+              class="blue white-text"
+              on:click={() => (settingsOpen = !settingsOpen)}
+            >
+              <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
+            </Button>
+          </div>
+          <Wrapper {isResizing} zoom={$livetlZoom}>
+            {#if settingsOpen}
+              <Options />
+            {:else}
+              <MessageDisplay direction={$textDirection} />
+            {/if}
+          </Wrapper>
         </div>
       </div>
     </div>
   </div>
-</div>
+</MaterialApp>
 
 <style>
   .bottomFloat {
@@ -134,6 +141,7 @@
     position: absolute;
     right: 0px;
     padding: 5px;
+    z-index: 100;
   }
   .horizontal {
     flex-direction: column;
@@ -197,5 +205,9 @@
   :global(.ui-resizable-n) {
     height: var(--bar);
     top: 0px;
+  }
+  :global(.s-app) {
+    height: 100%;
+    width: 100%;
   }
 </style>
