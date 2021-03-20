@@ -23,7 +23,7 @@
     display: grid;
     justify-content: center;
     min-width: max-content;
-    max-height:100%;
+    max-height: 100%;
   }
   :global(body) {
     margin: 0px 0px;
