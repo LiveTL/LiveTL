@@ -118,11 +118,12 @@
             </Button>
           </div>
           <Wrapper {isResizing} zoom={$livetlZoom}>
-            {#if settingsOpen}
+            <div style="display: {settingsOpen ? 'block' : 'none'};">
               <Options />
-            {:else}
+            </div>
+            <div style="display: {settingsOpen ? 'none' : 'block'};">
               <MessageDisplay direction={$textDirection} />
-            {/if}
+            </div>
           </Wrapper>
         </div>
       </div>
