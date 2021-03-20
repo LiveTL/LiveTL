@@ -16,6 +16,10 @@
   "icons": {
     "128": "icon-128.png"
   },
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon-34.png"
+  },
   "manifest_version": 2,
   "content_security_policy": "script-src 'self' https://www.youtube.com 'unsafe-eval'; object-src 'self'",
   "content_scripts": [

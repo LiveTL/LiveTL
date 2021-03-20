@@ -10,4 +10,8 @@
 </MaterialApp>
 
 <style>
+  :global(html body) {
+    min-width: 500px;
+    min-height: 500px;
+  }
 </style>
