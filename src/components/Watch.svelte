@@ -168,7 +168,6 @@
     flex: 1;
   }
   .tile {
-    background-color: #2c2c2c;
     /* border: 5px solid blue; */
     display: flex;
     overflow: auto;
