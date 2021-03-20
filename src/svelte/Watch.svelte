@@ -6,14 +6,17 @@
   import Options from "./Options.svelte";
   import VideoEmbed from "./VideoEmbed.svelte";
   import Wrapper from "./Wrapper.svelte";
+  import { Button, Icon } from "svelte-materialify";
+  import { mdiClose, mdiCogOutline } from "@mdi/js";
   import {
     videoSide,
     videoPanelSize,
     chatSize,
     chatZoom,
     livetlZoom,
+    textDirection,
   } from "../js/store.js";
-  import { VideoSide } from "../js/constants.js";
+  import { VideoSide, TextDirection } from "../js/constants.js";
   import ChatEmbed from "./ChatEmbed.svelte";
   document.title = "LiveTL";
   window.j = j;
@@ -73,6 +76,7 @@
   const videoId = params.get("video");
   const continuation = params.get("continuation");
   const isReplay = params.get("isReplay");
+  let settingsOpen = false;
 </script>
 
 <div class="flex vertical {$videoSide == VideoSide.RIGHT ? 'reversed' : ''}">
@@ -98,7 +102,22 @@
       </div>
       <div class="tile autoscale" bind:this={ltlElem}>
         <Wrapper {isResizing} zoom={$livetlZoom}>
-          <Options />
+          <Options open={settingsOpen}>
+            <div
+              class="settingsButton {$textDirection === TextDirection.TOP
+                ? 'bottom'
+                : 'top'}Float"
+            >
+              <Button
+                fab
+                size="small"
+                class="blue white-text"
+                on:click={() => (settingsOpen = !settingsOpen)}
+              >
+                <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
+              </Button>
+            </div>
+          </Options>
         </Wrapper>
       </div>
     </div>
@@ -106,6 +125,17 @@
 </div>
 
 <style>
+  .bottomFloat {
+    bottom: 0px;
+  }
+  .topFloat {
+    top: 0px;
+  }
+  .settingsButton {
+    position: fixed;
+    right: 0px;
+    padding: 5px;
+  }
   .horizontal {
     flex-direction: column;
   }

@@ -2,13 +2,18 @@
   import { MaterialApp } from "svelte-materialify/src";
 
   import Settings from "./Settings.svelte";
+
+  export let open = true;
 </script>
 
 <div class="wrapper">
   <MaterialApp theme="dark">
     <div class="app">
-      <Settings />
+      {#if open}
+        <Settings />
+      {/if}
     </div>
+    <slot />
   </MaterialApp>
 </div>
 
