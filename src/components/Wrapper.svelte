@@ -11,7 +11,7 @@
   style="
 display: {isResizing
     ? 'none'
-    : 'block'};
+    : 'grid'};
 width: {inverse}%;
 height: {inverse}%;
 transform-origin: 0px 0px;
