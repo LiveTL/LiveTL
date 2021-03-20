@@ -102,23 +102,22 @@
       </div>
       <div class="tile autoscale" bind:this={ltlElem}>
         <Wrapper {isResizing} zoom={$livetlZoom}>
-          <Options open={settingsOpen}>
-            <div
-              class="settingsButton {$textDirection === TextDirection.TOP
-                ? 'bottom'
-                : 'top'}Float"
-            >
-              <Button
-                fab
-                size="small"
-                class="blue white-text"
-                on:click={() => (settingsOpen = !settingsOpen)}
-              >
-                <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
-              </Button>
-            </div>
-          </Options>
+          <Options open={settingsOpen} />
         </Wrapper>
+        <div
+          class="settingsButton {$textDirection === TextDirection.TOP
+            ? 'bottom'
+            : 'top'}Float"
+        >
+          <Button
+            fab
+            size="small"
+            class="blue white-text"
+            on:click={() => (settingsOpen = !settingsOpen)}
+          >
+            <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
+          </Button>
+        </div>
       </div>
     </div>
   </div>
@@ -132,7 +131,7 @@
     top: 0px;
   }
   .settingsButton {
-    position: fixed;
+    position: absolute;
     right: 0px;
     padding: 5px;
   }
