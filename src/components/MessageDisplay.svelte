@@ -1,7 +1,7 @@
 <script>
+  import { onMount, onDestroy } from "svelte";
   import { TextDirection } from "../js/constants.js";
-  import { Queue } from "../js/queue.js";
-  import "../js/sources.js";
+  import { sources } from "../js/sources.js";
   import "../css/splash.css";
   export let direction;
   export let items = [
@@ -15,66 +15,15 @@
     },
   ];
 
-  let queued = new Queue();
-  let progress = {
-    current: null,
-    previous: null,
-  };
-  let interval = null;
-  const newMessage = async (message) => {
-    let text = "";
-    message.message.forEach((item) => {
-      if (item.type === "text") text += item.text;
+  let unsubscribe = null;
+  onMount(() => {
+    unsubscribe = sources.ytc.subscribe(n => {
+      if (n) items.push(n);
+      items = items;
     });
-    items = [...items, { text, author: message.author.name }];
-  };
-  const videoProgressUpdated = (time) => {
-    if (time < 0) return;
-    progress.current = time;
-    if (
-      Math.abs(progress.previous - progress.current) > 1 &&
-      progress.current != null
-    ) {
-      // scrubbed or skipped
-      while (queued.top) {
-        newMessage(queued.pop().data.message);
-      }
-    } else {
-      while (
-        queued.top != null &&
-        queued.top.data.timestamp <= progress.current
-      ) {
-        const item = queued.pop();
-        newMessage(item.data.message);
-      }
-    }
-    progress.previous = progress.current;
-  };
-  window.addEventListener("message", async (d) => {
-    d = JSON.parse(JSON.stringify(d.data));
-    if (typeof d === "string") d = JSON.parse(d);
-    if (d.event === "infoDelivery" && !interval) {
-      videoProgressUpdated(d.info.currentTime);
-    } else if (d.type === "messageChunk") {
-      if (!d.isReplay && !interval) {
-        const runQueue = () => {
-          videoProgressUpdated(Date.now() / 1000);
-        };
-        interval = setInterval(runQueue, 250);
-        runQueue();
-      }
-      for (const message of d.messages.sort(
-        (m1, m2) => m1.showtime - m2.showtime
-      )) {
-        let timestamp = (Date.now() + message.showtime) / 1000;
-        if (d.isReplay) timestamp = message.showtime;
-        queued.push({
-          timestamp,
-          message: message,
-        });
-      }
-    }
   });
+  onDestroy(() => unsubscribe());
+
 </script>
 
 <div class="messageDisplayWrapper">
