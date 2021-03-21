@@ -62,7 +62,7 @@ export function parseTranslation(message) {
   }
 
   return undefined;
-};
+}
 
 function removeEmojis(str) {
   return str;

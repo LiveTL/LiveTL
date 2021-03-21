@@ -26,7 +26,7 @@ function compose(...args) {
   return ipt => args.reduceRight((val, func) => func(val), ipt);
 }
 
-function ytcSource(window) {
+export function ytcSource(window) {
   const ytc = writable(
     { type: 'info', time: 0 } ||
     { type: 'message', messages: [{ author: '', text: '', timestamp: '' }] }
@@ -65,14 +65,14 @@ function ytcSource(window) {
 
   window.addEventListener('message', async d => {
     const data = getYTCData(d);
-    if (data.event === 'infoDelivery') {
-      await data.set({ type: 'info', time: data.info.currentTime });
+    if (data.event === 'infoDelivery' && !interval) {
+      videoProgressUpdated(data.info.currentTime);
     }
     else if (data.type === 'messageChunk') {
       for (const message of data.messages.sort(lessMsg)) {
         const timestamp = data.isReplay
-          ? (Date.now() + message.showtime) / 1000
-          : message.showtime;
+          ? message.showtime
+          : (Date.now() + message.showtime) / 1000;
         queued.push({ timestamp, message });
       }
       if (!interval && !data.isReplay) {
