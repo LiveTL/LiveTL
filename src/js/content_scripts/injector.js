@@ -26,7 +26,7 @@ const getLiveTLButton = (color) => {
   setLiveTLButtonAttributes(a);
   styleLiveTLButton(a, color);
   a.innerHTML = `
-  <paper-button id="button" class="style-scope ytd-toggle-button-renderer" role="button" tabindex="0" animated=""
+  <paper-button id="button" class="style-scope ytd-toggle-button-renderer livetlActivator" role="button" tabindex="0" animated=""
   elevation="0" aria-disabled="false" style="
     padding: 5px;
     width: 100%;
@@ -67,16 +67,23 @@ window.addEventListener('load', () => {
   elem.style.maxWidth = undefined;
   elem.style.maxHeight = undefined;
   try{
-    const params = new URLSearchParams(window.location.search);
-    params.get('embed_domain') || window.parent.location.href;
-    makeButton('Watch in LiveTL', () => {
-      if (params.get('continuation')) {
-        params.set('video', new URLSearchParams(window.parent.location.search).get('v'));
-        if(window.location.pathname.includes('live_chat_replay')) params.set('isReplay', true);
-        // eslint-disable-next-line no-undef
-        window.parent.location.href = `chrome-extension://${chrome.runtime.id}/watch.html?${params.toString()}`;
-      }
-    });
+    const insertButtons = () => {
+      const params = new URLSearchParams(window.location.search);
+      params.get('embed_domain') || window.parent.location.href;
+      makeButton('Watch in LiveTL', () => {
+        if (params.get('continuation')) {
+          params.set('video', new URLSearchParams(window.parent.location.search).get('v'));
+          if(window.location.pathname.includes('live_chat_replay')) params.set('isReplay', true);
+          // eslint-disable-next-line no-undef
+          window.parent.location.href = `chrome-extension://${chrome.runtime.id}/watch.html?${params.toString()}`;
+        }
+      });
+    };
+    insertButtons();
+    setInterval(()=>{
+      if(document.querySelector('.livetlActivator')) return;
+      insertButtons();
+    }, 100);
   // eslint-disable-next-line no-empty
   } catch(e) {
   }
