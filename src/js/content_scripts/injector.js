@@ -71,12 +71,12 @@ window.addEventListener('load', () => {
       const params = new URLSearchParams(window.location.search);
       params.get('embed_domain') || window.parent.location.href;
       makeButton('Watch in LiveTL', () => {
-        if (params.get('continuation')) {
-          params.set('video', new URLSearchParams(window.parent.location.search).get('v'));
-          if(window.location.pathname.includes('live_chat_replay')) params.set('isReplay', true);
-          // eslint-disable-next-line no-undef
-          window.parent.location.href = `chrome-extension://${chrome.runtime.id}/watch.html?${params.toString()}`;
-        }
+        params.set('video', (params.get('v') ||
+          new URLSearchParams(window.parent.location.search).get('v')
+        ));
+        if(window.location.pathname.includes('live_chat_replay')) params.set('isReplay', true);
+        // eslint-disable-next-line no-undef
+        window.top.location = `chrome-extension://${chrome.runtime.id}/watch.html?${params.toString()}`;
       });
     };
     insertButtons();
