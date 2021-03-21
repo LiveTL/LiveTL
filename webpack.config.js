@@ -119,7 +119,11 @@ var options = {
     }),
     new WriteFilePlugin()
   ],
-  mode
+  mode,
+  devServer: {
+    host: "http://localhost:3000/",
+    disableHostCheck: true
+  }
 };
 
 if (env.NODE_ENV === 'development') {

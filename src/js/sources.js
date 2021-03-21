@@ -10,8 +10,10 @@ export const sources = {
 };
 
 function getYTCData(unparsed) {
-  const data = JSON.parse(JSON.stringify(unparsed.data));
-  return typeof data == 'string' ? JSON.parse(data) : data;
+  try {
+    const data = JSON.parse(JSON.stringify(unparsed.data));
+    return typeof data == 'string' ? JSON.parse(data) : data;
+  } catch (e) { return {}; }
 }
 
 function ytcToMsg({ message, author: { name: author } }) {
