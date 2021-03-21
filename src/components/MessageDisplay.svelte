@@ -1,6 +1,7 @@
 <script>
   import { TextDirection } from "../js/constants.js";
   import { Queue } from "../js/queue.js";
+  import "../js/sources.js";
   import "../css/splash.css";
   export let direction;
   export let items = [

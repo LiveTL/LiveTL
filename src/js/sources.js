@@ -6,7 +6,7 @@ export const sources = {
   translations: writable({
     text: 'Test entry 1', author: 'Author 1'
   }),
-  ytc: ytcSource(window)
+  ytc: ytcSource(window).ytc
 };
 
 function getYTCData(unparsed) {
@@ -15,8 +15,15 @@ function getYTCData(unparsed) {
 }
 
 function ytcToMsg({ message, author: { name: author } }) {
-  const text = message.filter(item => item.type === 'text').join('');
+  const text = message
+    .filter(item => item.type === 'text')
+    .map(item => item.text)
+    .join('');
   return { text, author };
+}
+
+function compose(...args) {
+  return ipt => args.reduceRight((val, func) => func(val), ipt);
 }
 
 function ytcSource(window) {
@@ -27,6 +34,34 @@ function ytcSource(window) {
   const lessMsg = (m1, m2) => m1.showtime - m2.showtime;
   const queued = new Queue();
   let interval = null;
+  const progress = { current: null, previous: null };
+  const newMessage = compose(ytc.set, ytcToMsg);
+  const cleanUp = () => clearInterval(interval);
+
+  const videoProgressUpdated = (time) => {
+    if (time < 0) return;
+    progress.current = time;
+    if (
+      Math.abs(progress.previous - progress.current) > 1 &&
+      progress.current != null
+    ) {
+      // scrubbed or skipped
+      while (queued.top) {
+        newMessage(queued.pop().data.message);
+      }
+    } else {
+      while (
+        queued.top != null &&
+        queued.top.data.timestamp <= progress.current
+      ) {
+        const item = queued.pop();
+        newMessage(item.data.message);
+      }
+    }
+    progress.previous = progress.current;
+  };
+
+  const runQueue = compose(videoProgressUpdated, x => x / 1000, Date.now);
 
   window.addEventListener('message', async d => {
     const data = getYTCData(d);
@@ -41,12 +76,13 @@ function ytcSource(window) {
         queued.push({ timestamp, message });
       }
       if (!interval && !data.isReplay) {
-        interval = setInterval(() => { }, 250);
+        interval = setInterval(runQueue, 250);
+        runQueue();
       }
     }
   });
   ytc.set(null);
-  return ytc;
+  return { ytc, cleanUp };
 }
 
 function message(author, msg, timestamp) {
