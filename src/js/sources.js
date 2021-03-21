@@ -36,6 +36,7 @@ export function ytcSource(window) {
   const lessMsg = (m1, m2) => m1.showtime - m2.showtime;
   const queued = new Queue();
   let interval = null;
+  let firstChunkReceived = false;
   const progress = { current: null, previous: null };
   const newMessage = compose(ytc.set, ytcToMsg);
   const cleanUp = () => clearInterval(interval);
@@ -43,6 +44,7 @@ export function ytcSource(window) {
   const videoProgressUpdated = (time) => {
     if (time < 0) return;
     progress.current = time;
+    if (progress.previous == null) progress.previous = time;
     if (
       Math.abs(progress.previous - progress.current) > 1 &&
       progress.current != null
@@ -67,10 +69,11 @@ export function ytcSource(window) {
 
   window.addEventListener('message', async d => {
     const data = getYTCData(d);
-    if (data.event === 'infoDelivery' && !interval) {
+    if (data.event === 'infoDelivery' && !interval && firstChunkReceived) {
       videoProgressUpdated(data.info.currentTime);
     }
     else if (data.type === 'messageChunk') {
+      firstChunkReceived = true;
       for (const message of data.messages.sort(lessMsg)) {
         const timestamp = data.isReplay
           ? message.showtime
