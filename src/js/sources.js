@@ -1,3 +1,4 @@
+import { Queue } from './queue';
 import { writable } from 'svelte/store';
 
 
@@ -5,7 +6,7 @@ export const sources = {
   translations: writable({
     text: 'Test entry 1', author: 'Author 1'
   }),
-  chat: ytcSource(window)
+  ytc: ytcSource(window)
 };
 
 function getYTCData(unparsed) {
@@ -13,13 +14,39 @@ function getYTCData(unparsed) {
   return typeof data == 'string' ? JSON.parse(data) : data;
 }
 
+function ytcToMsg({ message, author: { name: author } }) {
+  const text = message.filter(item => item.type === 'text').join('');
+  return { text, author };
+}
+
 function ytcSource(window) {
-  const chat = writable({ text: 'Test entry 1', author: 'Author 1' });
+  const ytc = writable(
+    { type: 'info', time: 0 } ||
+    { type: 'message', messages: [{ author: '', text: '', timestamp: '' }] }
+  );
+  const lessMsg = (m1, m2) => m1.showtime - m2.showtime;
+  const queued = new Queue();
+  let interval = null;
+
   window.addEventListener('message', async d => {
     const data = getYTCData(d);
-    // if (data.event === 'infoDelivery') { }
+    if (data.event === 'infoDelivery') {
+      await data.set({ type: 'info', time: data.info.currentTime });
+    }
+    else if (data.type === 'messageChunk') {
+      for (const message of data.messages.sort(lessMsg)) {
+        const timestamp = data.isReplay
+          ? (Date.now() + message.showtime) / 1000
+          : message.showtime;
+        queued.push({ timestamp, message });
+      }
+      if (!interval && !data.isReplay) {
+        interval = setInterval(() => { }, 250);
+      }
+    }
   });
-  return chat;
+  ytc.set(null);
+  return ytc;
 }
 
 function message(author, msg, timestamp) {
@@ -50,7 +77,7 @@ export class DummyYTCEventSource {
         isReplay: false,
         messages: [
           message('Author 4', '[en] hello there', '03:18 PM'),
-          message('Author 3', '[es] hola eso', '03:17 PM')
+          message('Author 3', '[es] hola allí', '03:17 PM')
         ]
       },
       {
