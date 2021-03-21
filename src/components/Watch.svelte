@@ -111,7 +111,6 @@
             <Button
               fab
               size="small"
-              class="blue white-text"
               on:click={() => (settingsOpen = !settingsOpen)}
             >
               <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
