@@ -65,6 +65,8 @@ export class SyncStore {
   }
 }
 
+/** @typedef {(key: String, value: T) => void} Subscriber */
+
 /**
  * Lookup store that synchronizes with extension storage.
  * 
@@ -80,30 +82,83 @@ export class LookupStore {
     this.name = name;
     this.defaultValue = defaultValue;
     this._storage = storageBackend || storage;
+    this._lookup = {};
+    /** @type {String[]} */
+    this._keys = [];
+    /** @type {Map<Number, Subscriber>>} */
+    this._subscribers = new Map();
+    this._subnum = 0;
+    this._keyname = `${this.name}[]`;
+    this.loaded = this.loadFromStorage();
+  }
+
+  /** @private */
+  async loadFromStorage() {
+    this._keys = await this._storage.get(this._keyname) || this._keys;
+    await Promise.all(this._keys.map(async k => {
+      this._lookup[k] = await this._storage.get(this.mangleKey(k));
+    }));
+  }
+
+  /**
+   * @private
+   * @param {String} key 
+   */
+  mangleKey(key) {
+    return `${this.name}:$$${key}`;
+  }
+
+  /**
+   * @private
+   * @param {[key: String, value: T]} change
+   */
+  notify(change) {
+    this._subscribers.forEach(subscriber => subscriber(...change));
   }
 
   /**
    * @param {String} key
    * @return {T}
    */
-  get(key) { }
+  get(key) {
+    return this._lookup[key] || this.defaultValue;
+  }
 
   /**
    * @param {String} key
    * @param {T} value
    */
-  set(key, value) { }
+  async set(key, value) {
+    const previous = this._lookup[key];
+    this._lookup[key] = value;
+    const save = [this._storage.set(this.mangleKey(key), value)];
+    if (previous == null) {
+      this._keys.push(key);
+      save.push(this._storage.set(this._keyname, this._keys));
+    }
+    await Promise.all(save);
+    this.notify([key, value]);
+  }
 
   /**
-   * @param {(n: T) => void} callback
+   * @param {(v: T) => T} callback
    */
-  update(callback) { }
+  async update(name, callback) {
+    this.set(name, await callback(this.get()));
+  }
 
   /**
-   * @param {(key: String, value: T) => void} callback
+   * @param {Subscriber} callback
    * @returns {() => void}
    */
-  subscribe(callback) { }
+  subscribe(callback) {
+    const id = this._subnum++;
+    this._subscribers.set(id, callback);
+    return () => {
+      this._subscribers.delete(id);
+    };
+  }
+
 }
 
 async function getStorage(key, version='') {

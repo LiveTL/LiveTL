@@ -43,7 +43,7 @@ describe('Synchronized lookup store', () => {
   it('sets a default value', async () => {
     const storage = new MockBackend();
     const ss = await new LookupStore('test', { value: 'default' }, storage);
-    expect(ss.get('nonexistant').toEqual({ value: 'default' }));
+    expect(ss.get('nonexistant')).toEqual({ value: 'default' });
   });
 
   it('synchronizes with the extension storage', async () => {
@@ -52,7 +52,8 @@ describe('Synchronized lookup store', () => {
     const ss = await newStore();
     await ss.set('test key', { value: 'not default' });
     expect(ss.get('test key')).toEqual({ value: 'not default' });
-    const other = await newStore();
+    const other = newStore();
+    await other.loaded;
     expect(other.get('test key')).toEqual({ value: 'not default' });
   });
 
@@ -69,5 +70,15 @@ describe('Synchronized lookup store', () => {
     await ss.set('first key', { value: 'first not default' });
     await ss.set('second key', { value: 'second not default' });
     expect(notifs).toEqual(expectedNotifs);
+  });
+
+  it('can unsubscribe subscribers', async () => {
+    const storage = new MockBackend();
+    const ss = new LookupStore('test', { value: 'default' }, storage);
+    const notifs = [];
+    ss.subscribe(notifs.push)();
+    await ss.set('first key', { value: 'first not default' });
+    await ss.set('second key', { value: 'second not default' });
+    expect(notifs.length).toEqual(0);
   });
 });
