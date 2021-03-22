@@ -69,7 +69,7 @@ export function removeEmojis(str) {
 
 /**
  * @param {String} textLang 
- * @param {String} currentLang 
+ * @param {{ code: String, name: String, lang: String }} currentLang 
  * @returns {Boolean}
  */
 export function isLangMatch(textLang, currentLang) {
