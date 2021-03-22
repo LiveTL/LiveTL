@@ -65,6 +65,47 @@ export class SyncStore {
   }
 }
 
+/**
+ * Lookup store that synchronizes with extension storage.
+ * 
+ * @template T
+ */
+export class LookupStore {
+  /**
+   * @param {String} name 
+   * @param {T} defaultValue 
+   * @param {Storage} storageBackend 
+   */
+  constructor(name, defaultValue, storageBackend=null) {
+    this.name = name;
+    this.defaultValue = defaultValue;
+    this._storage = storageBackend || storage;
+  }
+
+  /**
+   * @param {String} key
+   * @return {T}
+   */
+  get(key) { }
+
+  /**
+   * @param {String} key
+   * @param {T} value
+   */
+  set(key, value) { }
+
+  /**
+   * @param {(n: T) => void} callback
+   */
+  update(callback) { }
+
+  /**
+   * @param {(key: String, value: T) => void} callback
+   * @returns {() => void}
+   */
+  subscribe(callback) { }
+}
+
 async function getStorage(key, version='') {
   const versionKey = `${version || this.version}$$${key}`;
   const result = await this.rawGet(versionKey);
