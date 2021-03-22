@@ -209,4 +209,7 @@
     height: 100%;
     width: 100%;
   }
+  :global(*) {
+    word-break: break-word;
+  }
 </style>
