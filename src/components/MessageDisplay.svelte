@@ -3,6 +3,8 @@
   import { TextDirection } from "../js/constants.js";
   import { sources } from "../js/sources.js";
   import "../css/splash.css";
+  import { Icon } from "svelte-materialify/src";
+  import { mdiPencil, mdiEyeOffOutline } from "@mdi/js";
   export let direction;
   export let items = [
     {
@@ -17,13 +19,12 @@
 
   let unsubscribe = null;
   onMount(() => {
-    unsubscribe = sources.ytc.subscribe(n => {
+    unsubscribe = sources.ytc.subscribe((n) => {
       if (n) items.push(n);
       items = items;
     });
   });
   onDestroy(() => unsubscribe());
-
 </script>
 
 <div class="messageDisplayWrapper">
@@ -42,9 +43,19 @@
       </div>
     </div>
     {#each items as item}
-      <div class="message">
+      <div class="message" let:hovering>
         <span>{item.text}</span>
-        <span class="author">{item.author}</span>
+        <span class="author"
+          >{item.author}
+          <span class="messageActions">
+            <span class="blueHighlight">
+              <Icon path={mdiPencil} size="1em" class="blueHighlight" />
+            </span>
+            <span class="redHighlight">
+              <Icon path={mdiEyeOffOutline} size="1em" />
+            </span>
+          </span>
+        </span>
       </div>
     {/each}
   </div>
@@ -76,8 +87,23 @@
     border-radius: var(--margin);
   }
 
+  .messageActions {
+    display: none;
+  }
+
+  .messageActions .blueHighlight :global(.s-icon:hover) {
+    color: var(--theme-text-link);
+  }
+  .messageActions .redHighlight :global(.s-icon:hover) {
+    color: #ff2873;
+  }
+
+  .message:hover .messageActions {
+    display: inline-block !important;
+    cursor: pointer;
+  }
   .author {
-    font-size: 0.6em;
+    font-size: 0.75em;
     color: lightgray;
   }
 
