@@ -2,3 +2,4 @@ node_modules
 build
 secrets.*.js
 package-lock.json
+.vscode
