@@ -1,4 +1,5 @@
 # LiveTL
+[![Tests](https://github.com/LiveTL/extension/actions/workflows/tests.yaml/badge.svg)](https://github.com/LiveTL/extension/actions/workflows/tests.yaml)
 
 ## Development
 
