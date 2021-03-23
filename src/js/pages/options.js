@@ -1,4 +1,4 @@
-import App from '../../components/Popout.svelte';
+import App from '../../components/BrowserAction.svelte';
 
 const app = new App({
   target: document.body,
