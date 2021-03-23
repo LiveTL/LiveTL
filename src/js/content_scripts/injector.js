@@ -1,3 +1,5 @@
+import {openWindow, sendToBackground} from '../bgmessage.js';
+
 for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) {
   window.addEventListener(eventName, e => e.stopImmediatePropagation(), true);
 }
@@ -7,9 +9,11 @@ const styleLiveTLButton = (a, color) => {
   a.style.font = 'inherit';
   a.style.fontSize = '11px';
   a.style.fontWeight = 'bold';
-  a.style.width = '100%';
+  a.style.width = '50%';
   a.style.margin = 0;
   a.style.textAlign = 'center';
+  a.style.display = 'inline-block';
+  a.style.boxShadow = 'rgb(194 194 194) 0px 0px 4px 1px inset';
 };
   
 const setLiveTLButtonAttributes = (a) => {
@@ -30,6 +34,7 @@ const getLiveTLButton = (color) => {
   elevation="0" aria-disabled="false" style="
     padding: 5px;
     width: 100%;
+    display: inline-block;
     margin: 0;
   ">
     <yt-formatted-string id="text" class="style-scope ytd-toggle-button-renderer">
@@ -70,13 +75,17 @@ window.addEventListener('load', () => {
     const insertButtons = () => {
       const params = new URLSearchParams(window.location.search);
       params.get('embed_domain') || window.parent.location.href;
+      params.set('video', (params.get('v') ||
+        new URLSearchParams(window.parent.location.search).get('v')
+      ));
+      if(window.location.pathname.includes('live_chat_replay')) params.set('isReplay', true);
       makeButton('Watch in LiveTL', () => {
-        params.set('video', (params.get('v') ||
-          new URLSearchParams(window.parent.location.search).get('v')
-        ));
-        if(window.location.pathname.includes('live_chat_replay')) params.set('isReplay', true);
         // eslint-disable-next-line no-undef
         window.top.location = `chrome-extension://${chrome.runtime.id}/watch.html?${params.toString()}`;
+      });
+      makeButton('Pop out TLs', () => {
+        // eslint-disable-next-line no-undef
+        openWindow(`chrome-extension://${chrome.runtime.id}/watch.html?${params.toString()}`);
       });
     };
     insertButtons();
