@@ -1,12 +1,13 @@
 <script>
   import { MaterialApp } from "svelte-materialify/src";
   import Settings from "./Settings.svelte";
+  export let isStandalone = false;
 </script>
 
 <MaterialApp theme="dark">
   <div class="wrapper">
     <div class="app">
-      <Settings />
+      <Settings {isStandalone} />
     </div>
     <slot />
   </div>

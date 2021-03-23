@@ -23,7 +23,7 @@
   </div>
   <Wrapper {isResizing} zoom={$livetlZoom}>
     <div style="display: {settingsOpen ? 'block' : 'none'};">
-      <Options />
+      <Options isStandalone />
     </div>
     <div style="display: {settingsOpen ? 'none' : 'block'};">
       <MessageDisplay direction={$textDirection} />

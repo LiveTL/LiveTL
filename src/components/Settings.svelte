@@ -25,6 +25,7 @@
   import SliderOption from "./options/Slider.svelte";
   import EnumOption from "./options/Radio.svelte";
   import SelectOption from "./options/Dropdown.svelte";
+  export let isStandalone = false;
 </script>
 
 <SelectOption
@@ -32,30 +33,36 @@
   store={language}
   items={languageNameValues}
 />
-<SliderOption name="Chat zoom" store={chatZoom} />
+{#if !isStandalone}
+  <SliderOption name="Chat zoom" store={chatZoom} />
+{/if}
 <SliderOption name="LiveTL panel zoom" store={livetlZoom} />
 <EnumOption
   name="Text direction:"
   options={Object.keys(TextDirection)}
   store={textDirection}
 />
-<EnumOption
-  name="Video side:"
-  options={Object.keys(VideoSide)}
-  store={videoSide}
-/>
+{#if !isStandalone}
+  <EnumOption
+    name="Video side:"
+    options={Object.keys(VideoSide)}
+    store={videoSide}
+  />
+{/if}
 <CheckOption name="Show moderator messages" store={showModMessage} />
 <CheckOption name="Show timestamps" store={showTimestamp} />
-<CheckOption name="Show captions" store={showCaption} />
-{#if $showCaption}
-  <SliderOption name="Caption duration" min={-1} store={captionDuration} />
-  <SliderOption name="Caption zoom" store={captionZoom} />
+{#if !isStandalone}
+  <CheckOption name="Show captions" store={showCaption} />
+  {#if $showCaption}
+    <SliderOption name="Caption duration" min={-1} store={captionDuration} />
+    <SliderOption name="Caption zoom" store={captionZoom} />
+  {/if}
 {/if}
 <CheckOption name="Read-aloud mode" store={doSpeechSynth} />
 {#if $doSpeechSynth}
   <SliderOption name="Speech volume" store={speechVolume} />
+  <CheckOption name="Auto-prefix chat messages" store={doTranslatorMode} />
 {/if}
-<CheckOption name="Auto-prefix chat messages" store={doTranslatorMode} />
 
 <style>
   :global(label > .option-label) {
