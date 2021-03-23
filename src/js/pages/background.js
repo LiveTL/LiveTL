@@ -20,7 +20,7 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
   } case 'window': {
     (window.browser || window.chrome).windows.create({
       url: request.url,
-      type: 'popout',
+      type: 'popup',
       height: 300,
       width: 600
     });

@@ -6,7 +6,7 @@ export function sendToBackground(data) {
 }
 
 export function openWindow(url) {
-  sendToBackground({
+  return sendToBackground({
     type: 'window',
     url
   });
