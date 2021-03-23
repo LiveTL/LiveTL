@@ -29,6 +29,7 @@ export const languages = [
 ];
 
 export const languageConversionTable = {};
+export const languageNameCode = {};
 export const languageNameValues = languages.map(lang => ({
   name: createLangSelectionName(lang), value: lang.lang
 }));
@@ -38,3 +39,4 @@ function createLangSelectionName(lang) {
 }
 
 languages.forEach(i => languageConversionTable[createLangSelectionName(i)] = i);
+languages.forEach(lang => languageNameCode[lang.name] = lang);

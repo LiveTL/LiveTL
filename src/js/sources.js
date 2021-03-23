@@ -1,13 +1,37 @@
 import { Queue } from './queue';
-import { writable } from 'svelte/store';
+// eslint-disable-next-line no-unused-vars
+import { writable, Writable } from 'svelte/store';
+import { isLangMatch, parseTranslation } from './filter';
+import { language } from './store';
+import { languageNameCode } from './constants';
 
 
+/** @typedef {{text: String, author: String, timestamp: String}} Message*/
+
+/** @type {{ translations: Writable<Message>, ytc: Writable<Message>}} */
 export const sources = {
-  translations: writable({
-    text: 'Test entry 1', author: 'Author 1'
-  }),
+  translations: writable(null),
   ytc: ytcSource(window).ytc
 };
+
+attachTranslationFilter(sources.translations, sources.ytc);
+
+/**
+ * 
+ * @param {Writable<Message>} translations 
+ * @param {Writable<Message>} ytc 
+ * @return {() => void} cleanup
+ */
+function attachTranslationFilter(translations, ytc) {
+  return ytc.subscribe(message => {
+    if (!message) return;
+    const parsed = parseTranslation(message.text);
+    const lang = languageNameCode[language.get()];
+    if (parsed && isLangMatch(parsed.lang, lang)) {
+      translations.set({...message, text: parsed.msg });
+    }
+  });
+}
 
 function getYTCData(unparsed) {
   try {
@@ -29,9 +53,8 @@ function compose(...args) {
 }
 
 export function ytcSource(window) {
-  const ytc = writable({
-    type: 'message', messages: [{ author: '', text: '', timestamp: '' }]
-  });
+  /** @type {Writable<Message>} */
+  const ytc = writable(null);
   const lessMsg = (m1, m2) => m1.showtime - m2.showtime;
   const queued = new Queue();
   let interval = null;
@@ -85,7 +108,6 @@ export function ytcSource(window) {
       }
     }
   });
-  ytc.set(null);
   return { ytc, cleanUp };
 }
 

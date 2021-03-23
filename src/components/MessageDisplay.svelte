@@ -8,20 +8,12 @@
   import { livetlFontSize } from "../js/store.js";
   $: document.body.style.fontSize = $livetlFontSize + 'px';
   export let direction;
-  export let items = [
-    {
-      text: "Test entry 1",
-      author: "Author 1",
-    },
-    {
-      text: "Test entry 2",
-      author: "Author 2",
-    },
-  ];
+  /** @type {{ text: String, author: String }[]}*/
+  export let items = [];
 
   let unsubscribe = null;
   onMount(() => {
-    unsubscribe = sources.ytc.subscribe((n) => {
+    unsubscribe = sources.translations.subscribe((n) => {
       if (n) items.push(n);
       items = items;
     });
