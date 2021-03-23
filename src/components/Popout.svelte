@@ -7,6 +7,7 @@
   import { livetlZoom, textDirection } from "../js/store.js";
   import MessageDisplay from "./MessageDisplay.svelte";
   let settingsOpen = false;
+  export let isStandalone = false;
   export let isResizing = false;
 </script>
 
@@ -23,7 +24,7 @@
   </div>
   <Wrapper {isResizing} zoom={$livetlZoom}>
     <div style="display: {settingsOpen ? 'block' : 'none'};">
-      <Options isStandalone />
+      <Options {isStandalone} />
     </div>
     <div style="display: {settingsOpen ? 'none' : 'block'};">
       <MessageDisplay direction={$textDirection} />
