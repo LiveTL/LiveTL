@@ -19,4 +19,12 @@
   $: store.set(value);
 </script>
 
-<Select bind:value {items} solo>{name}</Select>
+<div class="dropdown">
+  <Select bind:value {items} solo>{name}</Select>
+</div>
+
+<style>
+  .dropdown {
+    margin-top: 20px;
+  }
+</style>
