@@ -74,16 +74,16 @@ window.addEventListener('load', () => {
   const insertButtons = async () => {
     try {
       let params = new URLSearchParams(window.location.search);
-      params.get('embed_domain') || window.parent.location.href;
       const constructParams = () => {
         params = new URLSearchParams(window.location.search);
         params.set('video', (params.get('v') || (new URLSearchParams(window.parent.location.search).get('v'))));
         if(window.location.pathname.includes('live_chat_replay')) params.set('isReplay', true);
         return params;
       };
+      params.get('embed_domain') || window.parent.location.href;
       makeButton('Watch in LiveTL', () => {
         // eslint-disable-next-line no-undef
-        window.top.location = `chrome-extension://${chrome.runtime.id}/watch.html?${params.toString()}`;
+        window.top.location = `chrome-extension://${chrome.runtime.id}/watch.html?${constructParams().toString()}`;
       });
       const tabid = await sendToBackground({
         type:'tabid'
