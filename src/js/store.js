@@ -26,6 +26,6 @@ export const
   doTranslatorMode = SS('doTranslatorMode', false),
   videoPanelSize = SS('videoPanelSize', 80),
   chatSize = SS('chatSize', 50),
-  livetlZoom = SS('livetlZoom', 1),
+  livetlFontSize = SS('livetlFontSize', 12),
   usernameFilters = SS('userFilters', {}),
   channelFilters = SS('channelFilters', {});

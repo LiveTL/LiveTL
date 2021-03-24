@@ -38,6 +38,7 @@
 
   :global(.s-radio) {
     margin-left: 16px;
+    font-size: 16px !important;
   }
 
   .container {

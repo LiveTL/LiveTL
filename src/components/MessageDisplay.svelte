@@ -5,6 +5,8 @@
   import "../css/splash.css";
   import { Icon } from "svelte-materialify/src";
   import { mdiPencil, mdiEyeOffOutline } from "@mdi/js";
+  import { livetlFontSize } from "../js/store.js";
+  $: document.body.style.fontSize = $livetlFontSize + 'px';
   export let direction;
   export let items = [
     {
@@ -112,7 +114,7 @@
   }
 
   .message {
-    --margin: 2.5px;
+    --margin: 5px;
     margin: var(--margin);
     padding: calc(1.5 * var(--margin));
     width: calc(100% - 2 * var(--margin));

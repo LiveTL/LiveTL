@@ -4,7 +4,7 @@
   import Options from "./Options.svelte";
   import Wrapper from "./Wrapper.svelte";
   import { TextDirection } from "../js/constants.js";
-  import { livetlZoom, textDirection } from "../js/store.js";
+  import { textDirection } from "../js/store.js";
   import MessageDisplay from "./MessageDisplay.svelte";
   let settingsOpen = false;
   export let isStandalone = false;
@@ -22,7 +22,7 @@
       <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
     </Button>
   </div>
-  <Wrapper {isResizing} zoom={$livetlZoom}>
+  <Wrapper {isResizing}>
     <div style="display: {settingsOpen ? 'block' : 'none'};">
       <Options {isStandalone} />
     </div>
@@ -50,5 +50,8 @@
   }
   :global(.s-app) {
     height: 100%;
+  }
+  :global(.s-btn) {
+    vertical-align: top !important;
   }
 </style>
