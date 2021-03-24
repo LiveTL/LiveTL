@@ -1,16 +1,27 @@
 import {parseChatResponse} from '../parse-chat.js';
+import { sendToBackground } from '../bgmessage.js';
+
+let tabid = -1;
 
 const messageReceiveCallback = async (response) => {
   response = JSON.parse(response);
   try {
-    const chunk = parseChatResponse(response);
+    let chunk = parseChatResponse(response);
+    chunk.tabid = tabid;
     window.parent.postMessage(chunk, '*');
+    sendToBackground({
+      type: 'message',
+      data: chunk
+    });
   } catch (e) {
     console.debug(e);
   }
 };
   
 const chatLoaded = async () => {
+  tabid = await sendToBackground({
+    type:'tabid'
+  });
   const script = document.createElement('script');
   script.innerHTML = `
     for (event_name of ["visibilitychange", "webkitvisibilitychange", "blur"]) {
