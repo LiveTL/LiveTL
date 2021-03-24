@@ -84,7 +84,7 @@
     font-size: 1.5em;
   }
   .subheading {
-    font-size: 1.25em;
+    font-size: 1em;
   }
   .subscripts {
     font-size: 0.75em;

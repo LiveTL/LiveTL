@@ -26,6 +26,16 @@
   <SliderOption name="Chat zoom" store={chatZoom} />
 {/if}
 <SliderOption name="Font size" store={livetlFontSize} min={6} max={69} />
+<div
+  style="
+  margin-bottom: 20px;
+  font-size: {$livetlFontSize}px;
+  background-color: darken(var(--theme-cards), 50%);
+  padding: 5px;
+"
+>
+  Sample text ({Math.round($livetlFontSize * 100) / 100} point font)
+</div>
 <EnumOption
   name="Text direction:"
   options={Object.keys(TextDirection)}
