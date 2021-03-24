@@ -71,17 +71,18 @@ window.addEventListener('load', () => {
   elem.style.minHeight = '0px';
   elem.style.maxWidth = undefined;
   elem.style.maxHeight = undefined;
-  try{
+  try {
     const insertButtons = async () => {
+      let params = new URLSearchParams(window.location.search);
+      params.get('embed_domain') || window.parent.location.href;
       const constructParams = () => {
-        const params = new URLSearchParams(window.location.search);
-        params.get('embed_domain') || window.parent.location.href;
+        params = new URLSearchParams(window.location.search);
         params.set('video', (params.get('v') || new URLSearchParams(window.parent.location.search).get('v')));
         if(window.location.pathname.includes('live_chat_replay')) params.set('isReplay', true);
         return params;
       };
       makeButton('Watch in LiveTL', () => {
-        const params = constructParams();
+        params = constructParams();
         // eslint-disable-next-line no-undef
         window.top.location = `chrome-extension://${chrome.runtime.id}/watch.html?${params.toString()}`;
       });
