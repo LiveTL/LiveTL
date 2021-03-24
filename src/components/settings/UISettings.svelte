@@ -28,7 +28,7 @@
   export let isStandalone = false;
 </script>
 
-<div style="font-size: 16px !important; max-width: 500px; margin: auto;">
+<div style="font-size: 16px !important; margin: auto;">
   <SelectOption
     name="Language Filter"
     store={language}

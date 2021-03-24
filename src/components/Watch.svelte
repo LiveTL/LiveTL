@@ -30,7 +30,7 @@
   const convertToPx = () => {
     [
       [chatElem, "height", chatSize],
-      [isEmbedded ? vidElem : null, "width", videoPanelSize],
+      [isEmbedded ? null : vidElem, "width", videoPanelSize],
     ].forEach((item) => {
       const [elem, prop, store] = item;
       if (!elem) return;

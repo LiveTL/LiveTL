@@ -5,25 +5,31 @@
   export let isStandalone = false;
 
   const settings = [
-    { name: "LiveTL Interface", component: UISettings }
+    { name: "LiveTL Interface", component: UISettings },
+    { name: "Advanced Options", component: UISettings },
   ];
 </script>
 
 <MaterialApp theme="dark">
-  <Tabs centerActive>
-    <div slot="tabs">
-      {#each settings as { name }}
-        <Tab>{name}</Tab>
-      {/each}
-    </div>
+  <div style="display: flex; align-items: center; justify-content: center;">
+    <div style="max-width: 500px; width: 100%;">
+      <Tabs grow>
+        <div slot="tabs">
+          {#each settings as { name }}
+            <Tab>{name}</Tab>
+          {/each}
+        </div>
 
-    {#each settings as { component }}
-      <TabContent>
-        <br /><br />
-        <svelte:component this={component} {isStandalone} />
-      </TabContent>
-    {/each}
-  </Tabs>
+        <div style="margin-top: 40px;">
+          {#each settings as { component }}
+            <TabContent>
+              <svelte:component this={component} {isStandalone} />
+            </TabContent>
+          {/each}
+        </div>
+      </Tabs>
+    </div>
+  </div>
 </MaterialApp>
 
 <style>
