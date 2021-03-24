@@ -77,7 +77,7 @@ window.addEventListener('load', () => {
       params.get('embed_domain') || window.parent.location.href;
       const constructParams = () => {
         params = new URLSearchParams(window.location.search);
-        params.set('video', (params.get('v') || new URLSearchParams(window.parent.location.search).get('v')));
+        params.set('video', (params.get('v') || (new URLSearchParams(window.parent.location.search).get('v'))));
         if(window.location.pathname.includes('live_chat_replay')) params.set('isReplay', true);
         return params;
       };
