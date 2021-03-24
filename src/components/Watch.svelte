@@ -19,15 +19,21 @@
   window.j = j;
   let isResizing = false;
   let chatElem, vidElem, ltlElem;
+  const params = new URLSearchParams(window.location.search);
+  const videoId = params.get("video");
+  const continuation = params.get("continuation");
+  const isReplay = params.get("isReplay");
+  const isEmbedded = params.get("embedded");
   const resizable = (selector, info) => {
     j(document.querySelector(selector)).resizable(info);
   };
   const convertToPx = () => {
     [
       [chatElem, "height", chatSize],
-      [vidElem, "width", videoPanelSize],
+      [isEmbedded ? vidElem : null, "width", videoPanelSize],
     ].forEach((item) => {
       const [elem, prop, store] = item;
+      if (!elem) return;
       if (isResizing) {
         // elem.style.width = elem.clientWidth;
         // elem.style.height = elem.clientHeight;
@@ -68,23 +74,21 @@
     });
   };
   $: setTimeout(() => changeSide($videoSide), 0);
-  const params = new URLSearchParams(window.location.search);
-  const videoId = params.get("video");
-  const continuation = params.get("continuation");
-  const isReplay = params.get("isReplay");
 </script>
 
 <MaterialApp theme="dark">
   <div class="flex vertical {$videoSide == VideoSide.RIGHT ? 'reversed' : ''}">
-    <div
-      class="tile resizable"
-      style="width: {$videoPanelSize}%;"
-      bind:this={vidElem}
-    >
-      <Wrapper {isResizing}>
-        <VideoEmbed {videoId} />
-      </Wrapper>
-    </div>
+    {#if !isEmbedded}
+      <div
+        class="tile resizable"
+        style="width: {$videoPanelSize}%;"
+        bind:this={vidElem}
+      >
+        <Wrapper {isResizing}>
+          <VideoEmbed {videoId} />
+        </Wrapper>
+      </div>
+    {/if}
     <div class="tile autoscale">
       <div class="flex horizontal">
         <div

@@ -9,11 +9,11 @@ const styleLiveTLButton = (a, color) => {
   a.style.font = 'inherit';
   a.style.fontSize = '11px';
   a.style.fontWeight = 'bold';
-  a.style.width = '50%';
+  a.style.width = '100%';
   a.style.margin = 0;
   a.style.textAlign = 'center';
   a.style.display = 'inline-block';
-  a.style.boxShadow = 'rgb(194 194 194) 0px 0px 4px 1px inset';
+  // a.style.boxShadow = 'rgb(194 194 194) 0px 0px 4px 1px inset';
 };
   
 const setLiveTLButtonAttributes = (a) => {
@@ -71,8 +71,8 @@ window.addEventListener('load', () => {
   elem.style.minHeight = '0px';
   elem.style.maxWidth = undefined;
   elem.style.maxHeight = undefined;
-  try {
-    const insertButtons = async () => {
+  const insertButtons = async () => {
+    try {
       let params = new URLSearchParams(window.location.search);
       params.get('embed_domain') || window.parent.location.href;
       const constructParams = () => {
@@ -82,7 +82,6 @@ window.addEventListener('load', () => {
         return params;
       };
       makeButton('Watch in LiveTL', () => {
-        params = constructParams();
         // eslint-disable-next-line no-undef
         window.top.location = `chrome-extension://${chrome.runtime.id}/watch.html?${params.toString()}`;
       });
@@ -90,20 +89,35 @@ window.addEventListener('load', () => {
         type:'tabid'
       });
       makeButton('Pop out TLs', () => {
-        let params = constructParams();
-        params.set('tabid', tabid);
+        let popoutParams = constructParams();
+        popoutParams.set('tabid', tabid);
         // eslint-disable-next-line no-undef
-        openWindow(`chrome-extension://${chrome.runtime.id}/popout.html?${params.toString()}`);
+        openWindow(`chrome-extension://${chrome.runtime.id}/popout.html?${popoutParams.toString()}`);
       });
-    };
+      makeButton('Load LiveTL', () => {
+        let embeddedParams = constructParams();
+        embeddedParams.set('embedded', true);
+        document.body.outerHTML = '';
+        const iframe = document.createElement('iframe');
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.position = 'fixed';
+        // eslint-disable-next-line no-undef
+        iframe.src = `chrome-extension://${chrome.runtime.id}/watch.html?${embeddedParams.toString()}`;
+        document.body.appendChild(iframe);
+        window.addEventListener('message', d => {
+          iframe.contentWindow.postMessage(d.data, '*');
+        });
+      });
+      // eslint-disable-next-line no-empty
+    } catch(e) {
+    }
+  };
+  insertButtons();
+  setInterval(()=>{
+    if(document.querySelector('.livetlActivator')) return;
     insertButtons();
-    setInterval(()=>{
-      if(document.querySelector('.livetlActivator')) return;
-      insertButtons();
-    }, 100);
-  // eslint-disable-next-line no-empty
-  } catch(e) {
-  }
+  }, 100);
 });
 
 window.addEventListener('message', packet=>{
