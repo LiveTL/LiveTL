@@ -21,8 +21,8 @@
   </div>
   <div slot="append-outer">
     <div class="reset-button">
-      <Button fab size="x-small">
-        <Icon size="22px" path={mdiRestore} />
+      <Button on:click={() => store.reset()} size="x-small">
+        <Icon size="20px" path={mdiRestore} />
       </Button>
     </div>
   </div>
