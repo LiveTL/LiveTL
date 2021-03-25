@@ -154,6 +154,10 @@
   }
   :global(.ui-resizable-handle) {
     background-color: #4d4d4d;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   :global(.ui-resizable-e) {
     width: var(--bar);
@@ -170,6 +174,18 @@
   :global(.ui-resizable-n) {
     height: var(--bar);
     top: 0px;
+  }
+  :global(.ui-resizable-e::after),
+  :global(.ui-resizable-w::after) {
+    content: "⋮";
+    font-size: 30px;
+  }
+  :global(.ui-resizable-s::after),
+  :global(.ui-resizable-n::after) {
+    content: "⋯";
+    font-size: 30px;
+    transform: translateY(-3px);
+    position: absolute;
   }
   :global(.s-app) {
     height: 100%;
