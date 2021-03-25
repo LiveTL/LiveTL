@@ -1,6 +1,6 @@
 <script>
   import { Button, Icon, Slider } from "svelte-materialify/src";
-  import { mdiHome } from "@mdi/js";
+  import { mdiRestore } from "@mdi/js";
   import { Browser, BROWSER } from "../../js/web-constants.js";
 
   export let min = BROWSER == Browser.ANDROID ? 0.25 : 0.5;
@@ -16,11 +16,28 @@
 </script>
 
 <Slider bind:value {color}>
-  {name}:
+  <div slot="default">
+    {name}:
+  </div>
+  <div slot="append-outer">
+    <div class="reset-button">
+      <Button fab size="x-small">
+        <Icon size="22px" path={mdiRestore} />
+      </Button>
+    </div>
+  </div>
 </Slider>
 
 <style>
   :global(.s-slider) {
     max-width: 100% !important;
+  }
+
+  .reset-button {
+    color: #181818;
+  }
+
+  .reset-button:hover {
+    color: #2196f3;
   }
 </style>
