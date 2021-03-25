@@ -25,7 +25,12 @@
 {#if !isStandalone}
   <SliderOption name="Chat zoom" store={chatZoom} />
 {/if}
-<SliderOption name="Font size" store={livetlFontSize} min={6} max={69} />
+<SliderOption
+  name="Font size"
+  store={livetlFontSize}
+  min={5}
+  max={50}
+/>
 <div
   style="
   margin-bottom: 20px;
@@ -34,7 +39,7 @@
   padding: 5px;
 "
 >
-  Sample text ({Math.round($livetlFontSize * 100) / 100} point font)
+  Sample text ({Math.ceil($livetlFontSize + 2)} point font)
 </div>
 <div>
   <EnumOption

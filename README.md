@@ -16,10 +16,10 @@ PORT=3000
 NODE_ENV=development
 ```
 ```bash
-npm run start # dev
-npm run build # prod
-npm run test  # jest
-npm run test:watch # autotest
+yarn start # dev
+yarn build # prod
+yarn test  # jest
+yarn test:watch # autotest
 ```
 Load the `build` directory in Chrome developer mode.
 

@@ -8,6 +8,7 @@
   export let name = "";
   export let store = null;
   export let color = "blue";
+  export let step = null;
 
   let diff = max - min;
   $: value = Math.round((($store - min) * 100) / diff + min);
@@ -15,7 +16,7 @@
   $: store.set(scaledBack);
 </script>
 
-<Slider bind:value {color}>
+<Slider bind:value {color} {step}>
   <div slot="default">
     {name}:
   </div>
