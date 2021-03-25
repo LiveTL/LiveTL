@@ -158,6 +158,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
   }
   :global(.ui-resizable-e) {
     width: var(--bar);
