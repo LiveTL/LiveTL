@@ -18,7 +18,7 @@
 
 <div class="container">
   <span class="option-label">{name}</span>
-  <div class="buttons d-flex justify-space-around">
+  <div class="buttons d-flex">
     {#each options as opt}
       <Radio bind:group value={opt} {color}>{transformOpt(opt)}</Radio>
     {/each}

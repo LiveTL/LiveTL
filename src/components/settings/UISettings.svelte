@@ -36,18 +36,20 @@
 >
   Sample text ({Math.round($livetlFontSize * 100) / 100} point font)
 </div>
-<EnumOption
-  name="Text direction:"
-  options={Object.keys(TextDirection)}
-  store={textDirection}
-/>
-{#if !isStandalone}
+<div>
   <EnumOption
-    name="Video side:"
-    options={Object.keys(VideoSide)}
-    store={videoSide}
+    name="Text direction:"
+    options={Object.keys(TextDirection)}
+    store={textDirection}
   />
-{/if}
+  {#if !isStandalone}
+    <EnumOption
+      name="Video side:"
+      options={Object.keys(VideoSide)}
+      store={videoSide}
+    />
+  {/if}
+</div>
 <CheckOption name="Show timestamps" store={showTimestamp} />
 {#if !isStandalone}
   <CheckOption name="Show captions" store={showCaption} />

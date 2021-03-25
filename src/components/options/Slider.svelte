@@ -34,7 +34,7 @@
   }
 
   .reset-button {
-    color: #181818;
+    color: #2196f3;
   }
 
   .reset-button:hover {
