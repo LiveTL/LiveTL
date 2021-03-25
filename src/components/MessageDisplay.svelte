@@ -6,7 +6,7 @@
   import { Icon } from "svelte-materialify/src";
   import { mdiPencil, mdiEyeOffOutline } from "@mdi/js";
   import { livetlFontSize } from "../js/store.js";
-  $: document.body.style.fontSize = $livetlFontSize + 'px';
+  $: document.body.style.fontSize = Math.round($livetlFontSize) + 'px';
   export let direction;
   /** @type {{ text: String, author: String }[]}*/
   export let items = [];
