@@ -20,6 +20,7 @@
       <Subheader>Regex filters</Subheader>
       {#each items as item}
         <ListItem><TextField dense clearable bind:value={item}></TextField></ListItem>
+        <Divider />
       {/each}
       <ListItem>
         <TextField on:keyup={handleKeyUp} dense clearable={newItem} bind:value={newItem}>
@@ -32,6 +33,9 @@
 </MaterialApp>
 
 <style>
+  :global(.material-ripple) {
+    display: none !important;
+  }
   /* Enable the following to get lighter bg on listmenu
   .list {
     background-color: #1E1E1E;

@@ -3,3 +3,4 @@ build
 secrets.*.js
 package-lock.json
 .vscode
+*.swp
