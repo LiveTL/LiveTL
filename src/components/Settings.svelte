@@ -50,4 +50,7 @@
     color: var(--theme-text-secondary);
     font-size: 16px;
   }
+  :global(.s-window) {
+    padding: 10px;
+  }
 </style>
