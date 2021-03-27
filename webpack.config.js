@@ -23,6 +23,8 @@ if (fileSystem.existsSync(secretsPath)) {
   alias['secrets'] = secretsPath;
 }
 
+const prod = mode !== 'development';
+
 var options = {
   entry: {
     popout: path.join(__dirname, 'src', 'js', 'pages', 'popout.js'),
@@ -66,10 +68,11 @@ var options = {
       {
         test: /\.svelte$/,
         use: {
-          loader: 'svelte-loader',
+          loader: prod ? 'svelte-loader' : 'svelte-loader-hot',
           options: {
+            dev: !prod,
             emitCss: false,
-            hotReload: false,
+            hotReload: !prod,
             preprocess
           }
         }
@@ -117,7 +120,8 @@ var options = {
       filename: 'background.html',
       chunks: ['background']
     }),
-    new WriteFilePlugin()
+    new WriteFilePlugin(),
+    new webpack.HotModuleReplacementPlugin()
   ],
   mode,
   devServer: {
