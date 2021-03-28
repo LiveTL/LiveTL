@@ -20,7 +20,6 @@
       <Subheader>Regex filters</Subheader>
       {#each items as item}
         <ListItem><TextField dense clearable bind:value={item}></TextField></ListItem>
-        <Divider />
       {/each}
       <ListItem>
         <TextField on:keyup={handleKeyUp} dense clearable={newItem} bind:value={newItem}>
