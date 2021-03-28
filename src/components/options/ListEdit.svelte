@@ -1,7 +1,8 @@
 <script>
   import { List, ListItem, Divider, TextField, Card, Subheader, MaterialApp } from 'svelte-materialify/src';
 
-  let items = [];
+  export let name = '';
+  export let store = null;
 
   function handleKeyUp(e) {
     if (e.key === 'Enter') {
@@ -10,14 +11,16 @@
     }
   }
 
+  $: items = $store;
   $: newItem = '';
   $: items = items.filter(e => e);
+  $: store.set(items);
 </script>
 
 <MaterialApp theme="dark">
   <div class="list">
     <List>
-      <Subheader>Regex filters</Subheader>
+      <Subheader>{name}</Subheader>
       {#each items as item}
         <ListItem><TextField dense clearable bind:value={item}></TextField></ListItem>
       {/each}

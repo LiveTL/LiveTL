@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import '@testing-library/jest-dom/extend-expect';
 
-import { render, fireEvent } from '@testing-library/svelte';
+import { render } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
 
 import { get, writable } from 'svelte/store';
@@ -11,17 +11,24 @@ describe('editable list', () => {
   const items = ['hello', 'there'];
 
   it('displays title', () => {
-    const { getByText } = render(ListEdit, { name: 'title', store: writable(items) });
+    const { getByText } = render(ListEdit, {
+      name: 'title', store: writable(items)
+    });
     expect(getByText('title')).toBeInTheDocument();
   });
 
   it('displays all options', () => {
-    const { getByText } = render(ListEdit, { name: '', store: writable(items) });
-    items.map(getByText).map(expect).forEach(e => e.toBeInTheDocument());
+    const { getByDisplayValue } = render(ListEdit, {
+      name: '', store: writable(items)
+    });
+    expect(getByDisplayValue('hello')).toBeInTheDocument();
+    expect(getByDisplayValue('there')).toBeInTheDocument();
   });
 
   it('adds new options', async () => {
-    const { getByLabelText, getByDisplayValue } = render(ListEdit, { name: '', store: writable(items) });
+    const { getByLabelText, getByDisplayValue } = render(ListEdit, {
+      name: '', store: writable(items)
+    });
     const addInput = getByLabelText('Add New');
     await userEvent.type(addInput, 'Hello there{enter}');
     await userEvent.type(addInput, 'General Kenobi{enter}');

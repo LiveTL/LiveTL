@@ -2,6 +2,7 @@
   import {
     showModMessage,
     language,
+    textFilters,
     usernameFilters,
     channelFilters,
   } from "../../js/store.js";
@@ -18,4 +19,4 @@
   items={languageNameValues}
 />
 <CheckOption name="Show moderator messages" store={showModMessage} />
-<ListEdit />
+<ListEdit name="Regex filters" store={textFilters}/>
