@@ -1,3 +1,5 @@
+import { textFilters } from './store.js';
+
 const MAX_LANG_TAG_LEN = 7;
 
 const langTokens = [['[', ']'], ['{', '}'], ['(', ')'], ['|', '|'], ['<', '>'], ['【', '】'], ['「', '」'], ['『', '』'], ['〚', '〛'], ['（', '）'], ['〈', '〉'], ['⁽', '₎']];
@@ -6,6 +8,21 @@ const tokenMap = Object.fromEntries(langTokens);
 
 const transDelimiters = ['-', ':'];
 const langSplitRe = /[^A-Za-z]/;
+
+/** @type {(message: String) => Boolean} */
+export const matchesUserFilter = (() => {
+  /** @type {RegExp | null} */
+  let userRegex = null;
+  textFilters.subscribe(filters => {
+    userRegex = filters
+      ? new RegExp(filters.join('|'))
+      : null;
+  });
+
+  return message => userRegex
+    ? userRegex.test(message)
+    : false;
+})();
 
 /**
  * @param {String} message 
