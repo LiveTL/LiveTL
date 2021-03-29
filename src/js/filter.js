@@ -14,7 +14,7 @@ export const matchesUserFilter = (() => {
   /** @type {RegExp | null} */
   let userRegex = null;
   textFilters.subscribe(filters => {
-    userRegex = filters
+    userRegex = filters.length
       ? new RegExp(filters.join('|'))
       : null;
   });
