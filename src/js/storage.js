@@ -1,6 +1,5 @@
 import { get, writable } from 'svelte/store';
-import { Browser, BROWSER } from './web-constants.js';
-import { storageVersion } from './constants.js';
+import { storageVersion, Browser, BROWSER } from './constants.js';
 
 export const storage = new Storage(storageVersion);
 

@@ -1,5 +1,4 @@
-import { Browser, BROWSER, } from './web-constants.js';
-import { TextDirection, VideoSide } from './constants.js';
+import { Browser, BROWSER, TextDirection, VideoSide } from './constants.js';
 import { SyncStore } from './storage.js';
 
 /**
