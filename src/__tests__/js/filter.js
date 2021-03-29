@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
-import { parseTranslation, isLangMatch } from '../../js/filter.js';
+import { parseTranslation, isLangMatch, matchesUserFilter } from '../../js/filter.js';
 import { languages } from '../../js/constants.js';
+import { textFilters } from '../../js/store.js';
 
 const langs = {};
 languages.forEach(lang => {
@@ -36,5 +37,27 @@ describe.each([
 ])('isLangMatch("%s", "%s")', (textLang, currentLang, expected) => {
   it(`says the match is ${expected}`, () => {
     expect(isLangMatch(textLang, currentLang)).toEqual(expected);
+  });
+});
+
+describe('user regex filter', () => {
+  it('does not match every message if no filters', () => {
+    textFilters.set([]);
+    expect(matchesUserFilter('hello there')).toBeFalsy();
+  });
+
+  it('matches when there is one filter', () => {
+    textFilters.set(['hello']);
+    expect(matchesUserFilter('hello there')).toBeTruthy();
+    expect(matchesUserFilter('hey there')).toBeFalsy();
+  });
+
+  it('matches when there are multiple filters', () => {
+    textFilters.reset();
+    textFilters.set(['hello', 'there', 'general']);
+    expect(matchesUserFilter('hello kenobi')).toBeTruthy();
+    expect(matchesUserFilter('there are three filters')).toBeTruthy();
+    expect(matchesUserFilter('general kenobi')).toBeTruthy();
+    expect(matchesUserFilter('none of the filters')).toBeFalsy();
   });
 });
