@@ -1,4 +1,6 @@
 import { textFilters } from './store.js';
+// eslint-disable-next-line no-unused-vars
+import { SyncStore } from './storage.js';
 
 const MAX_LANG_TAG_LEN = 7;
 
@@ -9,20 +11,28 @@ const tokenMap = Object.fromEntries(langTokens);
 const transDelimiters = ['-', ':'];
 const langSplitRe = /[^A-Za-z]/;
 
-/** @type {(message: String) => Boolean} */
-export const matchesUserFilter = (() => {
+/**
+ * @param {SyncStore}
+ * @param {(pattern: RegExp | null, message: String) => Boolean} callback 
+ * @return {(message: String) => Boolean}
+ */
+function userFilter(ufilters, callback) {
   /** @type {RegExp | null} */
   let userRegex = null;
-  textFilters.subscribe(filters => {
+  ufilters.subscribe(filters => {
     userRegex = filters.length
       ? new RegExp(filters.join('|'))
       : null;
   });
+  return message => callback(userRegex, message);
+}
 
-  return message => userRegex
-    ? userRegex.test(message)
-    : false;
-})();
+export const matchesUserFilter = userFilter(
+  textFilters,
+  (pattern, message) => pattern
+    ? pattern.test(message)
+    : false
+);
 
 /**
  * @param {String} message 
