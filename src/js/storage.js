@@ -64,7 +64,10 @@ export class SyncStore {
   }
 }
 
-/** @typedef {(key: String, value: T) => void} Subscriber */
+/**
+ * @template T
+ * @typedef {(key: String, value: T) => void} Subscriber
+ */
 
 /**
  * Lookup store that synchronizes with extension storage.
@@ -84,7 +87,7 @@ export class LookupStore {
     this._lookup = {};
     /** @type {String[]} */
     this._keys = [];
-    /** @type {Map<Number, Subscriber>>} */
+    /** @type {Map<Number, Subscriber<T>>} */
     this._subscribers = new Map();
     this._subnum = 0;
     this._keyname = `${this.name}[]`;
@@ -143,11 +146,11 @@ export class LookupStore {
    * @param {(v: T) => T} callback
    */
   async update(name, callback) {
-    this.set(name, await callback(this.get()));
+    this.set(name, await callback(this.get(name)));
   }
 
   /**
-   * @param {Subscriber} callback
+   * @param {Subscriber<T>} callback
    * @returns {() => void}
    */
   subscribe(callback) {
@@ -202,18 +205,21 @@ export function Storage(version) {
     break;
   case Browser.FIREFOX:
     this.rawGet = async (key) => {
-    // eslint-disable-next-line no-undef
+      // @ts-ignore
+      // eslint-disable-next-line no-undef
       return await browser.storage.local.get(key);
     };
 
     this.rawSet = async (obj) => {
-    // eslint-disable-next-line no-undef
+      // @ts-ignore
+      // eslint-disable-next-line no-undef
       return await browser.storage.local.set(obj);
     };
     break;
   default:
     this.rawGet = (key) => {
       return new Promise((res) => {
+        // @ts-ignore
         // eslint-disable-next-line no-undef
         chrome.storage.local.get(key, res);
       });
@@ -221,7 +227,8 @@ export function Storage(version) {
 
     this.rawSet = (obj) => {
       return new Promise((res) => {
-      // eslint-disable-next-line no-undef
+        // @ts-ignore
+        // eslint-disable-next-line no-undef
         chrome.storage.local.set(obj, res);
       });
     };

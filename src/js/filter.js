@@ -90,8 +90,8 @@ export function removeEmojis(str) {
  * @returns {Boolean}
  */
 export function isLangMatch(textLang, currentLang) {
-  textLang = textLang.toLowerCase().split(langSplitRe).filter(s => s !== '');
-  return textLang.some(s => (
+  const textLangs = textLang.toLowerCase().split(langSplitRe).filter(s => s !== '');
+  return textLangs.some(s => (
     s && s.length >= 2 && (
       currentLang.name.toLowerCase().startsWith(s) ||
       s === currentLang.code ||
