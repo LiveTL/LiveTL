@@ -1,4 +1,4 @@
-import { textWhitelist } from './store.js';
+import { textWhitelist, textBlacklist } from './store.js';
 // eslint-disable-next-line no-unused-vars
 import { SyncStore } from './storage.js';
 
@@ -13,10 +13,9 @@ const langSplitRe = /[^A-Za-z]/;
 
 /**
  * @param {SyncStore}
- * @param {(pattern: RegExp | null, message: String) => Boolean} callback 
  * @return {(message: String) => Boolean}
  */
-function userFilter(ufilters, callback) {
+function userFilter(ufilters) {
   /** @type {RegExp | null} */
   let userRegex = null;
   ufilters.subscribe(filters => {
@@ -24,15 +23,15 @@ function userFilter(ufilters, callback) {
       ? new RegExp(filters.join('|'))
       : null;
   });
-  return message => callback(userRegex, message);
+
+  return message => userRegex
+    ? userRegex.test(message)
+    : false;
 }
 
-export const matchesUserFilter = userFilter(
-  textWhitelist,
-  (pattern, message) => pattern
-    ? pattern.test(message)
-    : false
-);
+export const textWhitelisted = userFilter(textWhitelist);
+
+export const textBlacklisted = userFilter(textBlacklist);
 
 /**
  * @param {String} message 

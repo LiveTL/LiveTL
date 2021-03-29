@@ -1,7 +1,7 @@
 import { Queue } from './queue';
 // eslint-disable-next-line no-unused-vars
 import { writable, Writable } from 'svelte/store';
-import { isLangMatch, parseTranslation, matchesUserFilter } from './filter';
+import { isLangMatch, parseTranslation, textWhitelisted } from './filter';
 import { language } from './store';
 import { languageNameCode } from './constants';
 
@@ -31,7 +31,7 @@ function attachTranslationFilter(translations, ytc) {
     if (parsed && isLangMatch(parsed.lang, lang)) {
       translations.set({...message, text: parsed.msg });
     }
-    else if (matchesUserFilter(text)) {
+    else if (textWhitelisted(text)) {
       translations.set({...message, text });
     }
   });
