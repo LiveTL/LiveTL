@@ -3,6 +3,7 @@
     showModMessage,
     language,
     textWhitelist,
+    textBlacklist,
     usernameFilters,
     channelFilters,
   } from "../../js/store.js";
@@ -19,4 +20,5 @@
   items={languageNameValues}
 />
 <CheckOption name="Show moderator messages" store={showModMessage} />
-<ListEdit name="Regex filters" store={textWhitelist}/>
+<ListEdit name="Whitelist filters (regex)" store={textWhitelist}/>
+<ListEdit name="Blacklist filters (regex)" store={textBlacklist} />

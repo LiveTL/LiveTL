@@ -1,7 +1,7 @@
 import { Queue } from './queue';
 // eslint-disable-next-line no-unused-vars
 import { writable, Writable } from 'svelte/store';
-import { isLangMatch, parseTranslation, textWhitelisted } from './filter';
+import { isLangMatch, parseTranslation, textWhitelisted, textBlacklisted } from './filter';
 import { language } from './store';
 import { languageNameCode } from './constants';
 
@@ -24,7 +24,7 @@ attachTranslationFilter(sources.translations, sources.ytc);
  */
 function attachTranslationFilter(translations, ytc) {
   return ytc.subscribe(message => {
-    if (!message) return;
+    if (!message || textBlacklisted(message.text)) return;
     const { text } = message;
     const parsed = parseTranslation(text);
     const lang = languageNameCode[language.get()];
