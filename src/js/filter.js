@@ -1,4 +1,4 @@
-import { textFilters } from './store.js';
+import { textWhitelist } from './store.js';
 // eslint-disable-next-line no-unused-vars
 import { SyncStore } from './storage.js';
 
@@ -28,7 +28,7 @@ function userFilter(ufilters, callback) {
 }
 
 export const matchesUserFilter = userFilter(
-  textFilters,
+  textWhitelist,
   (pattern, message) => pattern
     ? pattern.test(message)
     : false

@@ -26,6 +26,7 @@ export const
   videoPanelSize = SS('videoPanelSize', 80),
   chatSize = SS('chatSize', 50),
   livetlFontSize = SS('livetlFontSize', 18),
-  textFilters = SS('textFilters', []),
+  textWhitelist = SS('textFilters', [''].slice(1)),
+  textBlacklist = SS('textBlacklist', [''].slice(1)),
   usernameFilters = SS('userFilters', {}),
   channelFilters = SS('channelFilters', {});
