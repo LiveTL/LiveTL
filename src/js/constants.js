@@ -35,6 +35,14 @@ export const BROWSER = (() => {
   return Browser.CHROME;
 })();
 
+/** @enum {number} */
+export const AuthorType = {
+  moderator: 1,
+  verified: 2,
+  distinguished: 4,
+  standard: 8
+};
+
 export const languages = [
   { code: 'en', name: 'English', lang: 'English' },
   { code: 'jp', name: 'Japanese', lang: '日本語' },

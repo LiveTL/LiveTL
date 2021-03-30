@@ -3,7 +3,7 @@ import { Queue } from './queue';
 import { writable, Writable } from 'svelte/store';
 import { isLangMatch, parseTranslation, textWhitelisted, textBlacklisted } from './filter';
 import { language, showModMessage } from './store';
-import { languageNameCode } from './constants';
+import { AuthorType, languageNameCode } from './constants';
 
 
 /** @typedef {{text: String, author: String, timestamp: String, id: String, types: String[]}} Message*/
@@ -32,7 +32,7 @@ function attachTranslationFilter(translations, ytc) {
       translations.set({...message, text: parsed.msg });
     }
     else if (textWhitelisted(text) ||
-        types.includes('moderator') && showModMessage.get()
+        types & AuthorType.moderator && showModMessage.get()
     ) {
       translations.set({...message, text });
     }
@@ -51,7 +51,8 @@ function ytcToMsg({ message, author: { name: author, id, types } }) {
     .filter(item => item.type === 'text')
     .map(item => item.text)
     .join('');
-  return { text, author, id, types };
+  const typeFlag = types.reduce((flag, t) => flag | AuthorType[t], 0);
+  return { text, author, id, types: typeFlag };
 }
 
 function compose(...args) {
