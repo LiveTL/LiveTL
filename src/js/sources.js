@@ -44,12 +44,12 @@ function getYTCData(unparsed) {
   } catch (e) { return {}; }
 }
 
-function ytcToMsg({ message, author: { name: author } }) {
+function ytcToMsg({ message, author: { name: author, id, types } }) {
   const text = message
     .filter(item => item.type === 'text')
     .map(item => item.text)
     .join('');
-  return { text, author };
+  return { text, author, id, types };
 }
 
 function compose(...args) {
