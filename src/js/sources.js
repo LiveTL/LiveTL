@@ -2,11 +2,11 @@ import { Queue } from './queue';
 // eslint-disable-next-line no-unused-vars
 import { writable, Writable } from 'svelte/store';
 import { isLangMatch, parseTranslation, textWhitelisted, textBlacklisted } from './filter';
-import { language } from './store';
+import { language, showModMessage } from './store';
 import { languageNameCode } from './constants';
 
 
-/** @typedef {{text: String, author: String, timestamp: String}} Message*/
+/** @typedef {{text: String, author: String, timestamp: String, id: String, types: String[]}} Message*/
 
 /** @type {{ translations: Writable<Message>, ytc: Writable<Message>}} */
 export const sources = {
@@ -25,13 +25,15 @@ attachTranslationFilter(sources.translations, sources.ytc);
 function attachTranslationFilter(translations, ytc) {
   return ytc.subscribe(message => {
     if (!message || textBlacklisted(message.text)) return;
-    const { text } = message;
+    const { text, types } = message;
     const parsed = parseTranslation(text);
     const lang = languageNameCode[language.get()];
     if (parsed && isLangMatch(parsed.lang, lang)) {
       translations.set({...message, text: parsed.msg });
     }
-    else if (textWhitelisted(text)) {
+    else if (textWhitelisted(text) ||
+        types.includes('moderator') && showModMessage.get()
+    ) {
       translations.set({...message, text });
     }
   });
