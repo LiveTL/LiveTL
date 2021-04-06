@@ -10,7 +10,7 @@
     videoSide,
     videoPanelSize,
     chatSize,
-    chatZoom,
+    chatZoom
   } from "../js/store.js";
   import { VideoSide } from "../js/constants.js";
   import ChatEmbed from "./ChatEmbed.svelte";
@@ -30,8 +30,8 @@
   const convertToPx = () => {
     [
       [chatElem, "height", chatSize],
-      [isEmbedded ? null : vidElem, "width", videoPanelSize],
-    ].forEach((item) => {
+      [isEmbedded ? null : vidElem, "width", videoPanelSize]
+    ].forEach(item => {
       const [elem, prop, store] = item;
       if (!elem) return;
       if (isResizing) {
@@ -54,22 +54,22 @@
     isResizing = !isResizing;
     convertToPx();
   };
-  const changeSide = (side) => {
-    document.querySelectorAll(".ui-resizable-handle").forEach((elem) => {
+  const changeSide = side => {
+    document.querySelectorAll(".ui-resizable-handle").forEach(elem => {
       elem.remove();
     });
     resizable(".vertical .resizable", {
       handles: $videoSide == VideoSide.RIGHT ? "w" : "e",
       start: resizeCallback,
       stop: resizeCallback,
-      resize: (event, ui) => {},
+      resize: (event, ui) => {}
       // containment: 'body',
     });
     resizable(".vertical .autoscale .resizable", {
       handles: "s",
       start: resizeCallback,
       stop: resizeCallback,
-      resize: (event, ui) => {},
+      resize: (event, ui) => {}
       // containment: 'body',
     });
   };
@@ -185,7 +185,7 @@
   :global(.ui-resizable-n::after) {
     content: "⋯";
     font-size: 30px;
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     position: absolute;
   }
   :global(.s-app) {
