@@ -58,7 +58,8 @@
     flex-direction: row;
   }
 
-  .dropdown:hover, .dropdown-label:hover, .dropdown > *:hover {
+
+  :global(.dropdown input:hover) {
     cursor: pointer;
   }
 
