@@ -35,6 +35,8 @@
     "svelte-loader-hot": "^0.3.1",
     "svelte-materialify": "^0.3.6",
     "svelte-preprocess": "^4.6.9",
+    "vue-loader": "^15.9.6",
+    "vue-template-compiler": "^2.6.12",
     "webpack": "4.33.0",
     "webpack-dev-server": "3.7.1",
     "write-file-webpack-plugin": "4.5.0"
@@ -44,6 +46,7 @@
     "cache-loader": "^4.1.0",
     "jquery": "^3.6.0",
     "jquery-ui-bundle": "^1.12.1-migrate",
+    "vue": "^2.6.12",
     "youtube-iframe": "^1.0.3"
   }
 }

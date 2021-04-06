@@ -8,6 +8,7 @@ var webpack = require('webpack'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   WriteFilePlugin = require('write-file-webpack-plugin'),
   StringPlugin = require('string-replace-loader');
+const { VueLoaderPlugin } = require('vue-loader');
 
 const { preprocess } = require('./svelte.config');
 const mode = process.env.NODE_ENV || 'development';
@@ -32,6 +33,7 @@ var options = {
     options: path.join(__dirname, 'src', 'js', 'pages', 'options.js'),
     background: path.join(__dirname, 'src', 'js', 'pages', 'background.js'),
     watch: path.join(__dirname, 'src', 'js', 'pages', 'watch.js'),
+    hyperchat: path.join(__dirname, 'src', 'js', 'pages', 'hyperchat.js'),
     injector: path.join(__dirname, 'src', 'js', 'content_scripts', 'injector.js'),
     interceptor: path.join(__dirname, 'src', 'js', 'content_scripts', 'interceptor.js'),
     chat: path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat.js'),
@@ -86,6 +88,10 @@ var options = {
             preprocess
           }
         }
+      },
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader'
       }
     ]
   },
@@ -131,7 +137,13 @@ var options = {
       chunks: ['background']
     }),
     new WriteFilePlugin(),
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new VueLoaderPlugin(),
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, 'src', 'empty.html'),
+      filename: 'hyperchat.html',
+      chunks: ['hyperchat']
+    }),
   ],
   mode,
   devServer: {
