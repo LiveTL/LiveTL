@@ -18,6 +18,7 @@
     "clean-webpack-plugin": "^1.0.0",
     "copy-webpack-plugin": "^4.6.0",
     "css-loader": "2.1.0",
+    "deepmerge": "^4.2.2",
     "eslint": "^7.22.0",
     "eslint-plugin-svelte3": "^3.1.2",
     "file-loader": "3.0.1",
@@ -27,6 +28,7 @@
     "jest": "^26.6.3",
     "postcss": "^8.2.8",
     "sass": "^1.32.8",
+    "sass-loader": "^11.0.1",
     "string-replace-loader": "^3.0.1",
     "style-loader": "^0.23.1",
     "svelte": "^3.5.1",
@@ -47,6 +49,7 @@
     "jquery": "^3.6.0",
     "jquery-ui-bundle": "^1.12.1-migrate",
     "vue": "^2.6.12",
+    "vuetify": "^2.4.9",
     "youtube-iframe": "^1.0.3"
   }
 }
