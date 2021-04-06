@@ -1,19 +1,9 @@
 <script>
-  import { Icon, Menu, TextField, List, ListItem } from "svelte-materialify/src";
+  import { mdiClose } from "@mdi/js";
+  import { Button, Icon, Menu, TextField, ListItem } from "svelte-materialify/src";
 
   export let name = "";
   export let store = null; // LookupStore
-
-  function correctValue() {
-    console.log(value);
-    return
-    if (value == null) {
-      value = $store;
-    }
-    if (typeof value != "string") {
-      value = value[0];
-    }
-  }
 
   function getItems() {
     const items = [];
@@ -34,13 +24,16 @@
       <TextField disabled={null} solo={true} value={name} readonly></TextField>
     </div>
 
-    <List multiple={true} max={Infinity}>
-      {#each items as item}
-        <ListItem>
-          {item}
-        </ListItem>
-      {/each}
-    </List>
+    {#each items as item}
+      <ListItem>
+        {item}
+        <div class="button">
+          <Button fab size="x-small">
+            <Icon path={mdiClose} size="14px" />
+          </Button>
+        </div>
+      </ListItem>
+    {/each}
   </Menu>
 </div>
 
@@ -52,6 +45,10 @@
 
   .dropdown:hover, .dropdown-label:hover, .dropdown > *:hover {
     cursor: pointer;
+  }
+
+  .button {
+    float: right;
   }
 
   :global(.dropdown > div) {
