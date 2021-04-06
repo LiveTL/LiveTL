@@ -4,6 +4,11 @@
 ## Development
 
 ### Setup
+
+> ℹ LiveTL uses submodules. Make sure to clone the repo with the `--recursive` flag!
+
+> ℹ When pulling, you should also use `git pull --recurse`.
+
 ```bash
 yarn # use yarn, not npm
 ```
