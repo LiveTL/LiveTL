@@ -30,7 +30,8 @@
       ],
       "js": [
         "injector.bundle.js",
-        "interceptor.bundle.js"
+        "interceptor.bundle.js",
+        "chat.bundle.js"
       ],
       "all_frames": true
     }

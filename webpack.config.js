@@ -6,7 +6,8 @@ var webpack = require('webpack'),
   CleanWebpackPlugin = require('clean-webpack-plugin'),
   CopyWebpackPlugin = require('copy-webpack-plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
-  WriteFilePlugin = require('write-file-webpack-plugin');
+  WriteFilePlugin = require('write-file-webpack-plugin'),
+  StringPlugin = require('string-replace-loader');
 
 const { preprocess } = require('./svelte.config');
 const mode = process.env.NODE_ENV || 'development';
@@ -33,6 +34,7 @@ var options = {
     watch: path.join(__dirname, 'src', 'js', 'pages', 'watch.js'),
     injector: path.join(__dirname, 'src', 'js', 'content_scripts', 'injector.js'),
     interceptor: path.join(__dirname, 'src', 'js', 'content_scripts', 'interceptor.js'),
+    chat: path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat.js'),
   },
   chromeExtensionBoilerplate: {
     notHotReload: []
@@ -43,6 +45,14 @@ var options = {
   },
   module: {
     rules: [
+      {
+        test: /src\/submodules\/chat\/scripts\/chat\.js$/,
+        loader: 'string-replace-loader',
+        options: {
+          search: "import { getWAR } from '@/modules/war.js';",
+          replace: 'window.isLiveTL = true; const getWAR = path => `chrome-extension://${chrome.runtime.id}/${path}`;',
+        }
+      },
       // {
       //   test: /.*/,
       //   loader: 'cache-loader',
