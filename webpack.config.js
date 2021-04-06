@@ -128,6 +128,10 @@ var options = {
       'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV)
     }),
     new CopyWebpackPlugin([{
+      from: 'src/submodules/chat/assets',
+      to: 'hyperchat'
+    }]),
+    new CopyWebpackPlugin([{
       from: 'src/manifest.json',
       transform: function (content, path) {
         // generates the manifest file using the package.json informations
@@ -163,7 +167,7 @@ var options = {
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'empty.html'),
-      filename: 'hyperchat.html',
+      filename: 'hyperchat/index.html',
       chunks: ['hyperchat']
     }),
   ],
