@@ -29,10 +29,10 @@ const chatLoaded = async () => {
         event.stopImmediatePropagation();
       }, true);
     }
-    window.fetchFallback = window.fetch;
+    window.fetchFallbackLiveTLSvelte = window.fetch;
     window.fetch = async (...args) => {
       const url = args[0].url;
-      const result = await window.fetchFallback(...args);
+      const result = await window.fetchFallbackLiveTLSvelte(...args);
       if (url.startsWith(
         'https://www.youtube.com/youtubei/v1/live_chat/get_live_chat')
       ) {
