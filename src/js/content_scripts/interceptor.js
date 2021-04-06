@@ -3,7 +3,7 @@ import { sendToBackground } from '../bgmessage.js';
 
 let tabid = -1;
 
-const messageReceiveCallback = async (response) => {
+const messageReceiveLiveTLSvelteCallback = async (response) => {
   response = JSON.parse(response);
   try {
     let chunk = parseChatResponse(response);
@@ -37,12 +37,12 @@ const chatLoaded = async () => {
         'https://www.youtube.com/youtubei/v1/live_chat/get_live_chat')
       ) {
         const response = JSON.stringify(await (await result.clone()).json());
-        window.dispatchEvent(new CustomEvent('messageReceive', { detail: response }));
+        window.dispatchEvent(new CustomEvent('messageReceiveLiveTLSvelte', { detail: response }));
       }
       return result;
     };
   `;
-  window.addEventListener('messageReceive', d => messageReceiveCallback(d.detail));
+  window.addEventListener('messageReceiveLiveTLSvelte', d => messageReceiveLiveTLSvelteCallback(d.detail));
   document.body.appendChild(script);
 };
   
