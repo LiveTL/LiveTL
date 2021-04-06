@@ -1,6 +1,6 @@
 <script>
   import { mdiClose } from "@mdi/js";
-  import { Button, Icon, Menu, TextField, ListItem } from "svelte-materialify/src";
+  import { Button, Divider, Icon, Menu, TextField, ListItem } from "svelte-materialify/src";
 
   export let name = "";
   export let store = null; // LookupStore
@@ -24,13 +24,19 @@
       <TextField disabled={null} solo={true} value={name} readonly></TextField>
     </div>
 
-    {#each items as item}
+    {#each items as item, i}
+      {#if i}
+        <Divider />
+      {/if}
+      <!--TODO make it show a menu when listitem is clicked-->
       <ListItem>
-        {item}
-        <div class="button">
-          <Button fab size="x-small">
-            <Icon path={mdiClose} size="14px" />
-          </Button>
+        <div class="listitem-content">
+          <div class="item">{item}</div>
+          <div class="button">
+            <Button fab size="x-small">
+              <Icon path={mdiClose} size="14px" />
+            </Button>
+          </div>
         </div>
       </ListItem>
     {/each}
@@ -43,12 +49,22 @@
     width: 100%;
   }
 
+  .item {
+    padding-top: 7px;
+  }
+
+  .listitem-content {
+    display: flex;
+    flex-direction: row;
+  }
+
   .dropdown:hover, .dropdown-label:hover, .dropdown > *:hover {
     cursor: pointer;
   }
 
   .button {
-    float: right;
+    margin-left: auto;
+    order: 2;
   }
 
   :global(.dropdown > div) {
