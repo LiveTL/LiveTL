@@ -21,7 +21,6 @@
 
   onMount(() => {
     return store.subscribe(() => {
-      console.log('stuff has changed lmao');
       getItems();
     });
   });

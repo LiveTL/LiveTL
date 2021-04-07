@@ -71,7 +71,10 @@
             </span>
             <span
              class="redHighlight"
-             on:click={() => channelFilters.set(item.id, {...channelFilters.get(item.id), name: item.author, blacklist: true})}>
+             on:click={() => {
+               channelFilters.set(item.id, {...channelFilters.get(item.id), name: item.author, blacklist: true});
+               items = items.filter(i => i.id != item.id);
+             }}>
               <Icon path={mdiEyeOffOutline} size="1em" />
             </span>
           </span>
