@@ -2,7 +2,7 @@ import { Queue } from './queue';
 // eslint-disable-next-line no-unused-vars
 import { writable, Writable } from 'svelte/store';
 import { isLangMatch, parseTranslation, textWhitelisted, textBlacklisted } from './filter';
-import { language, showModMessage } from './store';
+import { channelFilters, language, showModMessage } from './store';
 import { AuthorType, languageNameCode } from './constants';
 
 
@@ -24,11 +24,13 @@ attachTranslationFilter(sources.translations, sources.ytc);
  */
 function attachTranslationFilter(translations, ytc) {
   return ytc.subscribe(message => {
-    if (!message || textBlacklisted(message.text)) return;
+    // if (message) console.log(message, channelFilters.get(message.id));
+    if (!message
+      || textBlacklisted(message.text)
+      || channelFilters.get(message.id).blacklist) return;
     const { text, types } = message;
     const parsed = parseTranslation(text);
     const lang = languageNameCode[language.get()];
-    console.log(message);
     if (parsed && isLangMatch(parsed.lang, lang)) {
       translations.set({...message, text: parsed.msg });
     }

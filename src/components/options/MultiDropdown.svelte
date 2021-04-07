@@ -8,7 +8,7 @@
   export let getBool = key => store.get(key);
   export let setBool = (key, val) => store.set(key, val);
 
-  function getItems() {
+  function getItems(s) {
     const items = [];
     Object.entries(store._lookup).forEach(([key, value]) => {
       if (key && getBool(key)) items.push({ key, item: getDisplayName(key, value) });
@@ -16,8 +16,7 @@
     return items;
   }
 
-  $: items = getItems();
-  $: console.log('items', items)
+  $: items = getItems($store);
 </script>
 
 <div class="dropdown">
