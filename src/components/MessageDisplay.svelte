@@ -1,12 +1,12 @@
 <script>
-  import { afterUpdate, onMount, onDestroy } from "svelte";
+  import { beforeUpdate, afterUpdate, onMount, onDestroy } from "svelte";
   import { TextDirection } from "../js/constants.js";
   import { sources } from "../js/sources.js";
   import "../css/splash.css";
   import { Icon } from "svelte-materialify/src";
   import { mdiPencil, mdiEyeOffOutline } from "@mdi/js";
   import { channelFilters, livetlFontSize } from "../js/store.js";
-  $: document.body.style.fontSize = Math.round($livetlFontSize) + 'px';
+  $: document.body.style.fontSize = Math.round($livetlFontSize) + "px";
   export let direction;
   /** @type {{ text: String, author: String }[]}*/
   export let items = [];
@@ -14,24 +14,35 @@
   let bottomMsg = null;
   let messageDisplay = null;
   let unsubscribe = null;
-  // TODO make it not scroll while user is scrolled up
-  // either listen for scroll event, or fix this
-  const shouldScroll = () => bottomMsg;
-  // const shouldScroll = () => bottomMsg &&
-  //   Math.ceil(messageDisplay.parentElement.innerHeight + messageDisplay.scrollTop + 20) >= messageDisplay.scrollHeight;
-
+  const shouldScroll = () => {
+    try {
+      const parentElem =
+        messageDisplay.parentElement.parentElement.parentElement;
+      return (
+        bottomMsg &&
+        Math.ceil(parentElem.clientHeight + parentElem.scrollTop) >=
+          parentElem.scrollHeight
+      );
+    } catch (e) {
+      return false;
+    }
+  };
   onMount(() => {
-    unsubscribe = sources.translations.subscribe((n) => {
+    unsubscribe = sources.translations.subscribe(n => {
       if (n) items.push(n);
       items = items;
     });
   });
   onDestroy(() => unsubscribe());
-  
+
+  let scrollOnTick = false;
+  beforeUpdate(() => {
+    if (shouldScroll() && direction == TextDirection.BOTTOM)
+      scrollOnTick = true;
+  });
   afterUpdate(() => {
-    if (shouldScroll() && direction == TextDirection.BOTTOM) {
-      bottomMsg.scrollIntoView();
-    }
+    if (scrollOnTick) bottomMsg.scrollIntoView();
+    scrollOnTick = false;
   });
 </script>
 
@@ -85,18 +96,23 @@
               <Icon path={mdiPencil} size="1em" class="blueHighlight" />
             </span>
             <span
-             class="redHighlight"
-             on:click={() => {
-               channelFilters.set(item.id, {...channelFilters.get(item.id), name: item.author, blacklist: true});
-               items = items.filter(i => i.id != item.id);
-             }}>
+              class="redHighlight"
+              on:click={() => {
+                channelFilters.set(item.id, {
+                  ...channelFilters.get(item.id),
+                  name: item.author,
+                  blacklist: true
+                });
+                items = items.filter(i => i.id != item.id);
+              }}
+            >
               <Icon path={mdiEyeOffOutline} size="1em" />
             </span>
           </span>
         </span>
       </div>
     {/each}
-    <div class="bottom 🥺" bind:this={bottomMsg}/>
+    <div class="bottom 🥺" bind:this={bottomMsg} />
   </div>
 </div>
 
