@@ -7,7 +7,7 @@
     plaintextWhitelist,
     plaintextBlacklist,
     usernameFilters,
-    channelFilters,
+    channelFilters
   } from "../../js/store.js";
   import { languageNameValues } from "../../js/constants.js";
   import CheckOption from "../options/Toggle.svelte";
@@ -28,8 +28,16 @@
   store={channelFilters}
   getDisplayName={(n, v) => v.name}
   getBool={n => channelFilters.get(n).blacklist}
-  setBool={(n, v) => channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}/>
-<ListEdit name="Chat whitelist (regex)" store={textWhitelist}/>
-<ListEdit name="Chat blacklist (regex)" store={textBlacklist} />
-<ListEdit name="Chat whitelist (plaintext)" store={plaintextWhitelist} />
-<ListEdit name="Chat blacklist (plaintext)" store={plaintextBlacklist} />
+  setBool={(n, v) =>
+    channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}
+/>
+<ListEdit
+  name="Message whitelist filters (plaintext)"
+  store={plaintextWhitelist}
+/>
+<ListEdit
+  name="Message blacklist filters (plaintext)"
+  store={plaintextBlacklist}
+/>
+<ListEdit name="Message whitelist filters (regex)" store={textWhitelist} />
+<ListEdit name="Message blacklist filters (regex)" store={textBlacklist} />

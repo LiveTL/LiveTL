@@ -1,4 +1,5 @@
 import { openWindow, sendToBackground } from '../bgmessage.js';
+import { mdiOpenInNew, mdiTelevisionPlay, mdiIframeArray } from '@mdi/js';
 
 for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) {
   window.addEventListener(eventName, e => e.stopImmediatePropagation(), true);
@@ -56,13 +57,30 @@ const getLiveTLButton = (color) => {
   return a;
 };
 
-const makeButton = (text, callback, color='rgb(0, 153, 255)') => {
+const makeButton = (text, callback, color='rgb(0, 153, 255)', icon='') => {
   let a = document.createElement('span');
+  a.style.flexGrow = 1;
+  a.style.flexBasis = 0;
   a.appendChild(getLiveTLButton(color));
   const e = document.querySelector('#input-panel');
-  e.appendChild(a);
+  let elem = e.querySelector('.livetlButtonWrapper');
+  if (!elem) {
+    elem = document.createElement('div');
+    elem.className = 'livetlButtonWrapper';
+    elem.style.display = 'flex';
+    e.appendChild(elem);
+  }
+  elem.appendChild(a);
   a.querySelector('a').addEventListener('click', callback);
-  a.querySelector('yt-formatted-string').textContent = text;
+  const textbox = a.querySelector('yt-formatted-string');
+  const svg = document.createElement('svg');
+  const defs = document.createElement('defs');
+  const path = document.createElement('path');
+  defs.appendChild(path);
+  svg.appendChild(defs);
+  textbox.textContent = text;
+  textbox.appendChild(svg);
+  path.setAttribute('d', icon);
 };
 
 window.addEventListener('load', () => {
@@ -84,7 +102,7 @@ window.addEventListener('load', () => {
       makeButton('Watch in LiveTL', () => {
         // eslint-disable-next-line no-undef
         window.top.location = `chrome-extension://${chrome.runtime.id}/watch.html?${constructParams().toString()}`;
-      });
+      }, undefined, mdiTelevisionPlay);
       const tabid = await sendToBackground({
         type:'tabid'
       });
@@ -93,8 +111,8 @@ window.addEventListener('load', () => {
         popoutParams.set('tabid', tabid);
         // eslint-disable-next-line no-undef
         openWindow(`chrome-extension://${chrome.runtime.id}/popout.html?${popoutParams.toString()}`);
-      });
-      makeButton('Load LiveTL', () => {
+      }, undefined, mdiOpenInNew);
+      makeButton('Embed TLs', () => {
         let embeddedParams = constructParams();
         embeddedParams.set('embedded', true);
         document.body.outerHTML = '';
@@ -108,7 +126,7 @@ window.addEventListener('load', () => {
         window.addEventListener('message', d => {
           iframe.contentWindow.postMessage(d.data, '*');
         });
-      });
+      }, undefined, mdiIframeArray);
       // eslint-disable-next-line no-empty
     } catch(e) {
     }
