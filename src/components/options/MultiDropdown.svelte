@@ -16,7 +16,8 @@
     return items;
   }
 
-  $: items = getItems($store);
+  $: items = getItems();
+  $: console.log('items', items)
 </script>
 
 <div class="dropdown">
@@ -35,7 +36,7 @@
           <div class="listitem-content">
             <div class="item">{item.item}</div>
             <div class="button">
-              <Button fab size="x-small" on:click={() => setBool(item.key, false)}>
+              <Button fab size="x-small" on:click={() => {setBool(item.key, false); items = items.filter(i => i != item)}}>
                 <Icon path={mdiClose} size="14px" />
               </Button>
             </div>

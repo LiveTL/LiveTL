@@ -24,6 +24,7 @@
 <MultiDropdown
   name="Blocked users"
   store={channelFilters}
+  getDisplayName={(n, v) => v.name}
   getBool={n => channelFilters.get(n).blacklist}
   setBool={(n, v) => channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}/>
 <ListEdit name="Whitelist filters (regex)" store={textWhitelist}/>

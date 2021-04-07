@@ -5,7 +5,7 @@
   import "../css/splash.css";
   import { Icon } from "svelte-materialify/src";
   import { mdiPencil, mdiEyeOffOutline } from "@mdi/js";
-  import { livetlFontSize } from "../js/store.js";
+  import { channelFilters, livetlFontSize } from "../js/store.js";
   $: document.body.style.fontSize = Math.round($livetlFontSize) + 'px';
   export let direction;
   /** @type {{ text: String, author: String }[]}*/
@@ -69,7 +69,9 @@
             <span class="blueHighlight">
               <Icon path={mdiPencil} size="1em" class="blueHighlight" />
             </span>
-            <span class="redHighlight">
+            <span
+             class="redHighlight"
+             on:click={() => channelFilters.set(item.id, {...channelFilters.get(item.id), name: item.author, blacklist: true})}>
               <Icon path={mdiEyeOffOutline} size="1em" />
             </span>
           </span>
