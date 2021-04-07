@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from 'svelte';
   import { mdiClose } from "@mdi/js";
   import { Button, Divider, Icon, Menu, TextField, ListItem } from "svelte-materialify/src";
 
@@ -8,15 +9,23 @@
   export let getBool = key => store.get(key);
   export let setBool = (key, val) => store.set(key, val);
 
-  function getItems(s) {
-    const items = [];
+  let items = []
+
+  function getItems() {
+    const items_ = [];
     Object.entries(store._lookup).forEach(([key, value]) => {
-      if (key && getBool(key)) items.push({ key, item: getDisplayName(key, value) });
+      if (key && getBool(key)) items_.push({ key, item: getDisplayName(key, value) });
     });
-    return items;
+    items = items_;
   }
 
-  $: items = getItems($store);
+  onMount(() => {
+    return store.subscribe(() => {
+      console.log('stuff has changed lmao');
+      getItems();
+    });
+  });
+  $: $store, getItems();
 </script>
 
 <div class="dropdown">
@@ -35,7 +44,7 @@
           <div class="listitem-content">
             <div class="item">{item.item}</div>
             <div class="button">
-              <Button fab size="x-small" on:click={() => {setBool(item.key, false); items = items.filter(i => i != item)}}>
+              <Button fab size="x-small" on:click={() => {setBool(item.key, false)}}>
                 <Icon path={mdiClose} size="14px" />
               </Button>
             </div>
