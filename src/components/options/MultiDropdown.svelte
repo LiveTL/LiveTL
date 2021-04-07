@@ -4,18 +4,19 @@
 
   export let name = "";
   export let store = null; // LookupStore
+  export let getDisplayName = (key, value) => `${key}`;
+  export let getBool = key => store.get(key);
+  export let setBool = (key, val) => store.set(key, val);
 
   function getItems() {
     const items = [];
     Object.entries(store._lookup).forEach(([key, value]) => {
-      if (key) items.push(`${key}`);
+      if (key && getBool(key)) items.push(getDisplayName(key, value));
     });
-    return ['bruh', 'moment'];
     return items;
   }
 
   $: items = getItems($store);
-  $: console.log(items);
 </script>
 
 <div class="dropdown">
@@ -24,22 +25,26 @@
       <TextField disabled={null} solo={true} value={name} readonly></TextField>
     </div>
 
-    {#each items as item, i}
-      {#if i}
-        <Divider />
-      {/if}
-      <!--TODO make it show a menu when listitem is clicked-->
-      <ListItem>
-        <div class="listitem-content">
-          <div class="item">{item}</div>
-          <div class="button">
-            <Button fab size="x-small">
-              <Icon path={mdiClose} size="14px" />
-            </Button>
+    {#if items.length}
+      {#each items as item, i}
+        {#if i}
+          <Divider />
+        {/if}
+        <!--TODO make it show a menu when listitem is clicked-->
+        <ListItem>
+          <div class="listitem-content">
+            <div class="item">{item}</div>
+            <div class="button">
+              <Button fab size="x-small" on:click={() => setBool(item, false)}>
+                <Icon path={mdiClose} size="14px" />
+              </Button>
+            </div>
           </div>
-        </div>
-      </ListItem>
-    {/each}
+        </ListItem>
+      {/each}
+     {:else}
+        <ListItem>none</ListItem>
+     {/if}
   </Menu>
 </div>
 
