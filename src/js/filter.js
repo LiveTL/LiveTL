@@ -12,33 +12,16 @@ const transDelimiters = ['-', ':'];
 const langSplitRe = /[^A-Za-z]/;
 
 /**
- * @param {SyncStore}
+ * @param {SyncStore} ufilters
+ * @param {(filter: String) => String} transform
  * @return {(message: String) => Boolean}
  */
-function userFilter(ufilters) {
+function userFilter(ufilters, transform = filter => filter) {
   /** @type {RegExp | null} */
   let userRegex = null;
   ufilters.subscribe(filters => {
     userRegex = filters.length
-      ? new RegExp(filters.join('|'))
-      : null;
-  });
-
-  return message => userRegex
-    ? userRegex.test(message)
-    : false;
-}
-
-/**
- * @param {SyncStore}
- * @return {(message: String) => Boolean}
- */
-function userPlainFilter(ufilters) {
-  /** @type {RegExp | null} */
-  let userRegex = null;
-  ufilters.subscribe(filters => {
-    userRegex = filters.length
-      ? new RegExp(filters.map(escapeRegExp).join('|'))
+      ? new RegExp(filters.map(transform).join('|'))
       : null;
   });
 
@@ -49,8 +32,8 @@ function userPlainFilter(ufilters) {
 
 export const textWhitelisted = userFilter(textWhitelist);
 export const textBlacklisted = userFilter(textBlacklist);
-export const plaintextWhitelisted = userPlainFilter(plaintextWhitelist);
-export const plaintextBlacklisted = userPlainFilter(plaintextBlacklist);
+export const plaintextWhitelisted = userFilter(plaintextWhitelist, escapeRegExp);
+export const plaintextBlacklisted = userFilter(plaintextBlacklist, escapeRegExp);
 
 /**
  * @param {String} message 
