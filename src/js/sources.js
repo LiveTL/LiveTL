@@ -24,10 +24,17 @@ attachTranslationFilter(sources.translations, sources.ytc);
  */
 function attachTranslationFilter(translations, ytc) {
   return ytc.subscribe(message => {
-    // if (message) console.log(message, channelFilters.get(message.id));
-    if (!message
-      || textBlacklisted(message.text)
-      || channelFilters.get(message.id).blacklist) return;
+    // TODO remove this if else and uncomment following return condition
+    if (message) {
+      translations.set({ ...message, text: message.text });
+      return;
+    }
+    else {
+      return;
+    }
+    // if (!message
+    //   || textBlacklisted(message.text)
+    //   || channelFilters.get(message.id).blacklist) return;
     const { text, types } = message;
     const parsed = parseTranslation(text);
     const lang = languageNameCode[language.get()];

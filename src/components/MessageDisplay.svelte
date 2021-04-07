@@ -1,5 +1,5 @@
 <script>
-  import { onMount, onDestroy } from "svelte";
+  import { afterUpdate, onMount, onDestroy } from "svelte";
   import { TextDirection } from "../js/constants.js";
   import { sources } from "../js/sources.js";
   import "../css/splash.css";
@@ -11,7 +11,15 @@
   /** @type {{ text: String, author: String }[]}*/
   export let items = [];
 
+  let bottomMsg = null;
+  let messageDisplay = null;
   let unsubscribe = null;
+  // TODO make it not scroll while user is scrolled up
+  // either listen for scroll event, or fix this
+  const shouldScroll = () => bottomMsg;
+  // const shouldScroll = () => bottomMsg &&
+  //   Math.ceil(messageDisplay.parentElement.innerHeight + messageDisplay.scrollTop + 20) >= messageDisplay.scrollHeight;
+
   onMount(() => {
     unsubscribe = sources.translations.subscribe((n) => {
       if (n) items.push(n);
@@ -19,10 +27,17 @@
     });
   });
   onDestroy(() => unsubscribe());
+  
+  afterUpdate(() => {
+    if (shouldScroll() && direction == TextDirection.BOTTOM) {
+      bottomMsg.scrollIntoView();
+    }
+  });
 </script>
 
 <div class="messageDisplayWrapper">
   <div
+    bind:this={messageDisplay}
     class="messageDisplay"
     style="align-self: flex-{direction === TextDirection.BOTTOM
       ? 'end'
@@ -81,6 +96,7 @@
         </span>
       </div>
     {/each}
+    <div class="bottom 🥺" bind:this={bottomMsg}/>
   </div>
 </div>
 
