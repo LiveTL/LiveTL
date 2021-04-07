@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
-import { parseTranslation, isLangMatch, textWhitelisted, textBlacklisted } from '../../js/filter.js';
+import { parseTranslation, isLangMatch, textWhitelisted, textBlacklisted, plaintextWhitelisted } from '../../js/filter.js';
 import { languages } from '../../js/constants.js';
-import { textBlacklist, textWhitelist } from '../../js/store.js';
+import { plaintextWhitelist, textBlacklist, textWhitelist } from '../../js/store.js';
 
 const langs = {};
 languages.forEach(lang => {
@@ -63,5 +63,34 @@ describe('user regex filters', () => {
   it('does not flag blacklist if no filters', () => {
     textBlacklist.set([]);
     expect(textBlacklisted('hello there')).toBeFalsy();
+  });
+});
+
+describe('user plaintext filters', () => {
+  it('does not match every message if no filters', () => {
+    plaintextWhitelist.set([]);
+    expect(plaintextWhitelisted('hello there')).toBeFalsy();
+  });
+
+  it('matches when there is one filter', () => {
+    plaintextWhitelist.set(['hello']);
+    expect(plaintextWhitelisted('hello there')).toBeTruthy();
+    expect(plaintextWhitelisted('hey there')).toBeFalsy();
+  });
+
+  it('matches when there are multiple filters', () => {
+    plaintextWhitelist.set(['hello', 'there', 'general']);
+    expect(plaintextWhitelisted('hello kenobi')).toBeTruthy();
+    expect(plaintextWhitelisted('there are three filters')).toBeTruthy();
+    expect(plaintextWhitelisted('general kenobi')).toBeTruthy();
+    expect(plaintextWhitelisted('none of the filters')).toBeFalsy();
+  });
+
+  it('properly matches escaped regex', () => {
+    plaintextWhitelist.set(['^hello', 'there$', '[en]']);
+    expect(plaintextWhitelisted('hello')).toBeFalsy();
+    expect(plaintextWhitelisted('there$ general')).toBeTruthy();
+    expect(plaintextWhitelisted('^hello')).toBeTruthy();
+    expect(plaintextWhitelisted('[en] test translation')).toBeTruthy();
   });
 });
