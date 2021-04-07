@@ -27,7 +27,7 @@
       <Options {isStandalone} />
     </div>
     <div style="display: {settingsOpen ? 'none' : 'block'};">
-      <MessageDisplay direction={$textDirection} />
+      <MessageDisplay direction={$textDirection} {settingsOpen} />
     </div>
   </Wrapper>
 </MaterialApp>

@@ -8,6 +8,7 @@
   import { channelFilters, livetlFontSize } from "../js/store.js";
   $: document.body.style.fontSize = Math.round($livetlFontSize) + "px";
   export let direction;
+  export let settingsOpen = false;
   /** @type {{ text: String, author: String }[]}*/
   export let items = [];
 
@@ -36,9 +37,16 @@
   onDestroy(() => unsubscribe());
 
   let scrollOnTick = false;
+  let settingsWasOpen = false;
+  $: settingsWasOpen = !settingsOpen;
   beforeUpdate(() => {
-    if (shouldScroll() && direction == TextDirection.BOTTOM)
+    if (
+      (shouldScroll() || settingsWasOpen) &&
+      direction == TextDirection.BOTTOM
+    ) {
       scrollOnTick = true;
+      settingsWasOpen = false;
+    }
   });
   afterUpdate(() => {
     if (scrollOnTick) bottomMsg.scrollIntoView();
