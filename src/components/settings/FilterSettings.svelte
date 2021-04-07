@@ -4,6 +4,8 @@
     language,
     textWhitelist,
     textBlacklist,
+    plaintextWhitelist,
+    plaintextBlacklist,
     usernameFilters,
     channelFilters,
   } from "../../js/store.js";
@@ -29,3 +31,5 @@
   setBool={(n, v) => channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}/>
 <ListEdit name="Chat whitelist (regex)" store={textWhitelist}/>
 <ListEdit name="Chat blacklist (regex)" store={textBlacklist} />
+<ListEdit name="Chat whitelist (plaintext)" store={plaintextWhitelist} />
+<ListEdit name="Chat blacklist (plaintext)" store={plaintextBlacklist} />

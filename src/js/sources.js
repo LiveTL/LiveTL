@@ -1,7 +1,7 @@
 import { Queue } from './queue';
 // eslint-disable-next-line no-unused-vars
 import { writable, Writable } from 'svelte/store';
-import { isLangMatch, parseTranslation, textWhitelisted, textBlacklisted } from './filter';
+import { isLangMatch, parseTranslation, textWhitelisted, textBlacklisted, plaintextWhitelisted, plaintextBlacklisted } from './filter';
 import { channelFilters, language, showModMessage } from './store';
 import { AuthorType, languageNameCode } from './constants';
 
@@ -33,6 +33,7 @@ function attachTranslationFilter(translations, ytc) {
     //   return;
     // }
     if (!message
+      || plaintextBlacklisted(message.text)
       || textBlacklisted(message.text)
       || channelFilters.get(message.id).blacklist) return;
     const { text, types } = message;
@@ -41,7 +42,7 @@ function attachTranslationFilter(translations, ytc) {
     if (parsed && isLangMatch(parsed.lang, lang)) {
       translations.set({...message, text: parsed.msg });
     }
-    else if (textWhitelisted(text) ||
+    else if (textWhitelisted(text) || plaintextWhitelisted(message.text) ||
         types & AuthorType.moderator && showModMessage.get()
     ) {
       translations.set({...message, text });
