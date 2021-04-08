@@ -8,8 +8,11 @@
   You can also disable floating captions in the settings menu.
   `;
   import { onMount } from "svelte";
+  import { sources } from "../js/sources.js";
   import { captionLeft, captionTop, captionWidth } from "../js/store.js";
   let captionElem = null;
+  const { translations } = sources;
+
   onMount(() => {
     const jcap = j(captionElem);
     jcap.draggable({
@@ -44,7 +47,7 @@
   left: {$captionLeft}%;
 "
 >
-  <div class="captionSegment">{text}</div>
+  <div class="captionSegment">{$translations ? $translations.text : text}</div>
 </div>
 
 <style>
