@@ -8,13 +8,12 @@ import { AuthorType, languageNameCode } from './constants';
 
 /** @typedef {{text: String, author: String, timestamp: String, id: String, types: String[]}} Message*/
 
-/** @type {{ translations: Writable<Message>, ytc: Writable<Message>}} */
+/** @type {{ translations: Writable<Message>, mod: Writable<Message> ytc: Writable<Message>}} */
 export const sources = {
   translations: writable(null),
+  mod: writable(null),
   ytc: ytcSource(window).ytc
 };
-
-attachTranslationFilter(sources.translations, sources.ytc);
 
 /** @type {(id: String) => Boolean} */
 const userBlacklisted = id => channelFilters.get(id).blacklist;
@@ -31,15 +30,18 @@ const isMod = msg => msg.types & AuthorType.moderator;
 /** @type {(msg: Message) => Boolean} */
 const showIfMod = msg => isMod(msg) && showModMessage.get();
 
+/** @type {(store: Writable<Message>) => (msg: Message, text: String) => void} */
+const setStoreMessage = store => (msg, text) => store.set({...msg, text});
+
 /**
- * 
  * @param {Writable<Message>} translations 
+ * @param {Writable<Message>} mod
  * @param {Writable<Message>} ytc 
  * @return {() => void} cleanup
  */
-function attachTranslationFilter(translations, ytc) {
-  /** @type {(msg: Message, text: String) => void} */
-  const setTranslation = (msg, text) => translations.set({...msg, text});
+function attachFilters(translations, mod, ytc) {
+  const setTranslation = setStoreMessage(translations);
+  const setModMessage = setStoreMessage(mod);
 
   return ytc.subscribe(message => {
     if (!message || isBlacklisted(message)) return;
@@ -49,10 +51,29 @@ function attachTranslationFilter(translations, ytc) {
     if (parsed && isLangMatch(parsed.lang, lang)) {
       setTranslation(message, parsed.msg);
     }
-    else if (isWhitelisted(message) || showIfMod(message)) {
+    else if (isWhitelisted(message)) {
       setTranslation(message, text);
     }
+    else if (showIfMod(message)) {
+      setModMessage(message, text);
+    }
   });
+}
+
+/**
+ * @template T
+ * @param  {...Writable<T>} stores 
+ * @returns {{ store: Writable<T>, cleanUp: VoidFunction}}
+ */
+export function combineStores(...stores) {
+  const combined = writable(null);
+  const unsubscribes = stores.map(s => s.subscribe(v => combined.set(v)));
+  return {
+    store: combined,
+    cleanUp() {
+      unsubscribes.forEach(u => u());
+    }
+  };
 }
 
 function getYTCData(unparsed) {
@@ -150,6 +171,7 @@ function message(author, msg, timestamp) {
   };
 }
 
+attachFilters(sources.translations, sources.mod, sources.ytc);
 export class DummyYTCEventSource {
   constructor() {
     this.subs = [];

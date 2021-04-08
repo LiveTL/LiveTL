@@ -1,7 +1,7 @@
 <script>
   import { beforeUpdate, afterUpdate, onMount, onDestroy } from "svelte";
   import { TextDirection } from "../js/constants.js";
-  import { sources } from "../js/sources.js";
+  import { sources, combineStores } from "../js/sources.js";
   import "../css/splash.css";
   import { Icon } from "svelte-materialify/src";
   import { mdiPencil, mdiEyeOffOutline } from "@mdi/js";
@@ -29,10 +29,15 @@
     }
   };
   onMount(() => {
-    unsubscribe = sources.translations.subscribe(n => {
+    const { cleanUp, store: source } = combineStores(sources.translations, sources.mod);
+    const sourceUnsub = source.subscribe(n => {
       if (n) items.push(n);
       items = items;
     });
+    unsubscribe = () => {
+      cleanUp();
+      sourceUnsub();
+    }
   });
   onDestroy(() => unsubscribe());
 
