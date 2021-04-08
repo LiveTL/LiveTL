@@ -18,7 +18,6 @@
 
   let field = null;
   $: if (field) {
-    console.log(field);
     const elem = field.querySelector(".s-text-field__wrapper.solo");
     const svg = document.createElement("svg");
     elem.appendChild(svg);
