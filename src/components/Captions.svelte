@@ -13,51 +13,56 @@
   let captionElem = null;
   const { translations } = sources;
 
-  onMount(() => {
-    const jcap = j(captionElem);
-    jcap.draggable({
-      stop: (event, ui) => {
-        const top = captionElem.offsetTop;
-        const left = captionElem.offsetLeft;
-        const height = window.innerHeight;
-        const width = window.innerWidth;
-        const topPercent = (100 * top) / height;
-        const leftPercent = (100 * left) / width;
-        captionTop.set(topPercent);
-        captionLeft.set(leftPercent);
-      },
-      containment: document.body
-    });
-    jcap.resizable({
-      handles: "e, w",
-      stop: (event, ui) => {
-        const width = captionElem.clientWidth;
-        const widthPercent = (100 * width) / window.innerWidth;
-        captionWidth.set(widthPercent);
-      }
-    });
-  });
+  $: if (captionElem) {
+    setTimeout(() => {
+      const jcap = j(captionElem);
+      jcap.draggable({
+        stop: (event, ui) => {
+          const top = captionElem.offsetTop;
+          const left = captionElem.offsetLeft;
+          const height = window.innerHeight;
+          const width = window.innerWidth;
+          const topPercent = (100 * top) / height;
+          const leftPercent = (100 * left) / width;
+          captionTop.set(topPercent);
+          captionLeft.set(leftPercent);
+        },
+        containment: document.body
+      });
+      jcap.resizable({
+        handles: "e, w",
+        stop: (event, ui) => {
+          const width = captionElem.clientWidth;
+          const widthPercent = (100 * width) / window.innerWidth;
+          captionWidth.set(widthPercent);
+        }
+      });
+    }, 0);
+  }
 </script>
 
 <div
-  id="ltlcaptions"
+  class="captionsBox"
   bind:this={captionElem}
   style="
   top: {$captionTop}%;
   left: {$captionLeft}%;
+  width: {$captionWidth}%;
 "
 >
   <div class="captionSegment">{$translations ? $translations.text : text}</div>
 </div>
 
 <style>
-  #ltlcaptions {
+  .captionsBox {
     z-index: 99999;
     padding: 5px 10px;
     animation-iteration-count: 1;
     animation: splash 1s normal forwards ease-in-out;
     position: absolute;
     cursor: move;
+    min-width: 50px;
+    text-align: center;
   }
 
   .captionSegment {
