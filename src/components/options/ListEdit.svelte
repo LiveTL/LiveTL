@@ -56,4 +56,7 @@
     background-color: #1E1E1E;
   }
   */
+  :global(.s-text-field__input label.active) {
+    transform: translateY(-20px) scale(0.75);
+  }
 </style>
