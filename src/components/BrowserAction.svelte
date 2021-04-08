@@ -13,6 +13,6 @@
 <style>
   :global(html) {
     min-width: 500px !important;
-    min-height: 400px !important;
+    min-height: 500px !important;
   }
 </style>
