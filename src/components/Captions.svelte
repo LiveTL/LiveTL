@@ -71,7 +71,7 @@
     font-size: 20px;
     background-color: rgba(0, 0, 0, 0.8);
     margin: 0;
-    padding: 5px 5px;
+    padding: 5px 10px;
     animation-iteration-count: 1;
     animation: splash 1s normal forwards ease-in-out;
   }
