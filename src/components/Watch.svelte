@@ -10,11 +10,13 @@
     videoSide,
     videoPanelSize,
     chatSize,
-    chatZoom
+    chatZoom,
+    showCaption
   } from "../js/store.js";
   import { VideoSide } from "../js/constants.js";
   import ChatEmbed from "./ChatEmbed.svelte";
   import Popout from "./Popout.svelte";
+  import Captions from "./Captions.svelte";
   document.title = "LiveTL";
   window.j = j;
   let isResizing = false;
@@ -77,6 +79,9 @@
 </script>
 
 <MaterialApp theme="dark">
+  {#if !isEmbedded && showCaption}
+    <Captions />
+  {/if}
   <div class="flex vertical {$videoSide == VideoSide.RIGHT ? 'reversed' : ''}">
     {#if !isEmbedded}
       <div

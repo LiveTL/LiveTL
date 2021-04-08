@@ -1,7 +1,7 @@
 <script>
   import {
     captionDuration,
-    captionZoom,
+    captionFontSize,
     videoSide,
     chatZoom,
     livetlFontSize,
@@ -57,7 +57,7 @@
 <CheckOption name="Show captions" store={showCaption} />
 {#if $showCaption}
   <SliderOption name="Caption duration" min={-1} store={captionDuration} />
-  <SliderOption name="Caption zoom" store={captionZoom} />
+  <SliderOption name="Caption zoom" store={captionFontSize} />
 {/if}
 <!-- {/if} -->
 <CheckOption name="Read-aloud mode" store={doSpeechSynth} />
