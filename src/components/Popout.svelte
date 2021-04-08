@@ -9,6 +9,7 @@
   let settingsOpen = false;
   export let isStandalone = false;
   export let isResizing = false;
+  document.title = "LiveTL Popout";
 </script>
 
 <MaterialApp theme="dark">
