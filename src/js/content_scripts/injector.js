@@ -103,14 +103,14 @@ window.addEventListener('load', () => {
         return params;
       };
       params.get('embed_domain') || window.parent.location.href;
-      makeButton('Watch in LiveTL', () => {
+      makeButton('Open LiveTL', () => {
         // eslint-disable-next-line no-undef
         window.top.location = `chrome-extension://${chrome.runtime.id}/watch.html?${constructParams().toString()}`;
       }, undefined, mdiYoutubeTv);
       const tabid = await sendToBackground({
         type:'tabid'
       });
-      makeButton('Pop out TLs', () => {
+      makeButton('TL Popout', () => {
         let popoutParams = constructParams();
         popoutParams.set('tabid', tabid);
         // eslint-disable-next-line no-undef
