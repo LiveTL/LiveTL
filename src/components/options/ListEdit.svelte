@@ -1,18 +1,26 @@
 <script>
-  import { List, ListItem, Divider, TextField, Card, Subheader, MaterialApp } from 'svelte-materialify/src';
+  import {
+    List,
+    ListItem,
+    Divider,
+    TextField,
+    Card,
+    Subheader,
+    MaterialApp
+  } from "svelte-materialify/src";
 
-  export let name = '';
+  export let name = "";
   export let store = null;
 
   function handleKeyUp(e) {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       items = [...items, newItem];
-      newItem = '';
+      newItem = "";
     }
   }
 
   $: items = $store;
-  $: newItem = '';
+  $: newItem = "";
   $: items = items.filter(e => e);
   $: store.set(items);
 </script>
@@ -22,11 +30,16 @@
     <List>
       <Subheader>{name}</Subheader>
       {#each items as item}
-        <ListItem><TextField dense clearable bind:value={item}></TextField></ListItem>
+        <ListItem><TextField dense clearable bind:value={item} /></ListItem>
       {/each}
       <ListItem>
-        <TextField on:keyup={handleKeyUp} dense clearable={newItem} bind:value={newItem}>
-          Add New
+        <TextField
+          on:keyup={handleKeyUp}
+          dense
+          clearable={newItem}
+          bind:value={newItem}
+        >
+          Add new (Press enter to save)
         </TextField>
       </ListItem>
       <Divider />

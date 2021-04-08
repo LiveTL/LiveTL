@@ -32,12 +32,12 @@
     channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}
 />
 <ListEdit
-  name="Message whitelist filters (plaintext)"
+  name="Show messages containing... (plaintext)"
   store={plaintextWhitelist}
 />
 <ListEdit
-  name="Message blacklist filters (plaintext)"
+  name="Block messages containing... (plaintext)"
   store={plaintextBlacklist}
 />
-<ListEdit name="Message whitelist filters (regex)" store={textWhitelist} />
-<ListEdit name="Message blacklist filters (regex)" store={textBlacklist} />
+<ListEdit name="Show messages that match... (regex)" store={textWhitelist} />
+<ListEdit name="Block messages that match... (regex)" store={textBlacklist} />
