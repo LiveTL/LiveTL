@@ -1,7 +1,14 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount } from "svelte";
   import { mdiClose } from "@mdi/js";
-  import { Button, Divider, Icon, Menu, TextField, ListItem } from "svelte-materialify/src";
+  import {
+    Button,
+    Divider,
+    Icon,
+    Menu,
+    TextField,
+    ListItem
+  } from "svelte-materialify/src";
 
   export let name = "";
   export let store = null; // LookupStore
@@ -9,12 +16,37 @@
   export let getBool = key => store.get(key);
   export let setBool = (key, val) => store.set(key, val);
 
-  let items = []
+  let field = null;
+  $: if (field) {
+    console.log(field);
+    const elem = field.querySelector(".s-text-field__wrapper.solo");
+    const svg = document.createElement("svg");
+    elem.appendChild(svg);
+    svg.outerHTML = `
+      <span
+        ><i
+          aria-hidden="true"
+          class="s-icon"
+          aria-disabled="false"
+          style="--s-icon-size:24px; --s-icon-rotate:0deg; margin-right: 8px;"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24px"
+            height="24px"
+            viewBox="0 0 24 24"><path d="M7,10L12,15L17,10H7Z" /></svg
+          >
+        </i><!--<Icon>--></span
+      >
+    `;
+  }
+
+  let items = [];
 
   function getItems() {
     const items_ = [];
     Object.entries(store._lookup).forEach(([key, value]) => {
-      if (key && getBool(key)) items_.push({ key, item: getDisplayName(key, value) });
+      if (key && getBool(key))
+        items_.push({ key, item: getDisplayName(key, value) });
     });
     items = items_;
   }
@@ -29,8 +61,8 @@
 
 <div class="dropdown">
   <Menu offsetY={false} closeOnClick={false}>
-    <div class="dropdown-label" slot="activator">
-      <TextField disabled={null} solo={true} value={name} readonly></TextField>
+    <div class="dropdown-label" slot="activator" bind:this={field}>
+      <TextField disabled={null} solo={true} value={name} readonly />
     </div>
 
     {#if items.length}
@@ -43,7 +75,13 @@
           <div class="listitem-content">
             <div class="item">{item.item}</div>
             <div class="button">
-              <Button fab size="x-small" on:click={() => {setBool(item.key, false)}}>
+              <Button
+                fab
+                size="x-small"
+                on:click={() => {
+                  setBool(item.key, false);
+                }}
+              >
                 <Icon path={mdiClose} size="14px" />
               </Button>
             </div>
@@ -71,7 +109,6 @@
     flex-direction: row;
   }
 
-
   :global(.dropdown input:hover) {
     cursor: pointer;
   }
@@ -92,5 +129,4 @@
   :global(.s-menu) {
     width: 100%;
   }
-
 </style>
