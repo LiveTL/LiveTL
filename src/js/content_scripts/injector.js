@@ -1,5 +1,5 @@
 import { openWindow, sendToBackground } from '../bgmessage.js';
-import { mdiOpenInNew, mdiTelevisionPlay, mdiIframeArray } from '@mdi/js';
+import { mdiOpenInNew, mdiYoutubeTv, mdiIframeArray } from '@mdi/js';
 
 for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) {
   window.addEventListener(eventName, e => e.stopImmediatePropagation(), true);
@@ -74,13 +74,17 @@ const makeButton = (text, callback, color='rgb(0, 153, 255)', icon='') => {
   a.querySelector('a').addEventListener('click', callback);
   const textbox = a.querySelector('yt-formatted-string');
   const svg = document.createElement('svg');
-  const defs = document.createElement('defs');
-  const path = document.createElement('path');
-  defs.appendChild(path);
-  svg.appendChild(defs);
   textbox.textContent = text;
   textbox.appendChild(svg);
-  path.setAttribute('d', icon);
+  svg.outerHTML = `
+    <svg viewBox="0 0 24 24" style="
+      height: 15px;
+      vertical-align: bottom;
+      margin-left: 5px;
+    ">
+      <path d="${icon}" fill="white"></path>
+    </svg>
+  `;
 };
 
 window.addEventListener('load', () => {
@@ -102,7 +106,7 @@ window.addEventListener('load', () => {
       makeButton('Watch in LiveTL', () => {
         // eslint-disable-next-line no-undef
         window.top.location = `chrome-extension://${chrome.runtime.id}/watch.html?${constructParams().toString()}`;
-      }, undefined, mdiTelevisionPlay);
+      }, undefined, mdiYoutubeTv);
       const tabid = await sendToBackground({
         type:'tabid'
       });
