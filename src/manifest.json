@@ -1,5 +1,5 @@
 {
-  "name": "Chrome Extension Svelte",
+  "name": "LiveTL",
   "options_page": "options.html",
   "permissions": [
     "storage",
@@ -14,11 +14,11 @@
     "persistent": true
   },
   "icons": {
-    "128": "icon-128.png"
+    "128": "128x128.png"
   },
   "browser_action": {
     "default_popup": "options.html",
-    "default_icon": "icon-34.png"
+    "default_icon": "48x48.png"
   },
   "manifest_version": 2,
   "content_security_policy": "script-src 'self' https://www.youtube.com 'unsafe-eval'; object-src 'self'",
