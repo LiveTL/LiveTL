@@ -23,7 +23,7 @@
   }
 
   .app {
-    padding: 20px !important;
+    padding: 0px !important;
     justify-content: center;
     min-width: max-content;
     max-height: 100%;

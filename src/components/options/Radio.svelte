@@ -6,11 +6,11 @@
   export let store = null;
   export let color = "blue";
 
-  const transformOpt = (str) =>
+  const transformOpt = str =>
     str
       .trim()
       .toLowerCase()
-      .replace(/\w\S*/g, (w) => w.replace(/^\w/, (c) => c.toUpperCase()));
+      .replace(/\w\S*/g, w => w.replace(/^\w/, c => c.toUpperCase()));
 
   $: group = $store;
   $: store.set(group);
@@ -31,14 +31,13 @@
     height: 20px;
     line-height: 20px;
     white-space: nowrap;
-    margin-right: 12px;
     color: var(--theme-text-secondary);
-    padding-left: 2px;
+    padding-left: 4px;
   }
 
   :global(.s-radio) {
-    margin-left: 16px;
     font-size: 16px !important;
+    margin-left: 12px;
   }
 
   .container {

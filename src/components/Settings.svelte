@@ -7,13 +7,13 @@
 
   const settings = [
     { name: "Interface", component: UISettings },
-    { name: "Filters", component: FilterSettings },
+    { name: "Filters", component: FilterSettings }
   ];
 </script>
 
 <MaterialApp theme="dark">
   <div style="display: flex; align-items: center; justify-content: center;">
-    <div style="max-width: 500px; width: 100%;">
+    <div style="max-width: calc(min(500px, 100%)); width: 100%;">
       <Tabs grow fixedTabs>
         <div slot="tabs">
           {#each settings as { name }}
