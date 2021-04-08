@@ -79,7 +79,7 @@
 </script>
 
 <MaterialApp theme="dark">
-  {#if !isEmbedded && showCaption}
+  {#if !isEmbedded && $showCaption}
     <Captions />
   {/if}
   <div class="flex vertical {$videoSide == VideoSide.RIGHT ? 'reversed' : ''}">
