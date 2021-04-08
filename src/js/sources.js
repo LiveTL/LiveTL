@@ -1,7 +1,7 @@
 import { Queue } from './queue';
 // eslint-disable-next-line no-unused-vars
 import { writable, Writable } from 'svelte/store';
-import { isLangMatch, parseTranslation, textWhitelisted, textBlacklisted, plaintextWhitelisted, plaintextBlacklisted } from './filter';
+import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted } from './filter';
 import { channelFilters, language, showModMessage } from './store';
 import { AuthorType, languageNameCode } from './constants';
 
@@ -16,6 +16,21 @@ export const sources = {
 
 attachTranslationFilter(sources.translations, sources.ytc);
 
+/** @type {(id: String) => Boolean} */
+const userBlacklisted = id => channelFilters.get(id).blacklist;
+
+/** @type {(msg: Message) => Boolean} */
+const isWhitelisted = msg => textWhitelisted(msg.text);
+
+/** @type {(msg: Message) => Boolean} */
+const isBlacklisted = msg => textBlacklisted(msg.text) || userBlacklisted(msg.id);
+
+/** @type {(msg: Message) => Boolean} */
+const isMod = msg => msg.types & AuthorType.moderator;
+
+/** @type {(msg: Message) => Boolean} */
+const showIfMod = msg => isMod(msg) && showModMessage.get();
+
 /**
  * 
  * @param {Writable<Message>} translations 
@@ -23,29 +38,19 @@ attachTranslationFilter(sources.translations, sources.ytc);
  * @return {() => void} cleanup
  */
 function attachTranslationFilter(translations, ytc) {
+  /** @type {(msg: Message, text: String) => void} */
+  const setTranslation = (msg, text) => translations.set({...msg, text});
+
   return ytc.subscribe(message => {
-    // uncomment this if else when testing scroll
-    // if (message) {
-    //   translations.set({ ...message, text: message.text });
-    //   return;
-    // }
-    // else {
-    //   return;
-    // }
-    if (!message
-      || plaintextBlacklisted(message.text)
-      || textBlacklisted(message.text)
-      || channelFilters.get(message.id).blacklist) return;
-    const { text, types } = message;
+    if (!message || isBlacklisted(message)) return;
+    const { text } = message;
     const parsed = parseTranslation(text);
     const lang = languageNameCode[language.get()];
     if (parsed && isLangMatch(parsed.lang, lang)) {
-      translations.set({...message, text: parsed.msg });
+      setTranslation(message, parsed.msg);
     }
-    else if (textWhitelisted(text) || plaintextWhitelisted(message.text) ||
-        types & AuthorType.moderator && showModMessage.get()
-    ) {
-      translations.set({...message, text });
+    else if (isWhitelisted(message) || showIfMod(message)) {
+      setTranslation(message, text);
     }
   });
 }

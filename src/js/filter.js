@@ -34,6 +34,11 @@ export const textWhitelisted = userFilter(textWhitelist);
 export const textBlacklisted = userFilter(textBlacklist);
 export const plaintextWhitelisted = userFilter(plaintextWhitelist, escapeRegExp);
 export const plaintextBlacklisted = userFilter(plaintextBlacklist, escapeRegExp);
+/** @type {(message: String) => Boolean} */
+export const isWhitelisted = message => textWhitelisted(message) || plaintextWhitelisted(message);
+/** @type {(message: String) => Boolean} */
+export const isBlacklisted = message => textBlacklisted(message) || plaintextBlacklisted(message);
+
 
 /**
  * @param {String} message 
