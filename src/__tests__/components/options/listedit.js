@@ -29,7 +29,7 @@ describe('editable list', () => {
     const { getByLabelText, getByDisplayValue } = render(ListEdit, {
       name: '', store: writable(items)
     });
-    const addInput = getByLabelText('Add New');
+    const addInput = getByLabelText('Add new (Press enter to save)');
     await userEvent.type(addInput, 'Hello there{enter}');
     await userEvent.type(addInput, 'General Kenobi{enter}');
     expect(getByDisplayValue('Hello there')).toBeInTheDocument();
@@ -39,7 +39,7 @@ describe('editable list', () => {
   it('saves the new options', async () => {
     const store = writable([]);
     const { getByLabelText } = render(ListEdit, { name: '', store });
-    const addInput = getByLabelText('Add New');
+    const addInput = getByLabelText('Add new (Press enter to save)');
     await userEvent.type(addInput, 'Hello there{enter}');
     await userEvent.type(addInput, 'General Kenobi{enter}');
     expect(get(store)).toEqual(['Hello there', 'General Kenobi']);
