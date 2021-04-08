@@ -3,6 +3,9 @@ import { storageVersion, Browser, BROWSER } from './constants.js';
 
 export const storage = new Storage(storageVersion);
 
+/** @type {Map<String, SyncStore>} */
+const stores = new Map();
+
 /**
  * Store that synchronizes with extension storage.
  * 
@@ -20,9 +23,14 @@ export class SyncStore {
     const store = writable(defaultValue);
     this._store = store;
     this._storage = storageBackend || storage;
-    this._storage.get(name).then(value => {
+    this.loadFromStorage();
+    stores.set(mangleStorageKey(name, storageVersion), this);
+  }
+
+  async loadFromStorage() {
+    this._storage.get(this.name).then(value => {
       if (value != null) {
-        store.set(value);
+        this._store.set(value);
       }
     });
   }
@@ -164,14 +172,18 @@ export class LookupStore {
 
 }
 
+function mangleStorageKey(key, version='') {
+  return `${version || storage.version}$$${key}`;
+}
+
 async function getStorage(key, version='') {
-  const versionKey = `${version || this.version}$$${key}`;
+  const versionKey = mangleStorageKey(key, version);
   const result = await this.rawGet(versionKey);
   return result ? result[versionKey] : result;
 }
 
 async function setStorage(key, value, version='') {
-  const versionKey = `${version || this.version}$$${key}`;
+  const versionKey = mangleStorageKey(key, version);
   let obj = {};
   obj[versionKey] = value;
   return await this.rawSet(obj);
@@ -205,6 +217,9 @@ export function Storage(version) {
     };
     break;
   case Browser.FIREFOX:
+    // @ts-ignore
+    // eslint-disable-next-line no-undef
+    browser.storage.onChanged.addListener(updateChangedStores);
     this.rawGet = async (key) => {
       // @ts-ignore
       // eslint-disable-next-line no-undef
@@ -218,6 +233,9 @@ export function Storage(version) {
     };
     break;
   default:
+    // @ts-ignore
+    // eslint-disable-next-line no-undef
+    chrome.storage.onChanged.addListener(updateChangedStores);
     this.rawGet = (key) => {
       return new Promise((res) => {
         // @ts-ignore
@@ -233,5 +251,14 @@ export function Storage(version) {
         chrome.storage.local.set(obj, res);
       });
     };
+  }
+}
+
+function updateChangedStores(changes) {
+  const changedItems = Object.keys(changes);
+
+  for (const item of changedItems) {
+    if (!stores.has(item)) continue;
+    stores.get(item).loadFromStorage();
   }
 }
