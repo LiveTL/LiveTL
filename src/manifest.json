@@ -1,5 +1,5 @@
 {
-  "name": "LiveTL",
+  "name": "LiveTL - Translation Filter for Streams",
   "options_page": "options.html",
   "permissions": [
     "storage",

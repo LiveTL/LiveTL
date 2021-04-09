@@ -7,9 +7,10 @@ var webpack = require('webpack'),
   CopyWebpackPlugin = require('copy-webpack-plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   WriteFilePlugin = require('write-file-webpack-plugin'),
-  StringPlugin = require('string-replace-loader');
+  StringPlugin = require('string-replace-loader'),
+  { version, description } = require('./package.json');
 const { VueLoaderPlugin } = require('vue-loader');
-
+console.log(version, description);
 const { preprocess } = require('./svelte.config');
 const mode = process.env.NODE_ENV || 'development';
 process.env.NODE_ENV = mode;
@@ -26,7 +27,6 @@ if (fileSystem.existsSync(secretsPath)) {
 }
 
 const prod = mode !== 'development';
-
 var options = {
   entry: {
     popout: path.join(__dirname, 'src', 'js', 'pages', 'popout.js'),
@@ -136,8 +136,8 @@ var options = {
       transform: function (content, path) {
         // generates the manifest file using the package.json informations
         return Buffer.from(JSON.stringify({
-          description: process.env.npm_package_description,
-          version: process.env.npm_package_version,
+          description: description,
+          version: version,
           ...JSON.parse(content.toString())
         }));
       }
