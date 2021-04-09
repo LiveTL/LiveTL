@@ -19,20 +19,32 @@
     // TODO uncomment to only show on update
     // lastVersion.set(manifest.version);
   };
+  let wrapper = null;
+  $: if (wrapper) {
+    wrapper.addEventListener("transitionend", e => {
+      if (e.target == wrapper) {
+        wrapper.remove();
+      }
+    });
+  }
 </script>
 
-<Dialog class="pa-4 wideDialog text-center" bind:active>
-  <div>
-    <div class="closeWrap">
-      <Button fab size="small" on:click={close}>
-        <Icon path={mdiClose} />
-      </Button>
+<div class="s-dialog" style="
+  opacity: {active ? 1 : 0};
+" bind:this={wrapper}>
+  <Dialog class="pa-4 wideDialog text-center" bind:active>
+    <div>
+      <div class="closeWrap">
+        <Button fab size="small" on:click={close}>
+          <Icon path={mdiClose} />
+        </Button>
+      </div>
+      <h1>New Update!</h1>
+      <h2>LiveTL was updated to the newest version ({manifest.version}).</h2>
+      <Button size="default" class="blue">See What's New!</Button>
     </div>
-    <h1>New Update!</h1>
-    <h2>LiveTL was updated to the newest version ({manifest.version}).</h2>
-    <Button size="default" class="blue">See What's New!</Button>
-  </div>
-</Dialog>
+  </Dialog>
+</div>
 
 <style>
   :global(.s-dialog) {
