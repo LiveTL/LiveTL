@@ -10,7 +10,6 @@ var webpack = require('webpack'),
   StringPlugin = require('string-replace-loader'),
   { version, description } = require('./package.json');
 const { VueLoaderPlugin } = require('vue-loader');
-console.log(version, description);
 const { preprocess } = require('./svelte.config');
 const mode = process.env.NODE_ENV || 'development';
 process.env.NODE_ENV = mode;

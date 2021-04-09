@@ -1,40 +1,26 @@
 <script>
-  import {
-    Button,
-    Icon,
-    ExpansionPanel,
-    ExpansionPanels
-  } from "svelte-materialify";
+  import { Button } from "svelte-materialify";
+  import { onMount } from "svelte";
   import { lastVersion } from "../js/store.js";
   import Dialog from "./Dialog.svelte";
 
   const manifest = chrome.runtime.getManifest();
-  let active = $lastVersion !== manifest.version;
+  const version = manifest.version;
+  let active = $lastVersion !== version;
+
+  let Changelogs;
+  onMount(async () => {
+    Changelogs = (await import(`../changelogs/${version}.svelte`)).default;
+  });
 </script>
 
 <Dialog bind:active>
   <span class="centered">
     <h1>New Update!</h1>
-    <h2>LiveTL was updated to the newest version ({manifest.version}).</h2>
+    <h2>LiveTL was updated to the newest version ({version}).</h2>
   </span>
   <span class="left">
-    <ExpansionPanels>
-      <ExpansionPanel>
-        <span slot="header">Item</span>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repellat amet natus
-        obcaecati molestiae quas mollitia error modi atque aliquam esse.
-      </ExpansionPanel>
-      <ExpansionPanel>
-        <span slot="header">Item</span>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repellat amet natus
-        obcaecati molestiae quas mollitia error modi atque aliquam esse.
-      </ExpansionPanel>
-      <ExpansionPanel>
-        <span slot="header">Item</span>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repellat amet natus
-        obcaecati molestiae quas mollitia error modi atque aliquam esse.
-      </ExpansionPanel>
-    </ExpansionPanels>
+    <svelte:component this={Changelogs} />
   </span>
   <Button
     transition
