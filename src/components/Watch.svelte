@@ -77,10 +77,11 @@
     });
   };
   $: setTimeout(() => changeSide($videoSide), 0);
+  let updatePopupActive = false;
 </script>
 
 <MaterialApp theme="dark">
-  <Updates />
+  <Updates bind:active={updatePopupActive} />
   {#if !isEmbedded && $showCaption}
     <Captions />
   {/if}
@@ -108,7 +109,7 @@
           </Wrapper>
         </div>
         <div class="tile autoscale" bind:this={ltlElem}>
-          <Popout {isResizing} />
+          <Popout {isResizing} bind:updatePopupActive />
         </div>
       </div>
     </div>

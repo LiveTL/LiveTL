@@ -6,8 +6,8 @@
 
   const manifest = chrome.runtime.getManifest();
   const version = manifest.version;
-  let active = $lastVersion !== version;
-  // let subelements = true;
+  export let active;
+  active = active || $lastVersion !== version;
 
   let Changelogs;
   onMount(async () => {
@@ -18,9 +18,6 @@
     dialog
       .querySelector(".s-overlay")
       .addEventListener("click", () => (active = false));
-    // dialog.querySelectorAll(".s-expansion-panel__header").forEach(e => {
-    //   e.addEventListener("mousedown", () => (subelements = false));
-    // });
   }
 </script>
 

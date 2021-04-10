@@ -9,6 +9,7 @@
   let settingsOpen = false;
   export let isStandalone = false;
   export let isResizing = false;
+  export let updatePopupActive = false;
   document.title = "LiveTL Popout";
 </script>
 
@@ -28,7 +29,11 @@
       <Options {isStandalone} />
     </div>
     <div style="display: {settingsOpen ? 'none' : 'block'};">
-      <MessageDisplay direction={$textDirection} {settingsOpen} />
+      <MessageDisplay
+        direction={$textDirection}
+        {settingsOpen}
+        bind:updatePopupActive
+      />
     </div>
   </Wrapper>
 </MaterialApp>

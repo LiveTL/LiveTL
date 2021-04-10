@@ -25,13 +25,14 @@
     deal with the janky mechanics and bugs of previous versions!
   </ExpansionPanel>
   <ExpansionPanel>
-    <span slot="header">AI Translations are coming soon!</span>
+    <span slot="header">AI-powered live translations are coming soon!</span>
     <p>
       For the past few months, our team has been hard at work on a project
-      called Kanatran, or KT for short. We already have the system up and
-      running at a small scale, and with financial support from users like you,
-      we can apply KT to more Hololive/Vtuber streams! If you are interested in
-      funding this project, please consider
+      called Kanatran (KT) that translates Hololive streams in realtime. We
+      already have the system up and running at a small scale, and with
+      financial support from users like you, we can apply KT to more
+      Hololive/Vtuber streams! If you are interested in funding this project,
+      please consider
       <a href="https://opencollective.com/livetl" target="_blank"
         >chipping in through Open Collective</a
       >.

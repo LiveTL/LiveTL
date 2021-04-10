@@ -29,7 +29,10 @@
     }
   };
   onMount(() => {
-    const { cleanUp, store: source } = combineStores(sources.translations, sources.mod);
+    const { cleanUp, store: source } = combineStores(
+      sources.translations,
+      sources.mod
+    );
     const sourceUnsub = source.subscribe(n => {
       if (n) items.push(n);
       items = items;
@@ -37,7 +40,7 @@
     unsubscribe = () => {
       cleanUp();
       sourceUnsub();
-    }
+    };
   });
   onDestroy(() => unsubscribe());
 
@@ -57,6 +60,7 @@
     if (scrollOnTick) bottomMsg.scrollIntoView();
     scrollOnTick = false;
   });
+  export let updatePopupActive = false;
 </script>
 
 <div class="messageDisplayWrapper">
@@ -76,6 +80,18 @@
       </div>
       <div class="subheading">
         Translations picked up from the chat will appear here.
+      </div>
+      <div class="subscripts">
+        <!-- svelte-ignore missing-declaration -->
+        <a
+          href="/"
+          on:click={e => {
+            e.preventDefault();
+            updatePopupActive = true;
+          }}
+          >See what's new in the most recent update ({chrome.runtime.getManifest()
+            .version})</a
+        >
       </div>
       <div class="subscripts">
         Please consider

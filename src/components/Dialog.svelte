@@ -11,10 +11,13 @@
   let display = true;
   $: if (wrapper) {
     wrapper.addEventListener("transitionend", e => {
-      if (e.target == wrapper) {
+      if (e.target == wrapper && e.target.style.opacity == "0") {
         display = false;
       }
     });
+  }
+  $: if (active && wrapper) {
+    display = true;
   }
 </script>
 
