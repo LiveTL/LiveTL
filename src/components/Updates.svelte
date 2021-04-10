@@ -33,6 +33,12 @@
     <span class="left">
       <svelte:component this={Changelogs} />
     </span>
+    <span class="centered">
+      <h2 style="margin: 25px;">
+        If you like this update, please consider sharing this information with
+        your friends! We'd really appreciate it :)
+      </h2>
+    </span>
     <Button
       transition
       size="default"
