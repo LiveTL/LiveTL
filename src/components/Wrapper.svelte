@@ -27,26 +27,26 @@
 <style>
   /* width */
 
-  ::-webkit-scrollbar {
+  :global(::-webkit-scrollbar) {
     width: 4px;
     height: 4px;
   }
 
   /* Track */
 
-  ::-webkit-scrollbar-track {
+  :global(::-webkit-scrollbar-track) {
     background: transparent;
   }
 
   /* Handle */
 
-  ::-webkit-scrollbar-thumb {
+  :global(::-webkit-scrollbar-thumb) {
     background: #888;
   }
 
   /* Handle on hover */
 
-  ::-webkit-scrollbar-thumb:hover {
+  :global(::-webkit-scrollbar-thumb:hover) {
     background: #555;
   }
 </style>
