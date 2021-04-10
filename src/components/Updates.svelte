@@ -7,6 +7,7 @@
   const manifest = chrome.runtime.getManifest();
   const version = manifest.version;
   let active = $lastVersion !== version;
+  // let subelements = true;
 
   let Changelogs;
   onMount(async () => {
@@ -17,6 +18,9 @@
     dialog
       .querySelector(".s-overlay")
       .addEventListener("click", () => (active = false));
+    // dialog.querySelectorAll(".s-expansion-panel__header").forEach(e => {
+    //   e.addEventListener("mousedown", () => (subelements = false));
+    // });
   }
 </script>
 
@@ -24,7 +28,7 @@
   <Dialog bind:active>
     <span class="centered">
       <h1>New Update!</h1>
-      <h2>LiveTL was updated to the newest version ({version}).</h2>
+      <h2>Here's what's new in LiveTL version {version}:</h2>
     </span>
     <span class="left">
       <svelte:component this={Changelogs} />

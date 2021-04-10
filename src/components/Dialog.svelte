@@ -60,7 +60,7 @@
   .closeWrap {
     float: right;
   }
-  :global(.s-expansion-panel>button) {
+  :global(.s-expansion-panel > button) {
     line-height: 0px;
     margin: 0px;
   }
