@@ -12,25 +12,33 @@
   onMount(async () => {
     Changelogs = (await import(`../changelogs/${version}.svelte`)).default;
   });
+  let dialog;
+  $: if (dialog) {
+    dialog
+      .querySelector(".s-overlay")
+      .addEventListener("click", () => (active = false));
+  }
 </script>
 
-<Dialog bind:active>
-  <span class="centered">
-    <h1>New Update!</h1>
-    <h2>LiveTL was updated to the newest version ({version}).</h2>
-  </span>
-  <span class="left">
-    <svelte:component this={Changelogs} />
-  </span>
-  <Button
-    transition
-    size="default"
-    class="blue"
-    on:click={() => (active = false)}
-  >
-    Let's Go!
-  </Button>
-</Dialog>
+<div bind:this={dialog}>
+  <Dialog bind:active>
+    <span class="centered">
+      <h1>New Update!</h1>
+      <h2>LiveTL was updated to the newest version ({version}).</h2>
+    </span>
+    <span class="left">
+      <svelte:component this={Changelogs} />
+    </span>
+    <Button
+      transition
+      size="default"
+      class="blue"
+      on:click={() => (active = false)}
+    >
+      Let's Go!
+    </Button>
+  </Dialog>
+</div>
 
 <style>
   h1 {
