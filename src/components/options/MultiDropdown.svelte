@@ -11,7 +11,7 @@
   function getItems() {
     const items = [];
     Object.entries(store._lookup).forEach(([key, value]) => {
-      if (key && getBool(key)) items.push(getDisplayName(key, value));
+      if (key && getBool(key)) items.push({ key, item: getDisplayName(key, value) });
     });
     return items;
   }
@@ -33,18 +33,18 @@
         <!--TODO make it show a menu when listitem is clicked-->
         <ListItem>
           <div class="listitem-content">
-            <div class="item">{item}</div>
+            <div class="item">{item.item}</div>
             <div class="button">
-              <Button fab size="x-small" on:click={() => setBool(item, false)}>
+              <Button fab size="x-small" on:click={() => setBool(item.key, false)}>
                 <Icon path={mdiClose} size="14px" />
               </Button>
             </div>
           </div>
         </ListItem>
       {/each}
-     {:else}
-        <ListItem>none</ListItem>
-     {/if}
+    {:else}
+      <ListItem>none</ListItem>
+    {/if}
   </Menu>
 </div>
 

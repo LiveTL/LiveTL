@@ -21,6 +21,10 @@
   items={languageNameValues}
 />
 <CheckOption name="Show moderator messages" store={showModMessage} />
-<MultiDropdown name="Blocked users" store={channelFilters} />
+<MultiDropdown
+  name="Blocked users"
+  store={channelFilters}
+  getBool={n => channelFilters.get(n).blacklist}
+  setBool={(n, v) => channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}/>
 <ListEdit name="Whitelist filters (regex)" store={textWhitelist}/>
 <ListEdit name="Blacklist filters (regex)" store={textBlacklist} />

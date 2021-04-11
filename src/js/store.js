@@ -8,6 +8,12 @@ import { LookupStore, SyncStore } from './storage.js';
  * @returns {SyncStore<T>}
  */
 const SS = (n, d) => new SyncStore(n, d);
+/**
+ * @template T
+ * @param {String} n 
+ * @param {T} d 
+ * @returns {LookupStore<T>}
+ */
 const LS = (n, d) => new LookupStore(n, d);
 const defaultZoom = BROWSER == Browser.ANDROID ? 0.5 : 1;
 
@@ -30,4 +36,4 @@ export const
   textWhitelist = SS('textFilters', [''].slice(1)),
   textBlacklist = SS('textBlacklist', [''].slice(1)),
   usernameFilters = LS('userFilters', false),
-  channelFilters = LS('channelFilters', false);
+  channelFilters = LS('channelFilters', { name: '', blacklist: false, whitelist: false });
