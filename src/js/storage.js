@@ -86,7 +86,7 @@ export class LookupStore {
     this._storage = storageBackend || storage;
     this._lookup = {};
     /** @type {String[]} */
-    this._keys = [];
+    this.keys = [];
     /** @type {Map<Number, Subscriber<T>>} */
     this._subscribers = new Map();
     this._subnum = 0;
@@ -96,8 +96,9 @@ export class LookupStore {
 
   /** @private */
   async loadFromStorage() {
-    this._keys = await this._storage.get(this._keyname) || this._keys;
-    await Promise.all(this._keys.map(async k => {
+    this.keys = (await this._storage.get(this._keyname) || this.keys)
+      .filter(k => k);
+    await Promise.all(this.keys.map(async k => {
       this._lookup[k] = await this._storage.get(this.mangleKey(k));
     }));
   }
@@ -135,8 +136,8 @@ export class LookupStore {
     this._lookup[key] = value;
     const save = [this._storage.set(this.mangleKey(key), value)];
     if (previous == null) {
-      this._keys.push(key);
-      save.push(this._storage.set(this._keyname, this._keys));
+      this.keys.push(key);
+      save.push(this._storage.set(this._keyname, this.keys));
     }
     await Promise.all(save);
     this.notify([key, value]);

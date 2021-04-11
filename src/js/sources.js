@@ -28,6 +28,7 @@ function attachTranslationFilter(translations, ytc) {
     const { text, types } = message;
     const parsed = parseTranslation(text);
     const lang = languageNameCode[language.get()];
+    console.log(message);
     if (parsed && isLangMatch(parsed.lang, lang)) {
       translations.set({...message, text: parsed.msg });
     }

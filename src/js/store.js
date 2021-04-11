@@ -1,5 +1,5 @@
 import { Browser, BROWSER, TextDirection, VideoSide } from './constants.js';
-import { SyncStore } from './storage.js';
+import { LookupStore, SyncStore } from './storage.js';
 
 /**
  * @template T
@@ -8,6 +8,7 @@ import { SyncStore } from './storage.js';
  * @returns {SyncStore<T>}
  */
 const SS = (n, d) => new SyncStore(n, d);
+const LS = (n, d) => new LookupStore(n, d);
 const defaultZoom = BROWSER == Browser.ANDROID ? 0.5 : 1;
 
 export const
@@ -28,5 +29,5 @@ export const
   livetlFontSize = SS('livetlFontSize', 18),
   textWhitelist = SS('textFilters', [''].slice(1)),
   textBlacklist = SS('textBlacklist', [''].slice(1)),
-  usernameFilters = SS('userFilters', {}),
-  channelFilters = SS('channelFilters', {});
+  usernameFilters = LS('userFilters', false),
+  channelFilters = LS('channelFilters', false);
