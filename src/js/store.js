@@ -42,4 +42,4 @@ export const
   plaintextBlacklist = SS('plaintextBlacklist', [''].slice(1)),
   usernameFilters = LS('userFilters', false),
   channelFilters = LS('channelFilters', { name: '', blacklist: false, whitelist: false }),
-  lastVersion = LS('lastVersion', '0.0.0');
+  lastVersion = SS('lastVersion', '0.0.0');

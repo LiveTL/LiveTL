@@ -7,7 +7,6 @@
   const manifest = chrome.runtime.getManifest();
   const version = manifest.version;
   export let active;
-  active = active || $lastVersion !== version;
 
   let Changelogs;
   onMount(async () => {
@@ -18,6 +17,11 @@
     dialog
       .querySelector(".s-overlay")
       .addEventListener("click", () => (active = false));
+  }
+
+  $: {
+    active = $lastVersion != version;
+    $lastVersion = version;
   }
 </script>
 
