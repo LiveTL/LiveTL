@@ -1,5 +1,4 @@
 <script>
-  import { onMount } from 'svelte';
   import * as j from 'jquery';
   import 'jquery-ui-bundle';
   import 'jquery-ui-bundle/jquery-ui.css';
@@ -57,7 +56,7 @@
     isResizing = !isResizing;
     convertToPx();
   };
-  const changeSide = side => {
+  const changeSide = () => {
     document.querySelectorAll('.ui-resizable-handle').forEach(elem => {
       elem.remove();
     });
@@ -65,14 +64,14 @@
       handles: $videoSide == VideoSide.RIGHT ? 'w' : 'e',
       start: resizeCallback,
       stop: resizeCallback,
-      resize: (event, ui) => {}
+      resize: () => { }
       // containment: 'body',
     });
     resizable('.vertical .autoscale .resizable', {
       handles: 's',
       start: resizeCallback,
       stop: resizeCallback,
-      resize: (event, ui) => {}
+      resize: () => { }
       // containment: 'body',
     });
   };

@@ -12,7 +12,7 @@
 
   export let name = '';
   export let store = null; // LookupStore
-  export let getDisplayName = (key, value) => `${key}`;
+  export let getDisplayName = (key, value) => `${key}` || value;
   export let getBool = key => store.get(key);
   export let setBool = (key, val) => store.set(key, val);
 

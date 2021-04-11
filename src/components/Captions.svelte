@@ -7,7 +7,6 @@
   Captions captured from the chat will appear here. Try moving and resizing!
   You can also disable floating captions in the settings menu.
   `;
-  import { onMount } from 'svelte';
   import { sources } from '../js/sources.js';
   import { captionLeft, captionTop, captionWidth } from '../js/store.js';
   let captionElem = null;
@@ -17,7 +16,7 @@
     setTimeout(() => {
       const jcap = j(captionElem);
       jcap.draggable({
-        stop: (event, ui) => {
+        stop: () => {
           const top = captionElem.offsetTop;
           const left = captionElem.offsetLeft;
           const height = window.innerHeight;
@@ -31,7 +30,7 @@
       });
       jcap.resizable({
         handles: 'e, w',
-        stop: (event, ui) => {
+        stop: () => {
           const width = captionElem.clientWidth;
           const widthPercent = (100 * width) / window.innerWidth;
           captionWidth.set(widthPercent);

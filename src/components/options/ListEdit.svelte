@@ -4,7 +4,6 @@
     ListItem,
     Divider,
     TextField,
-    Card,
     Subheader,
     MaterialApp
   } from 'svelte-materialify/src';

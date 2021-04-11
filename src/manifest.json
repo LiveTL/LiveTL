@@ -1,6 +1,8 @@
 {
   "name": "LiveTL - Translation Filter for Streams",
-  "options_page": "options.html",
+  "options_ui": {
+    "page": "options.html"
+  },
   "permissions": [
     "storage",
     "webRequest",

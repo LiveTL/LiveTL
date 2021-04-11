@@ -4,7 +4,7 @@
   import { lastVersion } from "../js/store.js";
   import Dialog from "./Dialog.svelte";
 
-  const manifest = chrome.runtime.getManifest();
+  const manifest = window.chrome.runtime.getManifest();
   const version = manifest.version;
   const lvLoaded = lastVersion.loaded;
 
