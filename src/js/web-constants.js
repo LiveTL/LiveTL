@@ -3,6 +3,7 @@
  */
 
 // Js enum omegalul
+/** @enum {number} */
 export const Browser = {
   FIREFOX: 0,
   CHROME: 1,

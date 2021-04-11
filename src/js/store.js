@@ -2,6 +2,12 @@ import { Browser, BROWSER, } from './web-constants.js';
 import { TextDirection, VideoSide } from './constants.js';
 import { SyncStore } from './storage.js';
 
+/**
+ * @template T
+ * @param {String} n 
+ * @param {T} d 
+ * @returns {SyncStore<T>}
+ */
 const SS = (n, d) => new SyncStore(n, d);
 const defaultZoom = BROWSER == Browser.ANDROID ? 0.5 : 1;
 

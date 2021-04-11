@@ -1,11 +1,19 @@
+/**
+ * @template T
+ */
 export class Queue {
   constructor() {
     this.clear();
   }
+
   clear() {
     this.top = null;
     this.last = this.top;
   }
+
+  /**
+   * @returns {T}
+   */
   pop() {
     const front = this.top;
     this.top = this.top.next;
@@ -14,6 +22,10 @@ export class Queue {
     }
     return front;
   }
+
+  /**
+   * @param {T} item 
+   */
   push(item) {
     const newItem = { data: item };
     if (this.last === null) {

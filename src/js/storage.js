@@ -4,7 +4,17 @@ import { storageVersion } from './constants.js';
 
 export const storage = new Storage(storageVersion);
 
+/**
+ * Store that synchronizes with extension storage.
+ * 
+ * @template T
+ */
 export class SyncStore {
+  /**
+   * @param {String} name 
+   * @param {T} defaultValue 
+   * @param {Storage} storageBackend 
+   */
   constructor(name, defaultValue, storageBackend=null) {
     this.name = name;
     this.defaultValue = defaultValue;
@@ -18,15 +28,24 @@ export class SyncStore {
     });
   }
 
+  /**
+   * @returns {T} the store value
+   */
   get() {
     return get(this._store);
   }
 
+  /**
+   * @param {T} value 
+   */
   set(value) {
     this._store.set(value);
     this._storage.set(this.name, value);
   }
 
+  /**
+   * @param {(n: T) => T} callback 
+   */
   update(callback) {
     this._store.update(callback);
     this._storage.set(this.name, get(this._store));
@@ -37,6 +56,10 @@ export class SyncStore {
     this._storage.set(this.name, this.defaultValue);
   }
 
+  /**
+   * @param {(n: T) => void} callback 
+   * @returns {() => void}
+   */
   subscribe(callback) {
     return this._store.subscribe(callback);
   }
@@ -58,6 +81,10 @@ async function setStorage(key, value, version='') {
 Storage.prototype.get = getStorage;
 Storage.prototype.set = setStorage;
 
+/**
+ * @constructor
+ * @param {String} version 
+ */
 export function Storage(version) {
   this.version = version;
 

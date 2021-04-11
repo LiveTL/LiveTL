@@ -4,17 +4,18 @@
 
 export const storageVersion = 'v0-alpha';
 
-// JS enums
-export const
-  VideoSide = {
-    LEFT: 'LEFT',
-    RIGHT: 'RIGHT',
-    // TOP: 'TOP'
-  },
-  TextDirection = {
-    TOP: 'TOP',
-    BOTTOM: 'BOTTOM'
-  };
+/** @enum {String} */
+export const VideoSide = {
+  LEFT: 'LEFT',
+  RIGHT: 'RIGHT',
+  // TOP: 'TOP'
+};
+
+/** @enum {String} */
+export const TextDirection = {
+  TOP: 'TOP',
+  BOTTOM: 'BOTTOM'
+};
 
 export const languages = [
   { code: 'en', name: 'English', lang: 'English' },

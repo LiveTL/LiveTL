@@ -29,10 +29,9 @@ function compose(...args) {
 }
 
 export function ytcSource(window) {
-  const ytc = writable(
-    { type: 'info', time: 0 } ||
-    { type: 'message', messages: [{ author: '', text: '', timestamp: '' }] }
-  );
+  const ytc = writable({
+    type: 'message', messages: [{ author: '', text: '', timestamp: '' }]
+  });
   const lessMsg = (m1, m2) => m1.showtime - m2.showtime;
   const queued = new Queue();
   let interval = null;
