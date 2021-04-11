@@ -6,12 +6,11 @@
   export let store = null;
   export let color = "blue";
 
-  function transformOpt(str) {
-    return str
+  const transformOpt = (str) =>
+    str
       .trim()
       .toLowerCase()
       .replace(/\w\S*/g, (w) => w.replace(/^\w/, (c) => c.toUpperCase()));
-  }
 
   $: group = $store;
   $: store.set(group);

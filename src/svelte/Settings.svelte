@@ -13,6 +13,8 @@
     speechVolume,
     textDirection,
     language,
+    usernameFilters,
+    channelFilters,
   } from "../js/store.js";
   import {
     languageNameValues,
@@ -25,7 +27,11 @@
   import SelectOption from "./SelectOption.svelte";
 </script>
 
-<SelectOption name="Language" store={language} items={languageNameValues} />
+<SelectOption
+  name="Language Filter"
+  store={language}
+  items={languageNameValues}
+/>
 <SliderOption name="Chat zoom" store={chatZoom} />
 <SliderOption name="LiveTL panel zoom" store={livetlZoom} />
 <EnumOption
