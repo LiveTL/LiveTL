@@ -7,6 +7,10 @@
     textBlacklist,
     plaintextWhitelist,
     plaintextBlacklist,
+    plainAuthorWhitelist,
+    regexAuthorWhitelist,
+    plainAuthorBlacklist,
+    regexAuthorBlacklist,
     usernameFilters,
     channelFilters
   } from "../../js/store.js";
@@ -24,12 +28,24 @@
   const chatAuthor = writable("chat");
   const paths = {
     Show: {
-      plain: plaintextWhitelist,
-      regex: textWhitelist
+      plain: {
+        chat: plaintextWhitelist,
+        author: plainAuthorWhitelist
+      },
+      regex: {
+        chat: textWhitelist,
+        author: regexAuthorWhitelist
+      }
     },
     Block: {
-      plain: plaintextBlacklist,
-      regex: textBlacklist
+      plain: {
+        chat: plaintextBlacklist,
+        author: plainAuthorBlacklist
+      },
+      regex: {
+        chat: textBlacklist,
+        author: regexAuthorBlacklist
+      }
     }
   };
 
@@ -38,7 +54,7 @@
     : 'authors named';
   $: endPrompt = $plaintextRegex == 'plain' ? 'plaintext' : 'regex';
   $: filterPrompt = `${$whiteBlackList} ${middlePrompt}...(${endPrompt})`;
-  $: filterStore = paths[$whiteBlackList][$plaintextRegex];
+  $: filterStore = paths[$whiteBlackList][$plaintextRegex][$chatAuthor];
 </script>
 
 <SelectOption
@@ -65,10 +81,9 @@
     name=""
     options={["plain", "regex"]}
     store={plaintextRegex} />
-  <!--Add "author" to options when support comes-->
   <EnumOption
     name=""
-    options={["chat"]}
+    options={["chat", "author"]}
     store={chatAuthor} />
   
   <ListEdit

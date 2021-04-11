@@ -42,4 +42,8 @@ export const
   plaintextBlacklist = SS('plaintextBlacklist', [''].slice(1)),
   usernameFilters = LS('userFilters', false),
   channelFilters = LS('channelFilters', { name: '', blacklist: false, whitelist: false }),
+  plainAuthorWhitelist = SS('plainAuthorWhitelist', [''].slice(1)),
+  regexAuthorWhitelist = SS('regexAuthorWhitelist', [''].slice(1)),
+  plainAuthorBlacklist = SS('plainAuthorBlacklist', [''].slice(1)),
+  regexAuthorBlacklist = SS('regexAuthorBlacklist', [''].slice(1)),
   lastVersion = SS('lastVersion', '0.0.0');
