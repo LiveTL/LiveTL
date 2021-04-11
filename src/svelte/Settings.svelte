@@ -4,6 +4,7 @@
     captionZoom,
     videoSide,
     chatZoom,
+    livetlZoom,
     doSpeechSynth,
     doTranslatorMode,
     showCaption,
@@ -26,6 +27,7 @@
 
 <SelectOption name="Language" store={language} items={languageNameValues} />
 <SliderOption name="Chat zoom" store={chatZoom} />
+<SliderOption name="LiveTL panel zoom" store={livetlZoom} />
 <EnumOption
   name="Text direction:"
   options={Object.keys(TextDirection)}

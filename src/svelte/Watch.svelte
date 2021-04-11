@@ -11,6 +11,7 @@
     videoPanelSize,
     chatSize,
     chatZoom,
+    livetlZoom,
   } from "../js/store.js";
   import { VideoSide } from "../js/constants.js";
   import ChatEmbed from "./ChatEmbed.svelte";
@@ -91,12 +92,12 @@
         style="height: {$chatSize}%"
         bind:this={chatElem}
       >
-        <Wrapper {isResizing} zoom={$chatZoom} position="absolute">
+        <Wrapper {isResizing} zoom={$chatZoom}>
           <ChatEmbed {videoId} {continuation} {isReplay} />
         </Wrapper>
       </div>
       <div class="tile autoscale" bind:this={ltlElem}>
-        <Wrapper {isResizing}>
+        <Wrapper {isResizing} zoom={$livetlZoom}>
           <Options />
         </Wrapper>
       </div>
@@ -135,6 +136,7 @@
     display: flex;
     overflow: auto;
     left: 0px !important;
+    position: relative;
   }
   .flex {
     display: flex;
