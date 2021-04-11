@@ -9,6 +9,7 @@ var webpack = require('webpack'),
   WriteFilePlugin = require('write-file-webpack-plugin');
 
 const { preprocess } = require('./svelte.config');
+const mode = process.env.NODE_ENV || 'development';
 
 // load the secrets
 var alias = {};
@@ -112,7 +113,7 @@ var options = {
     }),
     new WriteFilePlugin()
   ],
-  mode: env.NODE_ENV
+  mode
 };
 
 if (env.NODE_ENV === 'development') {
