@@ -17,6 +17,7 @@
   import ChatEmbed from "./ChatEmbed.svelte";
   import Popout from "./Popout.svelte";
   import Captions from "./Captions.svelte";
+  import Updates from "./Updates.svelte";
   document.title = "LiveTL";
   window.j = j;
   let isResizing = false;
@@ -79,6 +80,7 @@
 </script>
 
 <MaterialApp theme="dark">
+  <Updates />
   {#if !isEmbedded && $showCaption}
     <Captions />
   {/if}

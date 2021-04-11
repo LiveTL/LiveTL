@@ -55,7 +55,7 @@
 
 <style>
   .captionsBox {
-    z-index: 99999;
+    z-index: 100;
     animation-iteration-count: 1;
     animation: splash 1s normal forwards ease-in-out;
     position: absolute;
