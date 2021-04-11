@@ -9,8 +9,8 @@
   let wrapper = null;
   let display = false;
   $: if (wrapper) {
-    wrapper.addEventListener("transitionend", e => {
-      if (e.target == wrapper && e.target.style.opacity == "0") {
+    wrapper.addEventListener('transitionend', e => {
+      if (e.target == wrapper && e.target.style.opacity == '0') {
         display = false;
       }
     });
