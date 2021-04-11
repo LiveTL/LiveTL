@@ -38,7 +38,7 @@ function userPlainFilter(ufilters) {
   let userRegex = null;
   ufilters.subscribe(filters => {
     userRegex = filters.length
-      ? new RegExp(filters.join('|'))
+      ? new RegExp(filters.map(escapeRegExp).join('|'))
       : null;
   });
 
@@ -126,4 +126,10 @@ export function isLangMatch(textLang, currentLang) {
       currentLang.lang.toLowerCase().startsWith(s)
     )
   ));
+}
+
+
+// https://stackoverflow.com/questions/3115150/how-to-escape-regular-expression-special-characters-using-javascript
+function escapeRegExp(text) {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
