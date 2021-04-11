@@ -35,7 +35,7 @@
       please consider
       <a href="https://opencollective.com/livetl" target="_blank"
         >chipping in through Open Collective</a
-      >. (KT may be free or a premium feature, we aren't quite sure yet.)
+      >. (KT may become a paid or free feature, we aren't quite sure yet.)
     </p>
   </ExpansionPanel>
 </ExpansionPanels>
