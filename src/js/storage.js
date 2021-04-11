@@ -23,15 +23,17 @@ export class SyncStore {
     const store = writable(defaultValue);
     this._store = store;
     this._storage = storageBackend || storage;
+    this.loaded = writable(false);
     this.loadFromStorage();
     stores.set(mangleStorageKey(name, storageVersion), this);
   }
 
   async loadFromStorage() {
-    this._storage.get(this.name).then(value => {
+    return await this._storage.get(this.name).then(value => {
       if (value != null) {
         this._store.set(value);
       }
+      this.loaded.set(true);
     });
   }
 
