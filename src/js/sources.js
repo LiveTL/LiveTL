@@ -1,7 +1,7 @@
 import { Queue } from './queue';
 // eslint-disable-next-line no-unused-vars
 import { writable, Writable } from 'svelte/store';
-import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted } from './filter';
+import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted, authorWhitelisted, authorBlacklisted } from './filter';
 import { channelFilters, language, showModMessage } from './store';
 import { AuthorType, languageNameCode } from './constants';
 
@@ -19,10 +19,10 @@ export const sources = {
 const userBlacklisted = id => channelFilters.get(id).blacklist;
 
 /** @type {(msg: Message) => Boolean} */
-const isWhitelisted = msg => textWhitelisted(msg.text);
+const isWhitelisted = msg => textWhitelisted(msg.text) || authorWhitelisted(msg.id);
 
 /** @type {(msg: Message) => Boolean} */
-const isBlacklisted = msg => textBlacklisted(msg.text) || userBlacklisted(msg.id);
+const isBlacklisted = msg => textBlacklisted(msg.text) || userBlacklisted(msg.id) || authorBlacklisted(msg.id);
 
 /** @type {(msg: Message) => Boolean} */
 const isMod = msg => msg.types & AuthorType.moderator;

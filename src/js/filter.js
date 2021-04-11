@@ -1,4 +1,13 @@
-import { textWhitelist, textBlacklist, plaintextWhitelist, plaintextBlacklist } from './store.js';
+import {
+  textWhitelist,
+  textBlacklist,
+  plaintextWhitelist,
+  plaintextBlacklist,
+  plainAuthorWhitelist,
+  plainAuthorBlacklist,
+  regexAuthorWhitelist,
+  regexAuthorBlacklist
+} from './store.js';
 // eslint-disable-next-line no-unused-vars
 import { SyncStore } from './storage.js';
 
@@ -30,14 +39,34 @@ function userFilter(ufilters, transform = filter => filter) {
     : false;
 }
 
+const composeOr = (...args) => ipt => args.some(a => a(ipt));
+
 export const textWhitelisted = userFilter(textWhitelist);
 export const textBlacklisted = userFilter(textBlacklist);
 export const plaintextWhitelisted = userFilter(plaintextWhitelist, escapeRegExp);
 export const plaintextBlacklisted = userFilter(plaintextBlacklist, escapeRegExp);
+export const regAuthorWhitelisted = userFilter(regexAuthorWhitelist);
+export const regAuthorBlacklisted = userFilter(regexAuthorBlacklist);
+export const plainAuthorWhitelisted = userFilter(plainAuthorWhitelist, escapeRegExp);
+export const plainAuthorBlacklisted = userFilter(plainAuthorBlacklist, escapeRegExp);
+
 /** @type {(message: String) => Boolean} */
-export const isWhitelisted = message => textWhitelisted(message) || plaintextWhitelisted(message);
+export const isWhitelisted = composeOr(
+  textWhitelisted, plaintextWhitelisted
+);
 /** @type {(message: String) => Boolean} */
-export const isBlacklisted = message => textBlacklisted(message) || plaintextBlacklisted(message);
+export const isBlacklisted = composeOr(
+  textBlacklisted, plaintextBlacklisted
+);
+
+/** @type {(author: String) => Boolean} */
+export const authorWhitelisted = composeOr(
+  regAuthorWhitelisted, plainAuthorWhitelisted
+);
+/** @type {(author: String) => Boolean} */
+export const authorBlacklisted = composeOr(
+  regAuthorBlacklisted, plainAuthorBlacklisted
+);
 
 
 /**
