@@ -11,7 +11,7 @@
 
 ### [Download LiveTL](https://livetl.github.io/LiveTL/)
 
-TODO put new demo pictures
+![Demo](./img/demo.png)
 
 ## Feedback and Contributing
 
