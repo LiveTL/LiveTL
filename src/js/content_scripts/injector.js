@@ -105,7 +105,7 @@ window.addEventListener('load', () => {
       params.get('embed_domain') || window.parent.location.href;
       makeButton('Open LiveTL', () => {
         // eslint-disable-next-line no-undef
-        window.top.location = `chrome-extension://${chrome.runtime.id}/watch.html?${constructParams().toString()}`;
+        window.top.location = chrome.runtime.getURL(`watch.html?${constructParams().toString()}`);
       }, undefined, mdiYoutubeTv);
       const tabid = await sendToBackground({
         type:'tabid'
@@ -114,7 +114,7 @@ window.addEventListener('load', () => {
         let popoutParams = constructParams();
         popoutParams.set('tabid', tabid);
         // eslint-disable-next-line no-undef
-        openWindow(`chrome-extension://${chrome.runtime.id}/popout.html?${popoutParams.toString()}`);
+        openWindow(chrome.runtime.getURL(`popout.html?${popoutParams.toString()}`));
       }, undefined, mdiOpenInNew);
       makeButton('Embed TLs', () => {
         let embeddedParams = constructParams();
@@ -125,7 +125,7 @@ window.addEventListener('load', () => {
         iframe.style.height = '100%';
         iframe.style.position = 'fixed';
         // eslint-disable-next-line no-undef
-        iframe.src = `chrome-extension://${chrome.runtime.id}/watch.html?${embeddedParams.toString()}`;
+        iframe.src = chrome.runtime.getURL(`watch.html?${embeddedParams.toString()}`);
         document.body.appendChild(iframe);
         window.addEventListener('message', d => {
           iframe.contentWindow.postMessage(d.data, '*');

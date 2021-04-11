@@ -51,7 +51,7 @@ var options = {
         loader: 'string-replace-loader',
         options: {
           search: "import { getWAR } from '@/modules/war.js';",
-          replace: 'window.isLiveTL = true; const getWAR = path => `chrome-extension://${chrome.runtime.id}/${path}`;',
+          replace: 'window.isLiveTL = true; const getWAR = path => chrome.runtime.getURL(path);',
         }
       },
       // {
