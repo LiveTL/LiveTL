@@ -1,4 +1,5 @@
 <script>
+  import { writable } from "svelte/store";
   import {
     showModMessage,
     language,
@@ -9,12 +10,35 @@
     usernameFilters,
     channelFilters
   } from "../../js/store.js";
+  import { Subheader } from "svelte-materialify/src";
   import { languageNameValues } from "../../js/constants.js";
   import CheckOption from "../options/Toggle.svelte";
+  import EnumOption from "../options/Radio.svelte";
   import ListEdit from "../options/ListEdit.svelte";
   import SelectOption from "../options/Dropdown.svelte";
   import MultiDropdown from "../options/MultiDropdown.svelte";
   export let isStandalone = false;
+
+  const whiteBlackList = writable("Show");
+  const plaintextRegex = writable("plain");
+  const chatAuthor = writable("chat");
+  const paths = {
+    Show: {
+      plain: plaintextWhitelist,
+      regex: textWhitelist
+    },
+    Block: {
+      plain: plaintextBlacklist,
+      regex: textBlacklist
+    }
+  };
+
+  $: middlePrompt = $chatAuthor == 'chat'
+    ? 'messages containing'
+    : 'authors named';
+  $: endPrompt = $plaintextRegex == 'plain' ? 'plaintext' : 'regex';
+  $: filterPrompt = `${$whiteBlackList} ${middlePrompt}...(${endPrompt})`;
+  $: filterStore = paths[$whiteBlackList][$plaintextRegex];
 </script>
 
 <SelectOption
@@ -31,13 +55,24 @@
   setBool={(n, v) =>
     channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}
 />
-<ListEdit
-  name="Show messages containing... (plaintext)"
-  store={plaintextWhitelist}
-/>
-<ListEdit
-  name="Block messages containing... (plaintext)"
-  store={plaintextBlacklist}
-/>
-<ListEdit name="Show messages that match... (regex)" store={textWhitelist} />
-<ListEdit name="Block messages that match... (regex)" store={textBlacklist} />
+<div class="filter-options">
+  <Subheader>Custom filter options</Subheader>
+  <EnumOption
+    name=""
+    options={["Show", "Block"]}
+    store={whiteBlackList} />
+  <EnumOption
+    name=""
+    options={["plain", "regex"]}
+    store={plaintextRegex} />
+  <!--Add "author" to options when support comes-->
+  <EnumOption
+    name=""
+    options={["chat"]}
+    store={chatAuthor} />
+  
+  <ListEdit
+    name={filterPrompt}
+    store={filterStore}
+  />
+</div>
