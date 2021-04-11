@@ -4,6 +4,7 @@
   "description": "Get live translations for YouTube streams, crowdsourced from multilingual viewers!",
   "scripts": {
     "build": "node utils/build.js",
+    "package": "node utils/package.js",
     "start": "node utils/webserver.js",
     "test": "jest src",
     "test:watch": "npm run test -- --watch"
