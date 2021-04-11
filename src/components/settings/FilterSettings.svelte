@@ -1,5 +1,5 @@
 <script>
-  import { writable } from "svelte/store";
+  import { writable } from 'svelte/store';
   import {
     showModMessage,
     language,
@@ -13,19 +13,19 @@
     regexAuthorBlacklist,
     usernameFilters,
     channelFilters
-  } from "../../js/store.js";
-  import { Subheader } from "svelte-materialify/src";
-  import { languageNameValues } from "../../js/constants.js";
-  import CheckOption from "../options/Toggle.svelte";
-  import EnumOption from "../options/Radio.svelte";
-  import ListEdit from "../options/ListEdit.svelte";
-  import SelectOption from "../options/Dropdown.svelte";
-  import MultiDropdown from "../options/MultiDropdown.svelte";
+  } from '../../js/store.js';
+  import { Subheader } from 'svelte-materialify/src';
+  import { languageNameValues } from '../../js/constants.js';
+  import CheckOption from '../options/Toggle.svelte';
+  import EnumOption from '../options/Radio.svelte';
+  import ListEdit from '../options/ListEdit.svelte';
+  import SelectOption from '../options/Dropdown.svelte';
+  import MultiDropdown from '../options/MultiDropdown.svelte';
   export let isStandalone = false;
 
-  const whiteBlackList = writable("Show");
-  const plaintextRegex = writable("plain");
-  const chatAuthor = writable("chat");
+  const whiteBlackList = writable('Show');
+  const plaintextRegex = writable('plain');
+  const chatAuthor = writable('chat');
   const paths = {
     Show: {
       plain: {
@@ -75,15 +75,15 @@
   <Subheader>Custom filter options</Subheader>
   <EnumOption
     name=""
-    options={["Show", "Block"]}
+    options={['Show', 'Block']}
     store={whiteBlackList} />
   <EnumOption
     name=""
-    options={["plain", "regex"]}
+    options={['plain', 'regex']}
     store={plaintextRegex} />
   <EnumOption
     name=""
-    options={["chat", "author"]}
+    options={['chat', 'author']}
     store={chatAuthor} />
   
   <ListEdit

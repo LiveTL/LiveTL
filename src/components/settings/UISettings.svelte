@@ -13,12 +13,12 @@
     textDirection,
     usernameFilters,
     channelFilters
-  } from "../../js/store.js";
-  import { TextDirection, VideoSide } from "../../js/constants.js";
-  import CheckOption from "../options/Toggle.svelte";
-  import SliderOption from "../options/Slider.svelte";
-  import EnumOption from "../options/Radio.svelte";
-  import SelectOption from "../options/Dropdown.svelte";
+  } from '../../js/store.js';
+  import { TextDirection, VideoSide } from '../../js/constants.js';
+  import CheckOption from '../options/Toggle.svelte';
+  import SliderOption from '../options/Slider.svelte';
+  import EnumOption from '../options/Radio.svelte';
+  import SelectOption from '../options/Dropdown.svelte';
   export let isStandalone = false;
 </script>
 

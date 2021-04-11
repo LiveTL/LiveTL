@@ -1,13 +1,13 @@
 <script>
-  import { Button, Icon, Slider } from "svelte-materialify/src";
-  import { mdiRestore } from "@mdi/js";
-  import { Browser, BROWSER } from "../../js/constants.js";
+  import { Button, Icon, Slider } from 'svelte-materialify/src';
+  import { mdiRestore } from '@mdi/js';
+  import { Browser, BROWSER } from '../../js/constants.js';
 
   export let min = BROWSER == Browser.ANDROID ? 0.25 : 0.5;
   export let max = BROWSER == Browser.ANDROID ? 1.5 : 2;
-  export let name = "";
+  export let name = '';
   export let store = null;
-  export let color = "blue";
+  export let color = 'blue';
   export let step = null;
 
   let diff = max - min;

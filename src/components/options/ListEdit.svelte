@@ -7,20 +7,20 @@
     Card,
     Subheader,
     MaterialApp
-  } from "svelte-materialify/src";
+  } from 'svelte-materialify/src';
 
-  export let name = "";
+  export let name = '';
   export let store = null;
 
   function handleKeyUp(e) {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       items = [...items, newItem];
-      newItem = "";
+      newItem = '';
     }
   }
 
   $: items = $store;
-  $: newItem = "";
+  $: newItem = '';
   $: items = items.filter(e => e);
   $: store.set(items);
 </script>

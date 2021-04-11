@@ -1,15 +1,15 @@
 <script>
-  import "../css/splash.css";
-  import * as j from "jquery";
-  import "jquery-ui-bundle";
-  import "jquery-ui-bundle/jquery-ui.css";
+  import '../css/splash.css';
+  import * as j from 'jquery';
+  import 'jquery-ui-bundle';
+  import 'jquery-ui-bundle/jquery-ui.css';
   export let text = `
   Captions captured from the chat will appear here. Try moving and resizing!
   You can also disable floating captions in the settings menu.
   `;
-  import { onMount } from "svelte";
-  import { sources } from "../js/sources.js";
-  import { captionLeft, captionTop, captionWidth } from "../js/store.js";
+  import { onMount } from 'svelte';
+  import { sources } from '../js/sources.js';
+  import { captionLeft, captionTop, captionWidth } from '../js/store.js';
   let captionElem = null;
   const { translations } = sources;
 
@@ -30,7 +30,7 @@
         containment: document.body
       });
       jcap.resizable({
-        handles: "e, w",
+        handles: 'e, w',
         stop: (event, ui) => {
           const width = captionElem.clientWidth;
           const widthPercent = (100 * width) / window.innerWidth;

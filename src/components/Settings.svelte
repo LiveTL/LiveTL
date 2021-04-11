@@ -1,13 +1,13 @@
 <script>
-  import { Tabs, Tab, TabContent, MaterialApp } from "svelte-materialify/src";
-  import UISettings from "./settings/UISettings.svelte";
-  import FilterSettings from "./settings/FilterSettings.svelte";
+  import { Tabs, Tab, TabContent, MaterialApp } from 'svelte-materialify/src';
+  import UISettings from './settings/UISettings.svelte';
+  import FilterSettings from './settings/FilterSettings.svelte';
 
   export let isStandalone = false;
 
   const settings = [
-    { name: "Interface", component: UISettings },
-    { name: "Filters", component: FilterSettings }
+    { name: 'Interface', component: UISettings },
+    { name: 'Filters', component: FilterSettings }
   ];
 </script>
 

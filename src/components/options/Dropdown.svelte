@@ -1,7 +1,7 @@
 <script>
-  import { Select } from "svelte-materialify/src";
+  import { Select } from 'svelte-materialify/src';
 
-  export let name = "";
+  export let name = '';
   export let store = null;
   export let items = [];
 
@@ -9,7 +9,7 @@
     if (value == null) {
       value = $store;
     }
-    if (typeof value != "string") {
+    if (typeof value != 'string') {
       value = value[0];
     }
   }

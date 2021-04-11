@@ -1,10 +1,10 @@
 <script>
-  import { Radio } from "svelte-materialify/src";
+  import { Radio } from 'svelte-materialify/src';
 
-  export let name = "";
+  export let name = '';
   export let options = [];
   export let store = null;
-  export let color = "blue";
+  export let color = 'blue';
 
   const transformOpt = str =>
     str

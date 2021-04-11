@@ -1,16 +1,16 @@
 <script>
-  import { Button, Icon, MaterialApp } from "svelte-materialify/src";
-  import { mdiClose, mdiCogOutline } from "@mdi/js";
-  import Options from "./Options.svelte";
-  import Wrapper from "./Wrapper.svelte";
-  import { TextDirection } from "../js/constants.js";
-  import { textDirection } from "../js/store.js";
-  import MessageDisplay from "./MessageDisplay.svelte";
+  import { Button, Icon, MaterialApp } from 'svelte-materialify/src';
+  import { mdiClose, mdiCogOutline } from '@mdi/js';
+  import Options from './Options.svelte';
+  import Wrapper from './Wrapper.svelte';
+  import { TextDirection } from '../js/constants.js';
+  import { textDirection } from '../js/store.js';
+  import MessageDisplay from './MessageDisplay.svelte';
   let settingsOpen = false;
   export let isStandalone = false;
   export let isResizing = false;
   export let updatePopupActive = false;
-  document.title = "LiveTL Popout";
+  document.title = 'LiveTL Popout';
 </script>
 
 <MaterialApp theme="dark">

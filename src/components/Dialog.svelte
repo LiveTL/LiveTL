@@ -1,7 +1,7 @@
 <script>
-  import { Button, Dialog, Icon } from "svelte-materialify";
-  import { mdiClose } from "@mdi/js";
-  import { lastVersion } from "../js/store.js";
+  import { Button, Dialog, Icon } from 'svelte-materialify';
+  import { mdiClose } from '@mdi/js';
+  import { lastVersion } from '../js/store.js';
 
   export let active = true;
   const close = () => {
@@ -10,8 +10,8 @@
   let wrapper = null;
   let display = true;
   $: if (wrapper) {
-    wrapper.addEventListener("transitionend", e => {
-      if (e.target == wrapper && e.target.style.opacity == "0") {
+    wrapper.addEventListener('transitionend', e => {
+      if (e.target == wrapper && e.target.style.opacity == '0') {
         display = false;
       }
     });

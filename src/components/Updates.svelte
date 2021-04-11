@@ -1,8 +1,8 @@
 <script>
-  import { Button } from "svelte-materialify";
-  import { onMount, onDestroy } from "svelte";
-  import { lastVersion } from "../js/store.js";
-  import Dialog from "./Dialog.svelte";
+  import { Button } from 'svelte-materialify';
+  import { onMount, onDestroy } from 'svelte';
+  import { lastVersion } from '../js/store.js';
+  import Dialog from './Dialog.svelte';
 
   const manifest = chrome.runtime.getManifest();
   const version = manifest.version;
@@ -13,7 +13,7 @@
   const unsetLastVersion = () => {
     lastVersion.set(version);
     active = false;
-  }
+  };
 
   let Changelogs;
   onMount(async () => {
@@ -22,8 +22,8 @@
   let dialog;
   $: if (dialog) {
     dialog
-      .querySelector(".s-overlay")
-      .addEventListener("click", () => unsetLastVersion());
+      .querySelector('.s-overlay')
+      .addEventListener('click', () => unsetLastVersion());
   }
 
   $: active = $lvLoaded && $lastVersion != version;

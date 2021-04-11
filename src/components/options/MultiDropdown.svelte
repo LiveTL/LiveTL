@@ -1,6 +1,6 @@
 <script>
-  import { onMount } from "svelte";
-  import { mdiClose } from "@mdi/js";
+  import { onMount } from 'svelte';
+  import { mdiClose } from '@mdi/js';
   import {
     Button,
     Divider,
@@ -8,9 +8,9 @@
     Menu,
     TextField,
     ListItem
-  } from "svelte-materialify/src";
+  } from 'svelte-materialify/src';
 
-  export let name = "";
+  export let name = '';
   export let store = null; // LookupStore
   export let getDisplayName = (key, value) => `${key}`;
   export let getBool = key => store.get(key);
@@ -18,8 +18,8 @@
 
   let field = null;
   $: if (field) {
-    const elem = field.querySelector(".s-text-field__wrapper.solo");
-    const svg = document.createElement("svg");
+    const elem = field.querySelector('.s-text-field__wrapper.solo');
+    const svg = document.createElement('svg');
     elem.appendChild(svg);
     svg.outerHTML = `
       <span

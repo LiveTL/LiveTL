@@ -1,12 +1,12 @@
 <script>
-  import { beforeUpdate, afterUpdate, onMount, onDestroy } from "svelte";
-  import { TextDirection } from "../js/constants.js";
-  import { sources, combineStores } from "../js/sources.js";
-  import "../css/splash.css";
-  import { Icon } from "svelte-materialify/src";
-  import { mdiPencil, mdiEyeOffOutline } from "@mdi/js";
-  import { channelFilters, livetlFontSize } from "../js/store.js";
-  $: document.body.style.fontSize = Math.round($livetlFontSize) + "px";
+  import { beforeUpdate, afterUpdate, onMount, onDestroy } from 'svelte';
+  import { TextDirection } from '../js/constants.js';
+  import { sources, combineStores } from '../js/sources.js';
+  import '../css/splash.css';
+  import { Icon } from 'svelte-materialify/src';
+  import { mdiPencil, mdiEyeOffOutline } from '@mdi/js';
+  import { channelFilters, livetlFontSize } from '../js/store.js';
+  $: document.body.style.fontSize = Math.round($livetlFontSize) + 'px';
   export let direction;
   export let settingsOpen = false;
   /** @type {{ text: String, author: String }[]}*/
