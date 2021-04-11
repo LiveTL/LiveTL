@@ -3,9 +3,12 @@
   import "jquery-ui-bundle";
   import "jquery-ui-bundle/jquery-ui.css";
   import Options from "./Options.svelte";
+  import VideoEmbed from "./VideoEmbed.svelte";
+  import Wrapper from "./Wrapper.svelte";
   import { videoSide } from "../js/store.js";
   import { VideoSide } from "../js/constants.js";
   window.j = j;
+  let isResizing = false;
   function resizable(selector, info) {
     j(document.querySelector(selector)).resizable(info);
   }
@@ -15,30 +18,37 @@
     });
     resizable(".vertical .resizable", {
       handles: $videoSide == VideoSide.RIGHT ? "w" : "e",
-      start: () => {},
-      stop: () => {},
+      start: () => (isResizing = true),
+      stop: () => (isResizing = false),
       resize: (event, ui) => {},
       // containment: "body",
     });
     resizable(".vertical .autoscale .resizable", {
       handles: "s",
-      start: () => {},
-      stop: () => {},
+      start: () => (isResizing = true),
+      stop: () => (isResizing = false),
       resize: (event, ui) => {},
-      containment: "body",
+      // containment: "body",
     });
   };
   $: changeSide($videoSide);
   window.addEventListener("load", () => changeSide($videoSide));
+  $: console.log(isResizing);
 </script>
 
 <div class="flex vertical {$videoSide == VideoSide.RIGHT ? 'reversed' : ''}">
-  <div class="tile resizable" />
+  <div class="tile resizable">
+    <Wrapper {isResizing}>
+      <VideoEmbed videoId="M7lc1UVf-VE" />
+    </Wrapper>
+  </div>
   <div class="tile autoscale">
     <div class="flex horizontal">
       <div class="tile resizable" />
       <div class="tile autoscale">
-        <Options />
+        <Wrapper {isResizing}>
+          <Options />
+        </Wrapper>
       </div>
     </div>
   </div>
@@ -72,7 +82,7 @@
     flex: 1;
   }
   .tile {
-    background-color: red;
+    background-color: #2c2c2c;
     /* border: 5px solid blue; */
     display: flex;
     overflow: auto;
@@ -91,7 +101,7 @@
     margin: 0px;
   }
   :global(.ui-resizable-handle) {
-    background-color: black;
+    background-color: #4d4d4d;
   }
   :global(.ui-resizable-e) {
     width: var(--bar);

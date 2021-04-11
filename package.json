@@ -28,9 +28,10 @@
     "write-file-webpack-plugin": "4.5.0"
   },
   "dependencies": {
+    "@mdi/js": "^5.9.55",
+    "cache-loader": "^4.1.0",
     "jquery": "^3.6.0",
     "jquery-ui-bundle": "^1.12.1-migrate",
-    "@mdi/js": "^5.9.55",
-    "cache-loader": "^4.1.0"
+    "youtube-iframe": "^1.0.3"
   }
 }
