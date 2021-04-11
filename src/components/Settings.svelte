@@ -21,10 +21,10 @@
     TextDirection,
     VideoSide,
   } from "../js/constants.js";
-  import CheckOption from "./CheckOption.svelte";
-  import SliderOption from "./SliderOption.svelte";
-  import EnumOption from "./EnumOption.svelte";
-  import SelectOption from "./SelectOption.svelte";
+  import CheckOption from "./options/Toggle.svelte";
+  import SliderOption from "./options/Slider.svelte";
+  import EnumOption from "./options/Radio.svelte";
+  import SelectOption from "./options/Dropdown.svelte";
 </script>
 
 <SelectOption

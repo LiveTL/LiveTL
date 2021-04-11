@@ -1,7 +1,7 @@
 <script>
   import { Button, Icon, Slider } from "svelte-materialify/src";
   import { mdiHome } from "@mdi/js";
-  import { Browser, BROWSER } from "../js/web-constants.js";
+  import { Browser, BROWSER } from "../../js/web-constants.js";
 
   export let min = BROWSER == Browser.ANDROID ? 0.25 : 0.5;
   export let max = BROWSER == Browser.ANDROID ? 1.5 : 2;

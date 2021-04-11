@@ -1,4 +1,4 @@
-import App from '../../svelte/Watch.svelte';
+import App from '../../components/Watch.svelte';
 
 const app = new App({
   target: document.body,

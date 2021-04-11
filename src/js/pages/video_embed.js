@@ -1,4 +1,4 @@
-import App from '../../svelte/VideoEmbed.svelte';
+import App from '../../components/VideoEmbed.svelte';
 
 const app = new App({
   target: document.body,
