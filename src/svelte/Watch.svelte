@@ -6,7 +6,7 @@
   import Options from "./Options.svelte";
   import VideoEmbed from "./VideoEmbed.svelte";
   import Wrapper from "./Wrapper.svelte";
-  import { videoSide } from "../js/store.js";
+  import { videoSide, videoPanelSize, chatSize } from "../js/store.js";
   import { VideoSide } from "../js/constants.js";
   window.j = j;
   let isResizing = false;
@@ -37,14 +37,18 @@
 </script>
 
 <div class="flex vertical {$videoSide == VideoSide.RIGHT ? 'reversed' : ''}">
-  <div class="tile resizable">
+  <div class="tile resizable" style="width: {videoPanelSize}%">
     <Wrapper {isResizing}>
       <VideoEmbed videoId="M7lc1UVf-VE" />
     </Wrapper>
   </div>
   <div class="tile autoscale">
     <div class="flex horizontal">
-      <div class="tile resizable" />
+      <div class="tile resizable" style="height: {chatSize}%">
+        <Wrapper {isResizing}>
+          <Options />
+        </Wrapper>
+      </div>
       <div class="tile autoscale">
         <Wrapper {isResizing}>
           <Options />
@@ -71,11 +75,9 @@
     --bar: 10px;
   }
   .vertical > .resizable {
-    width: 50%;
     height: 100%;
   }
   .horizontal > .resizable {
-    height: 50%;
     width: 100%;
   }
   .autoscale {

@@ -17,4 +17,6 @@ export const
   captionZoom = SS('captionZoom', defaultZoom),
   doSpeechSynth = SS('doSpeechSynth', false),
   speechVolume = SS('speechVolume', 1),
-  doTranslatorMode = SS('doTranslatorMode', false);
+  doTranslatorMode = SS('doTranslatorMode', false),
+  videoPanelSize = SS('videoPanelSize', 80),
+  chatSize = SS('chatSize', 50);
