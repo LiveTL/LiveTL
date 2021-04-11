@@ -1,5 +1,5 @@
 <script>
-  import { ExpansionPanel, ExpansionPanels, Icon } from 'svelte-materialify';
+  import { ExpansionPanel, ExpansionPanels, Icon } from "svelte-materialify";
   let value;
 </script>
 
@@ -35,7 +35,7 @@
       please consider
       <a href="https://opencollective.com/livetl" target="_blank"
         >chipping in through Open Collective</a
-      >.
+      >. (KT may be free or a premium feature, we aren't quite sure yet.)
     </p>
   </ExpansionPanel>
 </ExpansionPanels>
