@@ -1,7 +1,6 @@
 <script>
   import { Button, Dialog, Icon } from 'svelte-materialify';
   import { mdiClose } from '@mdi/js';
-  import { lastVersion } from '../js/store.js';
 
   export let active = true;
   const close = () => {

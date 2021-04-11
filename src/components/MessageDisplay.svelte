@@ -60,7 +60,6 @@
     if (scrollOnTick) bottomMsg.scrollIntoView();
     scrollOnTick = false;
   });
-  export let updatePopupActive = false;
 </script>
 
 <div class="messageDisplayWrapper">
@@ -87,9 +86,9 @@
           href="/"
           on:click={e => {
             e.preventDefault();
-            updatePopupActive = true;
+            // updatePopupActive = true;
           }}
-          >See what's new in the most recent update ({chrome.runtime.getManifest()
+          >See what's new in the most recent update ({window.chrome.runtime.getManifest()
             .version})</a
         >
       </div>

@@ -11,7 +11,6 @@
     regexAuthorWhitelist,
     plainAuthorBlacklist,
     regexAuthorBlacklist,
-    usernameFilters,
     channelFilters
   } from '../../js/store.js';
   import { Subheader } from 'svelte-materialify/src';
