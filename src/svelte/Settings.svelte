@@ -11,14 +11,16 @@
     showTimestamp,
     speechVolume,
     textDirection,
+    language,
   } from "../js/store.js";
-  import { TextDirection, VideoSide } from "../js/constants.js";
+  import { languageNameValues, TextDirection, VideoSide } from "../js/constants.js";
   import CheckOption from "./CheckOption.svelte";
   import SliderOption from "./SliderOption.svelte";
   import EnumOption from "./EnumOption.svelte";
+  import SelectOption from "./SelectOption.svelte";
 </script>
 
-<!--TODO language select-->
+<SelectOption name="Language" store={language} items={languageNameValues} />
 <CheckOption name="Show moderator messages" store={showModMessage} />
 <SliderOption name="Chat zoom" store={chatZoom} />
 <CheckOption name="Show timestamps" store={showTimestamp} />

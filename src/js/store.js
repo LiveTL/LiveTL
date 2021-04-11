@@ -1,4 +1,4 @@
-import { Browser, BROWSER } from './web-constants';
+import { Browser, BROWSER, } from './web-constants.js';
 import { TextDirection, VideoSide } from './constants.js';
 import { SettingStore } from './storage.js';
 
@@ -6,7 +6,7 @@ const SS = (n, d) => new SettingStore(n, d);
 const defaultZoom = BROWSER == Browser.ANDROID ? 0.5 : 1;
 
 export const
-  language = SS('language', 'en'),
+  language = SS('language', 'English'),
   showModMessage = SS('showModMessage', true),
   chatZoom = SS('chatZoom', defaultZoom),
   showTimestamp = SS('showTimestamp', true),
