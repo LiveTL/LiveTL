@@ -3,22 +3,18 @@
   import * as j from "jquery";
   import "jquery-ui-bundle";
   import "jquery-ui-bundle/jquery-ui.css";
-  import Options from "./Options.svelte";
   import VideoEmbed from "./VideoEmbed.svelte";
   import Wrapper from "./Wrapper.svelte";
-  import { Button, Icon, MaterialApp } from "svelte-materialify/src";
-  import { mdiClose, mdiCogOutline } from "@mdi/js";
+  import { MaterialApp } from "svelte-materialify/src";
   import {
     videoSide,
     videoPanelSize,
     chatSize,
     chatZoom,
-    livetlZoom,
-    textDirection,
   } from "../js/store.js";
-  import { VideoSide, TextDirection } from "../js/constants.js";
+  import { VideoSide } from "../js/constants.js";
   import ChatEmbed from "./ChatEmbed.svelte";
-  import MessageDisplay from "./MessageDisplay.svelte";
+  import Popout from "./Popout.svelte";
   document.title = "LiveTL";
   window.j = j;
   let isResizing = false;
@@ -76,7 +72,6 @@
   const videoId = params.get("video");
   const continuation = params.get("continuation");
   const isReplay = params.get("isReplay");
-  let settingsOpen = false;
 </script>
 
 <MaterialApp theme="dark">
@@ -102,28 +97,7 @@
           </Wrapper>
         </div>
         <div class="tile autoscale" bind:this={ltlElem}>
-          <div
-            class="settingsButton {$textDirection === TextDirection.TOP
-              ? 'bottom'
-              : 'top'}Float"
-            style="display: {isResizing ? 'none' : 'unset'};"
-          >
-            <Button
-              fab
-              size="small"
-              on:click={() => (settingsOpen = !settingsOpen)}
-            >
-              <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
-            </Button>
-          </div>
-          <Wrapper {isResizing} zoom={$livetlZoom}>
-            <div style="display: {settingsOpen ? 'block' : 'none'};">
-              <Options />
-            </div>
-            <div style="display: {settingsOpen ? 'none' : 'block'};">
-              <MessageDisplay direction={$textDirection} />
-            </div>
-          </Wrapper>
+          <Popout {isResizing} />
         </div>
       </div>
     </div>
@@ -131,18 +105,6 @@
 </MaterialApp>
 
 <style>
-  .bottomFloat {
-    bottom: 0px;
-  }
-  .topFloat {
-    top: 0px;
-  }
-  .settingsButton {
-    position: absolute;
-    right: 0px;
-    padding: 5px;
-    z-index: 100;
-  }
   .horizontal {
     flex-direction: column;
   }

@@ -1,5 +1,5 @@
 <script>
-  import { MaterialApp } from 'svelte-materialify/src';
+  import { MaterialApp } from "svelte-materialify/src";
   import Settings from "./Settings.svelte";
 </script>
 
@@ -23,7 +23,6 @@
 
   .app {
     padding: 20px !important;
-    display: grid;
     justify-content: center;
     min-width: max-content;
     max-height: 100%;

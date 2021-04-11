@@ -1,6 +1,7 @@
 <script>
   export let isResizing;
   export let zoom = NaN;
+  export let verticalCenter = false;
   let factor;
   $: factor = zoom || 1;
   let inverse;
@@ -9,43 +10,43 @@
 
 <div
   style="
-display: {isResizing
+    display: {isResizing
     ? 'none'
     : 'grid'};
-width: {inverse}%;
-height: {inverse}%;
-transform-origin: 0px 0px;
-transform: scale({factor});
-overflow: auto;
-position: absolute;
-"
+    width: {inverse}%;
+    height: {inverse}%;
+    transform-origin: 0px 0px;
+    transform: scale({factor});
+    overflow: auto;
+    position: absolute;
+    "
 >
   <slot />
 </div>
 
 <style>
-/* width */
+  /* width */
 
-::-webkit-scrollbar {
+  ::-webkit-scrollbar {
     width: 4px;
     height: 4px;
-}
+  }
 
-/* Track */
+  /* Track */
 
-::-webkit-scrollbar-track {
+  ::-webkit-scrollbar-track {
     background: transparent;
-}
+  }
 
-/* Handle */
+  /* Handle */
 
-::-webkit-scrollbar-thumb {
+  ::-webkit-scrollbar-thumb {
     background: #888;
-}
+  }
 
-/* Handle on hover */
+  /* Handle on hover */
 
-::-webkit-scrollbar-thumb:hover {
+  ::-webkit-scrollbar-thumb:hover {
     background: #555;
-}
+  }
 </style>

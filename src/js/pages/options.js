@@ -1,4 +1,4 @@
-import App from '../../components/Options.svelte';
+import App from '../../components/Popout.svelte';
 
 const app = new App({
   target: document.body,
