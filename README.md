@@ -1,6 +1,25 @@
 # LiveTL - Translation Filter for Streams
 
-[![Tests](https://github.com/LiveTL/extension/actions/workflows/tests.yaml/badge.svg)](https://github.com/LiveTL/extension/actions/workflows/tests.yaml)
+[![Tests](https://github.com/LiveTL/LiveTL/actions/workflows/tests.yaml/badge.svg)](https://github.com/LiveTL/LiveTL/actions/workflows/tests.yaml)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg)](https://github.com/standard/semistandard)
+[![Contributors](https://img.shields.io/github/contributors/LiveTL/LiveTL)](https://github.com/LiveTL/LiveTL/contributors)
+[![Issues](https://img.shields.io/github/issues/LiveTL/LiveTL)](https://github.com/LiveTL/LiveTL/issues)
+![Total Lines](https://img.shields.io/tokei/lines/github/LiveTL/LiveTL)
+[![Commit Activity](https://img.shields.io/github/commit-activity/w/LiveTL/LiveTL)](https://github.com/LiveTL/LiveTL/commits/)
+[![Discord](https://img.shields.io/discord/780938154437640232.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/uJrV3tmthg)
+
+### [Download LiveTL](https://livetl.github.io/LiveTL/)
+
+TODO put new demo pictures
+
+## Feedback and Contributing
+
+We have a Discord server for those who would like to give feedback or discuss new
+features! [Here is the invite](https://discord.gg/uJrV3tmthg).
+
+If you are interested in helping us solve any issues and/or add features, please let us know in the Discord server and
+submit a Pull Request!
 
 ## Development
 
@@ -15,6 +34,7 @@ yarn # use yarn, not npm
 ```
 
 ### Commands
+
 #### Variables
 ```bash
 # defaults:
@@ -23,7 +43,7 @@ NODE_ENV=development
 ```
 ```bash
 yarn start # dev
-yarn build # prod
+yarn build production # prod
 yarn test  # jest
 yarn test:watch # autotest
 ```
