@@ -1,0 +1,44 @@
+{
+  "name": "LiveTL - Translation Filter for Streams",
+  "options_page": "options.html",
+  "permissions": [
+    "storage",
+    "webRequest",
+    "webRequestBlocking",
+    "https://www.youtube.com/*?*",
+    "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat/*",
+    "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay/*"
+  ],
+  "background": {
+    "page": "background.html",
+    "persistent": true
+  },
+  "icons": {
+    "128": "128x128.png"
+  },
+  "browser_action": {
+    "default_popup": "options.html",
+    "default_icon": "48x48.png"
+  },
+  "manifest_version": 2,
+  "content_security_policy": "script-src 'self' https://www.youtube.com 'unsafe-eval'; object-src 'self'",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/live_chat*",
+        "https://www.youtube.com/live_chat_replay*"
+      ],
+      "js": [
+        "injector.bundle.js",
+        "interceptor.bundle.js",
+        "chat.bundle.js"
+      ],
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    "*.js",
+    "*.html",
+    "*.png"
+  ]
+}
