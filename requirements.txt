@@ -1,5 +1,0 @@
-#import pytest, requests, selenium, samepack
-pytest==5.4.3
-requests==2.24.0
-selenium==3.141.0
-samepack>=0.1.4
