@@ -87,6 +87,7 @@
           href="/"
           on:click={e => {
             e.preventDefault();
+            // eslint-disable-next-line no-unused-vars
             updatePopupActive = true;
           }}
           >See what's new in the most recent update ({window.chrome.runtime.getManifest()
