@@ -48,6 +48,7 @@ yarn start # dev
 yarn build production # prod
 yarn test  # jest
 yarn test:watch # autotest
+yarn format # lint
 ```
 Load the `build` directory in Chrome developer mode.
 
