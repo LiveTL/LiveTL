@@ -41,6 +41,8 @@ yarn # use yarn, not npm
 PORT=3000
 NODE_ENV=development
 ```
+
+#### Commands
 ```bash
 yarn start # dev
 yarn build production # prod
@@ -50,9 +52,9 @@ yarn test:watch # autotest
 Load the `build` directory in Chrome developer mode.
 
 ### Hot Reload
-Enable `chrome://flags/#allow-insecure-localhost`
+Enable `chrome://flags/#allow-insecure-localhost` to use hot module and UI component reloading.
 
 ## Developers
 
-LiveTL is developed by [these fine people](https://github.com/LiveTL/LiveTL/graphs/contributors).
+LiveTL is developed by [these fine people](https://github.com/LiveTL/LiveTL/graphs/contributors)!
 
