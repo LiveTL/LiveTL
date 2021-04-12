@@ -17,7 +17,7 @@ describe('Toggle', () => {
 
   it('changes when clicked', async () => {
     const { getByRole } = render(Toggle, { store: writable(true) });
-    const button = getByRole('switch');
+    const button = getByRole('checkbox');
     await fireEvent.click(button);
     expect(button).toHaveAttribute('aria-checked', 'false');
   });
@@ -25,14 +25,14 @@ describe('Toggle', () => {
   it('updates store when clicked', async () => {
     const store = writable(true);
     const { getByRole } = render(Toggle, { store });
-    await fireEvent.click(getByRole('switch'));
+    await fireEvent.click(getByRole('checkbox'));
     expect(get(store)).toBeFalsy();
   });
 
   it('updates with the store', async () => {
     const store = writable(true);
     const { getByRole } = render(Toggle, { store });
-    const button = getByRole('switch');
+    const button = getByRole('checkbox');
     await store.set(false);
     expect(button).toHaveAttribute('aria-checked', 'false');
   });

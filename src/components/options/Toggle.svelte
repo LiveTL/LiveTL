@@ -4,6 +4,6 @@
   export let store = null;
 </script>
 
-<Checkbox on:change={store.update((n) => !n)} color="blue" checked={$store} dense>
+<Checkbox on:change={store.update((n) => !n)} color="blue" checked={$store}>
   <span class="option-label">{name}</span>
 </Checkbox>
