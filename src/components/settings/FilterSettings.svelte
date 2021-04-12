@@ -13,7 +13,7 @@
     regexAuthorBlacklist,
     channelFilters
   } from '../../js/store.js';
-  import { Subheader } from 'svelte-materialify/src';
+  import { Subheader /*, List, ListItem, ExpansionPanels, ExpansionPanel */ } from 'svelte-materialify/src';
   import { languageNameValues } from '../../js/constants.js';
   import CheckOption from '../options/Toggle.svelte';
   import EnumOption from '../options/FilterSelector.svelte';
@@ -48,10 +48,40 @@
     }
   };
 
-  $: middlePrompt =
-    $chatAuthor == 'chat' ? 'messages containing' : 'authors named';
-  $: endPrompt = $plaintextRegex == 'plain' ? 'plaintext' : 'regex';
-  $: filterPrompt = `${$whiteBlackList} ${middlePrompt}... (${endPrompt})`;
+  const getMidPrompt = chatAuthor => chatAuthor == 'chat' ? 'messages containing' : 'authors named';
+  const getEndPrompt = plainReg => plainReg == 'plain' ? '' : '(regex)';
+  const getPrompt = (whiteBlack, chatAuthor, plainReg, contains = '...') => {
+    return `${whiteBlack} ${getMidPrompt(chatAuthor)}${contains} ${getEndPrompt(plainReg)}`;
+  };
+
+  function getRules() {
+    const rules = [];
+    ['Show', 'Block'].forEach(beg => {
+      ['plain', 'regex'].forEach(mid => {
+        ['chat', 'author'].forEach(end => {
+          const store = paths[beg][mid][end];
+          store.get().forEach(e => {
+            rules.push(getPrompt(beg, mid, end, ' ' + e));
+          });
+        });
+      });
+    });
+    return rules;
+  }
+
+  $: rawStores = [
+    $plaintextWhitelist,
+    $plainAuthorWhitelist,
+    $textWhitelist,
+    $regexAuthorWhitelist,
+    $plaintextBlacklist,
+    $plainAuthorBlacklist,
+    $textBlacklist,
+    $regexAuthorBlacklist
+  ];
+
+  $: rules = [rawStores, getRules()][1];
+  $: filterPrompt = getPrompt($whiteBlackList, $chatAuthor, $plaintextRegex);
   $: filterStore = paths[$whiteBlackList][$plaintextRegex][$chatAuthor];
 </script>
 
@@ -70,6 +100,18 @@
     channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}
 />
 <div class="filter-options">
+  <!--
+  <ExpansionPanels>
+    <ExpansionPanel>
+      <span slot="header">Custom filters</span>
+      <List>
+        {#each rules as rule}
+          <ListItem>{rule}</ListItem>
+        {/each}
+      </List>
+    </ExpansionPanel>
+  </ExpansionPanels>
+  -->
   <Subheader>Custom filter options</Subheader>
   <EnumOption name="" options={['chat', 'author']} store={chatAuthor} />
   <EnumOption name="" options={['Show', 'Block']} store={whiteBlackList} />
