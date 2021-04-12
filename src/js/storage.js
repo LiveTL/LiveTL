@@ -25,10 +25,15 @@ export class SyncStore {
     this._storage = storageBackend || storage;
     this.loaded = writable(false);
     this.loadFromStorage();
+    this._lastSet = Date.now();
     stores.set(mangleStorageKey(name, storageVersion), this);
   }
 
   async loadFromStorage() {
+    // TODO make this use a queue of changes
+    // if it has changed recently, wait 100 millis
+    // and see if there's another change
+    if (Date.now() - this._lastSet < 100) return;
     return await this._storage.get(this.name).then(value => {
       if (value != null) {
         this._store.set(value);
@@ -49,6 +54,7 @@ export class SyncStore {
    */
   set(value) {
     this._store.set(value);
+    this._markSet();
     this._storage.set(this.name, value);
   }
 
@@ -58,11 +64,13 @@ export class SyncStore {
   update(callback) {
     this._store.update(callback);
     this._storage.set(this.name, get(this._store));
+    this._markSet();
   }
 
   reset() {
     this._store.set(this.defaultValue);
     this._storage.set(this.name, this.defaultValue);
+    this._markSet();
   }
 
   /**
@@ -71,6 +79,10 @@ export class SyncStore {
    */
   subscribe(callback) {
     return this._store.subscribe(callback);
+  }
+
+  _markSet() {
+    this._lastSet = Date.now();
   }
 }
 
