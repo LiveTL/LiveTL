@@ -51,7 +51,7 @@
   $: middlePrompt =
     $chatAuthor == 'chat' ? 'messages containing' : 'authors named';
   $: endPrompt = $plaintextRegex == 'plain' ? 'plaintext' : 'regex';
-  $: filterPrompt = `${$whiteBlackList} ${middlePrompt}...(${endPrompt})`;
+  $: filterPrompt = `${$whiteBlackList} ${middlePrompt}... (${endPrompt})`;
   $: filterStore = paths[$whiteBlackList][$plaintextRegex][$chatAuthor];
 </script>
 
