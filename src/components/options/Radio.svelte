@@ -11,16 +11,13 @@
       .trim()
       .toLowerCase()
       .replace(/\w\S*/g, w => w.replace(/^\w/, c => c.toUpperCase()));
-
-  $: group = $store;
-  $: store.set(group);
 </script>
 
 <div class="container">
   <span class="option-label">{name}</span>
   <div class="buttons d-flex">
     {#each options as opt}
-      <Radio bind:group value={opt} {color}>{transformOpt(opt)}</Radio>
+      <Radio bind:group={$store} value={opt} {color}>{transformOpt(opt)}</Radio>
     {/each}
   </div>
 </div>

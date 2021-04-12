@@ -4,6 +4,6 @@
   export let store = null;
 </script>
 
-<Checkbox on:change={store.update((n) => !n)} color="blue" checked={$store}>
+<Checkbox bind:checked={$store} color="blue">
   <span class="option-label">{name}</span>
 </Checkbox>
