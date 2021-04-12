@@ -11,6 +11,7 @@
   export let settingsOpen = false;
   /** @type {{ text: String, author: String }[]}*/
   export let items = [];
+  export let updatePopupActive = false;
 
   let bottomMsg = null;
   let messageDisplay = null;
@@ -86,7 +87,7 @@
           href="/"
           on:click={e => {
             e.preventDefault();
-            // updatePopupActive = true;
+            updatePopupActive = true;
           }}
           >See what's new in the most recent update ({window.chrome.runtime.getManifest()
             .version})</a

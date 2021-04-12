@@ -25,7 +25,7 @@
     deal with the janky mechanics and bugs of previous versions!
   </ExpansionPanel>
   <ExpansionPanel>
-    <span slot="header">AI-powered live translations are coming soon!</span>
+    <span slot="header">Automatic live translations are coming soon!</span>
     <p>
       For the past few months, our team has been hard at work on a project
       called Kanatran (KT) that translates Hololive streams in realtime. We
