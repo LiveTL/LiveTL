@@ -56,7 +56,7 @@
 </script>
 
 <SelectOption
-  name="Language Filter"
+  name="Language filter"
   store={language}
   items={languageNameValues}
 />

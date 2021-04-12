@@ -25,7 +25,7 @@ export const
   textDirection = SS('textDirection', TextDirection.BOTTOM),
   videoSide = SS('videoSide', VideoSide.LEFT),
   showCaption = SS('showCaption', true),
-  captionDuration = SS('captionDuration', -1),
+  captionDuration = SS('captionDuration', 10),
   captionFontSize = SS('captionFontSize', 18),
   captionWidth = SS('captionWidth', 80),
   captionLeft = SS('captionLeft', 10),

@@ -10,7 +10,7 @@
     with buttery smooth animations!
   </ExpansionPanel>
   <ExpansionPanel>
-    <span slot="header">Embedded Mode</span>
+    <span slot="header">Embedded mode</span>
     You can now load LiveTL right within the YouTube interface without using the
     popout mode.
   </ExpansionPanel>
