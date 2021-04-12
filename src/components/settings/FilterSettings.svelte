@@ -16,7 +16,7 @@
   import { Subheader } from 'svelte-materialify/src';
   import { languageNameValues } from '../../js/constants.js';
   import CheckOption from '../options/Toggle.svelte';
-  import EnumOption from '../options/Radio.svelte';
+  import EnumOption from '../options/FilterSelector.svelte';
   import ListEdit from '../options/ListEdit.svelte';
   import SelectOption from '../options/Dropdown.svelte';
   import MultiDropdown from '../options/MultiDropdown.svelte';
