@@ -6,7 +6,7 @@ import { channelFilters, language, showModMessage } from './store';
 import { AuthorType, languageNameCode } from './constants';
 
 
-/** @typedef {{text: String, author: String, timestamp: String, id: String, types: String[]}} Message*/
+/** @typedef {{text: String, author: String, timestamp: String, id: String, types: Number}} Message*/
 
 /** @type {{ translations: Writable<Message>, mod: Writable<Message> ytc: Writable<Message>}} */
 export const sources = {
