@@ -48,9 +48,8 @@
     }
   };
 
-  $: middlePrompt = $chatAuthor == 'chat'
-    ? 'messages containing'
-    : 'authors named';
+  $: middlePrompt =
+    $chatAuthor == 'chat' ? 'messages containing' : 'authors named';
   $: endPrompt = $plaintextRegex == 'plain' ? 'plaintext' : 'regex';
   $: filterPrompt = `${$whiteBlackList} ${middlePrompt}...(${endPrompt})`;
   $: filterStore = paths[$whiteBlackList][$plaintextRegex][$chatAuthor];
@@ -72,21 +71,9 @@
 />
 <div class="filter-options">
   <Subheader>Custom filter options</Subheader>
-  <EnumOption
-    name=""
-    options={['Show', 'Block']}
-    store={whiteBlackList} />
-  <EnumOption
-    name=""
-    options={['plain', 'regex']}
-    store={plaintextRegex} />
-  <EnumOption
-    name=""
-    options={['chat', 'author']}
-    store={chatAuthor} />
-  
-  <ListEdit
-    name={filterPrompt}
-    store={filterStore}
-  />
+  <EnumOption name="" options={['chat', 'author']} store={chatAuthor} />
+  <EnumOption name="" options={['Show', 'Block']} store={whiteBlackList} />
+  <EnumOption name="" options={['plain', 'regex']} store={plaintextRegex} />
+
+  <ListEdit name={filterPrompt} store={filterStore} />
 </div>
