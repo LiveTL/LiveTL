@@ -7,7 +7,7 @@
     active = false;
   };
   let wrapper = null;
-  let display = true;
+  let display = false;
   $: if (wrapper) {
     wrapper.addEventListener('transitionend', e => {
       if (e.target == wrapper && e.target.style.opacity == '0') {

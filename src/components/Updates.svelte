@@ -30,33 +30,31 @@
   onDestroy(() => lastVersion.set(active ? $lastVersion : version));
 </script>
 
-{#if active}
-  <div bind:this={dialog}>
-    <Dialog bind:active>
-      <span class="centered">
-        <h1>New Update!</h1>
-        <h2>Here's what's new in LiveTL version {version}:</h2>
-      </span>
-      <span class="left">
-        <svelte:component this={Changelogs} />
-      </span>
-      <span class="centered">
-        <h2 style="margin: 25px;">
-          If you like this update, please consider sharing this information with
-          your friends! We'd really appreciate it :)
-        </h2>
-      </span>
-      <Button
-        transition
-        size="default"
-        class="blue"
-        on:click={() => unsetLastVersion()}
-      >
-        Let's Go!
-      </Button>
-    </Dialog>
-  </div>
-{/if}
+<div bind:this={dialog}>
+  <Dialog bind:active>
+    <span class="centered">
+      <h1>New Update!</h1>
+      <h2>Here's what's new in LiveTL version {version}:</h2>
+    </span>
+    <span class="left">
+      <svelte:component this={Changelogs} />
+    </span>
+    <span class="centered">
+      <h2 style="margin: 25px;">
+        If you like this update, please consider sharing this information with
+        your friends! We'd really appreciate it :)
+      </h2>
+    </span>
+    <Button
+      transition
+      size="default"
+      class="blue"
+      on:click={() => unsetLastVersion()}
+    >
+      Let's Go!
+    </Button>
+  </Dialog>
+</div>
 
 <style>
   h1 {
