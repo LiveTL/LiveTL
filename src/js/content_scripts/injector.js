@@ -61,6 +61,7 @@ const makeButton = (text, callback, color='rgb(0, 153, 255)', icon='') => {
   let a = document.createElement('span');
   a.style.flexGrow = 1;
   a.style.flexBasis = 0;
+  a.style.position = 'relative';
   a.appendChild(getLiveTLButton(color));
   const e = document.querySelector('#input-panel');
   let elem = e.querySelector('.livetlButtonWrapper');
