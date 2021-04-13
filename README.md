@@ -46,7 +46,7 @@ NODE_ENV=development
 ```bash
 yarn start # dev
 yarn build production # prod
-yarn test  # jest
+yarn test # jest
 yarn test:watch # autotest
 yarn format # lint
 ```

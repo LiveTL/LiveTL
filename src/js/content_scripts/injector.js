@@ -34,7 +34,6 @@ const getLiveTLButton = (color) => {
   <paper-button id="button" class="style-scope ytd-toggle-button-renderer livetlActivator" role="button" tabindex="0" animated=""
   elevation="0" aria-disabled="false" style="
     padding: 5px;
-    width: 100%;
     display: inline-block;
     margin: 0;
   ">
