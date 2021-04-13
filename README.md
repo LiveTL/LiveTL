@@ -9,7 +9,7 @@
 [![Commit Activity](https://img.shields.io/github/commit-activity/w/LiveTL/LiveTL)](https://github.com/LiveTL/LiveTL/commits/)
 [![Discord](https://img.shields.io/discord/780938154437640232.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/uJrV3tmthg)
 
-### [Download LiveTL](https://livetl.github.io/LiveTL/)
+### [Download LiveTL](https://livetl.app/)
 
 ![Demo](./img/demo.png)
 
