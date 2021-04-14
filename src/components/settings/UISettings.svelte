@@ -69,5 +69,5 @@
 <CheckOption name="Read-aloud mode" store={doSpeechSynth} />
 {#if $doSpeechSynth}
   <SliderOption name="Speech volume" store={speechVolume} />
-  <CheckOption name="Auto-prefix chat messages" store={doTranslatorMode} />
 {/if}
+<!-- <CheckOption name="Auto-prefix chat messages" store={doTranslatorMode} /> -->

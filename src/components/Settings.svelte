@@ -25,7 +25,7 @@
           {#each settings as { component }}
             <TabContent>
               <div
-                style="font-size: 16px !important; margin: auto; margin-top: 10px;"
+                style="font-size: 16px !important; margin: 15px 0px 15px 0px;"
               >
                 <svelte:component this={component} {isStandalone} />
               </div>
