@@ -26,7 +26,7 @@
     }
   }
 
-  $: if (wrapper && thumb) setThumb();
+  $: if (wrapper && thumb && scaledBack != null) setThumb();
   onMount(async () => {
     await tick();
     setThumb();
