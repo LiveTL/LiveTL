@@ -2,6 +2,7 @@
   import { Button, Icon, Slider } from 'svelte-materialify/src';
   import { mdiRestore } from '@mdi/js';
   import { Browser, BROWSER } from '../../js/constants.js';
+  import { onMount, tick } from 'svelte';
 
   export let min = BROWSER == Browser.ANDROID ? 0.25 : 0.5;
   export let max = BROWSER == Browser.ANDROID ? 1.5 : 2;
@@ -17,12 +18,19 @@
   $: store.set(scaledBack);
 
   let wrapper = null;
-  $: if (wrapper && thumb) {
+
+  function setThumb() {
     let e = wrapper.querySelector('.s-slider__tooltip');
     if (e) {
       e.setAttribute('data-content', Math.round(scaledBack));
     }
   }
+
+  $: if (wrapper && thumb) setThumb();
+  onMount(async () => {
+    await tick();
+    setThumb();
+  });
 </script>
 
 <div bind:this={wrapper}>
