@@ -7,7 +7,9 @@
     captionLeft,
     captionTop,
     captionWidth,
-    captionFontSize
+    captionFontSize,
+    enableCaptionTimeout,
+    captionDuration
   } from '../js/store.js';
   export let text = `
   Captions captured from the chat will appear here. Try moving and resizing!
@@ -44,6 +46,14 @@
       });
     }, 0);
   }
+
+  let show = true;
+  let timeout = setTimeout(() => {}, 0);
+  $: if ($enableCaptionTimeout) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => (show = false), $captionDuration * 1000);
+    show = true;
+  }
 </script>
 
 <div
@@ -54,6 +64,9 @@
   left: {$captionLeft}%;
   width: {$captionWidth}%;
   font-size: {$captionFontSize}px;
+  display: {show
+    ? 'block'
+    : 'none'};
 "
 >
   <div class="captionSegment">{$translations ? $translations.text : text}</div>
