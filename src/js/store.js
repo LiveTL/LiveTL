@@ -29,7 +29,7 @@ export const
   captionFontSize = SS('captionFontSize', 18),
   captionWidth = SS('captionWidth', 80),
   captionLeft = SS('captionLeft', 10),
-  captionTop = SS('captionTop', 10),
+  captionTop = SS('captionTop', 80),
   doSpeechSynth = SS('doSpeechSynth', false),
   speechVolume = SS('speechVolume', 1),
   doTranslatorMode = SS('doTranslatorMode', false),

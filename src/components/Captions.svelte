@@ -49,10 +49,13 @@
 
   let show = true;
   let timeout = setTimeout(() => {}, 0);
-  $: if ($enableCaptionTimeout) {
+  $: if ($enableCaptionTimeout && $captionFontSize) {
     clearTimeout(timeout);
     timeout = setTimeout(() => (show = false), $captionDuration * 1000);
     show = true;
+  } else {
+    show = true;
+    clearTimeout(timeout);
   }
 </script>
 
