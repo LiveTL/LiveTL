@@ -49,6 +49,7 @@
     store={captionFontSize}
     min={9}
     max={54}
+    thumb
   />
   <CheckOption
     name="Make captions disappear when inactive"
@@ -56,10 +57,11 @@
   />
   {#if $enableCaptionTimeout}
     <SliderOption
-      name="Disappear after ({Math.round($captionDuration)} seconds)"
+      name="Disappear after (seconds)"
       store={captionDuration}
       min={2}
       max={61}
+      thumb
     />
   {/if}
 {/if}
