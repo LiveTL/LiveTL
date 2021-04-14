@@ -11,11 +11,13 @@
     showTimestamp,
     speechVolume,
     textDirection,
+    enableCaptionTimeout
   } from '../../js/store.js';
   import { TextDirection, VideoSide } from '../../js/constants.js';
   import CheckOption from '../options/Toggle.svelte';
   import SliderOption from '../options/Slider.svelte';
   import EnumOption from '../options/Radio.svelte';
+  import FontDemo from '../FontDemo.svelte';
   export let isStandalone = false;
 </script>
 
@@ -23,18 +25,7 @@
 <SliderOption name="Chat zoom" store={chatZoom} />
 <!-- {/if} -->
 <SliderOption name="Font size" store={livetlFontSize} min={9} max={54} />
-<div
-  style="
-  margin-bottom: 20px;
-  font-size: {Math.round(
-    $livetlFontSize
-  )}px;
-  background-color: darken(var(--theme-cards), 50%);
-  padding: 5px;
-"
->
-  Sample text ({Math.round($livetlFontSize)} point font)
-</div>
+<FontDemo fontSize={$livetlFontSize} />
 <div>
   <EnumOption
     name="Text direction:"
@@ -53,8 +44,24 @@
 <!-- {#if !isStandalone} -->
 <CheckOption name="Show captions" store={showCaption} />
 {#if $showCaption}
-  <SliderOption name="Caption duration" min={-1} store={captionDuration} />
-  <SliderOption name="Caption zoom" store={captionFontSize} />
+  <SliderOption
+    name="Caption font size"
+    store={captionFontSize}
+    min={9}
+    max={54}
+  />
+  <CheckOption
+    name="Make captions disappear when inactive"
+    store={enableCaptionTimeout}
+  />
+  {#if $enableCaptionTimeout}
+    <SliderOption
+      name="Disappear after ({Math.round($captionDuration)} seconds)"
+      store={captionDuration}
+      min={2}
+      max={61}
+    />
+  {/if}
 {/if}
 <!-- {/if} -->
 <CheckOption name="Read-aloud mode" store={doSpeechSynth} />

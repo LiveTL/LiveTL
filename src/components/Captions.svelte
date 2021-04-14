@@ -3,12 +3,18 @@
   import * as j from 'jquery';
   import 'jquery-ui-bundle';
   import 'jquery-ui-bundle/jquery-ui.css';
+  import {
+    captionLeft,
+    captionTop,
+    captionWidth,
+    captionFontSize
+  } from '../js/store.js';
   export let text = `
   Captions captured from the chat will appear here. Try moving and resizing!
-  You can also disable floating captions in the settings menu.
+  You can also disable floating captions or make captions disappear
+  when inactive in the settings menu.
   `;
   import { sources } from '../js/sources.js';
-  import { captionLeft, captionTop, captionWidth } from '../js/store.js';
   let captionElem = null;
   const { translations } = sources;
 
@@ -47,6 +53,7 @@
   top: {$captionTop}%;
   left: {$captionLeft}%;
   width: {$captionWidth}%;
+  font-size: {$captionFontSize}px;
 "
 >
   <div class="captionSegment">{$translations ? $translations.text : text}</div>
@@ -67,7 +74,6 @@
     color: #e5e5e5;
     word-wrap: break-word;
     word-break: break-word;
-    font-size: 20px;
     background-color: rgba(0, 0, 0, 0.8);
     margin: 0;
     padding: 5px 10px;

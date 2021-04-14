@@ -46,4 +46,5 @@ export const
   regexAuthorWhitelist = SS('regexAuthorWhitelist', [''].slice(1)),
   plainAuthorBlacklist = SS('plainAuthorBlacklist', [''].slice(1)),
   regexAuthorBlacklist = SS('regexAuthorBlacklist', [''].slice(1)),
+  enableCaptionTimeout = SS('enableCaptionTimeout', false),
   lastVersion = SS('lastVersion', '0.0.0');
