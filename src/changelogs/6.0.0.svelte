@@ -5,9 +5,11 @@
 
 <ExpansionPanels bind:value>
   <ExpansionPanel>
-    <span slot="header">New design elements!</span>
+    <span slot="header">A complete redesign from scratch!</span>
     This version integrates Material UI components. Enjoy a new, modern interface
-    with buttery smooth animations!
+    with buttery smooth animations! Also, the internals of the entire extension have
+    been rewritten from scratch. No longer do you have to deal with the janky mechanics
+    and bugs of previous versions!
   </ExpansionPanel>
   <ExpansionPanel>
     <span slot="header">Embedded mode</span>
@@ -20,9 +22,12 @@
     plaintext and regex! Check them out in the "Filters" tab in the settings menu.
   </ExpansionPanel>
   <ExpansionPanel>
-    <span slot="header">Rewritten from the ground up</span>
-    The entire extension has been rewritten from scratch. No longer do you have to
-    deal with the janky mechanics and bugs of previous versions!
+    <span slot="header">Available for iOS, Android, Edge, Opera, and more</span>
+    <p>
+      LiveTL is now available for Chrome, Firefox, Android, iOS, Opera, Brave,
+      and any Chromium-based platform! You can find all download links
+      <a href="https://livetl.app" target="_blank">on our website</a>.
+    </p>
   </ExpansionPanel>
   <ExpansionPanel>
     <span slot="header">Automatic live translations are coming soon!</span>
