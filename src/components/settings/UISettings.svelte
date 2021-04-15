@@ -24,7 +24,7 @@
 <!-- {#if !isStandalone} -->
 <SliderOption name="Chat zoom" store={chatZoom} />
 <!-- {/if} -->
-<SliderOption name="Font size" store={livetlFontSize} min={9} max={54} />
+<SliderOption name="Font size" store={livetlFontSize} min={9} max={54} thumb />
 <FontDemo fontSize={$livetlFontSize} />
 <div>
   <EnumOption

@@ -12,5 +12,5 @@
   padding: 5px;
 "
 >
-  Sample text ({Math.round(fontSize)} point font)
+  Sample text
 </div>
