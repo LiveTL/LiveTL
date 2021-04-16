@@ -1,5 +1,6 @@
 import { openWindow, sendToBackground } from '../bgmessage.js';
 import { mdiOpenInNew, mdiYoutubeTv, mdiIframeArray } from '@mdi/js';
+import { BROWSER, Browser } from '../constants.js';
 
 for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) {
   window.addEventListener(eventName, e => e.stopImmediatePropagation(), true);
@@ -87,7 +88,7 @@ const makeButton = (text, callback, color='rgb(0, 153, 255)', icon='') => {
   `;
 };
 
-window.addEventListener('load', () => {
+function loaded() {
   const elem = document.querySelector('yt-live-chat-app');
   elem.style.minWidth = '0px';
   elem.style.minHeight = '0px';
@@ -140,8 +141,12 @@ window.addEventListener('load', () => {
     if(document.querySelector('.livetlActivator')) return;
     insertButtons();
   }, 100);
-});
+}
+
+window.addEventListener('load', loaded);
 
 window.addEventListener('message', packet=>{
   if (packet.origin !== window.origin) window.postMessage(packet.data);
 });
+
+if (BROWSER === Browser.FIREFOX) loaded();
