@@ -100,38 +100,40 @@ function loaded() {
       const constructParams = () => {
         params = new URLSearchParams(window.location.search);
         params.set('video', (params.get('v') || (new URLSearchParams(window.parent.location.search).get('v'))));
-        if(window.location.pathname.includes('live_chat_replay')) params.set('isReplay', true);
+        if (window.location.pathname.includes('live_chat_replay')) params.set('isReplay', true);
         return params;
       };
-      params.get('embed_domain') || window.parent.location.href;
-      makeButton('Open LiveTL', () => {
+      if (params.get('embed_domain') ||
+          new URL(window.parent.location.href).hostname == new URL(window.location.href).hostname){
+        makeButton('Open LiveTL', () => {
         // eslint-disable-next-line no-undef
-        window.top.location = chrome.runtime.getURL(`watch.html?${constructParams().toString()}`);
-      }, undefined, mdiYoutubeTv);
-      const tabid = await sendToBackground({
-        type:'tabid'
-      });
-      makeButton('TL Popout', () => {
-        let popoutParams = constructParams();
-        popoutParams.set('tabid', tabid);
-        // eslint-disable-next-line no-undef
-        openWindow(chrome.runtime.getURL(`popout.html?${popoutParams.toString()}`));
-      }, undefined, mdiOpenInNew);
-      makeButton('Embed TLs', () => {
-        let embeddedParams = constructParams();
-        embeddedParams.set('embedded', true);
-        document.body.outerHTML = '';
-        const iframe = document.createElement('iframe');
-        iframe.style.width = '100%';
-        iframe.style.height = '100%';
-        iframe.style.position = 'fixed';
-        // eslint-disable-next-line no-undef
-        iframe.src = chrome.runtime.getURL(`watch.html?${embeddedParams.toString()}`);
-        document.body.appendChild(iframe);
-        window.addEventListener('message', d => {
-          iframe.contentWindow.postMessage(d.data, '*');
+          window.top.location = chrome.runtime.getURL(`watch.html?${constructParams().toString()}`);
+        }, undefined, mdiYoutubeTv);
+        const tabid = await sendToBackground({
+          type:'tabid'
         });
-      }, undefined, mdiIframeArray);
+        makeButton('TL Popout', () => {
+          let popoutParams = constructParams();
+          popoutParams.set('tabid', tabid);
+          // eslint-disable-next-line no-undef
+          openWindow(chrome.runtime.getURL(`popout.html?${popoutParams.toString()}`));
+        }, undefined, mdiOpenInNew);
+        makeButton('Embed TLs', () => {
+          let embeddedParams = constructParams();
+          embeddedParams.set('embedded', true);
+          document.body.outerHTML = '';
+          const iframe = document.createElement('iframe');
+          iframe.style.width = '100%';
+          iframe.style.height = '100%';
+          iframe.style.position = 'fixed';
+          // eslint-disable-next-line no-undef
+          iframe.src = chrome.runtime.getURL(`watch.html?${embeddedParams.toString()}`);
+          document.body.appendChild(iframe);
+          window.addEventListener('message', d => {
+            iframe.contentWindow.postMessage(d.data, '*');
+          });
+        }, undefined, mdiIframeArray);
+      }
       // eslint-disable-next-line no-empty
     } catch(e) {
     }
