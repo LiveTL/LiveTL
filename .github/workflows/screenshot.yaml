@@ -1,8 +1,8 @@
-name: Take Screenshots
+name: Update Screenshots
 on: workflow_dispatch
   
 jobs:
-  export_screenshots:
+  update_screenshots:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
