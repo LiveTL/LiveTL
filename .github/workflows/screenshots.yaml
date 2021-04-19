@@ -16,15 +16,18 @@ jobs:
       - uses: c-hive/gha-yarn-cache@v1
       - name: Install modules
         uses: ianwalter/puppeteer-container@v4.0.0
-        run: |
-          yarn
-          sudo apt install xvfb
+        with:
+          args: |
+            yarn
+            sudo apt install xvfb
       - name: Build extensions
         uses: ianwalter/puppeteer-container@v4.0.0
-        run: |
-          yarn build production
-          yarn package
+        with:
+          args: |
+            yarn build production
+            yarn package
       - name: Try screenshotting
         uses: ianwalter/puppeteer-container@v4.0.0
-        run: |
-          yarn sc
+        with:
+          args: |
+            yarn sc
