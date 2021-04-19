@@ -4,6 +4,7 @@ on:
     types:
       - released
   workflow_dispatch:
+  push:
   
 jobs:
   export_screenshots:
