@@ -13,7 +13,7 @@ xvfb.start((err)=>{ if (err) console.error(err); });
     // download the browser
     console.log('Downloading browser...');
     const browserFetcher = puppeteer.createBrowserFetcher();
-    const revisionInfo = await browserFetcher.download('818858');
+    const revisionInfo = await browserFetcher.download('r856583');
 
     // open the browser
     console.log('Opening browser...');
