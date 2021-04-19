@@ -10,10 +10,15 @@ xvfb.start((err)=>{ if (err) console.error(err); });
  
 (async () => {
   try {
-    console.log('Opening browser...');
+    // download the browser
+    console.log('Downloading browser...');
+    const browserFetcher = puppeteer.createBrowserFetcher();
+    const revisionInfo = await browserFetcher.download('818858');
 
     // open the browser
+    console.log('Opening browser...');
     const browser = await puppeteer.launch({
+      executablePath: revisionInfo.executablePath,
       headless: false,
       args: [
         `--disable-extensions-except=${path}`,
@@ -62,5 +67,6 @@ xvfb.start((err)=>{ if (err) console.error(err); });
     xvfb.stop();
   } catch (err) {
     console.error(err);
+    process.exit(1);
   }
 })();

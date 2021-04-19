@@ -17,7 +17,7 @@ jobs:
       - name: Install modules
         run: |
           yarn
-          sudo apt install chromium-browser xvfb
+          sudo apt install xvfb
       - name: Build extensions
         run: |
           yarn build production
