@@ -22,7 +22,7 @@ xvfb.start((err)=>{ if (err) console.error(err); });
       args: [
         `--disable-extensions-except=${path}`,
         `--load-extension=${path}`,
-        '--window-size=800,600',
+        '--window-size=1280,800',
         // '--no-sandbox',
         // '--start-fullscreen',
         `--display=${xvfb._display}`
@@ -57,9 +57,10 @@ xvfb.start((err)=>{ if (err) console.error(err); });
     console.log('Opening the page...');
     const page = await browser.newPage();
     await page.goto(`chrome-extension://${extensionID}/${extensionEndURL}`);
- 
+    await page.waitFor(5000);
+
     console.log('Exporting screenshot...');
-    await page.screenshot({path: 'extension.png'});
+    await page.screenshot({path: 'img/demo.png'});
  
     console.log('Closing the browser...');
     await browser.close();

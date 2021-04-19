@@ -16,6 +16,7 @@ jobs:
       - name: Install modules
         run: |
           yarn
+          yarn add puppeteer
           sudo apt install xvfb libnss3 libatk-adaptor libcups2 libxkbcommon0 libgtk-3-0 libgbm1
       - name: Build extensions
         run: |
@@ -23,4 +24,5 @@ jobs:
           yarn package
       - name: Try screenshotting
         run: |
+          mkdir sc
           yarn sc
