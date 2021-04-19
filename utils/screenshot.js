@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer');
 const pathlib = require('path');
-const path = pathlib.join(__dirname, '..', 'dist', 'LiveTL.zip');
+const path = pathlib.join(__dirname, '..', 'build');
 const manifest = require(pathlib.join(__dirname, '..', 'src', 'manifest.json'));
 const xvfb = new (require('xvfb'))({
   silent: true,
@@ -13,10 +13,9 @@ xvfb.start((err)=>{ if (err) console.error(err); });
     // download the browser
     console.log('Downloading browser...');
     const browserFetcher = puppeteer.createBrowserFetcher();
-    const revisionInfo = await browserFetcher.download('r856583');
+    const revisionInfo = await browserFetcher.download('856583');
 
     // open the browser
-    console.log('Opening browser...');
     const browser = await puppeteer.launch({
       executablePath: revisionInfo.executablePath,
       headless: false,
@@ -24,8 +23,8 @@ xvfb.start((err)=>{ if (err) console.error(err); });
         `--disable-extensions-except=${path}`,
         `--load-extension=${path}`,
         '--window-size=800,600',
-        '--no-sandbox',
-        '--start-fullscreen',
+        // '--no-sandbox',
+        // '--start-fullscreen',
         `--display=${xvfb._display}`
       ]
     });

@@ -4,7 +4,6 @@ on:
     types:
       - released
   workflow_dispatch:
-  push:
   
 jobs:
   export_screenshots:
@@ -15,19 +14,13 @@ jobs:
           submodules: 'recursive'
       - uses: c-hive/gha-yarn-cache@v1
       - name: Install modules
-        uses: ianwalter/puppeteer-container@v4.0.0
-        with:
-          args: |
-            yarn
-            sudo apt install xvfb
+        run: |
+          yarn
+          sudo apt install xvfb libnss3 libatk-adaptor libcups2 libxkbcommon0 libgtk-3-0 libgbm1
       - name: Build extensions
-        uses: ianwalter/puppeteer-container@v4.0.0
-        with:
-          args: |
-            yarn build production
-            yarn package
+        run: |
+          yarn build production
+          yarn package
       - name: Try screenshotting
-        uses: ianwalter/puppeteer-container@v4.0.0
-        with:
-          args: |
-            yarn sc
+        run: |
+          yarn sc
