@@ -1,0 +1,29 @@
+name: Update Screenshots
+on: workflow_dispatch
+  
+jobs:
+  update_screenshots:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+      - uses: c-hive/gha-yarn-cache@v1
+      - name: Install modules
+        run: |
+          yarn
+          yarn add puppeteer
+          sudo apt install xvfb libnss3 libatk-adaptor libcups2 libxkbcommon0 libgtk-3-0 libgbm1
+      - name: Build extensions
+        run: |
+          yarn build production
+          yarn package
+      - name: Screenshot pages
+        run: |
+          mkdir sc
+          yarn sc
+      - name: Commit screenshots
+        uses: EndBug/add-and-commit@v7
+        with:
+          message: 'Updated screenshots'
+          add: img

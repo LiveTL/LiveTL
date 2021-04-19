@@ -1,0 +1,27 @@
+name: Latest Release Build
+on:
+  release:
+    types:
+      - released
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+      - uses: c-hive/gha-yarn-cache@v1
+      - name: Install modules
+        run: yarn
+      - name: Build extensions
+        run: |
+          yarn build production
+          yarn package
+      - name: Upload builds to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/LiveTL.zip
+          asset_name: LiveTL.zip
+          tag: ${{ github.ref }}
+          overwrite: true

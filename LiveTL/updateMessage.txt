@@ -1,1 +1,0 @@
-Optimized YouTube chat with HyperChat, custom username and translation tag filters (in the settings panel), and bug fixes!

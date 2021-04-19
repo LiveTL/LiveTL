@@ -1,5 +1,0 @@
-<resources>
-    <style name="Theme.LiveTL.SplashScreen" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowBackground">@drawable/splash_screen_background</item>
-    </style>
-</resources>
