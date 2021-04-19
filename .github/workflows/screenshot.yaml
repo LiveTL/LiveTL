@@ -1,5 +1,11 @@
 name: Update Screenshots
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      pages:
+        description: 'Pages to screenshot. "all" or a list separated by commas (no spaces).'
+        required: true
+        default: 'all'
   
 jobs:
   update_screenshots:
@@ -21,7 +27,7 @@ jobs:
       - name: Screenshot pages
         run: |
           mkdir sc
-          yarn sc
+          yarn sc ${{ github.event.inputs.pages }}
       - name: Commit screenshots
         uses: EndBug/add-and-commit@v7
         with:

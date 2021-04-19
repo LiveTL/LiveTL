@@ -8,7 +8,7 @@ const xvfb = new (require('xvfb'))({
 });
 xvfb.start((err)=>{ if (err) console.error(err); });
  
-async function exportImage(page, url, func, name, scale=1) {
+async function exportImage(name, page, url, func, scale=1) {
   await page.goto(url);
   await page.setViewport({width: 1280, height: 800 });
   console.log(`Exporting '${name}'...`);
@@ -75,36 +75,44 @@ async function exportImage(page, url, func, name, scale=1) {
     console.log('Simulating user interactions...');
     const page = await browser.newPage();
 
-    await exportImage(page, `chrome-extension://${extensionID}/options.html`, async () => {
-      document.querySelectorAll('.s-tab')[0].click();
-      await window.sleep(1000);
-    }, 'options', 1.5);
+    const pages = {
+      'options': [`chrome-extension://${extensionID}/options.html`, async () => {
+        document.querySelectorAll('.s-tab')[0].click();
+        await window.sleep(1000);
+      }, 1.5],
+      'filters': [`chrome-extension://${extensionID}/options.html`, async () => {
+        document.querySelectorAll('.s-tab')[1].click();
+        await window.sleep(1000);
+      }, 1.5],
+      'demo': [`chrome-extension://${extensionID}/${watchPageURL}`, () => {
+        const maxTime = 4630.879359;
+        const segments = 25;
+        const intervalLength = 2500;
+        document.querySelectorAll('.s-dialog .s-btn')[1].click();
+        let i = 0;
+        return new Promise((resolve) =>{
+          const interval = setInterval(async () => {
+            if (i > segments) {
+              clearInterval(interval);
+              await window.sleep(1000);
+              resolve();
+              return;
+            }
+            window.player.seekTo((i / segments) * maxTime);
+            window.player.playVideo();
+            i++;
+          }, intervalLength);
+        });
+      }]
+    };
 
-    await exportImage(page, `chrome-extension://${extensionID}/options.html`, async () => {
-      document.querySelectorAll('.s-tab')[1].click();
-      await window.sleep(1000);
-    }, 'filters', 1.5);
+    let images = process.argv.slice(2);
+    if (images[0] == 'all') images = Object.keys(pages);
+    else images[0] = images[0].split(',');
 
-    await exportImage(page, `chrome-extension://${extensionID}/${watchPageURL}`, () => {
-      const maxTime = 4630.879359;
-      const segments = 25;
-      const intervalLength = 2500;
-      document.querySelectorAll('.s-dialog .s-btn')[1].click();
-      let i = 0;
-      return new Promise((resolve) =>{
-        const interval = setInterval(async () => {
-          if (i > segments) {
-            clearInterval(interval);
-            await window.sleep(1000);
-            resolve();
-            return;
-          }
-          window.player.seekTo((i / segments) * maxTime);
-          window.player.playVideo();
-          i++;
-        }, intervalLength);
-      });
-    }, 'demo');
+    for (const item of images) {
+      await exportImage(item, page, ...pages[item]);
+    }
  
     console.log('Closing the browser...');
     await browser.close();
