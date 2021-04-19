@@ -43,11 +43,11 @@
 </div>
 
 <style>
-  :global(.s-dialog) {
+  .s-dialog {
     z-index: 1000;
     font-size: 1rem;
   }
-  :global(.s-dialog *) {
+  .s-dialog :global(*) {
     line-height: 2rem;
   }
   :global(.wideDialog) {

@@ -4,7 +4,7 @@ const path = pathlib.join(__dirname, '..', 'build');
 const manifest = require(pathlib.join(__dirname, '..', 'src', 'manifest.json'));
 const xvfb = new (require('xvfb'))({
   silent: true,
-  xvfb_args: ['-screen', '0', '1280x720x24', '-ac'],
+  xvfb_args: ['-screen', '0', '1280x800x24', '-ac'],
 });
 xvfb.start((err)=>{ if (err) console.error(err); });
  
@@ -16,6 +16,7 @@ xvfb.start((err)=>{ if (err) console.error(err); });
     const revisionInfo = await browserFetcher.download('856583');
 
     // open the browser
+    console.log('Starting browser...');
     const browser = await puppeteer.launch({
       executablePath: revisionInfo.executablePath,
       headless: false,
@@ -23,7 +24,6 @@ xvfb.start((err)=>{ if (err) console.error(err); });
         `--disable-extensions-except=${path}`,
         `--load-extension=${path}`,
         '--window-size=1280,800',
-        // '--no-sandbox',
         // '--start-fullscreen',
         `--display=${xvfb._display}`
       ]
@@ -54,13 +54,44 @@ xvfb.start((err)=>{ if (err) console.error(err); });
     ].join('');
 
     //Navigate to the page
-    console.log('Opening the page...');
+    console.log('Simulating user interactions...');
     const page = await browser.newPage();
-    await page.goto(`chrome-extension://${extensionID}/${extensionEndURL}`);
-    await page.waitFor(5000);
+    await page.setViewport({width: 1280, height: 800, deviceScaleFactor: 1});
+    await page.goto(`chrome-extension://${extensionID}/${extensionEndURL}`, { waitUntil: 'networkidle2' });
+
+    // await page.$eval('.settingsButton button', elem => elem.click());
+    // await page.evaluate(() => {
+    //   Array.from(document.querySelectorAll('.s-checkbox'))
+    //     .filter(e => e.textContent.toLowerCase().includes('captions'))[0]
+    //     .querySelector('input[type=checkbox]').click();
+    // });
+    // await page.$eval('.settingsButton button', elem => elem.click());
+    await page.evaluate(() => {
+      const maxTime = 4630.879359;
+      const segments = 25;
+      const intervalLength = 2500;
+      document.querySelectorAll('.s-dialog .s-btn')[1].click();
+      let i = 0;
+      return new Promise((resolve) =>{
+        const interval = setInterval(() => {
+          if (i > segments) {
+            clearInterval(interval);
+            window.player.pauseVideo();
+            resolve();
+            return;
+          }
+          window.player.seekTo((i / segments) * maxTime);
+          window.player.playVideo();
+          i++;
+        }, intervalLength);
+      });
+    });
+
+    // await page.waitFor(2000 * 5 + 5);
 
     console.log('Exporting screenshot...');
-    await page.screenshot({path: 'img/demo.png'});
+    // await page.setViewport({});
+    await page.screenshot({path: 'img/demo.png', });
  
     console.log('Closing the browser...');
     await browser.close();

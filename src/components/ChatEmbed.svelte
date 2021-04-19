@@ -9,14 +9,14 @@
   } else if (videoId) {
     src = `https://www.youtube.com/live_chat?v=${videoId}`;
   }
-  window.addEventListener('message', (packet) => {
+  window.addEventListener('message', packet => {
     try {
       const data = JSON.parse(packet.data);
       if (data.event === 'infoDelivery') {
         const time = data.info.currentTime;
         iframe.contentWindow.postMessage(
           {
-            'yt-player-video-progress': time,
+            'yt-player-video-progress': time
           },
           '*'
         );
@@ -26,6 +26,16 @@
       iframe.contentWindow.postMessage(packet.data, '*');
     }
   });
+  setInterval(() => {
+    if (iframe) {
+      iframe.contentWindow.postMessage(
+        {
+          'yt-live-chat-set-dark-theme': true
+        },
+        '*'
+      );
+    }
+  }, 100);
 </script>
 
 <div class="wrapper">

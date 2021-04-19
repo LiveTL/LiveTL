@@ -33,7 +33,7 @@ export const
   doSpeechSynth = SS('doSpeechSynth', false),
   speechVolume = SS('speechVolume', 1),
   doTranslatorMode = SS('doTranslatorMode', false),
-  videoPanelSize = SS('videoPanelSize', 80),
+  videoPanelSize = SS('videoPanelSize', 70),
   chatSize = SS('chatSize', 50),
   livetlFontSize = SS('livetlFontSize', 18),
   textWhitelist = SS('textFilters', [''].slice(1)),
