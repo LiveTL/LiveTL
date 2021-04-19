@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   
 jobs:
-  snap:
+  export_screenshots:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
