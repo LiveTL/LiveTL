@@ -1,4 +1,4 @@
-name: Export Screenshots
+name: Take Screenshots
 on:
   release:
     types:
