@@ -1,4 +1,4 @@
-name: Latest Release Build
+name: Export Screenshots
 on:
   release:
     types:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   
 jobs:
-  build:
+  screenshot:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
