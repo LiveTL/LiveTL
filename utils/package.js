@@ -1,5 +1,6 @@
 const { spawn } = require('child_process');
 
+// eslint-disable-next-line no-unused-vars
 const shouldBeInRoot = process.argv.indexOf('firefox') != -1;
 
 spawn(
