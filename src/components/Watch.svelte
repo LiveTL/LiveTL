@@ -64,15 +64,15 @@
       handles: $videoSide == VideoSide.RIGHT ? 'w' : 'e',
       start: resizeCallback,
       stop: resizeCallback,
-      resize: () => { }
-      // containment: 'body',
+      resize: () => {},
+      containment: 'body'
     });
     resizable('.vertical .autoscale .resizable', {
       handles: 's',
       start: resizeCallback,
       stop: resizeCallback,
-      resize: () => { }
-      // containment: 'body',
+      resize: () => {},
+      containment: 'body'
     });
   };
   $: setTimeout(() => changeSide($videoSide), 0);
@@ -169,11 +169,13 @@
   }
   :global(.ui-resizable-e) {
     width: var(--bar);
-    right: 0px;
+    right: 10px;
+    transform: translateX(10px);
   }
   :global(.ui-resizable-w) {
     width: var(--bar);
-    left: 0px;
+    left: 10px;
+    transform: translateX(-10px);
   }
   :global(.ui-resizable-s) {
     height: var(--bar);
@@ -185,12 +187,12 @@
   }
   :global(.ui-resizable-e::after),
   :global(.ui-resizable-w::after) {
-    content: "⋮";
+    content: '⋮';
     font-size: 30px;
   }
   :global(.ui-resizable-s::after),
   :global(.ui-resizable-n::after) {
-    content: "⋯";
+    content: '⋯';
     font-size: 30px;
     transform: translateY(-2px);
     position: absolute;

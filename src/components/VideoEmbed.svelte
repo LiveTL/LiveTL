@@ -1,15 +1,15 @@
 <script>
   import YouTubeIframeLoader from 'youtube-iframe';
   export let videoId;
-  YouTubeIframeLoader.load((YT) => {
-    new YT.Player('player', {
+  YouTubeIframeLoader.load(YT => {
+    window.player = new YT.Player('player', {
       height: '100%',
       width: '100%',
       videoId,
       autoplay: 1,
       playerVars: {
-        autoplay: 1,
-      },
+        autoplay: 1
+      }
     });
   });
 </script>
