@@ -8,6 +8,24 @@ const xvfb = new (require('xvfb'))({
 });
 xvfb.start((err)=>{ if (err) console.error(err); });
  
+async function exportImage(page, url, func, name, scale=1) {
+  await page.goto(url);
+  await page.setViewport({width: 1280, height: 800 });
+  console.log(`Exporting '${name}'...`);
+  const p = 100 / scale;
+  await page.addStyleTag({content: `
+    body {
+      width: ${p}%;
+      height: ${p}%;
+      transform-origin: 0px 0px;
+      transform: scale(${scale});
+    }
+  `});
+  await page.evaluate(func);
+  await new Promise(res => setTimeout(res, 1000));
+  return page.screenshot({path: `img/${name}.png`, });
+}
+
 (async () => {
   try {
     // download the browser
@@ -46,7 +64,7 @@ xvfb.start((err)=>{ if (err) console.error(err); });
     console.log(`Extension ID: ${extensionID}`);
  
     // Define the extension page
-    const extensionEndURL = [
+    const watchPageURL = [
       'watch.html?',
       'continuation=op2w0wRiGlhDaWtxSndvWVZVTkljM2cwU0hGaExURlBVbXBSVkdnNVZGbEVhSGQzRWd0ak56UT',
       'NhbGxyZFRaRmJ4b1Q2cWpkdVFFTkNndGpOelEzYWxscmRUWkZieUFCQAFyAggEeAE%253D&',
@@ -56,17 +74,16 @@ xvfb.start((err)=>{ if (err) console.error(err); });
     //Navigate to the page
     console.log('Simulating user interactions...');
     const page = await browser.newPage();
-    await page.setViewport({width: 1280, height: 800, deviceScaleFactor: 1});
-    await page.goto(`chrome-extension://${extensionID}/${extensionEndURL}`, { waitUntil: 'networkidle2' });
 
-    // await page.$eval('.settingsButton button', elem => elem.click());
-    // await page.evaluate(() => {
-    //   Array.from(document.querySelectorAll('.s-checkbox'))
-    //     .filter(e => e.textContent.toLowerCase().includes('captions'))[0]
-    //     .querySelector('input[type=checkbox]').click();
-    // });
-    // await page.$eval('.settingsButton button', elem => elem.click());
-    await page.evaluate(() => {
+    await exportImage(page, `chrome-extension://${extensionID}/options.html`, () => {
+      document.querySelectorAll('.s-tab')[0].click();
+    }, 'options', 1.5);
+
+    await exportImage(page, `chrome-extension://${extensionID}/options.html`, () => {
+      document.querySelectorAll('.s-tab')[1].click();
+    }, 'filters', 1.5);
+
+    await exportImage(page, `chrome-extension://${extensionID}/${watchPageURL}`, () => {
       const maxTime = 4630.879359;
       const segments = 25;
       const intervalLength = 2500;
@@ -85,13 +102,7 @@ xvfb.start((err)=>{ if (err) console.error(err); });
           i++;
         }, intervalLength);
       });
-    });
-
-    // await page.waitFor(2000 * 5 + 5);
-
-    console.log('Exporting screenshot...');
-    // await page.setViewport({});
-    await page.screenshot({path: 'img/demo.png', });
+    }, 'demo');
  
     console.log('Closing the browser...');
     await browser.close();

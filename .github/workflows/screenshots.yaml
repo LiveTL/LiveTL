@@ -1,8 +1,8 @@
 name: Take Screenshots
 on:
-  release:
-    types:
-      - released
+  # release:
+  #   types:
+  #     - released
   workflow_dispatch:
   
 jobs:
@@ -22,7 +22,12 @@ jobs:
         run: |
           yarn build production
           yarn package
-      - name: Try screenshotting
+      - name: Screenshot pages
         run: |
           mkdir sc
           yarn sc
+      - name: Commit screenshots
+        uses: EndBug/add-and-commit@v7
+        with:
+          message: 'Updated screenshots'
+          add: img
