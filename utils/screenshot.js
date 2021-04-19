@@ -21,8 +21,8 @@ async function exportImage(page, url, func, name, scale=1) {
       transform: scale(${scale});
     }
   `});
+  await page.evaluate(() => window.sleep = ms => new Promise(res => setTimeout(res, ms)));
   await page.evaluate(func);
-  await new Promise(res => setTimeout(res, 1000));
   return page.screenshot({path: `img/${name}.png`, });
 }
 
@@ -75,12 +75,14 @@ async function exportImage(page, url, func, name, scale=1) {
     console.log('Simulating user interactions...');
     const page = await browser.newPage();
 
-    await exportImage(page, `chrome-extension://${extensionID}/options.html`, () => {
+    await exportImage(page, `chrome-extension://${extensionID}/options.html`, async () => {
       document.querySelectorAll('.s-tab')[0].click();
+      await window.sleep(1000);
     }, 'options', 1.5);
 
-    await exportImage(page, `chrome-extension://${extensionID}/options.html`, () => {
+    await exportImage(page, `chrome-extension://${extensionID}/options.html`, async () => {
       document.querySelectorAll('.s-tab')[1].click();
+      await window.sleep(1000);
     }, 'filters', 1.5);
 
     await exportImage(page, `chrome-extension://${extensionID}/${watchPageURL}`, () => {
@@ -93,7 +95,6 @@ async function exportImage(page, url, func, name, scale=1) {
         const interval = setInterval(() => {
           if (i > segments) {
             clearInterval(interval);
-            window.player.pauseVideo();
             resolve();
             return;
           }
