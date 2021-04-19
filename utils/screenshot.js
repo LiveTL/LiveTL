@@ -92,9 +92,10 @@ async function exportImage(page, url, func, name, scale=1) {
       document.querySelectorAll('.s-dialog .s-btn')[1].click();
       let i = 0;
       return new Promise((resolve) =>{
-        const interval = setInterval(() => {
+        const interval = setInterval(async () => {
           if (i > segments) {
             clearInterval(interval);
+            await window.sleep(1000);
             resolve();
             return;
           }
