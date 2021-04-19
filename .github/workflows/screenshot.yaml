@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       pages:
-        description: 'Pages to screenshot. "all" or a list separated by commas (no spaces).'
+        description: 'Pages to screenshot. "all" or a list separated by commas.'
         required: true
         default: 'all'
   

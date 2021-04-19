@@ -106,7 +106,7 @@ async function exportImage(name, page, url, func, scale=1) {
       }]
     };
 
-    let images = process.argv.slice(2);
+    let images = process.argv.slice(2).map(item => item.split(',')[0]);
     if (images[0] == 'all') images = Object.keys(pages);
     else images[0] = images[0].split(',');
 
