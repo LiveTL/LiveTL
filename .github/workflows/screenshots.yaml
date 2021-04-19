@@ -1,9 +1,5 @@
 name: Take Screenshots
-on:
-  # release:
-  #   types:
-  #     - released
-  workflow_dispatch:
+on: workflow_dispatch
   
 jobs:
   export_screenshots:
