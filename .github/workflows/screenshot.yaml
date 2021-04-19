@@ -19,7 +19,7 @@ jobs:
         run: |
           yarn
           yarn add puppeteer
-          sudo apt install xvfb libnss3 libatk-adaptor libcups2 libxkbcommon0 libgtk-3-0 libgbm1
+          sudo apt install xvfb libnss3 libatk-adaptor libcups2 libxkbcommon0 libgtk-3-0 libgbm1 fonts-indic fonts-noto fonts-noto-cjk
       - name: Build extensions
         run: |
           yarn build production

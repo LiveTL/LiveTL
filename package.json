@@ -53,6 +53,7 @@
     "jquery": "^3.6.0",
     "jquery-ui-bundle": "^1.12.1-migrate",
     "puppeteer": "^8.0.0",
+    "ssri": "^8.0.1",
     "vue": "^2.6.12",
     "vuetify": "^2.4.9",
     "youtube-iframe": "^1.0.3"
