@@ -79,41 +79,49 @@
   let updatePopupActive = false;
 </script>
 
-<MaterialApp theme="dark">
-  <Updates bind:active={updatePopupActive} />
-  {#if !isEmbedded && $showCaption}
-    <Captions />
-  {/if}
-  <div class="flex vertical {$videoSide == VideoSide.RIGHT ? 'reversed' : ''}">
-    {#if !isEmbedded}
-      <div
-        class="tile resizable"
-        style="width: {$videoPanelSize}%;"
-        bind:this={vidElem}
-      >
-        <Wrapper {isResizing}>
-          <VideoEmbed {videoId} />
-        </Wrapper>
-      </div>
+<div style="
+  margin: 20px 0px 0px 20px;
+  position: relative;
+  width: 100vw;
+  height: 100vh;">
+  <MaterialApp theme="dark">
+    <Updates bind:active={updatePopupActive} />
+    {#if !isEmbedded && $showCaption}
+      <Captions />
     {/if}
-    <div class="tile autoscale">
-      <div class="flex horizontal">
+    <div
+      class="flex vertical {$videoSide == VideoSide.RIGHT ? 'reversed' : ''}"
+    >
+      {#if !isEmbedded}
         <div
           class="tile resizable"
-          style="height: {$chatSize}%"
-          bind:this={chatElem}
+          style="width: {$videoPanelSize}%;"
+          bind:this={vidElem}
         >
-          <Wrapper {isResizing} zoom={$chatZoom}>
-            <ChatEmbed {videoId} {continuation} {isReplay} />
+          <Wrapper {isResizing}>
+            <VideoEmbed {videoId} />
           </Wrapper>
         </div>
-        <div class="tile autoscale" bind:this={ltlElem}>
-          <Popout {isResizing} bind:updatePopupActive />
+      {/if}
+      <div class="tile autoscale">
+        <div class="flex horizontal">
+          <div
+            class="tile resizable"
+            style="height: {$chatSize}%"
+            bind:this={chatElem}
+          >
+            <Wrapper {isResizing} zoom={$chatZoom}>
+              <ChatEmbed {videoId} {continuation} {isReplay} />
+            </Wrapper>
+          </div>
+          <div class="tile autoscale" bind:this={ltlElem}>
+            <Popout {isResizing} bind:updatePopupActive />
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</MaterialApp>
+  </MaterialApp>
+</div>
 
 <style>
   .horizontal {
@@ -153,10 +161,12 @@
     width: 100%;
   }
   :global(body) {
-    height: 100%;
-    position: absolute;
+    height: calc(100% + 40px);
+    position: fixed;
+    top: -20px;
+    left: -20px;
     margin: 0;
-    width: 100%;
+    width: calc(100% + 40px);
     margin: 0px;
   }
   :global(.ui-resizable-handle) {

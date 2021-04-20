@@ -79,7 +79,6 @@
   .captionsBox {
     z-index: 100;
     animation-iteration-count: 1;
-    animation: splash 1s normal forwards ease-in-out;
     position: absolute;
     cursor: move;
     min-width: 50px;
@@ -91,9 +90,20 @@
     word-wrap: break-word;
     word-break: break-word;
     background-color: rgba(0, 0, 0, 0.8);
-    margin: 0;
+    margin: 0px 20px 0px 20px;
     padding: 5px 10px;
     animation-iteration-count: 1;
     animation: splash 1s normal forwards ease-in-out;
+    margin: 20px;
+  }
+  .captionsBox :global(.ui-resizable-handle) {
+    height: calc(100% - 40px);
+    margin-top: 20px;
+  }
+  .captionsBox :global(.ui-resizable-e) {
+    transform: translateX(-10px);
+  }
+  .captionsBox :global(.ui-resizable-w) {
+    transform: translateX(10px);
   }
 </style>
