@@ -14,11 +14,11 @@ async function exportImage(name, page, url, func, scale=[1, 1]) {
   console.log(`Exporting '${name}'...`);
   const p = `calc(100% * ${scale[1]} / ${scale[0]})`;
   await page.addStyleTag({content: `
-    body {
+    html {
       width: ${p};
       height: ${p};
       transform-origin: 0px 0px;
-      transform: scale(calc(${scale[0]} / ${scale[1]});
+      transform: scale(calc(${scale[0]} / ${scale[1]}));
     }
   `});
   await page.evaluate(() => window.sleep = ms => new Promise(res => setTimeout(res, ms)));
@@ -44,7 +44,8 @@ async function exportImage(name, page, url, func, scale=[1, 1]) {
         '--window-size=1280,800',
         // '--start-fullscreen',
         `--display=${xvfb._display}`
-      ]
+      ],
+      ignoreDefaultArgs: ['--hide-scrollbars']
     });
  
     // Name of the extension
