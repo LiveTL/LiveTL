@@ -75,6 +75,15 @@ async function exportImage(name, page, url, func, scale=[1, 1]) {
     //Navigate to the page
     console.log('Simulating user interactions...');
     const page = await browser.newPage();
+    // page
+    //   .on('console', message =>
+    //     console.log(`${message.type().substr(0, 3).toUpperCase()} ${message.text()}`))
+    //   .on('pageerror', ({ message }) => console.log(message));
+    // .on('response', response =>
+    //   console.log(`${response.status()} ${response.url()}`))
+    // .on('requestfailed', request =>
+    //   console.log(`${request.failure().errorText} ${request.url()}`));
+
 
     const pages = {
       'options': [`chrome-extension://${extensionID}/options.html`, async () => {
