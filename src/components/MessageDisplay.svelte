@@ -127,7 +127,7 @@
           >
             <img
               alt="Chrome Web Store"
-              src="https://img.shields.io/chrome-web-store/users/moicohcfhhbmmngneghfjfjpdobmmnlg?color=blue&label=Chrome%20Users&logo=google&logoColor=white"
+              src="https://img.shields.io/chrome-web-store/users/moicohcfhhbmmngneghfjfjpdobmmnlg?color=blue&label=Chrome%20Users&logo=google&logoColor=white&style=flat"
             />
           </a>
           <a
@@ -136,7 +136,7 @@
           >
             <img
               alt="Mozilla Addons"
-              src="https://img.shields.io/amo/users/livetl?color=blue&label=Firefox%20Users&logo=mozilla&logoColor=white"
+              src="https://img.shields.io/amo/users/livetl?color=blue&label=Firefox%20Users&logo=mozilla&logoColor=white&style=flat"
             />
           </a>
           <a
@@ -145,7 +145,7 @@
           >
             <img
               alt="Other Platforms"
-              src="https://img.shields.io/badge/Other%20Platforms-Android%2C%20iOS-blue"
+              src="https://img.shields.io/badge/Other%20Platforms-Android%2C%20iOS-blue?style=flat"
             />
           </a>
           <a
@@ -154,7 +154,7 @@
           >
             <img
               alt="Reviews"
-              src="https://img.shields.io/badge/Average%20Rating-5%20stars-blue"
+              src="https://img.shields.io/badge/Average%20Rating-5%20stars-blue?style=flat"
             />
           </a>
           <a href="https://github.com/LiveTL/LiveTL/" target="about:blank">
@@ -166,13 +166,13 @@
           <a href="https://livetl.app/" target="about:blank">
             <img
               alt="Website"
-              src="https://img.shields.io/website?down_color=red&down_message=offline&label=Website&up_color=blue&up_message=livetl.app&url=http%3A%2F%2Flivetl.app%2F"
+              src="https://img.shields.io/website?down_color=red&down_message=offline&label=Website&up_color=blue&up_message=livetl.app&url=http%3A%2F%2Flivetl.app%2F&style=flat"
             />
           </a>
           <a href="https://opencollective.com/livetl" target="about:blank">
             <img
               alt="Donators and Supporters"
-              src="https://img.shields.io/opencollective/all/livetl?color=blue&label=Donators%20and%20Supporters&logo=dollar"
+              src="https://img.shields.io/opencollective/all/livetl?color=blue&label=Donators%20and%20Supporters&logo=dollar&style=flat"
             />
           </a>
           <a
