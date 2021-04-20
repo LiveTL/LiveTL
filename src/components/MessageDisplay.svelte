@@ -114,6 +114,77 @@
         <a href="https://opencollective.com/livetl" target="about:blank"
           >chipping in a few dollars to help fund future projects (stay tuned)</a
         >!
+        <div class="badges">
+          <a href="https://discord.gg/uJrV3tmthg" target="about:blank">
+            <img
+              alt="Discord"
+              src="https://img.shields.io/discord/780938154437640232.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2&style=flat"
+            />
+          </a>
+          <a
+            href="https://chrome.google.com/webstore/detail/livetl-translation-filter/moicohcfhhbmmngneghfjfjpdobmmnlg"
+            target="about:blank"
+          >
+            <img
+              alt="Chrome Web Store"
+              src="https://img.shields.io/chrome-web-store/users/moicohcfhhbmmngneghfjfjpdobmmnlg?color=blue&label=Chrome%20Users&logo=google&logoColor=white"
+            />
+          </a>
+          <a
+            href="https://addons.mozilla.org/en-US/firefox/addon/livetl/"
+            target="about:blank"
+          >
+            <img
+              alt="Mozilla Addons"
+              src="https://img.shields.io/amo/users/livetl?color=blue&label=Firefox%20Users&logo=mozilla&logoColor=white"
+            />
+          </a>
+          <a
+            href="https://livetl.app/"
+            target="about:blank"
+          >
+            <img
+              alt="Other Platforms"
+              src="https://img.shields.io/badge/Other%20Platforms-Android%2C%20iOS-blue"
+            />
+          </a>
+          <a
+            href="https://livetl.github.io/LiveTL/about/review"
+            target="about:blank"
+          >
+            <img
+              alt="Reviews"
+              src="https://img.shields.io/badge/Average%20Rating-5%20stars-blue"
+            />
+          </a>
+          <a href="https://github.com/LiveTL/LiveTL/" target="about:blank">
+            <img
+              alt="GitHub Repo"
+              src="https://img.shields.io/github/stars/LiveTL/LiveTL?style=flat&logo=github&label=Stars"
+            />
+          </a>
+          <a href="https://livetl.app/" target="about:blank">
+            <img
+              alt="Website"
+              src="https://img.shields.io/website?down_color=red&down_message=offline&label=Website&up_color=blue&up_message=livetl.app&url=http%3A%2F%2Flivetl.app%2F"
+            />
+          </a>
+          <a href="https://opencollective.com/livetl" target="about:blank">
+            <img
+              alt="Donators and Supporters"
+              src="https://img.shields.io/opencollective/all/livetl?color=blue&label=Donators%20and%20Supporters&logo=dollar"
+            />
+          </a>
+          <a
+            href="https://hosted.weblate.org/engage/livetl/"
+            target="about:blank"
+          >
+            <img
+              alt="Localization"
+              src="https://img.shields.io/badge/Localization-Weblate-blue"
+            />
+          </a>
+        </div>
       </div>
     </div>
     {#each items as item}
@@ -147,6 +218,12 @@
 </div>
 
 <style>
+  .badges {
+    margin-top: 10px;
+  }
+  .badges img {
+    height: 1.5em;
+  }
   .heading {
     font-size: 1.5em;
   }
