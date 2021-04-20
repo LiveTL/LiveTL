@@ -8,17 +8,17 @@ const xvfb = new (require('xvfb'))({
 });
 xvfb.start((err)=>{ if (err) console.error(err); });
  
-async function exportImage(name, page, url, func, scale=1) {
+async function exportImage(name, page, url, func, scale=[1, 1]) {
   await page.goto(url);
   await page.setViewport({width: 1280, height: 800 });
   console.log(`Exporting '${name}'...`);
-  const p = 100 / scale;
+  const p = `calc(100 * ${scale[1]} / ${scale[0]})`;
   await page.addStyleTag({content: `
     body {
       width: ${p}%;
       height: ${p}%;
       transform-origin: 0px 0px;
-      transform: scale(${scale});
+      transform: scale(calc(${scale[0]} / ${scale[1]});
     }
   `});
   await page.evaluate(() => window.sleep = ms => new Promise(res => setTimeout(res, ms)));
@@ -79,11 +79,11 @@ async function exportImage(name, page, url, func, scale=1) {
       'options': [`chrome-extension://${extensionID}/options.html`, async () => {
         document.querySelectorAll('.s-tab')[0].click();
         await window.sleep(1000);
-      }, 1.5],
+      }, [3, 2]],
       'filters': [`chrome-extension://${extensionID}/options.html`, async () => {
         document.querySelectorAll('.s-tab')[1].click();
         await window.sleep(1000);
-      }, 1.5],
+      }, [3, 2]],
       'demo': [`chrome-extension://${extensionID}/${watchPageURL}`, () => {
         const maxTime = 4630.879359;
         const segments = 25;
