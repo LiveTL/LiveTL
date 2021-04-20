@@ -134,7 +134,7 @@
           <a href="https://github.com/LiveTL/LiveTL/" target="about:blank">
             <img
               alt="GitHub Repo"
-              src="https://img.shields.io/github/stars/LiveTL/LiveTL?style=flat&logo=github&label=View on GitHub"
+              src="https://img.shields.io/github/stars/LiveTL/LiveTL?style=flat&logo=github&label=Star on GitHub"
             />
           </a>
           <a href="https://livetl.app/" target="about:blank">
