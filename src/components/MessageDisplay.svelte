@@ -61,6 +61,7 @@
     if (scrollOnTick) bottomMsg.scrollIntoView();
     scrollOnTick = false;
   });
+  const version = window.chrome.runtime.getManifest().version;
 </script>
 
 <div class="messageDisplayWrapper">
@@ -82,43 +83,19 @@
         Translations picked up from the chat will appear here.
       </div>
       <div class="subscripts">
-        <!-- svelte-ignore missing-declaration -->
-        <a
-          href="/"
-          on:click={e => {
-            e.preventDefault();
-            // eslint-disable-next-line no-unused-vars
-            updatePopupActive = true;
-          }}
-          >See what's new in the most recent update ({window.chrome.runtime.getManifest()
-            .version})</a
-        >
-      </div>
-      <div class="subscripts">
-        Please consider
-        <a
-          id="shareExtension"
-          href="https://livetl.github.io/LiveTL"
-          target="about:blank">sharing LiveTL with your friends</a
-        >,
-        <a
-          href="https://livetl.github.io/LiveTL/about/review"
-          target="about:blank">giving us a 5-star review</a
-        >,
-        <a href="https://discord.gg/uJrV3tmthg" target="about:blank"
-          >joining our Discord server</a
-        >,
-        <a href="https://github.com/LiveTL/LiveTL" target="about:blank"
-          >starring our GitHub repository</a
-        >, and
-        <a href="https://opencollective.com/livetl" target="about:blank"
-          >chipping in a few dollars to help fund future projects (stay tuned)</a
-        >!
         <div class="badges">
-          <a href="https://discord.gg/uJrV3tmthg" target="about:blank">
+          <a
+            href="https://livetl.app/"
+            target="about:blank"
+            on:click={e => {
+              e.preventDefault();
+              // eslint-disable-next-line no-unused-vars
+              updatePopupActive = true;
+            }}
+          >
             <img
-              alt="Discord"
-              src="https://img.shields.io/discord/780938154437640232.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2&style=flat"
+              alt="Version"
+              src="https://img.shields.io/badge/See what's new in-v{version}-blue?style=flat&color=ff69b4"
             />
           </a>
           <a
@@ -127,7 +104,7 @@
           >
             <img
               alt="Chrome Web Store"
-              src="https://img.shields.io/chrome-web-store/users/moicohcfhhbmmngneghfjfjpdobmmnlg?color=blue&label=Chrome%20Users&logo=google&logoColor=white&style=flat"
+              src="https://img.shields.io/chrome-web-store/users/moicohcfhhbmmngneghfjfjpdobmmnlg?color=blue&label=Chrome%20users&logo=google&logoColor=white&style=flat"
             />
           </a>
           <a
@@ -136,16 +113,13 @@
           >
             <img
               alt="Mozilla Addons"
-              src="https://img.shields.io/amo/users/livetl?color=blue&label=Firefox%20Users&logo=mozilla&logoColor=white&style=flat"
+              src="https://img.shields.io/amo/users/livetl?color=blue&label=Firefox%20users&logo=mozilla&logoColor=white&style=flat"
             />
           </a>
-          <a
-            href="https://livetl.app/"
-            target="about:blank"
-          >
+          <a href="https://livetl.app/" target="about:blank">
             <img
-              alt="Other Platforms"
-              src="https://img.shields.io/badge/Other%20Platforms-Android%2C%20iOS-blue?style=flat"
+              alt="Other platforms"
+              src="https://img.shields.io/badge/Other%20platforms-Android%2C%20iOS-blue?style=flat"
             />
           </a>
           <a
@@ -154,13 +128,13 @@
           >
             <img
               alt="Reviews"
-              src="https://img.shields.io/badge/Average%20Rating-5%20stars-blue?style=flat"
+              src="https://img.shields.io/badge/Leave a review-5%20stars-blue?style=flat"
             />
           </a>
           <a href="https://github.com/LiveTL/LiveTL/" target="about:blank">
             <img
               alt="GitHub Repo"
-              src="https://img.shields.io/github/stars/LiveTL/LiveTL?style=flat&logo=github&label=Stars"
+              src="https://img.shields.io/github/stars/LiveTL/LiveTL?style=flat&logo=github&label=View on GitHub"
             />
           </a>
           <a href="https://livetl.app/" target="about:blank">
@@ -171,8 +145,8 @@
           </a>
           <a href="https://opencollective.com/livetl" target="about:blank">
             <img
-              alt="Donators and Supporters"
-              src="https://img.shields.io/opencollective/all/livetl?color=blue&label=Donators%20and%20Supporters&logo=dollar&style=flat"
+              alt="Donators and supporters"
+              src="https://img.shields.io/opencollective/all/livetl?color=blue&label=Donators%20and%20supporters&logo=dollar&style=flat"
             />
           </a>
           <a
@@ -182,6 +156,12 @@
             <img
               alt="Localization"
               src="https://img.shields.io/badge/Localization-Weblate-blue"
+            />
+          </a>
+          <a href="https://discord.gg/uJrV3tmthg" target="about:blank">
+            <img
+              alt="Discord"
+              src="https://img.shields.io/discord/780938154437640232.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2&style=flat"
             />
           </a>
         </div>
