@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import { parseTranslation, isLangMatch, textWhitelisted, textBlacklisted, plaintextWhitelisted } from '../../js/filter.js';
 import { languages } from '../../js/constants.js';
-import { plaintextWhitelist, textBlacklist, textWhitelist } from '../../js/store.js';
+import { customFilters } from '../../js/store.js';
 
 const langs = {};
 languages.forEach(lang => {
@@ -40,20 +40,32 @@ describe.each([
   });
 });
 
+function rule(plain, chat, show, r) {
+  return {
+    chatAuthor: chat,
+    plainReg: plain,
+    showBlock: show,
+    rule: r
+  };
+}
+
+const tw = r => rule('regex', 'chat', 'show', r);
+const pw = r => rule('plain', 'chat', 'show', r);
+
 describe('user regex filters', () => {
   it('does not match every message if no filters', () => {
-    textWhitelist.set([]);
+    customFilters.set([]);
     expect(textWhitelisted('hello there')).toBeFalsy();
   });
 
   it('matches when there is one filter', () => {
-    textWhitelist.set(['hello']);
+    customFilters.set([tw('hello')]);
     expect(textWhitelisted('hello there')).toBeTruthy();
     expect(textWhitelisted('hey there')).toBeFalsy();
   });
 
   it('matches when there are multiple filters', () => {
-    textWhitelist.set(['hello', 'there', 'general']);
+    customFilters.set(['hello', 'there', 'general'].map(tw));
     expect(textWhitelisted('hello kenobi')).toBeTruthy();
     expect(textWhitelisted('there are three filters')).toBeTruthy();
     expect(textWhitelisted('general kenobi')).toBeTruthy();
@@ -61,25 +73,25 @@ describe('user regex filters', () => {
   });
 
   it('does not flag blacklist if no filters', () => {
-    textBlacklist.set([]);
+    customFilters.set([]);
     expect(textBlacklisted('hello there')).toBeFalsy();
   });
 });
 
 describe('user plaintext filters', () => {
   it('does not match every message if no filters', () => {
-    plaintextWhitelist.set([]);
+    customFilters.set([]);
     expect(plaintextWhitelisted('hello there')).toBeFalsy();
   });
 
   it('matches when there is one filter', () => {
-    plaintextWhitelist.set(['hello']);
+    customFilters.set(['hello'].map(pw));
     expect(plaintextWhitelisted('hello there')).toBeTruthy();
     expect(plaintextWhitelisted('hey there')).toBeFalsy();
   });
 
   it('matches when there are multiple filters', () => {
-    plaintextWhitelist.set(['hello', 'there', 'general']);
+    customFilters.set(['hello', 'there', 'general'].map(pw));
     expect(plaintextWhitelisted('hello kenobi')).toBeTruthy();
     expect(plaintextWhitelisted('there are three filters')).toBeTruthy();
     expect(plaintextWhitelisted('general kenobi')).toBeTruthy();
@@ -87,7 +99,7 @@ describe('user plaintext filters', () => {
   });
 
   it('properly matches escaped regex', () => {
-    plaintextWhitelist.set(['^hello', 'there$', '[en]']);
+    customFilters.set(['^hello', 'there$', '[en]'].map(pw));
     expect(plaintextWhitelisted('hello')).toBeFalsy();
     expect(plaintextWhitelisted('there$ general')).toBeTruthy();
     expect(plaintextWhitelisted('^hello')).toBeTruthy();

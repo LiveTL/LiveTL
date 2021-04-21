@@ -29,7 +29,7 @@ const show = e => e.showBlock == 'show';
 const rule = e => e.rule;
 
 const getFilterStore = (f1, f2, f3) => derived(customFilters, $filters => {
-  $filters.filter(f1).filter(f2).filter(f3).map(rule);
+  return $filters.filter(f1).filter(f2).filter(f3).map(rule);
 });
 
 const plaintextWhitelist = getFilterStore(chat, plain, show);
@@ -50,7 +50,6 @@ function userFilter(ufilters, transform = filter => filter) {
   /** @type {RegExp | null} */
   let userRegex = null;
   ufilters.subscribe(filters => {
-    if (filters == null) return;
     userRegex = filters.length
       ? new RegExp(filters.map(transform).join('|'))
       : null;
