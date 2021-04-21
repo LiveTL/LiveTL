@@ -1,15 +1,17 @@
-import {
-  textWhitelist,
-  textBlacklist,
-  plaintextWhitelist,
-  plaintextBlacklist,
-  plainAuthorWhitelist,
-  plainAuthorBlacklist,
-  regexAuthorWhitelist,
-  regexAuthorBlacklist
-} from './store.js';
+import { customFilters } from './store.js';
+// import {
+//   textWhitelist,
+//   textBlacklist,
+//   plaintextWhitelist,
+//   plaintextBlacklist,
+//   plainAuthorWhitelist,
+//   plainAuthorBlacklist,
+//   regexAuthorWhitelist,
+//   regexAuthorBlacklist
+// } from './store.js';
 // eslint-disable-next-line no-unused-vars
 import { SyncStore } from './storage.js';
+import { derived } from 'svelte/store';
 
 const MAX_LANG_TAG_LEN = 7;
 
@@ -20,6 +22,25 @@ const tokenMap = Object.fromEntries(langTokens);
 const transDelimiters = ['-', ':'];
 const langSplitRe = /[^A-Za-z]/;
 
+const not = f => (...args) => !f(...args);
+const chat = e => e.chatAuthor == 'chat';
+const plain = e => e.plainReg == 'plain';
+const show = e => e.showBlock == 'show';
+const rule = e => e.rule;
+
+const getFilterStore = (f1, f2, f3) => derived(customFilters, $filters => {
+  $filters.filter(f1).filter(f2).filter(f3).map(rule);
+});
+
+const plaintextWhitelist = getFilterStore(chat, plain, show);
+const plaintextBlacklist = getFilterStore(chat, plain, not(show));
+const textWhitelist = getFilterStore(chat, not(plain), show);
+const textBlacklist = getFilterStore(chat, not(plain), not(show));
+const plainAuthorWhitelist = getFilterStore(not(chat), plain, show);
+const plainAuthorBlacklist = getFilterStore(not(chat), plain, not(show));
+const regexAuthorWhitelist = getFilterStore(not(chat), not(plain), show);
+const regexAuthorBlacklist = getFilterStore(not(chat), not(plain), not(show));
+
 /**
  * @param {SyncStore} ufilters
  * @param {(filter: String) => String} transform
@@ -29,6 +50,7 @@ function userFilter(ufilters, transform = filter => filter) {
   /** @type {RegExp | null} */
   let userRegex = null;
   ufilters.subscribe(filters => {
+    if (filters == null) return;
     userRegex = filters.length
       ? new RegExp(filters.map(transform).join('|'))
       : null;

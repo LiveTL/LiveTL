@@ -1,6 +1,6 @@
 <script>
   import { Col, Row, TextField } from 'svelte-materialify/src';
-  import { writable } from 'svelte/store';
+  import { writable, derived, onMount } from 'svelte/store';
   import Dropdown from './Dropdown.svelte';
 
   export let stores = null;
@@ -28,7 +28,7 @@
   </Col>
   <Col class="center-top" {style}>
     <Dropdown store={sChatAuthor} items={chatAuthorItems} /></Col>
-  <Col class="center-top" style={style + 'flex-grow: 2'}>
+  <Col style={style + 'flex-grow: 2'}>
     <TextField dense clearable bind:value={rule} />
   </Col>
 </Row>
