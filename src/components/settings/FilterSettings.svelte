@@ -13,9 +13,10 @@
     regexAuthorBlacklist,
     channelFilters
   } from '../../js/store.js';
-  import { Subheader /*, List, ListItem, ExpansionPanels, ExpansionPanel */ } from 'svelte-materialify/src';
+  import { Subheader, List, ListItem, ExpansionPanels, ExpansionPanel } from 'svelte-materialify/src';
   import { languageNameValues } from '../../js/constants.js';
   import CheckOption from '../options/Toggle.svelte';
+  import CustomFilter from '../options/CustomFilter.svelte';
   import EnumOption from '../options/FilterSelector.svelte';
   import ListEdit from '../options/ListEdit.svelte';
   import SelectOption from '../options/Dropdown.svelte';
@@ -61,7 +62,10 @@
         ['chat', 'author'].forEach(end => {
           const store = paths[beg][mid][end];
           store.get().forEach(e => {
-            rules.push(getPrompt(beg, mid, end, ' ' + e));
+            rules.push({
+              showBlock: beg, plainReg: mid, chatAuthor: end, rule: e
+            });
+            // rules.push(getPrompt(beg, mid, end, ' ' + e));
           });
         });
       });
@@ -100,17 +104,15 @@
     channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}
 />
 <div class="filter-options">
+  {#each rules as rule}
+    <CustomFilter {...rule} stores={paths} />
+  {/each}
   <!--
-  <ExpansionPanels>
-    <ExpansionPanel>
-      <span slot="header">Custom filters</span>
-      <List>
-        {#each rules as rule}
-          <ListItem>{rule}</ListItem>
-        {/each}
-      </List>
-    </ExpansionPanel>
-  </ExpansionPanels>
+  <List>
+    {#each rules as rule}
+      <ListItem>{rule}</ListItem>
+    {/each}
+  </List>
   -->
   <Subheader>Custom filter options</Subheader>
   <EnumOption name="" options={['chat', 'author']} store={chatAuthor} />
