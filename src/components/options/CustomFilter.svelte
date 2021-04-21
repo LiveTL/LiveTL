@@ -20,15 +20,28 @@
 </script>
 
 <Row>
-  <Col {style}>
+  <Col class="center-top" {style}>
     <Dropdown store={sShowBlock} items={showBlockItems} />
   </Col>
-  <Col {style}>
+  <Col class="center-top" {style}>
     <Dropdown store={sPlainReg} items={plainRegItems} />
   </Col>
-  <Col {style}>
+  <Col class="center-top" {style}>
     <Dropdown store={sChatAuthor} items={chatAuthorItems} /></Col>
-  <Col style={style + 'flex-grow: 2'}>
+  <Col class="center-top" style={style + 'flex-grow: 2'}>
     <TextField dense clearable bind:value={rule} />
   </Col>
 </Row>
+
+<style>
+  :global(.center-top *) {
+    padding-top: auto;
+    padding-bottom: auto;
+    margin-top: 0px;
+  }
+
+  :global(.center-top) {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+</style>

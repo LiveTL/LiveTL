@@ -104,6 +104,7 @@
     channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}
 />
 <div class="filter-options">
+  <Subheader>Custom filter options</Subheader>
   {#each rules as rule}
     <CustomFilter {...rule} stores={paths} />
   {/each}
@@ -114,7 +115,6 @@
     {/each}
   </List>
   -->
-  <Subheader>Custom filter options</Subheader>
   <EnumOption name="" options={['chat', 'author']} store={chatAuthor} />
   <EnumOption name="" options={['Show', 'Block']} store={whiteBlackList} />
   <EnumOption name="" options={['plain', 'regex']} store={plaintextRegex} />
