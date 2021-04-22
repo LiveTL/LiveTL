@@ -6,7 +6,7 @@
     "build": "node utils/build.js",
     "package": "node utils/package.js",
     "start": "node utils/webserver.js",
-    "sc": "node utils/screenshot.js",
+    "ss": "node utils/screenshot.js",
     "test": "jest src",
     "test:watch": "npm run test -- --watch",
     "format": "eslint --fix ."

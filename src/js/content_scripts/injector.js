@@ -92,8 +92,13 @@ function loaded() {
   const elem = document.querySelector('yt-live-chat-app');
   elem.style.minWidth = '0px';
   elem.style.minHeight = '0px';
+  elem.style.width = '100%';
+  elem.style.height = '100%';
   elem.style.maxWidth = undefined;
   elem.style.maxHeight = undefined;
+  const body = document.querySelector('body');
+  body.style.width = '100%';
+  body.style.height = '100%';
   const insertButtons = async () => {
     try {
       let params = new URLSearchParams(window.location.search);
