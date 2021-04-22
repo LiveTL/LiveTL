@@ -4,7 +4,7 @@
   import { sources, combineStores } from '../js/sources.js';
   import '../css/splash.css';
   import { Icon } from 'svelte-materialify/src';
-  import { mdiPencil, mdiEyeOffOutline } from '@mdi/js';
+  import { mdiEyeOffOutline, mdiAccountRemove } from '@mdi/js';
   import { channelFilters, livetlFontSize } from '../js/store.js';
   import { BROWSER, Browser } from '../js/constants.js';
   $: document.body.style.fontSize = Math.round($livetlFontSize) + 'px';
@@ -190,8 +190,9 @@
         <span class="author"
           >{item.author}
           <span class="messageActions">
-            <span class="blueHighlight">
-              <Icon path={mdiPencil} size="1em" class="blueHighlight" />
+            <span class="redHighlight">
+              <!-- TODO HIDE THE MESSAGE -->
+              <Icon path={mdiEyeOffOutline} size="1em" />
             </span>
             <span
               class="redHighlight"
@@ -204,7 +205,7 @@
                 items = items.filter(i => i.id != item.id);
               }}
             >
-              <Icon path={mdiEyeOffOutline} size="1em" />
+              <Icon path={mdiAccountRemove} size="1em" />
             </span>
           </span>
         </span>
