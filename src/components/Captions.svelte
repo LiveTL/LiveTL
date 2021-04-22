@@ -49,14 +49,21 @@
 
   let show = true;
   let timeout = setTimeout(() => {}, 0);
-  $: if ($enableCaptionTimeout && $captionFontSize) {
+
+  function captionTimeout() {
     clearTimeout(timeout);
     timeout = setTimeout(() => (show = false), $captionDuration * 1000);
     show = true;
+  }
+
+  $: if ($enableCaptionTimeout && $captionFontSize) {
+    captionTimeout();
   } else {
     show = true;
     clearTimeout(timeout);
   }
+
+  $: if ($translations) captionTimeout();
 </script>
 
 <div
