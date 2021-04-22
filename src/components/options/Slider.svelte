@@ -15,6 +15,7 @@
   let diff = max - min;
   $: value = Math.round((($store - min) * 100) / diff + min);
   $: scaledBack = ((value - min) * diff) / 100 + min;
+  $: scaledBack = Math.max(Math.min(max, scaledBack), min);
   $: store.set(scaledBack);
 
   let wrapper = null;
