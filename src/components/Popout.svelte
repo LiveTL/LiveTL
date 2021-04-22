@@ -25,9 +25,9 @@
     </Button>
   </div>
   <Wrapper {isResizing}>
-    <div style="display: {settingsOpen ? 'block' : 'none'};">
+    {#if settingsOpen}
       <Options {isStandalone} />
-    </div>
+    {/if}
     <div style="display: {settingsOpen ? 'none' : 'block'};">
       <MessageDisplay
         direction={$textDirection}
