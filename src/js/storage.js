@@ -118,7 +118,7 @@ export class LookupStore {
     this._subscribers = new Map();
     this._subnum = 0;
     this._keyname = `${this.name}[]`;
-    this._updateAcrossSessions = updateAcrossSessions
+    this._updateAcrossSessions = updateAcrossSessions;
     this.loaded = this.loadFromStorage();
     stores.set(this._keyname, this);
   }
