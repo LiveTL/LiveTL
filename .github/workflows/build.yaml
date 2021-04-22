@@ -15,7 +15,7 @@ jobs:
         run: yarn
       - name: Build extensions
         run: |
-          yarn build production
+          yarn build production --version=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g')
           yarn package
       - name: Upload builds to release
         uses: svenstaro/upload-release-action@v2
