@@ -25,7 +25,7 @@ const langSplitRe = /[^A-Za-z]/;
 const not = f => (...args) => !f(...args);
 const chat = e => e.chatAuthor == 'chat';
 const plain = e => e.plainReg == 'plain';
-const show = e => e.showBlock == 'show';
+const show = e => e.showBlock == 'Show';
 const rule = e => e.rule;
 
 const getFilterStore = (f1, f2, f3) => derived(customFilters, $filters => {

@@ -19,7 +19,7 @@ const defaultZoom = BROWSER == Browser.ANDROID ? 0.5 : 1;
 const sampleFilter = {
   chatAuthor: 'chat',
   plainReg: 'plain',
-  showBlock: 'show',
+  showBlock: 'Show',
   rule: '' 
 };
 

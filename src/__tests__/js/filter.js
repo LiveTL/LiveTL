@@ -49,8 +49,8 @@ function rule(plain, chat, show, r) {
   };
 }
 
-const tw = r => rule('regex', 'chat', 'show', r);
-const pw = r => rule('plain', 'chat', 'show', r);
+const tw = r => rule('regex', 'chat', 'Show', r);
+const pw = r => rule('plain', 'chat', 'Show', r);
 
 describe('user regex filters', () => {
   it('does not match every message if no filters', () => {

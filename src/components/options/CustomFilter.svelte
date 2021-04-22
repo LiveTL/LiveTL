@@ -2,8 +2,8 @@
   import { Col, Row, TextField } from 'svelte-materialify/src';
   import { writable, derived, onMount } from 'svelte/store';
   import Dropdown from './Dropdown.svelte';
+  import { customFilters } from '../../js/store.js';
 
-  export let stores = null;
   export let rule = '';
   export let showBlock = 'Show';
   export let plainReg = 'plain';
