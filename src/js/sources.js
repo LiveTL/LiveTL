@@ -45,16 +45,17 @@ function attachFilters(translations, mod, ytc) {
 
   return ytc.subscribe(message => {
     if (!message || isBlacklisted(message)) return;
-    const { text } = message;
-    const parsed = parseTranslation(text);
+    const text = message.text.trim();
+    let parsed = parseTranslation(text);
+    if (parsed) parsed.msg = parsed.msg.trim();
     const lang = languageNameCode[language.get()];
-    if (parsed && isLangMatch(parsed.lang, lang)) {
+    if (parsed && isLangMatch(parsed.lang, lang) && parsed.msg) {
       setTranslation(message, parsed.msg);
     }
-    else if (isWhitelisted(message)) {
+    else if (isWhitelisted(message) && text) {
       setTranslation(message, text);
     }
-    else if (showIfMod(message)) {
+    else if (showIfMod(message) && text) {
       setModMessage(message, text);
     }
   });
