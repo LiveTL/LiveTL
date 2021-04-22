@@ -150,10 +150,10 @@ function loaded() {
   }, 100);
 }
 
-window.addEventListener('load', loaded);
 
 window.addEventListener('message', packet=>{
   if (packet.origin !== window.origin) window.postMessage(packet.data);
 });
 
 if (BROWSER === Browser.FIREFOX) loaded();
+else window.addEventListener('load', loaded);
