@@ -164,12 +164,11 @@
   }
   :global(body) {
     height: calc(100% + 40px) !important;
-    position: fixed;
-    top: -20px;
-    left: -20px;
-    margin: 0;
+    position: fixed !important;
+    top: -20px !important;
+    left: -20px !important;
+    margin: 0 !important;
     width: calc(100% + 40px) !important;
-    margin: 0px;
   }
   :global(.ui-resizable-handle) {
     background-color: #4d4d4d;
