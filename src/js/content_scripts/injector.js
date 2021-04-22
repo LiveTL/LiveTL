@@ -99,6 +99,7 @@ function loaded() {
   const body = document.querySelector('body');
   body.style.width = '100%';
   body.style.height = '100%';
+  body.style.position = 'fixed';
   const insertButtons = async () => {
     try {
       let params = new URLSearchParams(window.location.search);
