@@ -92,8 +92,14 @@ function loaded() {
   const elem = document.querySelector('yt-live-chat-app');
   elem.style.minWidth = '0px';
   elem.style.minHeight = '0px';
+  elem.style.width = '100%';
+  elem.style.height = '100%';
   elem.style.maxWidth = undefined;
   elem.style.maxHeight = undefined;
+  const body = document.querySelector('body');
+  body.style.width = '100%';
+  body.style.height = '100%';
+  body.style.position = 'fixed';
   const insertButtons = async () => {
     try {
       let params = new URLSearchParams(window.location.search);
@@ -145,10 +151,10 @@ function loaded() {
   }, 100);
 }
 
-window.addEventListener('load', loaded);
 
 window.addEventListener('message', packet=>{
   if (packet.origin !== window.origin) window.postMessage(packet.data);
 });
 
 if (BROWSER === Browser.FIREFOX) loaded();
+else window.addEventListener('load', loaded);
