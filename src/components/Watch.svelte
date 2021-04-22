@@ -79,11 +79,13 @@
   let updatePopupActive = false;
 </script>
 
-<div style="
+<div
+  style="
   margin: 20px 0px 0px 20px;
   position: relative;
   width: 100vw;
-  height: 100vh;">
+  height: 100vh;"
+>
   <MaterialApp theme="dark">
     <Updates bind:active={updatePopupActive} />
     {#if !isEmbedded && $showCaption}
@@ -161,12 +163,12 @@
     width: 100%;
   }
   :global(body) {
-    height: calc(100% + 40px);
+    height: calc(100% + 40px) !important;
     position: fixed;
     top: -20px;
     left: -20px;
     margin: 0;
-    width: calc(100% + 40px);
+    width: calc(100% + 40px) !important;
     margin: 0px;
   }
   :global(.ui-resizable-handle) {

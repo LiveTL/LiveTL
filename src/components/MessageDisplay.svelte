@@ -6,6 +6,7 @@
   import { Icon } from 'svelte-materialify/src';
   import { mdiPencil, mdiEyeOffOutline } from '@mdi/js';
   import { channelFilters, livetlFontSize } from '../js/store.js';
+  import { BROWSER, Browser } from '../js/constants.js';
   $: document.body.style.fontSize = Math.round($livetlFontSize) + 'px';
   export let direction;
   export let settingsOpen = false;
@@ -123,8 +124,24 @@
             />
           </a>
           <a
-            href="https://livetl.github.io/LiveTL/about/review"
+            href="/"
             target="about:blank"
+            on:click={e => {
+              e.preventDefault();
+              if (BROWSER === Browser.CHROME) {
+                window.open(
+                  'https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg/reviews'
+                );
+              } else if (BROWSER === Browser.FIREFOX) {
+                window.open(
+                  'https://addons.mozilla.org/en-US/firefox/addon/livetl'
+                );
+              } else {
+                window.open(
+                  'https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg/reviews'
+                );
+              }
+            }}
           >
             <img
               alt="Reviews"
