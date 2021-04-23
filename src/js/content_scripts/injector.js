@@ -38,7 +38,7 @@ const getLiveTLButton = (color) => {
     display: inline-block;
     margin: 0;
   ">
-    <yt-formatted-string id="text" class="style-scope ytd-toggle-button-renderer">
+    <yt-formatted-string id="text" class="style-scope ytd-toggle-button-renderer" style="display: block;">
     </yt-formatted-string>
     <paper-ripple class="style-scope paper-button">
       <div id="background" class="style-scope paper-ripple" style="opacity: 0.00738;"></div>
