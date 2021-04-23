@@ -17,7 +17,7 @@ export class SyncStore {
    * @param {T} defaultValue 
    * @param {Storage} storageBackend 
    */
-  constructor(name, defaultValue, storageBackend=null) {
+  constructor(name, defaultValue, storageBackend=null, updateAcrossSessions=true) {
     this.name = name;
     this.defaultValue = defaultValue;
     const store = writable(defaultValue);
@@ -26,6 +26,7 @@ export class SyncStore {
     this.loaded = writable(false);
     this.loadFromStorage();
     this._lastSet = Date.now();
+    this._updateAcrossSessions = updateAcrossSessions;
     stores.set(mangleStorageKey(name, storageVersion), this);
   }
 
@@ -40,6 +41,10 @@ export class SyncStore {
       }
       this.loaded.set(true);
     });
+  }
+
+  async updateFromStorage() {
+    if (this._updateAcrossSessions) return await this.loadFromStorage();
   }
 
   /**
@@ -102,7 +107,7 @@ export class LookupStore {
    * @param {T} defaultValue 
    * @param {Storage} storageBackend 
    */
-  constructor(name, defaultValue, storageBackend=null) {
+  constructor(name, defaultValue, storageBackend=null, updateAcrossSessions=true) {
     this.name = name;
     this.defaultValue = defaultValue;
     this._storage = storageBackend || storage;
@@ -113,6 +118,7 @@ export class LookupStore {
     this._subscribers = new Map();
     this._subnum = 0;
     this._keyname = `${this.name}[]`;
+    this._updateAcrossSessions = updateAcrossSessions;
     this.loaded = this.loadFromStorage();
     stores.set(this._keyname, this);
   }
@@ -124,6 +130,10 @@ export class LookupStore {
     await Promise.all(this.keys.map(async k => {
       this._lookup[k] = await this._storage.get(this.mangleKey(k));
     }));
+  }
+
+  async updateFromStorage() {
+    if (this._updateAcrossSessions) return await this.loadFromStorage();
   }
 
   /**
@@ -273,6 +283,6 @@ function updateChangedStores(changes) {
 
   for (const item of changedItems) {
     if (!stores.has(item)) continue;
-    stores.get(item).loadFromStorage();
+    stores.get(item).updateFromStorage();
   }
 }
