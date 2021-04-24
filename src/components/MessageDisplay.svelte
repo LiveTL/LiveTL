@@ -59,7 +59,7 @@
     }
   });
   afterUpdate(() => {
-    if (scrollOnTick) bottomMsg.scrollIntoView();
+    if (scrollOnTick) bottomMsg.scrollIntoView({ behaviour: 'smooth', block: 'nearest', inline: 'nearest' });
     scrollOnTick = false;
   });
   const version = window.chrome.runtime.getManifest().version;
