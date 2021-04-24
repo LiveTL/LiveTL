@@ -85,6 +85,7 @@
       </div>
       <div class="subscripts">
         <div class="badges">
+          <!--
           <a
             href="https://livetl.app/"
             target="about:blank"
@@ -123,6 +124,7 @@
               src="https://img.shields.io/badge/Other%20platforms-Android%2C%20iOS-blue?style=flat"
             />
           </a>
+          -->
           <a
             href="/"
             target="about:blank"
@@ -154,18 +156,21 @@
               src="https://img.shields.io/github/stars/LiveTL/LiveTL?style=flat&logo=github&label=Star on GitHub"
             />
           </a>
+          <!--
           <a href="https://livetl.app/" target="about:blank">
             <img
               alt="Website"
               src="https://img.shields.io/website?down_color=red&down_message=offline&label=Website&up_color=blue&up_message=livetl.app&url=http%3A%2F%2Flivetl.app%2F&style=flat"
             />
           </a>
+          -->
           <a href="https://opencollective.com/livetl" target="about:blank">
             <img
               alt="Donators and supporters"
               src="https://img.shields.io/opencollective/all/livetl?color=blue&label=Donators%20and%20supporters&logo=dollar&style=flat"
             />
           </a>
+          <!--
           <a
             href="https://hosted.weblate.org/engage/livetl/"
             target="about:blank"
@@ -175,6 +180,7 @@
               src="https://img.shields.io/badge/Localization-Weblate-blue"
             />
           </a>
+          -->
           <a href="https://discord.gg/uJrV3tmthg" target="about:blank">
             <img
               alt="Discord"
