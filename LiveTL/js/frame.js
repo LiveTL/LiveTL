@@ -339,6 +339,7 @@ async function insertLiveTLButtons(isHolotools = false) {
     e.appendChild(a);
     a.querySelector('a').addEventListener('click', callback);
     a.querySelector('yt-formatted-string').textContent = text;
+    a.querySelector('yt-formatted-string').style.display = 'block';
   };
 
   var isReplay = hasReplayChatOpen()
