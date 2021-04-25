@@ -1,1 +1,1 @@
-Optimized YouTube chat with HyperChat, custom username and translation tag filters (in the settings panel), and bug fixes!
+A minor bug fix for the launch buttons. Look forward to a HUGE update in a few weeks!
