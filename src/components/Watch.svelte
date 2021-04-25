@@ -2,6 +2,8 @@
   import * as j from 'jquery';
   import 'jquery-ui-bundle';
   import 'jquery-ui-bundle/jquery-ui.css';
+  window.jQuery = j;
+  import('jquery-ui-touch-punch');
   import VideoEmbed from './VideoEmbed.svelte';
   import Wrapper from './Wrapper.svelte';
   import { MaterialApp } from 'svelte-materialify/src';
@@ -18,7 +20,6 @@
   import Captions from './Captions.svelte';
   import Updates from './Updates.svelte';
   document.title = 'LiveTL';
-  window.j = j;
   let isResizing = false;
   let chatElem, vidElem, ltlElem;
   const params = new URLSearchParams(window.location.search);
@@ -214,5 +215,8 @@
   }
   :global(*) {
     word-break: break-word;
+  }
+  :global(html) {
+    overflow: hidden;
   }
 </style>
