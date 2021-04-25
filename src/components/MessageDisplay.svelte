@@ -200,14 +200,17 @@
       </div>
     </div>
     {#each items as item}
-      <div class="message" let:hovering>
+      <div
+        class="message"
+        let:hovering
+        style="display: {item.hidden ? 'none' : 'block'}"
+      >
         <span>{item.text}</span>
         <span class="author"
           >{item.author}
           {$showTimestamp ? `(${item.timestamp})` : ''}
           <span class="messageActions">
-            <span class="redHighlight">
-              <!-- TODO HIDE THE MESSAGE -->
+            <span class="redHighlight" on:click={() => (item.hidden = true)}>
               <Icon path={mdiEyeOffOutline} size="1em" />
             </span>
             <span
