@@ -5,12 +5,16 @@
   import '../css/splash.css';
   import { Icon } from 'svelte-materialify/src';
   import { mdiEyeOffOutline, mdiAccountRemove } from '@mdi/js';
-  import { channelFilters, livetlFontSize } from '../js/store.js';
+  import {
+    channelFilters,
+    livetlFontSize,
+    showTimestamp
+  } from '../js/store.js';
   import { BROWSER, Browser } from '../js/constants.js';
   $: document.body.style.fontSize = Math.round($livetlFontSize) + 'px';
   export let direction;
   export let settingsOpen = false;
-  /** @type {{ text: String, author: String }[]}*/
+  /** @type {{ text: String, author: String, timestamp: String }[]}*/
   export let items = [];
   export let updatePopupActive = false;
 
@@ -59,7 +63,12 @@
     }
   });
   afterUpdate(() => {
-    if (scrollOnTick) bottomMsg.scrollIntoView({ behaviour: 'smooth', block: 'nearest', inline: 'nearest' });
+    if (scrollOnTick)
+      bottomMsg.scrollIntoView({
+        behaviour: 'smooth',
+        block: 'nearest',
+        inline: 'nearest'
+      });
     scrollOnTick = false;
   });
   const version = window.chrome.runtime.getManifest().version;
@@ -195,6 +204,7 @@
         <span>{item.text}</span>
         <span class="author"
           >{item.author}
+          {$showTimestamp ? `(${item.timestamp})` : ''}
           <span class="messageActions">
             <span class="redHighlight">
               <!-- TODO HIDE THE MESSAGE -->
