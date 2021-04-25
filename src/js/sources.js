@@ -83,13 +83,13 @@ function getYTCData(unparsed) {
   } catch (e) { return {}; }
 }
 
-function ytcToMsg({ message, author: { name: author, id, types } }) {
+function ytcToMsg({ message, timestamp, author: { name: author, id, types } }) {
   const text = message
     .filter(item => item.type === 'text')
     .map(item => item.text)
     .join('');
   const typeFlag = types.reduce((flag, t) => flag | AuthorType[t], 0);
-  return { text, author, id, types: typeFlag };
+  return { text, timestamp, author, id, types: typeFlag };
 }
 
 function compose(...args) {
