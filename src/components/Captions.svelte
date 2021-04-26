@@ -63,7 +63,15 @@
     clearTimeout(timeout);
   }
 
-  $: if ($translations) captionTimeout();
+  $: if ($translations) {
+    captionTimeout();
+    if (elem) {
+      elem.style.display = 'none';
+      elem.offsetWidth; // force reflow
+      elem.style.display = 'block';
+    }
+  }
+  let elem = null;
 </script>
 
 <div
@@ -79,7 +87,9 @@
     : 'none'};
 "
 >
-  <div class="captionSegment">{$translations ? $translations.text : text}</div>
+  <div class="captionSegment" bind:this={elem}>
+    {$translations ? $translations.text : text}
+  </div>
 </div>
 
 <style>
