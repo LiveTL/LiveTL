@@ -56,7 +56,7 @@
   }
 
   :global(.s-slider__tooltip) {
-    font-size: 0px;
+    font-size: 0px !important;
     word-break: keep-all;
   }
 
