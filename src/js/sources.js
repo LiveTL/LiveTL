@@ -19,10 +19,10 @@ export const sources = {
 const userBlacklisted = id => channelFilters.get(id).blacklist;
 
 /** @type {(msg: Message) => Boolean} */
-const isWhitelisted = msg => textWhitelisted(msg.text) || authorWhitelisted(msg.id);
+const isWhitelisted = msg => textWhitelisted(msg.text) || authorWhitelisted(msg.author);
 
 /** @type {(msg: Message) => Boolean} */
-const isBlacklisted = msg => textBlacklisted(msg.text) || userBlacklisted(msg.id) || authorBlacklisted(msg.id);
+const isBlacklisted = msg => textBlacklisted(msg.text) || userBlacklisted(msg.id) || authorBlacklisted(msg.author);
 
 /** @type {(msg: Message) => Boolean} */
 const isMod = msg => msg.types & AuthorType.moderator;
