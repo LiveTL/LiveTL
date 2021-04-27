@@ -135,8 +135,12 @@ export function ytcSource(window) {
 
   window.addEventListener('message', async d => {
     const data = getYTCData(d);
-    if (data.event === 'infoDelivery' && !interval && firstChunkReceived) {
-      videoProgressUpdated(data.info.currentTime);
+    if (!interval && firstChunkReceived) {
+      if (data.event === 'infoDelivery') {
+        videoProgressUpdated(data.info.currentTime);
+      } else if (data['yt-player-video-progress']) {
+        videoProgressUpdated(data['yt-player-video-progress']);
+      }
     }
     else if (data.type === 'messageChunk') {
       firstChunkReceived = true;
@@ -155,7 +159,7 @@ export function ytcSource(window) {
   const connectionName = parseInt(new URLSearchParams(window.location.search).get('tabid'));
   if (window.chrome && window.chrome.runtime) {
     window.chrome.runtime.onMessage.addListener( (request) => {
-      if(request.tabid === connectionName) window.postMessage(request);
+      if (request.tabid === connectionName) window.postMessage(request);
     });
   }
   return { ytc, cleanUp };

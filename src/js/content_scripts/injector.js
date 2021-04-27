@@ -127,6 +127,7 @@ function loaded() {
         makeButton('Embed TLs', () => {
           let embeddedParams = constructParams();
           embeddedParams.set('embedded', true);
+          embeddedParams.set('tabid', tabid);
           document.body.outerHTML = '';
           const iframe = document.createElement('iframe');
           iframe.style.width = '100%';
