@@ -118,6 +118,14 @@ function loaded() {
         const tabid = await sendToBackground({
           type:'tabid'
         });
+        window.addEventListener('message', d => {
+          if (d.data['yt-player-video-progress']) {
+            sendToBackground({
+              type: 'message',
+              data: { ...d.data, tabid },
+            });
+          }
+        });
         makeButton('TL Popout', () => {
           let popoutParams = constructParams();
           popoutParams.set('tabid', tabid);
