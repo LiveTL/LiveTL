@@ -142,7 +142,7 @@ export function ytcSource(window) {
         videoProgressUpdated(data['yt-player-video-progress']);
       }
     }
-    else if (data.type === 'messageChunk') {
+    if (data.type === 'messageChunk') {
       firstChunkReceived = true;
       for (const message of data.messages.sort(lessMsg)) {
         const timestamp = data.isReplay
