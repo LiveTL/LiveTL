@@ -54,7 +54,6 @@
     "jquery": "^3.6.0",
     "jquery-ui-bundle": "^1.12.1-migrate",
     "jquery-ui-touch-punch": "^0.2.3",
-    "puppeteer": "^8.0.0",
     "ssri": "^8.0.1",
     "vue": "^2.6.12",
     "vuetify": "^2.4.9",
