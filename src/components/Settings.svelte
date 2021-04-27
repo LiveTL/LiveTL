@@ -14,7 +14,7 @@
 <MaterialApp theme="dark">
   <div style="display: flex; align-items: center; justify-content: center;">
     <div style="max-width: calc(min(500px, 100%)); width: 100%;">
-      <Tabs grow fixedTabs>
+      <Tabs grow fixedTabs showArrows={false}>
         <div slot="tabs">
           {#each settings as { name }}
             <Tab>{name}</Tab>
