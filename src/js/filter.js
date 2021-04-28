@@ -29,7 +29,7 @@ const show = e => e.showBlock == 'Show';
 const rule = e => e.rule;
 
 const getFilterStore = (f1, f2, f3) => derived(customFilters, $filters => {
-  return $filters.filter(f1).filter(f2).filter(f3).map(rule);
+  return $filters.filter(f1).filter(f2).filter(f3).filter(rule).map(rule);
 });
 
 const plaintextWhitelist = getFilterStore(chat, plain, show);
