@@ -33,6 +33,10 @@ const showIfMod = msg => isMod(msg) && showModMessage.get();
 /** @type {(store: Writable<Message>) => (msg: Message, text: String) => void} */
 const setStoreMessage = store => (msg, text) => store.set({...msg, text});
 
+const lang = () => languageNameCode[language.get()];
+
+const isTranslation = parsed => parsed && isLangMatch(parsed.lang, lang()) && parsed.msg;
+
 /**
  * @param {Writable<Message>} translations 
  * @param {Writable<Message>} mod
@@ -47,14 +51,14 @@ function attachFilters(translations, mod, ytc) {
     if (!message || isBlacklisted(message)) return;
     const text = message.text.trim();
     const parsed = parseTranslation(text);
-    const lang = languageNameCode[language.get()];
-    if (parsed && isLangMatch(parsed.lang, lang) && parsed.msg) {
+    if (!text) return;
+    if (isTranslation(parsed)) {
       setTranslation(message, parsed.msg);
     }
-    else if (isWhitelisted(message) && text) {
+    else if (isWhitelisted(message)) {
       setTranslation(message, text);
     }
-    else if (showIfMod(message) && text) {
+    else if (showIfMod(message)) {
       setModMessage(message, text);
     }
   });
