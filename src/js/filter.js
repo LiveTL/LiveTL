@@ -176,11 +176,9 @@ export function addFilter(chatAuthor, plainReg, showBlock, rule) {
   const filters = customFilters.get();
   const ids = filters.map(f => f.id);
   const id = filters.length ? Math.max(...ids) + 1 : 0;
-  customFilters.set([
-    ...filters,
-    { chatAuthor, plainReg, showBlock, rule, id }
-  ]);
-  return id;
+  const newFilter = { chatAuthor, plainReg, showBlock, rule, id };
+  customFilters.set([...filters, newFilter]);
+  return newFilter;
 }
 
 export function modifyFilter(id, chatAuthor, plainReg, showBlock, rule) {
@@ -189,13 +187,16 @@ export function modifyFilter(id, chatAuthor, plainReg, showBlock, rule) {
       if (f.id != id) return f;
       return { chatAuthor, plainReg, showBlock, rule, id: f.id };
     })
-    .filter(f => f.rule);
   customFilters.set(newFilters);
 }
 
 export function deleteFilter(id) {
   const newFilters = customFilters.get().filter(f => f.id != id);
   customFilters.set(newFilters);
+}
+
+export function cleanupFilters() {
+  customFilters.set(customFilters.get().filter(f => f.rule));
 }
 
 // TODO remove once done

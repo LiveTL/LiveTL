@@ -1,12 +1,15 @@
 <script>
   import { writable } from 'svelte/store';
+  import { onMount } from 'svelte';
   import {
     showModMessage,
     language,
     customFilters,
     channelFilters
   } from '../../js/store.js';
-  import { Subheader, List, ListItem, ExpansionPanels, ExpansionPanel } from 'svelte-materialify/src';
+  import { Row, Col, Button, Icon, Subheader, List, ListItem, ExpansionPanels, ExpansionPanel } from 'svelte-materialify/src';
+  import { mdiPlus } from '@mdi/js';
+  import { cleanupFilters } from '../../js/filter.js';
   import { languageNameValues } from '../../js/constants.js';
   import CheckOption from '../options/Toggle.svelte';
   import CustomFilter from '../options/CustomFilter.svelte';
@@ -16,6 +19,7 @@
   import MultiDropdown from '../options/MultiDropdown.svelte';
   export let isStandalone = false;
 
+  onMount(cleanupFilters);
 </script>
 
 <SelectOption
@@ -33,7 +37,18 @@
     channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}
 />
 <div class="filter-options">
-  <Subheader>Custom filter options</Subheader>
+  <Row>
+    <Col>
+      <Subheader>Custom filter options</Subheader>
+    </Col>
+    <Col style="padding-right: 2px;">
+      <Subheader style="float: right; padding-right: 0px">
+        <Button icon on:click={() => addFilter('chat', 'plain', 'Show', '')}>
+          <Icon path={mdiPlus} />
+        </Button>
+      </Subheader>
+    </Col>
+  </Row>
   {#each $customFilters as rule}
     <CustomFilter {...rule} />
   {/each}
