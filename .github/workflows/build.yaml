@@ -15,13 +15,21 @@ jobs:
         run: yarn
       - name: Build extensions
         run: |
-          yarn build production
+          yarn build production --version=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g')
           yarn package
-      - name: Upload builds to release
+      - name: Upload Chrome build to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/LiveTL.zip
-          asset_name: LiveTL.zip
+          file: dist/LiveTL-Chrome.zip
+          asset_name: LiveTL-Chrome.zip
+          tag: ${{ github.ref }}
+          overwrite: true
+      - name: Upload Firefox build to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/LiveTL-Firefox.zip
+          asset_name: LiveTL-Firefox.zip
           tag: ${{ github.ref }}
           overwrite: true

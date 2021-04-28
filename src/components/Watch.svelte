@@ -2,6 +2,8 @@
   import * as j from 'jquery';
   import 'jquery-ui-bundle';
   import 'jquery-ui-bundle/jquery-ui.css';
+  window.jQuery = j;
+  import('jquery-ui-touch-punch');
   import VideoEmbed from './VideoEmbed.svelte';
   import Wrapper from './Wrapper.svelte';
   import { MaterialApp } from 'svelte-materialify/src';
@@ -18,7 +20,6 @@
   import Captions from './Captions.svelte';
   import Updates from './Updates.svelte';
   document.title = 'LiveTL';
-  window.j = j;
   let isResizing = false;
   let chatElem, vidElem, ltlElem;
   const params = new URLSearchParams(window.location.search);
@@ -79,11 +80,13 @@
   let updatePopupActive = false;
 </script>
 
-<div style="
+<div
+  style="
   margin: 20px 0px 0px 20px;
   position: relative;
   width: 100vw;
-  height: 100vh;">
+  height: 100vh;"
+>
   <MaterialApp theme="dark">
     <Updates bind:active={updatePopupActive} />
     {#if !isEmbedded && $showCaption}
@@ -161,13 +164,12 @@
     width: 100%;
   }
   :global(body) {
-    height: calc(100% + 40px);
-    position: fixed;
-    top: -20px;
-    left: -20px;
-    margin: 0;
-    width: calc(100% + 40px);
-    margin: 0px;
+    height: calc(100% + 40px) !important;
+    position: fixed !important;
+    top: -20px !important;
+    left: -20px !important;
+    margin: 0 !important;
+    width: calc(100% + 40px) !important;
   }
   :global(.ui-resizable-handle) {
     background-color: #4d4d4d;
@@ -213,5 +215,8 @@
   }
   :global(*) {
     word-break: break-word;
+  }
+  :global(html) {
+    overflow: hidden;
   }
 </style>

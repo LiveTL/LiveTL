@@ -4,12 +4,17 @@
   import { sources, combineStores } from '../js/sources.js';
   import '../css/splash.css';
   import { Icon } from 'svelte-materialify/src';
-  import { mdiPencil, mdiEyeOffOutline } from '@mdi/js';
-  import { channelFilters, livetlFontSize } from '../js/store.js';
+  import { mdiEyeOffOutline, mdiAccountRemove } from '@mdi/js';
+  import {
+    channelFilters,
+    livetlFontSize,
+    showTimestamp
+  } from '../js/store.js';
+  import { BROWSER, Browser } from '../js/constants.js';
   $: document.body.style.fontSize = Math.round($livetlFontSize) + 'px';
   export let direction;
   export let settingsOpen = false;
-  /** @type {{ text: String, author: String }[]}*/
+  /** @type {{ text: String, author: String, timestamp: String }[]}*/
   export let items = [];
   export let updatePopupActive = false;
 
@@ -58,7 +63,12 @@
     }
   });
   afterUpdate(() => {
-    if (scrollOnTick) bottomMsg.scrollIntoView();
+    if (scrollOnTick)
+      bottomMsg.scrollIntoView({
+        behaviour: 'smooth',
+        block: 'nearest',
+        inline: 'nearest'
+      });
     scrollOnTick = false;
   });
   const version = window.chrome.runtime.getManifest().version;
@@ -84,6 +94,7 @@
       </div>
       <div class="subscripts">
         <div class="badges">
+          <!--
           <a
             href="https://livetl.app/"
             target="about:blank"
@@ -122,9 +133,26 @@
               src="https://img.shields.io/badge/Other%20platforms-Android%2C%20iOS-blue?style=flat"
             />
           </a>
+          -->
           <a
-            href="https://livetl.github.io/LiveTL/about/review"
+            href="/"
             target="about:blank"
+            on:click={e => {
+              e.preventDefault();
+              if (BROWSER === Browser.CHROME) {
+                window.open(
+                  'https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg/reviews'
+                );
+              } else if (BROWSER === Browser.FIREFOX) {
+                window.open(
+                  'https://addons.mozilla.org/en-US/firefox/addon/livetl'
+                );
+              } else {
+                window.open(
+                  'https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg/reviews'
+                );
+              }
+            }}
           >
             <img
               alt="Reviews"
@@ -137,18 +165,21 @@
               src="https://img.shields.io/github/stars/LiveTL/LiveTL?style=flat&logo=github&label=Star on GitHub"
             />
           </a>
+          <!--
           <a href="https://livetl.app/" target="about:blank">
             <img
               alt="Website"
               src="https://img.shields.io/website?down_color=red&down_message=offline&label=Website&up_color=blue&up_message=livetl.app&url=http%3A%2F%2Flivetl.app%2F&style=flat"
             />
           </a>
+          -->
           <a href="https://opencollective.com/livetl" target="about:blank">
             <img
               alt="Donators and supporters"
               src="https://img.shields.io/opencollective/all/livetl?color=blue&label=Donators%20and%20supporters&logo=dollar&style=flat"
             />
           </a>
+          <!--
           <a
             href="https://hosted.weblate.org/engage/livetl/"
             target="about:blank"
@@ -158,6 +189,7 @@
               src="https://img.shields.io/badge/Localization-Weblate-blue"
             />
           </a>
+          -->
           <a href="https://discord.gg/uJrV3tmthg" target="about:blank">
             <img
               alt="Discord"
@@ -168,13 +200,18 @@
       </div>
     </div>
     {#each items as item}
-      <div class="message" let:hovering>
+      <div
+        class="message"
+        let:hovering
+        style="display: {item.hidden ? 'none' : 'block'}"
+      >
         <span>{item.text}</span>
         <span class="author"
           >{item.author}
+          {$showTimestamp ? `(${item.timestamp})` : ''}
           <span class="messageActions">
-            <span class="blueHighlight">
-              <Icon path={mdiPencil} size="1em" class="blueHighlight" />
+            <span class="redHighlight" on:click={() => (item.hidden = true)}>
+              <Icon path={mdiEyeOffOutline} size="1em" />
             </span>
             <span
               class="redHighlight"
@@ -187,7 +224,7 @@
                 items = items.filter(i => i.id != item.id);
               }}
             >
-              <Icon path={mdiEyeOffOutline} size="1em" />
+              <Icon path={mdiAccountRemove} size="1em" />
             </span>
           </span>
         </span>

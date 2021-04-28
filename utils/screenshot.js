@@ -9,6 +9,8 @@ const xvfb = new (require('xvfb'))({
 xvfb.start((err)=>{ if (err) console.error(err); });
  
 async function exportImage(name, page, url, func, scale=[1, 1]) {
+  await page.emulateMediaFeatures([{
+    name: 'prefers-color-scheme', value: 'dark' }]);
   await page.goto(url);
   await page.setViewport({width: 1280, height: 800 });
   console.log(`Exporting '${name}'...`);
@@ -113,7 +115,15 @@ async function exportImage(name, page, url, func, scale=[1, 1]) {
             i++;
           }, intervalLength);
         });
-      }]
+      }],
+      'buttons': ['https://www.youtube.com/live_chat_replay?continuation=' + 
+                  'op2w0wRiGlhDaWtxSndvWVZVTkljM2cwU0hGaExURlBVbXBSVkdnNV' +
+                  'ZGbEVhSGQzRWd0cU9HdG9TVFZwY2kxUE9Cb1Q2cWpkdVFFTkNndHFP' +
+                  'R3RvU1RWcGNpMVBPQ0FCQAFyAggEeAE%253D',
+      async () => {
+        await window.sleep(15000);
+      }, [2, 1]
+      ]
     };
 
     let images = process.argv.slice(2).map(item => item.split(',')[0]);

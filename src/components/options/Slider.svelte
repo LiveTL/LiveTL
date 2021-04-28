@@ -13,8 +13,10 @@
   export let thumb = false;
 
   let diff = max - min;
+  $: value = Math.max(0, Math.min(100, value));
   $: value = Math.round((($store - min) * 100) / diff + min);
   $: scaledBack = ((value - min) * diff) / 100 + min;
+  $: scaledBack = Math.max(Math.min(max, scaledBack), min);
   $: store.set(scaledBack);
 
   let wrapper = null;
@@ -54,7 +56,7 @@
   }
 
   :global(.s-slider__tooltip) {
-    font-size: 0px;
+    font-size: 0px !important;
     word-break: keep-all;
   }
 

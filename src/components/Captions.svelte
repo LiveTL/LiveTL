@@ -49,14 +49,29 @@
 
   let show = true;
   let timeout = setTimeout(() => {}, 0);
-  $: if ($enableCaptionTimeout && $captionFontSize) {
+
+  function captionTimeout() {
     clearTimeout(timeout);
     timeout = setTimeout(() => (show = false), $captionDuration * 1000);
     show = true;
+  }
+
+  $: if ($enableCaptionTimeout && $captionFontSize) {
+    captionTimeout();
   } else {
     show = true;
     clearTimeout(timeout);
   }
+
+  $: if ($translations) {
+    captionTimeout();
+    if (elem) {
+      elem.style.display = 'none';
+      elem.offsetWidth; // force reflow
+      elem.style.display = 'block';
+    }
+  }
+  let elem = null;
 </script>
 
 <div
@@ -72,7 +87,9 @@
     : 'none'};
 "
 >
-  <div class="captionSegment">{$translations ? $translations.text : text}</div>
+  <div class="captionSegment" bind:this={elem}>
+    {$translations ? $translations.text : text}
+  </div>
 </div>
 
 <style>

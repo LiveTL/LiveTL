@@ -38,7 +38,7 @@ const getLiveTLButton = (color) => {
     display: inline-block;
     margin: 0;
   ">
-    <yt-formatted-string id="text" class="style-scope ytd-toggle-button-renderer">
+    <yt-formatted-string id="text" class="style-scope ytd-toggle-button-renderer" style="display: block;">
     </yt-formatted-string>
     <paper-ripple class="style-scope paper-button">
       <div id="background" class="style-scope paper-ripple" style="opacity: 0.00738;"></div>
@@ -92,8 +92,14 @@ function loaded() {
   const elem = document.querySelector('yt-live-chat-app');
   elem.style.minWidth = '0px';
   elem.style.minHeight = '0px';
+  elem.style.width = '100%';
+  elem.style.height = '100%';
   elem.style.maxWidth = undefined;
   elem.style.maxHeight = undefined;
+  const body = document.querySelector('body');
+  body.style.width = '100%';
+  body.style.height = '100%';
+  body.style.position = 'fixed';
   const insertButtons = async () => {
     try {
       let params = new URLSearchParams(window.location.search);
@@ -112,6 +118,14 @@ function loaded() {
         const tabid = await sendToBackground({
           type:'tabid'
         });
+        window.addEventListener('message', d => {
+          if (d.data['yt-player-video-progress']) {
+            sendToBackground({
+              type: 'message',
+              data: { ...d.data, tabid },
+            });
+          }
+        });
         makeButton('TL Popout', () => {
           let popoutParams = constructParams();
           popoutParams.set('tabid', tabid);
@@ -121,6 +135,7 @@ function loaded() {
         makeButton('Embed TLs', () => {
           let embeddedParams = constructParams();
           embeddedParams.set('embedded', true);
+          embeddedParams.set('tabid', tabid);
           document.body.outerHTML = '';
           const iframe = document.createElement('iframe');
           iframe.style.width = '100%';
@@ -145,10 +160,10 @@ function loaded() {
   }, 100);
 }
 
-window.addEventListener('load', loaded);
 
 window.addEventListener('message', packet=>{
   if (packet.origin !== window.origin) window.postMessage(packet.data);
 });
 
 if (BROWSER === Browser.FIREFOX) loaded();
+else window.addEventListener('load', loaded);

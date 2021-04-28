@@ -26,8 +26,8 @@ jobs:
           yarn package
       - name: Screenshot pages
         run: |
-          mkdir sc
-          yarn sc ${{ github.event.inputs.pages }}
+          mkdir ss
+          yarn ss ${{ github.event.inputs.pages }}
       - name: Commit screenshots
         uses: EndBug/add-and-commit@v7
         with:

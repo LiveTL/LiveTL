@@ -3,9 +3,10 @@
   import { onMount, onDestroy } from 'svelte';
   import { lastVersion } from '../js/store.js';
   import Dialog from './Dialog.svelte';
+  import versionMap from '../changelogs/versionMap';
 
   const manifest = window.chrome.runtime.getManifest();
-  const version = manifest.version;
+  const version = versionMap(manifest.version);
   const lvLoaded = lastVersion.loaded;
 
   export let active;

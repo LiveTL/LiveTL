@@ -54,6 +54,17 @@ var options = {
           replace: 'window.isLiveTL = true; const getWAR = path => chrome.runtime.getURL(path);',
         }
       },
+      {
+        include: [
+          path.resolve(__dirname, "node_modules/jquery-ui-touch-punch")
+        ],
+        test: /\.js$/,
+        loader: 'string-replace-loader',
+        options: {
+          search: "(jQuery)",
+          replace: '(window.jQuery)',
+        }
+      },
       // {
       //   test: /.*/,
       //   loader: 'cache-loader',
