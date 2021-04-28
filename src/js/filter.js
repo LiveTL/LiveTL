@@ -51,7 +51,7 @@ function userFilter(ufilters, transform = filter => filter) {
   let userRegex = null;
   ufilters.subscribe(filters => {
     userRegex = filters.length
-      ? new RegExp(filters.map(transform).join('|'))
+      ? new RegExp(filters.map(transform).filter(e => e).join('|'))
       : null;
   });
 
@@ -171,3 +171,33 @@ export function isLangMatch(textLang, currentLang) {
 function escapeRegExp(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
+
+export function addFilter(chatAuthor, plainReg, showBlock, rule) {
+  const filters = customFilters.get();
+  const ids = filters.map(f => f.id);
+  const id = filters.length ? Math.max(...ids) + 1 : 0;
+  customFilters.set([
+    ...filters,
+    { chatAuthor, plainReg, showBlock, rule, id }
+  ]);
+  return id;
+}
+
+export function modifyFilter(id, chatAuthor, plainReg, showBlock, rule) {
+  const newFilters = customFilters.get()
+    .map(f => {
+      if (f.id != id) return f;
+      return { chatAuthor, plainReg, showBlock, rule, id: f.id };
+    });
+  customFilters.set(newFilters);
+}
+
+export function deleteFilter(id) {
+  const newFilters = customFilters.get().filter(f => f.id != id);
+  customFilters.set(newFilters);
+}
+
+// TODO remove once done
+window.addFilter = addFilter;
+window.modifyFilter = modifyFilter;
+window.deleteFilter = deleteFilter;

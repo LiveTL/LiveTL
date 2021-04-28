@@ -22,7 +22,8 @@ const sampleFilter = {
   chatAuthor: 'chat',
   plainReg: 'plain',
   showBlock: 'Show',
-  rule: '' 
+  rule: '',
+  id: ''
 };
 
 export const
@@ -58,4 +59,5 @@ export const
   enableCaptionTimeout = SS('enableCaptionTimeout', false),
   lastVersion = SS('lastVersion', '0.0.0');
 
+// TODO remove once done
 window.customFilters = customFilters;

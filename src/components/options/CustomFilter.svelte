@@ -3,11 +3,13 @@
   import { writable, derived, onMount } from 'svelte/store';
   import Dropdown from './Dropdown.svelte';
   import { customFilters } from '../../js/store.js';
+  import { addFilter } from '../../js/filter.js';
 
   export let rule = '';
   export let showBlock = 'Show';
   export let plainReg = 'plain';
   export let chatAuthor = 'chat';
+  export let id = '';
 
   let sShowBlock = writable(showBlock);
   let sPlainReg = writable(plainReg);
@@ -27,7 +29,8 @@
     <Dropdown store={sPlainReg} items={plainRegItems} />
   </Col>
   <Col class="center-top" {style}>
-    <Dropdown store={sChatAuthor} items={chatAuthorItems} /></Col>
+    <Dropdown store={sChatAuthor} items={chatAuthorItems} />
+  </Col>
   <Col style={style + 'flex-grow: 2'}>
     <TextField dense clearable bind:value={rule} />
   </Col>
