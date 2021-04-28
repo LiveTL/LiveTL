@@ -19,6 +19,11 @@
   import MultiDropdown from '../options/MultiDropdown.svelte';
   export let isStandalone = false;
 
+  function createNewFilter() {
+    cleanupFilters();
+    addFilter('chat', 'plain', 'Show', '');
+  }
+
   onMount(cleanupFilters);
 </script>
 
@@ -43,7 +48,7 @@
     </Col>
     <Col style="padding-right: 2px;">
       <Subheader style="float: right; padding-right: 0px">
-        <Button icon on:click={() => addFilter('chat', 'plain', 'Show', '')}>
+        <Button icon on:click={createNewFilter}>
           <Icon path={mdiPlus} />
         </Button>
       </Subheader>

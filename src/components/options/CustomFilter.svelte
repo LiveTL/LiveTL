@@ -1,7 +1,7 @@
 <script>
   import { Col, Row, TextField } from 'svelte-materialify/src';
   import { writable, derived } from 'svelte/store';
-  import { fly } from 'svelte/transition';
+  import { onMount } from 'svelte';
   import Dropdown from './Dropdown.svelte';
   import { customFilters } from '../../js/store.js';
   import { addFilter, modifyFilter, deleteFilter } from '../../js/filter.js';
@@ -13,6 +13,7 @@
   export let id = '';
   export let isNew = false;
 
+  let div;
   let maxRuleLength = 0;
   let sShowBlock = writable(showBlock);
   let sPlainReg = writable(plainReg);
@@ -27,9 +28,16 @@
     modifyFilter(id, $sChatAuthor, $sPlainReg, $sShowBlock, rule);
     if (!rule && maxRuleLength) deleteFilter(id);
   })();
+  onMount(() => {
+    div.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'nearest'
+    });
+  });
 </script>
 
-<div transition:fly>
+<div bind:this={div}>
   <Row>
     <Col class="center-top" {style}>
       <Dropdown store={sShowBlock} items={showBlockItems} />
