@@ -18,7 +18,6 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
         ]
       }, (tabs) => {
         tabs.forEach(tab => {
-          console.log(tab);
           chrome.tabs.sendMessage(tab.id, request.data);
         });
       });
