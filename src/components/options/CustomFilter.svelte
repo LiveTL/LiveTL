@@ -3,7 +3,7 @@
   import { writable, derived, onMount } from 'svelte/store';
   import Dropdown from './Dropdown.svelte';
   import { customFilters } from '../../js/store.js';
-  import { addFilter } from '../../js/filter.js';
+  import { addFilter, modifyFilter, deleteFilter } from '../../js/filter.js';
 
   export let rule = '';
   export let showBlock = 'Show';
@@ -19,6 +19,9 @@
   let plainRegItems = getItems(['plain', 'regex']);
   let chatAuthorItems = getItems(['chat', 'author']);
   const style = 'padding-right: 0px; margin-top: auto; margin-bottom: auto;';
+  $: $sShowBlock, $sPlainReg, $sChatAuthor, rule, (() => {
+    modifyFilter(id, $sChatAuthor, $sPlainReg, $sShowBlock, rule);
+  })();
 </script>
 
 <Row>
