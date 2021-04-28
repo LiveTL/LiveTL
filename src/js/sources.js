@@ -103,7 +103,7 @@ function compose(...args) {
 function forwardPostMessages(window) {
   const connectionName = parseInt(new URLSearchParams(window.location.search).get('tabid'));
   if (window.chrome && window.chrome.runtime) {
-    window.chrome.runtime.onMessage.addListener( (request) => {
+    window.chrome.runtime.onMessage.addListener((request) => {
       if (request.tabid === connectionName) window.postMessage(request);
     });
   }

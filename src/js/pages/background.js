@@ -7,12 +7,18 @@ import '../../img/48x48.png';
 chrome.runtime.onMessage.addListener((request, sender, callback) => {
   switch (request.type) {
   case 'tabid': {
-    callback(sender.tab.id);
+    callback(sender.frameId || sender.tab.id);
     break;
   } case 'message': {
     try {
-      chrome.tabs.query({}, (tabs) => {
+      chrome.tabs.query({
+        url: [
+          'https://www.youtube.com/live_chat*',
+          'https://www.youtube.com/live_chat_replay*'
+        ]
+      }, (tabs) => {
         tabs.forEach(tab => {
+          console.log(tab);
           chrome.tabs.sendMessage(tab.id, request.data);
         });
       });
