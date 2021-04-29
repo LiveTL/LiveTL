@@ -38,9 +38,9 @@ export const BROWSER = (() => {
 /** @enum {number} */
 export const AuthorType = {
   moderator: 1,
-  verified: 2,
-  distinguished: 4,
-  standard: 8
+  verified: 1 << 1,
+  owner: 1 << 2,
+  member: 1 << 3
 };
 
 export const languages = [
