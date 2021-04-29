@@ -13,8 +13,9 @@
   ];
 
   function redrawSlider() {
-    const sliderElement = document.querySelector('.s-tab-slider');
-    const activeTab = document.querySelector('.s-tab.s-slide-item.active');
+    const sliderElement = document.querySelector('.ltl-settings-slider');
+    const activeTab = 
+      document.querySelector('.ltl-settings-tabs .s-tab.s-slide-item.active');
     if (
       !sliderElement || 
       !activeTab || 
@@ -45,7 +46,13 @@
 <MaterialApp theme="dark">
   <div style="display: flex; align-items: center; justify-content: center;">
     <div style="max-width: calc(min(500px, 100%)); width: 100%;">
-      <Tabs grow fixedTabs showArrows={false}>
+      <Tabs 
+        grow 
+        fixedTabs 
+        showArrows={false} 
+        class="ltl-settings-tabs" 
+        sliderClass="ltl-settings-slider"
+      >
         <div slot="tabs">
           {#each settings as { name }}
             <Tab>{name}</Tab>
