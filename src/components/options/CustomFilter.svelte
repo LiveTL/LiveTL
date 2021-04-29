@@ -24,7 +24,6 @@
   let chatAuthorItems = getItems(['chat', 'author']);
   const style = `
     padding-right: 0px;
-    margin-right: 12px;
   `;
   $: maxRuleLength = Math.max(maxRuleLength, rule.length);
   $: $sShowBlock,
@@ -47,26 +46,17 @@
 <div bind:this={div} class="wrap">
   <Row>
     <Col class="center-top" {style}>
-      <Dropdown
-        store={sShowBlock}
-        items={showBlockItems}
-      />
+      <Dropdown store={sShowBlock} items={showBlockItems} />
     </Col>
     <Col class="center-top" {style}>
-      <Dropdown
-        store={sPlainReg}
-        items={plainRegItems}
-      />
+      <Dropdown store={sPlainReg} items={plainRegItems} />
     </Col>
     <Col class="center-top" {style}>
-      <Dropdown
-        store={sChatAuthor}
-        items={chatAuthorItems}
-      />
+      <Dropdown store={sChatAuthor} items={chatAuthorItems} />
     </Col>
     <Col
       style={style +
-        'flex-basis: 100%; margin: 0px 12px 0px 12px; padding: 0px;'}
+        'flex-basis: 100%; margin: 0px 0px 0px 12px; padding: 0px;'}
     >
       <TextField dense clearable bind:value={rule} />
     </Col>
@@ -89,5 +79,8 @@
     background-color: rgba(255, 255, 255, 0.075);
     padding: 10px;
     border-radius: 5px;
+  }
+  .wrap :global(.s-row) {
+    padding-right: 12px;
   }
 </style>
