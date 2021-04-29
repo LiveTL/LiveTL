@@ -26,7 +26,6 @@
   .app {
     padding: 0px !important;
     justify-content: center;
-    min-width: max-content;
     max-height: 100%;
   }
   :global(body) {

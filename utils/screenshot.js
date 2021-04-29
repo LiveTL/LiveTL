@@ -94,7 +94,10 @@ async function exportImage(name, page, url, func, scale=[1, 1]) {
       }, [3, 2]],
       'filters': [`chrome-extension://${extensionID}/options.html`, async () => {
         document.querySelectorAll('.s-tab')[1].click();
+        document.querySelector('.filter-options button').click();
         await window.sleep(1000);
+        document.querySelectorAll('.filter-options .s-col')[5]
+          .querySelectorAll('input[type=text]')[0].value = '[Deutsch]';
       }, [3, 2]],
       'demo': [`chrome-extension://${extensionID}/${watchPageURL}`, () => {
         const maxTime = 4630.879359;

@@ -18,6 +18,13 @@ const SS = (n, d, s = true) => new SyncStore(n, d, null, s);
  */
 const LS = (n, d, s = true) => new LookupStore(n, d, null, s);
 const defaultZoom = BROWSER == Browser.ANDROID ? 0.5 : 1;
+const sampleFilter = {
+  chatAuthor: 'chat',
+  plainReg: 'plain',
+  showBlock: 'show',
+  rule: '',
+  id: ''
+};
 
 export const
   language = SS('language', 'English'),
@@ -48,5 +55,9 @@ export const
   regexAuthorWhitelist = SS('regexAuthorWhitelist', [''].slice(1)),
   plainAuthorBlacklist = SS('plainAuthorBlacklist', [''].slice(1)),
   regexAuthorBlacklist = SS('regexAuthorBlacklist', [''].slice(1)),
+  customFilters = SS('customFilters', [sampleFilter].slice(1)),
   enableCaptionTimeout = SS('enableCaptionTimeout', false),
   lastVersion = SS('lastVersion', '0.0.0');
+
+// TODO remove once done
+window.customFilters = customFilters;
