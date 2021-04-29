@@ -9,18 +9,22 @@
 
   const settings = [
     { name: 'Interface', component: UISettings },
-    { name: 'Filters', component: FilterSettings }
+    { name: 'Filters', component: FilterSettings },
   ];
 
+  let wrapper = null;
   function redrawSlider() {
-    const sliderElement = document.querySelector('.ltl-settings-slider');
-    const activeTab = 
-      document.querySelector('.ltl-settings-tabs .s-tab.s-slide-item.active');
+    const sliderElement = wrapper.querySelector('.ltl-settings-slider');
+    const activeTab = wrapper.querySelector(
+      '.ltl-settings-tabs .s-tab.s-slide-item.active'
+    );
     if (
-      !sliderElement || 
-      !activeTab || 
-      !sliderElement.offsetParent || 
-      !activeTab.offsetParent) return;
+      !sliderElement ||
+      !activeTab ||
+      !sliderElement.offsetParent ||
+      !activeTab.offsetParent
+    )
+      return;
 
     sliderElement.style.left = `${activeTab.offsetLeft}px`;
     sliderElement.style.width = `${activeTab.offsetWidth}px`;
@@ -36,7 +40,7 @@
   });
   afterUpdate(() => {
     if (callRedrawSlider) {
-      redrawSlider()
+      redrawSlider();
     }
     callRedrawSlider = false;
   });
@@ -44,13 +48,16 @@
 </script>
 
 <MaterialApp theme="dark">
-  <div style="display: flex; align-items: center; justify-content: center;">
+  <div
+    style="display: flex; align-items: center; justify-content: center;"
+    bind:this={wrapper}
+  >
     <div style="max-width: calc(min(500px, 100%)); width: 100%;">
-      <Tabs 
-        grow 
-        fixedTabs 
-        showArrows={false} 
-        class="ltl-settings-tabs" 
+      <Tabs
+        grow
+        fixedTabs
+        showArrows={false}
+        class="ltl-settings-tabs"
         sliderClass="ltl-settings-slider"
       >
         <div slot="tabs">
