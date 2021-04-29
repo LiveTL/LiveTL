@@ -1,5 +1,5 @@
 <script>
-  import { beforeUpdate, afterUpdate } from 'svelte';
+  import { beforeUpdate, afterUpdate, onMount, onDestroy } from 'svelte';
   import { Tabs, Tab, TabContent, MaterialApp } from 'svelte-materialify/src';
   import UISettings from './settings/UISettings.svelte';
   import FilterSettings from './settings/FilterSettings.svelte';
@@ -9,7 +9,7 @@
 
   const settings = [
     { name: 'Interface', component: UISettings },
-    { name: 'Filters', component: FilterSettings },
+    { name: 'Filters', component: FilterSettings }
   ];
 
   let wrapper = null;
@@ -44,7 +44,12 @@
     }
     callRedrawSlider = false;
   });
-  window.onresize = redrawSlider;
+  onMount(() => {
+    window.addEventListener('resize', redrawSlider);
+  });
+  onDestroy(() => {
+    window.removeEventListener('resize', redrawSlider);
+  });
 </script>
 
 <MaterialApp theme="dark">
