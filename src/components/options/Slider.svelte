@@ -29,10 +29,6 @@
   }
 
   $: if (wrapper && thumb && scaledBack != null) setThumb();
-  onMount(async () => {
-    await tick();
-    setThumb();
-  });
 
   function tipCallback(handle) {
     const tip = wrapper.querySelector('.s-slider__tooltip');
@@ -43,6 +39,7 @@
     }
   }
 
+  let mutationObserver;
   $: if (wrapper) {
     const handle = wrapper.querySelector('.s-slider__handle-lower');
     if (handle) {
@@ -53,11 +50,20 @@
           }
         });
       };
-      const mutationObserver = new MutationObserver(callback);
+      mutationObserver = new MutationObserver(callback);
       mutationObserver.observe(handle, { attributes: true });
       tipCallback(handle);
     }
   }
+
+  onMount(async () => {
+    await tick();
+    setThumb();
+  });
+
+  onDestroy(() => {
+    if (mutationObserver) mutationObserver.disconnect();
+  });
 </script>
 
 <div bind:this={wrapper}>
