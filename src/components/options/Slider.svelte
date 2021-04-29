@@ -2,7 +2,7 @@
   import { Button, Icon, Slider } from 'svelte-materialify/src';
   import { mdiRestore } from '@mdi/js';
   import { Browser, BROWSER } from '../../js/constants.js';
-  import { onMount, tick } from 'svelte';
+  import { onMount, onDestroy, tick } from 'svelte';
 
   export let min = BROWSER == Browser.ANDROID ? 0.25 : 0.5;
   export let max = BROWSER == Browser.ANDROID ? 1.5 : 2;
