@@ -95,6 +95,19 @@
       </div>
       <div class="subheading">
         Translations picked up from the chat will appear here.
+        <p style="font-size: 0.8em;">
+          <a
+            href="https://livetl.app/"
+            target="about:blank"
+            on:click={e => {
+              e.preventDefault();
+              // eslint-disable-next-line no-unused-vars
+              updatePopupActive = true;
+            }}
+          >
+            See what's new in v{version}
+          </a>
+        </p>
       </div>
       <div class="subscripts">
         <div class="badges">
