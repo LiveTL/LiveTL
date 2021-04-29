@@ -2,12 +2,13 @@
   import { MaterialApp } from 'svelte-materialify/src';
   import Settings from './Settings.svelte';
   export let isStandalone = false;
+  export let isResizing = false;
 </script>
 
 <MaterialApp theme="dark">
   <div class="wrapper">
     <div class="app">
-      <Settings {isStandalone} />
+      <Settings {isStandalone} {isResizing} />
     </div>
     <slot />
   </div>

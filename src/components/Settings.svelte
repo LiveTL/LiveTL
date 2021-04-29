@@ -1,14 +1,45 @@
 <script>
+  import { beforeUpdate, afterUpdate } from 'svelte';
   import { Tabs, Tab, TabContent, MaterialApp } from 'svelte-materialify/src';
   import UISettings from './settings/UISettings.svelte';
   import FilterSettings from './settings/FilterSettings.svelte';
 
   export let isStandalone = false;
+  export let isResizing = false;
 
   const settings = [
     { name: 'Interface', component: UISettings },
     { name: 'Filters', component: FilterSettings }
   ];
+
+  function redrawSlider() {
+    const sliderElement = document.querySelector('.s-tab-slider');
+    const activeTab = document.querySelector('.s-tab.s-slide-item.active');
+    if (
+      !sliderElement || 
+      !activeTab || 
+      !sliderElement.offsetParent || 
+      !activeTab.offsetParent) return;
+
+    sliderElement.style.left = `${activeTab.offsetLeft}px`;
+    sliderElement.style.width = `${activeTab.offsetWidth}px`;
+  }
+
+  let callRedrawSlider = false;
+  let wasResizing = false;
+  $: wasResizing = !isResizing;
+  beforeUpdate(() => {
+    if (wasResizing) {
+      callRedrawSlider = true;
+    }
+  });
+  afterUpdate(() => {
+    if (callRedrawSlider) {
+      redrawSlider()
+    }
+    callRedrawSlider = false;
+  });
+  window.onresize = redrawSlider;
 </script>
 
 <MaterialApp theme="dark">

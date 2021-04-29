@@ -26,7 +26,7 @@
   </div>
   <Wrapper {isResizing}>
     {#if settingsOpen}
-      <Options {isStandalone} />
+      <Options {isStandalone} {isResizing} />
     {/if}
     <div style="display: {settingsOpen ? 'none' : 'block'};">
       <MessageDisplay
