@@ -1,5 +1,5 @@
 <script>
-  import { beforeUpdate, afterUpdate } from 'svelte';
+  import { beforeUpdate, afterUpdate, onMount, onDestroy } from 'svelte';
   import { Tabs, Tab, TabContent, MaterialApp } from 'svelte-materialify/src';
   import UISettings from './settings/UISettings.svelte';
   import FilterSettings from './settings/FilterSettings.svelte';
@@ -44,7 +44,12 @@
     }
     callRedrawSlider = false;
   });
-  window.onresize = redrawSlider;
+  onMount(() => {
+    window.onresize = redrawSlider;
+  });
+  onDestroy(() => {
+    window.onresize = null;
+  });
 </script>
 
 <MaterialApp theme="dark">
