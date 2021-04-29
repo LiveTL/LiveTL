@@ -9,7 +9,7 @@
 
   const settings = [
     { name: 'Interface', component: UISettings },
-    { name: 'Filters', component: FilterSettings }
+    { name: 'Filters', component: FilterSettings },
   ];
 
   let wrapper = null;
@@ -44,13 +44,9 @@
     }
     callRedrawSlider = false;
   });
-  onMount(() => {
-    window.addEventListener('resize', redrawSlider);
-  });
-  onDestroy(() => {
-    window.removeEventListener('resize', redrawSlider);
-  });
 </script>
+
+<svelte:window on:resize={redrawSlider} />
 
 <MaterialApp theme="dark">
   <div
