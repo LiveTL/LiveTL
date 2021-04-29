@@ -1,6 +1,5 @@
 <script>
   import { beforeUpdate, afterUpdate, onMount, onDestroy } from 'svelte';
-  import { TextDirection } from '../js/constants.js';
   import { sources, combineStores } from '../js/sources.js';
   import '../css/splash.css';
   import { Icon } from 'svelte-materialify/src';
@@ -10,7 +9,12 @@
     livetlFontSize,
     showTimestamp
   } from '../js/store.js';
-  import { BROWSER, Browser } from '../js/constants.js';
+  import {
+    BROWSER,
+    Browser,
+    AuthorType,
+    TextDirection
+  } from '../js/constants.js';
   $: document.body.style.fontSize = Math.round($livetlFontSize) + 'px';
   export let direction;
   export let settingsOpen = false;
@@ -206,7 +210,10 @@
         style="display: {item.hidden ? 'none' : 'block'}"
       >
         <span>{item.text}</span>
-        <span class="author"
+        <span
+          class="author"
+          class:moderator={item.types & AuthorType.moderator}
+          class:owner={item.types & AuthorType.owner}
           >{item.author}
           {$showTimestamp ? `(${item.timestamp})` : ''}
           <span class="messageActions">
@@ -277,6 +284,14 @@
 
   .messageActions {
     display: none;
+  }
+
+  .moderator {
+    color: rgb(100, 141, 255) !important;
+  }
+
+  .owner {
+    color: rgb(255, 217, 0) !important;
   }
 
   .messageActions .blueHighlight :global(.s-icon:hover) {
