@@ -12,6 +12,9 @@
   export let chatAuthor = 'chat';
   export let id = '';
   export let isNew = false;
+  export let active = false;
+  let isActive = [false, false, false];
+  $: if (isNew) active = isActive.some(d => d);
 
   let div;
   let maxRuleLength = 0;
@@ -24,10 +27,14 @@
   let chatAuthorItems = getItems(['chat', 'author']);
   const style = 'padding-right: 0px; margin-top: auto; margin-bottom: auto;';
   $: maxRuleLength = Math.max(maxRuleLength, rule.length);
-  $: $sShowBlock, $sPlainReg, $sChatAuthor, rule, (() => {
-    modifyFilter(id, $sChatAuthor, $sPlainReg, $sShowBlock, rule);
-    if (!rule && maxRuleLength) deleteFilter(id);
-  })();
+  $: $sShowBlock,
+    $sPlainReg,
+    $sChatAuthor,
+    rule,
+    (() => {
+      modifyFilter(id, $sChatAuthor, $sPlainReg, $sShowBlock, rule);
+      if (!rule && maxRuleLength) deleteFilter(id);
+    })();
   onMount(() => {
     div.scrollIntoView({
       behavior: 'smooth',
@@ -40,13 +47,25 @@
 <div bind:this={div}>
   <Row>
     <Col class="center-top" {style}>
-      <Dropdown store={sShowBlock} items={showBlockItems} />
+      <Dropdown
+        store={sShowBlock}
+        items={showBlockItems}
+        bind:active={isActive[0]}
+      />
     </Col>
     <Col class="center-top" {style}>
-      <Dropdown store={sPlainReg} items={plainRegItems} />
+      <Dropdown
+        store={sPlainReg}
+        items={plainRegItems}
+        bind:active={isActive[1]}
+      />
     </Col>
     <Col class="center-top" {style}>
-      <Dropdown store={sChatAuthor} items={chatAuthorItems} />
+      <Dropdown
+        store={sChatAuthor}
+        items={chatAuthorItems}
+        bind:active={isActive[2]}
+      />
     </Col>
     <Col style={style + 'flex-grow: 2'}>
       <TextField dense clearable bind:value={rule} />

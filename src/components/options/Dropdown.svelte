@@ -4,6 +4,7 @@
   export let name = '';
   export let store = null;
   export let items = [];
+  export let active = false;
 
   function correctValue() {
     if (value == null) {
@@ -19,4 +20,4 @@
   $: store.set(value);
 </script>
 
-<Select bind:value {items} solo>{name}</Select>
+<Select bind:value {items} solo bind:active>{name}</Select>

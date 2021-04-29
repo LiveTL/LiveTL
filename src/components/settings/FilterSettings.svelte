@@ -7,7 +7,17 @@
     customFilters,
     channelFilters
   } from '../../js/store.js';
-  import { Row, Col, Button, Icon, Subheader, List, ListItem, ExpansionPanels, ExpansionPanel } from 'svelte-materialify/src';
+  import {
+    Row,
+    Col,
+    Button,
+    Icon,
+    Subheader,
+    List,
+    ListItem,
+    ExpansionPanels,
+    ExpansionPanel
+  } from 'svelte-materialify/src';
   import { mdiPlus } from '@mdi/js';
   import { cleanupFilters } from '../../js/filter.js';
   import { languageNameValues } from '../../js/constants.js';
@@ -25,6 +35,8 @@
   }
 
   onMount(cleanupFilters);
+
+  let customFilterActive = false;
 </script>
 
 <SelectOption
@@ -41,7 +53,7 @@
   setBool={(n, v) =>
     channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}
 />
-<div class="filter-options">
+<div class="filter-options" class:padded={customFilterActive}>
   <Row>
     <Col>
       <Subheader>Custom filter options</Subheader>
@@ -54,7 +66,17 @@
       </Subheader>
     </Col>
   </Row>
-  {#each $customFilters as rule}
-    <CustomFilter {...rule} />
+  {#each $customFilters as rule, i}
+    <CustomFilter
+      {...rule}
+      bind:active={customFilterActive}
+      isNew={$customFilters.length - 1 == i}
+    />
   {/each}
 </div>
+
+<style>
+  .padded {
+    margin-bottom: 50px;
+  }
+</style>
