@@ -37,7 +37,7 @@ export const BROWSER = (() => {
 
 /** @enum {number} */
 export const AuthorType = {
-  moderator: 1,
+  moderator: 1 << 0,
   verified: 1 << 1,
   owner: 1 << 2,
   member: 1 << 3
