@@ -33,6 +33,31 @@
     await tick();
     setThumb();
   });
+
+  function tipCallback(handle) {
+    const tip = wrapper.querySelector('.s-slider__tooltip');
+    if (tip) {
+      tip.style.display = handle.classList.contains('s-slider__active')
+        ? 'flex'
+        : 'none';
+    }
+  }
+
+  $: if (wrapper) {
+    const handle = wrapper.querySelector('.s-slider__handle-lower');
+    if (handle) {
+      const callback = (mutationsList, observer) => {
+        mutationsList.forEach(mutation => {
+          if (mutation.attributeName === 'class') {
+            tipCallback(handle);
+          }
+        });
+      };
+      const mutationObserver = new MutationObserver(callback);
+      mutationObserver.observe(handle, { attributes: true });
+      tipCallback(handle);
+    }
+  }
 </script>
 
 <div bind:this={wrapper}>
