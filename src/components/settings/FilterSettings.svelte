@@ -31,12 +31,11 @@
 
   function createNewFilter() {
     cleanupFilters();
-    addFilter('chat', 'plain', 'Show', '');
+    addFilter('chat', 'plain', 'show', '');
   }
 
   onMount(cleanupFilters);
 
-  let customFilterActive = false;
 </script>
 
 <SelectOption
@@ -53,10 +52,10 @@
   setBool={(n, v) =>
     channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}
 />
-<div class="filter-options" class:padded={customFilterActive}>
+<div class="filter-options">
   <Row>
     <Col>
-      <Subheader>Custom filter options</Subheader>
+      <Subheader>Custom filters</Subheader>
     </Col>
     <Col style="padding-right: 2px;">
       <Subheader style="float: right; padding-right: 0px">
@@ -69,14 +68,9 @@
   {#each $customFilters as rule, i}
     <CustomFilter
       {...rule}
-      bind:active={customFilterActive}
-      isNew={$customFilters.length - 1 == i}
     />
   {/each}
 </div>
 
 <style>
-  .padded {
-    margin-bottom: 50px;
-  }
 </style>

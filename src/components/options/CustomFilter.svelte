@@ -7,14 +7,11 @@
   import { addFilter, modifyFilter, deleteFilter } from '../../js/filter.js';
 
   export let rule = '';
-  export let showBlock = 'Show';
+  export let showBlock = 'show';
   export let plainReg = 'plain';
   export let chatAuthor = 'chat';
   export let id = '';
   export let isNew = false;
-  export let active = false;
-  let isActive = [false, false, false];
-  $: if (isNew) active = isActive.some(d => d);
 
   let div;
   let maxRuleLength = 0;
@@ -22,11 +19,13 @@
   let sPlainReg = writable(plainReg);
   let sChatAuthor = writable(chatAuthor);
   const getItems = values => values.map(v => ({ name: v, value: v }));
-  let showBlockItems = getItems(['Show', 'Block']);
+  let showBlockItems = getItems(['show', 'block']);
   let plainRegItems = getItems(['plain', 'regex']);
   let chatAuthorItems = getItems(['chat', 'author']);
-  const style =
-    'padding-right: 0px; margin-top: auto; margin-bottom: auto; margin-right: 12px;';
+  const style = `
+    padding-right: 0px;
+    margin-right: 12px;
+  `;
   $: maxRuleLength = Math.max(maxRuleLength, rule.length);
   $: $sShowBlock,
     $sPlainReg,
@@ -45,30 +44,30 @@
   });
 </script>
 
-<div bind:this={div}>
+<div bind:this={div} class="wrap">
   <Row>
     <Col class="center-top" {style}>
       <Dropdown
         store={sShowBlock}
         items={showBlockItems}
-        bind:active={isActive[0]}
       />
     </Col>
     <Col class="center-top" {style}>
       <Dropdown
         store={sPlainReg}
         items={plainRegItems}
-        bind:active={isActive[1]}
       />
     </Col>
     <Col class="center-top" {style}>
       <Dropdown
         store={sChatAuthor}
         items={chatAuthorItems}
-        bind:active={isActive[2]}
       />
     </Col>
-    <Col style={style + 'flex-grow: 2;'}>
+    <Col
+      style={style +
+        'flex-basis: 100%; margin: 0px 12px 0px 12px; padding: 0px;'}
+    >
       <TextField dense clearable bind:value={rule} />
     </Col>
   </Row>
@@ -84,5 +83,11 @@
   :global(.center-top) {
     padding-top: 0px;
     padding-bottom: 0px;
+  }
+  .wrap {
+    margin-bottom: 12px;
+    background-color: rgba(255, 255, 255, 0.075);
+    padding: 10px;
+    border-radius: 5px;
   }
 </style>
