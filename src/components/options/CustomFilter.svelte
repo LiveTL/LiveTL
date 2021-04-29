@@ -25,7 +25,8 @@
   let showBlockItems = getItems(['Show', 'Block']);
   let plainRegItems = getItems(['plain', 'regex']);
   let chatAuthorItems = getItems(['chat', 'author']);
-  const style = 'padding-right: 0px; margin-top: auto; margin-bottom: auto;';
+  const style =
+    'padding-right: 0px; margin-top: auto; margin-bottom: auto; margin-right: 12px;';
   $: maxRuleLength = Math.max(maxRuleLength, rule.length);
   $: $sShowBlock,
     $sPlainReg,
@@ -67,7 +68,7 @@
         bind:active={isActive[2]}
       />
     </Col>
-    <Col style={style + 'flex-grow: 2'}>
+    <Col style={style + 'flex-grow: 2;'}>
       <TextField dense clearable bind:value={rule} />
     </Col>
   </Row>
