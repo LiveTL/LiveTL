@@ -26,7 +26,7 @@ const isWhitelisted = msg => textWhitelisted(msg.text) || authorWhitelisted(msg.
 const isBlacklisted = msg => textBlacklisted(msg.text) || userBlacklisted(msg.id) || authorBlacklisted(msg.author);
 
 /** @type {(msg: Message) => Boolean} */
-const isMod = msg => msg.types & AuthorType.moderator;
+const isMod = msg => (msg.types & AuthorType.moderator) || (msg.types & AuthorType.owner);
 
 /** @type {(msg: Message) => Boolean} */
 const showIfMod = msg => isMod(msg) && showModMessage.get();
