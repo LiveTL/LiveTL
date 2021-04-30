@@ -4,6 +4,7 @@ import { writable, Writable } from 'svelte/store';
 import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted, authorWhitelisted, authorBlacklisted } from './filter';
 import { channelFilters, language, showModMessage } from './store';
 import { AuthorType, languageNameCode } from './constants';
+import './speech.js';
 
 
 /** @typedef {{text: String, author: String, timestamp: String, id: String, types: Number}} Message*/

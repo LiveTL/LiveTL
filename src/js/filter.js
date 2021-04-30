@@ -198,8 +198,3 @@ export function deleteFilter(id) {
 export function cleanupFilters() {
   customFilters.set(customFilters.get().filter(f => f.rule));
 }
-
-// TODO remove once done
-window.addFilter = addFilter;
-window.modifyFilter = modifyFilter;
-window.deleteFilter = deleteFilter;
