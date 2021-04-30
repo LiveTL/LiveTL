@@ -223,7 +223,7 @@
         style="display: {item.hidden ? 'none' : 'block'}"
       >
         <span>{item.text}</span>
-        <span class="author">
+        <span class="info">
           <span
             class:moderator={item.types & AuthorType.moderator}
             class:owner={item.types & AuthorType.owner}
@@ -302,11 +302,11 @@
   }
 
   .moderator {
-    color: #5e84f1 !important;
+    color: #A0BDFC !important;
   }
 
   .owner {
-    color: #ffd600 !important;
+    color: #FFD600 !important;
   }
 
   .messageActions .blueHighlight :global(.s-icon:hover) {
@@ -320,7 +320,7 @@
     display: inline-block !important;
     cursor: pointer;
   }
-  .author {
+  .info {
     font-size: 0.75em;
     color: lightgray;
   }
