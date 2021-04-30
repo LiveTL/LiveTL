@@ -37,6 +37,7 @@ const getLiveTLButton = (color) => {
     padding: 5px;
     display: inline-block;
     margin: 0;
+    height: auto !important;
   ">
     <yt-formatted-string id="text" class="style-scope ytd-toggle-button-renderer" style="display: block;">
     </yt-formatted-string>
@@ -54,6 +55,9 @@ const getLiveTLButton = (color) => {
     </paper-ripple>
   </paper-button>
   `;
+  a.style.height = '100%';
+  a.style.display = 'flex';
+  a.style.justifyContent = 'center';
   return a;
 };
 
