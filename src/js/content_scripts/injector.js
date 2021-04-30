@@ -81,6 +81,7 @@ const makeButton = (text, callback, color='rgb(0, 153, 255)', icon='') => {
   const svg = document.createElement('svg');
   textbox.textContent = text;
   textbox.appendChild(svg);
+  textbox.style.color = 'white';
   svg.outerHTML = `
     <svg viewBox="0 0 24 24" style="
       height: 15px;
