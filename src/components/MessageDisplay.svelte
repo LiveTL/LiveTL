@@ -223,12 +223,14 @@
         style="display: {item.hidden ? 'none' : 'block'}"
       >
         <span>{item.text}</span>
-        <span
-          class="author"
-          class:moderator={item.types & AuthorType.moderator}
-          class:owner={item.types & AuthorType.owner}
-          >{item.author}
-          {$showTimestamp ? `(${item.timestamp})` : ''}
+        <span class="author">
+          <span
+            class:moderator={item.types & AuthorType.moderator}
+            class:owner={item.types & AuthorType.owner}
+          >
+            {item.author}
+          </span>
+          <span>{$showTimestamp ? `(${item.timestamp})` : ''}</span>
           <span class="messageActions">
             <span class="redHighlight" on:click={() => (item.hidden = true)}>
               <Icon path={mdiEyeOffOutline} size="1em" />
@@ -300,11 +302,11 @@
   }
 
   .moderator {
-    color: rgb(100, 141, 255) !important;
+    color: #5e84f1 !important;
   }
 
   .owner {
-    color: rgb(255, 217, 0) !important;
+    color: #ffd600 !important;
   }
 
   .messageActions .blueHighlight :global(.s-icon:hover) {
