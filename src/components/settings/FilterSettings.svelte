@@ -19,7 +19,7 @@
     ExpansionPanel
   } from 'svelte-materialify/src';
   import { mdiPlus } from '@mdi/js';
-  import { cleanupFilters } from '../../js/filter.js';
+  import { addFilter, cleanupFilters } from '../../js/filter.js';
   import { languageNameValues } from '../../js/constants.js';
   import CheckOption from '../options/Toggle.svelte';
   import CustomFilter from '../options/CustomFilter.svelte';

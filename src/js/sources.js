@@ -4,6 +4,7 @@ import { writable, Writable } from 'svelte/store';
 import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted, authorWhitelisted, authorBlacklisted } from './filter';
 import { channelFilters, language, showModMessage } from './store';
 import { AuthorType, languageNameCode } from './constants';
+import { checkAndSpeak } from './speech.js';
 
 
 /** @typedef {{text: String, author: String, timestamp: String, id: String, types: Number}} Message*/
@@ -61,6 +62,17 @@ function attachFilters(translations, mod, ytc) {
     else if (showIfMod(message)) {
       setModMessage(message, text);
     }
+  });
+}
+
+/**
+ * @param {Writable<Message>} translations
+ * @return {() => void} cleanup
+ */
+function attachSpeechSynth(translations) {
+  return translations.subscribe(message => {
+    if (message)
+      checkAndSpeak(message.text);
   });
 }
 
@@ -205,6 +217,7 @@ function message(author, msg, timestamp) {
 }
 
 attachFilters(sources.translations, sources.mod, sources.ytc);
+attachSpeechSynth(sources.translations);
 
 export class DummyYTCEventSource {
   constructor() {
