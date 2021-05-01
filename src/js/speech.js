@@ -1,10 +1,13 @@
 import { doSpeechSynth, speechVolume } from './store.js';
 
-export function speak(text, volume=null) {
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.volume = volume || speechVolume.get() || 1;
+let utterance = null;
+
+export function speak(text, volume=0) {
+  speechSynthesis.cancel();
+  utterance = new SpeechSynthesisUtterance(text);
+  utterance.volume = volume || speechVolume.get();
   speechSynthesis.speak(utterance);
-};
+}
 
 export function checkAndSpeak(text) {
   if (doSpeechSynth.get()) {
