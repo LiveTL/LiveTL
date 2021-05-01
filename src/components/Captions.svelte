@@ -64,7 +64,7 @@
   }
 
   $: if ($translations) {
-    captionTimeout();
+    if ($enableCaptionTimeout) captionTimeout();
     if (elem) {
       elem.style.display = 'none';
       elem.offsetWidth; // force reflow
