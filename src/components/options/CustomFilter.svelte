@@ -41,9 +41,15 @@
       inline: 'nearest'
     });
   });
+
+  let width = 0;
 </script>
 
-<div bind:this={div} class="wrap">
+<div
+  bind:this={div}
+  class="wrap {width <= 350 ? 'vertical' : ''}"
+  bind:clientWidth={width}
+>
   <Row>
     <Col class="center-top" {style}>
       <Dropdown store={sShowBlock} items={showBlockItems} />
@@ -54,10 +60,7 @@
     <Col class="center-top" {style}>
       <Dropdown store={sChatAuthor} items={chatAuthorItems} />
     </Col>
-    <Col
-      style={style +
-        'flex-basis: 100%; margin: 0px 0px 0px 12px; padding: 0px;'}
-    >
+    <Col style={style + 'flex-basis: 100%; margin: 0px 0px 0px 0px;'}>
       <TextField dense clearable bind:value={rule} />
     </Col>
   </Row>
@@ -81,6 +84,10 @@
     border-radius: 5px;
   }
   .wrap :global(.s-row) {
+    padding-right: 12px;
+  }
+  .vertical :global(.s-row:first-of-type) {
+    flex-direction: column;
     padding-right: 12px;
   }
 </style>
