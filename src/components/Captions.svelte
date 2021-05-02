@@ -20,29 +20,29 @@
   let captionElem = null;
   const { translations } = sources;
 
+  function stop() {
+    const width = captionElem.clientWidth;
+    const widthPercent = (100 * width) / window.innerWidth;
+    captionWidth.set(widthPercent);
+    const top = captionElem.offsetTop;
+    const left = captionElem.offsetLeft;
+    const height = window.innerHeight;
+    const topPercent = (100 * top) / height;
+    const leftPercent = (100 * left) / window.innerWidth;
+    captionTop.set(topPercent);
+    captionLeft.set(leftPercent);
+  }
+
   $: if (captionElem) {
     setTimeout(() => {
       const jcap = j(captionElem);
       jcap.draggable({
-        stop: () => {
-          const top = captionElem.offsetTop;
-          const left = captionElem.offsetLeft;
-          const height = window.innerHeight;
-          const width = window.innerWidth;
-          const topPercent = (100 * top) / height;
-          const leftPercent = (100 * left) / width;
-          captionTop.set(topPercent);
-          captionLeft.set(leftPercent);
-        },
+        stop,
         containment: document.body
       });
       jcap.resizable({
         handles: 'e, w',
-        stop: () => {
-          const width = captionElem.clientWidth;
-          const widthPercent = (100 * width) / window.innerWidth;
-          captionWidth.set(widthPercent);
-        }
+        resize: stop
       });
     }, 0);
   }
@@ -78,9 +78,9 @@
   class="captionsBox"
   bind:this={captionElem}
   style="
-  top: {$captionTop}%;
-  left: {$captionLeft}%;
-  width: {$captionWidth}%;
+  top: min(max({$captionTop}%, calc(0% - 20px)), calc(100% - 30px));
+  left: min(max({$captionLeft}%, calc(0% - 20px)), calc(100% - 30px));
+  width: max(0%, {$captionWidth}%);
   font-size: {$captionFontSize}px;
   display: {show
     ? 'block'
@@ -94,7 +94,7 @@
 
 <style>
   .captionsBox {
-    z-index: 100;
+    z-index: 150;
     animation-iteration-count: 1;
     position: absolute;
     cursor: move;
