@@ -43,6 +43,10 @@
   });
 
   let width = 0;
+  let field;
+  $: if (field) {
+    field.querySelector('input[type=text]').focus();
+  }
 </script>
 
 <div
@@ -61,7 +65,9 @@
       <Dropdown store={sChatAuthor} items={chatAuthorItems} />
     </Col>
     <Col style={style + 'flex-basis: 100%; margin: 0px 0px 0px 0px;'}>
-      <TextField dense clearable bind:value={rule} />
+      <span bind:this={field}>
+        <TextField dense clearable bind:value={rule} />
+      </span>
     </Col>
   </Row>
 </div>

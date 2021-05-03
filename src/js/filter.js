@@ -186,7 +186,7 @@ export function modifyFilter(id, chatAuthor, plainReg, showBlock, rule) {
     .map(f => {
       if (f.id != id) return f;
       return { chatAuthor, plainReg, showBlock, rule, id: f.id };
-    })
+    });
   customFilters.set(newFilters);
 }
 
