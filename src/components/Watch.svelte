@@ -58,7 +58,7 @@
     convertToPx();
   };
   const changeSide = () => {
-    document.querySelectorAll('.ui-resizable-handle').forEach(elem => {
+    document.querySelectorAll('#mainUI .ui-resizable-handle').forEach(elem => {
       elem.remove();
     });
     resizable('.vertical .resizable', {
@@ -93,6 +93,7 @@
       <Captions />
     {/if}
     <div
+      id="mainUI"
       class="flex vertical {$videoSide == VideoSide.RIGHT ? 'reversed' : ''}"
     >
       {#if !isEmbedded}
