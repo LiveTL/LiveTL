@@ -112,6 +112,7 @@
     animation-iteration-count: 1;
     animation: splash 1s normal forwards ease-in-out;
     margin: 20px;
+    backdrop-filter: blur(5px);
   }
   .captionsBox :global(.ui-resizable-handle) {
     height: calc(100% - 40px);
