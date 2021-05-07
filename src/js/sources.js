@@ -116,7 +116,7 @@ function forwardPostMessages(window) {
   const connectionName = BigInt(new URLSearchParams(window.location.search).get('tabid'));
   if (window.chrome && window.chrome.runtime) {
     window.chrome.runtime.onMessage.addListener((request) => {
-      if (BigInt(request.tabid) === connectionName) window.postMessage(request);
+      if (BigInt(request.data.tabid) == connectionName) window.postMessage(request.data);
     });
   }
 }
