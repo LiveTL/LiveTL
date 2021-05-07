@@ -113,11 +113,15 @@ function compose(...args) {
 }
 
 function forwardPostMessages(window) {
-  const connectionName = BigInt(new URLSearchParams(window.location.search).get('tabid'));
-  if (window.chrome && window.chrome.runtime) {
-    window.chrome.runtime.onMessage.addListener((request) => {
-      if (BigInt(request.data.tabid) == connectionName) window.postMessage(request.data);
-    });
+  try {
+    const connectionName = BigInt(new URLSearchParams(window.location.search).get('tabid'));
+    if (window.chrome && window.chrome.runtime) {
+      window.chrome.runtime.onMessage.addListener((request) => {
+        if (BigInt(request.data.tabid) == connectionName) window.postMessage(request.data);
+      });
+    }
+  // eslint-disable-next-line no-empty
+  } catch(e) {
   }
 }
 
