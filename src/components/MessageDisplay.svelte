@@ -54,6 +54,14 @@
   });
   onDestroy(() => unsubscribe());
 
+  export function scrollToRecent() {
+    bottomMsg.scrollIntoView({
+      behaviour: 'smooth',
+      block: 'nearest',
+      inline: 'nearest'
+    });
+  }
+
   let scrollOnTick = false;
   let settingsWasOpen = false;
   $: settingsWasOpen = !settingsOpen;
@@ -68,11 +76,7 @@
   });
   afterUpdate(() => {
     if (scrollOnTick)
-      bottomMsg.scrollIntoView({
-        behaviour: 'smooth',
-        block: 'nearest',
-        inline: 'nearest'
-      });
+      scrollToRecent();
     scrollOnTick = false;
   });
   const version = window.chrome.runtime.getManifest().version;

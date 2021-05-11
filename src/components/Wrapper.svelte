@@ -6,6 +6,14 @@
   $: factor = zoom || 1;
   let inverse;
   $: inverse = 100 / factor;
+
+  let div;
+  export function isAtBottom() {
+    return Math.ceil(div.clientHeight + div.scrollTop) >= div.scrollHeight;
+  }
+  export function isAtTop() {
+    return div.scrollTop === 0;
+  }
 </script>
 
 <div
@@ -20,6 +28,8 @@
     overflow: auto;
     position: absolute;
     "
+  bind:this={div}
+  on:scroll
 >
   <slot />
 </div>
