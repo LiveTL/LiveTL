@@ -23,7 +23,8 @@
       }
       if (data.info.videoData) document.title = data.info.videoData.title;
     } catch (e) {
-      iframe.contentWindow.postMessage(packet.data, '*');
+      if (iframe && iframe.contentWindow)
+        iframe.contentWindow.postMessage(packet.data, '*');
     }
   });
   setInterval(() => {
