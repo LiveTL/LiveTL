@@ -1,5 +1,6 @@
 <script>
   import { afterUpdate } from 'svelte';
+  import { fade } from 'svelte/transition';
   import { Button, Icon, MaterialApp } from 'svelte-materialify/src';
   import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp } from '@mdi/js';
   import Options from './Options.svelte';
@@ -52,26 +53,31 @@
       />
     </div>
   </Wrapper>
-  <div
-    class="recentButton {$textDirection === TextDirection.TOP
-      ? 'top'
-      : 'bottom'}Float"
-    style="
-      display: {isAtRecent || isResizing || settingsOpen ? 'none' : 'unset'};
-    "
-  >
-    <Button
-      fab
-      size="small"
-      on:click={messageDisplay.scrollToRecent}
-      class="elevation-3"
-      style="background-color: #0287C3; border-color: #0287C3;"
-    >
-      <Icon
-        path={$textDirection === TextDirection.TOP ? mdiArrowUp : mdiArrowDown}
-      />
-    </Button>
-  </div>
+  {#if !(isResizing || settingsOpen)}
+    {#if !isAtRecent}
+      <div
+        class="recentButton {$textDirection === TextDirection.TOP
+          ? 'top'
+          : 'bottom'}Float"
+        style="display: 'unset';"
+        transition:fade|local="{{duration: 150}}"
+      >
+        <Button
+          fab
+          size="small"
+          on:click={messageDisplay.scrollToRecent}
+          class="elevation-3"
+          style="background-color: #0287C3; border-color: #0287C3;"
+        >
+          <Icon
+            path={
+              $textDirection === TextDirection.TOP ? mdiArrowUp : mdiArrowDown
+            }
+          />
+        </Button>
+      </div>
+    {/if}
+  {/if}
 </MaterialApp>
 
 <style>
