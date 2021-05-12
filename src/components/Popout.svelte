@@ -12,7 +12,8 @@
   export let isStandalone = false;
   export let isResizing = false;
   export let updatePopupActive = false;
-  document.title = 'LiveTL Popout';
+  const params = new URLSearchParams(window.location.search);
+  document.title = params.get('title') || 'LiveTL Popout';
 
   let wrapper;
   let messageDisplay;
@@ -60,7 +61,7 @@
           ? 'top'
           : 'bottom'}Float"
         style="display: 'unset';"
-        transition:fade|local="{{duration: 150}}"
+        transition:fade|local={{ duration: 150 }}
       >
         <Button
           fab
@@ -70,9 +71,9 @@
           style="background-color: #0287C3; border-color: #0287C3;"
         >
           <Icon
-            path={
-              $textDirection === TextDirection.TOP ? mdiArrowUp : mdiArrowDown
-            }
+            path={$textDirection === TextDirection.TOP
+              ? mdiArrowUp
+              : mdiArrowDown}
           />
         </Button>
       </div>

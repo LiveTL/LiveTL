@@ -134,6 +134,11 @@ function loaded() {
         makeButton('TL Popout', () => {
           let popoutParams = constructParams();
           popoutParams.set('tabid', tabid);
+          try {
+            popoutParams.set('title', window.parent.document.querySelector('#container > .title').textContent);
+          // eslint-disable-next-line no-empty
+          } catch(e) {
+          }
           // eslint-disable-next-line no-undef
           openWindow(chrome.runtime.getURL(`popout.html?${popoutParams.toString()}`));
         }, undefined, mdiOpenInNew);
