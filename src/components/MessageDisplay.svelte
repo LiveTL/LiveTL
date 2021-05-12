@@ -1,5 +1,10 @@
 <script>
-  import { beforeUpdate, afterUpdate, onMount, onDestroy } from 'svelte';
+  import {
+    afterUpdate,
+    onMount,
+    onDestroy,
+    createEventDispatcher
+  } from 'svelte';
   import { sources, combineStores } from '../js/sources.js';
   import '../css/splash.css';
   import { Icon } from 'svelte-materialify/src';
@@ -17,27 +22,12 @@
   } from '../js/constants.js';
   $: document.body.style.fontSize = Math.round($livetlFontSize) + 'px';
   export let direction;
-  export let settingsOpen = false;
   /** @type {{ text: String, author: String, timestamp: String }[]}*/
   export let items = [];
   export let updatePopupActive = false;
 
   let bottomMsg = null;
-  let messageDisplay = null;
   let unsubscribe = null;
-  const shouldScroll = () => {
-    try {
-      const parentElem =
-        messageDisplay.parentElement.parentElement.parentElement;
-      return (
-        bottomMsg &&
-        Math.ceil(parentElem.clientHeight + parentElem.scrollTop) >=
-          parentElem.scrollHeight
-      );
-    } catch (e) {
-      return false;
-    }
-  };
   onMount(() => {
     const { cleanUp, store: source } = combineStores(
       sources.translations,
@@ -54,37 +44,22 @@
   });
   onDestroy(() => unsubscribe());
 
-  export function scrollToRecent() {
+  export function scrollToRecent(behavior='smooth') {
     bottomMsg.scrollIntoView({
-      behaviour: 'smooth',
+      behavior: behavior,
       block: 'nearest',
       inline: 'nearest'
     });
   }
 
-  let scrollOnTick = false;
-  let settingsWasOpen = false;
-  $: settingsWasOpen = !settingsOpen;
-  beforeUpdate(() => {
-    if (
-      (shouldScroll() || settingsWasOpen) &&
-      direction == TextDirection.BOTTOM
-    ) {
-      scrollOnTick = true;
-      settingsWasOpen = false;
-    }
-  });
-  afterUpdate(() => {
-    if (scrollOnTick)
-      scrollToRecent();
-    scrollOnTick = false;
-  });
+  const dispatch = createEventDispatcher();
+  afterUpdate(() => dispatch('afterUpdate'));
+  
   const version = window.chrome.runtime.getManifest().version;
 </script>
 
 <div class="messageDisplayWrapper">
   <div
-    bind:this={messageDisplay}
     class="messageDisplay"
     style="align-self: flex-{direction === TextDirection.BOTTOM
       ? 'end'
