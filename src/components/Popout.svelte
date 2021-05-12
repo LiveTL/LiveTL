@@ -18,14 +18,38 @@
   let wrapper;
   let messageDisplay;
   let isAtRecent = true;
+  let checkTimer = null;
 
   function checkAtRecent() {
+    if (!wrapper) return;
     isAtRecent =
       ($textDirection === TextDirection.BOTTOM && wrapper.isAtBottom()) ||
       ($textDirection === TextDirection.TOP && wrapper.isAtTop());
   }
 
-  afterUpdate(() => checkAtRecent());
+  function checkRecentWithScroll() {
+    if (checkTimer !== null) {
+      clearTimeout(checkTimer);
+    }
+    checkTimer = setTimeout(() => checkAtRecent(), 50);
+  }
+
+  function onMessageDisplayUpdate() {
+    if (isAtRecent){
+      messageDisplay.scrollToRecent();
+    }
+  }
+
+  let settingsWasOpen = false;
+  $: settingsWasOpen = !settingsOpen;
+  afterUpdate(() => {
+    // Prevent smooth scrolling when exiting settings
+    if (settingsWasOpen) {
+      messageDisplay.scrollToRecent('auto');
+      settingsWasOpen = false;
+    }
+    checkAtRecent();
+  });
 </script>
 
 <svelte:window on:resize={checkAtRecent} />
@@ -41,16 +65,16 @@
       <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
     </Button>
   </div>
-  <Wrapper {isResizing} on:scroll={checkAtRecent} bind:this={wrapper}>
+  <Wrapper {isResizing} on:scroll={checkRecentWithScroll} bind:this={wrapper}>
     {#if settingsOpen}
       <Options {isStandalone} {isResizing} />
     {/if}
     <div style="display: {settingsOpen ? 'none' : 'block'};">
       <MessageDisplay
         direction={$textDirection}
-        {settingsOpen}
         bind:updatePopupActive
         bind:this={messageDisplay}
+        on:afterUpdate={onMessageDisplayUpdate}
       />
     </div>
   </Wrapper>
@@ -66,7 +90,7 @@
         <Button
           fab
           size="small"
-          on:click={messageDisplay.scrollToRecent}
+          on:click={() => messageDisplay.scrollToRecent()}
           class="elevation-3"
           style="background-color: #0287C3; border-color: #0287C3;"
         >
