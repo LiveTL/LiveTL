@@ -11,4 +11,4 @@ const initFullscreenButton = () => {
   // document.querySelector('#movie_player>.ytp-generic-popup').style.opacity = '0';
   window.removeEventListener('mousedown', initFullscreenButton);
 };
-window.addEventListener('mousedown', initFullscreenButton);
+initFullscreenButton();
