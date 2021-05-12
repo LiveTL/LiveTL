@@ -28,6 +28,7 @@
     transform: scale({factor});
     overflow: auto;
     position: absolute;
+    scrollbar-width: thin;
     {style}
     "
   bind:this={div}

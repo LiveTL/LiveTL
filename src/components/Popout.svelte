@@ -26,7 +26,21 @@
       ($textDirection === TextDirection.TOP && wrapper.isAtTop());
   }
 
-  afterUpdate(() => checkAtRecent());
+  function onMessageDisplayAfterUpdate() {
+    if (isAtRecent && !settingsOpen){
+      messageDisplay.scrollToRecent();
+    }
+  }
+
+  let settingsWasOpen = false;
+  $: settingsWasOpen = !settingsOpen;
+  afterUpdate(() => {
+    if (settingsWasOpen) {
+      messageDisplay.scrollToRecent();
+      settingsWasOpen = false;
+    }
+    checkAtRecent();
+  });
 </script>
 
 <svelte:window on:resize={checkAtRecent} />
@@ -50,9 +64,9 @@
     <div style="display: {settingsOpen ? 'none' : 'block'};">
       <MessageDisplay
         direction={$textDirection}
-        {settingsOpen}
         bind:updatePopupActive
         bind:this={messageDisplay}
+        on:afterUpdate={onMessageDisplayAfterUpdate}
       />
     </div>
   </Wrapper>
