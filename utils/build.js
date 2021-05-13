@@ -29,6 +29,7 @@ function replaceVersion() {
       encoding: 'utf8', flag: 'w+'
     });
   }
+  // eslint-disable-next-line no-empty
   catch (e) { }
 }
 

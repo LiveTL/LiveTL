@@ -162,7 +162,7 @@
             "
             bind:this={chatElem}
           >
-            <Wrapper {isResizing} zoom={$chatZoom}>
+            <Wrapper {isResizing} zoom={$chatZoom} style="padding-bottom: 10px;">
               <ChatEmbed {videoId} {continuation} {isReplay} />
             </Wrapper>
           </div>

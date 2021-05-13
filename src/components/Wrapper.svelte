@@ -2,6 +2,7 @@
   export let isResizing;
   export let zoom = NaN;
   export let verticalCenter = false;
+  export let style = "";
   let factor;
   $: factor = zoom || 1;
   let inverse;
@@ -27,6 +28,7 @@
     transform: scale({factor});
     overflow: auto;
     position: absolute;
+    {style}
     "
   bind:this={div}
   on:scroll
