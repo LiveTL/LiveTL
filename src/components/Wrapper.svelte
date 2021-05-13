@@ -30,6 +30,7 @@
     "
   bind:this={div}
   on:scroll
+  on:wheel
 >
   <slot />
 </div>

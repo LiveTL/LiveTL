@@ -20,6 +20,7 @@
   let isAtRecent = true;
   let checkTimer = null;
   let keepScrolling = false;
+  let interruptScroll = false;
 
   function checkAtRecent() {
     if (!wrapper) return false;
@@ -32,18 +33,19 @@
     messageDisplay.scrollToRecent();
   }
 
-  function checkRecentWithScroll() {
-    if (checkTimer !== null) {
+  function delayedCheckAtRecent() {
+    if (checkTimer !== null && !interruptScroll) {
       clearTimeout(checkTimer);
     }
     checkTimer = setTimeout(() => {
       const atRecent = checkAtRecent();
 
-      if (keepScrolling && !atRecent) {
+      if (keepScrolling && !atRecent && !interruptScroll) {
         messageDisplay.scrollToRecent();
       }
       else {
         keepScrolling = false;
+        interruptScroll = false;
         isAtRecent = atRecent;
       }
     }, 50);
@@ -63,7 +65,7 @@
       messageDisplay.scrollToRecent('auto');
       settingsWasOpen = false;
     }
-    isAtRecent = checkAtRecent();
+    delayedCheckAtRecent();
   });
 </script>
 
@@ -80,7 +82,12 @@
       <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
     </Button>
   </div>
-  <Wrapper {isResizing} on:scroll={checkRecentWithScroll} bind:this={wrapper}>
+  <Wrapper
+    {isResizing}
+    on:scroll={delayedCheckAtRecent}
+    on:wheel={() => (interruptScroll = true)}
+    bind:this={wrapper}
+  >
     {#if settingsOpen}
       <Options {isStandalone} {isResizing} />
     {/if}
