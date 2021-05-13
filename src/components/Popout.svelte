@@ -19,24 +19,39 @@
   let messageDisplay;
   let isAtRecent = true;
   let checkTimer = null;
+  let keepScrolling = false;
 
   function checkAtRecent() {
-    if (!wrapper) return;
-    isAtRecent =
-      ($textDirection === TextDirection.BOTTOM && wrapper.isAtBottom()) ||
+    if (!wrapper) return false;
+    return ($textDirection === TextDirection.BOTTOM && wrapper.isAtBottom()) ||
       ($textDirection === TextDirection.TOP && wrapper.isAtTop());
+  }
+
+  function keepScrollingToRecent() {
+    keepScrolling = true;
+    messageDisplay.scrollToRecent();
   }
 
   function checkRecentWithScroll() {
     if (checkTimer !== null) {
       clearTimeout(checkTimer);
     }
-    checkTimer = setTimeout(() => checkAtRecent(), 50);
+    checkTimer = setTimeout(() => {
+      const atRecent = checkAtRecent();
+
+      if (keepScrolling && !atRecent) {
+        messageDisplay.scrollToRecent();
+      }
+      else {
+        keepScrolling = false;
+        isAtRecent = atRecent;
+      }
+    }, 50);
   }
 
   function onMessageDisplayUpdate() {
-    if (isAtRecent){
-      messageDisplay.scrollToRecent();
+    if (isAtRecent && !settingsOpen) {
+      keepScrollingToRecent();
     }
   }
 
@@ -48,11 +63,11 @@
       messageDisplay.scrollToRecent('auto');
       settingsWasOpen = false;
     }
-    checkAtRecent();
+    isAtRecent = checkAtRecent();
   });
 </script>
 
-<svelte:window on:resize={checkAtRecent} />
+<svelte:window on:resize={() => (isAtRecent = checkAtRecent())} />
 
 <MaterialApp theme="dark">
   <div
@@ -90,7 +105,7 @@
         <Button
           fab
           size="small"
-          on:click={() => messageDisplay.scrollToRecent()}
+          on:click={keepScrollingToRecent}
           class="elevation-3"
           style="background-color: #0287C3; border-color: #0287C3;"
         >

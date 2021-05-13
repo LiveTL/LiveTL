@@ -19,9 +19,7 @@
 
 <div
   style="
-    display: {isResizing
-    ? 'none'
-    : 'grid'};
+    display: {isResizing ? 'none' : 'grid'};
     width: {inverse}%;
     height: {inverse}%;
     transform-origin: 0px 0px;
