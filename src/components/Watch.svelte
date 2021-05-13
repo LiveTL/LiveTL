@@ -28,7 +28,7 @@
   const isReplay = params.get('isReplay');
   const isEmbedded = params.get('embedded');
   const resizable = (selector, info) => {
-    j(document.querySelector(selector)).resizable(info);
+    j(typeof selector == 'string' ? document.querySelector(selector) : selector).resizable(info);
   };
   const convertToPx = () => {
     [
@@ -53,7 +53,10 @@
       }
     });
   };
-  const resizeCallback = () => {
+
+  let chatSideElem;
+
+  const resizeCallback = (_, dataobj) => {
     isResizing = !isResizing;
     convertToPx();
   };
@@ -61,14 +64,21 @@
     document.querySelectorAll('#mainUI .ui-resizable-handle').forEach(elem => {
       elem.remove();
     });
-    resizable('.vertical .resizable', {
-      handles: $videoSide == VideoSide.RIGHT ? 'w' : 'e',
+    
+    console.log($videoSide == VideoSide.LEFT ? vidElem : chatSideElem);
+    resizable($videoSide == VideoSide.LEFT ? vidElem : chatSideElem, {
+      handles: 'e',
       start: resizeCallback,
       stop: resizeCallback,
-      resize: () => {},
+      resize: (_, dataobj) => {
+        if ($videoSide == VideoSide.RIGHT) {
+          $videoPanelSize = Math.min(100, Math.max(0, (1 - (dataobj.size.width / window.innerWidth)) * 100));
+          console.log(dataobj.size.width, window.innerWidth);
+        }
+      },
       containment: 'body'
     });
-    resizable('.vertical .autoscale .resizable', {
+    resizable(chatElem, {
       handles: 's',
       start: resizeCallback,
       stop: resizeCallback,
@@ -140,11 +150,16 @@
           </Wrapper>
         </div>
       {/if}
-      <div class="tile autoscale">
-        <div class="flex horizontal">
+      <div class="tile autoscale" bind:this={chatSideElem}>
+        <div
+          class="flex horizontal"
+          style="
+            {$videoSide == VideoSide.RIGHT ? 'width: calc(100% - 10px);' : ''}"
+        >
           <div
             class="tile resizable"
-            style="height: {$chatSize}%"
+            style="height: {$chatSize}%;
+            "
             bind:this={chatElem}
           >
             <Wrapper {isResizing} zoom={$chatZoom}>
@@ -253,4 +268,5 @@
   :global(html) {
     overflow: hidden;
   }
+
 </style>
