@@ -51,6 +51,21 @@
     }, 50);
   }
 
+  function onWrapperKeyDown(e) {
+    const keys = ['PageUp', 'PageDown', 'Home', 'End', 'ArrowDown', 'ArrowUp'];
+    if (
+      !checkAtRecent() && (
+        (e.key === 'Home' && $textDirection === TextDirection.TOP) || 
+        (e.key === 'End' && $textDirection === TextDirection.BOTTOM)
+      )
+    ) {
+      keepScrollingToRecent();
+    }
+    else if (keys.includes(e.key)) {
+      interruptScroll = true;
+    }
+  }
+
   function onMessageDisplayUpdate() {
     if (isAtRecent && !settingsOpen) {
       keepScrollingToRecent();
@@ -86,6 +101,7 @@
     {isResizing}
     on:scroll={delayedCheckAtRecent}
     on:wheel={() => (interruptScroll = true)}
+    on:keydown={onWrapperKeyDown}
     bind:this={wrapper}
   >
     {#if settingsOpen}

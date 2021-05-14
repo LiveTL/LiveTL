@@ -31,6 +31,8 @@
   bind:this={div}
   on:scroll
   on:wheel
+  on:keydown
+  tabindex="0"
 >
   <slot />
 </div>
