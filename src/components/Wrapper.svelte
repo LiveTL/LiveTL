@@ -1,8 +1,10 @@
 <script>
+  import { afterUpdate, createEventDispatcher } from 'svelte';
   export let isResizing;
   export let zoom = NaN;
   export let verticalCenter = false;
   export let style = '';
+  export let smoothScroll = false;
   let factor;
   $: factor = zoom || 1;
   let inverse;
@@ -12,9 +14,18 @@
   export function isAtBottom() {
     return Math.ceil(div.clientHeight + div.scrollTop) >= div.scrollHeight;
   }
-  export function isAtTop() {
-    return div.scrollTop === 0;
+  export function isAtTop(offset=0) {
+    return div.scrollTop <= (0 + offset);
   }
+  export function scrollToBottom() {
+    div.scrollTop = div.scrollHeight - div.clientHeight;
+  }
+  export function scrollToTop(offset=0) {
+    div.scrollTop = 0 + offset;
+  }
+
+  const dispatch = createEventDispatcher();
+  afterUpdate(() => dispatch('afterUpdate'));
 </script>
 
 <div
@@ -26,6 +37,8 @@
     transform: scale({factor});
     overflow: auto;
     position: absolute;
+    scroll-behavior: {smoothScroll ? 'smooth' : 'auto'};
+    scrollbar-width: thin;
     {style}
     "
   bind:this={div}

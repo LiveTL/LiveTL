@@ -26,7 +26,6 @@
   export let items = [];
   export let updatePopupActive = false;
 
-  let bottomMsg = null;
   let unsubscribe = null;
   onMount(() => {
     const { cleanUp, store: source } = combineStores(
@@ -44,14 +43,6 @@
   });
   onDestroy(() => unsubscribe());
 
-  export function scrollToRecent(behavior='smooth') {
-    bottomMsg.scrollIntoView({
-      behavior: behavior,
-      block: 'nearest',
-      inline: 'nearest'
-    });
-  }
-
   const dispatch = createEventDispatcher();
   afterUpdate(() => dispatch('afterUpdate'));
   
@@ -66,7 +57,8 @@
       : 'start'};
       flex-direction: column{direction === TextDirection.TOP
       ? '-reverse'
-      : ''};"
+      : ''};
+      {direction === TextDirection.TOP ? 'padding-top: 1px;' : ''}"
   >
     <div class="message">
       <div class="heading">
@@ -231,7 +223,6 @@
         </span>
       </div>
     {/each}
-    <div class="bottom 🥺" bind:this={bottomMsg} />
   </div>
 </div>
 

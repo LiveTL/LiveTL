@@ -1,5 +1,5 @@
 <script>
-  import { afterUpdate } from 'svelte';
+  import { beforeUpdate } from 'svelte';
   import { fade } from 'svelte/transition';
   import { Button, Icon, MaterialApp } from 'svelte-materialify/src';
   import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp } from '@mdi/js';
@@ -21,19 +21,36 @@
   let checkTimer = null;
   let keepScrolling = false;
   let interruptScroll = false;
+  let smoothScroll = true;
+  const topScrollOffset = 1;
 
   function checkAtRecent() {
     if (!wrapper) return false;
     return ($textDirection === TextDirection.BOTTOM && wrapper.isAtBottom()) ||
-      ($textDirection === TextDirection.TOP && wrapper.isAtTop());
+      ($textDirection === TextDirection.TOP && wrapper.isAtTop(topScrollOffset));
+  }
+
+  function scrollToRecent() {
+    if (!wrapper) return;
+
+    if ($textDirection === TextDirection.BOTTOM) {
+      wrapper.scrollToBottom();
+    }
+    else {
+      wrapper.scrollToTop(topScrollOffset);
+    }
   }
 
   function keepScrollingToRecent() {
     keepScrolling = true;
-    messageDisplay.scrollToRecent();
+    scrollToRecent();
   }
 
-  function delayedCheckAtRecent() {
+  function onWrapperScroll() {
+    if ($textDirection === TextDirection.TOP && checkAtRecent()) {
+      wrapper.scrollToTop(topScrollOffset);
+    }
+
     if (checkTimer !== null && !interruptScroll) {
       clearTimeout(checkTimer);
     }
@@ -41,7 +58,7 @@
       const atRecent = checkAtRecent();
 
       if (keepScrolling && !atRecent && !interruptScroll) {
-        messageDisplay.scrollToRecent();
+        scrollToRecent();
       }
       else {
         keepScrolling = false;
@@ -66,21 +83,27 @@
     }
   }
 
-  function onMessageDisplayUpdate() {
+  function onMessageDisplayAfterUpdate() {
     if (isAtRecent && !settingsOpen) {
       keepScrollingToRecent();
     }
   }
 
+  function onWrapperAfterUpdate() {
+    if (!smoothScroll) {
+      scrollToRecent();
+      smoothScroll = true;
+    }
+  }
+
   let settingsWasOpen = false;
   $: settingsWasOpen = !settingsOpen;
-  afterUpdate(() => {
+  beforeUpdate(() => {
     // Prevent smooth scrolling when exiting settings
     if (settingsWasOpen) {
-      messageDisplay.scrollToRecent('auto');
+      smoothScroll = false;
       settingsWasOpen = false;
     }
-    delayedCheckAtRecent();
   });
 </script>
 
@@ -99,10 +122,12 @@
   </div>
   <Wrapper
     {isResizing}
-    on:scroll={delayedCheckAtRecent}
+    {smoothScroll}
+    bind:this={wrapper}
+    on:scroll={onWrapperScroll}
     on:wheel={() => (interruptScroll = true)}
     on:keydown={onWrapperKeyDown}
-    bind:this={wrapper}
+    on:afterUpdate={onWrapperAfterUpdate}
   >
     {#if settingsOpen}
       <Options {isStandalone} {isResizing} />
@@ -112,7 +137,7 @@
         direction={$textDirection}
         bind:updatePopupActive
         bind:this={messageDisplay}
-        on:afterUpdate={onMessageDisplayUpdate}
+        on:afterUpdate={onMessageDisplayAfterUpdate}
       />
     </div>
   </Wrapper>
