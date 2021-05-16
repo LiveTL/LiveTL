@@ -70,7 +70,7 @@
   .centered * {
     text-align: center;
   }
-  .left * {
+  .left :global(*) {
     text-align: left;
   }
 </style>

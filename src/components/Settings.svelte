@@ -1,5 +1,5 @@
 <script>
-  import { beforeUpdate, afterUpdate, onMount, onDestroy } from 'svelte';
+  import { beforeUpdate, afterUpdate } from 'svelte';
   import { Tabs, Tab, TabContent, MaterialApp } from 'svelte-materialify/src';
   import UISettings from './settings/UISettings.svelte';
   import FilterSettings from './settings/FilterSettings.svelte';

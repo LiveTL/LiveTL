@@ -276,7 +276,7 @@
   .subscripts {
     font-size: 0.75em;
   }
-  .subscripts > a {
+  .subscripts a {
     color: inherit !important;
   }
   .messageDisplayWrapper {
@@ -313,9 +313,6 @@
     color: #FFD600 !important;
   }
 
-  .messageActions .blueHighlight :global(.s-icon:hover) {
-    color: var(--theme-text-link);
-  }
   .messageActions .redHighlight :global(.s-icon:hover) {
     color: #ff2873;
   }

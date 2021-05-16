@@ -43,7 +43,7 @@
   $: if (wrapper) {
     const handle = wrapper.querySelector('.s-slider__handle-lower');
     if (handle) {
-      const callback = (mutationsList, observer) => {
+      const callback = mutationsList => {
         mutationsList.forEach(mutation => {
           if (mutation.attributeName === 'class') {
             tipCallback(handle);

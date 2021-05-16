@@ -1,5 +1,4 @@
 <script>
-  import { writable } from 'svelte/store';
   import { onMount } from 'svelte';
   import {
     showModMessage,
@@ -12,19 +11,13 @@
     Col,
     Button,
     Icon,
-    Subheader,
-    List,
-    ListItem,
-    ExpansionPanels,
-    ExpansionPanel
+    Subheader
   } from 'svelte-materialify/src';
   import { mdiPlus } from '@mdi/js';
   import { addFilter, cleanupFilters } from '../../js/filter.js';
   import { languageNameValues } from '../../js/constants.js';
   import CheckOption from '../options/Toggle.svelte';
   import CustomFilter from '../options/CustomFilter.svelte';
-  import EnumOption from '../options/FilterSelector.svelte';
-  import ListEdit from '../options/ListEdit.svelte';
   import SelectOption from '../options/Dropdown.svelte';
   import MultiDropdown from '../options/MultiDropdown.svelte';
   export let isStandalone = false;

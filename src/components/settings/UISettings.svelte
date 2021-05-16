@@ -6,7 +6,6 @@
     chatZoom,
     livetlFontSize,
     doSpeechSynth,
-    doTranslatorMode,
     showCaption,
     showTimestamp,
     speechVolume,

@@ -56,7 +56,7 @@
 
   let chatSideElem;
 
-  const resizeCallback = (_, dataobj) => {
+  const resizeCallback = () => {
     isResizing = !isResizing;
     convertToPx();
   };
@@ -115,11 +115,9 @@
   }
 
   window.addEventListener('message', data => {
-    try {
-      if (data.data.event == 'fullscreen') {
-        toggleFullScreen();
-      }
-    } catch (e) {}
+    if (data.data.event == 'fullscreen') {
+      toggleFullScreen();
+    }
   });
 </script>
 

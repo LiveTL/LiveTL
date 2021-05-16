@@ -1,5 +1,5 @@
 <script>
-  import { ExpansionPanel, ExpansionPanels } from 'svelte-materialify';
+  import { ExpansionPanels } from 'svelte-materialify';
   import V6 from './common/6.0.svelte';
   let value;
 </script>
