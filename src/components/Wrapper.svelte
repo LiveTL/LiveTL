@@ -2,7 +2,7 @@
   export let isResizing;
   export let zoom = NaN;
   export let verticalCenter = false;
-  export let style = "";
+  export let style = '';
   let factor;
   $: factor = zoom || 1;
   let inverse;

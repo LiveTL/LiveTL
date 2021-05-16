@@ -27,13 +27,13 @@
   `;
   $: maxRuleLength = Math.max(maxRuleLength, rule.length);
   $: $sShowBlock,
-    $sPlainReg,
-    $sChatAuthor,
-    rule,
-    (() => {
-      modifyFilter(id, $sChatAuthor, $sPlainReg, $sShowBlock, rule);
-      if (!rule && maxRuleLength) deleteFilter(id);
-    })();
+  $sPlainReg,
+  $sChatAuthor,
+  rule,
+  (() => {
+    modifyFilter(id, $sChatAuthor, $sPlainReg, $sShowBlock, rule);
+    if (!rule && maxRuleLength) deleteFilter(id);
+  })();
   onMount(() => {
     div.scrollIntoView({
       behavior: 'smooth',
