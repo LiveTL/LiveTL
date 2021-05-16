@@ -1,11 +1,11 @@
-import { doSpeechSynth, speechVolume } from './store.js';
-
-let utterance = null;
+import { doSpeechSynth, language, speechVolume } from './store.js';
+import { languageNameCode } from './constants.js';
 
 export function speak(text, volume=0) {
   // speechSynthesis.cancel();
-  utterance = new SpeechSynthesisUtterance(text);
+  const utterance = new SpeechSynthesisUtterance(text);
   utterance.volume = volume || speechVolume.get();
+  utterance.lang = languageNameCode[language.get()].tag;
   speechSynthesis.speak(utterance);
 }
 

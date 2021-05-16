@@ -44,14 +44,14 @@ export const AuthorType = {
 };
 
 export const languages = [
-  { code: 'en', name: 'English', lang: 'English' },
-  { code: 'jp', name: 'Japanese', lang: '日本語' },
-  { code: 'es', name: 'Spanish', lang: 'Español' },
-  { code: 'id', name: 'Indonesian', lang: 'Bahasa Indonesia' },
-  { code: 'kr', name: 'Korean', lang: '한국' },
-  { code: 'ch', name: 'Chinese', lang: '中文' },
-  { code: 'ru', name: 'Russian', lang: 'русский' },
-  { code: 'fr', name: 'French', lang: 'Français' }
+  { code: 'en', name: 'English', lang: 'English', tag: 'en-US' },
+  { code: 'jp', name: 'Japanese', lang: '日本語', tag: 'jp-JP' },
+  { code: 'es', name: 'Spanish', lang: 'Español', tag: 'es-MX' },
+  { code: 'id', name: 'Indonesian', lang: 'Bahasa Indonesia', tag: 'id-ID' },
+  { code: 'kr', name: 'Korean', lang: '한국', tag: 'ko-KR' },
+  { code: 'ch', name: 'Chinese', lang: '中文', tag: 'zh-CN' },
+  { code: 'ru', name: 'Russian', lang: 'русский', tag: 'ru-RO' },
+  { code: 'fr', name: 'French', lang: 'Français', tag: 'fr-FR' }
 ];
 
 export const languageConversionTable = {};
