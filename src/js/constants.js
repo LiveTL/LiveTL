@@ -4,7 +4,7 @@ export const storageVersion = 'v0-alpha';
 export const VideoSide = {
   LEFT: 'LEFT',
   RIGHT: 'RIGHT',
-  // TOP: 'TOP'
+  TOP: 'TOP'
 };
 
 /** @enum {String} */

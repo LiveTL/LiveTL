@@ -29,10 +29,10 @@
   const resizable = (selector, info) => {
     j(typeof selector == 'string' ? document.querySelector(selector) : selector).resizable(info);
   };
-  const convertToPx = () => {
+  const convertPxAndPercent = () => {
     [
       [chatElem, 'height', chatSize],
-      [isEmbedded ? null : vidElem, 'width', videoPanelSize]
+      [isEmbedded ? null : vidElem, $videoSide == VideoSide.TOP ? 'height' : 'width', videoPanelSize]
     ].forEach(item => {
       const [elem, prop, store] = item;
       if (!elem) return;
@@ -42,10 +42,10 @@
       } else {
         let percent;
         if (prop === 'height') {
-          percent = (100 * elem.clientHeight) / window.innerHeight;
+          percent = (100 * elem.clientHeight) / elem.parentElement.clientHeight;
           elem.style.height = `${percent}%`;
         } else if (prop === 'width') {
-          percent = (100 * elem.clientWidth) / window.innerWidth;
+          percent = (100 * elem.clientWidth) / elem.parentElement.clientWidth;
           elem.style.width = `${percent}%`;
         }
         store.set(percent);
@@ -57,22 +57,20 @@
 
   const resizeCallback = () => {
     isResizing = !isResizing;
-    convertToPx();
+    convertPxAndPercent();
   };
   const changeSide = () => {
     document.querySelectorAll('#mainUI .ui-resizable-handle').forEach(elem => {
       elem.remove();
     });
     
-    console.log($videoSide == VideoSide.LEFT ? vidElem : chatSideElem);
-    resizable($videoSide == VideoSide.LEFT ? vidElem : chatSideElem, {
-      handles: 'e',
+    resizable($videoSide == VideoSide.RIGHT ? chatSideElem : vidElem, {
+      handles: $videoSide == VideoSide.TOP ? 's' : 'e',
       start: resizeCallback,
       stop: resizeCallback,
       resize: (_, dataobj) => {
         if ($videoSide == VideoSide.RIGHT) {
           $videoPanelSize = Math.min(100, Math.max(0, (1 - (dataobj.size.width / window.innerWidth)) * 100));
-          console.log(dataobj.size.width, window.innerWidth);
         }
       },
       containment: 'body'
@@ -133,12 +131,15 @@
     {/if}
     <div
       id="mainUI"
-      class="flex vertical {$videoSide == VideoSide.RIGHT ? 'reversed' : ''}"
+      class="flex 
+        {$videoSide == VideoSide.TOP ? 'horizontal' : 'vertical'} 
+        {$videoSide == VideoSide.RIGHT ? 'reversed' : ''}"
     >
       {#if !isEmbedded}
         <div
           class="tile resizable"
-          style="width: {$videoPanelSize}%;"
+          style={($videoSide == VideoSide.TOP ? 'height' : `width`) +
+            `: ${$videoPanelSize}%;`}
           bind:this={vidElem}
         >
           <Wrapper {isResizing}>
@@ -146,7 +147,11 @@
           </Wrapper>
         </div>
       {/if}
-      <div class="tile autoscale" bind:this={chatSideElem}>
+      <div
+        class="tile autoscale"
+        bind:this={chatSideElem}
+        style={$videoSide == VideoSide.TOP ? 'min-width: 100% !important;' : ''}
+      >
         <div
           class="flex horizontal"
           style="
@@ -158,7 +163,11 @@
             "
             bind:this={chatElem}
           >
-            <Wrapper {isResizing} zoom={$chatZoom} style="padding-bottom: 10px;">
+            <Wrapper
+              {isResizing}
+              zoom={$chatZoom}
+              style="padding-bottom: 10px;"
+            >
               <ChatEmbed {videoId} {continuation} {isReplay} />
             </Wrapper>
           </div>
