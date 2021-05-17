@@ -107,6 +107,7 @@ function loaded() {
   body.style.position = 'fixed';
   const insertButtons = async () => {
     try {
+      document.querySelectorAll('.livetlButtonWrapper').forEach(item => item.remove());
       let params = new URLSearchParams(window.location.search);
       const constructParams = () => {
         params = new URLSearchParams(window.location.search);
@@ -165,7 +166,7 @@ function loaded() {
   };
   insertButtons();
   setInterval(()=>{
-    if(document.querySelector('.livetlActivator')) return;
+    if (document.querySelector('.livetlButtonWrapper')) return;
     insertButtons();
   }, 100);
 }

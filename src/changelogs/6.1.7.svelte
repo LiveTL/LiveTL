@@ -18,8 +18,9 @@
           mode, video side, etc.) no longer show up outside the full-page LiveTL
           mode.
         </li>
+        <li>Clicking on the extension icon now launches the LiveTL website.</li>
         <li>
-          Clicking on the extension icon now launches the LiveTL website.
+          The launch buttons inserted into the chat should no longer duplicate.
         </li>
       </ul>
     </div>
