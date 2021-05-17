@@ -31,17 +31,18 @@
     options={Object.keys(TextDirection)}
     store={textDirection}
   />
-  <!-- {#if !isStandalone} -->
-  <EnumOption
-    name="Video side:"
-    options={Object.keys(VideoSide)}
-    store={videoSide}
-  />
-  <!-- {/if} -->
+  {#if !isStandalone}
+    <EnumOption
+      name="Video side:"
+      options={Object.keys(VideoSide)}
+      store={videoSide}
+    />
+  {/if}
 </div>
 <CheckOption name="Show timestamps" store={showTimestamp} />
-<!-- {#if !isStandalone} -->
-<CheckOption name="Show captions" store={showCaption} />
+{#if !isStandalone}
+  <CheckOption name="Show captions" store={showCaption} />
+{/if}
 {#if $showCaption}
   <SliderOption
     name="Caption font size"

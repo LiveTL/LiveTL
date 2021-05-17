@@ -2,6 +2,10 @@
 import '../../img/128x128.png';
 import '../../img/48x48.png';
 
+chrome.browserAction.onClicked.addListener(() => {
+  chrome.tabs.create({ url: 'https://livetl.app' });
+});
+
 chrome.runtime.onMessage.addListener((request, sender, callback) => {
   switch (request.type) {
   case 'tabid': {

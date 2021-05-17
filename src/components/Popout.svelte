@@ -10,11 +10,11 @@
   import MessageDisplay from './MessageDisplay.svelte';
   import Updates from './Updates.svelte';
   let settingsOpen = false;
-  export let isStandalone = false;
   export let isResizing = false;
   export let updatePopupActive = false;
   const params = new URLSearchParams(window.location.search);
   document.title = params.get('title') || 'LiveTL Popout';
+  export let isStandalone = params.get('embedded') ? true : false;
 
   let wrapper;
   let messageDisplay;

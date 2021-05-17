@@ -13,6 +13,14 @@
           Vertical mode is finally here! You can now arrange the video and chat
           vertically for narrow screens.
         </li>
+        <li>
+          Settings that have no effect in embedded and popout modes (caption
+          mode, video side, etc.) no longer show up outside the full-page LiveTL
+          mode.
+        </li>
+        <li>
+          Clicking on the extension icon now launches the LiveTL website.
+        </li>
       </ul>
     </div>
   </ExpansionPanel>
