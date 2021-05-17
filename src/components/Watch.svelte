@@ -18,7 +18,6 @@
   import ChatEmbed from './ChatEmbed.svelte';
   import Popout from './Popout.svelte';
   import Captions from './Captions.svelte';
-  import Updates from './Updates.svelte';
   document.title = 'LiveTL';
   let isResizing = false;
   let chatElem, vidElem, ltlElem;
@@ -129,7 +128,6 @@
   height: 100vh;"
 >
   <MaterialApp theme="dark">
-    <Updates bind:active={updatePopupActive} />
     {#if !isEmbedded && $showCaption}
       <Captions />
     {/if}

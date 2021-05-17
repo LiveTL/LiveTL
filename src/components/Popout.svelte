@@ -8,6 +8,7 @@
   import { TextDirection } from '../js/constants.js';
   import { textDirection } from '../js/store.js';
   import MessageDisplay from './MessageDisplay.svelte';
+  import Updates from './Updates.svelte';
   let settingsOpen = false;
   export let isStandalone = false;
   export let isResizing = false;
@@ -31,6 +32,7 @@
 <svelte:window on:resize={checkAtRecent} />
 
 <MaterialApp theme="dark">
+  <Updates bind:active={updatePopupActive} />
   <div
     class="settingsButton {$textDirection === TextDirection.TOP
       ? 'bottom'
@@ -110,4 +112,5 @@
   :global(.s-btn) {
     vertical-align: top !important;
   }
+
 </style>
