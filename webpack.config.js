@@ -181,6 +181,10 @@ var options = {
       filename: 'hyperchat/index.html',
       chunks: ['hyperchat']
     }),
+    new CopyWebpackPlugin([{
+      from: 'src/changelogs/img',
+      to: 'img'
+    }]),
   ],
   mode,
   devServer: {

@@ -12,9 +12,10 @@
     videoPanelSize,
     chatSize,
     chatZoom,
-    showCaption
+    showCaption,
+    chatSplit
   } from '../js/store.js';
-  import { VideoSide } from '../js/constants.js';
+  import { VideoSide, ChatSplit } from '../js/constants.js';
   import ChatEmbed from './ChatEmbed.svelte';
   import Popout from './Popout.svelte';
   import Captions from './Captions.svelte';
@@ -31,7 +32,7 @@
   };
   const convertPxAndPercent = () => {
     [
-      [chatElem, 'height', chatSize],
+      [chatElem, $chatSplit == ChatSplit.VERTICAL ? 'width' : 'height', chatSize],
       [isEmbedded ? null : vidElem, $videoSide == VideoSide.TOP ? 'height' : 'width', videoPanelSize]
     ].forEach(item => {
       const [elem, prop, store] = item;
@@ -76,14 +77,14 @@
       containment: 'body'
     });
     resizable(chatElem, {
-      handles: 's',
+      handles: $chatSplit == ChatSplit.VERTICAL ? 'e' : 's',
       start: resizeCallback,
       stop: resizeCallback,
       resize: () => {},
       containment: 'body'
     });
   };
-  $: setTimeout(() => changeSide($videoSide), 0);
+  $: setTimeout(() => changeSide($videoSide, $chatSplit), 0);
   let updatePopupActive = false;
 
   function toggleFullScreen() {
@@ -153,20 +154,29 @@
         style={$videoSide == VideoSide.TOP ? 'min-width: 100% !important;' : ''}
       >
         <div
-          class="flex horizontal"
+          class="flex {$chatSplit == ChatSplit.VERTICAL
+            ? 'vertical'
+            : 'horizontal'}"
           style="
             {$videoSide == VideoSide.RIGHT ? 'width: calc(100% - 10px);' : ''}"
         >
           <div
             class="tile resizable"
-            style="height: {$chatSize}%;
+            style="{$chatSplit == ChatSplit.VERTICAL
+              ? 'width'
+              : 'height'}: {$chatSize}%;
+                min-{$chatSplit == ChatSplit.VERTICAL
+              ? 'width'
+              : 'height'}: 10px;
             "
             bind:this={chatElem}
           >
             <Wrapper
               {isResizing}
               zoom={$chatZoom}
-              style="padding-bottom: 10px;"
+              style={$chatSplit == ChatSplit.VERTICAL
+                ? ''
+                : 'padding-bottom: 10px;'}
             >
               <ChatEmbed {videoId} {continuation} {isReplay} />
             </Wrapper>
@@ -208,7 +218,7 @@
   .tile {
     /* border: 5px solid blue; */
     display: flex;
-    overflow: auto;
+    overflow: hidden;
     left: 0px !important;
     position: relative;
   }

@@ -10,9 +10,10 @@
     showTimestamp,
     speechVolume,
     textDirection,
-    enableCaptionTimeout
+    enableCaptionTimeout,
+    chatSplit
   } from '../../js/store.js';
-  import { TextDirection, VideoSide } from '../../js/constants.js';
+  import { ChatSplit, TextDirection, VideoSide } from '../../js/constants.js';
   import CheckOption from '../options/Toggle.svelte';
   import SliderOption from '../options/Slider.svelte';
   import EnumOption from '../options/Radio.svelte';
@@ -36,6 +37,11 @@
       name="Video side:"
       options={Object.keys(VideoSide)}
       store={videoSide}
+    />
+    <EnumOption
+      name="Chat split:"
+      options={Object.keys(ChatSplit)}
+      store={chatSplit}
     />
   {/if}
 </div>

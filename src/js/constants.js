@@ -8,6 +8,12 @@ export const VideoSide = {
 };
 
 /** @enum {String} */
+export const ChatSplit = {
+  HORIZONTAL: 'HORIZONTAL',
+  VERTICAL: 'VERTICAL'
+};
+
+/** @enum {String} */
 export const TextDirection = {
   TOP: 'TOP',
   BOTTOM: 'BOTTOM'

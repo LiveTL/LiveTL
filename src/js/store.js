@@ -1,4 +1,4 @@
-import { Browser, BROWSER, TextDirection, VideoSide } from './constants.js';
+import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit } from './constants.js';
 import { LookupStore, SyncStore } from './storage.js';
 
 /**
@@ -57,4 +57,5 @@ export const
   regexAuthorBlacklist = SS('regexAuthorBlacklist', [''].slice(1)),
   customFilters = SS('customFilters', [sampleFilter].slice(1)),
   enableCaptionTimeout = SS('enableCaptionTimeout', false),
+  chatSplit = SS('chatSplit', ChatSplit.HORIZONTAL),
   lastVersion = SS('lastVersion', '0.0.0');
