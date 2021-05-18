@@ -22,6 +22,7 @@
   let keepScrolling = false;
   let interruptScroll = false;
   let smoothScroll = true;
+  let messageDisplayMargin = 0;
   const topScrollOffset = 1;
 
   function checkAtRecent() {
@@ -46,6 +47,21 @@
     scrollToRecent();
   }
 
+  function updateMargin() {
+    if (isResizing || settingsOpen) return;
+
+    const wrapperHeight = wrapper.getClientHeight();
+    const messageDisplayHeight = messageDisplay.getClientHeight();
+    const offset = ($textDirection === TextDirection.BOTTOM ? 1 : 2);
+
+    if (messageDisplayHeight > wrapperHeight) {
+      messageDisplayMargin = 0;
+    }
+    else {
+      messageDisplayMargin = wrapperHeight - messageDisplayHeight + offset;
+    }
+  }
+
   function onWrapperScroll() {
     if ($textDirection === TextDirection.TOP && checkAtRecent()) {
       wrapper.scrollToTop(topScrollOffset);
@@ -55,6 +71,7 @@
       clearTimeout(checkTimer);
     }
     checkTimer = setTimeout(() => {
+      updateMargin();
       const atRecent = checkAtRecent();
 
       if (keepScrolling && !atRecent && !interruptScroll) {
@@ -107,7 +124,16 @@
   });
 </script>
 
-<svelte:window on:resize={() => (isAtRecent = checkAtRecent())} />
+<svelte:window 
+  on:resize={() => {
+    updateMargin();
+    isAtRecent = checkAtRecent();
+  }}
+  on:load={() => {
+    updateMargin();
+    scrollToRecent();
+  }}
+/>
 
 <MaterialApp theme="dark">
   <div
@@ -135,6 +161,7 @@
     <div style="display: {settingsOpen ? 'none' : 'block'};">
       <MessageDisplay
         direction={$textDirection}
+        margin={messageDisplayMargin}
         bind:updatePopupActive
         bind:this={messageDisplay}
         on:afterUpdate={onMessageDisplayAfterUpdate}

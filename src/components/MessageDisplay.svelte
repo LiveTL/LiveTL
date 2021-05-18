@@ -25,6 +25,12 @@
   /** @type {{ text: String, author: String, timestamp: String }[]}*/
   export let items = [];
   export let updatePopupActive = false;
+  export let margin;
+  let messageDisplay;
+
+  export function getClientHeight() {
+    return messageDisplay.clientHeight;
+  }
 
   let unsubscribe = null;
   onMount(() => {
@@ -52,13 +58,17 @@
 <div class="messageDisplayWrapper">
   <div
     class="messageDisplay"
-    style="align-self: flex-{direction === TextDirection.BOTTOM
-      ? 'end'
-      : 'start'};
+    style="
+      align-self: flex-{direction === TextDirection.BOTTOM
+        ? 'end'
+        : 'start'};
       flex-direction: column{direction === TextDirection.TOP
-      ? '-reverse'
-      : ''};
-      {direction === TextDirection.TOP ? 'padding-top: 1px;' : ''}"
+        ? '-reverse'
+        : ''};
+      {direction === TextDirection.TOP
+        ? 'padding-top: 1px; margin-bottom: '.concat(margin, 'px;')
+        : 'margin-top: '.concat(margin, 'px;')}"
+    bind:this={messageDisplay}
   >
     <div class="message">
       <div class="heading">

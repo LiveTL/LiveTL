@@ -23,6 +23,9 @@
   export function scrollToTop(offset=0) {
     div.scrollTop = 0 + offset;
   }
+  export function getClientHeight() {
+    return div.clientHeight;
+  }
 
   const dispatch = createEventDispatcher();
   afterUpdate(() => dispatch('afterUpdate'));
