@@ -1,5 +1,5 @@
 <script>
-  import { beforeUpdate } from 'svelte';
+  import { beforeUpdate, afterUpdate } from 'svelte';
   import { fade } from 'svelte/transition';
   import { Button, Icon, MaterialApp } from 'svelte-materialify/src';
   import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp } from '@mdi/js';
@@ -114,12 +114,20 @@
   }
 
   let settingsWasOpen = false;
+  let wasResizing = false;
   $: settingsWasOpen = !settingsOpen;
+  $: wasResizing = !isResizing;
   beforeUpdate(() => {
     // Prevent smooth scrolling when exiting settings
     if (settingsWasOpen) {
       smoothScroll = false;
       settingsWasOpen = false;
+    }
+  });
+  afterUpdate(() => {
+    if (wasResizing && document.readyState === 'complete') {
+      updateMargin();
+      wasResizing = false;
     }
   });
 </script>
