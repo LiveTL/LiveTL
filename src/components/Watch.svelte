@@ -139,8 +139,13 @@
       {#if !isEmbedded}
         <div
           class="tile resizable"
-          style={($videoSide == VideoSide.TOP ? 'height' : `width`) +
+          style="{($videoSide == VideoSide.TOP ? 'height' : `width`) +
             `: ${$videoPanelSize}%;`}
+            {$videoSide == VideoSide.LEFT
+            ? 'min-width: 10px;'
+            : $videoSide == VideoSide.TOP
+            ? 'min-height: 10px'
+            : ''}"
           bind:this={vidElem}
         >
           <Wrapper {isResizing}>
