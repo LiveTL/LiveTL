@@ -175,7 +175,7 @@
               {isResizing}
               zoom={$chatZoom}
               style={$chatSplit == ChatSplit.VERTICAL
-                ? ''
+                ? 'padding-right: 10px;'
                 : 'padding-bottom: 10px;'}
             >
               <ChatEmbed {videoId} {continuation} {isReplay} />
