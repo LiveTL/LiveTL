@@ -32,6 +32,7 @@ var options = {
     options: path.join(__dirname, 'src', 'js', 'pages', 'options.js'),
     background: path.join(__dirname, 'src', 'js', 'pages', 'background.js'),
     watch: path.join(__dirname, 'src', 'js', 'pages', 'watch.js'),
+    welcome: path.join(__dirname, 'src', 'js', 'pages', 'welcome.js'),
     hyperchat: path.join(__dirname, 'src', 'js', 'pages', 'hyperchat.js'),
     injector: path.join(__dirname, 'src', 'js', 'content_scripts', 'injector.js'),
     interceptor: path.join(__dirname, 'src', 'js', 'content_scripts', 'interceptor.js'),
@@ -167,6 +168,11 @@ var options = {
       template: path.join(__dirname, 'src', 'empty.html'),
       filename: 'options.html',
       chunks: ['options']
+    }),
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, 'src', 'empty.html'),
+      filename: 'welcome.html',
+      chunks: ['welcome']
     }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'empty.html'),

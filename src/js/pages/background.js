@@ -6,6 +6,11 @@ chrome.browserAction.onClicked.addListener(() => {
   chrome.tabs.create({ url: 'https://livetl.app' });
 });
 
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason != 'update')
+    chrome.tabs.create({ url: chrome.runtime.getURL('welcome.html') });
+});
+
 chrome.runtime.onMessage.addListener((request, sender, callback) => {
   switch (request.type) {
   case 'tabid': {
