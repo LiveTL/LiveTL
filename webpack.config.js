@@ -49,6 +49,18 @@ var options = {
   module: {
     rules: [
       {
+        include: [
+          path.resolve(__dirname, 'node_modules/svelte-materialify/src/components/Slider')
+        ],
+        test: /\.svelte$/,
+        loader: 'string-replace-loader',
+        options: {
+          search: 'import noUi',
+          replace: 'import * as noUi',
+          strict: true
+        }
+      },
+      {
         test: /src\/submodules\/chat\/scripts\/chat\.js$/,
         loader: 'string-replace-loader',
         options: {

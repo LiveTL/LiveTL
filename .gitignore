@@ -5,14 +5,3 @@ secrets.*.js
 package-lock.json
 .vscode
 *.swp
-
-# Ok i just wanna include that one file cause upgrading svelte-materialify breaks everything
-!node_modules/svelte-materialify
-node_modules/svelte-materialify/*
-!node_modules/svelte-materialify/src
-node_modules/svelte-materialify/src/*
-!node_modules/svelte-materialify/src/components
-node_modules/svelte-materialify/src/components/*
-!node_modules/svelte-materialify/src/components/Slider
-node_modules/svelte-materialify/src/components/Slider/*
-!node_modules/svelte-materialify/src/components/Slider/Slider.svelte
