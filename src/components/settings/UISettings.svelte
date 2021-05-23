@@ -10,7 +10,8 @@
     showTimestamp,
     speechVolume,
     textDirection,
-    enableCaptionTimeout
+    enableCaptionTimeout,
+    smoothAutoScroll
   } from '../../js/store.js';
   import { TextDirection, VideoSide } from '../../js/constants.js';
   import CheckOption from '../options/Toggle.svelte';
@@ -39,6 +40,7 @@
   />
   <!-- {/if} -->
 </div>
+<CheckOption name="Smooth auto-scroll" store={smoothAutoScroll} />
 <CheckOption name="Show timestamps" store={showTimestamp} />
 <!-- {#if !isStandalone} -->
 <CheckOption name="Show captions" store={showCaption} />

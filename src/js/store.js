@@ -57,4 +57,5 @@ export const
   regexAuthorBlacklist = SS('regexAuthorBlacklist', [''].slice(1)),
   customFilters = SS('customFilters', [sampleFilter].slice(1)),
   enableCaptionTimeout = SS('enableCaptionTimeout', false),
-  lastVersion = SS('lastVersion', '0.0.0');
+  lastVersion = SS('lastVersion', '0.0.0'),
+  smoothAutoScroll = SS('smoothAutoScroll', true);
