@@ -18,9 +18,11 @@
   import SliderOption from '../options/Slider.svelte';
   import EnumOption from '../options/Radio.svelte';
   import FontDemo from '../FontDemo.svelte';
+  import ImportExport from '../ImportExport.svelte';
   export let isStandalone = false;
 </script>
 
+<ImportExport />
 <!-- {#if !isStandalone} -->
 <SliderOption name="Chat zoom" store={chatZoom} />
 <!-- {/if} -->
