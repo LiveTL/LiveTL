@@ -3,7 +3,7 @@ import { storageVersion, Browser, BROWSER } from './constants.js';
 
 export const storage = new Storage(storageVersion);
 
-/** @type {Map<String, SyncStore>} */
+/** @type {Map<String, SyncStore | LookupStore>} */
 const stores = new Map();
 
 /**
@@ -28,6 +28,7 @@ export class SyncStore {
     this._lastSet = Date.now();
     this._updateAcrossSessions = updateAcrossSessions;
     stores.set(mangleStorageKey(name, storageVersion), this);
+    stores.set(name, this);
   }
 
   async loadFromStorage() {
@@ -61,6 +62,14 @@ export class SyncStore {
     this._store.set(value);
     this._markSet();
     this._storage.set(this.name, value);
+  }
+
+  getEntire() {
+    return this.get();
+  }
+
+  setEntire(value) {
+    this.set(value);
   }
 
   /**
@@ -121,6 +130,7 @@ export class LookupStore {
     this._updateAcrossSessions = updateAcrossSessions;
     this.loaded = this.loadFromStorage();
     stores.set(this._keyname, this);
+    stores.set(name, this);
   }
 
   /** @private */
@@ -176,6 +186,20 @@ export class LookupStore {
     this.notify([key, value]);
   }
 
+  getEntire() {
+    return this._lookup;
+  }
+
+  setEntire(value) {
+    this._lookup = value;
+    this.keys = Object.keys(value);
+    Object.entries(value).forEach(([key, value]) => this.notify([key, value]));
+    this.keys.forEach(key => {
+      this._storage.set(this.mangleKey(key), value[key]);
+    });
+    this._storage.set(this._keyname, this.keys);
+  }
+
   /**
    * @param {(v: T) => T} callback
    */
@@ -200,11 +224,18 @@ export class LookupStore {
  * @returns {String}
  */
 export function exportStores() {
-  ;
+  const exportedObj = {};
+  stores.forEach((store, name) => {
+    exportedObj[name] = store.getEntire();
+  });
+  return JSON.stringify(exportedObj);
 }
 
 export function importStores(data) {
-  ;
+  Object.entries(JSON.parse(data)).forEach(([name, value]) => {
+    if (!stores.has(name)) return;
+    stores.get(name).setEntire(value);
+  });
 }
 
 function mangleStorageKey(key, version='') {
