@@ -190,14 +190,15 @@ export class LookupStore {
     return this._lookup;
   }
 
-  setEntire(value) {
+  async setEntire(value) {
     this._lookup = value;
     this.keys = Object.keys(value);
     Object.entries(value).forEach(([key, value]) => this.notify([key, value]));
-    this.keys.forEach(key => {
-      this._storage.set(this.mangleKey(key), value[key]);
+    const save = this.keys.map(key => {
+      return this._storage.set(this.mangleKey(key), value[key]);
     });
-    this._storage.set(this._keyname, this.keys);
+    save.push(this._storage.set(this._keyname, this.keys));
+    await Promise.all(save);
   }
 
   /**

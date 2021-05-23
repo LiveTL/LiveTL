@@ -86,6 +86,18 @@ describe('Synchronized lookup store', () => {
     await ss.set('second key', { value: 'second not default' });
     expect(notifs.length).toEqual(0);
   });
+
+  it('can set and persist the entire lookup at once', async () => {
+    const storage = new MockBackend();
+    const ss = new LookupStore('test', 'default', new MockBackend());
+    ss.set('first key', 'val1');
+    const entire = ss.getEntire();
+    const ns = new LookupStore('test', 'default', storage);
+    await ns.setEntire(entire);
+    const ls = new LookupStore('test', 'default', storage);
+    await ls.loaded;
+    expect(ls.get('first key')).toEqual('val1');
+  });
 });
 
 describe('import and export system', () => {
