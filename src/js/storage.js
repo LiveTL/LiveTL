@@ -177,12 +177,10 @@ export class LookupStore {
   async set(key, value) {
     const previous = this._lookup[key];
     this._lookup[key] = value;
-    const save = [this._storage.set(this.mangleKey(key), value)];
-    if (previous == null) {
-      this.keys.push(key);
-      save.push(this._storage.set(this._keyname, this.keys));
-    }
-    await Promise.all(save);
+    await Promise.all([
+      this._saveOneKeyValue(key, value),
+      previous == null ? this._saveNewKey(key) : 0
+    ]);
     this.notify([key, value]);
   }
 
@@ -192,13 +190,12 @@ export class LookupStore {
 
   async setEntire(value) {
     this._lookup = value;
-    this.keys = Object.keys(value);
-    Object.entries(value).forEach(([key, value]) => this.notify([key, value]));
-    const save = this.keys.map(key => {
-      return this._storage.set(this.mangleKey(key), value[key]);
-    });
-    save.push(this._storage.set(this._keyname, this.keys));
-    await Promise.all(save);
+    const keys = Object.keys(value);
+    await Promise.all([
+      ...keys.map(key => this._saveOneKeyValue(key, value[key])),
+      this._saveKeys(keys)
+    ]);
+    Object.entries(value).forEach(this.notify.bind(this));
   }
 
   /**
@@ -215,9 +212,21 @@ export class LookupStore {
   subscribe(callback) {
     const id = this._subnum++;
     this._subscribers.set(id, callback);
-    return () => {
-      this._subscribers.delete(id);
-    };
+    return () => this._subscribers.delete(id);
+    
+  }
+
+  async _saveOneKeyValue(key, value) {
+    return await this._storage.set(this.mangleKey(key), value);
+  }
+
+  async _saveKeys(keys) {
+    this.keys = keys;
+    return await this._storage.set(this._keyname, keys);
+  }
+
+  async _saveNewKey(key) {
+    this._saveKeys([...this.keys, key]);
   }
 }
 
