@@ -1,5 +1,10 @@
 /* eslint-disable no-undef */
-import { LookupStore, SyncStore } from '../../js/storage.js';
+import {
+  LookupStore,
+  SyncStore,
+  exportStores,
+  importStores
+} from '../../js/storage.js';
 
 function MockBackend() {
   const storage = {};
@@ -80,5 +85,49 @@ describe('Synchronized lookup store', () => {
     await ss.set('first key', { value: 'first not default' });
     await ss.set('second key', { value: 'second not default' });
     expect(notifs.length).toEqual(0);
+  });
+});
+
+describe('import and export system', () => {
+  it('works with SyncStores', () => {
+    const storage = new MockBackend();
+    const ss1 = new SyncStore('firstStore', 10, storage);
+    const ss2 = new SyncStore('secondStore', 20, storage);
+    const ss3 = new SyncStore('thirdStore', 30, storage);
+    const getVals = () => [ss1, ss2, ss3].map(s => s.get());
+    const exported = exportStores();
+    const expected = [10, 20, 30];
+    importStores(exported);
+    expect(getVals()).toEqual(expected);
+    ss1.set(40);
+    ss3.set(10);
+    importStores(exported);
+    expect(getVals()).toEqual(expected);
+  });
+
+  it('works with LookupStores', () => {
+    const storage = new MockBackend();
+    const ls1 = new LookupStore('first', 10, storage);
+    const ls2 = new LookupStore('second', 20, storage);
+    const exported = exportStores();
+    importStores(exported);
+    expect(ls1.get('key')).toEqual(10);
+    ls1.set('key', 30);
+    ls2.set('key', 10);
+    importStores(exported);
+    expect(ls1.get('key')).toEqual(10);
+    expect(ls2.get('key')).toEqual(20);
+  });
+
+  it('works with both SyncStores and LookupStores', () => {
+    const storage = new MockBackend();
+    const ss = new SyncStore('first', 10, storage);
+    const ls = new LookupStore('second', 20, storage);
+    const exported = exportStores();
+    ss.set(30);
+    ls.set('key', 30);
+    importStores(exported);
+    expect(ss.get()).toEqual(10);
+    expect(ls.get('key')).toEqual(20);
   });
 });

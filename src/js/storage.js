@@ -196,6 +196,17 @@ export class LookupStore {
   }
 }
 
+/**
+ * @returns {String}
+ */
+export function exportStores() {
+  ;
+}
+
+export function importStores(data) {
+  ;
+}
+
 function mangleStorageKey(key, version='') {
   return `${version || storage.version}$$${key}`;
 }
