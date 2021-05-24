@@ -1,4 +1,5 @@
 import { omniComplete } from '../../js/translator-mode.js';
+import { get, writable } from 'svelte/store';
 
 const sleep = time => new Promise(res => setTimeout(res, time));
 
@@ -57,5 +58,16 @@ describe('omnicompletion', () =>{
     addSentence('hello there general kenobi');
     await sleep(0);
     expect(fired).toBe(2);
+  });
+
+  it('synchronizes with stores', async () => {
+    const { addWord, getWords, syncWith } = omniComplete();
+    const store = writable(['hello']);
+    syncWith(store);
+    expect(getWords()).toContain('hello');
+    addWord('there');
+    await sleep(0);
+    const { toContain } = expect(get(store));
+    ['hello', 'there'].forEach(toContain);
   });
 });

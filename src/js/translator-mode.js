@@ -1,5 +1,5 @@
 export function omniComplete(initialWords) {
-  const words = initialWords || [];
+  let words = initialWords || [];
   const callbacks = [];
   let changes = 0;
   const wordSet = new Set(words);
@@ -33,11 +33,19 @@ export function omniComplete(initialWords) {
   const notify = () => setTimeout(notifyWork);
   const subscribe = callbacks.push.bind(callbacks);
 
+  const syncWith = store => {
+    store.subscribe($words => {
+      words = $words;
+    });
+    subscribe(store.set.bind(store));
+  };
+
   return {
     addWord,
     addSentence,
     complete,
     getWords,
-    subscribe
+    subscribe,
+    syncWith
   };
 }
