@@ -2,21 +2,21 @@
   import { Button, Icon, Textarea } from 'svelte-materialify';
   import { mdiCheck, mdiClipboard, mdiClose } from '@mdi/js';
   import { importStores, exportStores } from '../js/storage.js';
+  import { compose } from '../js/utils.js';
   import Dialog from './Dialog.svelte'; 
+  import swal from 'sweetalert';
+
   let isImporting = false;
-  let isExporting = false;
   let value = '';
   let active = false;
   let width;
 
   function onImport() {
     isImporting = true;
-    isExporting = false;
     active = true;
   }
 
   function onExport() {
-    isExporting = true;
     isImporting = false;
     active = true;
   }
@@ -27,17 +27,18 @@
       close();
     }
     catch (e) {
-      alert(`Invalid settings: ${e}`);
+      swal('Oops', 'Invalid settings syntax', 'error');
     }
   }
 
-  async function exportToClipboard() {
-    await navigator.clipboard.writeText(exportStores());
-  }
+  const exportToClipboard = compose(
+    navigator.clipboard.writeText.bind(navigator.clipboard),
+    exportStores
+  );
 
   let display = false;
   $: if (!display) {
-    isImporting = isExporting = false;
+    isImporting = false;
     value = '';
   }
 
@@ -55,14 +56,14 @@
   <Dialog bind:display bind:active>
     <div style="text-align: left;" slot="default">
       <h6 style="margin-bottom: 10px;">
-        {isImporting ? 'Import' : isExporting ? 'Export' : 'You broke LiveTL'} Settings
+        {isImporting ? 'Import' : 'Export'} Settings
       </h6>
       <div style="display: {isImporting ? 'block' : 'none'};">
         <Textarea noResize bind:value color="blue">
           Enter your settings string (JSON)
         </Textarea>
       </div>
-      <div style="display: {isExporting ? 'block' : 'none'};">
+      <div style="display: {isImporting ? 'none' : 'block'};">
         <p>Click the clipboard icon to copy your settings.</p>
       </div>
     </div>
@@ -106,4 +107,15 @@
     overflow: visible !important;
   }
 
+  :global(.swal-modal) {
+    background-color: #212121;
+  }
+
+  :global(.swal-text), :global(.swal-title) {
+    color: #E5E5E5;
+  }
+
+  :global(.swal-button) {
+    background-color: #2196F3 !important;
+  }
 </style>

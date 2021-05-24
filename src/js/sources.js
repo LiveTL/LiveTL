@@ -1,4 +1,5 @@
 import { Queue } from './queue';
+import { compose } from './utils';
 // eslint-disable-next-line no-unused-vars
 import { writable, Writable } from 'svelte/store';
 import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted, authorWhitelisted, authorBlacklisted } from './filter';
@@ -106,10 +107,6 @@ function ytcToMsg({ message, timestamp, author: { name: author, id, types } }) {
     .join('');
   const typeFlag = types.reduce((flag, t) => flag | AuthorType[t], 0);
   return { text, timestamp, author, id, types: typeFlag };
-}
-
-function compose(...args) {
-  return ipt => args.reduceRight((val, func) => func(val), ipt);
 }
 
 function forwardPostMessages(window) {

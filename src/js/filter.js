@@ -1,4 +1,5 @@
 import { customFilters } from './store.js';
+import { not, composeOr } from './utils.js';
 // import {
 //   textWhitelist,
 //   textBlacklist,
@@ -22,7 +23,6 @@ const tokenMap = Object.fromEntries(langTokens);
 const transDelimiters = ['-', ':'];
 const langSplitRe = /[^A-Za-z]/;
 
-const not = f => (...args) => !f(...args);
 const chat = e => e.chatAuthor == 'chat';
 const plain = e => e.plainReg == 'plain';
 const show = e => e.showBlock == 'show';
@@ -60,7 +60,6 @@ function userFilter(ufilters, transform = filter => filter) {
     : false;
 }
 
-const composeOr = (...args) => ipt => args.some(a => a(ipt));
 
 export const textWhitelisted = userFilter(textWhitelist);
 export const textBlacklisted = userFilter(textBlacklist);
