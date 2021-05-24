@@ -3,8 +3,13 @@ import { storageVersion, Browser, BROWSER } from './constants.js';
 
 export const storage = new Storage(storageVersion);
 
-/** @type {Map<String, SyncStore | LookupStore>} */
-const stores = new Map();
+/** @typedef {Map<String, SyncStore | LookupStore>} StoreLookup */
+
+/** @type {{ byName: StoreLookup, byMangled: StoreLookup }} */
+const stores = {
+  byName: new Map(),
+  byMangled: new Map(),
+};
 
 /**
  * Store that synchronizes with extension storage.
@@ -27,8 +32,8 @@ export class SyncStore {
     this.loadFromStorage();
     this._lastSet = Date.now();
     this._updateAcrossSessions = updateAcrossSessions;
-    stores.set(mangleStorageKey(name, storageVersion), this);
-    stores.set(name, this);
+    stores.byMangled.set(mangleStorageKey(name, storageVersion), this);
+    stores.byName.set(name, this);
   }
 
   async loadFromStorage() {
@@ -129,8 +134,8 @@ export class LookupStore {
     this._keyname = `${this.name}[]`;
     this._updateAcrossSessions = updateAcrossSessions;
     this.loaded = this.loadFromStorage();
-    stores.set(this._keyname, this);
-    stores.set(name, this);
+    stores.byMangled.set(this._keyname, this);
+    stores.byName.set(name, this);
   }
 
   /** @private */
@@ -235,7 +240,7 @@ export class LookupStore {
  */
 export function exportStores() {
   const exportedObj = {};
-  stores.forEach((store, name) => {
+  stores.byName.forEach((store, name) => {
     exportedObj[name] = store.getEntire();
   });
   return JSON.stringify(exportedObj);
@@ -243,8 +248,8 @@ export function exportStores() {
 
 export function importStores(data) {
   Object.entries(JSON.parse(data)).forEach(([name, value]) => {
-    if (!stores.has(name)) return;
-    stores.get(name).setEntire(value);
+    if (!stores.byName.has(name)) return;
+    stores.byName.get(name).setEntire(value);
   });
 }
 
@@ -334,7 +339,7 @@ function updateChangedStores(changes) {
   const changedItems = Object.keys(changes);
 
   for (const item of changedItems) {
-    if (!stores.has(item)) continue;
-    stores.get(item).updateFromStorage();
+    if (!stores.byMangled.has(item)) continue;
+    stores.byMangled.get(item).updateFromStorage();
   }
 }
