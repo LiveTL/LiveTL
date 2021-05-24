@@ -10,6 +10,7 @@
   let active = false;
   let width;
   let error = '';
+  let success = '';
 
   function onImport() {
     isImporting = true;
@@ -33,18 +34,19 @@
 
   const exportToClipboard = compose(
     navigator.clipboard.writeText.bind(navigator.clipboard),
-    exportStores
+    exportStores,
+    () => success = 'Successfully copied!'
   );
 
   let display = false;
   $: if (!display) {
     isImporting = false;
     value = '';
+    error = '';
+    success = '';
   }
 
   const close = () => active = false;
-
-  $: if (!active) error = '';
 </script>
 
 <div>
@@ -72,6 +74,12 @@
         </Textarea>
       </div>
       <div style="display: {isImporting ? 'none' : 'block'};">
+        <div
+          style="display: {success ? 'block' : 'none'}; margin-bottom: 10px;"
+          class="green-text"
+        >
+          {success}
+        </div>
         <p>Click the clipboard icon to copy your settings.</p>
       </div>
     </div>
