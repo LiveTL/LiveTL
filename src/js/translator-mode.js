@@ -15,28 +15,25 @@ export function omniComplete(initialWords) {
 
   const addSentence = sentence => sentence.split(/\W+/).forEach(addWord);
   // Currently goes through everything,
-  // replace with trie if this is a bottleneck
+  // replace with trie or sorted array if this is a bottleneck
   const complete = wordPortion => words
     .filter(word => word.startsWith(wordPortion))
     .sort();
   const getWords = () => [...words];
 
-  const notifyWork = () => {
+  const notify = () => setTimeout(() => {
     if (changes) {
       changes = 0;
       callbacks.forEach(cb => cb(words));
       return;
     }
-    setTimeout(notifyWork);
-  };
+    notify();
+  });
 
-  const notify = () => setTimeout(notifyWork);
   const subscribe = callbacks.push.bind(callbacks);
 
   const syncWith = store => {
-    store.subscribe($words => {
-      words = $words;
-    });
+    store.subscribe($words => words = $words);
     subscribe(store.set.bind(store));
   };
 
