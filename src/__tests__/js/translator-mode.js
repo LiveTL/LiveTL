@@ -37,4 +37,10 @@ describe('omnicompletion', () =>{
     const { complete } = omniComplete(wordBank);
     expect(complete('th')).toEqual(['that', 'there', 'though']);
   })
+
+  it('doesn\'t add duplicates', () => {
+    const { addSentence, getWords } = omniComplete(wordBank);
+    addSentence('hello there, general kenobi');
+    expect(getWords().length).toEqual(wordBank.length);
+  })
 });
