@@ -7,9 +7,8 @@
   <ExpansionPanel>
     <span slot="header">Import/Export settings</span>
     <div>
-      You can now import and export settings in JSON format. Use it to copy your
-      settings onto other computers, share with your friends, and back up your
-      preferences!
+      You can now import and export settings in JSON format. Use it for backing
+      up your preferences or sharing them with friends!
     </div>
   </ExpansionPanel>
   <ExpansionPanel>
