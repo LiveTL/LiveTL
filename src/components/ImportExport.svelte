@@ -20,6 +20,20 @@
     active = true;
   }
 
+  function onImportRequest() {
+    try {
+      importStores(value);
+      close();
+    }
+    catch (e) {
+      alert(`Invalid settings: ${e}`);
+    }
+  }
+
+  async function exportToClipboard() {
+    await navigator.clipboard.writeText(exportStores());
+  }
+
   let display = false;
   $: if (!display) {
     isImporting = isExporting = false;
@@ -52,7 +66,7 @@
       </div>
     </div>
     <div slot="buttons">
-      <Button icon class="green-text">
+      <Button icon class="green-text" on:click={isImporting ? onImportRequest : exportToClipboard}>
         <Icon path={isImporting ? mdiCheck : mdiClipboard} />
       </Button>
       <Button icon class="red-text" on:click={close}>
