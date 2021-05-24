@@ -7,6 +7,7 @@
   let isExporting = false;
   let value = '';
   let active = false;
+  let width;
 
   function onImport() {
     isImporting = true;
@@ -44,11 +45,11 @@
 </script>
 
 <div>
-  <div class="buttons">
-    <Button style="width: 45%; margin-right: 2%;" on:click={onImport}>
+  <div class="buttons {width < 350 ? 'vertical' : ''}" bind:clientWidth={width}>
+    <Button class="import-button" style="margin-right: 2%;" on:click={onImport}>
       Import Settings
     </Button>
-    <Button style="width: 45%" on:click={onExport}>Export Settings</Button>
+    <Button class="import-button" on:click={onExport}>Export Settings</Button>
   </div>
 
   <Dialog bind:display bind:active>
@@ -79,6 +80,15 @@
 <style>
   .buttons {
     text-align: center;
+    margin-bottom: 1%;
+  }
+
+  .buttons :global(.import-button) {
+    width: 45%;
+  }
+
+  .buttons.vertical :global(.import-button) {
+    width: 100%;
     margin-bottom: 1%;
   }
 
