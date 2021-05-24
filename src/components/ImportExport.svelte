@@ -1,15 +1,15 @@
 <script>
-  import { Button, Icon, Textarea } from 'svelte-materialify';
-  import { mdiCheck, mdiClipboard, mdiClose } from '@mdi/js';
+  import { Button, Icon, Textarea, Chip } from 'svelte-materialify';
+  import { mdiCheck, mdiClipboardOutline, mdiClose } from '@mdi/js';
   import { importStores, exportStores } from '../js/storage.js';
   import { compose } from '../js/utils.js';
-  import Dialog from './Dialog.svelte'; 
-  import swal from 'sweetalert';
+  import Dialog from './Dialog.svelte';
 
   let isImporting = false;
   let value = '';
   let active = false;
   let width;
+  let error = '';
 
   function onImport() {
     isImporting = true;
@@ -27,7 +27,7 @@
       close();
     }
     catch (e) {
-      swal('Oops', 'Invalid settings syntax', 'error');
+      error = 'Invalid settings syntax';
     }
   }
 
@@ -43,6 +43,8 @@
   }
 
   const close = () => active = false;
+
+  $: if (!active) error = '';
 </script>
 
 <div>
@@ -59,6 +61,12 @@
         {isImporting ? 'Import' : 'Export'} Settings
       </h6>
       <div style="display: {isImporting ? 'block' : 'none'};">
+        <div
+          style="display: {error ? 'block' : 'none'}; margin-bottom: 10px;"
+          class="red-text"
+        >
+          {error}
+        </div>
         <Textarea noResize bind:value color="blue">
           Enter your settings string (JSON)
         </Textarea>
@@ -68,8 +76,12 @@
       </div>
     </div>
     <div slot="buttons">
-      <Button icon class="green-text" on:click={isImporting ? onImportRequest : exportToClipboard}>
-        <Icon path={isImporting ? mdiCheck : mdiClipboard} />
+      <Button
+        icon
+        class="green-text"
+        on:click={isImporting ? onImportRequest : exportToClipboard}
+      >
+        <Icon path={isImporting ? mdiCheck : mdiClipboardOutline} />
       </Button>
       <Button icon class="red-text" on:click={close}>
         <Icon path={mdiClose} />
@@ -107,15 +119,4 @@
     overflow: visible !important;
   }
 
-  :global(.swal-modal) {
-    background-color: #212121;
-  }
-
-  :global(.swal-text), :global(.swal-title) {
-    color: #E5E5E5;
-  }
-
-  :global(.swal-button) {
-    background-color: #2196F3 !important;
-  }
 </style>
