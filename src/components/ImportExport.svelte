@@ -1,16 +1,12 @@
 <script>
-  import { Button, Dialog, Icon, MaterialApp, Textarea } from 'svelte-materialify';
-  import { mdiCheck, mdiClose } from '@mdi/js';
+  import { Button, Icon, Textarea } from 'svelte-materialify';
+  import { mdiCheck, mdiClipboard, mdiClose } from '@mdi/js';
   import { importStores, exportStores } from '../js/storage.js';
-
-  let active = false;
+  import Dialog from './Dialog.svelte'; 
   let isImporting = false;
   let isExporting = false;
   let value = '';
-
-  function exitModal() {
-    active = false;
-  }
+  let active = false;
 
   function onImport() {
     isImporting = true;
@@ -24,40 +20,47 @@
     active = true;
   }
 
-  $: if (!active) {
+  let display = false;
+  $: if (!display) {
     isImporting = isExporting = false;
     value = '';
   }
 
-  $: console.log('active', active);
-  $: console.log('isImporting', isImporting);
+  const close = () => active = false;
 </script>
 
-<MaterialApp theme="dark">
+<div>
   <div class="buttons">
     <Button style="width: 45%; margin-right: 2%;" on:click={onImport}>
       Import Settings
     </Button>
-    <Button style="width: 45%" on:click={onExport}>
-      Export Settings
-    </Button>
+    <Button style="width: 45%" on:click={onExport}>Export Settings</Button>
   </div>
 
-  <Dialog class="pa-4" bind:active>
-    {#if isImporting}
-      <div class="header">
-        <h6>Import Settings</h6>
-        <Button icon class="green-text">
-          <Icon path={mdiCheck} />
-        </Button>
-        <Button icon class="red-text" on:click={exitModal}>
-          <Icon path={mdiClose} />
-        </Button>
+  <Dialog bind:display bind:active>
+    <div style="text-align: left;" slot="default">
+      <h6 style="margin-bottom: 10px;">
+        {isImporting ? 'Import' : isExporting ? 'Export' : 'You broke LiveTL'} Settings
+      </h6>
+      <div style="display: {isImporting ? 'block' : 'none'};">
+        <Textarea noResize bind:value color="blue">
+          Enter your settings string (JSON)
+        </Textarea>
       </div>
-      <Textarea noResize bind:value color="blue">Enter your settings</Textarea>
-    {/if}
+      <div style="display: {isExporting ? 'block' : 'none'};">
+        <p>Click the clipboard icon to copy your settings.</p>
+      </div>
+    </div>
+    <div slot="buttons">
+      <Button icon class="green-text">
+        <Icon path={isImporting ? mdiCheck : mdiClipboard} />
+      </Button>
+      <Button icon class="red-text" on:click={close}>
+        <Icon path={mdiClose} />
+      </Button>
+    </div>
   </Dialog>
-</MaterialApp>
+</div>
 
 <style>
   .buttons {
@@ -74,4 +77,9 @@
   .header > * {
     flex-grow: 1;
   }
+
+  :global(label) {
+    overflow: visible !important;
+  }
+
 </style>

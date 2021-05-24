@@ -44,9 +44,9 @@
     </Button>
   </div>
   <Wrapper {isResizing} on:scroll={checkAtRecent} bind:this={wrapper}>
-    {#if settingsOpen}
-      <Options {isStandalone} {isResizing} />
-    {/if}
+    <div style="display: {settingsOpen ? 'block' : 'none'};">
+      <Options {isStandalone} {isResizing} bind:active={settingsOpen} />
+    </div>
     <div style="display: {settingsOpen ? 'none' : 'block'};">
       <MessageDisplay
         direction={$textDirection}

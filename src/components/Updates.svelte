@@ -11,27 +11,18 @@
 
   export let active;
 
-  const unsetLastVersion = () => {
-    lastVersion.set(version);
-    active = false;
-  };
+  $: if (!active) lastVersion.set(version);
 
   let Changelogs;
   onMount(async () => {
     Changelogs = (await import(`../changelogs/${version}.svelte`)).default;
   });
-  let dialog;
-  $: if (dialog) {
-    dialog
-      .querySelector('.s-overlay')
-      .addEventListener('click', () => unsetLastVersion());
-  }
 
   $: active = $lvLoaded && $lastVersion != version;
   onDestroy(() => lastVersion.set(active ? $lastVersion : version));
 </script>
 
-<div bind:this={dialog}>
+<div>
   <Dialog bind:active>
     <span class="centered">
       <h1>New Update!</h1>
@@ -50,7 +41,7 @@
       transition
       size="default"
       class="blue"
-      on:click={() => unsetLastVersion()}
+      on:click={() => (active = false)}
     >
       Let's Go!
     </Button>
@@ -73,4 +64,5 @@
   .left :global(*) {
     text-align: left;
   }
+
 </style>

@@ -3,12 +3,13 @@
   import Settings from './Settings.svelte';
   export let isStandalone = false;
   export let isResizing = false;
+  export let active = false;
 </script>
 
 <MaterialApp theme="dark">
   <div class="wrapper">
     <div class="app">
-      <Settings {isStandalone} {isResizing} />
+      <Settings {isStandalone} {isResizing} bind:active />
     </div>
     <slot />
   </div>
@@ -34,4 +35,5 @@
     height: 100%;
     position: absolute;
   }
+
 </style>

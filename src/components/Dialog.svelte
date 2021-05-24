@@ -7,13 +7,16 @@
     active = false;
   };
   let wrapper = null;
-  let display = false;
+  export let display = false;
   $: if (wrapper) {
     wrapper.addEventListener('transitionend', e => {
       if (e.target == wrapper && e.target.style.opacity == '0') {
         display = false;
       }
     });
+    wrapper
+      .querySelector('.s-overlay')
+      .addEventListener('click', close);
   }
   $: if (active && wrapper) {
     display = true;
@@ -24,20 +27,20 @@
   class="s-dialog"
   style="
     opacity: {active ? 1 : 0};
-    display: {display
-    ? 'block'
-    : 'none'};
+    display: {display ? 'block' : 'none'};
   "
   bind:this={wrapper}
 >
-  <Dialog class="pa-4 wideDialog text-center" active>
+  <Dialog class="pa-4 wideDialog text-center" active persistent>
     <div>
       <div class="closeWrap">
-        <Button fab size="small" on:click={close}>
-          <Icon path={mdiClose} />
-        </Button>
+        <slot name="buttons">
+          <Button fab size="small" on:click={close}>
+            <Icon path={mdiClose} />
+          </Button>
+        </slot>
       </div>
-      <slot />
+      <slot default />
     </div>
   </Dialog>
 </div>
@@ -66,4 +69,5 @@
     line-height: 0px;
     margin: 0px;
   }
+
 </style>
