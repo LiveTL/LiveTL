@@ -21,7 +21,7 @@ const startLangTokens = langTokens.flatMap(e => e[0]);
 const tokenMap = Object.fromEntries(langTokens);
 
 const transDelimiters = ['-', ':'];
-const langSplitRe = /[^A-Za-z]/;
+const langSplitRe = /\W+/;
 
 const chat = e => e.chatAuthor == 'chat';
 const plain = e => e.plainReg == 'plain';
@@ -155,9 +155,10 @@ export function removeEmojis(str) {
  * @returns {Boolean}
  */
 export function isLangMatch(textLang, currentLang) {
-  const textLangs = textLang.toLowerCase().split(langSplitRe).filter(s => s !== '');
-  return textLangs.some(s => (
-    s && s.length >= 2 && (
+  const lower = textLang.toLowerCase();
+  const textLangs = lower.split(langSplitRe);
+  return [...textLangs, lower].some(s => (
+    s.length >= 2 && (
       currentLang.name.toLowerCase().startsWith(s) ||
       s === currentLang.code ||
       currentLang.lang.toLowerCase().startsWith(s)
