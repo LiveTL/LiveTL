@@ -46,6 +46,7 @@
     overflow: hidden !important;
     background-color: transparent !important;
     border-radius: 10px !important;
+    box-shadow: none !important;
   }
 
   .minimizeContainer {
