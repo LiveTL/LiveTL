@@ -15,7 +15,9 @@ const mode = process.env.NODE_ENV || 'development';
 process.env.NODE_ENV = mode;
 
 // load the secrets
-var alias = {};
+var alias = {
+  'jquery.ui': 'jquery-ui-bundle'
+};
 
 var secretsPath = path.join(__dirname, ('secrets.' + env.NODE_ENV + '.js'));
 
