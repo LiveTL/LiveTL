@@ -5,6 +5,7 @@
     onDestroy,
     createEventDispatcher
   } from 'svelte';
+  import { Checkbox } from 'svelte-materialify/src';
   import { sources, combineStores } from '../js/sources.js';
   import '../css/splash.css';
   import { Icon } from 'svelte-materialify/src';
@@ -56,6 +57,11 @@
   afterUpdate(() => dispatch('afterUpdate'));
   
   const version = window.chrome.runtime.getManifest().version;
+
+  export let screenshotting = false;
+  export let selectedItems = [];
+
+  $: if (!screenshotting) selectedItems = [];
 </script>
 
 <div class="messageDisplayWrapper">
@@ -195,12 +201,15 @@
         </div>
       </div>
     </div>
-    {#each items as item}
+    {#each items as item, index}
       <div
         class="message"
         let:hovering
         style="display: {item.hidden ? 'none' : 'block'}"
       >
+        {#if screenshotting}
+          <Checkbox bind:group={selectedItems} value={item} />
+        {/if}
         <span>{item.text}</span>
         <span class="info">
           <span
@@ -276,16 +285,21 @@
     border-radius: var(--margin);
   }
 
+  .message :global(.s-checkbox) {
+    display: inline-flex;
+    transform: translate(4px, 3px);
+  }
+
   .messageActions {
     display: none;
   }
 
   .moderator {
-    color: #A0BDFC !important;
+    color: #a0bdfc !important;
   }
 
   .owner {
-    color: #FFD600 !important;
+    color: #ffd600 !important;
   }
 
   .messageActions .redHighlight :global(.s-icon:hover) {
@@ -307,4 +321,5 @@
   .message:nth-child(even) {
     background-color: rgba(255, 255, 255, 0.2);
   }
+
 </style>

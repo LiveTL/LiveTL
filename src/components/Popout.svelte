@@ -1,13 +1,14 @@
 <script>
   import { afterUpdate } from 'svelte';
   import { fade } from 'svelte/transition';
-  import { Button, Icon, MaterialApp } from 'svelte-materialify/src';
-  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp } from '@mdi/js';
+  import { Button, Icon, MaterialApp, ProgressCircular } from 'svelte-materialify/src';
+  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCameraOutline, mdiCheckOutline, mdiCloseOutline } from '@mdi/js';
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
   import { TextDirection } from '../js/constants.js';
   import { textDirection } from '../js/store.js';
   import MessageDisplay from './MessageDisplay.svelte';
+  import ScreenshotExport from "./ScreenshotExport.svelte";
   import Updates from './Updates.svelte';
   let settingsOpen = false;
   export let isResizing = false;
@@ -41,11 +42,30 @@
     }
     checkAtRecent();
   });
+
+  let renderQueue;
+  let renderWidth = 500;
+
+  let screenshotting = false;
+
+  function toggleScreenshot() {
+    screenshotting = !screenshotting;
+  }
+
+  let selectedItems = [];
+  function saveScreenshot() {
+    renderQueue = selectedItems;
+    toggleScreenshot();
+  }
 </script>
 
 <svelte:window on:resize={checkAtRecent} />
 
 <MaterialApp theme="dark">
+  <div>
+    <ScreenshotExport bind:renderQueue bind:renderWidth />
+  </div>
+
   <Updates bind:active={updatePopupActive} />
   <div
     class="settingsButton {$textDirection === TextDirection.TOP
@@ -53,9 +73,26 @@
       : 'top'}Float"
     style="display: {isResizing ? 'none' : 'unset'};"
   >
-    <Button fab size="small" on:click={() => (settingsOpen = !settingsOpen)}>
-      <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
-    </Button>
+    {#if !settingsOpen}
+      <Button
+        fab
+        size="small"
+        class={screenshotting ? 'green' : ''}
+        on:click={screenshotting ? saveScreenshot : toggleScreenshot}
+      >
+        <Icon path={screenshotting ? mdiCheckOutline : mdiCameraOutline} />
+      </Button>
+    {/if}
+    {#if screenshotting}
+      <Button fab size="small" class="red" on:click={toggleScreenshot}>
+        <Icon path={mdiCloseOutline} />
+      </Button>
+    {/if}
+    {#if !screenshotting}
+      <Button fab size="small" on:click={() => (settingsOpen = !settingsOpen)}>
+        <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
+      </Button>
+    {/if}
   </div>
   <Wrapper {isResizing} on:scroll={checkAtRecent} bind:this={wrapper}>
     <div style="display: {settingsOpen ? 'block' : 'none'};">
@@ -67,6 +104,8 @@
         bind:updatePopupActive
         bind:this={messageDisplay}
         on:afterUpdate={onMessageDisplayAfterUpdate}
+        bind:screenshotting
+        bind:selectedItems
       />
     </div>
   </Wrapper>

@@ -51,7 +51,9 @@
   "dependencies": {
     "@mdi/js": "^5.9.55",
     "cache-loader": "^4.1.0",
+    "dns-packet": "^5.2.2",
     "hosted-git-info": "^4.0.2",
+    "html2canvas": "^1.0.0-rc.7",
     "jquery": "^3.6.0",
     "jquery-ui-bundle": "^1.12.1-migrate",
     "jquery-ui-touch-punch": "^0.2.3",
