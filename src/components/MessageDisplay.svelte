@@ -35,7 +35,10 @@
       sources.mod
     );
     const sourceUnsub = source.subscribe(n => {
-      if (n) items.push(n);
+      if (n) {
+        n.index = items.length;
+        items.push(n);
+      }
       items = items;
     });
     unsubscribe = () => {
@@ -201,7 +204,7 @@
         </div>
       </div>
     </div>
-    {#each items as item, index}
+    {#each items as item}
       <div
         class="message"
         let:hovering

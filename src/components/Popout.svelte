@@ -80,6 +80,9 @@
     style="display: {isResizing ? 'none' : 'unset'};"
   >
     {#if screenshotting}
+      <h6 class="floatingText">
+        {selectedItems.length} TLs selected
+      </h6>
       <TextField
         dense
         bind:value={renderWidth}
@@ -169,6 +172,14 @@
     background-color: var(--theme-surface);
     border-radius: 5px;
     width: 7em;
+  }
+  .floatingText {
+    display: inline;
+    margin-right: 5px;
+    vertical-align: text-bottom;
+    background-color: var(--theme-surface);
+    border-radius: 5px;
+    padding: 5px;
   }
   .recentButton {
     position: absolute;

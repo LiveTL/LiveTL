@@ -13,6 +13,7 @@ export default function(version) {
       else if(v[2] <= 7) return '6.1.7';
       else if(v[2] <= 8) return '6.1.8';
       else if(v[2] <= 9) return '6.1.9';
+      else if(v[2] <= 10) return '6.1.10';
     }
     }
   }
