@@ -265,6 +265,7 @@
 <style>
   h2 {
     font-size: 1.5em;
+    line-height: 1.5em;
   }
   .badges {
     margin-top: 10px;
