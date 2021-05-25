@@ -37,22 +37,60 @@
     .filter(dev => dev.type !== 'Bot');
 </script>
 
-
 <ExpansionPanels multiple>
   <ExpansionPanel>
-    <span slot="header">Developers</span>
-    <ol>
+    <span slot="header">Developers and Contributors</span>
+    <ul>
       {#each developers as { login: name }}
-        <li>{name}</li>
+        <li><a href="https://github.com/{name}" target="_blank">{name}</a></li>
+      {/each}
+    </ul>
+  </ExpansionPanel>
+  <ExpansionPanel style="flex-direction: column;">
+    <span slot="header">Donators and Supporters</span>
+    <p>
+      <a href="https://opencollective.com/livetl" target="_blank">
+        Please consider donating through Open Collective!
+      </a>
+    </p>
+    <ol>
+      {#each donators as { name, totalAmountDonated, profile }}
+        <li>
+          <a href={profile} target="_blank">{name}</a>
+          <span class="float-right">${totalAmountDonated}</span>
+        </li>
       {/each}
     </ol>
   </ExpansionPanel>
   <ExpansionPanel>
-    <span slot="header">Donators</span>
+    <span slot="header">Contact the Devs</span>
     <ol>
-      {#each donators as { name, totalAmountDonated }}
-        <li>{name}: <span class="float-right">${totalAmountDonated}</span></li>
-      {/each}
+      The quickest way to contact the developers is through the <a
+        href="https://discord.gg/uJrV3tmthg"
+        target="_blank">LiveTL Discord server</a
+      >.
+      <br />
+      <br />
+      Here are some other links:
+      <ul>
+        <li>
+          <a href="https://livetl.app/" target="_blank">Website</a>
+        </li>
+        <li>
+          <a href="https://github.com/LiveTL/LiveTL" target="_blank"
+            >GitHub repository</a
+          >
+        </li>
+      </ul>
     </ol>
   </ExpansionPanel>
 </ExpansionPanels>
+
+<style>
+  ul,
+  ol {
+    padding-left: 24px;
+    width: calc(100% - 24px);
+  }
+
+</style>

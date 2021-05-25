@@ -12,4 +12,11 @@
       The "Welcome to LiveTL!" message can now be collapsed into a smaller box.
     </div>
   </ExpansionPanel>
+  <ExpansionPanel>
+    <span slot="header">New About tab</span>
+    <div>
+      There is now an "About" tab in the settings menu to see information about
+      contributors, donators, and more.
+    </div>
+  </ExpansionPanel>
 </ExpansionPanels>
