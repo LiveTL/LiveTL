@@ -5,15 +5,17 @@
     onDestroy,
     createEventDispatcher
   } from 'svelte';
-  import { Checkbox, Button } from 'svelte-materialify/src';
+  import { Checkbox, Icon } from 'svelte-materialify/src';
   import { sources, combineStores } from '../js/sources.js';
+  import Minimizer from "./Minimizer.svelte";
   import '../css/splash.css';
-  import { Icon } from 'svelte-materialify/src';
-  import { mdiEyeOffOutline, mdiAccountRemove, mdiClose } from '@mdi/js';
+  import { mdiEyeOffOutline, mdiAccountRemove, mdiChevronDown, mdiChevronUp } from '@mdi/js';
   import {
     channelFilters,
     livetlFontSize,
-    showTimestamp
+    showTimestamp,
+    welcomeDismissed,
+    textDirection
   } from '../js/store.js';
   import {
     BROWSER,
@@ -64,7 +66,6 @@
 
   export let screenshotting = false;
   export let selectedItems = [];
-  let showWelcomeMessage = true;
 
   $: if (!screenshotting) selectedItems = [];
 </script>
@@ -79,25 +80,23 @@
       ? '-reverse'
       : ''};"
   >
-    {#if showWelcomeMessage}
-      <div class="message">
+    <div class="message transition">
+      {#if $textDirection == TextDirection.BOTTOM}
+        <Minimizer />
+      {/if}
+      {#if !$welcomeDismissed}
         <div class="heading">
           <h2>Welcome to LiveTL!</h2>
-          <Button
-            fab
-            size="small"
-            on:click={() => (showWelcomeMessage = false)}
-          >
-            <Icon path={mdiClose} />
-          </Button>
         </div>
-        <div class="subheading">
-          Translations picked up from the chat will appear here.
+      {/if}
+      <div class="subheading">
+        Translations picked up from the chat will appear here.
+        {#if !$welcomeDismissed}
           <p style="font-size: 0.8em;">
             <a
               href="https://livetl.app/"
               target="about:blank"
-              on:click={(e) => {
+              on:click={e => {
                 e.preventDefault();
                 // eslint-disable-next-line no-unused-vars
                 updatePopupActive = true;
@@ -106,53 +105,55 @@
               See what's new in v{version}
             </a>
           </p>
-        </div>
+        {/if}
+      </div>
+      {#if !$welcomeDismissed}
         <div class="subscripts">
           <div class="badges">
             <!--
-          <a
-            href="https://livetl.app/"
-            target="about:blank"
-            on:click={e => {
-              e.preventDefault();
-              // eslint-disable-next-line no-unused-vars
-              updatePopupActive = true;
-            }}
-          >
-            <img
-              alt="Version"
-              src="https://img.shields.io/badge/See what's new in-v{version}-blue?style=flat&color=ff69b4"
-            />
-          </a>
-          <a
-            href="https://chrome.google.com/webstore/detail/livetl-translation-filter/moicohcfhhbmmngneghfjfjpdobmmnlg"
-            target="about:blank"
-          >
-            <img
-              alt="Chrome Web Store"
-              src="https://img.shields.io/chrome-web-store/users/moicohcfhhbmmngneghfjfjpdobmmnlg?color=blue&label=Chrome%20users&logo=google&logoColor=white&style=flat"
-            />
-          </a>
-          <a
-            href="https://addons.mozilla.org/en-US/firefox/addon/livetl/"
-            target="about:blank"
-          >
-            <img
-              alt="Mozilla Addons"
-              src="https://img.shields.io/amo/users/livetl?color=blue&label=Firefox%20users&logo=mozilla&logoColor=white&style=flat"
-            />
-          </a>
-          <a href="https://livetl.app/" target="about:blank">
-            <img
-              alt="Other platforms"
-              src="https://img.shields.io/badge/Other%20platforms-Android%2C%20iOS-blue?style=flat"
-            />
-          </a>
-          -->
+        <a
+          href="https://livetl.app/"
+          target="about:blank"
+          on:click={e => {
+            e.preventDefault();
+            // eslint-disable-next-line no-unused-vars
+            updatePopupActive = true;
+          }}
+        >
+          <img
+            alt="Version"
+            src="https://img.shields.io/badge/See what's new in-v{version}-blue?style=flat&color=ff69b4"
+          />
+        </a>
+        <a
+          href="https://chrome.google.com/webstore/detail/livetl-translation-filter/moicohcfhhbmmngneghfjfjpdobmmnlg"
+          target="about:blank"
+        >
+          <img
+            alt="Chrome Web Store"
+            src="https://img.shields.io/chrome-web-store/users/moicohcfhhbmmngneghfjfjpdobmmnlg?color=blue&label=Chrome%20users&logo=google&logoColor=white&style=flat"
+          />
+        </a>
+        <a
+          href="https://addons.mozilla.org/en-US/firefox/addon/livetl/"
+          target="about:blank"
+        >
+          <img
+            alt="Mozilla Addons"
+            src="https://img.shields.io/amo/users/livetl?color=blue&label=Firefox%20users&logo=mozilla&logoColor=white&style=flat"
+          />
+        </a>
+        <a href="https://livetl.app/" target="about:blank">
+          <img
+            alt="Other platforms"
+            src="https://img.shields.io/badge/Other%20platforms-Android%2C%20iOS-blue?style=flat"
+          />
+        </a>
+        -->
             <a
               href="/"
               target="about:blank"
-              on:click={(e) => {
+              on:click={e => {
                 e.preventDefault();
                 if (BROWSER === Browser.CHROME) {
                   window.open(
@@ -181,13 +182,13 @@
               />
             </a>
             <!--
-          <a href="https://livetl.app/" target="about:blank">
-            <img
-              alt="Website"
-              src="https://img.shields.io/website?down_color=red&down_message=offline&label=Website&up_color=blue&up_message=livetl.app&url=http%3A%2F%2Flivetl.app%2F&style=flat"
-            />
-          </a>
-          -->
+        <a href="https://livetl.app/" target="about:blank">
+          <img
+            alt="Website"
+            src="https://img.shields.io/website?down_color=red&down_message=offline&label=Website&up_color=blue&up_message=livetl.app&url=http%3A%2F%2Flivetl.app%2F&style=flat"
+          />
+        </a>
+        -->
             <a href="https://opencollective.com/livetl" target="about:blank">
               <img
                 alt="Donators and supporters"
@@ -195,16 +196,16 @@
               />
             </a>
             <!--
-          <a
-            href="https://hosted.weblate.org/engage/livetl/"
-            target="about:blank"
-          >
-            <img
-              alt="Localization"
-              src="https://img.shields.io/badge/Localization-Weblate-blue"
-            />
-          </a>
-          -->
+        <a
+          href="https://hosted.weblate.org/engage/livetl/"
+          target="about:blank"
+        >
+          <img
+            alt="Localization"
+            src="https://img.shields.io/badge/Localization-Weblate-blue"
+          />
+        </a>
+        -->
             <a href="https://discord.gg/uJrV3tmthg" target="about:blank">
               <img
                 alt="Discord"
@@ -213,12 +214,11 @@
             </a>
           </div>
         </div>
-      </div>
-    {:else if !items.length}
-      <div class="message">
-        <span> Translations picked up from the chat will appear here. </span>
-      </div>
-    {/if}
+      {/if}
+      {#if $textDirection == TextDirection.TOP}
+        <Minimizer />
+      {/if}
+    </div>
     {#each items as item}
       <div
         class="message"
@@ -247,9 +247,9 @@
                 channelFilters.set(item.id, {
                   ...channelFilters.get(item.id),
                   name: item.author,
-                  blacklist: true,
+                  blacklist: true
                 });
-                items = items.filter((i) => i.id != item.id);
+                items = items.filter(i => i.id != item.id);
               }}
             >
               <Icon path={mdiAccountRemove} size="1em" />
