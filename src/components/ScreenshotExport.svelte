@@ -30,7 +30,7 @@
   id="renderElement"
   style="width: {renderWidth}px;"
 >
-  {#each renderQueue as item}
+  {#each renderQueue.sort((a, b) => a.index - b.index) as item}
     <div class="messageItem">
       <span>{item.text}</span>
       <span
@@ -85,9 +85,9 @@
   }
   .messageItem {
     margin: 2.5px 0px 2.5px 0px;
-    padding: 5px;
+    padding: 3.5px;
     background-color: rgba(0, 0, 0, 0.15);
-    border-radius: 5px;
+    border-radius: 2.5px;
   }
 
 </style>

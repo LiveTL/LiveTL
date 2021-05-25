@@ -11,7 +11,10 @@
 
   export let active;
 
-  $: if (!active) lastVersion.set(version);
+  function setLastVersion() {
+    active = false;
+    lastVersion.set(version);
+  }
 
   let Changelogs;
   onMount(async () => {
@@ -37,12 +40,7 @@
         your friends! We'd really appreciate it :)
       </h2>
     </span>
-    <Button
-      transition
-      size="default"
-      class="blue"
-      on:click={() => (active = false)}
-    >
+    <Button transition size="default" class="blue" on:click={setLastVersion}>
       Let's Go!
     </Button>
   </Dialog>
