@@ -5,9 +5,10 @@
 
 <ExpansionPanels bind:value>
   <ExpansionPanel>
-    <span slot="header">Export screenshots</span>
+    <span slot="header">Screenshot translations</span>
     <div>
-      You can now export translations as an image using the camera icon.
+      You can now selectively export translations as an image using the camera
+      icon!
       <img
         src="./img/ImageExport.png"
         style="width: 100%; height: auto;"
