@@ -79,8 +79,7 @@
       : 'top'}Float"
     style="display: {isResizing
       ? 'none'
-      : 'flex'}; flex-direction: row; align-items: center;
-  }"
+      : 'flex'}; flex-direction: row; align-items: center; flex-wrap: wrap;"
   >
     {#if screenshotting}
       <h6 class="floatingText">
@@ -94,29 +93,35 @@
         >Width (px)</TextField
       >
     {/if}
-    {#if !settingsOpen}
-      <div class={screenshotting ? 'green-text' : ''}>
+    <div style="display: flex;">
+      {#if !settingsOpen}
+        <div class={screenshotting ? 'green-text' : ''}>
+          <Button
+            fab
+            size="small"
+            on:click={screenshotting ? saveScreenshot : toggleScreenshot}
+          >
+            <Icon path={screenshotting ? mdiCheck : mdiCamera} />
+          </Button>
+        </div>
+      {/if}
+      {#if screenshotting}
+        <div class={screenshotting ? 'red-text' : ''}>
+          <Button fab size="small" on:click={toggleScreenshot}>
+            <Icon path={mdiClose} />
+          </Button>
+        </div>
+      {/if}
+      {#if !screenshotting}
         <Button
           fab
           size="small"
-          on:click={screenshotting ? saveScreenshot : toggleScreenshot}
+          on:click={() => (settingsOpen = !settingsOpen)}
         >
-          <Icon path={screenshotting ? mdiCheck : mdiCamera} />
+          <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
         </Button>
-      </div>
-    {/if}
-    {#if screenshotting}
-      <div class={screenshotting ? 'red-text' : ''}>
-        <Button fab size="small" on:click={toggleScreenshot}>
-          <Icon path={mdiClose} />
-        </Button>
-      </div>
-    {/if}
-    {#if !screenshotting}
-      <Button fab size="small" on:click={() => (settingsOpen = !settingsOpen)}>
-        <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
-      </Button>
-    {/if}
+      {/if}
+    </div>
   </div>
   <Wrapper {isResizing} on:scroll={checkAtRecent} bind:this={wrapper}>
     <div style="display: {settingsOpen ? 'block' : 'none'};">
