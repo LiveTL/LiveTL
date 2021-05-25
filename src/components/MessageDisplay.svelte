@@ -5,11 +5,11 @@
     onDestroy,
     createEventDispatcher
   } from 'svelte';
-  import { Checkbox } from 'svelte-materialify/src';
+  import { Checkbox, Button } from 'svelte-materialify/src';
   import { sources, combineStores } from '../js/sources.js';
   import '../css/splash.css';
   import { Icon } from 'svelte-materialify/src';
-  import { mdiEyeOffOutline, mdiAccountRemove } from '@mdi/js';
+  import { mdiEyeOffOutline, mdiAccountRemove, mdiClose } from '@mdi/js';
   import {
     channelFilters,
     livetlFontSize,
@@ -21,6 +21,7 @@
     AuthorType,
     TextDirection
   } from '../js/constants.js';
+
   $: document.body.style.fontSize = Math.round($livetlFontSize) + 'px';
   export let direction;
   /** @type {{ text: String, author: String, timestamp: String }[]}*/
@@ -63,6 +64,7 @@
 
   export let screenshotting = false;
   export let selectedItems = [];
+  let showWelcomeMessage = true;
 
   $: if (!screenshotting) selectedItems = [];
 </script>
@@ -77,29 +79,37 @@
       ? '-reverse'
       : ''};"
   >
-    <div class="message">
-      <div class="heading">
-        <strong> Welcome to LiveTL! </strong>
-      </div>
-      <div class="subheading">
-        Translations picked up from the chat will appear here.
-        <p style="font-size: 0.8em;">
-          <a
-            href="https://livetl.app/"
-            target="about:blank"
-            on:click={e => {
-              e.preventDefault();
-              // eslint-disable-next-line no-unused-vars
-              updatePopupActive = true;
-            }}
+    {#if showWelcomeMessage}
+      <div class="message">
+        <div class="heading">
+          <h2>Welcome to LiveTL!</h2>
+          <Button
+            fab
+            size="small"
+            on:click={() => (showWelcomeMessage = false)}
           >
-            See what's new in v{version}
-          </a>
-        </p>
-      </div>
-      <div class="subscripts">
-        <div class="badges">
-          <!--
+            <Icon path={mdiClose} />
+          </Button>
+        </div>
+        <div class="subheading">
+          Translations picked up from the chat will appear here.
+          <p style="font-size: 0.8em;">
+            <a
+              href="https://livetl.app/"
+              target="about:blank"
+              on:click={(e) => {
+                e.preventDefault();
+                // eslint-disable-next-line no-unused-vars
+                updatePopupActive = true;
+              }}
+            >
+              See what's new in v{version}
+            </a>
+          </p>
+        </div>
+        <div class="subscripts">
+          <div class="badges">
+            <!--
           <a
             href="https://livetl.app/"
             target="about:blank"
@@ -139,38 +149,38 @@
             />
           </a>
           -->
-          <a
-            href="/"
-            target="about:blank"
-            on:click={e => {
-              e.preventDefault();
-              if (BROWSER === Browser.CHROME) {
-                window.open(
-                  'https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg/reviews'
-                );
-              } else if (BROWSER === Browser.FIREFOX) {
-                window.open(
-                  'https://addons.mozilla.org/en-US/firefox/addon/livetl'
-                );
-              } else {
-                window.open(
-                  'https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg/reviews'
-                );
-              }
-            }}
-          >
-            <img
-              alt="Reviews"
-              src="https://img.shields.io/badge/Leave a review-5%20stars-blue?style=flat"
-            />
-          </a>
-          <a href="https://github.com/LiveTL/LiveTL/" target="about:blank">
-            <img
-              alt="GitHub Repo"
-              src="https://img.shields.io/github/stars/LiveTL/LiveTL?style=flat&logo=github&label=Star on GitHub"
-            />
-          </a>
-          <!--
+            <a
+              href="/"
+              target="about:blank"
+              on:click={(e) => {
+                e.preventDefault();
+                if (BROWSER === Browser.CHROME) {
+                  window.open(
+                    'https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg/reviews'
+                  );
+                } else if (BROWSER === Browser.FIREFOX) {
+                  window.open(
+                    'https://addons.mozilla.org/en-US/firefox/addon/livetl'
+                  );
+                } else {
+                  window.open(
+                    'https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg/reviews'
+                  );
+                }
+              }}
+            >
+              <img
+                alt="Reviews"
+                src="https://img.shields.io/badge/Leave a review-5%20stars-blue?style=flat"
+              />
+            </a>
+            <a href="https://github.com/LiveTL/LiveTL/" target="about:blank">
+              <img
+                alt="GitHub Repo"
+                src="https://img.shields.io/github/stars/LiveTL/LiveTL?style=flat&logo=github&label=Star on GitHub"
+              />
+            </a>
+            <!--
           <a href="https://livetl.app/" target="about:blank">
             <img
               alt="Website"
@@ -178,13 +188,13 @@
             />
           </a>
           -->
-          <a href="https://opencollective.com/livetl" target="about:blank">
-            <img
-              alt="Donators and supporters"
-              src="https://img.shields.io/opencollective/all/livetl?color=blue&label=Donators%20and%20supporters&logo=dollar&style=flat"
-            />
-          </a>
-          <!--
+            <a href="https://opencollective.com/livetl" target="about:blank">
+              <img
+                alt="Donators and supporters"
+                src="https://img.shields.io/opencollective/all/livetl?color=blue&label=Donators%20and%20supporters&logo=dollar&style=flat"
+              />
+            </a>
+            <!--
           <a
             href="https://hosted.weblate.org/engage/livetl/"
             target="about:blank"
@@ -195,15 +205,20 @@
             />
           </a>
           -->
-          <a href="https://discord.gg/uJrV3tmthg" target="about:blank">
-            <img
-              alt="Discord"
-              src="https://img.shields.io/discord/780938154437640232.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2&style=flat"
-            />
-          </a>
+            <a href="https://discord.gg/uJrV3tmthg" target="about:blank">
+              <img
+                alt="Discord"
+                src="https://img.shields.io/discord/780938154437640232.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2&style=flat"
+              />
+            </a>
+          </div>
         </div>
       </div>
-    </div>
+    {:else if !items.length}
+      <div class="message">
+        <span> Translations picked up from the chat will appear here. </span>
+      </div>
+    {/if}
     {#each items as item}
       <div
         class="message"
@@ -232,9 +247,9 @@
                 channelFilters.set(item.id, {
                   ...channelFilters.get(item.id),
                   name: item.author,
-                  blacklist: true
+                  blacklist: true,
                 });
-                items = items.filter(i => i.id != item.id);
+                items = items.filter((i) => i.id != item.id);
               }}
             >
               <Icon path={mdiAccountRemove} size="1em" />
@@ -248,6 +263,9 @@
 </div>
 
 <style>
+  h2 {
+    font-size: 1.5em;
+  }
   .badges {
     margin-top: 10px;
   }
@@ -255,7 +273,9 @@
     height: 1.5em;
   }
   .heading {
-    font-size: 1.5em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   .subheading {
     font-size: 1em;
