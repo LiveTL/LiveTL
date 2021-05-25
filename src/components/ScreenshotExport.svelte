@@ -11,8 +11,8 @@
   import Dialog from "./Dialog.svelte";
   $: if (renderQueue.length) {
     (async () => {
-      await tick();
       rendering = true;
+      await tick();
       const canvas = await html2canvas(renderElement);
       const base64image = canvas.toDataURL("image/png");
       image = base64image;
@@ -31,7 +31,7 @@
   style="width: {renderWidth}px;"
 >
   {#each renderQueue as item}
-    <div style="margin: 5px 0px 5px 0px;">
+    <div class="messageItem">
       <span>{item.text}</span>
       <span
         class="author"
@@ -40,6 +40,10 @@
       >
     </div>
   {/each}
+  <div style="text-align: center; font-size: 0.6em;">
+    <strong>Exported from LiveTL.</strong>
+    Translations may not be accurate.
+  </div>
 </div>
 {#if rendering}
   <div style="z-index: 100; top: 0; left: 0; width: 100%; position: fixed;">
@@ -66,10 +70,10 @@
     position: fixed;
     top: 0px;
     left: 0px;
-    padding: 10px;
+    padding: 2.5px 5px 2.5px 5px;
   }
   .author {
-    font-size: 0.75em;
+    font-size: 0.6em;
   }
 
   .moderator {
@@ -78,6 +82,12 @@
 
   .owner {
     color: #ffd600 !important;
+  }
+  .messageItem {
+    margin: 2.5px 0px 2.5px 0px;
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 5px;
   }
 
 </style>
