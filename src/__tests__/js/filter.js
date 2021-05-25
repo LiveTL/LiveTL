@@ -33,7 +33,9 @@ describe.each([
   [ ': jap', langs.jp, true ],
   [ '英語／EN', langs.en, true ],
   [ '英語／jp', langs.en, false ],
-  [ '【Polka˽EN】', langs.en, true ]
+  [ '【Polka˽EN】', langs.en, true ],
+  [ '[Français]', langs.fr, true ],
+  [ '日本語', langs.jp, true ],
 ])('isLangMatch("%s", "%s")', (textLang, currentLang, expected) => {
   it(`says the match is ${expected}`, () => {
     expect(isLangMatch(textLang, currentLang)).toEqual(expected);
