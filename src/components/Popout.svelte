@@ -1,12 +1,12 @@
 <script>
   import { afterUpdate } from 'svelte';
   import { fade } from 'svelte/transition';
-  import { Button, Icon, MaterialApp, ProgressCircular } from 'svelte-materialify/src';
+  import { Button, Icon, MaterialApp, TextField } from 'svelte-materialify/src';
   import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCameraOutline, mdiCheckOutline, mdiCloseOutline } from '@mdi/js';
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
   import { TextDirection } from '../js/constants.js';
-  import { textDirection } from '../js/store.js';
+  import { textDirection, screenshotRenderWidth } from '../js/store.js';
   import MessageDisplay from './MessageDisplay.svelte';
   import ScreenshotExport from "./ScreenshotExport.svelte";
   import Updates from './Updates.svelte';
@@ -44,7 +44,6 @@
   });
 
   let renderQueue;
-  let renderWidth = 500;
 
   let screenshotting = false;
 
@@ -57,13 +56,20 @@
     renderQueue = selectedItems;
     toggleScreenshot();
   }
+
+  let renderWidth = '500';
+  let renderWidthInt = null;
+  $: renderWidthInt = parseInt(renderWidth);
+  $: if(screenshotRenderWidth) {
+    $screenshotRenderWidth = renderWidthInt;
+  }
 </script>
 
 <svelte:window on:resize={checkAtRecent} />
 
 <MaterialApp theme="dark">
   <div>
-    <ScreenshotExport bind:renderQueue bind:renderWidth />
+    <ScreenshotExport bind:renderQueue bind:renderWidth={renderWidthInt} />
   </div>
 
   <Updates bind:active={updatePopupActive} />
@@ -73,6 +79,15 @@
       : 'top'}Float"
     style="display: {isResizing ? 'none' : 'unset'};"
   >
+    {#if screenshotting}
+      <TextField
+        dense
+        bind:value={renderWidth}
+        filled
+        rules={[item => (isNaN(parseInt(item)) ? 'Invalid width' : true)]}
+        >Width (px)</TextField
+      >
+    {/if}
     {#if !settingsOpen}
       <Button
         fab
@@ -148,6 +163,12 @@
     right: 0px;
     padding: 5px;
     z-index: 100;
+  }
+  .settingsButton :global(.s-input) {
+    display: inline-flex;
+    background-color: var(--theme-surface);
+    border-radius: 5px;
+    width: 7em;
   }
   .recentButton {
     position: absolute;

@@ -58,4 +58,5 @@ export const
   customFilters = SS('customFilters', [sampleFilter].slice(1)),
   enableCaptionTimeout = SS('enableCaptionTimeout', false),
   chatSplit = SS('chatSplit', ChatSplit.HORIZONTAL),
-  lastVersion = SS('lastVersion', '0.0.0');
+  lastVersion = SS('lastVersion', '0.0.0'),
+  screenshotRenderWidth = SS('screenshotRenderWidth', 500);

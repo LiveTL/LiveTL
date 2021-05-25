@@ -20,6 +20,9 @@
       rendering = false;
     })();
   }
+  import {
+    AuthorType
+  } from '../js/constants.js';
 </script>
 
 <div
@@ -28,9 +31,13 @@
   style="width: {renderWidth}px;"
 >
   {#each renderQueue as item}
-    <div>
+    <div style="margin: 5px 0px 5px 0px;">
       <span>{item.text}</span>
-      <span class="author">{item.author}</span>
+      <span
+        class="author"
+        class:moderator={item.types & AuthorType.moderator}
+        class:owner={item.types & AuthorType.owner}>{item.author}</span
+      >
     </div>
   {/each}
 </div>
@@ -63,6 +70,14 @@
   }
   .author {
     font-size: 0.75em;
+  }
+
+  .moderator {
+    color: #a0bdfc !important;
+  }
+
+  .owner {
+    color: #ffd600 !important;
   }
 
 </style>
