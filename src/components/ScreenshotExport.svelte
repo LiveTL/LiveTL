@@ -41,7 +41,7 @@
     </div>
   {/each}
   <div style="text-align: center; font-size: 0.6em;">
-    <strong>Exported from LiveTL.</strong>
+    <strong>Screenshot from LiveTL.</strong>
     Translations may not be accurate.
   </div>
 </div>

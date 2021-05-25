@@ -2,7 +2,7 @@
   import { afterUpdate } from 'svelte';
   import { fade } from 'svelte/transition';
   import { Button, Icon, MaterialApp, TextField } from 'svelte-materialify/src';
-  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCameraOutline, mdiCheckOutline, mdiCloseOutline } from '@mdi/js';
+  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck } from '@mdi/js';
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
   import { TextDirection } from '../js/constants.js';
@@ -77,7 +77,10 @@
     class="settingsButton {$textDirection === TextDirection.TOP
       ? 'bottom'
       : 'top'}Float"
-    style="display: {isResizing ? 'none' : 'unset'};"
+    style="display: {isResizing
+      ? 'none'
+      : 'flex'}; flex-direction: row; align-items: center;
+  }"
   >
     {#if screenshotting}
       <h6 class="floatingText">
@@ -92,19 +95,22 @@
       >
     {/if}
     {#if !settingsOpen}
-      <Button
-        fab
-        size="small"
-        class={screenshotting ? 'green' : ''}
-        on:click={screenshotting ? saveScreenshot : toggleScreenshot}
-      >
-        <Icon path={screenshotting ? mdiCheckOutline : mdiCameraOutline} />
-      </Button>
+      <div class={screenshotting ? 'green-text' : ''}>
+        <Button
+          fab
+          size="small"
+          on:click={screenshotting ? saveScreenshot : toggleScreenshot}
+        >
+          <Icon path={screenshotting ? mdiCheck : mdiCamera} />
+        </Button>
+      </div>
     {/if}
     {#if screenshotting}
-      <Button fab size="small" class="red" on:click={toggleScreenshot}>
-        <Icon path={mdiCloseOutline} />
-      </Button>
+      <div class={screenshotting ? 'red-text' : ''}>
+        <Button fab size="small" on:click={toggleScreenshot}>
+          <Icon path={mdiClose} />
+        </Button>
+      </div>
     {/if}
     {#if !screenshotting}
       <Button fab size="small" on:click={() => (settingsOpen = !settingsOpen)}>
@@ -196,6 +202,7 @@
   }
   :global(.s-btn) {
     vertical-align: top !important;
+    margin-left: 5px;
   }
 
 </style>
