@@ -1,6 +1,6 @@
 <script>
   import { ExpansionPanel, ExpansionPanels } from 'svelte-materialify';
-  let value = [0, 1];
+  let value = [];
 </script>
 
 <ExpansionPanels bind:value>
