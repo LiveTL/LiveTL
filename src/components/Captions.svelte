@@ -82,9 +82,7 @@
   left: min(max({$captionLeft}%, calc(0% - 20px)), calc(100% - 30px));
   width: max(0%, {$captionWidth}%);
   font-size: {$captionFontSize}px;
-  display: {show
-    ? 'block'
-    : 'none'};
+  display: {show ? 'block' : 'none'};
 "
 >
   <div class="captionSegment" bind:this={elem}>
@@ -111,12 +109,10 @@
     padding: 5px 10px;
     animation-iteration-count: 1;
     animation: splash 1s normal forwards ease-in-out;
-    margin: 20px;
     backdrop-filter: blur(5px);
   }
   .captionsBox :global(.ui-resizable-handle) {
-    height: calc(100% - 40px);
-    margin-top: 20px;
+    height: 100%;
   }
   .captionsBox :global(.ui-resizable-e) {
     transform: translateX(-10px);
@@ -124,4 +120,5 @@
   .captionsBox :global(.ui-resizable-w) {
     transform: translateX(10px);
   }
+
 </style>
