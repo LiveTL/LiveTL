@@ -297,6 +297,7 @@
   .messageDisplay {
     display: flex;
     width: 100%;
+    max-height: 100%;
   }
 
   .message {
