@@ -133,10 +133,8 @@ async function exportImage(name, page, url, func, scale = [1, 1]) {
 
     const args = process.argv.slice(2);
     let images = [];
-    args.forEach(arg => {
-      const items = arg.split(',');
-      items.forEach(item => images.push(item.trim()));
-    });
+    const items = args[0].split(',');
+    items.forEach(item => images.push(item.trim()));
 
     for (let i = 0; i < images.length; i++) {
       const item = images[i].toString();
