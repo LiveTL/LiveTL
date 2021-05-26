@@ -46,7 +46,7 @@
       {/each}
     </ul>
   </ExpansionPanel>
-  <ExpansionPanel style="flex-direction: column;">
+  <ExpansionPanel>
     <span slot="header">Donators and Supporters</span>
     <p>
       <a href="https://opencollective.com/livetl" target="_blank">
@@ -91,6 +91,10 @@
   ol {
     padding-left: 24px;
     width: calc(100% - 24px);
+  }
+
+  :global(.s-expansion-panel__content) {
+    flex-direction: column !important;
   }
 
 </style>
