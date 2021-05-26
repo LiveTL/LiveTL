@@ -6,16 +6,18 @@ const xvfb = new (require('xvfb'))({
   silent: true,
   xvfb_args: ['-screen', '0', '1280x800x24', '-ac'],
 });
-xvfb.start((err)=>{ if (err) console.error(err); });
- 
-async function exportImage(name, page, url, func, scale=[1, 1]) {
+xvfb.start((err) => { if (err) console.error(err); });
+
+async function exportImage(name, page, url, func, scale = [1, 1]) {
   await page.emulateMediaFeatures([{
-    name: 'prefers-color-scheme', value: 'dark' }]);
+    name: 'prefers-color-scheme', value: 'dark'
+  }]);
   await page.goto(url);
-  await page.setViewport({width: 1280, height: 800 });
+  await page.setViewport({ width: 1280, height: 800 });
   console.log(`Exporting '${name}'...`);
   const p = `calc(100% * ${scale[1]} / ${scale[0]})`;
-  await page.addStyleTag({content: `
+  await page.addStyleTag({
+    content: `
     html {
       width: ${p};
       height: ${p};
@@ -25,7 +27,7 @@ async function exportImage(name, page, url, func, scale=[1, 1]) {
   `});
   await page.evaluate(() => window.sleep = ms => new Promise(res => setTimeout(res, ms)));
   await page.evaluate(func);
-  return page.screenshot({path: `img/${name}.png`, });
+  return page.screenshot({ path: `img/${name}.png`, });
 }
 
 (async () => {
@@ -49,23 +51,23 @@ async function exportImage(name, page, url, func, scale=[1, 1]) {
       ],
       ignoreDefaultArgs: ['--hide-scrollbars']
     });
- 
+
     // Name of the extension
     const extensionName = manifest.name;
- 
+
     // Find the extension
     const targets = await browser.targets();
     const extensionTarget = targets.find(({ _targetInfo }) => {
       return _targetInfo.title === extensionName && _targetInfo.type === 'background_page';
     });
- 
+
     // Extract the URL
     const extensionURL = extensionTarget._targetInfo.url;
     console.log(`Extracted URL:  ${extensionURL}`);
     const urlSplit = extensionURL.split('/');
     const extensionID = urlSplit[2];
     console.log(`Extension ID: ${extensionID}`);
- 
+
     // Define the extension page
     const watchPageURL = [
       'watch.html?',
@@ -105,7 +107,7 @@ async function exportImage(name, page, url, func, scale=[1, 1]) {
         const intervalLength = 2500;
         document.querySelectorAll('.s-dialog .s-btn')[1].click();
         let i = 0;
-        return new Promise((resolve) =>{
+        return new Promise((resolve) => {
           const interval = setInterval(async () => {
             if (i > segments) {
               clearInterval(interval);
@@ -119,10 +121,10 @@ async function exportImage(name, page, url, func, scale=[1, 1]) {
           }, intervalLength);
         });
       }],
-      'buttons': ['https://www.youtube.com/live_chat_replay?continuation=' + 
-                  'op2w0wRiGlhDaWtxSndvWVZVTkljM2cwU0hGaExURlBVbXBSVkdnNV' +
-                  'ZGbEVhSGQzRWd0cU9HdG9TVFZwY2kxUE9Cb1Q2cWpkdVFFTkNndHFP' +
-                  'R3RvU1RWcGNpMVBPQ0FCQAFyAggEeAE%253D',
+      'buttons': ['https://www.youtube.com/live_chat_replay?continuation=' +
+        'op2w0wRiGlhDaWtxSndvWVZVTkljM2cwU0hGaExURlBVbXBSVkdnNV' +
+        'ZGbEVhSGQzRWd0cU9HdG9TVFZwY2kxUE9Cb1Q2cWpkdVFFTkNndHFP' +
+        'R3RvU1RWcGNpMVBPQ0FCQAFyAggEeAE%253D',
       async () => {
         await window.sleep(15000);
       }, [2, 1]
@@ -136,10 +138,11 @@ async function exportImage(name, page, url, func, scale=[1, 1]) {
       items.forEach(item => images.push(item.trim()));
     });
 
-    for (const item of images) {
-      await exportImage(item, page, ...pages[item]);
+    for (let i = 0; i < images.length; i++) {
+      const item = images[i].toString();
+      await exportImage(item, page, ...(pages[item]));
     }
- 
+
     console.log('Closing the browser...');
     await browser.close();
     xvfb.stop();
