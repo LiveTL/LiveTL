@@ -3,6 +3,7 @@
   import { Tabs, Tab, TabContent, MaterialApp } from 'svelte-materialify/src';
   import UISettings from './settings/UISettings.svelte';
   import FilterSettings from './settings/FilterSettings.svelte';
+  import About from './About.svelte';
 
   export let isStandalone = false;
   export let isResizing = false;
@@ -10,6 +11,7 @@
   const settings = [
     { name: 'Interface', component: UISettings },
     { name: 'Filters', component: FilterSettings },
+    { name: 'About', component: About },
   ];
 
   let wrapper = null;

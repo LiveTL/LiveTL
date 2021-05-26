@@ -59,4 +59,5 @@ export const
   enableCaptionTimeout = SS('enableCaptionTimeout', false),
   chatSplit = SS('chatSplit', ChatSplit.HORIZONTAL),
   lastVersion = SS('lastVersion', '0.0.0'),
-  screenshotRenderWidth = SS('screenshotRenderWidth', 500);
+  screenshotRenderWidth = SS('screenshotRenderWidth', 500),
+  welcomeDismissed = SS('welcomeDismissed', false);

@@ -27,7 +27,7 @@
   .app {
     padding: 0px !important;
     justify-content: center;
-    max-height: 100%;
+    height: 100%;
   }
   :global(body) {
     margin: 0px 0px;
