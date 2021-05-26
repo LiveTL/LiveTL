@@ -135,6 +135,7 @@ async function exportImage(name, page, url, func, scale = [1, 1]) {
     let images = [];
     const items = args[0].split(',');
     items.forEach(item => images.push(item.trim()));
+    if (images[0] == 'all') images = Object.keys(pages);
 
     for (let i = 0; i < images.length; i++) {
       const item = images[i].toString();
