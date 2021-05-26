@@ -131,7 +131,7 @@ async function exportImage(name, page, url, func, scale=[1, 1]) {
 
     let images = process.argv.slice(2).map(item => item.split(',')[0]);
     if (images[0] == 'all') images = Object.keys(pages);
-    else images = images[0].split(',');
+    else images = images[0].split(',').map(item => item.trim());
 
     for (const item of images) {
       await exportImage(item, page, ...pages[item]);
