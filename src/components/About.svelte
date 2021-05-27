@@ -1,11 +1,11 @@
 <script>
   import { onMount } from 'svelte';
   import { ExpansionPanel, ExpansionPanels, Row } from 'svelte-materialify/src';
+  import opencollective from '../plugins/opencollective.json';
+  import gh from '../plugins/gh.json';
 
   export let isStandalone = false;
 
-  const opencollectiveAPI = 'https://opencollective.com/livetl/members/all.json';
-  const ghAPI = 'https://api.github.com/repos/LiveTL/LiveTL/contributors';
   const compareAttr = attr => (a, b) => a[attr] - b[attr];
   const reverseCompare = cmp => (a, b) => -cmp(a, b);
   const compareDono = reverseCompare(compareAttr('totalAmountDonated'));
@@ -19,15 +19,6 @@
     });
   };
   const uniqueUsers = uniqueBy('profile');
-
-  let opencollective = [];
-  let gh = [];
-  onMount(async () => {
-    [opencollective, gh] = await Promise.all([
-      fetch(opencollectiveAPI).then(toJson),
-      fetch(ghAPI).then(toJson)
-    ]);
-  });
 
   $: donators = uniqueUsers(opencollective)
     .filter(user => user.role === 'BACKER')

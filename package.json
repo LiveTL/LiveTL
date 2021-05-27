@@ -7,6 +7,7 @@
     "package": "node utils/package.js",
     "start": "node utils/webserver.js",
     "ss": "node utils/screenshot.js",
+    "update:list": "node utils/genlist.js",
     "test": "sed -i 's/import noUi/import * as noUi/g' node_modules/svelte-materialify/src/components/Slider/Slider.svelte && jest src",
     "test:watch": "yarn test --watch",
     "format": "eslint --fix ."

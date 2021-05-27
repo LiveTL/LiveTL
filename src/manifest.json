@@ -9,8 +9,7 @@
     "webRequestBlocking",
     "https://www.youtube.com/*?*",
     "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat/*",
-    "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay/*",
-    "https://opencollective.com/livetl/members/all.json"
+    "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay/*"
   ],
   "background": {
     "page": "background.html",
