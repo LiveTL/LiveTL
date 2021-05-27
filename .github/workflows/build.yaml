@@ -15,6 +15,7 @@ jobs:
         run: yarn
       - name: Build extensions
         run: |
+          yarn update:list
           yarn build production --version=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g')
           yarn package
       - name: Upload Chrome build to release
