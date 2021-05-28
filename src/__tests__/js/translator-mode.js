@@ -1,4 +1,4 @@
-import { omniComplete } from '../../js/translator-mode.js';
+import { omniComplete, macroSystem } from '../../js/translator-mode.js';
 import { get, writable } from 'svelte/store';
 
 const sleep = time => new Promise(res => setTimeout(res, time));
@@ -69,5 +69,45 @@ describe('omnicompletion', () =>{
     await sleep(0);
     const { toContain } = expect(get(store));
     ['hello', 'there'].forEach(toContain);
+  });
+});
+
+describe('macro system', () => {
+  const macros = {
+    peko: 'pekora',
+    kiara: 'kiara',
+    en: '[en]',
+    coco: 'coco',
+    naki: 'ayame',
+    kan: 'kanata',
+  };
+
+  it('adds macros', () => {
+    const { addMacro, getMacro } = macroSystem();
+    addMacro('bot', 'botan');
+    expect(getMacro('bot')).toBe('botan');
+  });
+
+  it('replaces text with full macros', () => {
+    const { replaceText } = macroSystem(macros);
+    expect(replaceText('/en /peko: hello there, /naki: dochi dochi'))
+      .toBe('[en] pekora: hello there, ayame: dochi dochi');
+  });
+
+  it('replaces text with partial macros', () => {
+    const { replaceText } = macroSystem(macros);
+    expect(replaceText('/e /pe: hello there, /n: dochi dochi'))
+      .toBe('[en] pekora: hello there, ayame: dochi dochi');
+  });
+
+  it('doesn\'t replace escaped macros', () => {
+    const { replaceText } = macroSystem(macros);
+    const text = '//e //pe: hello there, //n: dochi dochi';
+    expect(replaceText(text)).toBe(text);
+  })
+
+  it('generates completions', () => {
+    const { complete } = macroSystem(macros);
+    expect(complete('[en] /k')).toEqual(['kan', 'kiara']);
   });
 });

@@ -2,7 +2,7 @@ export function omniComplete(initialWords) {
   let words = initialWords || [];
   const callbacks = [];
   let changes = 0;
-  const wordSet = new Set(words);
+  let wordSet = new Set(words);
 
   const addWord = word => {
     if (!wordSet.has(word)) {
@@ -33,7 +33,10 @@ export function omniComplete(initialWords) {
   const subscribe = callbacks.push.bind(callbacks);
 
   const syncWith = store => {
-    store.subscribe($words => words = $words);
+    store.subscribe($words => {
+      words = $words
+      wordSet = new Set(words);
+    });
     subscribe(store.set.bind(store));
   };
 
@@ -44,5 +47,22 @@ export function omniComplete(initialWords) {
     getWords,
     subscribe,
     syncWith
+  };
+}
+
+export function macroSystem(initialMacros) {
+  const macros = {...initialMacros} || {};
+  const completion = omniComplete(Object.keys(macros));
+  const { complete } = completion;
+
+  const addMacro = (name, expansion) => { };
+  const getMacro = name => macros[name];
+  const replaceText = text => text;
+
+  return {
+    addMacro,
+    complete,
+    getMacro,
+    replaceText,
   };
 }
