@@ -7,9 +7,9 @@
   } from 'svelte';
   import { Checkbox, Icon } from 'svelte-materialify/src';
   import { sources, combineStores } from '../js/sources.js';
-  import Minimizer from "./Minimizer.svelte";
+  import Minimizer from './Minimizer.svelte';
   import '../css/splash.css';
-  import { mdiEyeOffOutline, mdiAccountRemove, mdiChevronDown, mdiChevronUp } from '@mdi/js';
+  import { mdiEyeOffOutline, mdiAccountRemove } from '@mdi/js';
   import {
     channelFilters,
     livetlFontSize,
@@ -228,7 +228,15 @@
         {#if screenshotting}
           <Checkbox bind:group={selectedItems} value={item} />
         {/if}
-        <span>{item.text}</span>
+        {#each item.messageArray as message}
+          {#if message.type === 'text'}
+            <span>{message.text}</span>
+          {:else if message.type === 'link'}
+            <a class="chatLink" href={message.url} target="_blank">{message.text}</a>
+          {:else if message.type === 'emote' && message.src}
+            <img class="chatEmote" src={message.src} alt="emote" />
+          {/if}
+        {/each}
         <span class="info">
           <span
             class:moderator={item.types & AuthorType.moderator}
@@ -342,8 +350,20 @@
   .message:nth-child(odd) {
     background-color: rgba(255, 255, 255, 0.075);
   }
+
   .message:nth-child(even) {
     background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .chatEmote {
+    vertical-align: sub;
+    height: 1.5em;
+    width: 1.5em;
+    margin: 0px 0.2em 0px 0.2em;
+  }
+
+  .chatLink {
+    color: var(--theme-text-primary);
   }
 
 </style>
