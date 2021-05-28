@@ -105,6 +105,14 @@ function loaded() {
   body.style.width = '100%';
   body.style.height = '100%';
   body.style.position = 'fixed';
+  const css = `
+    .livetlButtonWrapper a.ytd-toggle-button-renderer:hover {
+      background-color: #0099ffb5 !important;
+    }
+  `;
+  const style = document.createElement('style');
+  style.innerHTML = css;
+  body.appendChild(style);
   const insertButtons = async () => {
     try {
       document.querySelectorAll('.livetlButtonWrapper').forEach(item => item.remove());
