@@ -10,7 +10,7 @@
 
   onMount(() => {
     translatorMode(
-      container.querySelectorAll('#input')[1], content, recommendations
+      container.querySelectorAll('#input'), content, recommendations
     );
   });
 </script>

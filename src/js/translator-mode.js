@@ -96,16 +96,21 @@ export function macroSystem(initialMacros) {
   };
 }
 
-export function translatorMode(chatBox, content, recommendations) {
+export function translatorMode([container, chatBox], content, recommendations) {
   const macrosys = macroSystem({ en: '[en]', peko: 'pekora' });
+  const invisible = '‍';
+  const invisiReg = new RegExp(invisible, 'g');
   const onKeyDown = e => setTimeout(() => {
+    e.preventDefault();
     const text = chatBox.textContent;
-    console.log(e);
+    const invisiLoc = text.indexOf(invisible);
+    const { length } = text;
+    console.log(e, text);
     if (e.key === ' ' || e.key === 'Tab') {
-      const newText = macrosys.replaceText(text) + ' ';
+      const newText = macrosys.replaceText(text);
       if (newText != text) {
-        chatBox.textContent = newText;
-        setCaret(chatBox, newText.length);
+        chatBox.textContent = newText + invisible;
+        setCaret(chatBox, newText.length + 1);
       }
     }
     recommendations.set(macrosys.complete(chatBox.textContent));
