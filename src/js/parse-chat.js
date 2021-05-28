@@ -62,7 +62,19 @@ export const parseChatResponse = response =>{
       const runs = [];
       if (messageItem.message) {
         messageItem.message.runs.forEach((run) => {
-          if (run.text) {
+          if (run.text && run.navigationEndpoint) {
+            let url = run.navigationEndpoint.commandMetadata.webCommandMetadata.url;
+            if (url.startsWith('/')) {
+              url = 'https://www.youtube.com'.concat(url);
+            }
+            runs.push({
+              type: 'link',
+              text: decodeURIComponent(escape(unescape(encodeURIComponent(
+                run.text
+              )))),
+              url: url
+            });
+          } else if (run.text) {
             runs.push({
               type: 'text',
               text: decodeURIComponent(escape(unescape(encodeURIComponent(

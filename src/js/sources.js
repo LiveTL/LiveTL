@@ -102,11 +102,11 @@ function getYTCData(unparsed) {
 
 function ytcToMsg({ message, timestamp, author: { name: author, id, types } }) {
   const text = message
-    .filter(item => item.type === 'text')
+    .filter(item => item.type === 'text' || item.type === 'link')
     .map(item => item.text)
     .join('');
   const typeFlag = types.reduce((flag, t) => flag | AuthorType[t], 0);
-  return { text, timestamp, author, id, types: typeFlag };
+  return { text, timestamp, author, id, types: typeFlag, messageArray: message };
 }
 
 function forwardPostMessages(window) {
