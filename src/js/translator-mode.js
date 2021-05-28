@@ -1,3 +1,5 @@
+import { compose } from './utils.js';
+
 export function omniComplete(initialWords) {
   let words = initialWords || [];
   const callbacks = [];
@@ -51,13 +53,39 @@ export function omniComplete(initialWords) {
 }
 
 export function macroSystem(initialMacros) {
-  const macros = {...initialMacros} || {};
+  let macros = {...initialMacros} || {};
   const completion = omniComplete(Object.keys(macros));
-  const { complete } = completion;
 
-  const addMacro = (name, expansion) => { };
-  const getMacro = name => macros[name];
-  const replaceText = text => text;
+  const addMacro = (name, expansion) => {
+    macros[name] = expansion;
+    completion.addWord(name);
+  };
+  const getMacro = name => {
+    if (macros[name]) return macros[name];
+    const possibleMacros = completion.complete(name);
+    return possibleMacros.length == 1 ? macros[possibleMacros[0]] : null;
+  };
+
+  const splitText = text => [text, text.matchAll(/[\w\/]+/g)];
+  const replaceSplitText = ([input, split]) => {
+    const replaced = [];
+    let lastIdx = 0;
+    for (const { '0': text, index } of split) {
+      const replacement = getMacro(text.substring(1));
+      replaced.push(input.substring(lastIdx, index));
+      replaced.push(replacement ? replacement : text);
+      lastIdx = index + text.length;
+    }
+    replaced.push(input.substring(lastIdx));
+    return replaced.join('');
+  };
+  const replaceText = compose(replaceSplitText, splitText);
+  const complete = text => {
+    try {
+      return completion.complete(text.match(/\/([\w]+)$/)[1]);
+    }
+    catch (e) { return text; }
+  };
 
   return {
     addMacro,
