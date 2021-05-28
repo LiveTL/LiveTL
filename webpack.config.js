@@ -34,6 +34,7 @@ var options = {
     watch: path.join(__dirname, 'src', 'js', 'pages', 'watch.js'),
     welcome: path.join(__dirname, 'src', 'js', 'pages', 'welcome.js'),
     hyperchat: path.join(__dirname, 'src', 'js', 'pages', 'hyperchat.js'),
+    translatormode: path.join(__dirname, 'src', 'js', 'pages', 'translatormode.js'),
     injector: path.join(__dirname, 'src', 'js', 'content_scripts', 'injector.js'),
     interceptor: path.join(__dirname, 'src', 'js', 'content_scripts', 'interceptor.js'),
     fullscreen: path.join(__dirname, 'src', 'js', 'content_scripts', 'fullscreen.js'),

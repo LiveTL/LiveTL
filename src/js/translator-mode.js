@@ -94,3 +94,13 @@ export function macroSystem(initialMacros) {
     replaceText,
   };
 }
+
+export function translatorMode(chatBox) {
+  const onKeyDown = e => {
+    console.log(e);
+  };
+  if (chatBox.cleanUpTlMode) chatBox.cleanUpTlMode();
+  chatBox.cleanUpTlMode = () =>
+    chatBox.removeEventListener('keydown', onKeyDown);
+  chatBox.addEventListener('keydown', onKeyDown);
+}
