@@ -1,4 +1,5 @@
 import { compose } from './utils.js';
+import { writable } from 'svelte/store';
 
 export function omniComplete(initialWords) {
   let words = initialWords || [];
@@ -84,7 +85,7 @@ export function macroSystem(initialMacros) {
     try {
       return completion.complete(text.match(/\/([\w]+)$/)[1]);
     }
-    catch (e) { return text; }
+    catch (e) { return []; }
   };
 
   return {
@@ -95,12 +96,35 @@ export function macroSystem(initialMacros) {
   };
 }
 
-export function translatorMode(chatBox) {
-  const onKeyDown = e => {
+export function translatorMode(chatBox, content, recommendations) {
+  const macrosys = macroSystem({ en: '[en]', peko: 'pekora' });
+  const onKeyDown = e => setTimeout(() => {
+    const text = chatBox.textContent;
     console.log(e);
-  };
+    if (e.key === ' ' || e.key === 'Tab') {
+      const newText = macrosys.replaceText(text) + ' ';
+      if (newText != text) {
+        chatBox.textContent = newText;
+        setCaret(chatBox, newText.length);
+      }
+    }
+    recommendations.set(macrosys.complete(chatBox.textContent));
+    content.set(chatBox.textContent);
+  });
+  const cleanUps = [
+    () => chatBox.removeEventListener('keydown', onKeyDown),
+  ];
   if (chatBox.cleanUpTlMode) chatBox.cleanUpTlMode();
-  chatBox.cleanUpTlMode = () =>
-    chatBox.removeEventListener('keydown', onKeyDown);
+  chatBox.cleanUpTlMode = () => cleanUps.forEach(c => c());
   chatBox.addEventListener('keydown', onKeyDown);
+}
+
+function setCaret(el, pos) {
+  var range = document.createRange();
+  var sel = window.getSelection();
+  range.setStart(el.childNodes[0], pos);
+  range.collapse(true);
+  sel.removeAllRanges();
+  sel.addRange(range);
+  el.focus();
 }
