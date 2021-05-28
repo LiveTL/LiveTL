@@ -9,20 +9,27 @@
   const version = versionMap(manifest.version);
   const lvLoaded = lastVersion.loaded;
 
-  export let active;
+  export let active = false;
 
   function setLastVersion() {
     active = false;
-    lastVersion.set(version);
   }
 
   let Changelogs;
+  let unsubscribe;
+
   onMount(async () => {
     Changelogs = (await import(`../changelogs/${version}.svelte`)).default;
+
+    unsubscribe = lastVersion.subscribe($lv => {
+      if ($lv != version) {
+        active = true;
+      }
+      lastVersion.set(version);
+    });
   });
 
-  $: active = $lvLoaded && $lastVersion != version;
-  onDestroy(() => lastVersion.set(active ? $lastVersion : version));
+  onDestroy(() => unsubscribe());
 </script>
 
 <div>
