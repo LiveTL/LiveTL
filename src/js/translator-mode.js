@@ -1,5 +1,6 @@
-import { compose } from './utils.js';
+import { compose, dbg } from './utils.js';
 import { get } from 'svelte/store';
+
 
 export function omniComplete(initialWords) {
   let words = initialWords || [];
@@ -113,63 +114,74 @@ export function translatorMode(
   const isKey = key => e => e.key === key;
   const isTab = isKey('Tab');
   const isSpace = isKey(' ');
+  const isCharData = m => m.type === 'characterData';
   const focussed = () => get(focusRec);
 
   const replaceText = text => focussed()
     ? macrosys.completeEnd(text, macrosys.getMacro(focussed()))
     : macrosys.replaceText(text);
 
+  const removeLastSpace = text => text.endsWith(' ')
+    ? text.substring(0, text.length - 1)
+    : text;
+
+  const setChatboxText = text => {
+    chatBox.textContent = text + invisible;
+    setChatCaret();
+    updateStores();
+  };
+
+  const updateStores = () => {
+    updateRecommendations();
+    updateContent();
+  };
+
   const spaceIf = cond => cond ? ' ' : '';
   const setChatCaret = pos => setCaret(chatBox, chatBox.textContent.length);
   const text = () => chatBox.textContent;
+  const textWithoutLastSpace = compose(removeLastSpace, text);
   const updateRecommendations =
     compose(recommendations.set, macrosys.complete, text)
   const updateContent = compose(content.set, text);
+  const doubleTimeout = cb => setTimeout(() => setTimeout(cb));
 
+  // Keydown event
   let e = null;
 
   const onKeyDown = $e => {
     e = $e;
     if (isTab(e) && oneRecommend()) substituteInChatbox();
-    if (isTab(e)) {
-      setTimeout(() => setTimeout(setChatCaret));
-    }
+    if (isTab(e)) doubleTimeout(setChatCaret);
   };
 
-  const dbg = (...args) => console.log(...args.map(o => `'${o}'`));
-
   const substituteInChatbox = () => {
-    const t = text();
-    const tt = t.endsWith(' ') ? t.substring(0, t.length - 1) : t;
-    const newText = replaceText(tt) + ' ';
-    setTimeout(() => {
-      if (newText != text()) {
-        chatBox.textContent = newText + invisible;
-        setChatCaret();
-        updateRecommendations();
-      }
-    });
+    const newText = replaceText(textWithoutLastSpace()) + ' ';
+    if (newText != text()) {
+      setTimeout(() => setChatboxText(newText));
+    }
   };
 
   const onMutation = () => {
     if (isSpace(e)) {
       substituteInChatbox();
     }
-
-    updateRecommendations();
-    updateContent();
+    updateStores();
   };
 
-  const observer = new MutationObserver(mutations => mutations.filter(m => m.type === 'characterData').forEach(onMutation));
+  const processMutations = mutations => mutations
+    .filter(isCharData)
+    .forEach(onMutation);
+
+  const chatBoxObserver = new MutationObserver(processMutations);
 
   const cleanUps = [
     () => chatBox.removeEventListener('keydown', onKeyDown),
-    () => observer.disconnect(),
+    () => chatBoxObserver.disconnect(),
   ];
   if (chatBox.cleanUpTlMode) chatBox.cleanUpTlMode();
   chatBox.cleanUpTlMode = () => cleanUps.forEach(c => c());
   chatBox.addEventListener('keydown', onKeyDown);
-  observer.observe(document.querySelector('#input').parentElement.parentElement, { subtree: true, characterData: true });
+  chatBoxObserver.observe(container, { subtree: true, characterData: true });
 }
 
 function setCaret(el, pos) {

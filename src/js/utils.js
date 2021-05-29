@@ -4,3 +4,5 @@ export const compose = (...args) =>
 export const not = f => (...args) => !f(...args);
 
 export const composeOr = (...args) => ipt => args.some(a => a(ipt));
+
+export const dbg = (...args) => console.log(...args.map(o => `'${o}'`));
