@@ -110,30 +110,43 @@ export function translatorMode(
   const invisible = '‍';
   const invisiReg = new RegExp(invisible, 'g');
   const oneRecommend = () => get(recommendations).length === 1;
-  const isTab = e => e.key === 'Tab';
+  const isKey = key => e => e.key === key;
+  const isTab = isKey('Tab');
+  const isSpace = isKey(' ');
   const focussed = () => get(focusRec);
+
+  const replaceText = text => focussed()
+    ? macrosys.completeEnd(text, macrosys.getMacro(focussed()))
+    : macrosys.replaceText(text);
+
+  const spaceIf = cond => cond ? ' ' : '';
+  const setChatCaret = pos => setCaret(chatBox, chatBox.textContent.length);
+  const text = () => chatBox.textContent;
+  const updateRecommendations =
+    compose(recommendations.set, macrosys.complete, text)
+  const updateContent = compose(content.set, text);
+
+  // TODO get the caret position and manually add in the text
+  // instead of setTimeout
+  // Known bug: if user types space too fast, focusRec has updated to null
+  // and no completion will occur
   const onKeyDown = e => setTimeout(() => {
     e.preventDefault();
-    const text = chatBox.textContent;
-    const invisiLoc = text.indexOf(invisible);
-    const { length } = text;
-    console.log(e, text);
-    if (e.key === ' ' || isTab(e) && oneRecommend()) {
-      const replaced = focussed()
-        ? macrosys.completeEnd(text, focussed())
-        : macrosys.replaceText(text);
-      const newText = isTab(e) ? replaced + ' ' : replaced;
-      if (newText != text) {
+    updateRecommendations();
+
+    if (isSpace(e) || isTab(e) && oneRecommend()) {
+      const newText = replaceText(text()) + spaceIf(isTab(e));
+      if (newText != text()) {
         chatBox.textContent = newText + invisible;
-        setCaret(chatBox, newText.length + 1);
+        setChatCaret();
       }
     }
-    if (e.key === 'Tab') {
-      setTimeout(() => setCaret(chatBox, chatBox.textContent.length));
-    }
-    recommendations.set(macrosys.complete(chatBox.textContent));
-    content.set(chatBox.textContent);
+
+    if (isTab(e)) setTimeout(setChatCaret);
+    updateRecommendations();
+    updateContent();
   });
+
   const cleanUps = [
     () => chatBox.removeEventListener('keydown', onKeyDown),
   ];
@@ -143,8 +156,8 @@ export function translatorMode(
 }
 
 function setCaret(el, pos) {
-  var range = document.createRange();
-  var sel = window.getSelection();
+  const range = document.createRange();
+  const sel = window.getSelection();
   range.setStart(el.childNodes[0], pos);
   range.collapse(true);
   sel.removeAllRanges();
