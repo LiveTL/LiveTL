@@ -7,6 +7,7 @@
 
   const content = writable('');
   const recommendations = writable([]);
+  const focusRec = writable(null);
 
   let focussed = 0;
 
@@ -26,7 +27,7 @@
 
   onMount(() => {
     translatorMode(
-      container.querySelectorAll('#input'), content, recommendations
+      container.querySelectorAll('#input'), content, recommendations, focusRec
     );
     chatbox.addEventListener('keydown', onKeydown);
   });
@@ -34,6 +35,7 @@
   container.cleanUpCbs.push(() => chatbox.removeEventListener('keydown', onKeyDown));
   $: reclen = $recommendations.length;
   $: focussed = reclen == 0 ? 0 : focussed % reclen;
+  $: focusRec.set(reclen ? $recommendations[focussed] : null);
 </script>
 
 <!-- The translation recommendations -->

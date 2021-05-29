@@ -81,6 +81,9 @@ export function macroSystem(initialMacros) {
     return replaced.join('');
   };
   const replaceText = compose(replaceSplitText, splitText);
+  const completeEnd = (text, completion) => {
+    return text.replace(/\/([\w]+)$/, completion);
+  };
   const complete = text => {
     try {
       return completion.complete(text.match(/\/([\w]+)$/)[1]);
@@ -91,17 +94,24 @@ export function macroSystem(initialMacros) {
   return {
     addMacro,
     complete,
+    completeEnd,
     getMacro,
     replaceText,
   };
 }
 
-export function translatorMode([container, chatBox], content, recommendations) {
+export function translatorMode(
+  [container, chatBox],
+  content,
+  recommendations,
+  focusRec,
+) {
   const macrosys = macroSystem({ en: '[en]', peko: 'pekora', ero: 'erofi' });
   const invisible = '‍';
   const invisiReg = new RegExp(invisible, 'g');
   const oneRecommend = () => get(recommendations).length === 1;
   const isTab = e => e.key === 'Tab';
+  const focussed = () => get(focusRec);
   const onKeyDown = e => setTimeout(() => {
     e.preventDefault();
     const text = chatBox.textContent;
@@ -109,7 +119,9 @@ export function translatorMode([container, chatBox], content, recommendations) {
     const { length } = text;
     console.log(e, text);
     if (e.key === ' ' || isTab(e) && oneRecommend()) {
-      const replaced = macrosys.replaceText(text);
+      const replaced = focussed()
+        ? macrosys.completeEnd(text, focussed())
+        : macrosys.replaceText(text);
       const newText = isTab(e) ? replaced + ' ' : replaced;
       if (newText != text) {
         chatBox.textContent = newText + invisible;
