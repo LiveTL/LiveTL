@@ -97,7 +97,7 @@ export function macroSystem(initialMacros) {
 }
 
 export function translatorMode([container, chatBox], content, recommendations) {
-  const macrosys = macroSystem({ en: '[en]', peko: 'pekora' });
+  const macrosys = macroSystem({ en: '[en]', peko: 'pekora', ero: 'erofi' });
   const invisible = '‍';
   const invisiReg = new RegExp(invisible, 'g');
   const onKeyDown = e => setTimeout(() => {
@@ -106,12 +106,15 @@ export function translatorMode([container, chatBox], content, recommendations) {
     const invisiLoc = text.indexOf(invisible);
     const { length } = text;
     console.log(e, text);
-    if (e.key === ' ' || e.key === 'Tab') {
+    if (e.key === ' ') {
       const newText = macrosys.replaceText(text);
       if (newText != text) {
         chatBox.textContent = newText + invisible;
         setCaret(chatBox, newText.length + 1);
       }
+    }
+    if (e.key === 'Tab') {
+      setTimeout(() => setCaret(chatBox, chatBox.textContent.length));
     }
     recommendations.set(macrosys.complete(chatBox.textContent));
     content.set(chatBox.textContent);

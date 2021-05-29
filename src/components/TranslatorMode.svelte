@@ -8,19 +8,56 @@
   const content = writable('');
   const recommendations = writable([]);
 
+  let focussed = 0;
+
+  const chatbox = container.querySelectorAll('#input')[1];
+  const hide = el => el.style.display = 'none';
+  const hideRipples = () => document
+    .querySelectorAll('paper-ripple')
+    .forEach(hide)
+
+  const onKeydown = e => {
+    if (e.key === 'Tab') {
+      e.stopPropagation();
+      setTimeout(hideRipples);
+      focussed++;
+    }
+  };
+
   onMount(() => {
     translatorMode(
       container.querySelectorAll('#input'), content, recommendations
     );
+    chatbox.addEventListener('keydown', onKeydown);
   });
+
+  container.cleanUpCbs.push(() => chatbox.removeEventListener('keydown', onKeyDown));
+  $: reclen = $recommendations.length;
+  $: focussed = reclen == 0 ? 0 : focussed % reclen;
 </script>
 
 <!-- The translation recommendations -->
 {#if $recommendations.length == 0}
+  <!--Invisible chars-->
   <p>‍‍‍</p>
 {/if}
-<p>
-  {#each $recommendations as recommend}
-    <span>{recommend}</span>
+<div class="recommends">
+  {#each $recommendations as recommend, i}
+    <div class:focussed={i == focussed}>{recommend}</div>
   {/each}
-</p>
+</div>
+
+<style>
+  .focussed {
+    color: #0099FF;
+  }
+
+  .recommends {
+    display: flex;
+    flex-direction: row wrap;
+  }
+
+  .recommends > * {
+    margin-right: 2rem;
+  }
+</style>
