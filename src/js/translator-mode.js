@@ -126,8 +126,10 @@ export function translatorMode(
     : text;
 
   const setChatboxText = text => {
+    const carPos = caretPos();
+    const atEnd = caretAtEnd();
     chatBox.textContent = text + invisible;
-    setChatCaret();
+    setChatCaret(atEnd ? null : carPos);
     updateStores();
   };
 
@@ -137,7 +139,10 @@ export function translatorMode(
   };
 
   const spaceIf = cond => cond ? ' ' : '';
-  const setChatCaret = pos => setCaret(chatBox, chatBox.textContent.length);
+  const setChatCaret =
+    pos => setCaret(chatBox, pos == null ? text().length : pos);
+  const caretPos = () => getCaretCharOffset(chatBox);
+  const caretAtEnd = () => caretPos() == text().length;
   const text = () => chatBox.textContent;
   const textWithoutLastSpace = compose(removeLastSpace, text);
   const updateRecommendations =
@@ -192,4 +197,28 @@ function setCaret(el, pos) {
   sel.removeAllRanges();
   sel.addRange(range);
   el.focus();
+}
+
+
+// https://stackoverflow.com/a/30400227
+function getCaretCharOffset(element) {
+  var caretOffset = 0;
+
+  if (window.getSelection) {
+    var range = window.getSelection().getRangeAt(0);
+    var preCaretRange = range.cloneRange();
+    preCaretRange.selectNodeContents(element);
+    preCaretRange.setEnd(range.endContainer, range.endOffset);
+    caretOffset = preCaretRange.toString().length;
+  } 
+
+  else if (document.selection && document.selection.type != "Control") {
+    var textRange = document.selection.createRange();
+    var preCaretTextRange = document.body.createTextRange();
+    preCaretTextRange.moveToElementText(element);
+    preCaretTextRange.setEndPoint("EndToEnd", textRange);
+    caretOffset = preCaretTextRange.text.length;
+  }
+
+  return caretOffset;
 }
