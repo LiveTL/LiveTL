@@ -1,5 +1,5 @@
 import { compose } from './utils.js';
-import { writable } from 'svelte/store';
+import { get } from 'svelte/store';
 
 export function omniComplete(initialWords) {
   let words = initialWords || [];
@@ -100,14 +100,17 @@ export function translatorMode([container, chatBox], content, recommendations) {
   const macrosys = macroSystem({ en: '[en]', peko: 'pekora', ero: 'erofi' });
   const invisible = '‍';
   const invisiReg = new RegExp(invisible, 'g');
+  const oneRecommend = () => get(recommendations).length === 1;
+  const isTab = e => e.key === 'Tab';
   const onKeyDown = e => setTimeout(() => {
     e.preventDefault();
     const text = chatBox.textContent;
     const invisiLoc = text.indexOf(invisible);
     const { length } = text;
     console.log(e, text);
-    if (e.key === ' ') {
-      const newText = macrosys.replaceText(text);
+    if (e.key === ' ' || isTab(e) && oneRecommend()) {
+      const replaced = macrosys.replaceText(text);
+      const newText = isTab(e) ? replaced + ' ' : replaced;
       if (newText != text) {
         chatBox.textContent = newText + invisible;
         setCaret(chatBox, newText.length + 1);
