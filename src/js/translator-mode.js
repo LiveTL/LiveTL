@@ -126,33 +126,50 @@ export function translatorMode(
     compose(recommendations.set, macrosys.complete, text)
   const updateContent = compose(content.set, text);
 
-  // TODO get the caret position and manually add in the text
-  // instead of setTimeout
-  // Known bug: if user types space too fast, focusRec has updated to null
-  // and no completion will occur
-  const onKeyDown = e => setTimeout(() => {
-    e.preventDefault();
-    updateRecommendations();
+  let e = null;
 
-    if (isSpace(e) || isTab(e) && oneRecommend()) {
-      const newText = replaceText(text()) + spaceIf(isTab(e));
+  const onKeyDown = $e => {
+    e = $e;
+    if (isTab(e) && oneRecommend()) substituteInChatbox();
+    if (isTab(e)) {
+      setTimeout(() => setTimeout(setChatCaret));
+    }
+  };
+
+  const dbg = (...args) => console.log(...args.map(o => `'${o}'`));
+
+  const substituteInChatbox = () => {
+    const t = text();
+    const tt = t.endsWith(' ') ? t.substring(0, t.length - 1) : t;
+    const newText = replaceText(tt) + ' ';
+    setTimeout(() => {
       if (newText != text()) {
         chatBox.textContent = newText + invisible;
         setChatCaret();
+        updateRecommendations();
       }
+    });
+  };
+
+  const onMutation = () => {
+    if (isSpace(e)) {
+      substituteInChatbox();
     }
 
-    if (isTab(e)) setTimeout(setChatCaret);
     updateRecommendations();
     updateContent();
-  });
+  };
+
+  const observer = new MutationObserver(mutations => mutations.filter(m => m.type === 'characterData').forEach(onMutation));
 
   const cleanUps = [
     () => chatBox.removeEventListener('keydown', onKeyDown),
+    () => observer.disconnect(),
   ];
   if (chatBox.cleanUpTlMode) chatBox.cleanUpTlMode();
   chatBox.cleanUpTlMode = () => cleanUps.forEach(c => c());
   chatBox.addEventListener('keydown', onKeyDown);
+  observer.observe(document.querySelector('#input').parentElement.parentElement, { subtree: true, characterData: true });
 }
 
 function setCaret(el, pos) {
