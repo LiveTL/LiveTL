@@ -1,15 +1,11 @@
 <script>
-  import { onMount } from 'svelte';
-  import { ExpansionPanel, ExpansionPanels, Row } from 'svelte-materialify/src';
+  import { ExpansionPanel, ExpansionPanels } from 'svelte-materialify/src';
   import opencollective from '../plugins/opencollective.json';
   import gh from '../plugins/gh.json';
-
-  export let isStandalone = false;
 
   const compareAttr = attr => (a, b) => a[attr] - b[attr];
   const reverseCompare = cmp => (a, b) => -cmp(a, b);
   const compareDono = reverseCompare(compareAttr('totalAmountDonated'));
-  const toJson = r => r.json();
   const uniqueBy = attr => arr => {
     const vals = new Set();
     return arr.filter(v => {

@@ -44,7 +44,7 @@
                they are available.`
   }, {
     prompt: 'A translator is using their own style of language tags.',
-    response: `You can manually select additional users to filter in the settings.`
+    response: 'You can manually select additional users to filter in the settings.'
   }];
 </script>
 

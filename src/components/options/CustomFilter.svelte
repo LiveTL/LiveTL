@@ -10,7 +10,6 @@
   export let plainReg = 'plain';
   export let chatAuthor = 'chat';
   export let id = '';
-  export let isNew = false;
 
   let div;
   let maxRuleLength = 0;

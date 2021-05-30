@@ -1,5 +1,5 @@
 <script>
-  import { Button, Icon, Textarea, Chip } from 'svelte-materialify';
+  import { Button, Icon, Textarea } from 'svelte-materialify';
   import { mdiCheck, mdiClipboardOutline, mdiClose } from '@mdi/js';
   import { importStores, exportStores } from '../js/storage.js';
   import { compose } from '../js/utils.js';
@@ -111,16 +111,6 @@
   .buttons.vertical :global(.import-button) {
     width: 100%;
     margin-bottom: 1%;
-  }
-
-  .header {
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 2%;
-  }
-
-  .header > * {
-    flex-grow: 1;
   }
 
   :global(label) {

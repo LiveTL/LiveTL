@@ -1,5 +1,5 @@
 <script>
-  import { tick } from "svelte";
+  import { tick } from 'svelte';
   import html2canvas from 'html2canvas';
   window.html2canvas = html2canvas;
   export let renderQueue = [];
@@ -8,13 +8,13 @@
   let rendering = false;
   let image = '';
   import { ProgressLinear } from 'svelte-materialify/src';
-  import Dialog from "./Dialog.svelte";
+  import Dialog from './Dialog.svelte';
   $: if (renderQueue.length) {
     (async () => {
       rendering = true;
       await tick();
       const canvas = await html2canvas(renderElement);
-      const base64image = canvas.toDataURL("image/png");
+      const base64image = canvas.toDataURL('image/png');
       image = base64image;
       renderQueue = [];
       rendering = false;

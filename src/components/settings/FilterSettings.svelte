@@ -20,7 +20,6 @@
   import CustomFilter from '../options/CustomFilter.svelte';
   import SelectOption from '../options/Dropdown.svelte';
   import MultiDropdown from '../options/MultiDropdown.svelte';
-  export let isStandalone = false;
 
   function createNewFilter() {
     cleanupFilters();

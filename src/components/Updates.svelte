@@ -7,7 +7,6 @@
 
   const manifest = window.chrome.runtime.getManifest();
   const version = versionMap(manifest.version);
-  const lvLoaded = lastVersion.loaded;
 
   export let active = false;
 
