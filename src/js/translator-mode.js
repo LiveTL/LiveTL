@@ -1,6 +1,7 @@
 import { compose, dbg } from './utils.js';
 import { get, writable } from 'svelte/store';
-import { doTranslatorMode, macros } from './store.js';
+import { doTranslatorMode, doAutoPrefix, language, macros } from './store.js';
+import { languageNameCode } from './constants.js';
 
 
 export function omniComplete(initialWords) {
@@ -164,7 +165,7 @@ export function translatorMode(
   const caretPos = () => getCaretCharOffset(chatBox);
   const caretAtEnd = () => caretPos() == text().length;
   const text = () => chatBox.textContent;
-  const autoPrefixTag = () => '[en] ' + invisible;
+  const autoPrefixTag = () => doAutoPrefix.get() ? langTag() + invisible : '';
   const textWithoutLastSpace = compose(removeLastSpace, text);
   const updateRecommendations =
     compose(recommendations.set, macrosys.complete, text)
@@ -251,3 +252,5 @@ function getCaretCharOffset(element) {
 
   return caretOffset;
 }
+
+const langTag = () => `[${languageNameCode[language.get()].code}] `;

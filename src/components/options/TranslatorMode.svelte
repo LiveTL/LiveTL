@@ -4,7 +4,8 @@
   import { onMount } from 'svelte';
 
   import CustomMacro from './CustomMacro.svelte';
-  import { macros } from '../../js/store.js';
+  import Toggle from './Toggle.svelte';
+  import { macros, doAutoPrefix } from '../../js/store.js';
 
   const emptyMacro = { name: '', expansion: '', enabled: true };
 
@@ -16,6 +17,7 @@
   onMount(() => setTimeout(cleanUpMacros));
 </script>
 
+<Toggle name="Auto-prefix chat messages" store={doAutoPrefix} />
 <Row>
   <Col>
     <Subheader>Macros</Subheader>
