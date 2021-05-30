@@ -6,6 +6,7 @@
     chatZoom,
     livetlFontSize,
     doSpeechSynth,
+    doTranslatorMode,
     showCaption,
     showTimestamp,
     speechVolume,
@@ -19,6 +20,7 @@
   import EnumOption from '../options/Radio.svelte';
   import FontDemo from '../FontDemo.svelte';
   import ImportExport from '../ImportExport.svelte';
+  import TranslatorMode from '../options/TranslatorMode.svelte';
   export let isStandalone = false;
 </script>
 
@@ -78,4 +80,7 @@
 {#if $doSpeechSynth}
   <SliderOption name="Speech volume" store={speechVolume} min={0} max={1} />
 {/if}
-<!-- <CheckOption name="Auto-prefix chat messages" store={doTranslatorMode} /> -->
+<CheckOption name="Translator mode" store={doTranslatorMode} />
+{#if $doTranslatorMode}
+  <TranslatorMode />
+{/if}

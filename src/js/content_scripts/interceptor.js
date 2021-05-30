@@ -1,4 +1,4 @@
-import {parseChatResponse} from '../parse-chat.js';
+import { parseChatResponse } from '../parse-chat.js';
 import { sendToBackground } from '../bgmessage.js';
 
 let tabid = -1;
