@@ -130,6 +130,7 @@ export function translatorMode(
   const isKey = key => e => e.key === key;
   const isTab = isKey('Tab');
   const isSpace = isKey(' ');
+  const isEnter = isKey('Enter');
   const isCharData = m => m.type === 'characterData';
   const focussed = () => get(focusRec);
 
@@ -146,6 +147,7 @@ export function translatorMode(
   const setChatboxText = text => {
     const carPos = caretPos();
     const atEnd = caretAtEnd();
+    if (text) container.setAttribute('has-text', '');
     chatBox.textContent = text + invisible;
     setChatCaret(atEnd ? null : carPos);
     updateStores();
@@ -162,10 +164,12 @@ export function translatorMode(
   const caretPos = () => getCaretCharOffset(chatBox);
   const caretAtEnd = () => caretPos() == text().length;
   const text = () => chatBox.textContent;
+  const autoPrefixTag = () => '[en] ' + invisible;
   const textWithoutLastSpace = compose(removeLastSpace, text);
   const updateRecommendations =
     compose(recommendations.set, macrosys.complete, text)
   const updateContent = compose(content.set, text);
+  const setAutoPrefix = compose(setChatboxText, autoPrefixTag);
   const doubleTimeout = cb => setTimeout(() => setTimeout(cb));
 
   // Keydown event
@@ -176,6 +180,7 @@ export function translatorMode(
     e = $e;
     if (isTab(e) && oneRecommend()) substituteInChatbox();
     if (isTab(e)) doubleTimeout(setChatCaret);
+    if (isEnter(e)) doubleTimeout(setAutoPrefix);
   };
 
   const substituteInChatbox = () => {
@@ -193,6 +198,8 @@ export function translatorMode(
     updateStores();
   };
 
+  const onFocus = () => setTimeout(setAutoPrefix);
+
   const processMutations = mutations => mutations
     .filter(isCharData)
     .forEach(onMutation);
@@ -201,11 +208,13 @@ export function translatorMode(
 
   const cleanUps = [
     () => chatBox.removeEventListener('keydown', onKeyDown),
+    () => chatBox.removeEventListener('focus', onFocus),
     () => chatBoxObserver.disconnect(),
   ];
   if (chatBox.cleanUpTlMode) chatBox.cleanUpTlMode();
   chatBox.cleanUpTlMode = () => cleanUps.forEach(c => c());
   chatBox.addEventListener('keydown', onKeyDown);
+  chatBox.addEventListener('focus', onFocus);
   chatBoxObserver.observe(container, { subtree: true, characterData: true });
 }
 
