@@ -23,11 +23,11 @@
 <Row>
   <Col>
     <span bind:this={field}>
-      <TextField dense bind:value={name} />
+      <TextField dense bind:value={name}>Name</TextField>
     </span>
   </Col>
   <Col>
-    <TextField dense bind:value={expansion} />
+    <TextField dense bind:value={expansion}>Expansion</TextField>
   </Col>
   <Checkbox bind:checked={enabled} />
 </Row>
