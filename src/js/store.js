@@ -61,4 +61,4 @@ export const
   lastVersion = SS('lastVersion', '0.0.0'),
   screenshotRenderWidth = SS('screenshotRenderWidth', 500),
   welcomeDismissed = SS('welcomeDismissed', false),
-  macros = SS([]);
+  macros = SS('macros', []);

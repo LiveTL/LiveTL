@@ -1,5 +1,6 @@
 import { compose, dbg } from './utils.js';
-import { get } from 'svelte/store';
+import { get, writable } from 'svelte/store';
+import { macros } from './store.js';
 
 
 export function omniComplete(initialWords) {
@@ -54,9 +55,15 @@ export function omniComplete(initialWords) {
   };
 }
 
+function macroStoreValueToLookup(value) {
+  const obj = {};
+  value.filter(v => v.enabled).forEach(v => obj[v.name] = v.expansion);
+  return obj;
+}
+
 export function macroSystem(initialMacros) {
   let macros = {...initialMacros} || {};
-  const completion = omniComplete(Object.keys(macros));
+  let completion = omniComplete(Object.keys(macros));
 
   const addMacro = (name, expansion) => {
     macros[name] = expansion;
@@ -92,11 +99,20 @@ export function macroSystem(initialMacros) {
     catch (e) { return []; }
   };
 
+  // one-way syncing
+  const syncWith = store => {
+    store.subscribe(value => {
+      macros = macroStoreValueToLookup(value)
+      completion = omniComplete(Object.keys(macros));
+    });
+  };
+
   return {
     addMacro,
     complete,
     completeEnd,
     getMacro,
+    syncWith,
     replaceText,
   };
 }
@@ -116,6 +132,8 @@ export function translatorMode(
   const isSpace = isKey(' ');
   const isCharData = m => m.type === 'characterData';
   const focussed = () => get(focusRec);
+
+  macrosys.syncWith(macros);
 
   const replaceText = text => focussed()
     ? macrosys.completeEnd(text, macrosys.getMacro(focussed()))
