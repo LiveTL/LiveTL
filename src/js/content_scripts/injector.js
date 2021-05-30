@@ -109,6 +109,9 @@ function loaded() {
     .livetlButtonWrapper a.ytd-toggle-button-renderer:hover {
       background-color: #0099ffb5 !important;
     }
+    .livetlButtonWrapper a.ytd-toggle-button-renderer {
+      transition: 0.1s;
+    }
   `;
   const style = document.createElement('style');
   style.innerHTML = css;
