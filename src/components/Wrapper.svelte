@@ -1,10 +1,9 @@
 <script>
   export let isResizing;
   export let zoom = NaN;
-  export let verticalCenter = false;
   export let style = '';
   let factor;
-  $: factor = zoom || 1;
+  $: factor = parseFloat(zoom.toFixed(2)) || 1;
   let inverse;
   $: inverse = 100 / factor;
 

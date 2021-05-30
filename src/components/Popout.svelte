@@ -8,7 +8,7 @@
   import { TextDirection } from '../js/constants.js';
   import { textDirection, screenshotRenderWidth } from '../js/store.js';
   import MessageDisplay from './MessageDisplay.svelte';
-  import ScreenshotExport from "./ScreenshotExport.svelte";
+  import ScreenshotExport from './ScreenshotExport.svelte';
   import Updates from './Updates.svelte';
   let settingsOpen = false;
   export let isResizing = false;

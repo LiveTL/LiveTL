@@ -55,6 +55,10 @@ function attachFilters(translations, mod, ytc) {
     const parsed = parseTranslation(text);
     if (!text) return;
     if (isTranslation(parsed)) {
+      if (message.messageArray[0].type === 'text') {
+        const originalText = message.messageArray[0].text;
+        message.messageArray[0].text = parseTranslation(originalText).msg;
+      }
       setTranslation(message, parsed.msg);
     }
     else if (isWhitelisted(message)) {
