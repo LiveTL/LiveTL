@@ -6,6 +6,12 @@
   export let expansion;
   export let enabled;
   export let id;
+
+  const saveValues = newMacro => {
+    $macros = $macros.map((m, i) => i == id ? newMacro : m);
+  };
+
+  $: saveValues({ name, expansion, enabled });
 </script>
 
 <Row>
