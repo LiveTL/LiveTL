@@ -11,10 +11,9 @@
   const cleanUpMacros =
     () => $macros = $macros.filter(m => m.name + m.expansion);
 
-  const createNewMacro =
-    () => [cleanUpMacros(), $macros = [...$macros, emptyMacro]];
+  const createNewMacro = () => $macros = [...cleanUpMacros(), emptyMacro];
 
-  onMount(cleanUpMacros);
+  onMount(() => setTimeout(cleanUpMacros));
 </script>
 
 <Row>
