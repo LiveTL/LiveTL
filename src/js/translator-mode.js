@@ -1,6 +1,6 @@
 import { compose, dbg } from './utils.js';
 import { get, writable } from 'svelte/store';
-import { macros } from './store.js';
+import { doTranslatorMode, macros } from './store.js';
 
 
 export function omniComplete(initialWords) {
@@ -172,6 +172,7 @@ export function translatorMode(
   let e = null;
 
   const onKeyDown = $e => {
+    if (!get(doTranslatorMode)) return;
     e = $e;
     if (isTab(e) && oneRecommend()) substituteInChatbox();
     if (isTab(e)) doubleTimeout(setChatCaret);
@@ -185,6 +186,7 @@ export function translatorMode(
   };
 
   const onMutation = () => {
+    if (!get(doTranslatorMode)) return;
     if (isSpace(e)) {
       substituteInChatbox();
     }
