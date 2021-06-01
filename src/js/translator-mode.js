@@ -1,5 +1,5 @@
 import { compose, dbg } from './utils.js';
-import { get, writable } from 'svelte/store';
+import { get, writable, Writable } from 'svelte/store';
 import { doTranslatorMode, doAutoPrefix, language, macros } from './store.js';
 import { languageNameCode } from './constants.js';
 
@@ -10,6 +10,7 @@ export function omniComplete(initialWords) {
   let changes = 0;
   let wordSet = new Set(words);
 
+  /** @type {(word: String) => void} */
   const addWord = word => {
     if (!wordSet.has(word)) {
       changes++;
@@ -19,14 +20,18 @@ export function omniComplete(initialWords) {
     }
   }
 
+  /** @type {(sentence: String) => void} */
   const addSentence = sentence => sentence.split(/\W+/).forEach(addWord);
   // Currently goes through everything,
   // replace with trie or sorted array if this is a bottleneck
+  /** @type {(wordPortion: String) => Array<String>} */
   const complete = wordPortion => words
     .filter(word => word.startsWith(wordPortion))
     .sort();
+  /** @type {() => Array<String>} */
   const getWords = () => [...words];
 
+  /** @type {() => void} */
   const notify = () => setTimeout(() => {
     if (changes) {
       changes = 0;
@@ -36,8 +41,10 @@ export function omniComplete(initialWords) {
     notify();
   });
 
+  /** @type {(callback: (words: Array<String>) => void) => void} */
   const subscribe = callbacks.push.bind(callbacks);
 
+  /** @type {(store: Writable<String>) => void} */
   const syncWith = store => {
     store.subscribe($words => {
       words = $words
