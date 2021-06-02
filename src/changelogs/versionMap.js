@@ -20,6 +20,10 @@ export default function(version) {
       if(v[2] <= 0) return '6.2.0';
       if(v[2] <= 1) return '6.2.1';
       if(v[2] <= 2) return '6.2.2';
+      break;
+    }
+    case 3: {
+      if(v[2] <= 1) return '6.3.1';
     }
     }
   }

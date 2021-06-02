@@ -80,7 +80,7 @@
 {#if $doSpeechSynth}
   <SliderOption name="Speech volume" store={speechVolume} min={0} max={1} />
 {/if}
-<CheckOption name="Translator mode" store={doTranslatorMode} />
+<!-- <CheckOption name="Translator mode" store={doTranslatorMode} />
 {#if $doTranslatorMode}
   <TranslatorMode />
-{/if}
+{/if} -->
