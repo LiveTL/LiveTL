@@ -96,7 +96,7 @@
             <a
               href="https://livetl.app/"
               target="about:blank"
-              on:click={e => {
+              on:click={(e) => {
                 e.preventDefault();
                 // eslint-disable-next-line no-unused-vars
                 updatePopupActive = true;
@@ -153,7 +153,7 @@
             <a
               href="/"
               target="about:blank"
-              on:click={e => {
+              on:click={(e) => {
                 e.preventDefault();
                 if (BROWSER === Browser.CHROME) {
                   window.open(
@@ -255,9 +255,9 @@
                 channelFilters.set(item.id, {
                   ...channelFilters.get(item.id),
                   name: item.author,
-                  blacklist: true
+                  blacklist: true,
                 });
-                items = items.filter(i => i.id != item.id);
+                items = items.filter((i) => i.id != item.id);
               }}
             >
               <Icon path={mdiAccountRemove} size="1em" />
@@ -304,8 +304,8 @@
 
   .messageDisplay {
     display: flex;
-    max-height: 100%;
     width: 100%;
+    max-height: 100%;
   }
 
   .message {

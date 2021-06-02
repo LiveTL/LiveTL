@@ -58,7 +58,6 @@
     "html2canvas": "^1.0.0-rc.7",
     "jquery": "^3.6.0",
     "jquery-ui-bundle": "^1.12.1-migrate",
-    "jquery-ui-touch-punch": "^0.2.3",
     "ssri": "^8.0.1",
     "vue": "^2.6.12",
     "vuetify": "^2.4.9",
