@@ -73,17 +73,22 @@ export function macroSystem(initialMacros) {
   let macros = {...initialMacros} || {};
   let completion = omniComplete(Object.keys(macros));
 
+  /** @type {(name: String, expansion: String) => void} */
   const addMacro = (name, expansion) => {
     macros[name] = expansion;
     completion.addWord(name);
   };
+  
+  /** @type {(name: String) => String | null} */
   const getMacro = name => {
     if (macros[name]) return macros[name];
     const possibleMacros = completion.complete(name);
     return possibleMacros.length == 1 ? macros[possibleMacros[0]] : null;
   };
 
+  /** @type {(text: String) => [String, Array<String>]} */
   const splitText = text => [text, text.matchAll(/[\w\/]+/g)];
+  /** @type {([input: String, split: Array<String>]) => String} */
   const replaceSplitText = ([input, split]) => {
     const replaced = [];
     let lastIdx = 0;
@@ -96,10 +101,13 @@ export function macroSystem(initialMacros) {
     replaced.push(input.substring(lastIdx));
     return replaced.join('');
   };
+  /** @type {(text: String) => String} */
   const replaceText = compose(replaceSplitText, splitText);
+  /** @type {(text: String, completion: String) => String} */
   const completeEnd = (text, completion) => {
     return text.replace(/\/([\w]+)$/, completion);
   };
+  /** @type {(text: String) => Array<String>} */
   const complete = text => {
     try {
       return completion.complete(text.match(/\/([\w]+)$/)[1]);
