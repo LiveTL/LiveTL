@@ -48,6 +48,10 @@
   }];
 </script>
 
+<svelte:head>
+  <link rel="shortcut icon" href="48x48.png" type="image/png">
+</svelte:head>
+
 <MaterialApp theme="dark">
   <h1>Thank you for installing LiveTL!</h1>
   <h3>
