@@ -66,6 +66,9 @@
 </script>
 
 <svelte:window on:resize={checkAtRecent} />
+<svelte:head>
+  <link rel="shortcut icon" href="48x48.png" type="image/png">
+</svelte:head>
 
 <MaterialApp theme="dark">
   <div>
