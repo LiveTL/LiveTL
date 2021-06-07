@@ -8,11 +8,14 @@ assignees: ''
 ---
 
 **Checklist (make sure you do all these before you submit a bug report)**
-- [ ] I have checked for a duplicate or similar issue
-- [ ] I am still able to reproduce the issue after I reinstall the extension
-- [ ] I have clear instructions to reproduce the bug, even on another machine
-- [ ] I am not suggesting a feature. If I am, I will use the feature suggestion issue template
-- [ ] This is not a matter of opinion (For example: "I think this feature should do this, but it does that. It obviously works as intended, but i think it should work diffeently.") If it is, I will use the feature suggestion issue template
+- [ ] This is an issue for LiveTL, not Hyperchat. I will go to [the Hyperchat repo](https://github.com/LiveTL/HyperChat) to report an issue with Hyperchat.
+- [ ] This is an issue for the LiveTL web extension, not LiveTL iOS or LiveTL Android. I will go to the [iOS](https://github.com/LiveTL/ios) or [Android](https://github.com/LiveTL/android) repo to report issues for those platforms.
+- [ ] This issue is not a matter of opinion (For example: "A feature obviously works as intended, but *I think* it should work differently.") If it is, I will use the feature suggestion issue template.
+- [ ] I have checked for a duplicate or similar issue. I made sure to check closed issues as well. 
+- [ ] I am still able to reproduce the issue after I reinstall the extension.
+- [ ] I have clear instructions to reproduce the bug, even on another machine.
+- [ ] I am not suggesting a feature. If I am, I will use the feature suggestion issue template.
+
 
 **Describe the bug**
 A clear and concise description of what the bug is. (Describe what's wrong)
