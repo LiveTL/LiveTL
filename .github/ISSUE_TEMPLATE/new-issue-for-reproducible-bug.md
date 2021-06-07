@@ -1,5 +1,5 @@
 ---
-name: New issue for Reproducible Bug
+name: Bug Report
 about: Create a report for a bug that is reproduceable, even not on your machine
 title: ''
 labels: bug
