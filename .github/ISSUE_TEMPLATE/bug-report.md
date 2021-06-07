@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-about: Create a report for a bug that is reproduceable, even not on your machine
+about: Create a report for a bug that is reproduceable.
 title: ''
 labels: bug
 assignees: ''
