@@ -5,3 +5,5 @@ secrets.*.js
 package-lock.json
 .vscode
 *.swp
+
+.DS_Store
