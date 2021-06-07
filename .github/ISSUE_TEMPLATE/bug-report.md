@@ -12,7 +12,7 @@ assignees: ''
 - [ ] I am still able to reproduce the issue after I reinstall the extension
 - [ ] I have clear instructions to reproduce the bug, even on another machine
 - [ ] I am not suggesting a feature. If I am, I will use the feature suggestion issue template
-- [ ] This is not a matter of opinion (For example: "I think this button should do this, but it does that") If it is, I will use the feature suggestion issue template
+- [ ] This is not a matter of opinion (For example: "I think this feature should do this, but it does that. It obviously works as intended, but i think it should work diffeently.") If it is, I will use the feature suggestion issue template
 
 **Describe the bug**
 A clear and concise description of what the bug is. (Describe what's wrong)
