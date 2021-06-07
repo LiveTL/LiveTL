@@ -12,7 +12,7 @@ assignees: ''
 - [ ] I am still able to reproduce the issue after I reinstall the extension
 - [ ] I have clear instructions to reproduce the bug, even on another machine
 - [ ] I am not suggesting a feature. If I am, I will use the feature suggestion issue template
-- [ ] This is not a matter of opinion (For example: "This button should use orange instead of blue") If it is, I will use the feature suggestion issue template
+- [ ] This is not a matter of opinion (For example: "I think this button should do this, but it does that") If it is, I will use the feature suggestion issue template
 
 **Describe the bug**
 A clear and concise description of what the bug is. (Describe what's wrong)
@@ -39,7 +39,7 @@ If applicable, upload a copy of the web console's output to [GitHub Gist](https:
  - Browser Version [e.g. 91.0.864.41]
 
 **Discord**
-If you discussed this issue with someone on the LiveTL Discord server, provide a link to the first message here.
+If you discussed this issue with someone on the LiveTL Discord server, provide a link to the first message here. (If you didn't, don't worry about it! We will discuss it with you here.)
 
 **Additional context**
-Add any other context about the problem here. For example: any other extensions that may be conflicting with LiveTL.
+Add any other context about the problem here. Ex. any other extensions that may be conflicting with LiveTL.
