@@ -182,7 +182,7 @@ export function translatorMode(
   const text = () => chatBox.textContent;
   // TODO
   // eslint-disable-next-line no-constant-condition
-  const autoPrefixTag = () => /* doAutoPrefix.get() */ false ? langTag() + invisible : '';
+  const autoPrefixTag = () => doAutoPrefix.get() ? langTag() + invisible : '';
   const textWithoutLastSpace = compose(removeLastSpace, text);
   const updateRecommendations =
     compose(recommendations.set, macrosys.complete, text);
@@ -216,7 +216,10 @@ export function translatorMode(
     updateStores();
   };
 
-  const onFocus = () => setTimeout(setAutoPrefix);
+  const onFocus = () => {
+    if (!get(doTranslatorMode)) return;
+    setTimeout(setAutoPrefix);
+  }
 
   const processMutations = mutations => mutations
     .filter(isCharData)
