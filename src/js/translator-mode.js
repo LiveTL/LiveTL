@@ -14,11 +14,11 @@ export function omniComplete(initialWords) {
   const addWord = word => {
     if (!wordSet.has(word)) {
       changes++;
-      words.push(word)
+      words.push(word);
       wordSet.add(word);
       notify();
     }
-  }
+  };
 
   /** @type {(sentence: String) => void} */
   const addSentence = sentence => sentence.split(/\W+/).forEach(addWord);
@@ -47,7 +47,7 @@ export function omniComplete(initialWords) {
   /** @type {(store: Writable<String>) => void} */
   const syncWith = store => {
     store.subscribe($words => {
-      words = $words
+      words = $words;
       wordSet = new Set(words);
     });
     subscribe(store.set.bind(store));
@@ -118,7 +118,7 @@ export function macroSystem(initialMacros) {
   // one-way syncing
   const syncWith = store => {
     store.subscribe(value => {
-      macros = macroStoreValueToLookup(value)
+      macros = macroStoreValueToLookup(value);
       completion = omniComplete(Object.keys(macros));
     });
   };
@@ -180,10 +180,12 @@ export function translatorMode(
   const caretPos = () => getCaretCharOffset(chatBox);
   const caretAtEnd = () => caretPos() == text().length;
   const text = () => chatBox.textContent;
-  const autoPrefixTag = () => doAutoPrefix.get() ? langTag() + invisible : '';
+  // TODO
+  // eslint-disable-next-line no-constant-condition
+  const autoPrefixTag = () => /* doAutoPrefix.get() */ false ? langTag() + invisible : '';
   const textWithoutLastSpace = compose(removeLastSpace, text);
   const updateRecommendations =
-    compose(recommendations.set, macrosys.complete, text)
+    compose(recommendations.set, macrosys.complete, text);
   const updateContent = compose(content.set, text);
   const setAutoPrefix = compose(setChatboxText, autoPrefixTag);
   const doubleTimeout = cb => setTimeout(() => setTimeout(cb));
@@ -257,11 +259,11 @@ function getCaretCharOffset(element) {
     caretOffset = preCaretRange.toString().length;
   } 
 
-  else if (document.selection && document.selection.type != "Control") {
+  else if (document.selection && document.selection.type != 'Control') {
     var textRange = document.selection.createRange();
     var preCaretTextRange = document.body.createTextRange();
     preCaretTextRange.moveToElementText(element);
-    preCaretTextRange.setEndPoint("EndToEnd", textRange);
+    preCaretTextRange.setEndPoint('EndToEnd', textRange);
     caretOffset = preCaretTextRange.text.length;
   }
 

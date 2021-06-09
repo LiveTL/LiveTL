@@ -62,4 +62,4 @@ export const
   screenshotRenderWidth = SS('screenshotRenderWidth', 500),
   welcomeDismissed = SS('welcomeDismissed', false),
   macros = SS('macros', []),
-  doAutoPrefix = SS('doAutoPrefix', true);
+  doAutoPrefix = SS('doAutoPrefix', false);
