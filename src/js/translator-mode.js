@@ -217,7 +217,7 @@ export function translatorMode(
   };
 
   const onFocus = () => {
-    if (!get(doTranslatorMode)) return;
+    if (!get(doTranslatorMode) || text() !== '') return;
     setTimeout(setAutoPrefix);
   }
 
