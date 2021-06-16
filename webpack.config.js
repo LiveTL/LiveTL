@@ -194,6 +194,10 @@ var options = {
       from: 'src/changelogs/img',
       to: 'img'
     }]),
+    new CopyWebpackPlugin([{
+      from: 'src/img/blfavicon.ico',
+      to: 'img'
+    }])
   ],
   mode,
   devServer: {
