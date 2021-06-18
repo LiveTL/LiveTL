@@ -3,14 +3,13 @@ var webpack = require('webpack'),
   path = require('path'),
   fileSystem = require('fs'),
   env = require('./utils/env'),
-  CleanWebpackPlugin = require('clean-webpack-plugin'),
   CopyWebpackPlugin = require('copy-webpack-plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
-  WriteFilePlugin = require('write-file-webpack-plugin'),
   StringPlugin = require('string-replace-loader'),
   { version, description } = require('./package.json');
 const { VueLoaderPlugin } = require('vue-loader');
 const { preprocess } = require('./svelte.config');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin'); 
 const mode = process.env.NODE_ENV || 'development';
 process.env.NODE_ENV = mode;
 
@@ -42,12 +41,10 @@ var options = {
     fullscreen: path.join(__dirname, 'src', 'js', 'content_scripts', 'fullscreen.js'),
     chat: path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat.js'),
   },
-  chromeExtensionBoilerplate: {
-    notHotReload: []
-  },
   output: {
     path: path.join(__dirname, 'build'),
-    filename: '[name].bundle.js'
+    filename: '[name].bundle.js',
+    publicPath: '/'
   },
   module: {
     rules: [
@@ -77,31 +74,45 @@ var options = {
       // },
       {
         test: /\.css$/,
-        loader: 'style-loader!css-loader',
+        use: ["style-loader", "css-loader"],
         // include: /.*/
         // exclude: /node_modules/
       },
       {
-        test: new RegExp('\.(' + fileExtensions.join('|') + ')$'),
-        loader: 'file-loader?name=[name].[ext]',
+        test: new RegExp('.(' + fileExtensions.join('|') + ')$'),
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]',
+          esModule: false // Don't treat images as modules
+        },
         // include: /.*/
         // exclude: /node_modules/
       },
       {
         test: /\.html$/,
         loader: 'html-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
+        enforce: 'post' // Fix vue-loader issues
       },
       {
         test: /\.svelte$/,
         use: {
-          loader: prod ? 'svelte-loader' : 'svelte-loader-hot',
+          loader: 'svelte-loader',
           options: {
-            dev: !prod,
+            compilerOptions: {
+              dev: !prod // Built-in HMR
+            },
             emitCss: false,
             hotReload: !prod,
             preprocess
           }
+        }
+      },
+      {
+        // required to prevent errors from Svelte on Webpack 5+
+        test: /node_modules\/svelte\/.*\.mjs$/,
+        resolve: {
+          fullySpecified: false
         }
       },
       {
@@ -137,26 +148,38 @@ var options = {
   },
   plugins: [
     // clean the build folder
-    new CleanWebpackPlugin(['build']),
+    new CleanWebpackPlugin(),
     // expose and write the allowed env vars on the compiled bundle
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV)
     }),
-    new CopyWebpackPlugin([{
-      from: 'src/submodules/chat/assets',
-      to: 'hyperchat'
-    }]),
-    new CopyWebpackPlugin([{
-      from: 'src/manifest.json',
-      transform: function (content, path) {
-        // generates the manifest file using the package.json informations
-        return Buffer.from(JSON.stringify({
-          description: description,
-          version: version,
-          ...JSON.parse(content.toString())
-        }));
-      }
-    }]),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: 'src/submodules/chat/assets',
+          to: 'hyperchat'
+        },
+        {
+          from: 'src/manifest.json',
+          transform: function (content, path) {
+            // generates the manifest file using the package.json informations
+            return Buffer.from(JSON.stringify({
+              description: description,
+              version: version,
+              ...JSON.parse(content.toString())
+            }));
+          }
+        },
+        {
+          from: 'src/changelogs/img',
+          to: 'img'
+        },
+        {
+          from: 'src/img/blfavicon.ico',
+          to: 'img'
+        }
+      ]
+    }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'empty.html'),
       filename: 'watch.html',
@@ -182,7 +205,6 @@ var options = {
       filename: 'background.html',
       chunks: ['background']
     }),
-    new WriteFilePlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
@@ -190,14 +212,6 @@ var options = {
       filename: 'hyperchat/index.html',
       chunks: ['hyperchat']
     }),
-    new CopyWebpackPlugin([{
-      from: 'src/changelogs/img',
-      to: 'img'
-    }]),
-    new CopyWebpackPlugin([{
-      from: 'src/img/blfavicon.ico',
-      to: 'img'
-    }])
   ],
   mode,
   devServer: {
@@ -207,7 +221,7 @@ var options = {
 };
 
 if (env.NODE_ENV === 'development') {
-  options.devtool = 'cheap-module-eval-source-map';
+  options.devtool = 'eval-cheap-module-source-map';
 }
 
 module.exports = options;

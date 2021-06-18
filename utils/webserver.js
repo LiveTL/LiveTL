@@ -31,6 +31,7 @@ var server =
     headers: { 'Access-Control-Allow-Origin': '*' },
     public: `localhost:${env.PORT}`,
     disableHostCheck: true,
+    writeToDisk: true // write-file-webpack-plugin no longer needed
   });
 
 server.listen(env.PORT);
