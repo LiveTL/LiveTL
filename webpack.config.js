@@ -79,7 +79,7 @@ var options = {
         // exclude: /node_modules/
       },
       {
-        test: new RegExp('\.(' + fileExtensions.join('|') + ')$'),
+        test: new RegExp('.(' + fileExtensions.join('|') + ')$'),
         loader: 'file-loader',
         options: {
           name: '[name].[ext]',
