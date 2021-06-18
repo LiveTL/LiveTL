@@ -1,6 +1,6 @@
 <script>
-  import { ExpansionPanel, ExpansionPanels } from 'svelte-materialify';
-  import V6 from "./common/6.2.svelte";
+  import { ExpansionPanels } from 'svelte-materialify';
+  import V6 from './common/6.2.svelte';
   let value = [];
 </script>
 
