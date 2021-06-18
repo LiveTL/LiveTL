@@ -104,7 +104,7 @@ describe('macro system', () => {
     const { replaceText } = macroSystem(macros);
     const text = '//e //pe: hello there, //n: dochi dochi';
     expect(replaceText(text)).toBe(text);
-  })
+  });
 
   it('generates completions', () => {
     const { complete } = macroSystem(macros);
