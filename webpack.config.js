@@ -97,9 +97,11 @@ var options = {
       {
         test: /\.svelte$/,
         use: {
-          loader: prod ? 'svelte-loader' : 'svelte-loader-hot',
+          loader: 'svelte-loader',
           options: {
-            dev: !prod,
+            compilerOptions: {
+              dev: !prod // Built-in HMR
+            },
             emitCss: false,
             hotReload: !prod,
             preprocess
