@@ -37,10 +37,6 @@
   items={languageNameValues}
 />
 <CheckOption name="Show moderator messages" store={showModMessage} />
-<CheckOption
-  name="Show MChad translators when available"
-  store={enableMchadTLs}
-/>
 <MultiDropdown
   name="Blocked users"
   store={channelFilters}
@@ -49,6 +45,12 @@
   setBool={(n, v) =>
     channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}
 />
+<Row>
+  <Col>
+    <Subheader>External translation sources</Subheader>
+    <CheckOption name="MChad (volunteer translators)" store={enableMchadTLs} />
+  </Col>
+</Row>
 <div class="filter-options">
   <Row>
     <Col>
