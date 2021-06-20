@@ -88,7 +88,7 @@
 "
 >
   <div class="captionSegment" bind:this={elem}>
-    {$translations ? $translations.text : text}
+    {$translations ? $translations.messageArray[0].text : text}
   </div>
 </div>
 

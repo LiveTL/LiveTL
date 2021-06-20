@@ -8,7 +8,11 @@ import { AuthorType, languageNameCode } from './constants';
 import { checkAndSpeak } from './speech.js';
 
 
-/** @typedef {{text: String, author: String, timestamp: String, id: String, types: Number}} Message*/
+/** @typedef {{type: 'text', text: String}} TextMessage */
+/** @typedef {{type: 'link', url: String, text: String}} LinkMessage */
+/** @typedef {{type: 'emote', src: String}} EmoteMessage */
+/** @typedef {TextMessage | LinkMessage | EmoteMessage} MessageItem */
+/** @typedef {{messageArray: MessageItem[], author: String, timestamp: String, id: String, types: Number}} Message */
 
 /** @type {{ translations: Writable<Message>, mod: Writable<Message> ytc: Writable<Message>}} */
 export const sources = {
@@ -32,12 +36,18 @@ const isMod = msg => (msg.types & AuthorType.moderator) || (msg.types & AuthorTy
 /** @type {(msg: Message) => Boolean} */
 const showIfMod = msg => isMod(msg) && showModMessage.get();
 
-/** @type {(store: Writable<Message>) => (msg: Message, text: String) => void} */
-const setStoreMessage = store => (msg, text) => store.set({...msg, text});
-
 const lang = () => languageNameCode[language.get()];
 
 const isTranslation = parsed => parsed && isLangMatch(parsed.lang, lang()) && parsed.msg;
+
+/** @type {(msg: Message) => Message} */
+const replaceFirstTranslation = msg => {
+  const messageArray = [...msg.messageArray];
+  if (messageArray[0].type === 'text') {
+    messageArray[0].text = parseTranslation(messageArray[0].text).msg;
+  }
+  return {...msg, messageArray};
+};
 
 /**
  * @param {Writable<Message>} translations 
@@ -46,26 +56,19 @@ const isTranslation = parsed => parsed && isLangMatch(parsed.lang, lang()) && pa
  * @return {() => void} cleanup
  */
 function attachFilters(translations, mod, ytc) {
-  const setTranslation = setStoreMessage(translations);
-  const setModMessage = setStoreMessage(mod);
-
   return ytc.subscribe(message => {
     if (!message || isBlacklisted(message)) return;
     const text = message.text.trim();
     const parsed = parseTranslation(text);
     if (!text) return;
     if (isTranslation(parsed)) {
-      if (message.messageArray[0].type === 'text') {
-        const originalText = message.messageArray[0].text;
-        message.messageArray[0].text = parseTranslation(originalText).msg;
-      }
-      setTranslation(message, parsed.msg);
+      translations.set(replaceFirstTranslation(message));
     }
     else if (isWhitelisted(message)) {
-      setTranslation(message, text);
+      translations.set(message);
     }
     else if (showIfMod(message)) {
-      setModMessage(message, text);
+      mod.set(message);
     }
   });
 }
