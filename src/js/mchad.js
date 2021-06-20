@@ -1,4 +1,5 @@
 import { MCHAD } from './constants.js';
+import { derived, readable } from 'svelte/store';
 
 /**
  * @param {String} videoId 
@@ -71,4 +72,20 @@ export function getLive(entry) {
   return new EventSource(`${MCHAD}/Listener/?room=${entry.Room}`, { withCredentials: true});
 }
 
-window.getArchive = getArchive;
+export const streamRoom = room => readable(null, set => {
+  const source = new EventSource(`${MCHAD}/Listener?room=${room}`);
+  
+  source.onmessage = event => {
+    set(JSON.parse(event.data));
+  };
+  
+  return function stop() {
+    source.close();
+  };
+});
+
+export const getRoomTranslations = room => derived(streamRoom(room), (data, set) => {
+  if (data?.flag == 'insert') {
+    set(data.Stext);
+  }
+});
