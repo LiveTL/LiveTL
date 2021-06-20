@@ -4,7 +4,8 @@
     showModMessage,
     language,
     customFilters,
-    channelFilters
+    channelFilters,
+    enableMchadTLs
   } from '../../js/store.js';
   import {
     Row,
@@ -36,6 +37,10 @@
   items={languageNameValues}
 />
 <CheckOption name="Show moderator messages" store={showModMessage} />
+<CheckOption
+  name="Show MChad translators when available"
+  store={enableMchadTLs}
+/>
 <MultiDropdown
   name="Blocked users"
   store={channelFilters}
@@ -58,9 +63,7 @@
     </Col>
   </Row>
   {#each $customFilters as rule, i}
-    <CustomFilter
-      {...rule}
-    />
+    <CustomFilter {...rule} />
   {/each}
 </div>
 

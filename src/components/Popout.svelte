@@ -10,12 +10,14 @@
   import MessageDisplay from './MessageDisplay.svelte';
   import ScreenshotExport from './ScreenshotExport.svelte';
   import Updates from './Updates.svelte';
+  import { getRooms } from '../js/mchad.js';  
   let settingsOpen = false;
   export let isResizing = false;
   export let updatePopupActive = false;
   const params = new URLSearchParams(window.location.search);
   document.title = params.get('title') || 'LiveTL Popout';
   export let isStandalone = params.get('embedded') ? true : false;
+  export let videoId = '';
 
   let wrapper;
   let messageDisplay;
@@ -67,7 +69,7 @@
 
 <svelte:window on:resize={checkAtRecent} />
 <svelte:head>
-  <link rel="shortcut icon" href="48x48.png" type="image/png">
+  <link rel="shortcut icon" href="48x48.png" type="image/png" />
 </svelte:head>
 
 <MaterialApp theme="dark">
@@ -212,5 +214,4 @@
     vertical-align: top !important;
     margin-left: 5px;
   }
-
 </style>

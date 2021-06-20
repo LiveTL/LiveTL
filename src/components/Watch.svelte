@@ -186,7 +186,7 @@
             </Wrapper>
           </div>
           <div class="tile autoscale" bind:this={ltlElem}>
-            <Popout {isResizing} bind:updatePopupActive />
+            <Popout {isResizing} {videoId} bind:updatePopupActive />
           </div>
         </div>
       </div>
