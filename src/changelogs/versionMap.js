@@ -27,6 +27,7 @@ export default function(version) {
       if(v[2] <= 2) return '6.3.2';
       if(v[2] <= 3) return '6.3.3';
       if(v[2] <= 5) return '6.3.5';
+      if(v[2] <= 6) return '6.3.6';
     }
     }
   }
