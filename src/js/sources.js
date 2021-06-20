@@ -12,7 +12,7 @@ import { checkAndSpeak } from './speech.js';
 /** @typedef {{type: 'link', url: String, text: String}} LinkMessage */
 /** @typedef {{type: 'emote', src: String}} EmoteMessage */
 /** @typedef {TextMessage | LinkMessage | EmoteMessage} MessageItem */
-/** @typedef {{messageArray: MessageItem[], author: String, timestamp: String, id: String, types: Number}} Message */
+/** @typedef {{text: String, messageArray: MessageItem[], author: String, timestamp: String, id: String, types: Number}} Message */
 
 /** @type {{ translations: Writable<Message>, mod: Writable<Message> ytc: Writable<Message>}} */
 export const sources = {
@@ -36,6 +36,10 @@ const isMod = msg => (msg.types & AuthorType.moderator) || (msg.types & AuthorTy
 /** @type {(msg: Message) => Boolean} */
 const showIfMod = msg => isMod(msg) && showModMessage.get();
 
+/** @type {(store: Writable<Message>) => (msg: Message, text: String | undefined) => void} */
+const setStoreMessage =
+  store => (msg, text) => store.set({...msg, text: text ?? msg.text});
+
 const lang = () => languageNameCode[language.get()];
 
 const isTranslation = parsed => parsed && isLangMatch(parsed.lang, lang()) && parsed.msg;
@@ -56,19 +60,22 @@ const replaceFirstTranslation = msg => {
  * @return {() => void} cleanup
  */
 function attachFilters(translations, mod, ytc) {
+  const setTranslation = setStoreMessage(translations);
+  const setModMessage = setStoreMessage(mod);
+
   return ytc.subscribe(message => {
     if (!message || isBlacklisted(message)) return;
     const text = message.text.trim();
     const parsed = parseTranslation(text);
     if (!text) return;
     if (isTranslation(parsed)) {
-      translations.set(replaceFirstTranslation(message));
+      setTranslation(replaceFirstTranslation(message), parsed.msg);
     }
     else if (isWhitelisted(message)) {
-      translations.set(message);
+      setTranslation(message);
     }
     else if (showIfMod(message)) {
-      mod.set(message);
+      setModMessage(message);
     }
   });
 }
