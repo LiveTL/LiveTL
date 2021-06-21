@@ -64,8 +64,7 @@
 
 <style>
   #renderElement {
-    background-color: white;
-    color: black;
+    background-color: var(--theme-surface);
     z-index: -1;
     position: fixed;
     top: 0px;
@@ -76,18 +75,10 @@
     font-size: 0.6em;
   }
 
-  .moderator {
-    color: #a0bdfc !important;
-  }
-
-  .owner {
-    color: #ffd600 !important;
-  }
   .messageItem {
     margin: 2.5px 0px 2.5px 0px;
     padding: 3.5px;
-    background-color: rgba(0, 0, 0, 0.15);
+    background-color: rgba(255, 255, 255, 0.15);
     border-radius: 2.5px;
   }
-
 </style>
