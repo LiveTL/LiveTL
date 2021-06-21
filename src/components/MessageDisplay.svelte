@@ -68,6 +68,15 @@
   export let screenshotting = false;
   export let selectedItems = [];
 
+  const banMessage = item => () => {
+    channelFilters.set(item.id, {
+      ...channelFilters.get(item.id),
+      name: item.author,
+      blacklist: true,
+    });
+    items = items.filter(i => i.id != item.id);
+  };
+
   $: if (!screenshotting) selectedItems = [];
 </script>
 
@@ -221,7 +230,13 @@
       {/if}
     </div>
     {#each items.filter(item => item) as item}
-      <Message message={item} hidden={item.hidden} showTimestamp={$showTimestamp}>
+      <Message
+        message={item}
+        hidden={item.hidden}
+        showTimestamp={$showTimestamp}
+        on:hide={() => item.hidden = true}
+        on:ban={banMessage(item)}
+      >
         {#if screenshotting}
           <Checkbox bind:group={selectedItems} value={item} />
         {/if}

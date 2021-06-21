@@ -39,7 +39,7 @@
     <span>{timestamp}</span>
 
     <span class="message-actions">
-      <span class="red-highlight" on:click={dispatch('hide')}>
+      <span class="red-highlight" on:click={() => dispatch('hide')}>
         <Icon path={mdiEyeOffOutline} size="1em" />
       </span>
 
