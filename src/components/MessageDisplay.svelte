@@ -5,6 +5,7 @@
     onDestroy,
     createEventDispatcher
   } from 'svelte';
+  import Message from './Message.svelte';
   import { Checkbox, Icon } from 'svelte-materialify/src';
   import { sources, combineStores } from '../js/sources.js';
   import Minimizer from './Minimizer.svelte';
@@ -219,52 +220,12 @@
         <Minimizer />
       {/if}
     </div>
-    {#each items as item}
-      <div
-        class="message"
-        let:hovering
-        style="display: {item.hidden ? 'none' : 'block'}"
-      >
+    {#each items.filter(item => item) as item}
+      <Message message={item} hidden={item.hidden} showTimestamp={$showTimestamp}>
         {#if screenshotting}
           <Checkbox bind:group={selectedItems} value={item} />
         {/if}
-        {#each item.messageArray as message}
-          {#if message.type === 'text'}
-            <span>{message.text}</span>
-          {:else if message.type === 'link'}
-            <a class="chatLink" href={message.url} target="_blank">{message.text}</a>
-          {:else if message.type === 'emote' && message.src}
-            <img class="chatEmote" src={message.src} alt="emote" />
-          {/if}
-        {/each}
-        <span class="info">
-          <span
-            class:moderator={item.types & AuthorType.moderator}
-            class:owner={item.types & AuthorType.owner}
-          >
-            {item.author}
-          </span>
-          <span>{$showTimestamp ? `(${item.timestamp})` : ''}</span>
-          <span class="messageActions">
-            <span class="redHighlight" on:click={() => (item.hidden = true)}>
-              <Icon path={mdiEyeOffOutline} size="1em" />
-            </span>
-            <span
-              class="redHighlight"
-              on:click={() => {
-                channelFilters.set(item.id, {
-                  ...channelFilters.get(item.id),
-                  name: item.author,
-                  blacklist: true,
-                });
-                items = items.filter((i) => i.id != item.id);
-              }}
-            >
-              <Icon path={mdiAccountRemove} size="1em" />
-            </span>
-          </span>
-        </span>
-      </div>
+      </Message>
     {/each}
     <div class="bottom 🥺" bind:this={bottomMsg} />
   </div>
@@ -317,53 +278,11 @@
     border-radius: var(--margin);
   }
 
-  .message :global(.s-checkbox) {
-    display: inline-flex;
-    transform: translate(4px, 3px);
-  }
-
-  .messageActions {
-    display: none;
-  }
-
-  .moderator {
-    color: #a0bdfc !important;
-  }
-
-  .owner {
-    color: #ffd600 !important;
-  }
-
-  .messageActions .redHighlight :global(.s-icon:hover) {
-    color: #ff2873;
-  }
-
-  .message:hover .messageActions {
-    display: inline-block !important;
-    cursor: pointer;
-  }
-  .info {
-    font-size: 0.75em;
-    color: lightgray;
-  }
-
-  .message:nth-child(odd) {
+  .messageDisplayWrapper :global(.message:nth-child(odd)) {
     background-color: rgba(255, 255, 255, 0.075);
   }
 
-  .message:nth-child(even) {
+  .messageDisplayWrapper :global(.message:nth-child(even)) {
     background-color: rgba(255, 255, 255, 0.2);
   }
-
-  .chatEmote {
-    vertical-align: sub;
-    height: 1.5em;
-    width: 1.5em;
-    margin: 0px 0.2em 0px 0.2em;
-  }
-
-  .chatLink {
-    color: var(--theme-text-primary);
-  }
-
 </style>
