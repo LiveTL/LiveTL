@@ -81,20 +81,16 @@
   $: if (!screenshotting) selectedItems = [];
 </script>
 
-<div class="messageDisplayWrapper">
+<div class="message-display-wrapper">
   <div
-    class="messageDisplay"
-    style="align-self: flex-{direction === TextDirection.BOTTOM
-      ? 'end'
-      : 'start'};
-      flex-direction: column{direction === TextDirection.TOP
-      ? '-reverse'
-      : ''};"
+    class="message-display"
+    class:dir-top={direction === TextDirection.TOP}
+    class:dir-bottom={direction === TextDirection.BOTTOM}
   >
 
     <IntroMessage />
 
-    {#each items.filter(item => item) as item}
+    {#each items as item}
       <Message
         message={item}
         hidden={item.hidden}
@@ -112,57 +108,65 @@
 </div>
 
 <style>
+  .dir-top {
+    align-self: flex-start;
+    flex-direction: column-reverse;
+  }
+
+  .dir-bottom {
+    align-self: flex-end;
+    flex-direction: column;
+  }
+
   h2 {
     font-size: 1.5em;
     line-height: 1.5em;
   }
+
   .badges {
     margin-top: 10px;
   }
+
   .badges img {
     height: 1.5em;
   }
+
   .heading {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
+
   .subheading {
     font-size: 1em;
   }
+
   .subscripts {
     font-size: 0.75em;
   }
+
   .subscripts a {
     color: inherit !important;
   }
-  .messageDisplayWrapper {
+
+  .message-display-wrapper {
     height: 100%;
     width: 100%;
     display: flex;
     overflow-x: hidden;
   }
 
-  .messageDisplay {
+  .message-display {
     display: flex;
     width: 100%;
     max-height: 100%;
   }
 
-  .message {
-    --margin: 5px;
-    margin: var(--margin);
-    padding: calc(1.5 * var(--margin));
-    width: calc(100% - 2 * var(--margin));
-    animation: splash 1s normal forwards ease-in-out;
-    border-radius: var(--margin);
-  }
-
-  .messageDisplayWrapper :global(.message:nth-child(odd)) {
+  .message-display-wrapper :global(.message:nth-child(odd)) {
     background-color: rgba(255, 255, 255, 0.075);
   }
 
-  .messageDisplayWrapper :global(.message:nth-child(even)) {
+  .message-display-wrapper :global(.message:nth-child(even)) {
     background-color: rgba(255, 255, 255, 0.2);
   }
 </style>
