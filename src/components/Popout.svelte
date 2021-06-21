@@ -55,7 +55,7 @@
   let allItems = [];
 
   function selectAllScreenshot() {
-    selectedItems = allItems;
+    selectedItems = [...allItems];
   }
 
   function saveScreenshot() {
