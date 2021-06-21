@@ -15,7 +15,7 @@
   }
 
   let Changelogs;
-  let unsubscribe;
+  let unsubscribe = () => { };
 
   onMount(async () => {
     Changelogs = (await import(`../changelogs/${version}.svelte`)).default;

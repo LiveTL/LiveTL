@@ -1,5 +1,6 @@
 import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit } from './constants.js';
 import { LookupStore, SyncStore } from './storage.js';
+import { writable } from 'svelte/store';
 
 /**
  * @template T
@@ -26,6 +27,7 @@ const sampleFilter = {
   id: ''
 };
 
+// Settings
 export const
   language = SS('language', 'English'),
   showModMessage = SS('showModMessage', true),
@@ -64,3 +66,6 @@ export const
   macros = SS('macros', []),
   doAutoPrefix = SS('doAutoPrefix', false),
   enableMchadTLs = SS('enableMchadTLs', true);
+
+// Non-persistant stores
+export const updatePopupActive = writable(false);

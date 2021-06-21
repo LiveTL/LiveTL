@@ -8,7 +8,11 @@ import { AuthorType, languageNameCode } from './constants';
 import { checkAndSpeak } from './speech.js';
 
 
-/** @typedef {{text: String, author: String, timestamp: String, id: String, types: Number}} Message*/
+/** @typedef {{type: 'text', text: String}} TextMessage */
+/** @typedef {{type: 'link', url: String, text: String}} LinkMessage */
+/** @typedef {{type: 'emote', src: String}} EmoteMessage */
+/** @typedef {TextMessage | LinkMessage | EmoteMessage} MessageItem */
+/** @typedef {{text: String, messageArray: MessageItem[], author: String, timestamp: String, id: String, types: Number}} Message */
 
 /** @type {{ translations: Writable<Message>, mod: Writable<Message> ytc: Writable<Message>}} */
 export const sources = {
@@ -32,12 +36,22 @@ const isMod = msg => (msg.types & AuthorType.moderator) || (msg.types & AuthorTy
 /** @type {(msg: Message) => Boolean} */
 const showIfMod = msg => isMod(msg) && showModMessage.get();
 
-/** @type {(store: Writable<Message>) => (msg: Message, text: String) => void} */
-const setStoreMessage = store => (msg, text) => store.set({...msg, text});
+/** @type {(store: Writable<Message>) => (msg: Message, text: String | undefined) => void} */
+const setStoreMessage =
+  store => (msg, text) => store.set({...msg, text: text ?? msg.text});
 
 const lang = () => languageNameCode[language.get()];
 
 const isTranslation = parsed => parsed && isLangMatch(parsed.lang, lang()) && parsed.msg;
+
+/** @type {(msg: Message) => Message} */
+const replaceFirstTranslation = msg => {
+  const messageArray = [...msg.messageArray];
+  if (messageArray[0].type === 'text') {
+    messageArray[0].text = parseTranslation(messageArray[0].text).msg;
+  }
+  return {...msg, messageArray};
+};
 
 /**
  * @param {Writable<Message>} translations 
@@ -55,17 +69,13 @@ function attachFilters(translations, mod, ytc) {
     const parsed = parseTranslation(text);
     if (!text) return;
     if (isTranslation(parsed)) {
-      if (message.messageArray[0].type === 'text') {
-        const originalText = message.messageArray[0].text;
-        message.messageArray[0].text = parseTranslation(originalText).msg;
-      }
-      setTranslation(message, parsed.msg);
+      setTranslation(replaceFirstTranslation(message), parsed.msg);
     }
     else if (isWhitelisted(message)) {
-      setTranslation(message, text);
+      setTranslation(message);
     }
     else if (showIfMod(message)) {
-      setModMessage(message, text);
+      setModMessage(message);
     }
   });
 }
