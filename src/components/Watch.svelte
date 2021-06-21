@@ -84,7 +84,6 @@
     });
   };
   $: setTimeout(() => changeSide($videoSide, $chatSplit), 0);
-  let updatePopupActive = false;
 
   function toggleFullScreen() {
     if (
@@ -186,7 +185,7 @@
             </Wrapper>
           </div>
           <div class="tile autoscale" bind:this={ltlElem}>
-            <Popout {isResizing} bind:updatePopupActive />
+            <Popout {isResizing} />
           </div>
         </div>
       </div>

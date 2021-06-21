@@ -10,9 +10,9 @@
   import MessageDisplay from './MessageDisplay.svelte';
   import ScreenshotExport from './ScreenshotExport.svelte';
   import Updates from './Updates.svelte';
+  import { updatePopupActive } from '../js/store.js';
   let settingsOpen = false;
   export let isResizing = false;
-  export let updatePopupActive = false;
   const params = new URLSearchParams(window.location.search);
   document.title = params.get('title') || 'LiveTL Popout';
   export let isStandalone = params.get('embedded') ? true : false;
@@ -75,7 +75,7 @@
     <ScreenshotExport bind:renderQueue bind:renderWidth={renderWidthInt} />
   </div>
 
-  <Updates bind:active={updatePopupActive} />
+  <Updates bind:active={$updatePopupActive} />
   <div
     class="settingsButton {$textDirection === TextDirection.TOP
       ? 'bottom'
@@ -133,7 +133,6 @@
     <div style="display: {settingsOpen ? 'none' : 'block'};">
       <MessageDisplay
         direction={$textDirection}
-        bind:updatePopupActive
         bind:this={messageDisplay}
         on:afterUpdate={onMessageDisplayAfterUpdate}
         bind:screenshotting

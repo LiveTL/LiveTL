@@ -25,11 +25,12 @@
     TextDirection
   } from '../js/constants.js';
 
+  import IntroMessage from './IntroMessage.svelte';
+
   $: document.body.style.fontSize = Math.round($livetlFontSize) + 'px';
   export let direction;
   /** @type {{ text: String, author: String, timestamp: String }[]}*/
   export let items = [];
-  export let updatePopupActive = false;
 
   let bottomMsg = null;
   let unsubscribe = null;
@@ -90,145 +91,9 @@
       ? '-reverse'
       : ''};"
   >
-    <div class="message transition">
-      {#if $textDirection == TextDirection.BOTTOM}
-        <Minimizer />
-      {/if}
-      {#if !$welcomeDismissed}
-        <div class="heading">
-          <h2>Welcome to LiveTL!</h2>
-        </div>
-      {/if}
-      <div class="subheading">
-        Translations picked up from the chat will appear here.
-        {#if !$welcomeDismissed}
-          <p style="font-size: 0.8em;">
-            <a
-              href="https://livetl.app/"
-              target="about:blank"
-              on:click={(e) => {
-                e.preventDefault();
-                // eslint-disable-next-line no-unused-vars
-                updatePopupActive = true;
-              }}
-            >
-              See what's new in v{version}
-            </a>
-          </p>
-        {/if}
-      </div>
-      {#if !$welcomeDismissed}
-        <div class="subscripts">
-          <div class="badges">
-            <!--
-        <a
-          href="https://livetl.app/"
-          target="about:blank"
-          on:click={e => {
-            e.preventDefault();
-            // eslint-disable-next-line no-unused-vars
-            updatePopupActive = true;
-          }}
-        >
-          <img
-            alt="Version"
-            src="https://img.shields.io/badge/See what's new in-v{version}-blue?style=flat&color=ff69b4"
-          />
-        </a>
-        <a
-          href="https://chrome.google.com/webstore/detail/livetl-translation-filter/moicohcfhhbmmngneghfjfjpdobmmnlg"
-          target="about:blank"
-        >
-          <img
-            alt="Chrome Web Store"
-            src="https://img.shields.io/chrome-web-store/users/moicohcfhhbmmngneghfjfjpdobmmnlg?color=blue&label=Chrome%20users&logo=google&logoColor=white&style=flat"
-          />
-        </a>
-        <a
-          href="https://addons.mozilla.org/en-US/firefox/addon/livetl/"
-          target="about:blank"
-        >
-          <img
-            alt="Mozilla Addons"
-            src="https://img.shields.io/amo/users/livetl?color=blue&label=Firefox%20users&logo=mozilla&logoColor=white&style=flat"
-          />
-        </a>
-        <a href="https://livetl.app/" target="about:blank">
-          <img
-            alt="Other platforms"
-            src="https://img.shields.io/badge/Other%20platforms-Android%2C%20iOS-blue?style=flat"
-          />
-        </a>
-        -->
-            <a
-              href="/"
-              target="about:blank"
-              on:click={(e) => {
-                e.preventDefault();
-                if (BROWSER === Browser.CHROME) {
-                  window.open(
-                    'https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg/reviews'
-                  );
-                } else if (BROWSER === Browser.FIREFOX) {
-                  window.open(
-                    'https://addons.mozilla.org/en-US/firefox/addon/livetl'
-                  );
-                } else {
-                  window.open(
-                    'https://chrome.google.com/webstore/detail/livetl-live-translations/moicohcfhhbmmngneghfjfjpdobmmnlg/reviews'
-                  );
-                }
-              }}
-            >
-              <img
-                alt="Reviews"
-                src="https://img.shields.io/badge/Leave a review-5%20stars-blue?style=flat"
-              />
-            </a>
-            <a href="https://github.com/LiveTL/LiveTL/" target="about:blank">
-              <img
-                alt="GitHub Repo"
-                src="https://img.shields.io/github/stars/LiveTL/LiveTL?style=flat&logo=github&label=Star on GitHub"
-              />
-            </a>
-            <!--
-        <a href="https://livetl.app/" target="about:blank">
-          <img
-            alt="Website"
-            src="https://img.shields.io/website?down_color=red&down_message=offline&label=Website&up_color=blue&up_message=livetl.app&url=http%3A%2F%2Flivetl.app%2F&style=flat"
-          />
-        </a>
-        -->
-            <a href="https://opencollective.com/livetl" target="about:blank">
-              <img
-                alt="Donators and supporters"
-                src="https://img.shields.io/opencollective/all/livetl?color=blue&label=Donators%20and%20supporters&logo=dollar&style=flat"
-              />
-            </a>
-            <!--
-        <a
-          href="https://hosted.weblate.org/engage/livetl/"
-          target="about:blank"
-        >
-          <img
-            alt="Localization"
-            src="https://img.shields.io/badge/Localization-Weblate-blue"
-          />
-        </a>
-        -->
-            <a href="https://discord.gg/uJrV3tmthg" target="about:blank">
-              <img
-                alt="Discord"
-                src="https://img.shields.io/discord/780938154437640232.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2&style=flat"
-              />
-            </a>
-          </div>
-        </div>
-      {/if}
-      {#if $textDirection == TextDirection.TOP}
-        <Minimizer />
-      {/if}
-    </div>
+
+    <IntroMessage />
+
     {#each items.filter(item => item) as item}
       <Message
         message={item}
