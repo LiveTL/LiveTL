@@ -36,7 +36,8 @@
       <span
         class="author"
         class:moderator={item.types & AuthorType.moderator}
-        class:owner={item.types & AuthorType.owner}>{item.author}</span
+        class:owner={item.types & AuthorType.owner}
+        >{item.author} ({item.timestamp})</span
       >
     </div>
   {/each}
