@@ -1,6 +1,5 @@
 import { openWindow, sendToBackground } from '../bgmessage.js';
 import { mdiOpenInNew, mdiYoutubeTv, mdiIframeArray } from '@mdi/js';
-import { BROWSER, Browser } from '../constants.js';
 
 for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) {
   window.addEventListener(eventName, e => e.stopImmediatePropagation(), true);
@@ -93,7 +92,22 @@ const makeButton = (text, callback, color='rgb(0, 153, 255)', icon='') => {
   `;
 };
 
-function loaded() {
+const constructParams = () => {
+  const params = new URLSearchParams(window.location.search);
+  params.set(
+    'video',
+    (
+      params.get('v') ||
+      (new URLSearchParams(window.parent.location.search).get('v'))
+    )
+  );
+  if (window.location.pathname.includes('live_chat_replay')) {
+    params.set('isReplay', true);
+  }
+  return params;
+};
+
+async function loaded() {
   const elem = document.querySelector('yt-live-chat-app');
   elem.style.minWidth = '0px';
   elem.style.minHeight = '0px';
@@ -116,74 +130,84 @@ function loaded() {
   const style = document.createElement('style');
   style.innerHTML = css;
   body.appendChild(style);
-  const insertButtons = async () => {
-    try {
-      document.querySelectorAll('.livetlButtonWrapper').forEach(item => item.remove());
-      let params = new URLSearchParams(window.location.search);
-      const constructParams = () => {
-        params = new URLSearchParams(window.location.search);
-        params.set('video', (params.get('v') || (new URLSearchParams(window.parent.location.search).get('v'))));
-        if (window.location.pathname.includes('live_chat_replay')) params.set('isReplay', true);
-        return params;
-      };
-      if (params.get('embed_domain') ||
-          new URL(window.parent.location.href).hostname == new URL(window.location.href).hostname){
-        makeButton('Open LiveTL', () => {
-          window.top.location = chrome.runtime.getURL(`watch.html?${constructParams().toString()}`);
-        }, undefined, mdiYoutubeTv);
-        const tabid = await sendToBackground({
-          type:'tabid'
-        });
-        window.addEventListener('message', d => {
-          if (d.data['yt-player-video-progress']) {
-            sendToBackground({
-              type: 'message',
-              data: { ...d.data, tabid },
-            });
-          }
-        });
-        // TODO: set tabid and frameid on popout params
-        makeButton('TL Popout', () => {
-          let popoutParams = constructParams();
-          popoutParams.set('tabid', tabid);
-          try {
-            popoutParams.set('title', window.parent.document.querySelector('#container > .title').textContent);
-          // eslint-disable-next-line no-empty
-          } catch(e) {
-          }
-          openWindow(chrome.runtime.getURL(`popout.html?${popoutParams.toString()}`));
-        }, undefined, mdiOpenInNew);
-        makeButton('Embed TLs', () => {
-          let embeddedParams = constructParams();
-          embeddedParams.set('embedded', true);
-          embeddedParams.set('tabid', tabid);
-          document.body.outerHTML = '';
-          const iframe = document.createElement('iframe');
-          iframe.style.width = '100%';
-          iframe.style.height = '100%';
-          iframe.style.position = 'fixed';
-          iframe.src = chrome.runtime.getURL(`watch.html?${embeddedParams.toString()}`);
-          document.body.appendChild(iframe);
-          window.addEventListener('message', d => {
-            iframe.contentWindow.postMessage(d.data, '*');
-          });
-        }, undefined, mdiIframeArray);
-      }
-      // eslint-disable-next-line no-empty
-    } catch(e) {
+
+  if (document.querySelector('.livetlButtonWrapper')) {
+    console.debug('LTL buttons already injected. Skipping injection');
+    return;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('embed_domain') === chrome.runtime.id) {
+    console.debug('Chat is in extension, not injecting LTL buttons.');
+    return;
+  }
+
+  /** Start buttons injections */
+  makeButton('Open LiveTL', () => {
+    window.top.location =
+      chrome.runtime.getURL(`watch.html?${constructParams().toString()}`);
+  }, undefined, mdiYoutubeTv);
+  const tabid = await sendToBackground({
+    type:'tabid'
+  });
+  window.addEventListener('message', (d) => {
+    if (d.data['yt-player-video-progress']) {
+      sendToBackground({
+        type: 'message',
+        data: { ...d.data, tabid },
+      });
     }
-  };
-  insertButtons();
-  setInterval(()=>{
-    if (document.querySelector('.livetlButtonWrapper')) return;
-    insertButtons();
-  }, 100);
+  });
+  // TODO: set tabid and frameid on popout params
+  makeButton('TL Popout', () => {
+    let popoutParams = constructParams();
+    popoutParams.set('tabid', tabid);
+    try{
+      popoutParams.set(
+        'title',
+        window.parent.document.querySelector('#container > .title').textContent
+      );
+    }
+    catch (e) {
+      if (e instanceof DOMException) {
+        console.debug('Ignored expected CORS error', { e });
+      }
+      else {
+        throw e;
+      }
+    }
+    openWindow(
+      chrome.runtime.getURL(`popout.html?${popoutParams.toString()}`)
+    );
+  }, undefined, mdiOpenInNew);
+  makeButton('Embed TLs', () => {
+    let embeddedParams = constructParams();
+    embeddedParams.set('embedded', true);
+    embeddedParams.set('tabid', tabid);
+    document.body.outerHTML = '';
+    const iframe = document.createElement('iframe');
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.style.position = 'fixed';
+    iframe.src =
+      chrome.runtime.getURL(`watch.html?${embeddedParams.toString()}`);
+    document.body.appendChild(iframe);
+    window.addEventListener('message', (d) => {
+      iframe.contentWindow.postMessage(d.data, '*');
+    });
+  }, undefined, mdiIframeArray);
 }
 
-
-window.addEventListener('message', packet=>{
+window.addEventListener('message', (packet) => {
   if (packet.origin !== window.origin) window.postMessage(packet.data);
 });
 
-if (BROWSER === Browser.FIREFOX) loaded();
-else window.addEventListener('load', loaded);
+/**
+ * Load on DOMContentLoaded or later.
+ * Does not matter unless run_at is specified in manifest.
+ */
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loaded);
+} else {
+  loaded();
+}
