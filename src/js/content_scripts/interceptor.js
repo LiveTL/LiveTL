@@ -1,3 +1,4 @@
+// TODO: Remove when fully migrated
 import { parseChatResponse } from '../parse-chat.js';
 import { sendToBackground } from '../bgmessage.js';
 

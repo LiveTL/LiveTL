@@ -1,10 +1,9 @@
-/* eslint-disable no-undef */
 import '../../img/128x128.png';
 import '../../img/48x48.png';
 
-chrome.browserAction.onClicked.addListener(() => {
-  chrome.tabs.create({ url: 'https://livetl.app' });
-});
+// chrome.browserAction.onClicked.addListener(() => {
+//   chrome.tabs.create({ url: 'https://livetl.app' });
+// });
 
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason != 'update')

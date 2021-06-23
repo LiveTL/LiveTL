@@ -40,6 +40,8 @@ var options = {
     interceptor: path.join(__dirname, 'src', 'js', 'content_scripts', 'interceptor.js'),
     fullscreen: path.join(__dirname, 'src', 'js', 'content_scripts', 'fullscreen.js'),
     chat: path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat.js'),
+    chatinterceptor: path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat-interceptor.js'),
+    chatBackground: path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat-background.js'),
   },
   output: {
     path: path.join(__dirname, 'build'),
@@ -49,11 +51,11 @@ var options = {
   module: {
     rules: [
       {
-        test: /src\/submodules\/chat\/scripts\/chat\.js$/,
+        test: /src\/submodules\/chat\/scripts\/chat(-background)?\.js$/,
         loader: 'string-replace-loader',
         options: {
-          search: "import { getWAR } from '@/modules/war.js';",
-          replace: 'window.isLiveTL = true; const getWAR = path => chrome.runtime.getURL(path);',
+          search: "const isLiveTL = false;",
+          replace: 'const isLiveTL = true;',
         }
       },
       {
@@ -203,7 +205,7 @@ var options = {
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'empty.html'),
       filename: 'background.html',
-      chunks: ['background']
+      chunks: ['background', 'chatBackground']
     }),
     new webpack.HotModuleReplacementPlugin(),
     new VueLoaderPlugin(),

@@ -30,6 +30,7 @@
         "https://www.youtube.com/live_chat_replay*"
       ],
       "js": [
+        "chatinterceptor.bundle.js",
         "injector.bundle.js",
         "interceptor.bundle.js",
         "chat.bundle.js"

@@ -193,6 +193,7 @@ export function ytcSource(window) {
     .map(extractToMsg(data))
     .forEach(item => queued.push(item));
 
+  //TODO: migrate to background messaging
   window.addEventListener('message', d => {
     const data = getYTCData(d);
     updateVideoProgressBeforeMessages(data);
