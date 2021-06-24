@@ -41,4 +41,7 @@
   .left-video {
     width: calc(100% - var(--bar) + 4px);
   }
+  .wrapper {
+    overflow: hidden;
+  }
 </style>
