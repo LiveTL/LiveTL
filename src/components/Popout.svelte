@@ -17,7 +17,7 @@
   export let isResizing = false;
   const params = new URLSearchParams(window.location.search);
   $videoTitle = params.get('title') || $videoTitle;
-  document.title = $videoTitle || 'LiveTL Popout';
+  $: document.title = $videoTitle || 'LiveTL Popout';
   export let isStandalone = params.get('embedded') ? true : false;
   export let videoId = '';
 
