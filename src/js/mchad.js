@@ -18,7 +18,7 @@ export async function getRooms(videoId) {
 
 /**
  * @param {Object} entry 
- * @returns {[{ text: String, time: Date }] | undefined }
+ * @returns {[{ text: String, time: number }] | undefined }
  */
 export async function getArchive(entry) {
   try {

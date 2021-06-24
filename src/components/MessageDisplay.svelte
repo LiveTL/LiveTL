@@ -67,7 +67,7 @@
   
   const version = window.chrome.runtime.getManifest().version;
 
-  export let screenshotting = false;
+  export let isSelecting = false;
   export let selectedItems = [];
 
   const banMessage = item => () => {
@@ -79,7 +79,7 @@
     items = items.filter(i => i.id != item.id);
   };
 
-  $: if (!screenshotting) selectedItems = [];
+  $: if (!isSelecting) selectedItems = [];
 </script>
 
 <MessageDisplayWrapper>
@@ -98,7 +98,7 @@
         on:hide={() => (item.hidden = true)}
         on:ban={banMessage(item)}
       >
-        {#if screenshotting}
+        {#if isSelecting}
           <Checkbox bind:group={selectedItems} value={item} />
         {/if}
       </Message>

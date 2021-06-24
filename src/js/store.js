@@ -69,3 +69,4 @@ export const
 
 // Non-persistant stores
 export const updatePopupActive = writable(false);
+export const videoTitle = writable('LiveTL');

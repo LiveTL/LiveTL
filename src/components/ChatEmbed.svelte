@@ -1,4 +1,5 @@
 <script>
+  import { videoTitle } from "../js/store.js";
   export let continuation;
   export let videoId;
   export let isReplay;
@@ -21,7 +22,7 @@
           '*'
         );
       }
-      if (data.info.videoData) document.title = data.info.videoData.title;
+      if (data.info.videoData) $videoTitle = data.info.videoData.title;
     } catch (e) {
       if (iframe && iframe.contentWindow)
         iframe.contentWindow.postMessage(packet.data, '*');
