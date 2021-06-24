@@ -15,7 +15,7 @@
   const hide = el => el.style.display = 'none';
   const hideRipples = () => document
     .querySelectorAll('paper-ripple')
-    .forEach(hide)
+    .forEach(hide);
 
   const onKeydown = e => {
     if (e.key === 'Tab') {

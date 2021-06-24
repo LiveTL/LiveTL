@@ -1,8 +1,8 @@
 <script>
-  import { afterUpdate } from 'svelte';
+  import { afterUpdate, tick } from 'svelte';
   import { fade } from 'svelte/transition';
   import { Button, Icon, MaterialApp, TextField } from 'svelte-materialify/src';
-  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck } from '@mdi/js';
+  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline  } from '@mdi/js';
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
   import { TextDirection } from '../js/constants.js';
@@ -10,9 +10,9 @@
   import MessageDisplay from './MessageDisplay.svelte';
   import ScreenshotExport from './ScreenshotExport.svelte';
   import Updates from './Updates.svelte';
+  import { updatePopupActive } from '../js/store.js';
   let settingsOpen = false;
   export let isResizing = false;
-  export let updatePopupActive = false;
   const params = new URLSearchParams(window.location.search);
   document.title = params.get('title') || 'LiveTL Popout';
   export let isStandalone = params.get('embedded') ? true : false;
@@ -20,6 +20,8 @@
   let wrapper;
   let messageDisplay;
   let isAtRecent = true;
+
+  const updateWrapper = () => [wrapper.isAtBottom(), wrapper.isAtTop()];
 
   function checkAtRecent() {
     isAtRecent =
@@ -40,7 +42,7 @@
       messageDisplay.scrollToRecent();
       settingsWasOpen = false;
     }
-    checkAtRecent();
+    tick().then(checkAtRecent);
   });
 
   let renderQueue;
@@ -52,6 +54,12 @@
   }
 
   let selectedItems = [];
+  let allItems = [];
+
+  function selectAllScreenshot() {
+    selectedItems = [...allItems];
+  }
+
   function saveScreenshot() {
     renderQueue = selectedItems;
     toggleScreenshot();
@@ -67,7 +75,7 @@
 
 <svelte:window on:resize={checkAtRecent} />
 <svelte:head>
-  <link rel="shortcut icon" href="48x48.png" type="image/png">
+  <link rel="shortcut icon" href="48x48.png" type="image/png" />
 </svelte:head>
 
 <MaterialApp theme="dark">
@@ -75,7 +83,7 @@
     <ScreenshotExport bind:renderQueue bind:renderWidth={renderWidthInt} />
   </div>
 
-  <Updates bind:active={updatePopupActive} />
+  <Updates bind:active={$updatePopupActive} />
   <div
     class="settingsButton {$textDirection === TextDirection.TOP
       ? 'bottom'
@@ -97,6 +105,13 @@
       >
     {/if}
     <div style="display: flex;">
+      {#if screenshotting}
+        <div class="blue-text">
+          <Button fab size="small" on:click={selectAllScreenshot}>
+            <Icon path={mdiExpandAllOutline} />
+          </Button>
+        </div>
+      {/if}
       {#if !settingsOpen}
         <div class={screenshotting ? 'green-text' : ''}>
           <Button
@@ -133,11 +148,11 @@
     <div style="display: {settingsOpen ? 'none' : 'block'};">
       <MessageDisplay
         direction={$textDirection}
-        bind:updatePopupActive
         bind:this={messageDisplay}
         on:afterUpdate={onMessageDisplayAfterUpdate}
         bind:screenshotting
         bind:selectedItems
+        bind:items={allItems}
       />
     </div>
   </Wrapper>
@@ -150,10 +165,12 @@
         style="display: 'unset';"
         transition:fade|local={{ duration: 150 }}
       >
+      <!-- scroll and reload isbottom and istop functions on click -->
         <Button
           fab
           size="small"
-          on:click={messageDisplay.scrollToRecent}
+          on:click={() => messageDisplay.scrollToRecent()}
+          on:click={updateWrapper}
           class="elevation-3"
           style="background-color: #0287C3; border-color: #0287C3;"
         >
@@ -212,5 +229,4 @@
     vertical-align: top !important;
     margin-left: 5px;
   }
-
 </style>
