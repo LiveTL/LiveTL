@@ -42,11 +42,7 @@ export async function getArchive(entry) {
   }
 }
 
-/**
- * @param {Object} entry 
- * @returns {EventSource}
- */
-export function getLive(entry) {
+export const streamRoom = room => readable(null, set => {
   /*
     - There will be a ping every 1 minute to keep the connection alive.
     - eventlistener will always try to reconnect even if the connection is cut from the server-side,
@@ -69,10 +65,6 @@ export function getLive(entry) {
     -> flag = update, if there's a change on an entry.
         content is the same as [insert], just use _id to find the locally saved entry and overwrite.
   */
-  return new EventSource(`${MCHAD}/Listener/?room=${entry.Room}`, { withCredentials: true});
-}
-
-export const streamRoom = room => readable(null, set => {
   const source = new EventSource(`${MCHAD}/Listener?room=${room}`);
   
   source.onmessage = event => {

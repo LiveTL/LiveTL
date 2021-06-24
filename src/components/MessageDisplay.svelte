@@ -9,6 +9,7 @@
   import { Checkbox, Icon } from 'svelte-materialify/src';
   import { sources, combineStores } from '../js/sources.js';
   import Minimizer from './Minimizer.svelte';
+  import MessageDisplayWrapper from "./MessageDisplayWrapper.svelte";
   import '../css/splash.css';
   import { mdiEyeOffOutline, mdiAccountRemove } from '@mdi/js';
   import {
@@ -81,13 +82,12 @@
   $: if (!screenshotting) selectedItems = [];
 </script>
 
-<div class="message-display-wrapper">
+<MessageDisplayWrapper>
   <div
     class="message-display"
     class:dir-top={direction === TextDirection.TOP}
     class:dir-bottom={direction === TextDirection.BOTTOM}
   >
-
     <IntroMessage />
 
     {#each items as item}
@@ -95,7 +95,7 @@
         message={item}
         hidden={item.hidden}
         showTimestamp={$showTimestamp}
-        on:hide={() => item.hidden = true}
+        on:hide={() => (item.hidden = true)}
         on:ban={banMessage(item)}
       >
         {#if screenshotting}
@@ -105,7 +105,7 @@
     {/each}
     <div class="bottom 🥺" bind:this={bottomMsg} />
   </div>
-</div>
+</MessageDisplayWrapper>
 
 <style>
   .dir-top {
@@ -149,24 +149,9 @@
     color: inherit !important;
   }
 
-  .message-display-wrapper {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    overflow-x: hidden;
-  }
-
   .message-display {
     display: flex;
     width: 100%;
     max-height: 100%;
-  }
-
-  .message-display-wrapper :global(.message:nth-child(odd)) {
-    background-color: rgba(255, 255, 255, 0.075);
-  }
-
-  .message-display-wrapper :global(.message:nth-child(even)) {
-    background-color: rgba(255, 255, 255, 0.2);
   }
 </style>
