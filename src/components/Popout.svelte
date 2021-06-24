@@ -28,6 +28,8 @@
   }
 
   function onMessageDisplayAfterUpdate() {
+    console.log('IS AT RECENT', isAtRecent);
+    console.log('IS AT BOTTOM', wrapper.isAtBottom());
     if (isAtRecent && !settingsOpen){
       messageDisplay.scrollToRecent();
     }
@@ -163,10 +165,11 @@
         style="display: 'unset';"
         transition:fade|local={{ duration: 150 }}
       >
+      <!-- scroll and reload isbottom and istop functions on click -->
         <Button
           fab
           size="small"
-          on:click={messageDisplay.scrollToRecent}
+          on:click={() => [messageDisplay.scrollToRecent(), wrapper.isAtBottom(), wrapper.isAtTop()]}
           class="elevation-3"
           style="background-color: #0287C3; border-color: #0287C3;"
         >

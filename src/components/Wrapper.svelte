@@ -1,4 +1,6 @@
 <script>
+  import { delayed } from '../js/utils.js';
+
   export let isResizing;
   export let zoom = NaN;
   export let style = '';
@@ -8,12 +10,13 @@
   $: inverse = 100 / factor;
 
   let div;
-  export function isAtBottom() {
-    return Math.ceil(div.clientHeight + div.scrollTop) >= div.scrollHeight;
-  }
-  export function isAtTop() {
-    return div.scrollTop === 0;
-  }
+
+  export const isAtBottom = delayed(() =>
+    Math.ceil(div.clientHeight + div.scrollTop) >= div.scrollHeight,
+    true
+  );
+
+  export const isAtTop = delayed(() => div.scrollTop === 0, true);
 </script>
 
 <div
