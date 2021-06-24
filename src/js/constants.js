@@ -28,11 +28,6 @@ export const Browser = {
   ANDROID: 3
 };
 
-/** @enum {String} */
-export const MessageSource = {
-  MCHAD: 'MCHAD'
-};
-
 export const BROWSER = (() => {
   if (/Firefox/.exec(navigator.userAgent)) {
     return Browser.FIREFOX;
