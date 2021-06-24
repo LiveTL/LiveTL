@@ -2,7 +2,7 @@
   import { afterUpdate } from 'svelte';
   import { fade } from 'svelte/transition';
   import { Button, Icon, MaterialApp, TextField } from 'svelte-materialify/src';
-  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck } from '@mdi/js';
+  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline  } from '@mdi/js';
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
   import { TextDirection } from '../js/constants.js';
@@ -54,6 +54,12 @@
   }
 
   let selectedItems = [];
+  let allItems = [];
+
+  function selectAllScreenshot() {
+    selectedItems = [...allItems];
+  }
+
   function saveScreenshot() {
     renderQueue = selectedItems;
     toggleScreenshot();
@@ -99,6 +105,13 @@
       >
     {/if}
     <div style="display: flex;">
+      {#if screenshotting}
+        <div class="blue-text">
+          <Button fab size="small" on:click={selectAllScreenshot}>
+            <Icon path={mdiExpandAllOutline} />
+          </Button>
+        </div>
+      {/if}
       {#if !settingsOpen}
         <div class={screenshotting ? 'green-text' : ''}>
           <Button
@@ -139,6 +152,7 @@
         on:afterUpdate={onMessageDisplayAfterUpdate}
         bind:screenshotting
         bind:selectedItems
+        bind:items={allItems}
       />
     </div>
   </Wrapper>
