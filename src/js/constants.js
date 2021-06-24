@@ -46,12 +46,13 @@ export const BROWSER = (() => {
   return Browser.CHROME;
 })();
 
-/** @enum {number} */
+/** @enum {Number} */
 export const AuthorType = {
   moderator: 1 << 0,
   verified: 1 << 1,
   owner: 1 << 2,
-  member: 1 << 3
+  member: 1 << 3,
+  mchad: 1 << 4,
 };
 
 export const languages = [

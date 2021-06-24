@@ -1,4 +1,4 @@
-import { MCHAD } from './constants.js';
+import { MCHAD, AuthorType } from './constants.js';
 import { derived, readable } from 'svelte/store';
 
 /**
@@ -76,8 +76,20 @@ export const streamRoom = room => readable(null, set => {
   };
 });
 
+const removeSeconds = time => time.replace(/:\d\d /, ' ');
+
+const unixToTimestamp = unix =>
+  removeSeconds(new Date(unix).toLocaleString('en-us').split(', ')[1]);
+
 export const getRoomTranslations = room => derived(streamRoom(room), (data, set) => {
-  if (data?.flag == 'insert') {
-    set(data.Stext);
+  const flag = data?.flag;
+  if (flag === 'insert' || flag === 'update') {
+    set({
+      text: data.Stext,
+      messageArray: [{ type: 'text', text: data.Stext }],
+      author: 'MCHAD', // TODO find the actual author
+      timestamp: unixToTimestamp(data.Stime),
+      types: AuthorType.mchad
+    });
   }
 });
