@@ -68,10 +68,10 @@ describe('Synchronized lookup store', () => {
     /** @type {{ value: String }[]} */
     const notifs = [];
     const expectedNotifs = [
-      { k: 'first key', v: { value: 'first not default' } },
-      { k: 'second key', v: { value: 'second not default' } }
+      [['first key', { value: 'first not default' }]],
+      [['first key', { value: 'first not default' }], ['second key', { value: 'second not default' }]]
     ];
-    ss.subscribe((k, v) => notifs.push({ k, v }));
+    ss.subscribe(notifs.push.bind(notifs));
     await ss.set('first key', { value: 'first not default' });
     await ss.set('second key', { value: 'second not default' });
     expect(notifs).toEqual(expectedNotifs);
@@ -81,10 +81,10 @@ describe('Synchronized lookup store', () => {
     const storage = new MockBackend();
     const ss = new LookupStore('test', { value: 'default' }, storage);
     const notifs = [];
-    ss.subscribe(notifs.push)();
+    ss.subscribe(notifs.push.bind(notifs))();
     await ss.set('first key', { value: 'first not default' });
     await ss.set('second key', { value: 'second not default' });
-    expect(notifs.length).toEqual(0);
+    expect(notifs.length).toEqual(1);
   });
 
   it('can set and persist the entire lookup at once', async () => {
