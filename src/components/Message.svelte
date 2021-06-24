@@ -2,7 +2,7 @@
 
 <script>
   import { Message } from '../js/sources.js';
-  import { AuthorType, MessageSource } from '../js/constants.js';
+  import { AuthorType } from '../js/constants.js';
   import { createEventDispatcher } from 'svelte';
   import { Icon } from 'svelte-materialify/src';
   import { mdiEyeOffOutline, mdiAccountRemove, mdiCheckCircle } from '@mdi/js';
@@ -37,7 +37,7 @@
 
   <span class="info">
     <span class:moderator class:owner>{message.author}</span>
-    {#if message.source == MessageSource.MCHAD}
+    {#if message.types & AuthorType.mchad}
       <span class="mchad"
         ><Icon path={mdiCheckCircle} size="1em" /> Mchad TL</span
       >
