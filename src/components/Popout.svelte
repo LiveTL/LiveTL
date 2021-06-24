@@ -1,5 +1,5 @@
 <script>
-  import { afterUpdate } from 'svelte';
+  import { afterUpdate, tick } from 'svelte';
   import { fade } from 'svelte/transition';
   import { Button, Icon, MaterialApp, TextField } from 'svelte-materialify/src';
   import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline  } from '@mdi/js';
@@ -23,6 +23,8 @@
   let messageDisplay;
   let isAtRecent = true;
 
+  const updateWrapper = () => [wrapper.isAtBottom(), wrapper.isAtTop()];
+
   function checkAtRecent() {
     isAtRecent =
       ($textDirection === TextDirection.BOTTOM && wrapper.isAtBottom()) ||
@@ -42,7 +44,7 @@
       messageDisplay.scrollToRecent();
       settingsWasOpen = false;
     }
-    checkAtRecent();
+    tick().then(checkAtRecent);
   });
 
   let renderQueue;
@@ -165,10 +167,12 @@
         style="display: 'unset';"
         transition:fade|local={{ duration: 150 }}
       >
+      <!-- scroll and reload isbottom and istop functions on click -->
         <Button
           fab
           size="small"
-          on:click={messageDisplay.scrollToRecent}
+          on:click={() => messageDisplay.scrollToRecent()}
+          on:click={updateWrapper}
           class="elevation-3"
           style="background-color: #0287C3; border-color: #0287C3;"
         >
