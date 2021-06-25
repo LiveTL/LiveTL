@@ -33,10 +33,7 @@ export async function getArchive(entry) {
       'body': JSON.stringify({
         link: entry.Link
       })
-    })).json().map(d => ({
-      text: d.Stext,
-      time: (new Date(d.Stime) - new Date(start))/1000
-    }));
+    })).json().map(mchadToMessage);
   } catch(e) {
     return undefined;
   }
@@ -81,15 +78,17 @@ const removeSeconds = time => time.replace(/:\d\d /, ' ');
 const unixToTimestamp = unix =>
   removeSeconds(new Date(unix).toLocaleString('en-us').split(', ')[1]);
 
+const mchadToMessage = data => ({
+  text: data.Stext,
+  messageArray: [{ type: 'text', text: data.Stext }],
+  author: 'MCHAD', // TODO find the actual author
+  timestamp: unixToTimestamp(data.Stime),
+  types: AuthorType.mchad
+});
+
 export const getRoomTranslations = room => derived(streamRoom(room), (data, set) => {
   const flag = data?.flag;
   if (flag === 'insert' || flag === 'update') {
-    set({
-      text: data.Stext,
-      messageArray: [{ type: 'text', text: data.Stext }],
-      author: 'MCHAD', // TODO find the actual author
-      timestamp: unixToTimestamp(data.Stime),
-      types: AuthorType.mchad
-    });
+    set(mchadToMessage(data));
   }
 });
