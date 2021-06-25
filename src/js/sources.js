@@ -2,17 +2,12 @@ import { Queue } from './queue';
 import { compose } from './utils';
 // eslint-disable-next-line no-unused-vars
 import { writable, Writable } from 'svelte/store';
+import { Message } from './types.js';
 import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted, authorWhitelisted, authorBlacklisted } from './filter';
 import { channelFilters, language, showModMessage } from './store';
 import { AuthorType, languageNameCode } from './constants';
 import { checkAndSpeak } from './speech.js';
 
-
-/** @typedef {{type: 'text', text: String}} TextMessage */
-/** @typedef {{type: 'link', url: String, text: String}} LinkMessage */
-/** @typedef {{type: 'emote', src: String}} EmoteMessage */
-/** @typedef {TextMessage | LinkMessage | EmoteMessage} MessageItem */
-/** @typedef {{text: String, messageArray: MessageItem[], author: String, timestamp: String, id: String, types: Number}} Message */
 
 /** @type {{ translations: Writable<Message>, mod: Writable<Message> ytc: Writable<Message>}} */
 export const sources = {

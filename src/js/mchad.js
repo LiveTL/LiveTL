@@ -1,44 +1,42 @@
 import { MCHAD, AuthorType } from './constants.js';
-import { derived, readable } from 'svelte/store';
+import { Message, MCHADTL, MCHADStreamItem, MCHADLiveRoom, MCHADArchiveRoom, UnixTimestamp } from './types.js';
+import { derived, readable, Readable } from 'svelte/store';
 
 /**
  * @param {String} videoId 
- * @returns {{ live: [Object], vod: [Object] }}
+ * @returns {{ live: MCHADLiveRoom[], vod: MCHADArchiveRoom[] }}
  */
 export async function getRooms(videoId) {
-  const f = d => {
-    d.videoId = videoId;
-    return d;
-  };
+  const addVideoId = room => ({...room, videoId});
+  const getRoom = link =>
+    fetch(link).then(r => r.json()).then(r => r.map(addVideoId)).catch(() => []);
+
   return {
-    live: await (await fetch(`${MCHAD}/Room?link=YT_${videoId}`)).json().map(f),
-    vod: await (await fetch(`${MCHAD}/Archive?link=YT_${videoId}`)).json().map(f)
+    live: await getRoom(`${MCHAD}/Room?link=YT_${videoId}`),
+    vod: await getRoom(`${MCHAD}/Archive?link=YT_${videoId}`)
   };
 }
 
 /**
- * @param {Object} entry 
- * @returns {[{ text: String, time: number }] | undefined }
+ * @param {MCHADArchiveRoom} room
+ * @returns {Message[]}
  */
-export async function getArchive(entry) {
-  try {
-    const meta = await (await fetch(`https://holodex.net/api/v2/videos/${entry.videoId}`)).json();
-    const start = meta.start_actual;
-    return await (await fetch(`${MCHAD}/Archive`, {
-      'method': 'POST',
-      headers: {
-        'Accept': 'application/json, text/plain, */*',
-        'Content-Type': 'application/json'
-      },
-      'body': JSON.stringify({
-        link: entry.Link
-      })
-    })).json().map(mchadToMessage);
-  } catch(e) {
-    return undefined;
-  }
+export async function getArchive(room) {
+  const meta = await (await fetch(`https://holodex.net/api/v2/videos/${room.videoId}`)).json();
+  const start = meta.start_actual;
+  return await fetch(`${MCHAD}/Archive`, {
+    'method': 'POST',
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    },
+    'body': JSON.stringify({
+      link: room.Link
+    })
+  }).then(r => r.json()).catch(() => []).map(mchadToMessage);
 }
 
+/** @type {(room: String) => Readable<MCHADStreamItem>} */
 export const streamRoom = room => readable(null, set => {
   /*
     - There will be a ping every 1 minute to keep the connection alive.
@@ -73,11 +71,14 @@ export const streamRoom = room => readable(null, set => {
   };
 });
 
+/** @type {(time: String) => String} */
 const removeSeconds = time => time.replace(/:\d\d /, ' ');
 
+/** @type {(unix: UnixTimestamp) => String} */
 const unixToTimestamp = unix =>
   removeSeconds(new Date(unix).toLocaleString('en-us').split(', ')[1]);
 
+/** @type {(data: MCHADTL) => Message} */
 const mchadToMessage = data => ({
   text: data.Stext,
   messageArray: [{ type: 'text', text: data.Stext }],
@@ -86,6 +87,7 @@ const mchadToMessage = data => ({
   types: AuthorType.mchad
 });
 
+/** @type {(room: String) => Readable<Message>} */
 export const getRoomTranslations = room => derived(streamRoom(room), (data, set) => {
   const flag = data?.flag;
   if (flag === 'insert' || flag === 'update') {
