@@ -39,7 +39,6 @@
     const { cleanUp, store: source } = combineStores(
       sources.translations,
       sources.mod,
-      sources.mchad
     );
     const sourceUnsub = source.subscribe(n => {
       if (n) {

@@ -12,7 +12,7 @@ import { getArchive, getLiveTranslations } from './mchad.js';
 
 /** @type {{ translations: Writable<Message>, mod: Writable<Message>, ytc: Writable<Message>, mchad: Readable<Message>}} */
 export const sources = {
-  translations: writable(null),
+  ytcTranslations: writable(null),
   mod: writable(null),
   ytc: ytcSource(window).ytc,
   mchad: combineStores(getArchive(videoId), getLiveTranslations(videoId)).store
@@ -229,7 +229,8 @@ function message(author, msg, timestamp) {
   };
 }
 
-attachFilters(sources.translations, sources.mod, sources.ytc);
+attachFilters(sources.ytcTranslations, sources.mod, sources.ytc);
+sources.translations = combineStores(sources.ytcTranslations, sources.mchad).store;
 attachSpeechSynth(sources.translations);
 
 export class DummyYTCEventSource {
