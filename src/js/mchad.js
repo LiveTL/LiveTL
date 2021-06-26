@@ -34,7 +34,7 @@ export async function getArchive(room) {
     'body': JSON.stringify({
       link: room.Link
     })
-  }).then(r => r.json()).catch(() => []).map(mchadToMessage(room.room));
+  }).then(r => r.json()).catch(() => []).map(mchadToMessage(room.Room));
 }
 
 /** @type {(room: String) => Readable<MCHADStreamItem>} */
@@ -89,10 +89,10 @@ const mchadToMessage = author => data => ({
 });
 
 /** @type {(room: MCHADLiveRoom) => Readable<Message>} */
-export const getRoomTranslations = room => derived(streamRoom(room.room), (data, set) => {
+export const getRoomTranslations = room => derived(streamRoom(room.Room), (data, set) => {
   if (!enableMchadTLs.get()) return;
   const flag = data?.flag;
-  const toMessage = mchadToMessage(room.room);
+  const toMessage = mchadToMessage(room.Room);
   if (flag === 'insert' || flag === 'update') {
     set(toMessage(data));
   }
