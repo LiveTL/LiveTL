@@ -37,7 +37,7 @@ export async function getArchiveFromRoom(room) {
     body: JSON.stringify({
       link: room.Link
     })
-  }).then(toJson).catch(() => [])
+  }).then(toJson).catch(() => []);
   const { Stime: firstTime } = [...script, { Stime: 0 }, { Stime: 0 }][1];
   const toMessage = mchadToMessage(room.Room, archiveUnixToTimestamp(firstTime));
 
