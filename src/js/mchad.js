@@ -1,7 +1,7 @@
 import { MCHAD, AuthorType } from './constants.js';
 import { Message, MCHADTL, MCHADStreamItem, MCHADLiveRoom, MCHADArchiveRoom, UnixTimestamp } from './types.js';
-import { derived, readable, Readable } from 'svelte/store';
-import { enableMchadTLs } from './store.js';
+import { derived, get, readable, Readable } from 'svelte/store';
+import { enableMchadTLs, timestamp } from './store.js';
 
 /** @typedef {(unix: UnixTimestamp) => String} UnixTransformer */
 
@@ -24,22 +24,50 @@ export async function getRooms(videoId) {
  * @param {MCHADArchiveRoom} room
  * @returns {Message[]}
  */
-export async function getArchive(room) {
+export async function getArchiveFromRoom(room) {
   const meta = await (await fetch(`https://holodex.net/api/v2/videos/${room.videoId}`)).json();
-  const start = meta.start_actual;
+  const start = Math.floor(new Date(meta.start_actual) / 1000);
+  console.log('ACTUAL START', meta.start_actual);
+  console.log('ACTUAL START', start);
   const toJson = r => r.json();
   const toMessage = mchadToMessage(room.Room, archiveUnixToTimestamp(start));
-  return await fetch(`${MCHAD}/Archive`, {
-    'method': 'POST',
+  const script = await fetch(`${MCHAD}/Archive`, {
+    method: 'POST',
     headers: {
       'Accept': 'application/json, text/plain, */*',
       'Content-Type': 'application/json'
     },
-    'body': JSON.stringify({
+    body: JSON.stringify({
       link: room.Link
     })
-  }).then(toJson).catch(() => []).map(toMessage);
+  }).then(toJson).catch(() => [])
+
+  return script.map(toMessage);
 }
+
+/** @type {(videoId: String) => Readable<Message>} */
+export const getArchive = videoId => readable(null, async set => {
+  const { vod } = await getRooms(videoId);
+  if (vod.length == 0) return () => { };
+  const script = await getArchiveFromRoom(vod[0])
+    .then(s => s.map(tl => ({...tl, unix: archiveTimeToInt(tl.timestamp)})))
+    .then(s => s.sort((l, r) => l.unix - r.unix));
+
+  const inFuture = tl => tl.unix > prev;
+
+  let prev = get(timestamp);
+  let futureTL = script.find(inFuture);
+  console.log('SCRIPT', script);
+
+  return timestamp.subscribe($time => {
+    if (prev <= futureTL?.unix && futureTL?.unix <= $time) {
+      set(futureTL);
+    }
+    prev = $time;
+    futureTL = script.find(inFuture);
+  });
+});
+
 
 /** @type {(room: String) => Readable<MCHADStreamItem>} */
 export const streamRoom = room => readable(null, set => {
@@ -85,12 +113,19 @@ const unixToTimestamp = unix =>
 
 /** @type {(startUnix: UnixTimestamp) => UnixTransformer} */
 const archiveUnixToTimestamp = startUnix => unix => {
-  const time = unix - startUnix;
+  const time = Math.floor((unix / 1000 - startUnix) / 1000);
   const hours = Math.floor(time / 3600);
   const mins = Math.floor(time % 3600 / 60);
   const secs = time % 60;
   return [hours, mins, secs].join(':');
 };
+
+/** @type {(archiveTime: String) => Number} */
+const archiveTimeToInt = archiveTime => archiveTime
+  .split(':')
+  .map(t => parseInt(t))
+  .map((t, i) => t * Math.pow(60, 2 - i))
+  .reduce((l, r) => l + r);
 
 /** @type {(author: String, timestampTransform: UnixTransformer) => (data: MCHADTL) => Message} */
 const mchadToMessage = (author, timestampTransform) => data => ({

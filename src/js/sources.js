@@ -7,7 +7,7 @@ import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlac
 import { channelFilters, language, showModMessage, timestamp } from './store';
 import { videoId, AuthorType, languageNameCode } from './constants';
 import { checkAndSpeak } from './speech.js';
-import { getLiveTranslations } from './mchad.js';
+import { getArchive, getLiveTranslations } from './mchad.js';
 
 
 /** @type {{ translations: Writable<Message>, mod: Writable<Message>, ytc: Writable<Message>, mchad: Readable<Message>}} */
@@ -15,7 +15,7 @@ export const sources = {
   translations: writable(null),
   mod: writable(null),
   ytc: ytcSource(window).ytc,
-  mchad: getLiveTranslations(videoId)
+  mchad: combineStores(getArchive(videoId), getLiveTranslations(videoId)).store
 };
 
 /** @type {(id: String) => Boolean} */
