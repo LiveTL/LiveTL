@@ -27,10 +27,7 @@ export async function getRooms(videoId) {
 export async function getArchiveFromRoom(room) {
   const meta = await (await fetch(`https://holodex.net/api/v2/videos/${room.videoId}`)).json();
   const start = Math.floor(new Date(meta.start_actual) / 1000);
-  console.log('ACTUAL START', meta.start_actual);
-  console.log('ACTUAL START', start);
   const toJson = r => r.json();
-  const toMessage = mchadToMessage(room.Room, archiveUnixToTimestamp(start));
   const script = await fetch(`${MCHAD}/Archive`, {
     method: 'POST',
     headers: {
@@ -41,6 +38,8 @@ export async function getArchiveFromRoom(room) {
       link: room.Link
     })
   }).then(toJson).catch(() => [])
+  const { Stime: firstTime } = [...script, { Stime: 0 }, { Stime: 0 }][1];
+  const toMessage = mchadToMessage(room.Room, archiveUnixToTimestamp(firstTime));
 
   return script.map(toMessage);
 }
@@ -57,7 +56,6 @@ export const getArchive = videoId => readable(null, async set => {
 
   let prev = get(timestamp);
   let futureTL = script.find(inFuture);
-  console.log('SCRIPT', script);
 
   return timestamp.subscribe($time => {
     if (prev <= futureTL?.unix && futureTL?.unix <= $time) {
@@ -113,11 +111,11 @@ const unixToTimestamp = unix =>
 
 /** @type {(startUnix: UnixTimestamp) => UnixTransformer} */
 const archiveUnixToTimestamp = startUnix => unix => {
-  const time = Math.floor((unix / 1000 - startUnix) / 1000);
+  const time = Math.floor((unix - startUnix) / 1000);
   const hours = Math.floor(time / 3600);
   const mins = Math.floor(time % 3600 / 60);
   const secs = time % 60;
-  return [hours, mins, secs].join(':');
+  return [hours, mins, secs].map(e => `${e}`.padStart(2, 0)).join(':');
 };
 
 /** @type {(archiveTime: String) => Number} */
