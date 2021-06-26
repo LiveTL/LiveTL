@@ -9,8 +9,8 @@
   let image = '';
   import { ProgressLinear } from 'svelte-materialify/src';
   import Dialog from './Dialog.svelte';
-  import Message from "./Message.svelte";
-  import MessageDisplayWrapper from "./MessageDisplayWrapper.svelte";
+  import Message from './Message.svelte';
+  import MessageDisplayWrapper from './MessageDisplayWrapper.svelte';
   $: if (renderQueue.length) {
     (async () => {
       rendering = true;

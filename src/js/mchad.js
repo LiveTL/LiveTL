@@ -101,6 +101,6 @@ export const getRoomTranslations = room => derived(streamRoom(room.room), (data,
 /** @type {(videoId: String) => Readable<Message>} */
 export const getLiveTranslations = videoId => readable(null, async set => {
   const { live } = await getRooms(videoId);
-  if (live.length == 0) return () => { }
+  if (live.length == 0) return () => { };
   return getRoomTranslations(live[0]).subscribe(set);
 });

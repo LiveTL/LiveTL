@@ -79,8 +79,8 @@
       ).map(
         d => `${d.author} (${d.timestamp}): ${d.text}`
       ).join('\n')], {
-        type: "text/plain;charset=utf-8"
-      }
+      type: 'text/plain;charset=utf-8'
+    }
     );
     saveAs(blob, textFilename);
     toggleSelecting();

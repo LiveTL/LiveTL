@@ -1,5 +1,5 @@
 <script>
-  export let style="";
+  export let style='';
 </script>
 
 <div class="message-display-wrapper" {style}>

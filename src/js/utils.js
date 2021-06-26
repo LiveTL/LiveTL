@@ -15,5 +15,5 @@ export const delayed = (fn, start) => {
     const prev = val;
     val = fn(...args);
     return prev;
-  }
-}
+  };
+};

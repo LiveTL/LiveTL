@@ -13,7 +13,7 @@
 
   export const isAtBottom = delayed(() =>
     Math.ceil(div.clientHeight + div.scrollTop) >= div.scrollHeight,
-    true
+  true
   );
 
   export const isAtTop = delayed(() => div.scrollTop === 0, true);

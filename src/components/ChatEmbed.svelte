@@ -1,5 +1,5 @@
 <script>
-  import { videoTitle } from "../js/store.js";
+  import { videoTitle } from '../js/store.js';
   export let continuation;
   export let videoId;
   export let isReplay;

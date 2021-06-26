@@ -9,7 +9,7 @@
   import { Checkbox, Icon } from 'svelte-materialify/src';
   import { sources, combineStores } from '../js/sources.js';
   import Minimizer from './Minimizer.svelte';
-  import MessageDisplayWrapper from "./MessageDisplayWrapper.svelte";
+  import MessageDisplayWrapper from './MessageDisplayWrapper.svelte';
   import '../css/splash.css';
   import { mdiEyeOffOutline, mdiAccountRemove } from '@mdi/js';
   import {
