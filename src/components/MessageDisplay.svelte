@@ -42,8 +42,7 @@
     );
     const sourceUnsub = source.subscribe(n => {
       if (n) {
-        n.index = items.length;
-        items.push(n);
+        items.push({...n, index: items.length});
       }
       items = items;
     });
