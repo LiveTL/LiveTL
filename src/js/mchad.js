@@ -97,8 +97,8 @@ export const getRoomTranslations = room => derived(streamRoom(room.room), (data,
 });
 
 /** @type {(videoId: String) => Readable<Message>} */
-export const getLiveTranslations = videoId => {
+export const getLiveTranslations = videoId => readable(null, set => {
   const { live } = getRooms(videoId);
-  if (live.length == 0) return readable(null);
-  return getRoomTranslations(live[0]);
-}
+  if (live.length == 0) return () => { }
+  return getRoomTranslations(live[0]).subscribe(set);
+});

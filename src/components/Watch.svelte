@@ -14,7 +14,7 @@
     showCaption,
     chatSplit
   } from '../js/store.js';
-  import { VideoSide, ChatSplit } from '../js/constants.js';
+  import { videoId, VideoSide, ChatSplit } from '../js/constants.js';
   import ChatEmbed from './ChatEmbed.svelte';
   import Popout from './Popout.svelte';
   import Captions from './Captions.svelte';
@@ -22,7 +22,6 @@
   let isResizing = false;
   let chatElem, vidElem, ltlElem;
   const params = new URLSearchParams(window.location.search);
-  const videoId = params.get('video');
   const continuation = params.get('continuation');
   const isReplay = params.get('isReplay');
   const isEmbedded = params.get('embedded');

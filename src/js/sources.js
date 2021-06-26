@@ -1,19 +1,21 @@
 import { Queue } from './queue';
 import { compose } from './utils';
 // eslint-disable-next-line no-unused-vars
-import { writable, Writable } from 'svelte/store';
+import { writable, Writable, Readable } from 'svelte/store';
 import { Message } from './types.js';
 import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted, authorWhitelisted, authorBlacklisted } from './filter';
 import { channelFilters, language, showModMessage } from './store';
-import { AuthorType, languageNameCode } from './constants';
+import { videoId, AuthorType, languageNameCode } from './constants';
 import { checkAndSpeak } from './speech.js';
+import { getLiveTranslations } from './mchad.js';
 
 
-/** @type {{ translations: Writable<Message>, mod: Writable<Message> ytc: Writable<Message>}} */
+/** @type {{ translations: Writable<Message>, mod: Writable<Message>, ytc: Writable<Message>, mchad: Readable<Message>}} */
 export const sources = {
   translations: writable(null),
   mod: writable(null),
-  ytc: ytcSource(window).ytc
+  ytc: ytcSource(window).ytc,
+  mchad: getLiveTranslations(videoId)
 };
 
 /** @type {(id: String) => Boolean} */

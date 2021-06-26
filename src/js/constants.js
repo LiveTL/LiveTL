@@ -75,3 +75,5 @@ languages.forEach(i => languageConversionTable[createLangSelectionName(i)] = i);
 languages.forEach(lang => languageNameCode[lang.lang] = lang);
 
 export const MCHAD = 'http://157.230.241.238';
+
+export const videoId = new URLSearchParams(window.location.search ?? '').get('video');
