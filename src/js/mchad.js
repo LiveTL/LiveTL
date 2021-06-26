@@ -33,7 +33,7 @@ export async function getArchive(room) {
     'body': JSON.stringify({
       link: room.Link
     })
-  }).then(r => r.json()).catch(() => []).map(mchadToMessage);
+  }).then(r => r.json()).catch(() => []).map(mchadToMessage(room.room));
 }
 
 /** @type {(room: String) => Readable<MCHADStreamItem>} */
@@ -78,19 +78,27 @@ const removeSeconds = time => time.replace(/:\d\d /, ' ');
 const unixToTimestamp = unix =>
   removeSeconds(new Date(unix).toLocaleString('en-us').split(', ')[1]);
 
-/** @type {(data: MCHADTL) => Message} */
-const mchadToMessage = data => ({
+/** @type {(author: String) => (data: MCHADTL) => Message} */
+const mchadToMessage = author => data => ({
   text: data.Stext,
   messageArray: [{ type: 'text', text: data.Stext }],
-  author: 'MCHAD', // TODO find the actual author
+  author,
   timestamp: unixToTimestamp(data.Stime),
   types: AuthorType.mchad
 });
 
-/** @type {(room: String) => Readable<Message>} */
-export const getRoomTranslations = room => derived(streamRoom(room), (data, set) => {
+/** @type {(room: MCHADLiveRoom) => Readable<Message>} */
+export const getRoomTranslations = room => derived(streamRoom(room.room), (data, set) => {
   const flag = data?.flag;
+  const toMessage = mchadToMessage(room.room);
   if (flag === 'insert' || flag === 'update') {
-    set(mchadToMessage(data));
+    set(toMessage(data));
   }
 });
+
+/** @type {(videoId: String) => Readable<Message>} */
+export const getLiveTranslations = videoId => {
+  const { live } = getRooms(videoId);
+  if (live.length == 0) return readable(null);
+  return getRoomTranslations(live[0]);
+}
