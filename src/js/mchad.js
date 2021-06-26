@@ -135,12 +135,12 @@ const mchadToMessage = (author, timestampTransform) => data => ({
 });
 
 /** @type {(room: MCHADLiveRoom) => Readable<Message>} */
-export const getRoomTranslations = room => derived(streamRoom(room.Room), (data, set) => {
+export const getRoomTranslations = room => derived(streamRoom(room.Nick), (data, set) => {
   if (!enableMchadTLs.get()) return;
   const flag = data?.flag;
   const toMessage = mchadToMessage(room.Nick, unixToTimestamp);
   if (flag === 'insert' || flag === 'update') {
-    set(toMessage(data));
+    set(toMessage(data.content));
   }
 });
 
