@@ -3,6 +3,8 @@ import { Message, MCHADTL, MCHADStreamItem, MCHADLiveRoom, MCHADArchiveRoom, Uni
 import { derived, readable, Readable } from 'svelte/store';
 import { enableMchadTLs } from './store.js';
 
+/** @typedef {(unix: UnixTimestamp) => String} UnixTransformer */
+
 /**
  * @param {String} videoId 
  * @returns {{ live: MCHADLiveRoom[], vod: MCHADArchiveRoom[] }}
@@ -25,6 +27,8 @@ export async function getRooms(videoId) {
 export async function getArchive(room) {
   const meta = await (await fetch(`https://holodex.net/api/v2/videos/${room.videoId}`)).json();
   const start = meta.start_actual;
+  const toJson = r => r.json();
+  const toMessage = mchadToMessage(room.Room, archiveUnixToTimestamp(start));
   return await fetch(`${MCHAD}/Archive`, {
     'method': 'POST',
     headers: {
@@ -34,7 +38,7 @@ export async function getArchive(room) {
     'body': JSON.stringify({
       link: room.Link
     })
-  }).then(r => r.json()).catch(() => []).map(mchadToMessage(room.Room));
+  }).then(toJson).catch(() => []).map(toMessage);
 }
 
 /** @type {(room: String) => Readable<MCHADStreamItem>} */
@@ -75,16 +79,25 @@ export const streamRoom = room => readable(null, set => {
 /** @type {(time: String) => String} */
 const removeSeconds = time => time.replace(/:\d\d /, ' ');
 
-/** @type {(unix: UnixTimestamp) => String} */
+/** @type {UnixTransformer} */
 const unixToTimestamp = unix =>
   removeSeconds(new Date(unix).toLocaleString('en-us').split(', ')[1]);
 
-/** @type {(author: String) => (data: MCHADTL) => Message} */
-const mchadToMessage = author => data => ({
+/** @type {(startUnix: UnixTimestamp) => UnixTransformer} */
+const archiveUnixToTimestamp = startUnix => unix => {
+  const time = unix - startUnix;
+  const hours = Math.floor(time / 3600);
+  const mins = Math.floor(time % 3600 / 60);
+  const secs = time % 60;
+  return [hours, mins, secs].join(':');
+};
+
+/** @type {(author: String, timestampTransform: UnixTransformer) => (data: MCHADTL) => Message} */
+const mchadToMessage = (author, timestampTransform) => data => ({
   text: data.Stext,
   messageArray: [{ type: 'text', text: data.Stext }],
   author,
-  timestamp: unixToTimestamp(data.Stime),
+  timestamp: timestampTransform(data.Stime),
   types: AuthorType.mchad
 });
 
@@ -92,7 +105,7 @@ const mchadToMessage = author => data => ({
 export const getRoomTranslations = room => derived(streamRoom(room.Room), (data, set) => {
   if (!enableMchadTLs.get()) return;
   const flag = data?.flag;
-  const toMessage = mchadToMessage(room.Room);
+  const toMessage = mchadToMessage(room.Nick, unixToTimestamp);
   if (flag === 'insert' || flag === 'update') {
     set(toMessage(data));
   }
