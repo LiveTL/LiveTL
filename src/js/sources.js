@@ -4,7 +4,7 @@ import { compose } from './utils';
 import { writable, Writable, Readable } from 'svelte/store';
 import { Message } from './types.js';
 import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted, authorWhitelisted, authorBlacklisted } from './filter';
-import { channelFilters, language, showModMessage } from './store';
+import { channelFilters, language, showModMessage, timestamp } from './store';
 import { videoId, AuthorType, languageNameCode } from './constants';
 import { checkAndSpeak } from './speech.js';
 import { getLiveTranslations } from './mchad.js';
@@ -168,6 +168,7 @@ export function ytcSource(window) {
       pushUpToCurrentToStore(time);
     }
     progress.previous = time;
+    timestamp.set(time);
   };
 
   const updateVideoProgressBeforeMessages = data => {
