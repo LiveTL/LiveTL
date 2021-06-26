@@ -1,6 +1,7 @@
 import { MCHAD, AuthorType } from './constants.js';
 import { Message, MCHADTL, MCHADStreamItem, MCHADLiveRoom, MCHADArchiveRoom, UnixTimestamp } from './types.js';
 import { derived, readable, Readable } from 'svelte/store';
+import { enableMchadTLs } from './store.js';
 
 /**
  * @param {String} videoId 
@@ -89,6 +90,7 @@ const mchadToMessage = author => data => ({
 
 /** @type {(room: MCHADLiveRoom) => Readable<Message>} */
 export const getRoomTranslations = room => derived(streamRoom(room.room), (data, set) => {
+  if (!enableMchadTLs.get()) return;
   const flag = data?.flag;
   const toMessage = mchadToMessage(room.room);
   if (flag === 'insert' || flag === 'update') {
