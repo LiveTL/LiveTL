@@ -25,9 +25,10 @@
   let messageDisplay;
   let isAtRecent = true;
 
-  const updateWrapper = () => [wrapper.isAtBottom(), wrapper.isAtTop()];
+  const updateWrapper = () => [wrapper.isAtBottom(), wrapper.isAtTop(), setTimeout(checkAtRecent)];
 
   function checkAtRecent() {
+    if (wrapper == null) return;
     isAtRecent =
       ($textDirection === TextDirection.BOTTOM && wrapper.isAtBottom()) ||
       ($textDirection === TextDirection.TOP && wrapper.isAtTop());
@@ -100,7 +101,7 @@
   }
 </script>
 
-<svelte:window on:resize={checkAtRecent} />
+<svelte:window on:resize={updateWrapper} />
 <svelte:head>
   <link rel="shortcut icon" href="48x48.png" type="image/png" />
 </svelte:head>
