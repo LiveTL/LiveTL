@@ -1,15 +1,16 @@
 // eslint-disable-next-line no-unused-vars
-import { derived, readable, Readable } from 'svelte/store';
+import { get, derived, readable, Readable } from 'svelte/store';
 // eslint-disable-next-line no-unused-vars
-import { Message, UnixTimestamp } from './types.js';
+import { Message, ScriptMessage, UnixTimestamp } from './types.js';
 import { AuthorType } from './constants.js';
-import { formatTimestampMillis, toJson } from './utils.js';
+import { formatTimestampMillis, suppress, toJson } from './utils.js';
+import { timestamp } from './store.js';
 
 export const sseToStream = link => readable(null, set => {
   const source = new EventSource(link);
 
   source.onmessage = event => {
-    set(JSON.parse(event.data));
+    suppress(() => set(JSON.parse(event.data)));
   };
 
   return function stop() {
@@ -17,9 +18,26 @@ export const sseToStream = link => readable(null, set => {
   };
 });
 
+/** @type {(script: ScriptMessage[]) => Readable<Message>} */
+export const archiveStreamFromScript = script => readable(null, set => {
+  const inFuture = tl => tl.unix > prev;
+
+  let prev = get(timestamp);
+  let futureTL = script.find(inFuture);
+
+  return timestamp.subscribe($time => {
+    if (prev <= futureTL?.unix && futureTL?.unix <= $time) {
+      set(futureTL);
+    }
+    prev = $time;
+    futureTL = script.find(inFuture);
+  });
+});
+
 /** @type {(endpoint: String) => String} */
 const url = endpoint => `https://api.livetl.app${endpoint}`;
 
+/** @type {(id: String) => String)} */
 const authorName = (() => {
   const lookup = new Map();
   const addTranslator = translator => lookup.set(translator.userID, translator.displayName);
@@ -28,10 +46,11 @@ const authorName = (() => {
   return lookup.get.bind(lookup);
 })();
 
-window.authorName = authorName;
-
 /** @type {(videoId: String) => String} */
 const apiLiveLink = videoId => url(`/translations/stream?videoId=${videoId}?languageCode=en`);
+
+/** @type {(videoId: String) => String} */
+const apiArchiveLink = videoId => url(`/translations/${videoId}/en`);
 
 /** @type {(videoId: String) => Readable<Message>} */
 export const getLiveTranslations = videoId => derived(sseToStream(apiLiveLink(videoId)), $data => {

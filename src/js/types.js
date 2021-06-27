@@ -13,3 +13,5 @@
 /** @typedef {String} StreamTitle */
 /** @typedef {{Nick: Nickname, EntryPass: Boolean, Empty: Boolean, StreamLink: String, videoId: String}} MCHADLiveRoom */
 /** @typedef {{Room: Nickname, Link: String, Nick: StreamTitle, Pass: Boolean, Tags: String, StreamLink: String, Star: Number, videoId: String}} MCHADArchiveRoom */
+
+/** @typedef {Message & {unix: String}} ScriptMessage */

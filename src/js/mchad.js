@@ -5,7 +5,7 @@ import { Message, MCHADTL, MCHADStreamItem, MCHADLiveRoom, MCHADArchiveRoom, Uni
 import { derived, get, readable, Readable } from 'svelte/store';
 import { enableMchadTLs, timestamp } from './store.js';
 import { combineArr, formatTimestampMillis } from './utils.js';
-import { sseToStream } from './api.js';
+import { archiveStreamFromScript, sseToStream } from './api.js';
 
 /** @typedef {(unix: UnixTimestamp) => String} UnixTransformer */
 
@@ -70,22 +70,15 @@ export async function getArchiveFromRoom(room) {
 export const getArchive = videoId => readable(null, async set => {
   const { vod } = await getRooms(videoId);
   if (vod.length == 0) return () => { };
+
+  const byUnix = (l, r) => l.unix - r.unix;
+  const addUnix = tl => ({...tl, unix: archiveTimeToInt(tl.timestamp)});
+
   const script = await getArchiveFromRoom(vod[0])
-    .then(s => s.map(tl => ({...tl, unix: archiveTimeToInt(tl.timestamp)})))
-    .then(s => s.sort((l, r) => l.unix - r.unix));
+    .then(s => s.map(addUnix))
+    .then(s => s.sort(byUnix));
 
-  const inFuture = tl => tl.unix > prev;
-
-  let prev = get(timestamp);
-  let futureTL = script.find(inFuture);
-
-  return timestamp.subscribe($time => {
-    if (prev <= futureTL?.unix && futureTL?.unix <= $time) {
-      set(futureTL);
-    }
-    prev = $time;
-    futureTL = script.find(inFuture);
-  });
+  return archiveStreamFromScript(script).subscribe(set);
 });
 
 /** @type {(room: String) => Readable<MCHADStreamItem>} */

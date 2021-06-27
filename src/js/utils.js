@@ -33,3 +33,10 @@ export const formatTimestampMillis = millis => {
 };
 
 export const toJson = r => r.json();
+
+export const suppress = cb => {
+  try {
+    cb();
+  }
+  catch (e) { };
+};
