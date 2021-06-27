@@ -65,7 +65,8 @@ export const
   welcomeDismissed = SS('welcomeDismissed', false),
   macros = SS('macros', []),
   doAutoPrefix = SS('doAutoPrefix', false),
-  enableMchadTLs = SS('enableMchadTLs', true);
+  enableMchadTLs = SS('enableMchadTLs', true),
+  enableAPITLs = SS('enableAPITLs', true);
 
 // Non-persistant stores
 export const updatePopupActive = writable(false);

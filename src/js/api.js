@@ -4,7 +4,7 @@ import { get, derived, readable, Readable } from 'svelte/store';
 import { APITranslation, Message, ScriptMessage, UnixTimestamp } from './types.js';
 import { AuthorType } from './constants.js';
 import { formatTimestampMillis, sortBy, suppress, toJson } from './utils.js';
-import { timestamp } from './store.js';
+import { enableAPITLs, timestamp } from './store.js';
 
 export const sseToStream = link => readable(null, set => {
   const source = new EventSource(link);
@@ -69,11 +69,14 @@ export const getArchive = videoId => readable(null, async set => {
     .then(s => s.map(transformApiTl))
     .then(sortBy('unix'));
 
-  return archiveStreamFromScript(script).subscribe(set);
+  return archiveStreamFromScript(script).subscribe(tl => {
+    if (enableAPITLs.get())
+      set(tl);
+  });
 });
 
 /** @type {(videoId: String) => Readable<Message>} */
 export const getLiveTranslations = videoId => derived(sseToStream(apiLiveLink(videoId)), $data => {
-  if ($data?.videoId !== videoId) return;
+  if ($data?.videoId !== videoId || !enableAPITLs.get()) return;
   return transformApiTl($data);
 });

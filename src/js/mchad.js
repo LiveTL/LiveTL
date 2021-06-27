@@ -77,7 +77,10 @@ export const getArchive = videoId => readable(null, async set => {
     .then(s => s.map(addUnix))
     .then(sortBy('unix'));
 
-  return archiveStreamFromScript(script).subscribe(set);
+  return archiveStreamFromScript(script).subscribe(tl => {
+    if (enableMchadTLs.get())
+      set(tl);
+  });
 });
 
 /** @type {(room: String) => Readable<MCHADStreamItem>} */

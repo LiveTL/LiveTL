@@ -5,7 +5,8 @@
     language,
     customFilters,
     channelFilters,
-    enableMchadTLs
+    enableMchadTLs,
+    enableAPITLs
   } from '../../js/store.js';
   import {
     Row,
@@ -48,6 +49,7 @@
 <Row>
   <Col>
     <Subheader>External translation sources</Subheader>
+    <CheckOption name="LiveTL API" store={enableAPITLs} />
     <CheckOption name="MChad (volunteer translators)" store={enableMchadTLs} />
   </Col>
 </Row>
