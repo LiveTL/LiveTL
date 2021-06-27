@@ -31,3 +31,5 @@ export const formatTimestampMillis = millis => {
   const secs = time % 60;
   return [hours, mins, secs].map(e => `${e}`.padStart(2, 0)).join(':');
 };
+
+export const toJson = r => r.json();
