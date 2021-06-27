@@ -1,5 +1,7 @@
 import { MCHAD, AuthorType } from './constants.js';
+// eslint-disable-next-line no-unused-vars
 import { Message, MCHADTL, MCHADStreamItem, MCHADLiveRoom, MCHADArchiveRoom, UnixTimestamp } from './types.js';
+// eslint-disable-next-line no-unused-vars
 import { derived, get, readable, Readable } from 'svelte/store';
 import { enableMchadTLs, timestamp } from './store.js';
 
@@ -15,8 +17,12 @@ export async function getRooms(videoId) {
     fetch(link).then(r => r.json()).then(r => r.map(addVideoId)).catch(() => []);
 
   return {
-    live: await getRoom(`${MCHAD}/Room?link=YT_${videoId}`),
-    vod: await getRoom(`${MCHAD}/Archive?link=YT_${videoId}`)
+    live: (await getRoom(`${MCHAD}/Room?link=YT_${videoId}`)).concat(
+      await getRoom(`${MCHAD}/Room?link=https://youtu.be/${videoId}`)
+    ),
+    vod: (await getRoom(`${MCHAD}/Archive?link=YT_${videoId}`)).concat(
+      await getRoom(`${MCHAD}/Archive?link=https://youtu.be/${videoId}`)
+    )
   };
 }
 
@@ -26,6 +32,7 @@ export async function getRooms(videoId) {
  */
 export async function getArchiveFromRoom(room) {
   const meta = await (await fetch(`https://holodex.net/api/v2/videos/${room.videoId}`)).json();
+  // eslint-disable-next-line no-unused-vars
   const start = Math.floor(new Date(meta.start_actual) / 1000);
   const toJson = r => r.json();
   const script = await fetch(`${MCHAD}/Archive`, {
