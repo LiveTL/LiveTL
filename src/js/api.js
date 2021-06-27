@@ -3,7 +3,7 @@ import { get, derived, readable, Readable } from 'svelte/store';
 // eslint-disable-next-line no-unused-vars
 import { APITranslation, Message, ScriptMessage, UnixTimestamp } from './types.js';
 import { AuthorType } from './constants.js';
-import { formatTimestampMillis, suppress, toJson } from './utils.js';
+import { formatTimestampMillis, sortBy, suppress, toJson } from './utils.js';
 import { timestamp } from './store.js';
 
 export const sseToStream = link => readable(null, set => {
@@ -52,12 +52,13 @@ const apiLiveLink = videoId => url(`/translations/stream?videoId=${videoId}?lang
 /** @type {(videoId: String) => String} */
 const apiArchiveLink = videoId => url(`/translations/${videoId}/en`);
 
-/** @type {(apitl: APITranslation) => Message} */
+/** @type {(apitl: APITranslation) => ScriptMessage} */
 const transformApiTl = apitl => ({
   text: apitl.translatedText,
   messageArray: [{ type: 'text', text: apitl.translatedText }],
   author: authorName(apitl.translatorId),
   timestamp: formatTimestampMillis(apitl.start),
+  unix: Math.floor(apitl.start / 1000),
   types: AuthorType.api
 });
 
@@ -65,7 +66,10 @@ const transformApiTl = apitl => ({
 export const getArchive = videoId => readable(null, async set => {
   const script = await fetch(apiArchiveLink(videoId))
     .then(toJson)
-    .then();
+    .then(s => s.map(transformApiTl))
+    .then(sortBy('unix'));
+
+  return archiveStreamFromScript(script).subscribe(set);
 });
 
 /** @type {(videoId: String) => Readable<Message>} */
