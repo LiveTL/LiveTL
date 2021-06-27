@@ -4,7 +4,7 @@ import { Message, MCHADTL, MCHADStreamItem, MCHADLiveRoom, MCHADArchiveRoom, Uni
 // eslint-disable-next-line no-unused-vars
 import { derived, get, readable, Readable } from 'svelte/store';
 import { enableMchadTLs, timestamp } from './store.js';
-import { combineArr } from './utils.js';
+import { combineArr, formatTimestampMillis } from './utils.js';
 import { sseToStream } from './api.js';
 
 /** @typedef {(unix: UnixTimestamp) => String} UnixTransformer */
@@ -99,13 +99,7 @@ const unixToTimestamp = unix =>
   removeSeconds(new Date(unix).toLocaleString('en-us').split(', ')[1]);
 
 /** @type {(startUnix: UnixTimestamp) => UnixTransformer} */
-const archiveUnixToTimestamp = startUnix => unix => {
-  const time = Math.floor((unix - startUnix) / 1000);
-  const hours = Math.floor(time / 3600);
-  const mins = Math.floor(time % 3600 / 60);
-  const secs = time % 60;
-  return [hours, mins, secs].map(e => `${e}`.padStart(2, 0)).join(':');
-};
+const archiveUnixToTimestamp = startUnix => unix => formatTimestampMillis(unix - startUnix);
 
 /** @type {(archiveTime: String) => Number} */
 const archiveTimeToInt = archiveTime => archiveTime

@@ -3,6 +3,7 @@ import { derived, readable, Readable } from 'svelte/store';
 // eslint-disable-next-line no-unused-vars
 import { Message, UnixTimestamp } from './types.js';
 import { AuthorType } from './constants.js';
+import { formatTimestampMillis } from './utils.js';
 
 export const sseToStream = link => readable(null, set => {
   const source = new EventSource(link);
@@ -27,7 +28,7 @@ export const getLiveTranslations = videoId => derived(sseToStream(apiLink(videoI
     text: $data.translatedText,
     messageArray: [{ type: 'text', text: $data.translatedText }],
     author: 'Taishi', // TODO actually find the author
-    timestamp: '', // TODO extract and use the archive unix to timestamp logic
+    timestamp: formatTimestampMillis($data.start),
     types: AuthorType.api
   };
 });
