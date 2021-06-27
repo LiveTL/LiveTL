@@ -64,7 +64,10 @@ export const
   screenshotRenderWidth = SS('screenshotRenderWidth', 500),
   welcomeDismissed = SS('welcomeDismissed', false),
   macros = SS('macros', []),
-  doAutoPrefix = SS('doAutoPrefix', false);
+  doAutoPrefix = SS('doAutoPrefix', false),
+  enableMchadTLs = SS('enableMchadTLs', true);
 
 // Non-persistant stores
 export const updatePopupActive = writable(false);
+export const videoTitle = writable('LiveTL');
+export const timestamp = writable(0);

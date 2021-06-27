@@ -15,5 +15,7 @@ export const delayed = (fn, start) => {
     const prev = val;
     val = fn(...args);
     return prev;
-  }
-}
+  };
+};
+
+export const combineArr = arrs => arrs.reduce((l, r) => [...l, ...r], []);

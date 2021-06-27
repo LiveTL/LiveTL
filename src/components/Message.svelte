@@ -1,17 +1,18 @@
-<svelte:options immutable/>
+<svelte:options immutable />
 
 <script>
   import { Message } from '../js/sources.js';
   import { AuthorType } from '../js/constants.js';
   import { createEventDispatcher } from 'svelte';
   import { Icon } from 'svelte-materialify/src';
-  import { mdiEyeOffOutline, mdiAccountRemove } from '@mdi/js';
+  import { mdiEyeOffOutline, mdiAccountRemove, mdiCheckCircle } from '@mdi/js';
   import '../css/splash.css';
 
   /** @type {Message} */
   export let message = null;
   export let hidden = false;
   export let showTimestamp = false;
+  export let thin=false;
 
   const dispatch = createEventDispatcher();
 
@@ -20,7 +21,7 @@
   $: timestamp = showTimestamp ? `(${message.timestamp})` : '';
 </script>
 
-<div class="message" style="display: {hidden ? 'none': 'block'}">
+<div class="message" class:thin style="display: {hidden ? 'none' : 'block'}">
   <!-- For screenshot checkmark -->
   <slot />
 
@@ -36,17 +37,18 @@
 
   <span class="info">
     <span class:moderator class:owner>{message.author}</span>
+    {#if message.types & AuthorType.mchad}
+      <span class="mchad"
+        ><Icon path={mdiCheckCircle} size="1em" /> Mchad TL</span
+      >
+    {/if}
     <span>{timestamp}</span>
-
     <span class="message-actions">
       <span class="red-highlight" on:click={() => dispatch('hide')}>
         <Icon path={mdiEyeOffOutline} size="1em" />
       </span>
 
-      <span
-        class="red-highlight"
-        on:click={() => dispatch('ban')}
-      >
+      <span class="red-highlight" on:click={() => dispatch('ban')}>
         <Icon path={mdiAccountRemove} size="1em" />
       </span>
     </span>
@@ -61,6 +63,10 @@
     width: calc(100% - 2 * var(--margin));
     animation: splash 1s normal forwards ease-in-out;
     border-radius: var(--margin);
+  }
+
+  .thin {
+    --margin: 2px !important;
   }
 
   .message :global(.s-checkbox) {
@@ -78,15 +84,15 @@
   }
 
   .message-actions .red-highlight :global(.s-icon:hover) {
-    color: #FF2873;
+    color: #ff2873;
   }
 
   .moderator {
-    color: #A0BDFC !important;
+    color: #a0bdfc !important;
   }
 
   .owner {
-    color: #FFD600 !important;
+    color: #ffd600 !important;
   }
 
   .info {
@@ -103,5 +109,11 @@
     height: 1.5em;
     width: 1.5em;
     margin: 0px 0.2em 0px 0.2em;
+  }
+
+  .mchad {
+    background-color: rgba(255, 255, 255, 0.25);
+    padding: 2px;
+    border-radius: 5px;
   }
 </style>

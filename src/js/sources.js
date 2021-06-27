@@ -1,24 +1,21 @@
 import { Queue } from './queue';
 import { compose } from './utils';
 // eslint-disable-next-line no-unused-vars
-import { writable, Writable } from 'svelte/store';
+import { writable, Writable, Readable } from 'svelte/store';
+import { Message } from './types.js';
 import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted, authorWhitelisted, authorBlacklisted } from './filter';
-import { channelFilters, language, showModMessage } from './store';
-import { AuthorType, languageNameCode } from './constants';
+import { channelFilters, language, showModMessage, timestamp } from './store';
+import { videoId, AuthorType, languageNameCode } from './constants';
 import { checkAndSpeak } from './speech.js';
+import { getArchive, getLiveTranslations } from './mchad.js';
 
 
-/** @typedef {{type: 'text', text: String}} TextMessage */
-/** @typedef {{type: 'link', url: String, text: String}} LinkMessage */
-/** @typedef {{type: 'emote', src: String}} EmoteMessage */
-/** @typedef {TextMessage | LinkMessage | EmoteMessage} MessageItem */
-/** @typedef {{text: String, messageArray: MessageItem[], author: String, timestamp: String, id: String, types: Number}} Message */
-
-/** @type {{ translations: Writable<Message>, mod: Writable<Message> ytc: Writable<Message>}} */
+/** @type {{ translations: Writable<Message>, mod: Writable<Message>, ytc: Writable<Message>, mchad: Readable<Message>}} */
 export const sources = {
-  translations: writable(null),
+  ytcTranslations: writable(null),
   mod: writable(null),
-  ytc: ytcSource(window).ytc
+  ytc: ytcSource(window).ytc,
+  mchad: combineStores(getArchive(videoId), getLiveTranslations(videoId)).store
 };
 
 /** @type {(id: String) => Boolean} */
@@ -171,6 +168,7 @@ export function ytcSource(window) {
       pushUpToCurrentToStore(time);
     }
     progress.previous = time;
+    timestamp.set(time);
   };
 
   const updateVideoProgressBeforeMessages = data => {
@@ -231,7 +229,8 @@ function message(author, msg, timestamp) {
   };
 }
 
-attachFilters(sources.translations, sources.mod, sources.ytc);
+attachFilters(sources.ytcTranslations, sources.mod, sources.ytc);
+sources.translations = combineStores(sources.ytcTranslations, sources.mchad).store;
 attachSpeechSynth(sources.translations);
 
 export class DummyYTCEventSource {
