@@ -5,6 +5,7 @@ import { Message, MCHADTL, MCHADStreamItem, MCHADLiveRoom, MCHADArchiveRoom, Uni
 import { derived, get, readable, Readable } from 'svelte/store';
 import { enableMchadTLs, timestamp } from './store.js';
 import { combineArr } from './utils.js';
+import { sseToStream } from './api.js';
 
 /** @typedef {(unix: UnixTimestamp) => String} UnixTransformer */
 
@@ -87,41 +88,8 @@ export const getArchive = videoId => readable(null, async set => {
   });
 });
 
-
 /** @type {(room: String) => Readable<MCHADStreamItem>} */
-export const streamRoom = room => readable(null, set => {
-  /*
-    - There will be a ping every 1 minute to keep the connection alive.
-    - eventlistener will always try to reconnect even if the connection is cut from the server-side,
-      need to call eventlistener.close().
-    - incoming data mostly in form of { "flag":"[type of message]", "content":"[content]" },
-      it's immediately JSON parseable if you use eventlistener, or if you use traditional
-      http.get(), you will need to add "{" and "}" before parsing to JSON.
-
-    Types of incoming data
-    -> {} empty json for ping.
-    -> flag = Connect, content just a welcome to server stuff to confirm the connection.
-    -> flag = Timeout, if no activitiy in the Mchad server for 30 minutes for particular room.
-    -> flag = insert, if there's a new entry.
-        content contains
-            - _id: id of the entry.
-            - Stime: unix epoch milisecond when the entry is uploaded to the server.
-            - Stext: string text for the translation.
-            - CC: Font colour, string in hex "rrggbb" format.
-            - OC: Outline colour , string in hex "rrggbb" format.
-    -> flag = update, if there's a change on an entry.
-        content is the same as [insert], just use _id to find the locally saved entry and overwrite.
-  */
-  const source = new EventSource(`${MCHAD}/Listener?room=${room}`);
-  
-  source.onmessage = event => {
-    set(JSON.parse(event.data));
-  };
-  
-  return function stop() {
-    source.close();
-  };
-});
+const streamRoom = room => sseToStream(`${MCHAD}/Listener?room=${room}`);
 
 /** @type {(time: String) => String} */
 const removeSeconds = time => time.replace(/:\d\d /, ' ');
