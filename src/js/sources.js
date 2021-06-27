@@ -9,14 +9,16 @@ import { channelFilters, language, showModMessage, timestamp } from './store';
 import { videoId, AuthorType, languageNameCode } from './constants';
 import { checkAndSpeak } from './speech.js';
 import { getArchive, getLiveTranslations } from './mchad.js';
+import * as API from './api.js';
 
 
-/** @type {{ translations: Writable<Message>, mod: Writable<Message>, ytc: Writable<Message>, mchad: Readable<Message>}} */
+/** @type {{ translations: Writable<Message>, mod: Writable<Message>, ytc: Writable<Message>, mchad: Readable<Message>, api: Readable<Message>}} */
 export const sources = {
   ytcTranslations: writable(null),
   mod: writable(null),
   ytc: ytcSource(window).ytc,
-  mchad: combineStores(getArchive(videoId), getLiveTranslations(videoId)).store
+  mchad: combineStores(getArchive(videoId), getLiveTranslations(videoId)).store,
+  api: API.getLiveTranslations(videoId),
 };
 
 /** @type {(id: String) => Boolean} */
@@ -231,7 +233,11 @@ function message(author, msg, timestamp) {
 }
 
 attachFilters(sources.ytcTranslations, sources.mod, sources.ytc);
-sources.translations = combineStores(sources.ytcTranslations, sources.mchad).store;
+sources.translations = combineStores(
+  sources.ytcTranslations,
+  sources.mchad,
+  sources.api
+).store;
 attachSpeechSynth(sources.translations);
 
 export class DummyYTCEventSource {
