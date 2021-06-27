@@ -1,5 +1,8 @@
+// eslint-disable-next-line no-unused-vars
 import { compose, dbg } from './utils.js';
+// eslint-disable-next-line no-unused-vars
 import { get, writable, Writable } from 'svelte/store';
+// eslint-disable-next-line no-unused-vars
 import { doTranslatorMode, doAutoPrefix, language, macros } from './store.js';
 import { languageNameCode } from './constants.js';
 
@@ -87,7 +90,7 @@ export function macroSystem(initialMacros) {
   };
 
   /** @type {(text: String) => [String, Array<String>]} */
-  const splitText = text => [text, text.matchAll(/[\w\/]+/g)];
+  const splitText = text => [text, text.matchAll(/[\w/]+/g)];
   /** @type {([input: String, split: Array<String>]) => String} */
   const replaceSplitText = ([input, split]) => {
     const replaced = [];
@@ -141,6 +144,7 @@ export function translatorMode(
 ) {
   const macrosys = macroSystem({ en: '[en]', peko: 'pekora', ero: 'erofi' });
   const invisible = '‍';
+  // eslint-disable-next-line no-unused-vars
   const invisiReg = new RegExp(invisible, 'g');
   const oneRecommend = () => get(recommendations).length === 1;
   const isKey = key => e => e.key === key;
@@ -174,6 +178,7 @@ export function translatorMode(
     updateContent();
   };
 
+  // eslint-disable-next-line no-unused-vars
   const spaceIf = cond => cond ? ' ' : '';
   const setChatCaret =
     pos => setCaret(chatBox, pos == null ? text().length : pos);
