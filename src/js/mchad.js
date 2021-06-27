@@ -4,26 +4,40 @@ import { Message, MCHADTL, MCHADStreamItem, MCHADLiveRoom, MCHADArchiveRoom, Uni
 // eslint-disable-next-line no-unused-vars
 import { derived, get, readable, Readable } from 'svelte/store';
 import { enableMchadTLs, timestamp } from './store.js';
+import { combineArr } from './utils.js';
 
 /** @typedef {(unix: UnixTimestamp) => String} UnixTransformer */
+
+
+/** @type {(videoId: String) => (links: String[]) => Promise<MCHADLiveRoom[] | MCHADArchiveRoom[]>} */
+const getRoomCreator = videoId => {
+  const addVideoId = room => ({...room, videoId});
+  const getRoom = link =>
+    fetch(link).then(r => r.json()).then(r => r.map(addVideoId)).catch(() => []);
+
+  return links => Promise.all(links.map(getRoom)).then(combineArr);
+};
 
 /**
  * @param {String} videoId 
  * @returns {{ live: MCHADLiveRoom[], vod: MCHADArchiveRoom[] }}
  */
 export async function getRooms(videoId) {
-  const addVideoId = room => ({...room, videoId});
-  const getRoom = link =>
-    fetch(link).then(r => r.json()).then(r => r.map(addVideoId)).catch(() => []);
+  const getRooms_ = getRoomCreator(videoId);
 
-  return {
-    live: (await getRoom(`${MCHAD}/Room?link=YT_${videoId}`)).concat(
-      await getRoom(`${MCHAD}/Room?link=https://youtu.be/${videoId}`)
-    ),
-    vod: (await getRoom(`${MCHAD}/Archive?link=YT_${videoId}`)).concat(
-      await getRoom(`${MCHAD}/Archive?link=https://youtu.be/${videoId}`)
-    )
-  };
+  const liveLinks = [
+    `${MCHAD}/Room?link=YT_${videoId}`,
+    `${MCHAD}/Room?link=https://youtu.be/${videoId}`
+  ];
+
+  const vodLinks = [
+    `${MCHAD}/Archive?link=YT_${videoId}`,
+    `${MCHAD}/Archive?link=https://youtu.be/${videoId}`
+  ];
+
+  const [ live, vod ] = await Promise.all([liveLinks, vodLinks].map(getRooms_));
+
+  return { live, vod };
 }
 
 /**
