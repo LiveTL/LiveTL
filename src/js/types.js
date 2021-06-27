@@ -15,3 +15,4 @@
 /** @typedef {{Room: Nickname, Link: String, Nick: StreamTitle, Pass: Boolean, Tags: String, StreamLink: String, Star: Number, videoId: String}} MCHADArchiveRoom */
 
 /** @typedef {Message & {unix: String}} ScriptMessage */
+/** @typedef {{id: Number, videoId: String, translatorId: String, languageCode: String, translatedText: String, start: Number, end: Number | null}} APITranslation */

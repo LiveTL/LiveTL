@@ -4,7 +4,7 @@ import { Message, MCHADTL, MCHADStreamItem, MCHADLiveRoom, MCHADArchiveRoom, Uni
 // eslint-disable-next-line no-unused-vars
 import { derived, get, readable, Readable } from 'svelte/store';
 import { enableMchadTLs, timestamp } from './store.js';
-import { combineArr, formatTimestampMillis } from './utils.js';
+import { combineArr, formatTimestampMillis, sortBy } from './utils.js';
 import { archiveStreamFromScript, sseToStream } from './api.js';
 
 /** @typedef {(unix: UnixTimestamp) => String} UnixTransformer */
@@ -71,12 +71,11 @@ export const getArchive = videoId => readable(null, async set => {
   const { vod } = await getRooms(videoId);
   if (vod.length == 0) return () => { };
 
-  const byUnix = (l, r) => l.unix - r.unix;
   const addUnix = tl => ({...tl, unix: archiveTimeToInt(tl.timestamp)});
 
   const script = await getArchiveFromRoom(vod[0])
     .then(s => s.map(addUnix))
-    .then(s => s.sort(byUnix));
+    .then(sortBy('unix'));
 
   return archiveStreamFromScript(script).subscribe(set);
 });

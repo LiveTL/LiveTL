@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import { get, derived, readable, Readable } from 'svelte/store';
 // eslint-disable-next-line no-unused-vars
-import { Message, ScriptMessage, UnixTimestamp } from './types.js';
+import { APITranslation, Message, ScriptMessage, UnixTimestamp } from './types.js';
 import { AuthorType } from './constants.js';
 import { formatTimestampMillis, suppress, toJson } from './utils.js';
 import { timestamp } from './store.js';
@@ -52,14 +52,24 @@ const apiLiveLink = videoId => url(`/translations/stream?videoId=${videoId}?lang
 /** @type {(videoId: String) => String} */
 const apiArchiveLink = videoId => url(`/translations/${videoId}/en`);
 
+/** @type {(apitl: APITranslation) => Message} */
+const transformApiTl = apitl => ({
+  text: apitl.translatedText,
+  messageArray: [{ type: 'text', text: apitl.translatedText }],
+  author: authorName(apitl.translatorId),
+  timestamp: formatTimestampMillis(apitl.start),
+  types: AuthorType.api
+});
+
+/** @type {(videoId: String) => Readable<Message>} */
+export const getArchive = videoId => readable(null, async set => {
+  const script = await fetch(apiArchiveLink(videoId))
+    .then(toJson)
+    .then();
+});
+
 /** @type {(videoId: String) => Readable<Message>} */
 export const getLiveTranslations = videoId => derived(sseToStream(apiLiveLink(videoId)), $data => {
   if ($data?.videoId !== videoId) return;
-  return {
-    text: $data.translatedText,
-    messageArray: [{ type: 'text', text: $data.translatedText }],
-    author: authorName($data.translatorId),
-    timestamp: formatTimestampMillis($data.start),
-    types: AuthorType.api
-  };
+  return transformApiTl($data);
 });
