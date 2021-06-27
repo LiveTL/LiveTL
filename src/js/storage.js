@@ -28,8 +28,7 @@ export class SyncStore {
     const store = writable(defaultValue);
     this._store = store;
     this._storage = storageBackend || storage;
-    this.loaded = writable(false);
-    this.loadFromStorage();
+    this.loaded = this.loadFromStorage();
     this._lastSet = Date.now();
     this._updateAcrossSessions = updateAcrossSessions;
     stores.byMangled.set(mangleStorageKey(name, storageVersion), this);
@@ -42,10 +41,7 @@ export class SyncStore {
     // and see if there's another change
     if (Date.now() - this._lastSet < 100) return;
     return await this._storage.get(this.name).then(value => {
-      if (value != null) {
-        this._store.set(value);
-      }
-      this.loaded.set(true);
+      this._store.set(value ?? this.get());
     });
   }
 
