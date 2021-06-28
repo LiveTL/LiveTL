@@ -48,6 +48,7 @@ export const AuthorType = {
   owner: 1 << 2,
   member: 1 << 3,
   mchad: 1 << 4,
+  api: 1 << 5
 };
 
 export const languages = [
