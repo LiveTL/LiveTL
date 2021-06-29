@@ -38,7 +38,9 @@ export const suppress = cb => {
   try {
     cb();
   }
-  catch (e) { }
+  catch (e) {
+    return undefined;
+  }
 };
 
 export const sortBy = attr => arr => arr.sort((l, r) => l[attr] - r[attr]);

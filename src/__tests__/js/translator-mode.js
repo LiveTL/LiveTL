@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { omniComplete, macroSystem } from '../../js/translator-mode.js';
 import { get, writable } from 'svelte/store';
 

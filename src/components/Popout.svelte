@@ -10,7 +10,6 @@
   import MessageDisplay from './MessageDisplay.svelte';
   import ScreenshotExport from './ScreenshotExport.svelte';
   import Updates from './Updates.svelte';
-  import { getRooms } from '../js/mchad.js';  
   import { updatePopupActive } from '../js/store.js';
   import { saveAs } from 'file-saver';
   let settingsOpen = false;
@@ -19,7 +18,6 @@
   $videoTitle = params.get('title') || $videoTitle;
   $: document.title = $videoTitle || 'LiveTL Popout';
   export let isStandalone = params.get('embedded') ? true : false;
-  export let videoId = '';
 
   let wrapper;
   let messageDisplay;
@@ -97,7 +95,7 @@
   let renderWidthInt = null;
   $: renderWidthInt = parseInt(renderWidth);
   $: if(screenshotRenderWidth) {
-    $screenshotRenderWidth = renderWidthInt;
+    screenshotRenderWidth.set(renderWidthInt);
   }
 </script>
 
@@ -113,7 +111,7 @@
 
   <Updates bind:active={$updatePopupActive} />
   <div
-    class="settingsButton {$textDirection === TextDirection.TOP
+    class="settings-button {$textDirection === TextDirection.TOP
       ? 'bottom'
       : 'top'}Float"
     style="display: {isResizing
@@ -130,7 +128,7 @@
           bind:value={renderWidth}
           filled
           rules={[item => (isNaN(parseInt(item)) ? 'Invalid width' : true)]}
-          class="widthInput">Width (px)</TextField
+          class="width-input">Width (px)</TextField
         >
       {/if}
       {#if selectOperation == saveDownload}
@@ -139,7 +137,7 @@
           bind:value={textFilename}
           filled
           rules={[item => (!item ? 'Invalid filename' : true)]}
-          class="filenameInput">Filename</TextField
+          class="filename-input">Filename</TextField
         >
       {/if}
     {/if}
@@ -245,21 +243,21 @@
   .topFloat {
     top: 0px;
   }
-  .settingsButton {
+  .settings-button {
     position: absolute;
     right: 0px;
     padding: 5px;
     z-index: 100;
   }
-  .settingsButton :global(.s-input) {
+  .settings-button :global(.s-input) {
     display: inline-flex;
     background-color: var(--theme-surface);
     border-radius: 5px;
   }
-  .widthInput {
+  .settings-button :global(.width-input) {
     width: 7em;
   }
-  .filenameInput {
+  .settings-button :global(.filename-input) {
     width: 15em;
   }
   .floatingText {

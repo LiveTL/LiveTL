@@ -3,7 +3,7 @@ import { MCHAD, AuthorType } from './constants.js';
 import { Message, MCHADTL, MCHADStreamItem, MCHADLiveRoom, MCHADArchiveRoom, UnixTimestamp } from './types.js';
 // eslint-disable-next-line no-unused-vars
 import { derived, get, readable, Readable } from 'svelte/store';
-import { enableMchadTLs, timestamp } from './store.js';
+import { enableMchadTLs } from './store.js';
 import { combineArr, formatTimestampMillis, sortBy } from './utils.js';
 import { archiveStreamFromScript, sseToStream } from './api.js';
 
