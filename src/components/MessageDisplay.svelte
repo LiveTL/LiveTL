@@ -6,23 +6,16 @@
     createEventDispatcher
   } from 'svelte';
   import Message from './Message.svelte';
-  import { Checkbox, Icon } from 'svelte-materialify/src';
+  import { Checkbox } from 'svelte-materialify/src';
   import { sources, combineStores } from '../js/sources.js';
-  import Minimizer from './Minimizer.svelte';
   import MessageDisplayWrapper from './MessageDisplayWrapper.svelte';
   import '../css/splash.css';
-  import { mdiEyeOffOutline, mdiAccountRemove } from '@mdi/js';
   import {
     channelFilters,
     livetlFontSize,
     showTimestamp,
-    welcomeDismissed,
-    textDirection
   } from '../js/store.js';
   import {
-    BROWSER,
-    Browser,
-    AuthorType,
     TextDirection
   } from '../js/constants.js';
 
@@ -64,8 +57,6 @@
   const dispatch = createEventDispatcher();
   afterUpdate(() => dispatch('afterUpdate'));
   
-  const version = window.chrome.runtime.getManifest().version;
-
   export let isSelecting = false;
   export let selectedItems = [];
 
@@ -115,37 +106,6 @@
   .dir-bottom {
     align-self: flex-end;
     flex-direction: column;
-  }
-
-  h2 {
-    font-size: 1.5em;
-    line-height: 1.5em;
-  }
-
-  .badges {
-    margin-top: 10px;
-  }
-
-  .badges img {
-    height: 1.5em;
-  }
-
-  .heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .subheading {
-    font-size: 1em;
-  }
-
-  .subscripts {
-    font-size: 0.75em;
-  }
-
-  .subscripts a {
-    color: inherit !important;
   }
 
   .message-display {

@@ -1,7 +1,8 @@
 <svelte:options immutable />
 
 <script>
-  import { Message } from '../js/sources.js';
+  // eslint-disable-next-line no-unused-vars
+  import { Message } from '../js/types.js';
   import { AuthorType } from '../js/constants.js';
   import { createEventDispatcher } from 'svelte';
   import { Icon } from 'svelte-materialify/src';
