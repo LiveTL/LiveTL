@@ -22,7 +22,7 @@
           '*'
         );
       }
-      if (data.info.videoData) $videoTitle = data.info.videoData.title;
+      if (data.info.videoData) videoTitle.set(data.info.videoData.title);
     } catch (e) {
       if (iframe && iframe.contentWindow)
         iframe.contentWindow.postMessage(packet.data, '*');

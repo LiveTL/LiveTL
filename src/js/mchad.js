@@ -3,8 +3,9 @@ import { MCHAD, AuthorType } from './constants.js';
 import { Message, MCHADTL, MCHADStreamItem, MCHADLiveRoom, MCHADArchiveRoom, UnixTimestamp } from './types.js';
 // eslint-disable-next-line no-unused-vars
 import { derived, get, readable, Readable } from 'svelte/store';
-import { enableMchadTLs, timestamp } from './store.js';
-import { combineArr } from './utils.js';
+import { enableMchadTLs } from './store.js';
+import { combineArr, formatTimestampMillis, sortBy } from './utils.js';
+import { archiveStreamFromScript, sseToStream } from './api.js';
 
 /** @typedef {(unix: UnixTimestamp) => String} UnixTransformer */
 
@@ -69,59 +70,21 @@ export async function getArchiveFromRoom(room) {
 export const getArchive = videoId => readable(null, async set => {
   const { vod } = await getRooms(videoId);
   if (vod.length == 0) return () => { };
+
+  const addUnix = tl => ({...tl, unix: archiveTimeToInt(tl.timestamp)});
+
   const script = await getArchiveFromRoom(vod[0])
-    .then(s => s.map(tl => ({...tl, unix: archiveTimeToInt(tl.timestamp)})))
-    .then(s => s.sort((l, r) => l.unix - r.unix));
+    .then(s => s.map(addUnix))
+    .then(sortBy('unix'));
 
-  const inFuture = tl => tl.unix > prev;
-
-  let prev = get(timestamp);
-  let futureTL = script.find(inFuture);
-
-  return timestamp.subscribe($time => {
-    if (prev <= futureTL?.unix && futureTL?.unix <= $time) {
-      set(futureTL);
-    }
-    prev = $time;
-    futureTL = script.find(inFuture);
+  return archiveStreamFromScript(script).subscribe(tl => {
+    if (enableMchadTLs.get())
+      set(tl);
   });
 });
 
-
 /** @type {(room: String) => Readable<MCHADStreamItem>} */
-export const streamRoom = room => readable(null, set => {
-  /*
-    - There will be a ping every 1 minute to keep the connection alive.
-    - eventlistener will always try to reconnect even if the connection is cut from the server-side,
-      need to call eventlistener.close().
-    - incoming data mostly in form of { "flag":"[type of message]", "content":"[content]" },
-      it's immediately JSON parseable if you use eventlistener, or if you use traditional
-      http.get(), you will need to add "{" and "}" before parsing to JSON.
-
-    Types of incoming data
-    -> {} empty json for ping.
-    -> flag = Connect, content just a welcome to server stuff to confirm the connection.
-    -> flag = Timeout, if no activitiy in the Mchad server for 30 minutes for particular room.
-    -> flag = insert, if there's a new entry.
-        content contains
-            - _id: id of the entry.
-            - Stime: unix epoch milisecond when the entry is uploaded to the server.
-            - Stext: string text for the translation.
-            - CC: Font colour, string in hex "rrggbb" format.
-            - OC: Outline colour , string in hex "rrggbb" format.
-    -> flag = update, if there's a change on an entry.
-        content is the same as [insert], just use _id to find the locally saved entry and overwrite.
-  */
-  const source = new EventSource(`${MCHAD}/Listener?room=${room}`);
-  
-  source.onmessage = event => {
-    set(JSON.parse(event.data));
-  };
-  
-  return function stop() {
-    source.close();
-  };
-});
+const streamRoom = room => sseToStream(`${MCHAD}/Listener?room=${room}`);
 
 /** @type {(time: String) => String} */
 const removeSeconds = time => time.replace(/:\d\d /, ' ');
@@ -131,13 +94,7 @@ const unixToTimestamp = unix =>
   removeSeconds(new Date(unix).toLocaleString('en-us').split(', ')[1]);
 
 /** @type {(startUnix: UnixTimestamp) => UnixTransformer} */
-const archiveUnixToTimestamp = startUnix => unix => {
-  const time = Math.floor((unix - startUnix) / 1000);
-  const hours = Math.floor(time / 3600);
-  const mins = Math.floor(time % 3600 / 60);
-  const secs = time % 60;
-  return [hours, mins, secs].map(e => `${e}`.padStart(2, 0)).join(':');
-};
+const archiveUnixToTimestamp = startUnix => unix => formatTimestampMillis(unix - startUnix);
 
 /** @type {(archiveTime: String) => Number} */
 const archiveTimeToInt = archiveTime => archiveTime

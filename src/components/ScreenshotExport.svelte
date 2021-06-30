@@ -22,9 +22,6 @@
       rendering = false;
     })();
   }
-  import {
-    AuthorType
-  } from '../js/constants.js';
 </script>
 
 <div

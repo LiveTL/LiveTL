@@ -8,15 +8,17 @@ import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlac
 import { channelFilters, language, showModMessage, timestamp } from './store';
 import { videoId, AuthorType, languageNameCode } from './constants';
 import { checkAndSpeak } from './speech.js';
-import { getArchive, getLiveTranslations } from './mchad.js';
+import * as MCHAD from './mchad.js';
+import * as API from './api.js';
 
 
-/** @type {{ translations: Writable<Message>, mod: Writable<Message>, ytc: Writable<Message>, mchad: Readable<Message>}} */
+/** @type {{ translations: Writable<Message>, mod: Writable<Message>, ytc: Writable<Message>, mchad: Readable<Message>, api: Readable<Message>}} */
 export const sources = {
   ytcTranslations: writable(null),
   mod: writable(null),
   ytc: ytcSource(window).ytc,
-  mchad: combineStores(getArchive(videoId), getLiveTranslations(videoId)).store
+  mchad: combineStores(MCHAD.getArchive(videoId), MCHAD.getLiveTranslations(videoId)).store,
+  api: combineStores(API.getArchive(videoId), API.getLiveTranslations(videoId)).store,
 };
 
 /** @type {(id: String) => Boolean} */
@@ -231,7 +233,11 @@ function message(author, msg, timestamp) {
 }
 
 attachFilters(sources.ytcTranslations, sources.mod, sources.ytc);
-sources.translations = combineStores(sources.ytcTranslations, sources.mchad).store;
+sources.translations = combineStores(
+  sources.ytcTranslations,
+  sources.mchad,
+  sources.api
+).store;
 attachSpeechSynth(sources.translations);
 
 export class DummyYTCEventSource {
