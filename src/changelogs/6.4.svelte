@@ -5,12 +5,12 @@
 
 <ExpansionPanels bind:value>
   <ExpansionPanel>
-    <span slot="header">News post on Reddit</span>
+    <span slot="header">Upcoming news post on Reddit</span>
     <div>
       We have some exciting news to share with you regarding an all-new Android
       app, translation exports, external dedicated translator sources, and beta
       features! The post will be made public several hours after this update
-      goes public.
+      goes public. Be sure to bookmark the link!
       <br />
       <a href="https://livetl.app/en/news/latest" target="_blank">
         <img
