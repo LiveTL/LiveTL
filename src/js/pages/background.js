@@ -6,20 +6,6 @@ chrome.runtime.onInstalled.addListener((details) => {
     chrome.tabs.create({ url: chrome.runtime.getURL('welcome.html') });
 });
 
-chrome.runtime.onMessage.addListener((request) => {
-  switch (request.type) {
-  case 'window': {
-    (window.browser || window.chrome).windows.create({
-      url: request.url,
-      type: 'popup',
-      height: 300,
-      width: 600
-    });
-  }
-    // can't break here, callback breaks
-  }
-});
-
 const stripHeaders = (headers)=> {
   return headers.filter(header => {
     let headerName = header.name.toLowerCase();

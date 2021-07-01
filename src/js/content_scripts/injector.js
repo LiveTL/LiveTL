@@ -1,6 +1,5 @@
-import { openWindow } from '../bgmessage.js';
 import { mdiOpenInNew, mdiYoutubeTv, mdiIframeArray } from '@mdi/js';
-import { getFrameInfoAsync } from '../../submodules/chat/scripts/chat-utils.js';
+import { getFrameInfoAsync, createPopup } from '../../submodules/chat/scripts/chat-utils.js';
 
 for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) {
   window.addEventListener(eventName, e => e.stopImmediatePropagation(), true);
@@ -170,7 +169,7 @@ async function loaded() {
         throw e;
       }
     }
-    openWindow(
+    createPopup(
       chrome.runtime.getURL(`popout.html?${popoutParams.toString()}`)
     );
   }, undefined, mdiOpenInNew);
