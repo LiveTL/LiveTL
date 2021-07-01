@@ -193,7 +193,7 @@
       {/if}
     </div>
   </div>
-  <Wrapper {isResizing} on:scroll={checkAtRecent} bind:this={wrapper}>
+  <Wrapper {isResizing} on:scroll={updateWrapper} bind:this={wrapper}>
     <div style="display: {settingsOpen ? 'block' : 'none'};">
       <Options {isStandalone} {isResizing} bind:active={settingsOpen} />
     </div>
