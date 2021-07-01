@@ -66,7 +66,8 @@ export const
   macros = SS('macros', []),
   doAutoPrefix = SS('doAutoPrefix', false),
   enableMchadTLs = SS('enableMchadTLs', true),
-  enableAPITLs = SS('enableAPITLs', true);
+  enableAPITLs = SS('enableAPITLs', true),
+  enableExportButtons = SS('enableExportButtons', true);
 
 // Non-persistant stores
 export const updatePopupActive = writable(false);
