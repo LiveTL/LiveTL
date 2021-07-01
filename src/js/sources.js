@@ -123,19 +123,6 @@ function ytcToMsg({ message, timestamp, author: { name: author, id, types } }) {
   return { text, timestamp, author, id, types: typeFlag, messageArray: message };
 }
 
-function forwardPostMessages(window) {
-  try {
-    const connectionName = BigInt(new URLSearchParams(window.location.search).get('tabid'));
-    if (window.chrome && window.chrome.runtime) {
-      window.chrome.runtime.onMessage.addListener((request) => {
-        if (BigInt(request.data.tabid) == connectionName) window.postMessage(request.data);
-      });
-    }
-  // eslint-disable-next-line no-empty
-  } catch(e) {
-  }
-}
-
 export function ytcSource(window) {
   /** @type {Writable<Message>} */
   const ytc = writable(null);
@@ -199,27 +186,52 @@ export function ytcSource(window) {
     timestamp: getTimestamp(data, message), message
   });
 
-  const pushMessagesToQueue = data => data.messages
+  const pushMessagesToQueue = data => data
     .sort(lessMsg)
     .map(extractToMsg(data))
     .forEach(item => queued.push(item));
 
-  //TODO: migrate to background messaging
+  /** Connect to background messaging as client */
+  const port = chrome.runtime.connect();
+  const registerClient = (frameInfo) => {
+    port.postMessage({
+      type: 'registerClient',
+      frameInfo: frameInfo,
+      getInitialData: false
+    });
+  };
+
+  const params = new URLSearchParams(window.location.search);
+  const isPopout = params.get('popout');
+  if (isPopout){
+    registerClient(
+      {
+        tabId: parseInt(params.get('tabid')),
+        frameId: parseInt(params.get('frameid'))
+      }
+    );
+  }
+
   window.addEventListener('message', d => {
     const data = getYTCData(d);
     updateVideoProgressBeforeMessages(data);
-    
-    if (data.type === 'messageChunk') {
-      firstChunkReceived = true;
-      pushMessagesToQueue(data);
-      if (!isPollingProgress() && !data.isReplay) {
-        startVideoProgressUpdatePolling();
-      }
+
+    if (!isPopout && data.type === 'frameInfo') {
+      registerClient(data.frameInfo);
     }
   });
 
-  forwardPostMessages(window);
-  
+  port.onMessage.addListener((payload) => {
+    if (payload.type !== 'actionChunk') {
+      return;
+    }
+    firstChunkReceived = true;
+    pushMessagesToQueue(payload.messages);
+    if (!isPollingProgress() && !payload.isReplay) {
+      startVideoProgressUpdatePolling();
+    }
+  });
+
   return { ytc, cleanUp };
 }
 

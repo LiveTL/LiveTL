@@ -1,5 +1,6 @@
-import { openWindow, sendToBackground } from '../bgmessage.js';
+import { openWindow } from '../bgmessage.js';
 import { mdiOpenInNew, mdiYoutubeTv, mdiIframeArray } from '@mdi/js';
+import { getFrameInfoAsync } from '../../submodules/chat/scripts/chat-utils.js';
 
 for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) {
   window.addEventListener(eventName, e => e.stopImmediatePropagation(), true);
@@ -131,6 +132,9 @@ async function loaded() {
   style.innerHTML = css;
   body.appendChild(style);
 
+  const frameInfo = await getFrameInfoAsync();
+  window.parent.postMessage({ type: 'frameInfo', frameInfo: frameInfo }, '*');
+
   if (document.querySelector('.livetlButtonWrapper')) {
     console.debug('LTL buttons already injected. Skipping injection');
     return;
@@ -147,21 +151,11 @@ async function loaded() {
     window.top.location =
       chrome.runtime.getURL(`watch.html?${constructParams().toString()}`);
   }, undefined, mdiYoutubeTv);
-  const tabid = await sendToBackground({
-    type:'tabid'
-  });
-  window.addEventListener('message', (d) => {
-    if (d.data['yt-player-video-progress']) {
-      sendToBackground({
-        type: 'message',
-        data: { ...d.data, tabid },
-      });
-    }
-  });
-  // TODO: set tabid and frameid on popout params
   makeButton('TL Popout', () => {
-    let popoutParams = constructParams();
-    popoutParams.set('tabid', tabid);
+    const popoutParams = constructParams();
+    popoutParams.set('popout', true);
+    popoutParams.set('tabid', frameInfo.tabId);
+    popoutParams.set('frameid', frameInfo.frameId);
     try{
       popoutParams.set(
         'title',
@@ -181,9 +175,8 @@ async function loaded() {
     );
   }, undefined, mdiOpenInNew);
   makeButton('Embed TLs', () => {
-    let embeddedParams = constructParams();
+    const embeddedParams = constructParams();
     embeddedParams.set('embedded', true);
-    embeddedParams.set('tabid', tabid);
     document.body.outerHTML = '';
     const iframe = document.createElement('iframe');
     iframe.style.width = '100%';

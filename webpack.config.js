@@ -37,11 +37,10 @@ var options = {
     hyperchat: path.join(__dirname, 'src', 'js', 'pages', 'hyperchat.js'),
     translatormode: path.join(__dirname, 'src', 'js', 'pages', 'translatormode.js'),
     injector: path.join(__dirname, 'src', 'js', 'content_scripts', 'injector.js'),
-    interceptor: path.join(__dirname, 'src', 'js', 'content_scripts', 'interceptor.js'),
     fullscreen: path.join(__dirname, 'src', 'js', 'content_scripts', 'fullscreen.js'),
     chat: path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat.js'),
-    chatinterceptor: path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat-interceptor.js'),
-    chatBackground: path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat-background.js'),
+    'chat-interceptor': path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat-interceptor.js'),
+    'chat-background': path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat-background.js'),
   },
   output: {
     path: path.join(__dirname, 'build'),
@@ -205,7 +204,7 @@ var options = {
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'empty.html'),
       filename: 'background.html',
-      chunks: ['background', 'chatBackground']
+      chunks: ['background', 'chat-background']
     }),
     new webpack.HotModuleReplacementPlugin(),
     new VueLoaderPlugin(),
