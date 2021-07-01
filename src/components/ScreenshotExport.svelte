@@ -31,7 +31,7 @@
 >
   <MessageDisplayWrapper style="flex-direction: column !important;">
     {#each renderQueue.sort((a, b) => a.index - b.index) as item}
-      <Message message={item} thin />
+      <Message message={item} thin inanimate />
     {/each}
     <div style="text-align: center; font-size: 0.6em;">
       <strong>Screenshot from LiveTL.</strong>

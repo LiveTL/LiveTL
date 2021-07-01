@@ -13,7 +13,8 @@
   export let message = null;
   export let hidden = false;
   export let showTimestamp = false;
-  export let thin=false;
+  export let thin = false;
+  export let inanimate = true;
 
   const dispatch = createEventDispatcher();
 
@@ -22,7 +23,12 @@
   $: timestamp = showTimestamp ? `(${message.timestamp})` : '';
 </script>
 
-<div class="message" class:thin style="display: {hidden ? 'none' : 'block'}">
+<div
+  class="message"
+  class:inanimate
+  class:thin
+  style="display: {hidden ? 'none' : 'block'}"
+>
   <!-- For screenshot checkmark -->
   <slot />
 
@@ -57,6 +63,9 @@
 </div>
 
 <style>
+  .inanimate {
+    animation: none !important;
+  }
   .message {
     --margin: 5px;
     margin: var(--margin);
