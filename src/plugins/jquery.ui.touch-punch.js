@@ -1,3 +1,4 @@
+/* eslint-disable */
 /*!
  * jQuery UI Touch Punch 1.0.8 as modified by RWAP Software
  * based on original touchpunch v0.2.3 which has not been updated since 2014

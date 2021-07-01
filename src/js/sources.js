@@ -1,20 +1,24 @@
 import { Queue } from './queue';
 import { compose } from './utils';
 // eslint-disable-next-line no-unused-vars
-import { writable, Writable } from 'svelte/store';
+import { writable, Writable, Readable } from 'svelte/store';
+// eslint-disable-next-line no-unused-vars
+import { Message } from './types.js';
 import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted, authorWhitelisted, authorBlacklisted } from './filter';
-import { channelFilters, language, showModMessage } from './store';
-import { AuthorType, languageNameCode } from './constants';
+import { channelFilters, language, showModMessage, timestamp } from './store';
+import { videoId, AuthorType, languageNameCode } from './constants';
 import { checkAndSpeak } from './speech.js';
+import * as MCHAD from './mchad.js';
+import * as API from './api.js';
 
 
-/** @typedef {{text: String, author: String, timestamp: String, id: String, types: Number}} Message*/
-
-/** @type {{ translations: Writable<Message>, mod: Writable<Message> ytc: Writable<Message>}} */
+/** @type {{ translations: Writable<Message>, mod: Writable<Message>, ytc: Writable<Message>, mchad: Readable<Message>, api: Readable<Message>}} */
 export const sources = {
-  translations: writable(null),
+  ytcTranslations: writable(null),
   mod: writable(null),
-  ytc: ytcSource(window).ytc
+  ytc: ytcSource(window).ytc,
+  mchad: combineStores(MCHAD.getArchive(videoId), MCHAD.getLiveTranslations(videoId)).store,
+  api: combineStores(API.getArchive(videoId), API.getLiveTranslations(videoId)).store,
 };
 
 /** @type {(id: String) => Boolean} */
@@ -32,12 +36,22 @@ const isMod = msg => (msg.types & AuthorType.moderator) || (msg.types & AuthorTy
 /** @type {(msg: Message) => Boolean} */
 const showIfMod = msg => isMod(msg) && showModMessage.get();
 
-/** @type {(store: Writable<Message>) => (msg: Message, text: String) => void} */
-const setStoreMessage = store => (msg, text) => store.set({...msg, text});
+/** @type {(store: Writable<Message>) => (msg: Message, text: String | undefined) => void} */
+const setStoreMessage =
+  store => (msg, text) => store.set({...msg, text: text ?? msg.text});
 
 const lang = () => languageNameCode[language.get()];
 
 const isTranslation = parsed => parsed && isLangMatch(parsed.lang, lang()) && parsed.msg;
+
+/** @type {(msg: Message) => Message} */
+const replaceFirstTranslation = msg => {
+  const messageArray = [...msg.messageArray];
+  if (messageArray[0].type === 'text') {
+    messageArray[0].text = parseTranslation(messageArray[0].text).msg;
+  }
+  return {...msg, messageArray};
+};
 
 /**
  * @param {Writable<Message>} translations 
@@ -55,17 +69,13 @@ function attachFilters(translations, mod, ytc) {
     const parsed = parseTranslation(text);
     if (!text) return;
     if (isTranslation(parsed)) {
-      if (message.messageArray[0].type === 'text') {
-        const originalText = message.messageArray[0].text;
-        message.messageArray[0].text = parseTranslation(originalText).msg;
-      }
-      setTranslation(message, parsed.msg);
+      setTranslation(replaceFirstTranslation(message), parsed.msg);
     }
     else if (isWhitelisted(message)) {
-      setTranslation(message, text);
+      setTranslation(message);
     }
     else if (showIfMod(message)) {
-      setModMessage(message, text);
+      setModMessage(message);
     }
   });
 }
@@ -161,6 +171,7 @@ export function ytcSource(window) {
       pushUpToCurrentToStore(time);
     }
     progress.previous = time;
+    timestamp.set(time);
   };
 
   const updateVideoProgressBeforeMessages = data => {
@@ -222,7 +233,12 @@ function message(author, msg, timestamp) {
   };
 }
 
-attachFilters(sources.translations, sources.mod, sources.ytc);
+attachFilters(sources.ytcTranslations, sources.mod, sources.ytc);
+sources.translations = combineStores(
+  sources.ytcTranslations,
+  sources.mchad,
+  sources.api
+).store;
 attachSpeechSynth(sources.translations);
 
 export class DummyYTCEventSource {

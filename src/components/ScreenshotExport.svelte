@@ -9,6 +9,8 @@
   let image = '';
   import { ProgressLinear } from 'svelte-materialify/src';
   import Dialog from './Dialog.svelte';
+  import Message from './Message.svelte';
+  import MessageDisplayWrapper from './MessageDisplayWrapper.svelte';
   $: if (renderQueue.length) {
     (async () => {
       rendering = true;
@@ -20,9 +22,6 @@
       rendering = false;
     })();
   }
-  import {
-    AuthorType
-  } from '../js/constants.js';
 </script>
 
 <div
@@ -30,20 +29,15 @@
   id="renderElement"
   style="width: {renderWidth}px;"
 >
-  {#each renderQueue.sort((a, b) => a.index - b.index) as item}
-    <div class="messageItem">
-      <span>{item.text}</span>
-      <span
-        class="author"
-        class:moderator={item.types & AuthorType.moderator}
-        class:owner={item.types & AuthorType.owner}>{item.author}</span
-      >
+  <MessageDisplayWrapper style="flex-direction: column !important;">
+    {#each renderQueue.sort((a, b) => a.index - b.index) as item}
+      <Message message={item} thin inanimate />
+    {/each}
+    <div style="text-align: center; font-size: 0.6em;">
+      <strong>Screenshot from LiveTL.</strong>
+      Translations may not be accurate.
     </div>
-  {/each}
-  <div style="text-align: center; font-size: 0.6em;">
-    <strong>Screenshot from LiveTL.</strong>
-    Translations may not be accurate.
-  </div>
+  </MessageDisplayWrapper>
 </div>
 {#if rendering}
   <div style="z-index: 100; top: 0; left: 0; width: 100%; position: fixed;">
@@ -64,30 +58,11 @@
 
 <style>
   #renderElement {
-    background-color: white;
-    color: black;
+    background-color: var(--theme-surface);
     z-index: -1;
     position: fixed;
     top: 0px;
     left: 0px;
     padding: 2.5px 5px 2.5px 5px;
   }
-  .author {
-    font-size: 0.6em;
-  }
-
-  .moderator {
-    color: #a0bdfc !important;
-  }
-
-  .owner {
-    color: #ffd600 !important;
-  }
-  .messageItem {
-    margin: 2.5px 0px 2.5px 0px;
-    padding: 3.5px;
-    background-color: rgba(0, 0, 0, 0.15);
-    border-radius: 2.5px;
-  }
-
 </style>

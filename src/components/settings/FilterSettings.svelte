@@ -4,7 +4,9 @@
     showModMessage,
     language,
     customFilters,
-    channelFilters
+    channelFilters,
+    enableMchadTLs,
+    enableAPITLs
   } from '../../js/store.js';
   import {
     Row,
@@ -44,6 +46,13 @@
   setBool={(n, v) =>
     channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}
 />
+<Row>
+  <Col>
+    <Subheader>External translation sources</Subheader>
+    <CheckOption name="LiveTL API" store={enableAPITLs} />
+    <CheckOption name="MChad (volunteer translators)" store={enableMchadTLs} />
+  </Col>
+</Row>
 <div class="filter-options">
   <Row>
     <Col>
@@ -58,9 +67,7 @@
     </Col>
   </Row>
   {#each $customFilters as rule, i}
-    <CustomFilter
-      {...rule}
-    />
+    <CustomFilter {...rule} />
   {/each}
 </div>
 

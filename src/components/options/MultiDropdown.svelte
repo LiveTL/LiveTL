@@ -1,5 +1,4 @@
 <script>
-  import { onMount } from 'svelte';
   import { mdiClose } from '@mdi/js';
   import {
     Button,
@@ -39,23 +38,13 @@
     `;
   }
 
-  let items = [];
-
-  function getItems() {
-    const items_ = [];
-    Object.entries(store._lookup).forEach(([key, value]) => {
-      if (key && getBool(key))
-        items_.push({ key, item: getDisplayName(key, value) });
-    });
-    items = items_;
+  function convertLookup(lookup) {
+    return [...lookup]
+      .filter(([key]) => key && getBool(key))
+      .map(([key, value]) => ({ key, item: getDisplayName(key, value) }));
   }
 
-  onMount(() => {
-    return store.subscribe(() => {
-      getItems();
-    });
-  });
-  $: $store, getItems();
+  $: items = convertLookup($store);
 </script>
 
 <div class="dropdown">

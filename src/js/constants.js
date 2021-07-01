@@ -41,12 +41,14 @@ export const BROWSER = (() => {
   return Browser.CHROME;
 })();
 
-/** @enum {number} */
+/** @enum {Number} */
 export const AuthorType = {
   moderator: 1 << 0,
   verified: 1 << 1,
   owner: 1 << 2,
-  member: 1 << 3
+  member: 1 << 3,
+  mchad: 1 << 4,
+  api: 1 << 5
 };
 
 export const languages = [
@@ -72,3 +74,7 @@ function createLangSelectionName(lang) {
 
 languages.forEach(i => languageConversionTable[createLangSelectionName(i)] = i);
 languages.forEach(lang => languageNameCode[lang.lang] = lang);
+
+export const MCHAD = 'http://157.230.241.238';
+
+export const videoId = new URLSearchParams(window.location.search ?? '').get('video');

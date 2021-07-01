@@ -6,7 +6,7 @@
     chatZoom,
     livetlFontSize,
     doSpeechSynth,
-    doTranslatorMode,
+    // doTranslatorMode,
     showCaption,
     showTimestamp,
     speechVolume,
@@ -20,7 +20,7 @@
   import EnumOption from '../options/Radio.svelte';
   import FontDemo from '../FontDemo.svelte';
   import ImportExport from '../ImportExport.svelte';
-  import TranslatorMode from '../options/TranslatorMode.svelte';
+  // import TranslatorMode from '../options/TranslatorMode.svelte';
   export let isStandalone = false;
 </script>
 

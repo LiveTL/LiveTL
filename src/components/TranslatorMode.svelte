@@ -32,7 +32,7 @@
     chatbox.addEventListener('keydown', onKeydown);
   });
 
-  container.cleanUpCbs.push(() => chatbox.removeEventListener('keydown', onKeyDown));
+  container.cleanUpCbs.push(() => chatbox.removeEventListener('keydown', onKeydown));
   $: reclen = $recommendations.length;
   $: focussed = reclen == 0 ? 0 : focussed % reclen;
   $: focusRec.set(reclen ? $recommendations[focussed] : null);

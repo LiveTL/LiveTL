@@ -1,5 +1,6 @@
 import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit } from './constants.js';
 import { LookupStore, SyncStore } from './storage.js';
+import { writable } from 'svelte/store';
 
 /**
  * @template T
@@ -26,6 +27,7 @@ const sampleFilter = {
   id: ''
 };
 
+// Settings
 export const
   language = SS('language', 'English'),
   showModMessage = SS('showModMessage', true),
@@ -62,4 +64,11 @@ export const
   screenshotRenderWidth = SS('screenshotRenderWidth', 500),
   welcomeDismissed = SS('welcomeDismissed', false),
   macros = SS('macros', []),
-  doAutoPrefix = SS('doAutoPrefix', false);
+  doAutoPrefix = SS('doAutoPrefix', false),
+  enableMchadTLs = SS('enableMchadTLs', true),
+  enableAPITLs = SS('enableAPITLs', true);
+
+// Non-persistant stores
+export const updatePopupActive = writable(false);
+export const videoTitle = writable('LiveTL');
+export const timestamp = writable(0);

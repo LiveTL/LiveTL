@@ -28,8 +28,7 @@ export class SyncStore {
     const store = writable(defaultValue);
     this._store = store;
     this._storage = storageBackend || storage;
-    this.loaded = writable(false);
-    this.loadFromStorage();
+    this.loaded = this.loadFromStorage();
     this._lastSet = Date.now();
     this._updateAcrossSessions = updateAcrossSessions;
     stores.byMangled.set(mangleStorageKey(name, storageVersion), this);
@@ -42,10 +41,7 @@ export class SyncStore {
     // and see if there's another change
     if (Date.now() - this._lastSet < 100) return;
     return await this._storage.get(this.name).then(value => {
-      if (value != null) {
-        this._store.set(value);
-      }
-      this.loaded.set(true);
+      this._store.set(value ?? this.get());
     });
   }
 
@@ -145,6 +141,7 @@ export class LookupStore {
     await Promise.all(this.keys.map(async k => {
       this._lookup[k] = await this._storage.get(this.mangleKey(k));
     }));
+    this.notify();
   }
 
   async updateFromStorage() {
@@ -161,10 +158,9 @@ export class LookupStore {
 
   /**
    * @private
-   * @param {[key: String, value: T]} change
    */
-  notify(change) {
-    this._subscribers.forEach(subscriber => subscriber(...change));
+  notify() {
+    this._subscribers.forEach(subscriber => subscriber(Object.entries(this._lookup)));
   }
 
   /**
@@ -186,7 +182,7 @@ export class LookupStore {
       this._saveOneKeyValue(key, value),
       previous == null ? this._saveNewKey(key) : 0
     ]);
-    this.notify([key, value]);
+    this.notify();
   }
 
   getEntire() {
@@ -200,7 +196,7 @@ export class LookupStore {
       ...keys.map(key => this._saveOneKeyValue(key, value[key])),
       this._saveKeys(keys)
     ]);
-    Object.entries(value).forEach(this.notify.bind(this));
+    this.notify();
   }
 
   /**
@@ -217,6 +213,7 @@ export class LookupStore {
   subscribe(callback) {
     const id = this._subnum++;
     this._subscribers.set(id, callback);
+    callback(Object.entries(this._lookup));
     return () => this._subscribers.delete(id);
     
   }
