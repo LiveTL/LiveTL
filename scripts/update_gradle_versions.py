@@ -23,7 +23,7 @@ while listed_releases:
 with open(build_gradle, "r") as fin:
     for line in fin:
         if "versionCode" in line:
-            version_code = releases - 31
+            version_code = (releases - 31) + 169
             new_line = re.sub(r"\d+", f"{version_code}", line)
         elif "versionName" in line:
             version_name = re.sub(r"\"", "", os.environ["VERSION"])
