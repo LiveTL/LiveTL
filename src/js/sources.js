@@ -193,17 +193,19 @@ export function ytcSource(window) {
 
   /** Connect to background messaging as client */
   const port = chrome.runtime.connect();
+  let portRegistered = false;
   const registerClient = (frameInfo) => {
     port.postMessage({
       type: 'registerClient',
       frameInfo: frameInfo,
       getInitialData: false
     });
+    portRegistered = true;
   };
 
   const params = new URLSearchParams(window.location.search);
   const isPopout = params.get('popout');
-  if (isPopout){
+  if (isPopout && !portRegistered){
     registerClient(
       {
         tabId: parseInt(params.get('tabid')),
@@ -216,7 +218,7 @@ export function ytcSource(window) {
     const data = getYTCData(d);
     updateVideoProgressBeforeMessages(data);
 
-    if (!isPopout && data.type === 'frameInfo') {
+    if (!isPopout && data.type === 'frameInfo' && !portRegistered) {
       registerClient(data.frameInfo);
     }
   });
