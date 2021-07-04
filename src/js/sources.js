@@ -38,7 +38,7 @@ const showIfMod = msg => isMod(msg) && showModMessage.get();
 
 /** @type {(store: Writable<Message>) => (msg: Message, text: String | undefined) => void} */
 const setStoreMessage =
-  store => (msg, text) => store.set({...msg, text: text ?? msg.text});
+  store => (msg, text) => store.set({ ...msg, text: text ?? msg.text });
 
 const lang = () => languageNameCode[language.get()];
 
@@ -50,7 +50,7 @@ const replaceFirstTranslation = msg => {
   if (messageArray[0].type === 'text') {
     messageArray[0].text = parseTranslation(messageArray[0].text).msg;
   }
-  return {...msg, messageArray};
+  return { ...msg, messageArray };
 };
 
 /**
@@ -144,13 +144,13 @@ export function ytcSource(window) {
   };
 
   const pushAllQueuedToStore = () => pushQueuedToStore(() => true);
-  const pushUpToCurrentToStore =
-    currentTime => pushQueuedToStore(q => q.top.data.timestamp < currentTime);
+  const pushUpToCurrentToStore = (currentTime) =>
+    pushQueuedToStore(q => q.top.data.timestamp <= currentTime);
 
-  const scrubbedOrSkipped =
-    time => progress.previous != null && Math.abs(progress.previous - time) > 1;
+  const scrubbedOrSkipped = (time) =>
+    time == null || Math.abs(progress.previous - time) > 1;
 
-  const videoProgressUpdated = time => {
+  const videoProgressUpdated = (time) => {
     if (time < 0) return;
     if (scrubbedOrSkipped(time)) {
       pushAllQueuedToStore();
@@ -178,17 +178,14 @@ export function ytcSource(window) {
     runQueue();
   };
 
-  const getTimestamp = (data, message) => data.isReplay
-    ? message.showtime
-    : (Date.now() + message.showtime) / 1000;
-
-  const extractToMsg = data => message => ({
-    timestamp: getTimestamp(data, message), message
+  const extractToMsg = () => (message) => ({
+    timestamp: message.showtime / 1000,
+    message
   });
 
-  const pushMessagesToQueue = data => data
+  const pushMessagesToQueue = (messages) => messages
     .sort(lessMsg)
-    .map(extractToMsg(data))
+    .map(extractToMsg(messages))
     .forEach(item => queued.push(item));
 
   /** Connect to background messaging as client */
@@ -205,7 +202,7 @@ export function ytcSource(window) {
 
   const params = new URLSearchParams(window.location.search);
   const isPopout = params.get('popout');
-  if (isPopout && !portRegistered){
+  if (isPopout && !portRegistered) {
     registerClient(
       {
         tabId: parseInt(params.get('tabid')),
@@ -279,7 +276,7 @@ export class DummyYTCEventSource {
       {
         type: 'messageChunk',
         isReplay: false,
-        messages: [ message('Author 5', 'hello again', '03:19 PM') ]
+        messages: [message('Author 5', 'hello again', '03:19 PM')]
       }
     ];
   }
