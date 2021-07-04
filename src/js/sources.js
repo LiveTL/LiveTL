@@ -107,13 +107,6 @@ export function combineStores(...stores) {
   };
 }
 
-function getYTCData(unparsed) {
-  try {
-    const data = JSON.parse(JSON.stringify(unparsed.data));
-    return typeof data == 'string' ? JSON.parse(data) : data;
-  } catch (e) { return {}; }
-}
-
 function ytcToMsg({ message, timestamp, author: { name: author, id, types } }) {
   const text = message
     .filter(item => item.type === 'text' || item.type === 'link')
@@ -163,11 +156,7 @@ export function ytcSource(window) {
 
   const updateVideoProgressBeforeMessages = data => {
     if (!isPollingProgress() && firstChunkReceived) {
-      if (data.event === 'infoDelivery') {
-        videoProgressUpdated(data.info.currentTime);
-      } else if (data['yt-player-video-progress']) {
-        videoProgressUpdated(data['yt-player-video-progress']);
-      }
+      videoProgressUpdated(data);
     }
   };
 
@@ -211,23 +200,21 @@ export function ytcSource(window) {
     );
   }
 
-  window.addEventListener('message', d => {
-    const data = getYTCData(d);
-    updateVideoProgressBeforeMessages(data);
-
-    if (!isPopout && data.type === 'frameInfo' && !portRegistered) {
-      registerClient(data.frameInfo);
+  window.addEventListener('message', (d) => {
+    if (!isPopout && d.data.type === 'frameInfo' && !portRegistered) {
+      registerClient(d.data.frameInfo);
     }
   });
 
   port.onMessage.addListener((payload) => {
-    if (payload.type !== 'actionChunk') {
-      return;
-    }
-    firstChunkReceived = true;
-    pushMessagesToQueue(payload.messages);
-    if (!isPollingProgress() && !payload.isReplay) {
-      startVideoProgressUpdatePolling();
+    if (payload.type === 'actionChunk') {
+      firstChunkReceived = true;
+      pushMessagesToQueue(payload.messages);
+      if (!isPollingProgress() && !payload.isReplay) {
+        startVideoProgressUpdatePolling();
+      }
+    } else if (payload.type === 'playerProgress') {
+      updateVideoProgressBeforeMessages(payload.playerProgress);
     }
   });
 
