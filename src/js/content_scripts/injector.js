@@ -176,8 +176,18 @@ async function loaded() {
   makeButton('Embed TLs', () => {
     const embeddedParams = constructParams();
     embeddedParams.set('embedded', true);
-    window.location.href =
-      chrome.runtime.getURL(`watch.html?${embeddedParams.toString()}`);
+    embeddedParams.set('tabid', frameInfo.tabId);
+    embeddedParams.set('frameid', frameInfo.frameId);
+    document.body.outerHTML = '';
+    const iframe = document.createElement('iframe');
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.style.position = 'fixed';
+    iframe.src = chrome.runtime.getURL(`watch.html?${embeddedParams.toString()}`);
+    document.body.appendChild(iframe);
+    window.addEventListener('message', d => {
+      iframe.contentWindow.postMessage(d.data, '*');
+    });
   }, undefined, mdiIframeArray);
 }
 
