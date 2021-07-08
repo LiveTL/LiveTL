@@ -4,6 +4,7 @@
 /** @typedef {TextMessage | LinkMessage | EmoteMessage} MessageItem */
 /** @typedef {{text: String, messageArray: MessageItem[], author: String, timestamp: String, id: String, types: Number}} Message */
 
+/** @typedef {Number} Seconds */
 /** @typedef {Number} UnixTimestamp */
 /** @typedef {String} HexColor */
 /** @typedef {{Stext: String, Stime: UnixTimestamp, CC: HexColor, OC: HexColor}} MCHADTL */

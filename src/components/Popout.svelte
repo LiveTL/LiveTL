@@ -6,11 +6,10 @@
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
   import { TextDirection, paramsVideoTitle, paramsEmbedded } from '../js/constants.js';
-  import { textDirection, screenshotRenderWidth, videoTitle } from '../js/store.js';
+  import { textDirection, screenshotRenderWidth, videoTitle, enableExportButtons, updatePopupActive } from '../js/store.js';
   import MessageDisplay from './MessageDisplay.svelte';
   import ScreenshotExport from './ScreenshotExport.svelte';
   import Updates from './Updates.svelte';
-  import { updatePopupActive } from '../js/store.js';
   import { saveAs } from 'file-saver';
   let settingsOpen = false;
   export let isResizing = false;
@@ -64,16 +63,18 @@
 
   let selectOperation = () => {};
 
+  function getSelectedItems() {
+    return selectedItems.filter(d => !d.hidden);
+  }
+
   function saveScreenshot() {
-    renderQueue = selectedItems.filter(d => !d.hidden);
+    renderQueue = getSelectedItems();
     toggleSelecting();
     selectOperation = () => {};
   }
 
   function saveDownload() {
-    const toSave = selectedItems.filter(
-      d => !d.hidden
-    ).map(
+    const toSave = getSelectedItems().map(
       d => `${d.author} (${d.timestamp}): ${d.text}`
     );
     if (toSave.length) {
@@ -119,7 +120,7 @@
   >
     {#if isSelecting}
       <h6 class="floatingText">
-        {selectedItems.length} TLs selected
+        {getSelectedItems().length} TLs selected
       </h6>
       {#if selectOperation == saveScreenshot}
         <TextField
@@ -159,7 +160,7 @@
         </div>
       {/if}
       {#if !isSelecting}
-        {#if !settingsOpen}
+        {#if !settingsOpen && $enableExportButtons}
           <Button
             fab
             size="small"
@@ -191,7 +192,7 @@
       {/if}
     </div>
   </div>
-  <Wrapper {isResizing} on:scroll={checkAtRecent} bind:this={wrapper}>
+  <Wrapper {isResizing} on:scroll={updateWrapper} bind:this={wrapper}>
     <div style="display: {settingsOpen ? 'block' : 'none'};">
       <Options {isStandalone} {isResizing} bind:active={settingsOpen} />
     </div>

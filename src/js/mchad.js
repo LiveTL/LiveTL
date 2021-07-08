@@ -1,10 +1,10 @@
 import { MCHAD, AuthorType } from './constants.js';
 // eslint-disable-next-line no-unused-vars
-import { Message, MCHADTL, MCHADStreamItem, MCHADLiveRoom, MCHADArchiveRoom, UnixTimestamp } from './types.js';
+import { Message, MCHADTL, MCHADStreamItem, MCHADLiveRoom, MCHADArchiveRoom, Seconds, UnixTimestamp } from './types.js';
 // eslint-disable-next-line no-unused-vars
 import { derived, get, readable, Readable } from 'svelte/store';
 import { enableMchadTLs } from './store.js';
-import { combineArr, formatTimestampMillis, sortBy } from './utils.js';
+import { combineArr, formatTimestampMillis, sleep, sortBy } from './utils.js';
 import { archiveStreamFromScript, sseToStream } from './api.js';
 
 /** @typedef {(unix: UnixTimestamp) => String} UnixTransformer */
@@ -122,9 +122,17 @@ export const getRoomTranslations = room => derived(streamRoom(room.Nick), (data,
   }
 });
 
+/** @type {(videoId: String, retryInterval: Seconds) => MCHADLiveRoom} */
+const getLiveRoomWithRetry = async (videoId, retryInterval) => {
+  while (1) {
+    const { live } = await getRooms(videoId);
+    if (live.length) return live[0];
+    await sleep(retryInterval * 1000);
+  }
+};
+
 /** @type {(videoId: String) => Readable<Message>} */
 export const getLiveTranslations = videoId => readable(null, async set => {
-  const { live } = await getRooms(videoId);
-  if (live.length == 0) return () => { };
-  return getRoomTranslations(live[0]).subscribe(set);
+  const room = await getLiveRoomWithRetry(videoId, 30);
+  return getRoomTranslations(room).subscribe(set);
 });
