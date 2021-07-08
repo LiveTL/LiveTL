@@ -11,8 +11,9 @@
 
   let div;
 
+  // Add 5 as a safety since without it, #257 is caused
   export const isAtBottom = delayed(() =>
-    Math.ceil(div.clientHeight + div.scrollTop) >= div.scrollHeight,
+    Math.ceil(div.clientHeight + div.scrollTop + 5) >= div.scrollHeight,
   true
   );
 
