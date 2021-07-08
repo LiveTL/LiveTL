@@ -112,15 +112,12 @@
 
   <Updates bind:active={$updatePopupActive} />
   <div
-    class="settings-button {$textDirection === TextDirection.TOP
-      ? 'bottom'
-      : 'top'}Float"
-    style="display: {isResizing
-      ? 'none'
-      : 'flex'}; flex-direction: row; align-items: center; flex-wrap: wrap;"
+    class="settings-button d-flex"
+    class:bottom-float={$textDirection === TextDirection.TOP}
+    class:d-none={isResizing}
   >
     {#if isSelecting}
-      <h6 class="floatingText">
+      <h6 class="floating-text">
         {getSelectedItems().length} TLs selected
       </h6>
       {#if selectOperation == saveScreenshot}
@@ -142,7 +139,7 @@
         >
       {/if}
     {/if}
-    <div style="display: flex;">
+    <div class="d-flex">
       {#if isSelecting}
         <div class="blue-text">
           <Button fab size="small" on:click={selectAllItems}>
@@ -154,7 +151,7 @@
             <Icon path={mdiCheck} />
           </Button>
         </div>
-        <div class={isSelecting ? 'red-text' : ''}>
+        <div class:red-text={isSelecting}>
           <Button fab size="small" on:click={toggleSelecting}>
             <Icon path={mdiClose} />
           </Button>
@@ -194,10 +191,10 @@
     </div>
   </div>
   <Wrapper {isResizing} on:scroll={updateWrapper} bind:this={wrapper}>
-    <div style="display: {settingsOpen ? 'block' : 'none'};">
+    <div class:d-none={!settingsOpen}>
       <Options {isStandalone} {isResizing} bind:active={settingsOpen} />
     </div>
-    <div style="display: {settingsOpen ? 'none' : 'block'};">
+    <div class:d-none={settingsOpen}>
       <MessageDisplay
         direction={$textDirection}
         bind:this={messageDisplay}
@@ -211,10 +208,8 @@
   {#if !(isResizing || settingsOpen)}
     {#if !isAtRecent}
       <div
-        class="recentButton {$textDirection === TextDirection.TOP
-          ? 'top'
-          : 'bottom'}Float"
-        style="display: 'unset';"
+        class="recent-button"
+        class:bottom-float={$textDirection !== TextDirection.TOP}
         transition:fade|local={{ duration: 150 }}
       >
         <!-- scroll and reload isbottom and istop functions on click -->
@@ -238,17 +233,15 @@
 </MaterialApp>
 
 <style>
-  .bottomFloat {
-    bottom: 0px;
-  }
-  .topFloat {
-    top: 0px;
-  }
   .settings-button {
     position: absolute;
+    top: 0px;
     right: 0px;
     padding: 5px;
     z-index: 100;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
   }
   .settings-button :global(.s-input) {
     display: inline-flex;
@@ -261,7 +254,7 @@
   .settings-button :global(.filename-input) {
     width: 15em;
   }
-  .floatingText {
+  .floating-text {
     display: inline;
     margin-right: 5px;
     vertical-align: text-bottom;
@@ -269,12 +262,18 @@
     border-radius: 5px;
     padding: 5px;
   }
-  .recentButton {
+  .recent-button {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
     padding: 5px;
     z-index: 100;
+    top: 0px;
+    display: unset;
+  }
+  .bottom-float {
+    bottom: 0px;
+    top: unset;
   }
   :global(body) {
     overflow: hidden;
