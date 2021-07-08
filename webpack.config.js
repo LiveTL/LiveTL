@@ -13,13 +13,13 @@ const { preprocess } = require('./svelte.config');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const FileManagerPlugin = require('filemanager-webpack-plugin');
 const isAndroid = process.argv.includes('android');
-const mode = isAndroid ? 'production' : (process.env.NODE_ENV || 'development');
+const mode = isAndroid ? 'production' : (env.NODE_ENV || 'development');
 const manifest = JSON.stringify({
   description: description,
   version: version,
   ...JSON.parse(JSON.stringify(require("./src/manifest.json")))
 });
-process.env.NODE_ENV = mode;
+env.NODE_ENV = mode;
 
 // load the secrets
 var alias = {
