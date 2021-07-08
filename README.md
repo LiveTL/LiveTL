@@ -45,7 +45,8 @@ NODE_ENV=development
 #### Commands
 ```bash
 yarn start # dev
-yarn build production --version=0.0.0 # prod
+yarn build production # production
+yarn build android # android
 yarn test # jest
 yarn test:watch # autotest
 yarn format # lint

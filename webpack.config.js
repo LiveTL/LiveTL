@@ -7,10 +7,18 @@ var webpack = require('webpack'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   StringPlugin = require('string-replace-loader'),
   { version, description } = require('./package.json');
+const BannerPlugin = webpack.BannerPlugin;
 const { VueLoaderPlugin } = require('vue-loader');
 const { preprocess } = require('./svelte.config');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin'); 
-const mode = process.env.NODE_ENV || 'development';
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const FileManagerPlugin = require('filemanager-webpack-plugin');
+const isAndroid = process.argv.includes('android');
+const mode = isAndroid ? 'production' : (process.env.NODE_ENV || 'development');
+const manifest = JSON.stringify({
+  description: description,
+  version: version,
+  ...JSON.parse(JSON.stringify(require("./src/manifest.json")))
+});
 process.env.NODE_ENV = mode;
 
 // load the secrets
@@ -27,6 +35,7 @@ if (fileSystem.existsSync(secretsPath)) {
 }
 
 const prod = mode !== 'development';
+const polyfills = isAndroid ? ['chrome'] : [];
 var options = {
   entry: {
     popout: path.join(__dirname, 'src', 'js', 'pages', 'popout.js'),
@@ -41,11 +50,12 @@ var options = {
     chat: path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat.js'),
     'chat-interceptor': path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat-interceptor.js'),
     'chat-background': path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat-background.js'),
+    chrome: path.join(__dirname, 'src', 'js', 'polyfills', 'chrome.js')
   },
   output: {
     path: path.join(__dirname, 'build'),
     filename: '[name].bundle.js',
-    publicPath: '/'
+    publicPath: './'
   },
   module: {
     rules: [
@@ -56,6 +66,16 @@ var options = {
           search: "const isLiveTL = false;",
           replace: 'const isLiveTL = true;',
         }
+      }, {
+        test: /.*/,
+        use: [{
+          loader: 'string-replace-loader',
+          options: {
+            search: "const isAndroid = false;",
+            replace: `const isAndroid = ${isAndroid};`,
+          }
+        }],
+        enforce: 'post'
       },
       {
         include: [
@@ -141,7 +161,7 @@ var options = {
             },
           },
         ],
-      },
+      }
     ]
   },
   resolve: {
@@ -164,11 +184,7 @@ var options = {
           from: 'src/manifest.json',
           transform: function (content, path) {
             // generates the manifest file using the package.json informations
-            return Buffer.from(JSON.stringify({
-              description: description,
-              version: version,
-              ...JSON.parse(content.toString())
-            }));
+            return Buffer.from(manifest);
           }
         },
         {
@@ -181,37 +197,56 @@ var options = {
         }
       ]
     }),
+    new FileManagerPlugin({
+      events: {
+        onEnd: {
+          delete: ['./build/hyperchat/hyperchat.bundle.js'],
+          move: [
+            { 
+              source: './build/hyperchat.bundle.js',
+              destination: './build/hyperchat/hyperchat.bundle.js'
+            },
+          ],
+        },
+      },
+    }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'empty.html'),
       filename: 'watch.html',
-      chunks: ['watch']
+      chunks: [...polyfills, 'watch'],
+      chunksSortMode: 'manual'
     }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'empty.html'),
       filename: 'popout.html',
-      chunks: ['popout']
+      chunks: [...polyfills, 'popout'],
+      chunksSortMode: 'manual'
     }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'empty.html'),
       filename: 'options.html',
-      chunks: ['options']
+      chunks: [...polyfills, 'options'],
+      chunksSortMode: 'manual'
     }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'empty.html'),
       filename: 'welcome.html',
-      chunks: ['welcome']
+      chunks: [...polyfills, 'welcome'],
+      chunksSortMode: 'manual'
     }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'empty.html'),
       filename: 'background.html',
-      chunks: ['background', 'chat-background']
+      chunks: [...polyfills, 'background', 'chat-background'],
+      chunksSortMode: 'manual'
     }),
     new webpack.HotModuleReplacementPlugin(),
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'empty.html'),
       filename: 'hyperchat/index.html',
-      chunks: ['hyperchat']
+      chunks: [...polyfills, 'hyperchat'],
+      chunksSortMode: 'manual'
     }),
   ],
   mode,
