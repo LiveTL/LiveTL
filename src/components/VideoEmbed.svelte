@@ -1,6 +1,6 @@
 <script>
   import YouTubeIframeLoader from 'youtube-iframe';
-  import { videoSide } from '../js/store.js';
+  import { faviconURL, videoSide } from '../js/store.js';
   import { VideoSide } from '../js/constants.js';
 
   export let videoId;
@@ -17,19 +17,13 @@
         onStateChange() {
           const data = window.player.getVideoData();
           if (data.author.includes('Marine Ch.')) {
-            faviconURL = '/img/blfavicon.ico';
+            faviconURL.set('/img/blfavicon.ico');
           }
         }
       }
     });
   });
-
-  let faviconURL = '/48x48.png';
 </script>
-
-<svelte:head>
-  <link rel="icon" href={faviconURL} />
-</svelte:head>
 
 <div class="wrapper" class:left-video={$videoSide == VideoSide.LEFT}>
   <div id="player" />

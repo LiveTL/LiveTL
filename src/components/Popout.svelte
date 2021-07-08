@@ -6,7 +6,7 @@
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
   import { TextDirection } from '../js/constants.js';
-  import { textDirection, screenshotRenderWidth, videoTitle, enableExportButtons, updatePopupActive } from '../js/store.js';
+  import { faviconURL, textDirection, screenshotRenderWidth, videoTitle, enableExportButtons, updatePopupActive } from '../js/store.js';
   import MessageDisplay from './MessageDisplay.svelte';
   import ScreenshotExport from './ScreenshotExport.svelte';
   import Updates from './Updates.svelte';
@@ -102,7 +102,7 @@
 
 <svelte:window on:resize={updateWrapper} />
 <svelte:head>
-  <link rel="shortcut icon" href="48x48.png" type="image/png" />
+  <link rel="shortcut icon" href={$faviconURL} type="image/png" />
 </svelte:head>
 
 <MaterialApp theme="dark">
