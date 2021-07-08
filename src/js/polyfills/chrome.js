@@ -3,10 +3,14 @@
 // all windows (including subframes)
 
 // native js interface injected in all windows and subframes
-// window.nativeJavascriptInterface = {
-//   sendToBackground: data => {}, // native android method, accessible via js 
-//   sendToForeground: data => {}, // native android method, accessible via js 
-// };
+window.nativeJavascriptInterface = {
+  sendToBackground: data => {
+    console.error('sendToBackground was called, but no nativeJavascriptInterface exists!', data);
+  }, // native android method, accessible via js 
+  sendToForeground: data => {
+    console.error('sendToForeground was called, but no nativeJavascriptInterface exists!', data);
+  }, // native android method, accessible via js 
+};
 
 // send a message to the background script
 function sendToBackground(data, randomMessageID) {
