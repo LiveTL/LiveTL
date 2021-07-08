@@ -98,6 +98,16 @@ window.chrome = {
         }
       }; // fake port that postMessages to the bgscript
       return port; 
+    },
+    onInstalled: {
+      // eslint-disable-next-line no-unused-vars
+      addListener: callback => { }
+    }
+  },
+  webRequest: {
+    onHeadersReceived: {
+      // eslint-disable-next-line no-unused-vars
+      addListener: callback => { }
     }
   }
 };
