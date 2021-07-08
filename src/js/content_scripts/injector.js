@@ -1,5 +1,6 @@
 import { mdiOpenInNew, mdiYoutubeTv, mdiIframeArray } from '@mdi/js';
 import { getFrameInfoAsync, createPopup } from '../../submodules/chat/scripts/chat-utils.js';
+import { paramsEmbedDomain } from '../constants.js';
 
 for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) {
   window.addEventListener(eventName, e => e.stopImmediatePropagation(), true);
@@ -139,8 +140,7 @@ async function loaded() {
     return;
   }
 
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('embed_domain') === chrome.runtime.id) {
+  if (paramsEmbedDomain === chrome.runtime.id) {
     console.debug('Chat is in extension, not injecting LTL buttons.');
     return;
   }
@@ -148,7 +148,7 @@ async function loaded() {
   /** Start buttons injections */
   makeButton('Open LiveTL', () => {
     window.top.location =
-      chrome.runtime.getURL(`watch.html?${constructParams().toString()}`);
+      chrome.runtime.getURL(`watch.html?${constructParams()}`);
   }, undefined, mdiYoutubeTv);
   makeButton('TL Popout', () => {
     const popoutParams = constructParams();
@@ -170,7 +170,7 @@ async function loaded() {
       }
     }
     createPopup(
-      chrome.runtime.getURL(`popout.html?${popoutParams.toString()}`)
+      chrome.runtime.getURL(`popout.html?${popoutParams}`)
     );
   }, undefined, mdiOpenInNew);
   makeButton('Embed TLs', () => {
@@ -183,7 +183,7 @@ async function loaded() {
     iframe.style.width = '100%';
     iframe.style.height = '100%';
     iframe.style.position = 'fixed';
-    iframe.src = chrome.runtime.getURL(`watch.html?${embeddedParams.toString()}`);
+    iframe.src = chrome.runtime.getURL(`watch.html?${embeddedParams}`);
     document.body.appendChild(iframe);
     window.addEventListener('message', d => {
       iframe.contentWindow.postMessage(d.data, '*');

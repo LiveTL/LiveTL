@@ -6,7 +6,7 @@ import { writable, Writable, Readable } from 'svelte/store';
 import { Message } from './types.js';
 import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted, authorWhitelisted, authorBlacklisted } from './filter';
 import { channelFilters, language, showModMessage, timestamp } from './store';
-import { videoId, AuthorType, languageNameCode } from './constants';
+import { paramsVideoId, AuthorType, languageNameCode, paramsPopout, paramsTabId, paramsFrameId } from './constants';
 import { checkAndSpeak } from './speech.js';
 import * as MCHAD from './mchad.js';
 import * as API from './api.js';
@@ -17,8 +17,8 @@ export const sources = {
   ytcTranslations: writable(null),
   mod: writable(null),
   ytc: ytcSource(window).ytc,
-  mchad: combineStores(MCHAD.getArchive(videoId), MCHAD.getLiveTranslations(videoId)).store,
-  api: combineStores(API.getArchive(videoId), API.getLiveTranslations(videoId)).store,
+  mchad: combineStores(MCHAD.getArchive(paramsVideoId), MCHAD.getLiveTranslations(paramsVideoId)).store,
+  api: combineStores(API.getArchive(paramsVideoId), API.getLiveTranslations(paramsVideoId)).store,
 };
 
 /** @type {(id: String) => Boolean} */
@@ -167,14 +167,14 @@ export function ytcSource(window) {
     runQueue();
   };
 
-  const extractToMsg = () => (message) => ({
+  const extractToMsg = (message) => ({
     timestamp: message.showtime / 1000,
     message
   });
 
   const pushMessagesToQueue = (messages) => messages
     .sort(lessMsg)
-    .map(extractToMsg(messages))
+    .map(extractToMsg)
     .forEach(item => queued.push(item));
 
   /** Connect to background messaging as client */
@@ -189,19 +189,17 @@ export function ytcSource(window) {
     portRegistered = true;
   };
 
-  const params = new URLSearchParams(window.location.search);
-  const isPopout = params.get('popout');
-  if (isPopout && !portRegistered) {
+  if (paramsPopout && !portRegistered) {
     registerClient(
       {
-        tabId: parseInt(params.get('tabid')),
-        frameId: parseInt(params.get('frameid'))
+        tabId: parseInt(paramsTabId),
+        frameId: parseInt(paramsFrameId)
       }
     );
   }
 
   window.addEventListener('message', (d) => {
-    if (!isPopout && d.data.type === 'frameInfo' && !portRegistered) {
+    if (!paramsPopout && d.data.type === 'frameInfo' && !portRegistered) {
       registerClient(d.data.frameInfo);
     }
   });
