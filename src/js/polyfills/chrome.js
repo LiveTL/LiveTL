@@ -2,6 +2,8 @@
 // the background script as well as
 // all windows (including subframes)
 
+const MANIFEST_OBJECT = undefined;
+
 // native js interface injected in all windows and subframes
 window.nativeJavascriptInterface = {
   sendToBackground: data => {
@@ -56,7 +58,7 @@ window.chrome = {
   runtime: {
     id: 'livetl_android',
     getURL: path => `file://android_asset/${path}`, // replacement for chrome-extension urls
-    getManifest: () => 'manifest string here', // can also do a request to an asset
+    getManifest: () => MANIFEST_OBJECT, // can also do a request to an asset
     sendMessage(data, callback=null) { // send message to background polyfill
       const randomMessageID = Date.now(); // generate some sort of id to identify the message
       if (callback) {

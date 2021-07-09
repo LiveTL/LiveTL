@@ -124,7 +124,7 @@
   margin: 20px 0px 0px 20px;
   position: relative;
   width: 100vw;
-  height: 100vh;"
+  height: calc(100% - 40px);"
 >
   <MaterialApp theme="dark">
     {#if !paramsEmbedded && $showCaption}

@@ -74,6 +74,12 @@ var options = {
             search: "const isAndroid = false;",
             replace: `const isAndroid = ${isAndroid};`,
           }
+        },{
+          loader: 'string-replace-loader',
+          options: {
+            search: "const MANIFEST_OBJECT = undefined;",
+            replace: `const MANIFEST_OBJECT = ${manifest};`,
+          }
         }],
         enforce: 'post'
       },
