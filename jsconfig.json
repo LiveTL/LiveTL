@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "checkJs": true,
+    "noEmit": true,
+    "strict": true,
+    "lib": ["dom", "es5"],
+    "baseUrl": "src/"
+  },
+  "exclude": ["node_modules", "build"]
+}
