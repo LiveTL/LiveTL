@@ -28,12 +28,10 @@ export async function getRooms(videoId) {
 
   const liveLinks = [
     `${MCHAD}/Room?link=YT_${videoId}`,
-    `${MCHAD}/Room?link=https://youtu.be/${videoId}`
   ];
 
   const vodLinks = [
     `${MCHAD}/Archive?link=YT_${videoId}`,
-    `${MCHAD}/Archive?link=https://youtu.be/${videoId}`
   ];
 
   const [ live, vod ] = await Promise.all([liveLinks, vodLinks].map(getRooms_));
