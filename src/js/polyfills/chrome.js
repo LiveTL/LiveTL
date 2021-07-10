@@ -8,10 +8,10 @@ const MANIFEST_OBJECT = undefined;
 window.nativeJavascriptInterface = {
   sendToBackground: data => {
     console.error('sendToBackground was called, but no nativeJavascriptInterface exists!', data);
-  }, // native android method, accessible via js 
+  }, // native android method, accessible via js
   sendToForeground: data => {
     console.error('sendToForeground was called, but no nativeJavascriptInterface exists!', data);
-  }, // native android method, accessible via js 
+  }, // native android method, accessible via js
 };
 
 // send a message to the background script
@@ -28,7 +28,7 @@ function sendToBackground(data, randomMessageID) {
     }
   }));
 }
-  
+
 // send a message to all content scripts
 function sendToForeground(data, randomMessageID) {
   window.nativeJavascriptInterface.sendToForeground(JSON.stringify({
@@ -43,7 +43,7 @@ function sendToForeground(data, randomMessageID) {
     }
   }));
 }
-  
+
 let polyfillStorage = {
   awaitingCallbacks: {}, // store callbacks that are waiting for a response
   onConnectCallbacks: [], // store callbacks that are waiting for a connection
@@ -52,12 +52,12 @@ let polyfillStorage = {
     // 'portID': [] // store callbacks that are waiting for a message event on a specific port
   }
 };
-  
+
 // chrome api polyfill injected in all windows and subframes
 window.chrome = {
   runtime: {
     id: 'livetl_android',
-    getURL: path => `file://android_asset/${path}`, // replacement for chrome-extension urls
+    getURL: path => `file:///android_asset/${path}`, // replacement for chrome-extension urls
     getManifest: () => MANIFEST_OBJECT, // can also do a request to an asset
     sendMessage(data, callback=null) { // send message to background polyfill
       const randomMessageID = Date.now(); // generate some sort of id to identify the message
@@ -103,7 +103,7 @@ window.chrome = {
           addListener: callback => { } // can't really detect disconnect so just ignore
         }
       }; // fake port that postMessages to the bgscript
-      return port; 
+      return port;
     },
     onInstalled: {
       // eslint-disable-next-line no-unused-vars
@@ -117,12 +117,12 @@ window.chrome = {
     }
   }
 };
-  
+
 window.addEventListener('message', event => { // on post message receive
   try {
     const data = event.data; // parse json
     if (data.type == 'sendToForeground') {
-      // { 
+      // {
       //   'type': 'sendToForeground',
       //   'data': {},
       //   'randomMessageID': 'random string',
@@ -133,7 +133,7 @@ window.addEventListener('message', event => { // on post message receive
       //     }
       //   }
       // }
-  
+
       // if message is from the background script
       // that means that this script is a content script
       if (!(data.randomMessageID in polyfillStorage.awaitingCallbacks)) {
@@ -160,7 +160,7 @@ window.addEventListener('message', event => { // on post message receive
         return;
       }
     } else if (data.type == 'sendToBackground') {
-      // { 
+      // {
       //   'type': 'sendToBackground',
       //   'data': {},
       //   'randomMessageID': 'random string',
@@ -171,7 +171,7 @@ window.addEventListener('message', event => { // on post message receive
       //     }
       //   }
       // }
-  
+
       // if message is from the content script
       // that means that this script is a background script
       if (data.data.event == 'connectPort') {
@@ -199,7 +199,7 @@ window.addEventListener('message', event => { // on post message receive
             addListener: callback => { } // can't really detect disconnect so just ignore
           }
         }; // construct a fake port
-          // pass the fake port to all listeners that were waiting for a port connection 
+          // pass the fake port to all listeners that were waiting for a port connection
         polyfillStorage.onConnectCallbacks.forEach(callback => callback(port));
         return;
       } else if (data.data.event == 'postMessage') {
@@ -211,7 +211,7 @@ window.addEventListener('message', event => { // on post message receive
       }
     }
     // if it's none of the above, that means it's a standalone message
-    // (which i don't think happens in the content script but i'll support it anyway) 
+    // (which i don't think happens in the content script but i'll support it anyway)
     if (data.type == 'sendToForeground' || data.type == 'sendToBackground') {
       polyfillStorage.onMessageCallbacks.forEach(callback => callback(data.data));
     }
