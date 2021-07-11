@@ -12,6 +12,7 @@ const { VueLoaderPlugin } = require('vue-loader');
 const { preprocess } = require('./svelte.config');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const FileManagerPlugin = require('filemanager-webpack-plugin');
+const WebpackConcatPlugin = require('webpack-concat-files-plugin');
 const isAndroid = process.argv.includes('android');
 const mode = isAndroid ? 'production' : (env.NODE_ENV || 'development');
 const manifest = JSON.stringify({
@@ -33,9 +34,7 @@ var fileExtensions = ['jpg', 'jpeg', 'png', 'gif', 'eot', 'otf', 'svg', 'ttf', '
 if (fileSystem.existsSync(secretsPath)) {
   alias['secrets'] = secretsPath;
 }
-
 const prod = mode !== 'development';
-const polyfills = isAndroid ? ['chrome'] : [];
 var options = {
   entry: {
     popout: path.join(__dirname, 'src', 'js', 'pages', 'popout.js'),
@@ -50,7 +49,7 @@ var options = {
     chat: path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat.js'),
     'chat-interceptor': path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat-interceptor.js'),
     'chat-background': path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat-background.js'),
-    chrome: path.join(__dirname, 'src', 'js', 'polyfills', 'chrome.js')
+    // chrome: path.join(__dirname, 'src', 'js', 'polyfills', 'chrome.js')
   },
   output: {
     path: path.join(__dirname, 'build'),
@@ -73,12 +72,6 @@ var options = {
           options: {
             search: "const isAndroid = false;",
             replace: `const isAndroid = ${isAndroid};`,
-          }
-        },{
-          loader: 'string-replace-loader',
-          options: {
-            search: "const MANIFEST_OBJECT = undefined;",
-            replace: `const MANIFEST_OBJECT = ${manifest};`,
           }
         }],
         enforce: 'post'
@@ -180,6 +173,15 @@ var options = {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV)
     }),
+    new BannerPlugin({
+      banner: fileSystem.readFileSync(
+        path.join(__dirname, 'src', 'js', 'polyfills', 'chrome.js')
+      ).toString().replace(
+        'const MANIFEST_OBJECT = undefined;',
+        `const MANIFEST_OBJECT = ${manifest};`
+      ),
+      raw: true,
+    }),
     new CopyWebpackPlugin({
       patterns: [
         {
@@ -219,31 +221,31 @@ var options = {
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'empty.html'),
       filename: 'watch.html',
-      chunks: [...polyfills, 'watch'],
+      chunks: ['watch'],
       chunksSortMode: 'manual'
     }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'empty.html'),
       filename: 'popout.html',
-      chunks: [...polyfills, 'popout'],
+      chunks: ['popout'],
       chunksSortMode: 'manual'
     }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'empty.html'),
       filename: 'options.html',
-      chunks: [...polyfills, 'options'],
+      chunks: ['options'],
       chunksSortMode: 'manual'
     }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'empty.html'),
       filename: 'welcome.html',
-      chunks: [...polyfills, 'welcome'],
+      chunks: ['welcome'],
       chunksSortMode: 'manual'
     }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'empty.html'),
       filename: 'background.html',
-      chunks: [...polyfills, 'background', 'chat-background'],
+      chunks: ['background', 'chat-background'],
       chunksSortMode: 'manual'
     }),
     new webpack.HotModuleReplacementPlugin(),
@@ -251,7 +253,7 @@ var options = {
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'empty.html'),
       filename: 'hyperchat/index.html',
-      chunks: [...polyfills, 'hyperchat'],
+      chunks: ['hyperchat'],
       chunksSortMode: 'manual'
     }),
   ],
