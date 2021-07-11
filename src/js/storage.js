@@ -296,28 +296,23 @@ export function Storage(version) {
     break;
   case Browser.FIREFOX:
     // @ts-ignore
-    // eslint-disable-next-line no-undef
     browser.storage.onChanged.addListener(updateChangedStores);
     this.rawGet = async (key) => {
       // @ts-ignore
-      // eslint-disable-next-line no-undef
       return await browser.storage.local.get(key);
     };
 
     this.rawSet = async (obj) => {
       // @ts-ignore
-      // eslint-disable-next-line no-undef
       return await browser.storage.local.set(obj);
     };
     break;
   default:
     // @ts-ignore
-    // eslint-disable-next-line no-undef
     chrome.storage.onChanged.addListener(updateChangedStores);
     this.rawGet = (key) => {
       return new Promise((res) => {
         // @ts-ignore
-        // eslint-disable-next-line no-undef
         chrome.storage.local.get(key, res);
       });
     };
@@ -325,7 +320,6 @@ export function Storage(version) {
     this.rawSet = (obj) => {
       return new Promise((res) => {
         // @ts-ignore
-        // eslint-disable-next-line no-undef
         chrome.storage.local.set(obj, res);
       });
     };

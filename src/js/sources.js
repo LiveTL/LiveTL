@@ -6,7 +6,7 @@ import { writable, Writable, Readable } from 'svelte/store';
 import { Message } from './types.js';
 import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted, authorWhitelisted, authorBlacklisted } from './filter';
 import { channelFilters, language, showModMessage, timestamp } from './store';
-import { videoId, AuthorType, languageNameCode } from './constants';
+import { paramsVideoId, AuthorType, languageNameCode, paramsPopout, paramsTabId, paramsFrameId } from './constants';
 import { checkAndSpeak } from './speech.js';
 import * as MCHAD from './mchad.js';
 import * as API from './api.js';
@@ -17,8 +17,8 @@ export const sources = {
   ytcTranslations: writable(null),
   mod: writable(null),
   ytc: ytcSource(window).ytc,
-  mchad: combineStores(MCHAD.getArchive(videoId), MCHAD.getLiveTranslations(videoId)).store,
-  api: combineStores(API.getArchive(videoId), API.getLiveTranslations(videoId)).store,
+  mchad: combineStores(MCHAD.getArchive(paramsVideoId), MCHAD.getLiveTranslations(paramsVideoId)).store,
+  api: combineStores(API.getArchive(paramsVideoId), API.getLiveTranslations(paramsVideoId)).store,
 };
 
 /** @type {(id: String) => Boolean} */
@@ -38,7 +38,7 @@ const showIfMod = msg => isMod(msg) && showModMessage.get();
 
 /** @type {(store: Writable<Message>) => (msg: Message, text: String | undefined) => void} */
 const setStoreMessage =
-  store => (msg, text) => store.set({...msg, text: text ?? msg.text});
+  store => (msg, text) => store.set({ ...msg, text: text ?? msg.text });
 
 const lang = () => languageNameCode[language.get()];
 
@@ -50,7 +50,7 @@ const replaceFirstTranslation = msg => {
   if (messageArray[0].type === 'text') {
     messageArray[0].text = parseTranslation(messageArray[0].text).msg;
   }
-  return {...msg, messageArray};
+  return { ...msg, messageArray };
 };
 
 /**
@@ -107,13 +107,6 @@ export function combineStores(...stores) {
   };
 }
 
-function getYTCData(unparsed) {
-  try {
-    const data = JSON.parse(JSON.stringify(unparsed.data));
-    return typeof data == 'string' ? JSON.parse(data) : data;
-  } catch (e) { return {}; }
-}
-
 function ytcToMsg({ message, timestamp, author: { name: author, id, types } }) {
   const text = message
     .filter(item => item.type === 'text' || item.type === 'link')
@@ -121,19 +114,6 @@ function ytcToMsg({ message, timestamp, author: { name: author, id, types } }) {
     .join('');
   const typeFlag = types.reduce((flag, t) => flag | AuthorType[t], 0);
   return { text, timestamp, author, id, types: typeFlag, messageArray: message };
-}
-
-function forwardPostMessages(window) {
-  try {
-    const connectionName = BigInt(new URLSearchParams(window.location.search).get('tabid'));
-    if (window.chrome && window.chrome.runtime) {
-      window.chrome.runtime.onMessage.addListener((request) => {
-        if (BigInt(request.data.tabid) == connectionName) window.postMessage(request.data);
-      });
-    }
-  // eslint-disable-next-line no-empty
-  } catch(e) {
-  }
 }
 
 export function ytcSource(window) {
@@ -157,13 +137,13 @@ export function ytcSource(window) {
   };
 
   const pushAllQueuedToStore = () => pushQueuedToStore(() => true);
-  const pushUpToCurrentToStore =
-    currentTime => pushQueuedToStore(q => q.top.data.timestamp < currentTime);
+  const pushUpToCurrentToStore = (currentTime) =>
+    pushQueuedToStore(q => q.top.data.timestamp <= currentTime);
 
-  const scrubbedOrSkipped =
-    time => progress.previous != null && Math.abs(progress.previous - time) > 1;
+  const scrubbedOrSkipped = (time) =>
+    time == null || Math.abs(progress.previous - time) > 1;
 
-  const videoProgressUpdated = time => {
+  const videoProgressUpdated = (time) => {
     if (time < 0) return;
     if (scrubbedOrSkipped(time)) {
       pushAllQueuedToStore();
@@ -176,11 +156,7 @@ export function ytcSource(window) {
 
   const updateVideoProgressBeforeMessages = data => {
     if (!isPollingProgress() && firstChunkReceived) {
-      if (data.event === 'infoDelivery') {
-        videoProgressUpdated(data.info.currentTime);
-      } else if (data['yt-player-video-progress']) {
-        videoProgressUpdated(data['yt-player-video-progress']);
-      }
+      videoProgressUpdated(data);
     }
   };
 
@@ -191,34 +167,55 @@ export function ytcSource(window) {
     runQueue();
   };
 
-  const getTimestamp = (data, message) => data.isReplay
-    ? message.showtime
-    : (Date.now() + message.showtime) / 1000;
-
-  const extractToMsg = data => message => ({
-    timestamp: getTimestamp(data, message), message
+  const extractToMsg = (message) => ({
+    timestamp: message.showtime / 1000,
+    message
   });
 
-  const pushMessagesToQueue = data => data.messages
+  const pushMessagesToQueue = (messages) => messages
     .sort(lessMsg)
-    .map(extractToMsg(data))
+    .map(extractToMsg)
     .forEach(item => queued.push(item));
 
-  window.addEventListener('message', d => {
-    const data = getYTCData(d);
-    updateVideoProgressBeforeMessages(data);
-    
-    if (data.type === 'messageChunk') {
-      firstChunkReceived = true;
-      pushMessagesToQueue(data);
-      if (!isPollingProgress() && !data.isReplay) {
-        startVideoProgressUpdatePolling();
+  /** Connect to background messaging as client */
+  const port = chrome.runtime.connect();
+  let portRegistered = false;
+  const registerClient = (frameInfo) => {
+    port.postMessage({
+      type: 'registerClient',
+      frameInfo: frameInfo,
+      getInitialData: false
+    });
+    portRegistered = true;
+  };
+
+  if (paramsPopout && !portRegistered) {
+    registerClient(
+      {
+        tabId: parseInt(paramsTabId),
+        frameId: parseInt(paramsFrameId)
       }
+    );
+  }
+
+  window.addEventListener('message', (d) => {
+    if (!paramsPopout && d.data.type === 'frameInfo' && !portRegistered) {
+      registerClient(d.data.frameInfo);
     }
   });
 
-  forwardPostMessages(window);
-  
+  port.onMessage.addListener((payload) => {
+    if (payload.type === 'actionChunk') {
+      firstChunkReceived = true;
+      pushMessagesToQueue(payload.messages);
+      if (!isPollingProgress() && !payload.isReplay) {
+        startVideoProgressUpdatePolling();
+      }
+    } else if (payload.type === 'playerProgress') {
+      updateVideoProgressBeforeMessages(payload.playerProgress);
+    }
+  });
+
   return { ytc, cleanUp };
 }
 
@@ -264,7 +261,7 @@ export class DummyYTCEventSource {
       {
         type: 'messageChunk',
         isReplay: false,
-        messages: [ message('Author 5', 'hello again', '03:19 PM') ]
+        messages: [message('Author 5', 'hello again', '03:19 PM')]
       }
     ];
   }

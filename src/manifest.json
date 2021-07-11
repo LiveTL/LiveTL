@@ -30,8 +30,8 @@
         "https://www.youtube.com/live_chat_replay*"
       ],
       "js": [
+        "chat-interceptor.bundle.js",
         "injector.bundle.js",
-        "interceptor.bundle.js",
         "chat.bundle.js"
       ],
       "all_frames": true
