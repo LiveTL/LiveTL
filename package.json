@@ -26,6 +26,7 @@
     "eslint": "^7.22.0",
     "eslint-plugin-svelte3": "^3.1.2",
     "file-loader": "6.2.0",
+    "filemanager-webpack-plugin": "^6.1.4",
     "fs-extra": "7.0.1",
     "glob-parent": "^6.0.0",
     "html-loader": "2.1.2",
