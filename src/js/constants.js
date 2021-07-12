@@ -75,7 +75,7 @@ function createLangSelectionName(lang) {
 languages.forEach(i => languageConversionTable[createLangSelectionName(i)] = i);
 languages.forEach(lang => languageNameCode[lang.lang] = lang);
 
-export const MCHAD = 'http://157.230.241.238';
+export const MCHAD = 'https://repo.mchatx.org';
 
 const params = new URLSearchParams(window.location.search ?? '')
 

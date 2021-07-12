@@ -27,13 +27,11 @@ export async function getRooms(videoId) {
   const getRooms_ = getRoomCreator(videoId);
 
   const liveLinks = [
-    `${MCHAD}/Room?link=YT_${videoId}`,
-    `${MCHAD}/Room?link=https://youtu.be/${videoId}`
+    `${MCHAD}/Room?link=YT_${videoId}`
   ];
 
   const vodLinks = [
-    `${MCHAD}/Archive?link=YT_${videoId}`,
-    `${MCHAD}/Archive?link=https://youtu.be/${videoId}`
+    `${MCHAD}/Archive?link=YT_${videoId}`
   ];
 
   const [ live, vod ] = await Promise.all([liveLinks, vodLinks].map(getRooms_));
@@ -60,9 +58,14 @@ export async function getArchiveFromRoom(room) {
       link: room.Link
     })
   }).then(toJson).catch(() => []);
-  const { Stime: firstTime } = [...script, { Stime: 0 }, { Stime: 0 }][1];
+  
+  let { Stime: firstTime } = [...script, { Stime: 0 }][0];
+  const startmatch = script.filter(e => (e.Stext.match(/--.*Stream.*Start.*--/i) != null));
+  if (startmatch.length != 0){
+    firstTime = startmatch[0].Stime;
+  }
+    
   const toMessage = mchadToMessage(room.Room, archiveUnixToTimestamp(firstTime));
-
   return script.map(toMessage);
 }
 
@@ -75,6 +78,7 @@ export const getArchive = videoId => readable(null, async set => {
 
   const script = await getArchiveFromRoom(vod[0])
     .then(s => s.map(addUnix))
+    .then(s => s.filter(e => e.unix >= 0))
     .then(sortBy('unix'));
 
   return archiveStreamFromScript(script).subscribe(tl => {
