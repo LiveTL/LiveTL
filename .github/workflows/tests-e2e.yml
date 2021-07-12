@@ -28,5 +28,14 @@ jobs:
       run: |
         yarn
         git checkout .
+    - name: Build extension
+      run: |
+        ls
+        yarn build production --version="69.42.0"
+        ls build
+        yarn package
+        ls dist
+        cp dist/LiveTL-Firefox.zip dist/LiveTL-Firefox.xpi
+        ls dist
     - name: Run tests
       run: yarn e2e
