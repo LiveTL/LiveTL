@@ -7,7 +7,7 @@ import { formatTimestampMillis, sortBy, suppress, toJson } from './utils.js';
 import { enableAPITLs, timestamp } from './store.js';
 
 export const sseToStream = link => readable(null, set => {
-  if (!isLive) return () => { }
+  if (!isLive) return () => { };
 
   const source = new EventSource(link);
 

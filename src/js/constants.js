@@ -77,7 +77,7 @@ languages.forEach(lang => languageNameCode[lang.lang] = lang);
 
 export const MCHAD = 'https://repo.mchatx.org';
 
-const params = new URLSearchParams(window.location.search ?? '')
+const params = new URLSearchParams(window.location.search ?? '');
 
 export const videoId = params.get('video');
 export const isLive = !params.get('isReplay');
