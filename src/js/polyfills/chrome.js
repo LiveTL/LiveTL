@@ -9,10 +9,10 @@
   // window.nativeJavascriptInterface = {
   //   sendToBackground: data => {
   //     console.error('sendToBackground was called, but no nativeJavascriptInterface exists!', data);
-  //   }, // native android method, accessible via js 
+  //   }, // native android method, accessible via js
   //   sendToForeground: data => {
   //     console.error('sendToForeground was called, but no nativeJavascriptInterface exists!', data);
-  //   }, // native android method, accessible via js 
+  //   }, // native android method, accessible via js
   // };
 
   // send a message to the background script
@@ -58,7 +58,7 @@
   window.chrome = {
     runtime: {
       id: 'livetl_android',
-      getURL: path => `file:///android_asset/${path}`, // replacement for chrome-extension urls
+      getURL: path => `https://__local_android_asset_baseurl__/${path}`, // replacement for chrome-extension urls
       getManifest: () => MANIFEST_OBJECT, // can also do a request to an asset
       sendMessage(data, callback=null) { // send message to background polyfill
         const randomMessageID = Date.now(); // generate some sort of id to identify the message
