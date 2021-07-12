@@ -49,7 +49,7 @@ const authorName = (() => {
 })();
 
 /** @type {(videoId: String) => String} */
-const apiLiveLink = videoId => url(`/translations/stream?videoId=${videoId}?languageCode=en`);
+const apiLiveLink = videoId => url(`/translations/stream?videoId=${videoId}&languageCode=en`);
 
 /** @type {(videoId: String) => String} */
 const apiArchiveLink = videoId => url(`/translations/${videoId}/en`);
