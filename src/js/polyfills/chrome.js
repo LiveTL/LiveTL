@@ -116,6 +116,12 @@
       // eslint-disable-next-line no-unused-vars
         addListener: callback => { }
       }
+    },
+    browserAction: {
+      onClicked: {
+        // eslint-disable-next-line no-unused-vars
+        addListener: callback => { }
+      }
     }
   };
 
