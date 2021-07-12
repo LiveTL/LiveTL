@@ -59,18 +59,12 @@ export async function getArchiveFromRoom(room) {
     })
   }).then(toJson).catch(() => []);
   
-  var { Stime: firstTime } = [...script, { Stime: 0 }][0];
-  var startmatch = script.filter(e => (e.Stext.match(/--.*Stream.*Start.*--/i) != null));
+  let { Stime: firstTime } = [...script, { Stime: 0 }][0];
+  const startmatch = script.filter(e => (e.Stext.match(/--.*Stream.*Start.*--/i) != null));
   if (startmatch.length != 0){
     firstTime = startmatch[0].Stime;
   }
-  /*
-  //  start also doesn't seem to be correct for some reason ?
-  if (firstTime != 0){
-    firstTime = start;
-  }
-  */
-  
+    
   const toMessage = mchadToMessage(room.Room, archiveUnixToTimestamp(firstTime));
   return script.map(toMessage);
 }
@@ -84,7 +78,7 @@ export const getArchive = videoId => readable(null, async set => {
 
   const script = await getArchiveFromRoom(vod[0])
     .then(s => s.map(addUnix))
-    .then(s => s = s.filter(e => e.unix >= 0))
+    .then(s => s.filter(e => e.unix >= 0))
     .then(sortBy('unix'));
 
   return archiveStreamFromScript(script).subscribe(tl => {
