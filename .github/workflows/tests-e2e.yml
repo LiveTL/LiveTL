@@ -7,6 +7,8 @@ jobs:
       DISPLAY: ":0"
     steps:
     - uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
     - name: Set up Python 3.8
       uses: actions/setup-python@v2
       with:
@@ -27,7 +29,6 @@ jobs:
     - name: Install modules
       run: |
         yarn
-        git checkout .
     - name: Build extension
       run: |
         ls
