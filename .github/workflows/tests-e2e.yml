@@ -1,0 +1,32 @@
+name: E2E Tests
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      DISPLAY: ":0"
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Set up Virtual Display for Chrome
+      run: |
+        sudo apt install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
+        sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
+    - name: Set up Firefox
+      run: sudo apt install -y firefox
+    - name: Set up Chrome
+      run: |
+        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        sudo dpkg -i ./google-chrome-stable_current_amd64.deb
+    - name: Install Dependencies
+      run: python3 -m pip install autoparaselenium
+    - uses: c-hive/gha-yarn-cache@v1
+    - name: Install modules
+      run: |
+        yarn
+        git checkout .
+    - name: Run tests
+      run: yarn e2e
