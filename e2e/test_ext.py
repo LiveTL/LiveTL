@@ -37,6 +37,10 @@ def test_injection(web):
     web.switch_to.frame(web.find_elements_by_css_selector("#chatframe")[0])
 
     # LiveTL Buttons
+    @retry
+    def _():
+        open_button, popout_button, embed_button = web.find_elements_by_css_selector(".livetlButtonWrapper > span")
+
     open_button, popout_button, embed_button = web.find_elements_by_css_selector(".livetlButtonWrapper > span")
     assert open_button.text.strip() == "Open LiveTL"
     assert popout_button.text.strip() == "TL Popout"
@@ -82,13 +86,18 @@ def test_embed_mchad_vod_tls(web):
 
     # Go to 2/10 completion of the video and back
     body, = web.find_elements_by_css_selector("body")
-    # body.click()
+    with suppress(Exception):
+        body.click()
     body.send_keys("2")
     time.sleep(5)
     body.send_keys("0")
 
     switch_to_embed_frame(web)
-    web.save_screenshot("mio-mchad-tls.png")
+
+    @retry
+    def _():
+        tl, info = web.find_elements_by_css_selector(".message-display > .message > span")
+
     tl, info = web.find_elements_by_css_selector(".message-display > .message > span")
     assert "Mio, this time we're veteran" in tl.text, "Incorrect tl"
     assert "MonMon TL" in info.text, "Incorrect author of tl"
@@ -108,12 +117,17 @@ def test_embed_ytc_vod_tls(web):
     # author: KFC
     # timestamp: 23:51
     body, = web.find_elements_by_css_selector("body")
-    # body.click()
+    with suppress(Exception):
+        body.click()
     body.send_keys("3")
     time.sleep(5)
 
     switch_to_embed_frame(web)
-    web.save_screenshot("kiara-tls.png")
+
+    @retry
+    def _():
+        tl, info = web.find_elements_by_css_selector(".message-display > .message > span")
+
     tl, info = web.find_elements_by_css_selector(".message-display > .message > span")
     assert "You sound so cool just now" in tl.text, "Incorrect tl"
     assert "KFC" in info.text, "Incorrect author"
@@ -127,6 +141,10 @@ def open_embed(web, site=chilled_cow):
 
     web.switch_to.frame(web.find_elements_by_css_selector("#chatframe")[0])
 
+    @retry
+    def _():
+        *_, embed_button = web.find_elements_by_css_selector(".livetlButtonWrapper > span")
+
     *_, embed_button = web.find_elements_by_css_selector(".livetlButtonWrapper > span")
     embed_button.click()
     time.sleep(5)
@@ -136,10 +154,20 @@ def open_embed(web, site=chilled_cow):
     close_update_dialogue(web)
 
 
+def retry(cb, amount=15, interval=1):
+    for i in range(amount):
+        try:
+            return cb()
+        except Exception as e:
+            if i == amount - 1:
+                raise e
+            time.sleep(interval)
+
+
 def wait_for_ads(web, expected_part_of_title):
     # title_el, = web.find_elements_by_css_selector(".ytp-title")
     # while expected_part_of_title not in title_el.text:
-    while ">Ad " in web.page_source:
+    while ">Ad " in web.page_source or [time.sleep(3), ">Ad " in web.page_source][1]:
         for skip in web.find_elements_by_css_selector(".ytp-ad-skip-button"):
             with suppress(Exception):
                 skip.click()
