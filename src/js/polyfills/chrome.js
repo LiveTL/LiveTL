@@ -100,7 +100,6 @@
           },
           onMessage: {
             addListener: callback => {
-              console.log(window.location.href, portID); 
               const portCallbacks = polyfillStorage.portOnMessageCallbacks[portID];
               polyfillStorage.portOnMessageCallbacks[portID] = portCallbacks || [];
               polyfillStorage.portOnMessageCallbacks[portID].push(callback);
@@ -226,7 +225,6 @@
               addListener: callback => { } // can't really detect disconnect so just ignore
             }
           }; // construct a fake port
-          console.log(data, data.sender, port);
           // pass the fake port to all listeners that were waiting for a port connection
           polyfillStorage.onConnectCallbacks.forEach(callback => {
             try {
