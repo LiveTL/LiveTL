@@ -61,7 +61,7 @@ def test_embed_resize(web):
     previous_height = embed_window.size["height"]
     ActionChains(web).drag_and_drop_by_offset(handle, 0, 20).perform()
     new_height = embed_window.size["height"]
-    assert abs(previous_height - new_height - 20) <= 1e-2
+    assert abs(previous_height - new_height - 20) <= 2
 
 
 def open_embed(web):
