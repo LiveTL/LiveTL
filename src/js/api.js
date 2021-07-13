@@ -2,11 +2,13 @@
 import { get, derived, readable, Readable } from 'svelte/store';
 // eslint-disable-next-line no-unused-vars
 import { APITranslation, Message, ScriptMessage, UnixTimestamp } from './types.js';
-import { AuthorType } from './constants.js';
+import { AuthorType, isLive } from './constants.js';
 import { formatTimestampMillis, sortBy, suppress, toJson } from './utils.js';
 import { enableAPITLs, timestamp } from './store.js';
 
 export const sseToStream = link => readable(null, set => {
+  if (!isLive) return () => { };
+
   const source = new EventSource(link);
 
   source.onmessage = event => {
@@ -47,7 +49,7 @@ const authorName = (() => {
 })();
 
 /** @type {(videoId: String) => String} */
-const apiLiveLink = videoId => url(`/translations/stream?videoId=${videoId}?languageCode=en`);
+const apiLiveLink = videoId => url(`/translations/stream?videoId=${videoId}&languageCode=en`);
 
 /** @type {(videoId: String) => String} */
 const apiArchiveLink = videoId => url(`/translations/${videoId}/en`);
