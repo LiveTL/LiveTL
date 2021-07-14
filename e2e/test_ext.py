@@ -103,7 +103,7 @@ def test_embed_mchad_vod_tls(web):
     # Go to 2/10 completion of the video and back
     body, = web.find_elements_by_css_selector("body")
     with suppress(Exception):
-        body.click()
+        retry(body.click, 5)
     body.send_keys("2")
     time.sleep(5)
     body.send_keys("0")
@@ -134,7 +134,7 @@ def test_embed_ytc_vod_tls(web):
     # timestamp: 23:51
     body, = web.find_elements_by_css_selector("body")
     with suppress(Exception):
-        body.click()
+        retry(body.click, 5)
     body.send_keys("3")
     time.sleep(5)
 
@@ -170,7 +170,7 @@ def open_embed(web, site=chilled_cow):
     close_update_dialogue(web)
 
 
-def retry(cb, amount=25, interval=1):
+def retry(cb, amount=30, interval=1):
     for i in range(amount):
         try:
             return cb()
