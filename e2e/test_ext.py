@@ -7,7 +7,7 @@ Screenshots of test failures can be viewed at https://fileupload.r2dev2bb8.repl.
 import time
 import os
 from contextlib import suppress
-from functools import wraps
+from functools import partial, wraps
 from pathlib import Path
 
 from autoparaselenium import configure, run_on as a_run_on, all_, Extension
@@ -110,16 +110,17 @@ def test_embed_mchad_vod_tls(web):
     wait_for_ads(web, phas)
 
     # Go to 2/10 completion of the video and back
-    body, = web.find_elements_by_css_selector("body")
-    with suppress(Exception):
-        retry(body.click, 5)
-    body.send_keys("2")
-    time.sleep(5)
-    body.send_keys("0")
+    for body in web.find_elements_by_css_selector("body"):
+        with suppress(Exception):
+            retry(body.click, 5)
+        time.sleep(1)
+        body.send_keys("2")
+        time.sleep(5)
+        body.send_keys("0")
 
     switch_to_embed_frame(web)
 
-    @retry
+    @partial(retry, amount=45)
     def _():
         tl, info = web.find_elements_by_css_selector(".message-display > .message > span")
 
@@ -143,7 +144,7 @@ def test_embed_ytc_vod_tls(web):
     # timestamp: 23:51
     body, = web.find_elements_by_css_selector("body")
     with suppress(Exception):
-        retry(body.click, 5)
+        body.click()
     body.send_keys("3")
     time.sleep(5)
 
