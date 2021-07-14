@@ -32,4 +32,4 @@ jobs:
     - name: Build extension
       run: yarn e2e:build
     - name: Run tests
-      run: HEADED=1 pytest --tests-per-worker 2 e2e
+      run: pytest --tests-per-worker 4 e2e

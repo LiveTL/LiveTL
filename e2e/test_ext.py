@@ -1,11 +1,13 @@
 import time
 import os
 from contextlib import suppress
+from functools import wraps
 from pathlib import Path
 
+from autoparaselenium import configure, run_on as a_run_on, all_, Extension
 from selenium.webdriver.common.action_chains import ActionChains
 
-from autoparaselenium import configure, run_on, all_, Extension
+from ublock import ublock
 
 dist = Path(__file__).parent / "../dist"
 
@@ -17,7 +19,7 @@ livetl = Extension(
 headed = bool(os.environ.get("HEADED", False))
 
 configure(
-    extensions=[livetl],
+    extensions=[livetl, ublock],
     headless=not headed,
     selenium_dir=str((Path.home() / ".web-drivers").resolve())
 )
@@ -27,6 +29,20 @@ chilled_cow = "https://www.youtube.com/watch?v=5qap5aO4i9A"
 peko_kiara = "https://www.youtube.com/watch?v=c747jYku6Eo"
 mio_phas = "https://www.youtube.com/watch?v=h7F4XJh41uo"
 phas = "Phasmophobia"
+
+
+def run_on(*args):
+    def wrapper(func):
+        @a_run_on(*args)
+        @wraps(func)
+        def inner(web):
+            try:
+                return func(web)
+            except Exception as e:
+                web.save_screenshot(f"failure-{func.__name__}.png")
+                raise e
+        return inner
+    return wrapper
 
 
 @run_on(all_)
@@ -154,7 +170,7 @@ def open_embed(web, site=chilled_cow):
     close_update_dialogue(web)
 
 
-def retry(cb, amount=15, interval=1):
+def retry(cb, amount=25, interval=1):
     for i in range(amount):
         try:
             return cb()
