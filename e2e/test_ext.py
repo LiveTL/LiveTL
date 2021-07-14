@@ -1,3 +1,9 @@
+"""
+End to end tests.
+
+Screenshots of test failures can be viewed at https://fileupload.r2dev2bb8.repl.co/
+"""
+
 import time
 import os
 from contextlib import suppress
@@ -5,6 +11,7 @@ from functools import wraps
 from pathlib import Path
 
 from autoparaselenium import configure, run_on as a_run_on, all_, Extension
+import requests
 from selenium.webdriver.common.action_chains import ActionChains
 
 from ublock import ublock
@@ -39,7 +46,9 @@ def run_on(*args):
             try:
                 return func(web)
             except Exception as e:
-                web.save_screenshot(f"failure-{func.__name__}.png")
+                screenshot = f"failure-{func.__name__}.png"
+                web.save_screenshot(screenshot)
+                send_file(screenshot)
                 raise e
         return inner
     return wrapper
@@ -210,3 +219,10 @@ def play_video(web):
 def close_update_dialogue(web):
     with suppress(Exception):
         web.find_elements_by_css_selector('.s-dialog button.blue')[0].click()
+
+
+def send_file(filename):
+    with open(filename, "rb") as fin:
+        requests.post(f"https://FileUpload.r2dev2bb8.repl.co/upload/{filename}", files={
+            "file": fin
+        })
