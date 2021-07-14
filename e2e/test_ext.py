@@ -109,18 +109,11 @@ def test_embed_mchad_vod_tls(web):
     play_video(web)
     wait_for_ads(web, phas)
 
-    # Go to 2/10 completion of the video and back
-    for body in web.find_elements_by_css_selector("body"):
-        with suppress(Exception):
-            retry(body.click, 5)
-        time.sleep(1)
-        body.send_keys("2")
-        time.sleep(5)
-        body.send_keys("0")
-
+    # Skipping from 0 to a later timestamp should show first translation in between
+    seek(web, 17 * 60 + 50)
     switch_to_embed_frame(web)
 
-    @partial(retry, amount=45)
+    @retry
     def _():
         tl, info = web.find_elements_by_css_selector(".message-display > .message > span")
 
@@ -142,12 +135,7 @@ def test_embed_ytc_vod_tls(web):
     # tl: You sound so cool just now
     # author: KFC
     # timestamp: 23:51
-    body, = web.find_elements_by_css_selector("body")
-    with suppress(Exception):
-        body.click()
-    body.send_keys("3")
-    time.sleep(5)
-
+    seek(web, 23 * 60 + 49)
     switch_to_embed_frame(web)
 
     @retry
@@ -220,6 +208,10 @@ def play_video(web):
 def close_update_dialogue(web):
     with suppress(Exception):
         web.find_elements_by_css_selector('.s-dialog button.blue')[0].click()
+
+
+def seek(web, seconds):
+    web.execute_script(f"document.querySelector('video').currentTime = {int(seconds)}")
 
 
 def send_file(filename):
