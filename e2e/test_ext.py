@@ -171,10 +171,10 @@ def test_embed_tl_scroll(web):
     # Scroll to the top
     switch_to_embed_frame(web)
     web.execute_script("document.querySelector('.message-display-wrapper .message').scrollIntoView()")
-    assert scroll_to_bottom_buttons(), "scroll to bottom button isn't displayed"
+    assert retry_bool(scroll_to_bottom_buttons), "scroll to bottom button isn't displayed"
     scroll_to_bottom_buttons()[0].click()
     time.sleep(1) # button doesn't immediately go away
-    assert not scroll_to_bottom_buttons(), "scroll to bottom button is still displayed"
+    assert retry_bool(lambda: not scroll_to_bottom_buttons()), "scroll to bottom button is still displayed"
 
 
 def open_mio_embed(web):
@@ -232,6 +232,14 @@ def retry(cb, amount=30, interval=1):
             if i == amount - 1:
                 raise e
             time.sleep(interval)
+
+
+def retry_bool(cb, amount=30, interval=1):
+    for _ in range(amount):
+        if cb():
+            return True
+        time.sleep(interval)
+    return False
 
 
 def wait_for_ads(web, expected_part_of_title):
