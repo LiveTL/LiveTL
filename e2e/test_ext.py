@@ -113,9 +113,9 @@ def test_embed_mchad_vod_tls(web):
 
     @retry
     def _():
-        tl, info = web.find_elements_by_css_selector(".message-display > .message > span")
+        tl, info = web.find_elements_by_css_selector(".message-display > .message > span")[:2]
 
-    tl, info = web.find_elements_by_css_selector(".message-display > .message > span")
+    tl, info = web.find_elements_by_css_selector(".message-display > .message > span")[:2]
     assert "Mio, this time we're veteran" in tl.text, "Incorrect tl"
     assert "MonMon TL" in info.text, "Incorrect author of tl"
     assert "Mchad TL" in info.text, "MCHAD badge not found"
@@ -138,9 +138,9 @@ def test_embed_ytc_vod_tls(web):
 
     @retry
     def _():
-        tl, info = web.find_elements_by_css_selector(".message-display > .message > span")
+        tl, info = web.find_elements_by_css_selector(".message-display > .message > span")[:2]
 
-    tl, info = web.find_elements_by_css_selector(".message-display > .message > span")
+    tl, info = web.find_elements_by_css_selector(".message-display > .message > span")[:2]
     assert "You sound so cool just now" in tl.text, "Incorrect tl"
     assert "KFC" in info.text, "Incorrect author"
     assert "Mchad TL" not in info.text, "MCHAD badge incorrectly displayed"
@@ -161,7 +161,7 @@ def test_embed_tl_scroll(web):
     amount_of_tls = 0
     for minutes in range(0, 41, 10):
         seek(web, minutes * 60 + 50)
-        assert has_been_new_tl(web, amount_of_tls)
+        assert has_been_new_tl(web, amount_of_tls, amount=20)
         amount_of_tls = get_amount_of_tls(web)
 
     # Scroll to the top
