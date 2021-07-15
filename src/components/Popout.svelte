@@ -57,6 +57,7 @@
 
   let selectedItems = [];
   let allItems = [];
+  let selectedItemCount = 0;
 
   function selectAllItems() {
     selectedItems = [...allItems];
@@ -67,6 +68,8 @@
   function getSelectedItems() {
     return selectedItems.filter(d => !d.hidden);
   }
+
+  $: selectedItemCount = getSelectedItems().length;
 
   function saveScreenshot() {
     renderQueue = getSelectedItems();
@@ -118,7 +121,7 @@
   >
     {#if isSelecting}
       <h6 class="floating-text">
-        {getSelectedItems().length} TLs selected
+        {selectedItemCount} TLs selected
       </h6>
       {#if selectOperation == saveScreenshot}
         <TextField
