@@ -159,10 +159,14 @@ def test_embed_tl_scroll(web):
     # Load ~9 translations
     seek(web, 0)
     amount_of_tls = 0
+    new_tls = 0
     for minutes in range(0, 41, 10):
         seek(web, minutes * 60 + 50)
-        assert has_been_new_tl(web, amount_of_tls, amount=20)
+        new_tls += has_been_new_tl(web, amount_of_tls, amount=30)
         amount_of_tls = get_amount_of_tls(web)
+
+    assert new_tls >= 3, "There were not new translations enough times"
+    assert amount_of_tls >= 4, "There were not enough translations caught"
 
     # Scroll to the top
     switch_to_embed_frame(web)
