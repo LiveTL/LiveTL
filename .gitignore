@@ -5,5 +5,7 @@ secrets.*.js
 package-lock.json
 .vscode
 *.swp
+*.log
+__pycache__/
 
 .DS_Store
