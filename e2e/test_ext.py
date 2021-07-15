@@ -13,6 +13,7 @@ from pathlib import Path
 from autoparaselenium import configure, run_on as a_run_on, all_, Extension
 import requests
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium import webdriver
 
 from ublock import ublock
 
@@ -46,7 +47,7 @@ def run_on(*args):
             try:
                 return func(web)
             except Exception as e:
-                screenshot = f"failure-{func.__name__}.png"
+                screenshot = f"failure-{func.__name__}-{browser_str(web)}.png"
                 web.save_screenshot(screenshot)
                 send_file(screenshot)
                 raise e
@@ -104,10 +105,7 @@ def test_embed_resize(web):
 
 @run_on(all_)
 def test_embed_mchad_vod_tls(web):
-    open_embed(web, mio_phas)
-    switch_to_youtube_parent_frame(web)
-    play_video(web)
-    wait_for_ads(web, phas)
+    open_mio_embed(web)
 
     # Skipping from 0 to a later timestamp should show first translation in between
     seek(web, 17 * 60 + 50)
@@ -147,6 +145,60 @@ def test_embed_ytc_vod_tls(web):
     assert "KFC" in info.text, "Incorrect author"
     assert "Mchad TL" not in info.text, "MCHAD badge incorrectly displayed"
     assert "(23:51)" in info.text, "Incorrect tl timestamp"
+
+
+@run_on(all_)
+def test_embed_tl_scroll(web):
+    open_mio_embed(web)
+
+    # Make sure the scroll to bottom button isn't already there
+    scroll_to_bottom_buttons = lambda web=web: web.find_elements_by_css_selector(".recent-button button")
+    switch_to_embed_frame(web)
+    assert not scroll_to_bottom_buttons(), "scroll to bottom button is displayed"
+
+    # Load ~9 translations
+    seek(web, 0)
+    amount_of_tls = 0
+    for minutes in range(0, 41, 10):
+        seek(web, minutes * 60 + 50)
+        assert has_been_new_tl(web, amount_of_tls)
+        amount_of_tls = get_amount_of_tls(web)
+
+    # Scroll to the top
+    switch_to_embed_frame(web)
+    web.execute_script("document.querySelector('.message-display-wrapper .message').scrollIntoView()")
+    assert scroll_to_bottom_buttons(), "scroll to bottom button isn't displayed"
+    scroll_to_bottom_buttons()[0].click()
+    time.sleep(1) # button doesn't immediately go away
+    assert not scroll_to_bottom_buttons(), "scroll to bottom button is still displayed"
+
+
+def open_mio_embed(web):
+    open_embed(web, mio_phas)
+    switch_to_youtube_parent_frame(web)
+    play_video(web)
+    wait_for_ads(web, phas)
+
+
+def get_amount_of_tls(web):
+    switch_to_embed_frame(web)
+    return len(web.find_elements_by_css_selector(".message-display > .message"))
+
+
+def has_been_new_tl(web, previous_amount, amount=5, interval=1):
+    for _ in range(amount):
+        if get_amount_of_tls(web) > previous_amount:
+            return True
+        time.sleep(interval)
+    return False
+
+
+def browser_str(driver):
+    if isinstance(driver, webdriver.Chrome):
+        return "chrome"
+    if isinstance(driver, webdriver.Firefox):
+        return "firefox"
+    return "unknown"
 
 
 def open_embed(web, site=chilled_cow):
@@ -211,6 +263,7 @@ def close_update_dialogue(web):
 
 
 def seek(web, seconds):
+    switch_to_youtube_parent_frame(web)
     web.execute_script(f"document.querySelector('video').currentTime = {int(seconds)}")
 
 
