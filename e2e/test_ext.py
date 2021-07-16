@@ -113,9 +113,9 @@ def test_embed_mchad_vod_tls(web):
 
     @retry
     def _():
-        tl, info = web.find_elements_by_css_selector(".message-display > .message > span")
+        tl, info = web.find_elements_by_css_selector(".message-display > .message > span")[:2]
 
-    tl, info = web.find_elements_by_css_selector(".message-display > .message > span")
+    tl, info = web.find_elements_by_css_selector(".message-display > .message > span")[:2]
     assert "Mio, this time we're veteran" in tl.text, "Incorrect tl"
     assert "MonMon TL" in info.text, "Incorrect author of tl"
     assert "Mchad TL" in info.text, "MCHAD badge not found"
@@ -138,9 +138,9 @@ def test_embed_ytc_vod_tls(web):
 
     @retry
     def _():
-        tl, info = web.find_elements_by_css_selector(".message-display > .message > span")
+        tl, info = web.find_elements_by_css_selector(".message-display > .message > span")[:2]
 
-    tl, info = web.find_elements_by_css_selector(".message-display > .message > span")
+    tl, info = web.find_elements_by_css_selector(".message-display > .message > span")[:2]
     assert "You sound so cool just now" in tl.text, "Incorrect tl"
     assert "KFC" in info.text, "Incorrect author"
     assert "Mchad TL" not in info.text, "MCHAD badge incorrectly displayed"
@@ -159,18 +159,22 @@ def test_embed_tl_scroll(web):
     # Load ~9 translations
     seek(web, 0)
     amount_of_tls = 0
+    new_tls = 0
     for minutes in range(0, 41, 10):
         seek(web, minutes * 60 + 50)
-        assert has_been_new_tl(web, amount_of_tls)
+        new_tls += has_been_new_tl(web, amount_of_tls, amount=30)
         amount_of_tls = get_amount_of_tls(web)
+
+    assert new_tls >= 3, "There were not new translations enough times"
+    assert amount_of_tls >= 4, "There were not enough translations caught"
 
     # Scroll to the top
     switch_to_embed_frame(web)
     web.execute_script("document.querySelector('.message-display-wrapper .message').scrollIntoView()")
-    assert scroll_to_bottom_buttons(), "scroll to bottom button isn't displayed"
+    assert retry_bool(scroll_to_bottom_buttons), "scroll to bottom button isn't displayed"
     scroll_to_bottom_buttons()[0].click()
     time.sleep(1) # button doesn't immediately go away
-    assert not scroll_to_bottom_buttons(), "scroll to bottom button is still displayed"
+    assert retry_bool(lambda: not scroll_to_bottom_buttons()), "scroll to bottom button is still displayed"
 
 
 def open_mio_embed(web):
@@ -228,6 +232,14 @@ def retry(cb, amount=30, interval=1):
             if i == amount - 1:
                 raise e
             time.sleep(interval)
+
+
+def retry_bool(cb, amount=30, interval=1):
+    for _ in range(amount):
+        if cb():
+            return True
+        time.sleep(interval)
+    return False
 
 
 def wait_for_ads(web, expected_part_of_title):
