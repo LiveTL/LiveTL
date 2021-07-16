@@ -191,11 +191,12 @@ def get_amount_of_tls(web):
 
 
 def has_been_new_tl(web, previous_amount, amount=5, interval=1):
-    for _ in range(amount):
-        if get_amount_of_tls(web) > previous_amount:
-            return True
-        time.sleep(interval)
-    return False
+    beg = time.time()
+    res = retry_bool(lambda: get_amount_of_tls(web) > previous_amount, amount, interval)
+    if not res:
+        assert time.time() - beg > amount * interval - 5, "it didn't retry, error with test"
+        print(time.time() - beg)
+    return res
 
 
 def browser_str(driver):
