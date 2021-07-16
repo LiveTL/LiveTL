@@ -60,7 +60,6 @@ def run_on(*args):
 def test_injection(web):
     web.get(chilled_cow)
     time.sleep(5)
-    assert False # to test failure
 
     web.switch_to.frame(web.find_elements_by_css_selector("#chatframe")[0])
 

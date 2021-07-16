@@ -1,7 +1,7 @@
 name: E2E Tests
 on: push
 jobs:
-  test:
+  e2e-test:
     runs-on: ubuntu-latest
     env:
       DISPLAY: ":0"
