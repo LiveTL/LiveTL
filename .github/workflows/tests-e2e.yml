@@ -32,4 +32,4 @@ jobs:
     - name: Build extension
       run: yarn e2e:build
     - name: Run tests
-      run: pytest --tests-per-worker 3 e2e
+      run: DISCORD_REPORT_HOOK=${{ secrets.DISCORD_WEBHOOK }} pytest --tests-per-worker 3 e2e

@@ -15,6 +15,7 @@ import requests
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium import webdriver
 
+from reporting import report_file
 from ublock import ublock
 
 dist = Path(__file__).parent / "../dist"
@@ -49,7 +50,7 @@ def run_on(*args):
             except Exception as e:
                 screenshot = f"failure-{func.__name__}-{browser_str(web)}.png"
                 web.save_screenshot(screenshot)
-                send_file(screenshot)
+                report_file(func.__name__, browser_str(web), screenshot)
                 raise e
         return inner
     return wrapper
@@ -59,6 +60,7 @@ def run_on(*args):
 def test_injection(web):
     web.get(chilled_cow)
     time.sleep(5)
+    assert False # to test failure
 
     web.switch_to.frame(web.find_elements_by_css_selector("#chatframe")[0])
 

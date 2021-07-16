@@ -2,7 +2,7 @@ import os
 
 import requests
 
-url = os.environ.get("DISCORD_REPORT_HOOK", "")
+url = os.environ.get("DISCORD_REPORT_HOOK", "").strip()
 
 def report_file(test_name, browser_name, filename):
     if not url:
