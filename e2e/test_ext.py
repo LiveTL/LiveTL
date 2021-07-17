@@ -15,6 +15,7 @@ import requests
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium import webdriver
 
+from reporting import report_file
 from ublock import ublock
 
 dist = Path(__file__).parent / "../dist"
@@ -49,7 +50,7 @@ def run_on(*args):
             except Exception as e:
                 screenshot = f"failure-{func.__name__}-{browser_str(web)}.png"
                 web.save_screenshot(screenshot)
-                send_file(screenshot)
+                report_file(func.__name__, browser_str(web), screenshot)
                 raise e
         return inner
     return wrapper
@@ -190,11 +191,12 @@ def get_amount_of_tls(web):
 
 
 def has_been_new_tl(web, previous_amount, amount=5, interval=1):
-    for _ in range(amount):
-        if get_amount_of_tls(web) > previous_amount:
-            return True
-        time.sleep(interval)
-    return False
+    beg = time.time()
+    res = retry_bool(lambda: get_amount_of_tls(web) > previous_amount, amount, interval)
+    if not res:
+        assert time.time() - beg > amount * interval - 5, "it didn't retry, error with test"
+        print(time.time() - beg)
+    return res
 
 
 def browser_str(driver):
