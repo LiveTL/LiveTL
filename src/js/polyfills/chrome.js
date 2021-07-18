@@ -60,19 +60,21 @@
     });
   }
 
+  function sendMessage(data, callback = null) { // send message to background polyfill
+    const randomMessageID = Date.now(); // generate some sort of id to identify the message
+    if (callback) {
+      polyfillStorage.awaitingCallbacks[randomMessageID] = callback; // store callback
+    }
+    sendToBackground(data, randomMessageID); // send message to bgscript, callback called on reply
+  }
+
   // chrome api polyfill injected in all windows and subframes
   window.chrome = {
     runtime: {
       id: 'livetl_android',
       getURL: path => `https://__local_android_asset_baseurl__/${path}`, // replacement for chrome-extension urls
       getManifest: () => MANIFEST_OBJECT, // can also do a request to an asset
-      sendMessage(data, callback = null) { // send message to background polyfill
-        const randomMessageID = Date.now(); // generate some sort of id to identify the message
-        if (callback) {
-          polyfillStorage.awaitingCallbacks[randomMessageID] = callback; // store callback
-        }
-        sendToBackground(data, randomMessageID); // send message to bgscript, callback called on reply
-      },
+      sendMessage,
       onMessage: {
         addListener: callback => { // only ever used in background script
           polyfillStorage.onMessageCallbacks.push(callback);
@@ -86,13 +88,13 @@
       connect() {
         // connect is done from the content script only
         const portID = Date.now(); // generate a random port id
-        window.chrome.runtime.sendMessage({
+        sendMessage({
           event: 'connectPort',
           portID
         }); // establish port
         const port = {
           postMessage: data => {
-            window.chrome.runtime.sendMessage({
+            sendMessage({
               event: 'postMessage',
               data,
               portID: portID
