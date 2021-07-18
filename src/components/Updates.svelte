@@ -23,7 +23,6 @@
     await lastVersion.loaded;
 
     unsubscribe = lastVersion.subscribe($lv => {
-      console.log(lastVersion.loaded, $lv);
       if ($lv != version) {
         active = true;
       }

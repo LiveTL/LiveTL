@@ -69,7 +69,7 @@
     return selectedItems.filter(d => !d.hidden);
   }
 
-  $: selectedItemCount = getSelectedItems().length;
+  $: selectedItems, selectedItemCount = getSelectedItems().length;
 
   function saveScreenshot() {
     renderQueue = getSelectedItems();
