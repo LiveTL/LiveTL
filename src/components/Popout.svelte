@@ -2,11 +2,11 @@
   import { afterUpdate, tick } from 'svelte';
   import { fade } from 'svelte/transition';
   import { Button, Icon, MaterialApp, TextField } from 'svelte-materialify/src';
-  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload  } from '@mdi/js';
+  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload, mdiFullscreen  } from '@mdi/js';
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
   import { TextDirection, paramsVideoTitle, paramsEmbedded } from '../js/constants.js';
-  import { faviconURL, textDirection, screenshotRenderWidth, videoTitle, enableExportButtons, updatePopupActive } from '../js/store.js';
+  import { faviconURL, textDirection, screenshotRenderWidth, videoTitle, enableExportButtons, updatePopupActive, enableFullscreenButton } from '../js/store.js';
   import MessageDisplay from './MessageDisplay.svelte';
   import ScreenshotExport from './ScreenshotExport.svelte';
   import Updates from './Updates.svelte';
@@ -68,7 +68,7 @@
     return selectedItems.filter(d => !d.hidden);
   }
 
-  $: selectedItemCount = getSelectedItems().length;
+  $: selectedItems, selectedItemCount = getSelectedItems().length;
 
   function saveScreenshot() {
     renderQueue = getSelectedItems();
@@ -99,6 +99,32 @@
   $: renderWidthInt = parseInt(renderWidth);
   $: if(screenshotRenderWidth) {
     screenshotRenderWidth.set(renderWidthInt);
+  }
+
+  
+  function toggleFullScreen() {
+    if (
+      (document.fullScreenElement && document.fullScreenElement !== null) ||
+      (!document.mozFullScreen && !document.webkitIsFullScreen)
+    ) {
+      if (document.documentElement.requestFullScreen) {
+        document.documentElement.requestFullScreen();
+      } else if (document.documentElement.mozRequestFullScreen) {
+        document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.webkitRequestFullScreen) {
+        document.documentElement.webkitRequestFullScreen(
+          Element.ALLOW_KEYBOARD_INPUT
+        );
+      }
+    } else {
+      if (document.cancelFullScreen) {
+        document.cancelFullScreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.webkitCancelFullScreen) {
+        document.webkitCancelFullScreen();
+      }
+    }
   }
 </script>
 
@@ -180,6 +206,11 @@
             }}
           >
             <Icon path={isSelecting ? mdiCheck : mdiDownload} />
+          </Button>
+        {/if}
+        {#if !settingsOpen && $enableFullscreenButton}
+          <Button fab size="small" on:click={toggleFullScreen}>
+            <Icon path={mdiFullscreen} />
           </Button>
         {/if}
         <Button
