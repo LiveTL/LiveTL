@@ -11,7 +11,8 @@
       videoId,
       autoplay: 1,
       playerVars: {
-        autoplay: 1
+        autoplay: 1,
+        fs: 0
       },
       events: {
         onStateChange() {
@@ -25,10 +26,7 @@
   });
 </script>
 
-<div
-  class="wrapper"
-  class:left-video={$videoSide == VideoSide.LEFT}
->
+<div class="wrapper" class:left-video={$videoSide == VideoSide.LEFT}>
   <div id="player" />
 </div>
 
