@@ -35,15 +35,6 @@
         "chat.bundle.js"
       ],
       "all_frames": true
-    },
-    {
-      "matches": [
-        "https://www.youtube.com/embed/**"
-      ],
-      "js": [
-        "fullscreen.bundle.js"
-      ],
-      "all_frames": true
     }
   ],
   "web_accessible_resources": [

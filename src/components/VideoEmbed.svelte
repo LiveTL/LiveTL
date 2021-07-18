@@ -4,7 +4,6 @@
   import { VideoSide } from '../js/constants.js';
 
   export let videoId;
-  let videoEmbedWrapper;
   YouTubeIframeLoader.load(YT => {
     window.player = new YT.Player('player', {
       height: '100%',
@@ -20,53 +19,15 @@
           if (data.author.includes('Marine Ch.')) {
             faviconURL.set('/img/blfavicon.ico');
           }
-        },
-        onReady() {
-          videoEmbedWrapper.querySelector('iframe').contentWindow.postMessage({
-            event: 'initFullscreenListener'
-          }, '*');
         }
       }
     });
-  });
-
-
-  function toggleFullScreen() {
-    if (
-      (document.fullScreenElement && document.fullScreenElement !== null) ||
-      (!document.mozFullScreen && !document.webkitIsFullScreen)
-    ) {
-      if (document.documentElement.requestFullScreen) {
-        document.documentElement.requestFullScreen();
-      } else if (document.documentElement.mozRequestFullScreen) {
-        document.documentElement.mozRequestFullScreen();
-      } else if (document.documentElement.webkitRequestFullScreen) {
-        document.documentElement.webkitRequestFullScreen(
-          Element.ALLOW_KEYBOARD_INPUT
-        );
-      }
-    } else {
-      if (document.cancelFullScreen) {
-        document.cancelFullScreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.webkitCancelFullScreen) {
-        document.webkitCancelFullScreen();
-      }
-    }
-  }
-
-  window.addEventListener('message', data => {
-    if (data.data.event == 'fullscreen') {
-      toggleFullScreen();
-    }
   });
 </script>
 
 <div
   class="wrapper"
   class:left-video={$videoSide == VideoSide.LEFT}
-  bind:this={videoEmbedWrapper}
 >
   <div id="player" />
 </div>
