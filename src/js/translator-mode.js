@@ -190,7 +190,6 @@ export function translatorMode(
   const caretPos = () => getCaretCharOffset(chatBox);
   const caretAtEnd = () => caretPos() == text().length;
   const text = () => chatBox.textContent;
-  // eslint-disable-next-line no-constant-condition
   const autoPrefixTag = () => doAutoPrefix.get() ? langTag() + nbsp : '';
   const updateRecommendations =
     compose(recommendations.set, macrosys.complete, text);
@@ -271,4 +270,4 @@ function getCaretCharOffset(element) {
   return caretOffset;
 }
 
-const langTag = () => `[${languageNameCode[language.get()].code}] `;
+const langTag = () => `[${languageNameCode[language.get()].code}]`;
