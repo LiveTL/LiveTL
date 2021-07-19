@@ -144,8 +144,10 @@ export function translatorMode(
 ) {
   const macrosys = macroSystem({ en: '[en]', peko: 'pekora', ero: 'erofi' });
   const invisible = '‍';
+  const nbsp = ' ';
   // eslint-disable-next-line no-unused-vars
   const invisiReg = new RegExp(invisible, 'g');
+  const nbspReg = new RegExp(nbsp, 'g');
   const oneRecommend = () => get(recommendations).length === 1;
   const isKey = key => e => e.key === key;
   const isTab = isKey('Tab');
@@ -160,9 +162,10 @@ export function translatorMode(
     ? macrosys.completeEnd(text, macrosys.getMacro(focussed()))
     : macrosys.replaceText(text);
 
-  const removeLastSpace = text => text.endsWith(' ')
-    ? text.substring(0, text.length - 1)
-    : text;
+  const removeLastSpace = text => text
+    .replace(invisiReg, '')
+    .replace(nbspReg, '')
+    .replace(/ +$/g, '');
 
   const setChatboxText = text => {
     const carPos = caretPos();
@@ -207,9 +210,10 @@ export function translatorMode(
   };
 
   const substituteInChatbox = () => {
+    dbg('PREVIOUS TEXT', textWithoutLastSpace());
     const newText = replaceText(textWithoutLastSpace()) + ' ';
     if (newText != text()) {
-      setTimeout(() => setChatboxText(newText));
+      setChatboxText(newText);
     }
   };
 
@@ -224,24 +228,26 @@ export function translatorMode(
   const onFocus = () => {
     if (!get(doTranslatorMode) || text() !== '') return;
     setTimeout(setAutoPrefix);
-  }
+  };
 
-  const processMutations = mutations => mutations
-    .filter(isCharData)
-    .forEach(onMutation);
-
-  const chatBoxObserver = new MutationObserver(processMutations);
+  const onInput = e => {
+    if (!get(doTranslatorMode)) return;
+    if (e.data === ' ') {
+      substituteInChatbox();
+    }
+    updateStores();
+  };
 
   const cleanUps = [
     () => chatBox.removeEventListener('keydown', onKeyDown),
     () => chatBox.removeEventListener('focus', onFocus),
-    () => chatBoxObserver.disconnect(),
+    () => chatBox.removeEventListener('input', onInput),
   ];
   if (chatBox.cleanUpTlMode) chatBox.cleanUpTlMode();
   chatBox.cleanUpTlMode = () => cleanUps.forEach(c => c());
   chatBox.addEventListener('keydown', onKeyDown);
   chatBox.addEventListener('focus', onFocus);
-  chatBoxObserver.observe(container, { subtree: true, characterData: true });
+  chatBox.addEventListener('input', onInput);
 }
 
 function setCaret(el, pos) {
