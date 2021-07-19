@@ -142,7 +142,9 @@ export function translatorMode(
   recommendations,
   focusRec,
 ) {
+  // initial macros will be cleared during sync
   const macrosys = macroSystem({ en: '[en]', peko: 'pekora', ero: 'erofi' });
+  // use nbsp as it won't break when adding space to the end
   const nbsp = ' ';
   // eslint-disable-next-line no-unused-vars
   const nbspReg = new RegExp(nbsp, 'g');
@@ -208,14 +210,6 @@ export function translatorMode(
     if (newText.trim() != text().trim()) {
       setChatboxText(newText);
     }
-  };
-
-  const onMutation = () => {
-    if (!get(doTranslatorMode)) return;
-    if (isSpace(e)) {
-      substituteInChatbox();
-    }
-    updateStores();
   };
 
   const onFocus = () => {
