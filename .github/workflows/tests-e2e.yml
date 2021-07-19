@@ -19,6 +19,8 @@ jobs:
         node-version: 16
     - name: Fix the broken install
       run: sudo apt -y --fix-broken install
+    - name: Install yarn
+      run: sudo npm i -g yarn
     - name: Set up Virtual Display for Chrome
       run: |
         sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
