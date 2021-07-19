@@ -2,7 +2,7 @@ name: E2E Tests
 on: push
 jobs:
   e2e-test:
-    runs-on: self-hosted
+    runs-on: grumpy
     env:
       DISPLAY: ":0"
     steps:
