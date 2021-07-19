@@ -24,7 +24,7 @@ jobs:
         wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
         sudo dpkg -i ./google-chrome-stable_current_amd64.deb
     - name: Install Dependencies
-      run: python3 -m pip install autoparaselenium>=0.1.7
+      run: python3 -m pip install -r requirements.txt
     - uses: c-hive/gha-yarn-cache@v1
     - name: Install modules
       run: |
@@ -32,4 +32,4 @@ jobs:
     - name: Build extension
       run: yarn e2e:build
     - name: Run tests
-      run: DISCORD_REPORT_HOOK=${{ secrets.DISCORD_WEBHOOK }} pytest --tests-per-worker 3 e2e
+      run: DISCORD_REPORT_HOOK=${{ secrets.DISCORD_WEBHOOK }} pytest --tests-per-worker 3 --reruns 3  e2e

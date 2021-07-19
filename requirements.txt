@@ -1,0 +1,2 @@
+autoparaselenium>=0.1.7
+pytest-rerunfailures>=10.1
