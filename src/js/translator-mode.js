@@ -143,10 +143,8 @@ export function translatorMode(
   focusRec,
 ) {
   const macrosys = macroSystem({ en: '[en]', peko: 'pekora', ero: 'erofi' });
-  const invisible = '‍';
   const nbsp = ' ';
   // eslint-disable-next-line no-unused-vars
-  const invisiReg = new RegExp(invisible, 'g');
   const nbspReg = new RegExp(nbsp, 'g');
   const oneRecommend = () => get(recommendations).length === 1;
   const isKey = key => e => e.key === key;
@@ -162,16 +160,13 @@ export function translatorMode(
     ? macrosys.completeEnd(text, macrosys.getMacro(focussed()))
     : macrosys.replaceText(text);
 
-  const removeLastSpace = text => text
-    .replace(invisiReg, '')
-    .replace(nbspReg, '')
-    .replace(/ +$/g, '');
+  const removeLastSpace = text => text.trimEnd();
 
   const setChatboxText = text => {
     const carPos = caretPos();
     const atEnd = caretAtEnd();
     if (text) container.setAttribute('has-text', '');
-    chatBox.textContent = text + invisible;
+    chatBox.textContent = text;
     setChatCaret(atEnd ? null : carPos);
     updateStores();
   };
@@ -182,15 +177,14 @@ export function translatorMode(
   };
 
   // eslint-disable-next-line no-unused-vars
-  const spaceIf = cond => cond ? ' ' : '';
+  const spaceIf = cond => cond ? nbsp : '';
   const setChatCaret =
     pos => setCaret(chatBox, pos == null ? text().length : pos);
   const caretPos = () => getCaretCharOffset(chatBox);
   const caretAtEnd = () => caretPos() == text().length;
   const text = () => chatBox.textContent;
-  // TODO
   // eslint-disable-next-line no-constant-condition
-  const autoPrefixTag = () => doAutoPrefix.get() ? langTag() + invisible : '';
+  const autoPrefixTag = () => doAutoPrefix.get() ? langTag() + nbsp : '';
   const textWithoutLastSpace = compose(removeLastSpace, text);
   const updateRecommendations =
     compose(recommendations.set, macrosys.complete, text);
@@ -210,9 +204,8 @@ export function translatorMode(
   };
 
   const substituteInChatbox = () => {
-    dbg('PREVIOUS TEXT', textWithoutLastSpace());
-    const newText = replaceText(textWithoutLastSpace()) + ' ';
-    if (newText != text()) {
+    const newText = replaceText(textWithoutLastSpace()) + nbsp;
+    if (newText.trim() != text().trim()) {
       setChatboxText(newText);
     }
   };
