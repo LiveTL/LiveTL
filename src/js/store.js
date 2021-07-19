@@ -64,7 +64,14 @@ export const
   screenshotRenderWidth = SS('screenshotRenderWidth', 500),
   welcomeDismissed = SS('welcomeDismissed', false),
   macros = SS('macros', []),
-  doAutoPrefix = SS('doAutoPrefix', false);
+  doAutoPrefix = SS('doAutoPrefix', false),
+  enableMchadTLs = SS('enableMchadTLs', true),
+  enableAPITLs = SS('enableAPITLs', true),
+  enableExportButtons = SS('enableExportButtons', true),
+  enableFullscreenButton = SS('enableFullscreenButton', true);
 
 // Non-persistant stores
 export const updatePopupActive = writable(false);
+export const videoTitle = writable('LiveTL');
+export const timestamp = writable(0);
+export const faviconURL = writable('/48x48.png');

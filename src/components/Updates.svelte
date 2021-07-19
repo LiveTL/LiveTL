@@ -20,6 +20,8 @@
   onMount(async () => {
     Changelogs = (await import(`../changelogs/${version}.svelte`)).default;
 
+    await lastVersion.loaded;
+
     unsubscribe = lastVersion.subscribe($lv => {
       if ($lv != version) {
         active = true;

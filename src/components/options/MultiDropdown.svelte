@@ -1,5 +1,4 @@
 <script>
-  import { onMount } from 'svelte';
   import { mdiClose } from '@mdi/js';
   import {
     Button,
@@ -41,7 +40,7 @@
 
   function convertLookup(lookup) {
     return [...lookup]
-      .filter(([key, value]) => key && getBool(key))
+      .filter(([key]) => key && getBool(key))
       .map(([key, value]) => ({ key, item: getDisplayName(key, value) }));
   }
 

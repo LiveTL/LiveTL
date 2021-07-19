@@ -10,24 +10,24 @@
 
   const badges = [
     {
-      name: "Leave a review",
-      src: "https://img.shields.io/badge/Leave a review-5%20stars-blue?style=flat",
+      name: 'Leave a review',
+      src: 'https://img.shields.io/badge/Leave a review-5%20stars-blue?style=flat',
       href: reviewLink
     },
     {
-      name: "Star on GitHub",
-      src: "https://img.shields.io/github/stars/LiveTL/LiveTL?style=flat&logo=github&label=Star on GitHub",
-      href: "https://github.com/LiveTL/LiveTL/"
+      name: 'Star on GitHub',
+      src: 'https://img.shields.io/github/stars/LiveTL/LiveTL?style=flat&logo=github&label=Star on GitHub',
+      href: 'https://github.com/LiveTL/LiveTL/'
     },
     {
-      name: "Donators and supporters",
-      src: "https://img.shields.io/opencollective/all/livetl?color=blue&label=Donators%20and%20supporters&logo=dollar&style=flat",
-      href: "https://opencollective.com/livetl"
+      name: 'Donators and supporters',
+      src: 'https://img.shields.io/opencollective/all/livetl?color=blue&label=Donators%20and%20supporters&logo=dollar&style=flat',
+      href: 'https://opencollective.com/livetl'
     },
     {
-      name: "Discord",
-      src: "https://img.shields.io/discord/780938154437640232.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2&style=flat",
-      href: "https://discord.gg/uJrV3tmthg"
+      name: 'Discord',
+      src: 'https://img.shields.io/discord/780938154437640232.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2&style=flat',
+      href: 'https://discord.gg/uJrV3tmthg'
     }
   ];
 

@@ -12,7 +12,9 @@
     speechVolume,
     textDirection,
     enableCaptionTimeout,
-    chatSplit
+    chatSplit,
+    enableExportButtons,
+    enableFullscreenButton
   } from '../../js/store.js';
   import { ChatSplit, TextDirection, VideoSide } from '../../js/constants.js';
   import CheckOption from '../options/Toggle.svelte';
@@ -80,6 +82,14 @@
 {#if $doSpeechSynth}
   <SliderOption name="Speech volume" store={speechVolume} min={0} max={1} />
 {/if}
+<CheckOption
+  name="Show screenshot and download buttons"
+  store={enableExportButtons}
+/>
+<CheckOption
+  name="Show fullscreen button"
+  store={enableFullscreenButton}
+/>
 <CheckOption name="Translator mode" store={doTranslatorMode} />
 {#if $doTranslatorMode}
   <TranslatorMode />

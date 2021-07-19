@@ -38,7 +38,6 @@ var options = {
     translatormode: path.join(__dirname, 'src', 'js', 'pages', 'translatormode.js'),
     injector: path.join(__dirname, 'src', 'js', 'content_scripts', 'injector.js'),
     interceptor: path.join(__dirname, 'src', 'js', 'content_scripts', 'interceptor.js'),
-    fullscreen: path.join(__dirname, 'src', 'js', 'content_scripts', 'fullscreen.js'),
     chat: path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat.js'),
   },
   output: {

@@ -14,7 +14,7 @@
     showCaption,
     chatSplit
   } from '../js/store.js';
-  import { VideoSide, ChatSplit } from '../js/constants.js';
+  import { videoId, VideoSide, ChatSplit } from '../js/constants.js';
   import ChatEmbed from './ChatEmbed.svelte';
   import Popout from './Popout.svelte';
   import Captions from './Captions.svelte';
@@ -22,7 +22,6 @@
   let isResizing = false;
   let chatElem, vidElem, ltlElem;
   const params = new URLSearchParams(window.location.search);
-  const videoId = params.get('video');
   const continuation = params.get('continuation');
   const isReplay = params.get('isReplay');
   const isEmbedded = params.get('embedded');
@@ -84,37 +83,6 @@
     });
   };
   $: setTimeout(() => changeSide($videoSide, $chatSplit), 0);
-
-  function toggleFullScreen() {
-    if (
-      (document.fullScreenElement && document.fullScreenElement !== null) ||
-      (!document.mozFullScreen && !document.webkitIsFullScreen)
-    ) {
-      if (document.documentElement.requestFullScreen) {
-        document.documentElement.requestFullScreen();
-      } else if (document.documentElement.mozRequestFullScreen) {
-        document.documentElement.mozRequestFullScreen();
-      } else if (document.documentElement.webkitRequestFullScreen) {
-        document.documentElement.webkitRequestFullScreen(
-          Element.ALLOW_KEYBOARD_INPUT
-        );
-      }
-    } else {
-      if (document.cancelFullScreen) {
-        document.cancelFullScreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.webkitCancelFullScreen) {
-        document.webkitCancelFullScreen();
-      }
-    }
-  }
-
-  window.addEventListener('message', data => {
-    if (data.data.event == 'fullscreen') {
-      toggleFullScreen();
-    }
-  });
 </script>
 
 <div
@@ -185,7 +153,7 @@
             </Wrapper>
           </div>
           <div class="tile autoscale" bind:this={ltlElem}>
-            <Popout {isResizing} />
+            <Popout {isResizing} {videoId} />
           </div>
         </div>
       </div>

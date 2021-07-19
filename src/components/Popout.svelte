@@ -2,28 +2,30 @@
   import { afterUpdate, tick } from 'svelte';
   import { fade } from 'svelte/transition';
   import { Button, Icon, MaterialApp, TextField } from 'svelte-materialify/src';
-  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline  } from '@mdi/js';
+  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload, mdiFullscreen  } from '@mdi/js';
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
   import { TextDirection } from '../js/constants.js';
-  import { textDirection, screenshotRenderWidth } from '../js/store.js';
+  import { faviconURL, textDirection, screenshotRenderWidth, videoTitle, enableExportButtons, updatePopupActive, enableFullscreenButton } from '../js/store.js';
   import MessageDisplay from './MessageDisplay.svelte';
   import ScreenshotExport from './ScreenshotExport.svelte';
   import Updates from './Updates.svelte';
-  import { updatePopupActive } from '../js/store.js';
+  import { saveAs } from 'file-saver';
   let settingsOpen = false;
   export let isResizing = false;
   const params = new URLSearchParams(window.location.search);
-  document.title = params.get('title') || 'LiveTL Popout';
+  $videoTitle = params.get('title') || $videoTitle;
+  $: document.title = $videoTitle || 'LiveTL Popout';
   export let isStandalone = params.get('embedded') ? true : false;
 
   let wrapper;
   let messageDisplay;
   let isAtRecent = true;
 
-  const updateWrapper = () => [wrapper.isAtBottom(), wrapper.isAtTop()];
+  const updateWrapper = () => [wrapper.isAtBottom(), wrapper.isAtTop(), setTimeout(checkAtRecent)];
 
   function checkAtRecent() {
+    if (wrapper == null) return;
     isAtRecent =
       ($textDirection === TextDirection.BOTTOM && wrapper.isAtBottom()) ||
       ($textDirection === TextDirection.TOP && wrapper.isAtTop());
@@ -47,35 +49,89 @@
 
   let renderQueue;
 
-  let screenshotting = false;
+  let isSelecting = false;
 
-  function toggleScreenshot() {
-    screenshotting = !screenshotting;
+  function toggleSelecting() {
+    isSelecting = !isSelecting;
   }
 
   let selectedItems = [];
   let allItems = [];
+  let selectedItemCount = 0;
 
-  function selectAllScreenshot() {
+  function selectAllItems() {
     selectedItems = [...allItems];
   }
 
+  let selectOperation = () => {};
+
+  function getSelectedItems() {
+    return selectedItems.filter(d => !d.hidden);
+  }
+
+  $: selectedItems, selectedItemCount = getSelectedItems().length;
+
   function saveScreenshot() {
-    renderQueue = selectedItems;
-    toggleScreenshot();
+    renderQueue = getSelectedItems();
+    toggleSelecting();
+    selectOperation = () => {};
+  }
+
+  function saveDownload() {
+    const toSave = getSelectedItems().map(
+      d => `${d.author} (${d.timestamp}): ${d.text}`
+    );
+    if (toSave.length) {
+      const blob = new Blob([
+        toSave.join('\n')], {
+        type: 'text/plain;charset=utf-8'
+      }
+      );
+      saveAs(blob, textFilename);
+    }
+    toggleSelecting();
+    selectOperation = () => {};
   }
 
   let renderWidth = '500';
+  let textFilename = 'LiveTL_Stream_Log.txt';
+  $: textFilename = `${$videoTitle}.txt`;
   let renderWidthInt = null;
   $: renderWidthInt = parseInt(renderWidth);
   $: if(screenshotRenderWidth) {
-    $screenshotRenderWidth = renderWidthInt;
+    screenshotRenderWidth.set(renderWidthInt);
+  }
+
+  
+  function toggleFullScreen() {
+    if (
+      (document.fullScreenElement && document.fullScreenElement !== null) ||
+      (!document.mozFullScreen && !document.webkitIsFullScreen)
+    ) {
+      if (document.documentElement.requestFullScreen) {
+        document.documentElement.requestFullScreen();
+      } else if (document.documentElement.mozRequestFullScreen) {
+        document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.webkitRequestFullScreen) {
+        document.documentElement.webkitRequestFullScreen(
+          Element.ALLOW_KEYBOARD_INPUT
+        );
+      }
+    } else {
+      if (document.cancelFullScreen) {
+        document.cancelFullScreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.webkitCancelFullScreen) {
+        document.webkitCancelFullScreen();
+      }
+    }
   }
 </script>
 
-<svelte:window on:resize={checkAtRecent} />
+<svelte:window on:resize={updateWrapper} />
 <svelte:head>
-  <link rel="shortcut icon" href="48x48.png" type="image/png" />
+  <link rel="shortcut icon" href={$faviconURL} type="image/png" />
 </svelte:head>
 
 <MaterialApp theme="dark">
@@ -85,52 +141,79 @@
 
   <Updates bind:active={$updatePopupActive} />
   <div
-    class="settingsButton {$textDirection === TextDirection.TOP
-      ? 'bottom'
-      : 'top'}Float"
-    style="display: {isResizing
-      ? 'none'
-      : 'flex'}; flex-direction: row; align-items: center; flex-wrap: wrap;"
+    class="settings-button d-flex"
+    class:bottom-float={$textDirection === TextDirection.TOP}
+    class:d-none={isResizing}
   >
-    {#if screenshotting}
-      <h6 class="floatingText">
-        {selectedItems.length} TLs selected
+    {#if isSelecting}
+      <h6 class="floating-text">
+        {selectedItemCount} TLs selected
       </h6>
-      <TextField
-        dense
-        bind:value={renderWidth}
-        filled
-        rules={[item => (isNaN(parseInt(item)) ? 'Invalid width' : true)]}
-        >Width (px)</TextField
-      >
+      {#if selectOperation == saveScreenshot}
+        <TextField
+          dense
+          bind:value={renderWidth}
+          filled
+          rules={[item => (isNaN(parseInt(item)) ? 'Invalid width' : true)]}
+          class="width-input">Width (px)</TextField
+        >
+      {/if}
+      {#if selectOperation == saveDownload}
+        <TextField
+          dense
+          bind:value={textFilename}
+          filled
+          rules={[item => (!item ? 'Invalid filename' : true)]}
+          class="filename-input">Filename</TextField
+        >
+      {/if}
     {/if}
-    <div style="display: flex;">
-      {#if screenshotting}
+    <div class="d-flex">
+      {#if isSelecting}
         <div class="blue-text">
-          <Button fab size="small" on:click={selectAllScreenshot}>
+          <Button fab size="small" on:click={selectAllItems}>
             <Icon path={mdiExpandAllOutline} />
           </Button>
         </div>
-      {/if}
-      {#if !settingsOpen}
-        <div class={screenshotting ? 'green-text' : ''}>
-          <Button
-            fab
-            size="small"
-            on:click={screenshotting ? saveScreenshot : toggleScreenshot}
-          >
-            <Icon path={screenshotting ? mdiCheck : mdiCamera} />
+        <div class="green-text">
+          <Button fab size="small" on:click={selectOperation}>
+            <Icon path={mdiCheck} />
           </Button>
         </div>
-      {/if}
-      {#if screenshotting}
-        <div class={screenshotting ? 'red-text' : ''}>
-          <Button fab size="small" on:click={toggleScreenshot}>
+        <div class:red-text={isSelecting}>
+          <Button fab size="small" on:click={toggleSelecting}>
             <Icon path={mdiClose} />
           </Button>
         </div>
       {/if}
-      {#if !screenshotting}
+      {#if !isSelecting}
+        {#if !settingsOpen && $enableExportButtons}
+          <Button
+            fab
+            size="small"
+            on:click={() => {
+              toggleSelecting();
+              selectOperation = saveScreenshot;
+            }}
+          >
+            <Icon path={isSelecting ? mdiCheck : mdiCamera} />
+          </Button>
+          <Button
+            fab
+            size="small"
+            on:click={() => {
+              toggleSelecting();
+              selectOperation = saveDownload;
+            }}
+          >
+            <Icon path={isSelecting ? mdiCheck : mdiDownload} />
+          </Button>
+        {/if}
+        {#if !settingsOpen && $enableFullscreenButton}
+          <Button fab size="small" on:click={toggleFullScreen}>
+            <Icon path={mdiFullscreen} />
+          </Button>
+        {/if}
         <Button
           fab
           size="small"
@@ -141,16 +224,16 @@
       {/if}
     </div>
   </div>
-  <Wrapper {isResizing} on:scroll={checkAtRecent} bind:this={wrapper}>
-    <div style="display: {settingsOpen ? 'block' : 'none'};">
+  <Wrapper {isResizing} on:scroll={updateWrapper} bind:this={wrapper}>
+    <div class:d-none={!settingsOpen}>
       <Options {isStandalone} {isResizing} bind:active={settingsOpen} />
     </div>
-    <div style="display: {settingsOpen ? 'none' : 'block'};">
+    <div class:d-none={settingsOpen}>
       <MessageDisplay
         direction={$textDirection}
         bind:this={messageDisplay}
         on:afterUpdate={onMessageDisplayAfterUpdate}
-        bind:screenshotting
+        bind:isSelecting
         bind:selectedItems
         bind:items={allItems}
       />
@@ -159,13 +242,11 @@
   {#if !(isResizing || settingsOpen)}
     {#if !isAtRecent}
       <div
-        class="recentButton {$textDirection === TextDirection.TOP
-          ? 'top'
-          : 'bottom'}Float"
-        style="display: 'unset';"
+        class="recent-button"
+        class:bottom-float={$textDirection !== TextDirection.TOP}
         transition:fade|local={{ duration: 150 }}
       >
-      <!-- scroll and reload isbottom and istop functions on click -->
+        <!-- scroll and reload isbottom and istop functions on click -->
         <Button
           fab
           size="small"
@@ -186,25 +267,28 @@
 </MaterialApp>
 
 <style>
-  .bottomFloat {
-    bottom: 0px;
-  }
-  .topFloat {
-    top: 0px;
-  }
-  .settingsButton {
+  .settings-button {
     position: absolute;
+    top: 0px;
     right: 0px;
     padding: 5px;
     z-index: 100;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
   }
-  .settingsButton :global(.s-input) {
+  .settings-button :global(.s-input) {
     display: inline-flex;
     background-color: var(--theme-surface);
     border-radius: 5px;
+  }
+  .settings-button :global(.width-input) {
     width: 7em;
   }
-  .floatingText {
+  .settings-button :global(.filename-input) {
+    width: 15em;
+  }
+  .floating-text {
     display: inline;
     margin-right: 5px;
     vertical-align: text-bottom;
@@ -212,12 +296,18 @@
     border-radius: 5px;
     padding: 5px;
   }
-  .recentButton {
+  .recent-button {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
     padding: 5px;
     z-index: 100;
+    top: 0px;
+    display: unset;
+  }
+  .bottom-float {
+    bottom: 0px;
+    top: unset;
   }
   :global(body) {
     overflow: hidden;
