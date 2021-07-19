@@ -46,7 +46,7 @@ def run_on(*args):
         @wraps(func)
         def inner(web):
             try:
-                return func(web)
+                return retry(lambda: func(web), amount=3)
             except Exception as e:
                 screenshot = f"failure-{func.__name__}-{browser_str(web)}.png"
                 web.save_screenshot(screenshot)
