@@ -3,6 +3,7 @@
   import { Tabs, Tab, TabContent, MaterialApp } from 'svelte-materialify/src';
   import UISettings from './settings/UISettings.svelte';
   import FilterSettings from './settings/FilterSettings.svelte';
+  import TranslatorMode from './settings/TranslatorMode.svelte';
   import About from './About.svelte';
 
   export let isStandalone = false;
@@ -11,6 +12,7 @@
   const settings = [
     { name: 'Interface', component: UISettings },
     { name: 'Filters', component: FilterSettings },
+    { name: 'Chat', component: TranslatorMode },
     { name: 'About', component: About },
   ];
 
