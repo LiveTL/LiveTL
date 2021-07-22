@@ -13,7 +13,8 @@
     textDirection,
     enableCaptionTimeout,
     chatSplit,
-    enableExportButtons
+    enableExportButtons,
+    enableFullscreenButton
   } from '../../js/store.js';
   import { ChatSplit, TextDirection, VideoSide } from '../../js/constants.js';
   import CheckOption from '../options/Toggle.svelte';
@@ -84,6 +85,10 @@
 <CheckOption
   name="Show screenshot and download buttons"
   store={enableExportButtons}
+/>
+<CheckOption
+  name="Show fullscreen button"
+  store={enableFullscreenButton}
 />
 <!-- <CheckOption name="Translator mode" store={doTranslatorMode} />
 {#if $doTranslatorMode}

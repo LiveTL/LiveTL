@@ -67,7 +67,8 @@ export const
   doAutoPrefix = SS('doAutoPrefix', false),
   enableMchadTLs = SS('enableMchadTLs', true),
   enableAPITLs = SS('enableAPITLs', true),
-  enableExportButtons = SS('enableExportButtons', true);
+  enableExportButtons = SS('enableExportButtons', true),
+  enableFullscreenButton = SS('enableFullscreenButton', true);
 
 // Non-persistant stores
 export const updatePopupActive = writable(false);

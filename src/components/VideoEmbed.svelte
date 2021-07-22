@@ -11,7 +11,8 @@
       videoId,
       autoplay: 1,
       playerVars: {
-        autoplay: 1
+        autoplay: 1,
+        fs: 0
       },
       events: {
         onStateChange() {

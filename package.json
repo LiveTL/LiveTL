@@ -1,6 +1,6 @@
 {
   "name": "LiveTL",
-  "version": "6.4.3",
+  "version": "6.4.4",
   "description": "Get live translations for YouTube streams, crowdsourced from multilingual viewers!",
   "scripts": {
     "build": "node utils/build.js",
@@ -11,6 +11,9 @@
     "type:check": "tsc -p jsconfig.json",
     "test": "sed -i 's/import noUi/import * as noUi/g' node_modules/svelte-materialify/src/components/Slider/Slider.svelte && jest src",
     "test:watch": "yarn test --watch",
+    "e2e:build": "yarn build production && yarn package && cp dist/LiveTL-Firefox.zip dist/LiveTL-Firefox.xpi",
+    "e2e:test": "pytest --tests-per-worker auto e2e",
+    "e2e": "yarn e2e:build && yarn e2e:test",
     "format": "eslint --fix ."
   },
   "devDependencies": {
@@ -27,6 +30,7 @@
     "eslint": "^7.22.0",
     "eslint-plugin-svelte3": "^3.1.2",
     "file-loader": "6.2.0",
+    "filemanager-webpack-plugin": "^6.1.4",
     "fs-extra": "7.0.1",
     "glob-parent": "^6.0.0",
     "html-loader": "2.1.2",
@@ -47,6 +51,7 @@
     "vue-loader": "^15.9.7",
     "vue-template-compiler": "^2.6.12",
     "webpack": "^5.39.1",
+    "webpack-concat-files-plugin": "^0.5.2",
     "webpack-dev-server": "3.11.2",
     "ws": "^7.5.0",
     "xvfb": "^0.4.0"

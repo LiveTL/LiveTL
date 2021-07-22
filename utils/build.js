@@ -1,5 +1,5 @@
-const mode = process.argv.indexOf('production') != -1 ? 'production' : 'development';
-process.env.NODE_ENV = process.env.NODE_ENV || mode;
+// const mode = (process.argv.indexOf('production') || process.argv.indexOf('android')) != -1 ? 'production' : 'development';
+// process.env.NODE_ENV = process.env.NODE_ENV || mode;
 
 var webpack = require('webpack'),
   config = require('../webpack.config');
@@ -12,11 +12,12 @@ webpack(
   config,
   err => {
     if (err) throw err;
-    replaceVersion();
+    // replaceVersion();
     addChromeManifest();
   }
 );
 
+// eslint-disable-next-line no-unused-vars
 function replaceVersion() {
   try {
     const versionArg = process.argv.filter(arg => arg.startsWith('--version'))[0];

@@ -1,3 +1,5 @@
+const isAndroid = false;
+// DO NOT EDIT THE ABOVE LINE, it will be updated by webpack.
 export const storageVersion = 'v0-alpha';
 
 /** @enum {String} */
@@ -32,7 +34,7 @@ export const BROWSER = (() => {
   if (/Firefox/.exec(navigator.userAgent)) {
     return Browser.FIREFOX;
   }
-  if (window.isAndroid || window.chrome == null) {
+  if (isAndroid || window.chrome == null) {
     return Browser.ANDROID;
   }
   if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
@@ -75,7 +77,7 @@ function createLangSelectionName(lang) {
 languages.forEach(i => languageConversionTable[createLangSelectionName(i)] = i);
 languages.forEach(lang => languageNameCode[lang.lang] = lang);
 
-export const MCHAD = 'http://157.230.241.238';
+export const MCHAD = 'https://repo.mchatx.org';
 
 const params = new URLSearchParams(window.location.search);
 export const paramsVideoId = params.get('video');
