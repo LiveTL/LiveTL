@@ -189,7 +189,7 @@ var options = {
         },
         {
           from: 'src/manifest.json',
-          transform: function (content, path) {
+          transform: (content, path) => {
             // generates the manifest file using the package.json informations
             return Buffer.from(manifest);
           }

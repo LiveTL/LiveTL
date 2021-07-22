@@ -135,7 +135,7 @@
 
   window.addEventListener('message', event => { // on post message receive
     try {
-      const data = event.data; // parse json
+      const { data } = event; // parse json
       if (data.type == 'sendToForeground') {
         // {
         //   'type': 'sendToForeground',
@@ -158,7 +158,7 @@
           try {
             polyfillStorage.awaitingCallbacks[data.randomMessageID](data.data);
           } catch (error) {
-            console.debug('Error while running callback in awaiting response receiver', error);
+            console.error('Error while running callback in awaiting response receiver', error);
           }
           delete polyfillStorage.awaitingCallbacks[data.randomMessageID];
           return;
@@ -171,7 +171,7 @@
               try {
                 callback(data.data.data);
               } catch (error) {
-                console.debug('Error while running callback in portOnMessage receiver', error);
+                console.error('Error while running callback in portOnMessage receiver', error);
               }
             });
           } else {
@@ -232,18 +232,18 @@
             try {
               callback(port);
             } catch (error) {
-              console.debug('Error in callback', error);
+              console.error('Error in callback', error);
             }
           });
           return;
         } else if (data.data.event == 'postMessage') {
           // received a postMessage sent through a port.
-          (polyfillStorage.portOnMessageCallbacks[data.data.portID] || []).forEach(
+          polyfillStorage.portOnMessageCallbacks[data.data.portID]?.forEach(
             callback => {
               try {
                 callback(data.data.data);
               } catch (error) {
-                console.debug('Error while running callback in port postMessage receiver', error);
+                console.error('Error while running callback in port postMessage receiver', error);
               }
             }
           ); // pass the data to all listeners of this port
@@ -262,7 +262,7 @@
         });
       }
     } catch (e) {
-      console.debug(e);
+      console.debug('Unknown error while handling postmessage:', e);
     }
   });
 }) ();

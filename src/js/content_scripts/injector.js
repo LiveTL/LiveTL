@@ -95,13 +95,8 @@ const makeButton = (text, callback, color='rgb(0, 153, 255)', icon='') => {
 
 const constructParams = () => {
   const params = new URLSearchParams(window.location.search);
-  params.set(
-    'video',
-    (
-      params.get('v') ||
-      (new URLSearchParams(window.parent.location.search).get('v'))
-    )
-  );
+  const v = params.get('v') || (new URLSearchParams(window.parent.location.search).get('v'));
+  params.set('video', v);
   if (window.location.pathname.includes('live_chat_replay')) {
     params.set('isReplay', true);
   }
