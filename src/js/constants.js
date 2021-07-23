@@ -1,3 +1,5 @@
+const isAndroid = false;
+// DO NOT EDIT THE ABOVE LINE, it will be updated by webpack.
 export const storageVersion = 'v0-alpha';
 
 /** @enum {String} */
@@ -32,7 +34,7 @@ export const BROWSER = (() => {
   if (/Firefox/.exec(navigator.userAgent)) {
     return Browser.FIREFOX;
   }
-  if (window.isAndroid || window.chrome == null) {
+  if (isAndroid || window.chrome == null) {
     return Browser.ANDROID;
   }
   if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
@@ -77,7 +79,13 @@ languages.forEach(lang => languageNameCode[lang.lang] = lang);
 
 export const MCHAD = 'https://repo.mchatx.org';
 
-const params = new URLSearchParams(window.location.search ?? '');
-
-export const videoId = params.get('video');
-export const isLive = !params.get('isReplay');
+const params = new URLSearchParams(window.location.search);
+export const paramsVideoId = params.get('video');
+export const paramsPopout = params.get('popout');
+export const paramsTabId = params.get('tabid');
+export const paramsFrameId = params.get('frameid');
+export const paramsVideoTitle = params.get('title');
+export const paramsEmbedded = params.get('embedded');
+export const paramsContinuation = params.get('continuation');
+export const paramsIsReplay = params.get('isReplay');
+export const paramsEmbedDomain = params.get('embed_domain');

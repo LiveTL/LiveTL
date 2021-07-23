@@ -5,10 +5,11 @@
   export let isReplay;
   let iframe;
   let src;
+  const extensionId = chrome.runtime.id;
   if (isReplay) {
-    src = `https://www.youtube.com/live_chat_replay?continuation=${continuation}`;
+    src = `https://www.youtube.com/live_chat_replay?continuation=${continuation}&embed_domain=${extensionId}`;
   } else if (videoId) {
-    src = `https://www.youtube.com/live_chat?v=${videoId}`;
+    src = `https://www.youtube.com/live_chat?v=${videoId}&embed_domain=${extensionId}`;
   }
   window.addEventListener('message', packet => {
     try {

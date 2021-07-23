@@ -14,24 +14,27 @@
     showCaption,
     chatSplit
   } from '../js/store.js';
-  import { videoId, VideoSide, ChatSplit } from '../js/constants.js';
+  import {
+    paramsVideoId,
+    VideoSide,
+    ChatSplit,
+    paramsContinuation,
+    paramsIsReplay,
+    paramsEmbedded
+  } from '../js/constants.js';
   import ChatEmbed from './ChatEmbed.svelte';
   import Popout from './Popout.svelte';
   import Captions from './Captions.svelte';
   document.title = 'LiveTL';
   let isResizing = false;
   let chatElem, vidElem, ltlElem;
-  const params = new URLSearchParams(window.location.search);
-  const continuation = params.get('continuation');
-  const isReplay = params.get('isReplay');
-  const isEmbedded = params.get('embedded');
   const resizable = (selector, info) => {
     j(typeof selector == 'string' ? document.querySelector(selector) : selector).resizable(info);
   };
   const convertPxAndPercent = () => {
     [
       [chatElem, $chatSplit == ChatSplit.VERTICAL ? 'width' : 'height', chatSize],
-      [isEmbedded ? null : vidElem, $videoSide == VideoSide.TOP ? 'height' : 'width', videoPanelSize]
+      [paramsEmbedded ? null : vidElem, $videoSide == VideoSide.TOP ? 'height' : 'width', videoPanelSize]
     ].forEach(item => {
       const [elem, prop, store] = item;
       if (!elem) return;
@@ -90,10 +93,10 @@
   margin: 20px 0px 0px 20px;
   position: relative;
   width: 100vw;
-  height: 100vh;"
+  height: calc(100% - 40px);"
 >
   <MaterialApp theme="dark">
-    {#if !isEmbedded && $showCaption}
+    {#if !paramsEmbedded && $showCaption}
       <Captions />
     {/if}
     <div
@@ -102,7 +105,7 @@
         {$videoSide == VideoSide.TOP ? 'horizontal' : 'vertical'} 
         {$videoSide == VideoSide.RIGHT ? 'reversed' : ''}"
     >
-      {#if !isEmbedded}
+      {#if !paramsEmbedded}
         <div
           class="tile resizable"
           style="{($videoSide == VideoSide.TOP ? 'height' : `width`) +
@@ -115,7 +118,7 @@
           bind:this={vidElem}
         >
           <Wrapper {isResizing}>
-            <VideoEmbed {videoId} />
+            <VideoEmbed videoId={paramsVideoId} />
           </Wrapper>
         </div>
       {/if}
@@ -149,11 +152,15 @@
                 ? 'padding-right: 10px;'
                 : 'padding-bottom: 10px;'}
             >
-              <ChatEmbed {videoId} {continuation} {isReplay} />
+              <ChatEmbed
+                videoId={paramsVideoId}
+                continuation={paramsContinuation}
+                isReplay={paramsIsReplay}
+              />
             </Wrapper>
           </div>
           <div class="tile autoscale" bind:this={ltlElem}>
-            <Popout {isResizing} {videoId} />
+            <Popout {isResizing} />
           </div>
         </div>
       </div>
