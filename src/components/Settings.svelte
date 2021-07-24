@@ -61,7 +61,7 @@
     style="display: flex; align-items: center; justify-content: center;"
     bind:this={wrapper}
   >
-    <div style="max-width: calc(min(500px, 100%)); width: 100%;">
+    <div class="settings-container" style="max-width: calc(min(500px, 100%)); width: 100%;">
       <Tabs
         grow
         fixedTabs
@@ -72,8 +72,12 @@
           {#each settings as { icon, name }}
             <Tab>
               <Tooltip bottom>
-                <span slot="tip">{name}</span>
-                <Icon path={icon} />
+                <div slot="tip">
+                  <div style="text-align: center">{name}</div>
+                </div>
+                <div style="width: 100%; height: 100%;">
+                  <Icon path={icon} />
+                </div>
               </Tooltip>
             </Tab>
           {/each}
@@ -112,4 +116,23 @@
     padding: 0px 10px 0px 10px;
   }
 
+  .settings-container :global(.s-tooltip__wrapper) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .settings-container :global(.s-tab) {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+
+  /* Center all icons horizontally and vertically */
+  .settings-container :global(.s-tab i) {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
 </style>
