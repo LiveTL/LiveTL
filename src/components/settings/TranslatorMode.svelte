@@ -1,5 +1,5 @@
 <script>
-  import { Col, Row, Subheader, Button, Icon } from 'svelte-materialify/src';
+  import { Col, Row, Subheader, Button, Icon, ExpansionPanels, ExpansionPanel } from 'svelte-materialify/src';
   import { mdiPlus } from '@mdi/js';
   import { onMount } from 'svelte';
 
@@ -31,6 +31,20 @@
         </Button>
       </Subheader>
     </Col>
+  </Row>
+  <Row>
+    <ExpansionPanels>
+      <ExpansionPanel>
+        <span slot="header">How to use</span>
+        <p>Macros are identified by a name and will expand to the expansion when typed.</p>
+        <p>To use macros, type a / in chat and start typing in the name of a macro.</p>
+        <p>Suggestions will appear under the chat entry box which can be cycled through with the tab key</p>
+        <p>When you have your macro suggestion highlighted, hit space and the macro will expand</p>
+      </ExpansionPanel>
+    </ExpansionPanels>
+  </Row>
+  <Row>
+    <div style="height: 1rem" />
   </Row>
   {#each $macros as macro, id}
     <CustomMacro {...macro} {id} />
