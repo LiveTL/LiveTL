@@ -136,39 +136,46 @@ export function macroSystem(initialMacros) {
   };
 }
 
+/**
+ * Does the non-rendering part of translator mode.
+ *
+ * Features:
+ *   - auto-prefix
+ *   - macros
+ *
+ * @param {HTMLElement} container the container for the input element (first #input)
+ * @param {HTMLElement} chatBox the actual input element (second #input)
+ * @param {Writable<String>} content a store to view the content of the chatbox, do not modify
+ * @param {Writable<String[]>} recommendations a store to view the recommendations, do not modify
+ * @param {Writable<String | null>} focusRec a store to set the focussed recommendation
+ */
 export function translatorMode(
   [container, chatBox],
   content,
   recommendations,
   focusRec,
 ) {
+  // initial macros will be cleared during sync
   const macrosys = macroSystem({ en: '[en]', peko: 'pekora', ero: 'erofi' });
-  const invisible = '‍';
-  // eslint-disable-next-line no-unused-vars
-  const invisiReg = new RegExp(invisible, 'g');
+  // use nbsp as it won't break when adding space to the end
+  const nbsp = ' ';
   const oneRecommend = () => get(recommendations).length === 1;
   const isKey = key => e => e.key === key;
   const isTab = isKey('Tab');
-  const isSpace = isKey(' ');
   const isEnter = isKey('Enter');
-  const isCharData = m => m.type === 'characterData';
-  const focussed = () => get(focusRec);
+  const focussedRecommendation = () => get(focusRec);
 
   macrosys.syncWith(macros);
 
-  const replaceText = text => focussed()
-    ? macrosys.completeEnd(text, macrosys.getMacro(focussed()))
+  const replaceText = text => focussedRecommendation()
+    ? macrosys.completeEnd(text, macrosys.getMacro(focussedRecommendation()))
     : macrosys.replaceText(text);
-
-  const removeLastSpace = text => text.endsWith(' ')
-    ? text.substring(0, text.length - 1)
-    : text;
 
   const setChatboxText = text => {
     const carPos = caretPos();
     const atEnd = caretAtEnd();
     if (text) container.setAttribute('has-text', '');
-    chatBox.textContent = text + invisible;
+    chatBox.textContent = text;
     setChatCaret(atEnd ? null : carPos);
     updateStores();
   };
@@ -178,67 +185,55 @@ export function translatorMode(
     updateContent();
   };
 
-  // eslint-disable-next-line no-unused-vars
-  const spaceIf = cond => cond ? ' ' : '';
-  const setChatCaret =
-    pos => setCaret(chatBox, pos == null ? text().length : pos);
+  const setChatCaret = pos =>
+    setCaret(chatBox, pos == null ? text().length : pos);
   const caretPos = () => getCaretCharOffset(chatBox);
   const caretAtEnd = () => caretPos() == text().length;
   const text = () => chatBox.textContent;
-  // TODO
-  // eslint-disable-next-line no-constant-condition
-  const autoPrefixTag = () => /* doAutoPrefix.get() */ false ? langTag() + invisible : '';
-  const textWithoutLastSpace = compose(removeLastSpace, text);
+  const autoPrefixTag = () => doAutoPrefix.get() ? langTag() + nbsp : '';
   const updateRecommendations =
     compose(recommendations.set, macrosys.complete, text);
   const updateContent = compose(content.set, text);
   const setAutoPrefix = compose(setChatboxText, autoPrefixTag);
   const doubleTimeout = cb => setTimeout(() => setTimeout(cb));
 
-  // Keydown event
-  let e = null;
-
-  const onKeyDown = $e => {
+  const onKeyDown = e => {
     if (!get(doTranslatorMode)) return;
-    e = $e;
-    if (isTab(e) && oneRecommend()) substituteInChatbox();
+    if (isTab(e) && oneRecommend()) expandMacrosInChatbox();
     if (isTab(e)) doubleTimeout(setChatCaret);
     if (isEnter(e)) doubleTimeout(setAutoPrefix);
   };
 
-  const substituteInChatbox = () => {
-    const newText = replaceText(textWithoutLastSpace()) + ' ';
-    if (newText != text()) {
-      setTimeout(() => setChatboxText(newText));
+  const expandMacrosInChatbox = () => {
+    const newText = replaceText(text().trimEnd()) + nbsp;
+    if (newText.trim() != text().trim()) {
+      setChatboxText(newText);
     }
   };
 
-  const onMutation = () => {
+  const onFocus = () => {
+    if (!get(doTranslatorMode) || text() !== '') return;
+    setTimeout(setAutoPrefix);
+  };
+
+  const onInput = e => {
     if (!get(doTranslatorMode)) return;
-    if (isSpace(e)) {
-      substituteInChatbox();
+    if (e.data === ' ') {
+      expandMacrosInChatbox();
     }
     updateStores();
   };
 
-  const onFocus = () => setTimeout(setAutoPrefix);
-
-  const processMutations = mutations => mutations
-    .filter(isCharData)
-    .forEach(onMutation);
-
-  const chatBoxObserver = new MutationObserver(processMutations);
-
   const cleanUps = [
     () => chatBox.removeEventListener('keydown', onKeyDown),
     () => chatBox.removeEventListener('focus', onFocus),
-    () => chatBoxObserver.disconnect(),
+    () => chatBox.removeEventListener('input', onInput),
   ];
   if (chatBox.cleanUpTlMode) chatBox.cleanUpTlMode();
   chatBox.cleanUpTlMode = () => cleanUps.forEach(c => c());
   chatBox.addEventListener('keydown', onKeyDown);
   chatBox.addEventListener('focus', onFocus);
-  chatBoxObserver.observe(container, { subtree: true, characterData: true });
+  chatBox.addEventListener('input', onInput);
 }
 
 function setCaret(el, pos) {
@@ -275,4 +270,4 @@ function getCaretCharOffset(element) {
   return caretOffset;
 }
 
-const langTag = () => `[${languageNameCode[language.get()].code}] `;
+const langTag = () => `[${languageNameCode[language.get()].code}]`;
