@@ -87,5 +87,5 @@ export const paramsFrameId = params.get('frameid');
 export const paramsVideoTitle = params.get('title');
 export const paramsEmbedded = params.get('embedded');
 export const paramsContinuation = params.get('continuation');
-export const paramsIsReplay = params.get('isReplay');
+export const paramsIsVOD = params.get('isReplay');
 export const paramsEmbedDomain = params.get('embed_domain');
