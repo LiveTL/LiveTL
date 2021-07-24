@@ -1,13 +1,11 @@
 <script>
   import { mdiClose } from '@mdi/js';
-  import {
-    Button,
-    Divider,
-    Icon,
-    Menu,
-    TextField,
-    ListItem,
-  } from 'svelte-materialify/src';
+  import Button from 'svelte-materialify/src/components/Button.svelte';
+  import Divider from 'svelte-materialify/src/components/Divider.svelte';
+  import Icon from 'svelte-materialify/src/components/Icon.svelte';
+  import Menu from 'svelte-materialify/src/components/Menu.svelte';
+  import TextField from 'svelte-materialify/src/components/TextField.svelte';
+  import ListItem from 'svelte-materialify/src/components/ListItem.svelte';
 
   export let name = '';
   export let store = null; // LookupStore
@@ -82,39 +80,4 @@
   </Menu>
 </div>
 
-<style>
-  .dropdown {
-    margin-top: 20px;
-    width: 100%;
-  }
-
-  .item {
-    padding-top: 7px;
-  }
-
-  .listitem-content {
-    display: flex;
-    flex-direction: row;
-  }
-
-  :global(.dropdown input:hover) {
-    cursor: pointer;
-  }
-
-  .button {
-    margin-left: auto;
-    order: 2;
-  }
-
-  :global(.dropdown > div) {
-    width: 100%;
-  }
-
-  :global(.s-menu:hover) {
-    cursor: pointer;
-  }
-
-  :global(.s-menu) {
-    width: 100%;
-  }
-</style>
+<style></style>

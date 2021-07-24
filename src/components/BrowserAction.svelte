@@ -1,7 +1,7 @@
 <script>
   import Options from '../components/Options.svelte';
   import Wrapper from './Wrapper.svelte';
-  import { MaterialApp } from 'svelte-materialify/src';
+  import MaterialApp from 'svelte-materialify/src/components/MaterialApp/MaterialApp.svelte';
 </script>
 
 <MaterialApp theme="dark">

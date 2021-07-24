@@ -1,5 +1,5 @@
 <script>
-  import { MaterialApp } from 'svelte-materialify/src';
+  import MaterialApp from 'svelte-materialify/src/components/MaterialApp/MaterialApp.svelte';
   import Settings from './Settings.svelte';
   export let isStandalone = false;
   export let isResizing = false;

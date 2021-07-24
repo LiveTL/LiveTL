@@ -3,7 +3,8 @@
     welcomeDismissed,
     textDirection
   } from '../js/store.js';
-  import { Button, Icon } from 'svelte-materialify/src';
+  import Button from 'svelte-materialify/src/components/Button.svelte';
+  import Icon from 'svelte-materialify/src/components/Icon.svelte';
   import { mdiChevronDown, mdiChevronUp } from '@mdi/js';
   import {
     TextDirection
@@ -61,5 +62,4 @@
     /* background-color: rgba(255, 255, 255, 0.1) !important; */
     box-shadow: none !important;
   }
-
 </style>

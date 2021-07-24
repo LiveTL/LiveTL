@@ -5,7 +5,7 @@
   import '../plugins/jquery.ui.touch-punch';
   import VideoEmbed from './VideoEmbed.svelte';
   import Wrapper from './Wrapper.svelte';
-  import { MaterialApp } from 'svelte-materialify/src';
+  import MaterialApp from 'svelte-materialify/src/components/MaterialApp/MaterialApp.svelte';
   import {
     videoSide,
     videoPanelSize,

@@ -1,5 +1,8 @@
 <script>
-  import { Row, Col, Checkbox, TextField } from 'svelte-materialify/src';
+  import Row from 'svelte-materialify/src/components/Row.svelte';
+  import Col from 'svelte-materialify/src/components/Col.svelte';
+  import Checkbox from 'svelte-materialify/src/components/Checkbox.svelte';
+  import TextField from 'svelte-materialify/src/components/TextField.svelte';
   import { macros } from '../../js/store.js';
 
   export let name;

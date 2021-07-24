@@ -1,5 +1,5 @@
 <script>
-  import { Checkbox } from 'svelte-materialify/src';
+  import Checkbox from 'svelte-materialify/src/components/Checkbox.svelte';
   export let name = '';
   export let store = null;
 

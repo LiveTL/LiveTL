@@ -6,7 +6,7 @@
     createEventDispatcher
   } from 'svelte';
   import Message from './Message.svelte';
-  import { Checkbox } from 'svelte-materialify/src';
+  import Checkbox from 'svelte-materialify/src/components/Checkbox.svelte';
   import { sources, combineStores } from '../js/sources.js';
   import MessageDisplayWrapper from './MessageDisplayWrapper.svelte';
   import '../css/splash.css';

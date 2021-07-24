@@ -1,7 +1,10 @@
 <script>
   import { afterUpdate, tick } from 'svelte';
   import { fade } from 'svelte/transition';
-  import { Button, Icon, MaterialApp, TextField } from 'svelte-materialify/src';
+  import Button from 'svelte-materialify/src/components/Button.svelte';
+  import Icon from 'svelte-materialify/src/components/Icon.svelte';
+  import TextField from 'svelte-materialify/src/components/TextField.svelte';
+  import MaterialApp from 'svelte-materialify/src/components/MaterialApp/MaterialApp.svelte';
   import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload, mdiFullscreen  } from '@mdi/js';
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';

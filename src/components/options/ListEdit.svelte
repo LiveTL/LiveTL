@@ -1,12 +1,10 @@
 <script>
-  import {
-    List,
-    ListItem,
-    Divider,
-    TextField,
-    Subheader,
-    MaterialApp
-  } from 'svelte-materialify/src';
+  import List from 'svelte-materialify/src/components/List.svelte';
+  import ListItem from 'svelte-materialify/src/components/ListItem.svelte';
+  import Divider from 'svelte-materialify/src/components/Divider.svelte';
+  import TextField from 'svelte-materialify/src/components/TextField.svelte';
+  import Subheader from 'svelte-materialify/src/components/Subheader.svelte';
+  import MaterialApp from 'svelte-materialify/src/components/MaterialApp/MaterialApp.svelte';
 
   export let name = '';
   export let store = null;

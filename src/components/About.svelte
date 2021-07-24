@@ -1,5 +1,6 @@
 <script>
-  import { ExpansionPanel, ExpansionPanels } from 'svelte-materialify/src';
+  import ExpansionPanel from 'svelte-materialify/src/components/ExpansionPanel.svelte';
+  import ExpansionPanels from 'svelte-materialify/src/components/ExpansionPanels.svelte';
   import opencollective from '../plugins/opencollective.json';
   import gh from '../plugins/gh.json';
 
@@ -83,5 +84,4 @@
   :global(.s-expansion-panel__content) {
     flex-direction: column !important;
   }
-
 </style>

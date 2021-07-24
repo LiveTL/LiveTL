@@ -15,6 +15,7 @@ const FileManagerPlugin = require('filemanager-webpack-plugin');
 const WebpackConcatPlugin = require('webpack-concat-files-plugin');
 const isAndroid = process.argv.includes('android');
 const mode = isAndroid ? 'production' : (env.NODE_ENV || 'development');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const manifest = JSON.stringify({
   description: description,
   version: version,
@@ -166,6 +167,7 @@ var options = {
     alias: alias
   },
   plugins: [
+    new BundleAnalyzerPlugin(),
     // clean the build folder
     new CleanWebpackPlugin(),
     // expose and write the allowed env vars on the compiled bundle
