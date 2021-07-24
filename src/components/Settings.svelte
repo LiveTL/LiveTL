@@ -1,7 +1,7 @@
 <script>
   import { beforeUpdate, afterUpdate } from 'svelte';
   import { Icon, Tabs, Tab, TabContent, MaterialApp } from 'svelte-materialify/src';
-  import { mdiBrush, mdiFilter, mdiHelp } from '@mdi/js';
+  import { mdiBrush, mdiChat, mdiFilter, mdiHelp } from '@mdi/js';
   import UISettings from './settings/UISettings.svelte';
   import FilterSettings from './settings/FilterSettings.svelte';
   import TranslatorMode from './settings/TranslatorMode.svelte';
@@ -13,7 +13,7 @@
   const settings = [
     { name: 'Interface', component: UISettings, icon: mdiBrush },
     { name: 'Filters', component: FilterSettings, icon: mdiFilter },
-    { name: 'Chat', component: TranslatorMode, icon: mdiHelp },
+    { name: 'Chat', component: TranslatorMode, icon: mdiChat },
     { name: 'About', component: About, icon: mdiHelp },
   ];
 
