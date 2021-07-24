@@ -84,7 +84,6 @@
   name="Show screenshot and download buttons"
   store={enableExportButtons}
 />
-<CheckOption
-  name="Show fullscreen button"
-  store={enableFullscreenButton}
-/>
+{#if !isStandalone}
+  <CheckOption name="Show fullscreen button" store={enableFullscreenButton} />
+{/if}

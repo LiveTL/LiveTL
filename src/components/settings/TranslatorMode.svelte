@@ -36,10 +36,22 @@
     <ExpansionPanels>
       <ExpansionPanel>
         <span slot="header">How to use</span>
-        <p>Macros are identified by a name and will expand to the expansion when typed.</p>
-        <p>To use macros, type a / in chat and start typing in the name of a macro.</p>
-        <p>Suggestions will appear under the chat entry box which can be cycled through with the tab key</p>
-        <p>When you have your macro suggestion highlighted, hit space and the macro will expand</p>
+        <p>
+          Macros are identified by a name and will expand to the expansion when
+          typed.
+        </p>
+        <p>
+          To use macros, type a / in chat and start typing in the name of a
+          macro.
+        </p>
+        <p>
+          Suggestions will appear under the chat entry box which can be cycled
+          through with the tab key.
+        </p>
+        <p>
+          When you have your macro suggestion highlighted, hit space and the
+          macro will expand.
+        </p>
       </ExpansionPanel>
     </ExpansionPanels>
   </Row>

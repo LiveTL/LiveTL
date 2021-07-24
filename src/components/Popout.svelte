@@ -208,7 +208,7 @@
             <Icon path={isSelecting ? mdiCheck : mdiDownload} />
           </Button>
         {/if}
-        {#if !settingsOpen && $enableFullscreenButton}
+        {#if !settingsOpen && $enableFullscreenButton && !isStandalone}
           <Button fab size="small" on:click={toggleFullScreen}>
             <Icon path={mdiFullscreen} />
           </Button>
