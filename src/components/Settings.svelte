@@ -1,6 +1,7 @@
 <script>
   import { beforeUpdate, afterUpdate } from 'svelte';
-  import { Tabs, Tab, TabContent, MaterialApp } from 'svelte-materialify/src';
+  import { Icon, Tabs, Tab, TabContent, MaterialApp } from 'svelte-materialify/src';
+  import { mdiBrush, mdiFilter, mdiHelp } from '@mdi/js';
   import UISettings from './settings/UISettings.svelte';
   import FilterSettings from './settings/FilterSettings.svelte';
   import About from './About.svelte';
@@ -9,9 +10,9 @@
   export let isResizing = false;
 
   const settings = [
-    { name: 'Interface', component: UISettings },
-    { name: 'Filters', component: FilterSettings },
-    { name: 'About', component: About },
+    { name: 'Interface', component: UISettings, icon: mdiBrush },
+    { name: 'Filters', component: FilterSettings, icon: mdiFilter },
+    { name: 'About', component: About, icon: mdiHelp },
   ];
 
   let wrapper = null;
@@ -62,13 +63,14 @@
       <Tabs
         grow
         fixedTabs
-        showArrows={false}
         class="ltl-settings-tabs"
         sliderClass="ltl-settings-slider"
       >
         <div slot="tabs">
-          {#each settings as { name }}
-            <Tab>{name}</Tab>
+          {#each settings as { icon }}
+            <Tab>
+              <Icon path={icon} />
+            </Tab>
           {/each}
         </div>
 
