@@ -1,6 +1,6 @@
 <script>
   import { beforeUpdate, afterUpdate } from 'svelte';
-  import { Icon, Tabs, Tab, TabContent, MaterialApp } from 'svelte-materialify/src';
+  import { Icon, Tabs, Tab, TabContent, Tooltip, MaterialApp } from 'svelte-materialify/src';
   import { mdiBrush, mdiChat, mdiFilter, mdiHelp } from '@mdi/js';
   import UISettings from './settings/UISettings.svelte';
   import FilterSettings from './settings/FilterSettings.svelte';
@@ -69,9 +69,12 @@
         sliderClass="ltl-settings-slider"
       >
         <div slot="tabs">
-          {#each settings as { icon }}
+          {#each settings as { icon, name }}
             <Tab>
-              <Icon path={icon} />
+              <Tooltip bottom>
+                <span slot="tip">{name}</span>
+                <Icon path={icon} />
+              </Tooltip>
             </Tab>
           {/each}
         </div>
