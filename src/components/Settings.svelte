@@ -61,7 +61,10 @@
     style="display: flex; align-items: center; justify-content: center;"
     bind:this={wrapper}
   >
-    <div class="settings-container" style="max-width: calc(min(500px, 100%)); width: 100%;">
+    <div
+      class="settings-container"
+      style="max-width: calc(min(500px, 100%)); width: 100%;"
+    >
       <Tabs
         grow
         fixedTabs

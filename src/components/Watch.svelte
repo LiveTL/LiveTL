@@ -261,5 +261,8 @@
   :global(html) {
     overflow: hidden;
   }
-
+  :global(.s-tooltip) {
+    margin-left: 20px;
+    margin-top: 20px;
+  }
 </style>
