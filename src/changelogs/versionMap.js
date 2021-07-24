@@ -20,7 +20,8 @@ const changelogSequence = [
   '6.4',
   '6.4.2',
   '6.4.3',
-  '6.4.4'
+  '6.4.4',
+  '6.4.5'
 ];
 // eslint-disable-next-line no-unused-vars
 export default version => {

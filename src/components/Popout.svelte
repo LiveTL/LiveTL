@@ -5,7 +5,7 @@
   import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload, mdiFullscreen  } from '@mdi/js';
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
-  import { TextDirection } from '../js/constants.js';
+  import { TextDirection, paramsVideoTitle, paramsEmbedded } from '../js/constants.js';
   import { faviconURL, textDirection, screenshotRenderWidth, videoTitle, enableExportButtons, updatePopupActive, enableFullscreenButton } from '../js/store.js';
   import MessageDisplay from './MessageDisplay.svelte';
   import ScreenshotExport from './ScreenshotExport.svelte';
@@ -13,10 +13,9 @@
   import { saveAs } from 'file-saver';
   let settingsOpen = false;
   export let isResizing = false;
-  const params = new URLSearchParams(window.location.search);
-  $videoTitle = params.get('title') || $videoTitle;
+  $videoTitle = paramsVideoTitle || $videoTitle;
   $: document.title = $videoTitle || 'LiveTL Popout';
-  export let isStandalone = params.get('embedded') ? true : false;
+  export let isStandalone = paramsEmbedded ? true : false;
 
   let wrapper;
   let messageDisplay;
