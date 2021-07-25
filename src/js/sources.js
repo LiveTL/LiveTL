@@ -8,6 +8,7 @@ import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlac
 import { channelFilters, language, showModMessage, timestamp } from './store';
 import { paramsVideoId, AuthorType, languageNameCode, paramsPopout, paramsTabId, paramsFrameId } from './constants';
 import { checkAndSpeak } from './speech.js';
+import { removeDuplicateMessages } from './sources-util.js';
 import * as MCHAD from './mchad.js';
 import * as API from './api.js';
 
@@ -230,11 +231,11 @@ function message(author, msg, timestamp) {
 }
 
 attachFilters(sources.ytcTranslations, sources.mod, sources.ytc);
-sources.translations = combineStores(
+sources.translations = removeDuplicateMessages(combineStores(
   sources.ytcTranslations,
   sources.mchad,
   sources.api
-).store;
+).store);
 attachSpeechSynth(sources.translations);
 
 export class DummyYTCEventSource {
