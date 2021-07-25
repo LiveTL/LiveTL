@@ -1,6 +1,9 @@
 <script>
   import { beforeUpdate, afterUpdate } from 'svelte';
-  import { Tabs, Tab, TabContent, MaterialApp } from 'svelte-materialify/src';
+  import Tabs from 'svelte-materialify/src/components/Tabs/Tabs.svelte';
+  import Tab from 'svelte-materialify/src/components/Tabs/Tab.svelte';
+  import TabContent from 'svelte-materialify/src/components/Tabs/TabContent.svelte';
+  import MaterialApp from 'svelte-materialify/src/components/MaterialApp/MaterialApp.svelte';
   import UISettings from './settings/UISettings.svelte';
   import FilterSettings from './settings/FilterSettings.svelte';
   import About from './About.svelte';
@@ -104,5 +107,4 @@
   :global(.s-window) {
     padding: 0px 10px 0px 10px;
   }
-
 </style>

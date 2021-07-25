@@ -1,5 +1,7 @@
 <script>
-  import { Button, Icon, Slider } from 'svelte-materialify/src';
+  import Button from 'svelte-materialify/src/components/Button/Button.svelte';
+  import Icon from 'svelte-materialify/src/components/Icon/Icon.svelte';
+  import Slider from 'svelte-materialify/src/components/Slider/Slider.svelte';
   import { mdiRestore } from '@mdi/js';
   import { Browser, BROWSER } from '../../js/constants.js';
   import { onMount, onDestroy, tick } from 'svelte';

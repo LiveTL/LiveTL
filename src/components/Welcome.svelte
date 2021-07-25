@@ -1,5 +1,5 @@
 <script>
-  import { MaterialApp } from 'svelte-materialify/src';
+  import MaterialApp from 'svelte-materialify/src/components/MaterialApp/MaterialApp.svelte';
 
   const links = [{
     text: 'LiveTL Website',
