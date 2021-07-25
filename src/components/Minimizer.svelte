@@ -3,8 +3,8 @@
     welcomeDismissed,
     textDirection
   } from '../js/store.js';
-  import Button from 'svelte-materialify/src/components/Button.svelte';
-  import Icon from 'svelte-materialify/src/components/Icon.svelte';
+  import Button from 'svelte-materialify/src/components/Button/Button.svelte';
+  import Icon from 'svelte-materialify/src/components/Icon/Icon.svelte';
   import { mdiChevronDown, mdiChevronUp } from '@mdi/js';
   import {
     TextDirection

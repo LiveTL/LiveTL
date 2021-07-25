@@ -1,9 +1,9 @@
 <script>
-  import Col from 'svelte-materialify/src/components/Col.svelte';
-  import Row from 'svelte-materialify/src/components/Row.svelte';
+  import Row from 'svelte-materialify/src/components/Grid/Row.svelte';
+  import Col from 'svelte-materialify/src/components/Grid/Col.svelte';
   import Subheader from 'svelte-materialify/src/components/Subheader.svelte';
-  import Button from 'svelte-materialify/src/components/Button.svelte';
-  import Icon from 'svelte-materialify/src/components/Icon.svelte';
+  import Button from 'svelte-materialify/src/components/Button/Button.svelte';
+  import Icon from 'svelte-materialify/src/components/Icon/Icon.svelte';
   import { mdiPlus } from '@mdi/js';
   import { onMount } from 'svelte';
 

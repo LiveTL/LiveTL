@@ -1,5 +1,5 @@
 <script>
-  import Radio from 'svelte-materialify/src/components/Radio.svelte';
+  import Radio from 'svelte-materialify/src/components/Radio/Radio.svelte';
 
   export let name = '';
   export let options = [];

@@ -1,7 +1,7 @@
 <script>
-  import Col from 'svelte-materialify/src/components/Col.svelte';
-  import Row from 'svelte-materialify/src/components/Row.svelte';
-  import TextField from 'svelte-materialify/src/components/TextField.svelte';
+  import Col from 'svelte-materialify/src/components/Grid/Col.svelte';
+  import Row from 'svelte-materialify/src/components/Grid/Row.svelte';
+  import TextField from 'svelte-materialify/src/components/TextField/TextField.svelte';
   import { writable } from 'svelte/store';
   import { onMount } from 'svelte';
   import Dropdown from './Dropdown.svelte';

@@ -1,9 +1,9 @@
 <script>
   import { afterUpdate, tick } from 'svelte';
   import { fade } from 'svelte/transition';
-  import Button from 'svelte-materialify/src/components/Button.svelte';
-  import Icon from 'svelte-materialify/src/components/Icon.svelte';
-  import TextField from 'svelte-materialify/src/components/TextField.svelte';
+  import Button from 'svelte-materialify/src/components/Button/Button.svelte';
+  import Icon from 'svelte-materialify/src/components/Icon/Icon.svelte';
+  import TextField from 'svelte-materialify/src/components/TextField/TextField.svelte';
   import MaterialApp from 'svelte-materialify/src/components/MaterialApp/MaterialApp.svelte';
   import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload, mdiFullscreen  } from '@mdi/js';
   import Options from './Options.svelte';

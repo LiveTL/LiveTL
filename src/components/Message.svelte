@@ -5,7 +5,7 @@
   import { Message } from '../js/types.js';
   import { AuthorType } from '../js/constants.js';
   import { createEventDispatcher } from 'svelte';
-  import Icon from 'svelte-materialify/src/components/Icon.svelte';
+  import Icon from 'svelte-materialify/src/components/Icon/Icon.svelte';
   import { mdiEyeOffOutline, mdiAccountRemove, mdiCheckCircle } from '@mdi/js';
   import '../css/splash.css';
 

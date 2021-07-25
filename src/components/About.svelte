@@ -1,6 +1,6 @@
 <script>
-  import ExpansionPanel from 'svelte-materialify/src/components/ExpansionPanel.svelte';
-  import ExpansionPanels from 'svelte-materialify/src/components/ExpansionPanels.svelte';
+  import ExpansionPanel from 'svelte-materialify/src/components/ExpansionPanels/ExpansionPanel.svelte';
+  import ExpansionPanels from 'svelte-materialify/src/components/ExpansionPanels/ExpansionPanels.svelte';
   import opencollective from '../plugins/opencollective.json';
   import gh from '../plugins/gh.json';
 

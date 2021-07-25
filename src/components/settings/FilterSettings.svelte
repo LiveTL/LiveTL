@@ -8,11 +8,11 @@
     enableMchadTLs,
     enableAPITLs
   } from '../../js/store.js';
-  import Row from 'svelte-materialify/src/components/Row.svelte';
-  import Col from 'svelte-materialify/src/components/Col.svelte';
-  import Button from 'svelte-materialify/src/components/Button.svelte';
-  import Icon from 'svelte-materialify/src/components/Icon.svelte';
-  import Subheader from 'svelte-materialify/src/components/Subheader.svelte';
+  import Row from 'svelte-materialify/src/components/Grid/Row.svelte';
+  import Col from 'svelte-materialify/src/components/Grid/Col.svelte';
+  import Button from 'svelte-materialify/src/components/Button/Button.svelte';
+  import Icon from 'svelte-materialify/src/components/Icon/Icon.svelte';
+  import Subheader from 'svelte-materialify/src/components/Subheader/Subheader.svelte';
   import { mdiPlus } from '@mdi/js';
   import { addFilter, cleanupFilters } from '../../js/filter.js';
   import { languageNameValues } from '../../js/constants.js';

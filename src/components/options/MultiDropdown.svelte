@@ -1,11 +1,11 @@
 <script>
   import { mdiClose } from '@mdi/js';
-  import Button from 'svelte-materialify/src/components/Button.svelte';
-  import Divider from 'svelte-materialify/src/components/Divider.svelte';
-  import Icon from 'svelte-materialify/src/components/Icon.svelte';
-  import Menu from 'svelte-materialify/src/components/Menu.svelte';
-  import TextField from 'svelte-materialify/src/components/TextField.svelte';
-  import ListItem from 'svelte-materialify/src/components/ListItem.svelte';
+  import Button from 'svelte-materialify/src/components/Button/Button.svelte';
+  import Divider from 'svelte-materialify/src/components/Divider/Divider.svelte';
+  import Icon from 'svelte-materialify/src/components/Icon/Icon.svelte';
+  import Menu from 'svelte-materialify/src/components/Menu/Menu.svelte';
+  import TextField from 'svelte-materialify/src/components/TextField/TextField.svelte';
+  import ListItem from 'svelte-materialify/src/components/List/ListItem.svelte';
 
   export let name = '';
   export let store = null; // LookupStore

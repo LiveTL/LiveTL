@@ -7,7 +7,7 @@
   let renderElement = null;
   let rendering = false;
   let image = '';
-  import ProgressLinear from 'svelte-materialify/src/components/ProgressLinear.svelte';
+  import ProgressLinear from 'svelte-materialify/src/components/ProgressLinear/ProgressLinear.svelte';
   import Dialog from './Dialog.svelte';
   import Message from './Message.svelte';
   import MessageDisplayWrapper from './MessageDisplayWrapper.svelte';

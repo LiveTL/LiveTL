@@ -1,8 +1,8 @@
 <script>
   import { beforeUpdate, afterUpdate } from 'svelte';
-  import Tabs from 'svelte-materialify/src/components/Tabs.svelte';
-  import Tab from 'svelte-materialify/src/components/Tab.svelte';
-  import TabContent from 'svelte-materialify/src/components/TabContent.svelte';
+  import Tabs from 'svelte-materialify/src/components/Tabs/Tabs.svelte';
+  import Tab from 'svelte-materialify/src/components/Tabs/Tab.svelte';
+  import TabContent from 'svelte-materialify/src/components/Tabs/TabContent.svelte';
   import MaterialApp from 'svelte-materialify/src/components/MaterialApp/MaterialApp.svelte';
   import UISettings from './settings/UISettings.svelte';
   import FilterSettings from './settings/FilterSettings.svelte';
