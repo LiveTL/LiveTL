@@ -1,12 +1,12 @@
 import { writable } from 'svelte/store';
 
-import { removeDuplicateMessages } from '../../js/sources-util.js';
+import { removeDuplicateMessage } from '../../js/sources-util.js';
 import { AuthorType } from '../../js/constants.js';
 
 
 const createTestObjects = () => {
   const source = writable(null);
-  const withoutDups = removeDuplicateMessages(source);
+  const withoutDups = removeDuplicateMessage(source);
   const aggregate = [];
   source.subscribe($m => {
     if ($m) aggregate.push($m);
@@ -25,7 +25,7 @@ const message = (text, author, types) => ({
 
 
 describe('message duplication mitigation', () =>{ 
-  it(`doesn't let messages that are the same as the last message through`, () => {
+  it('doesn\'t let messages that are the same as the last message through', () => {
     const { aggregate, source } = createTestObjects();
     const messages = [
       message('Konichiwassup', 'Taishi', AuthorType.mchad),
@@ -50,7 +50,7 @@ describe('message duplication mitigation', () =>{
       message('hello there', 'Taishi Ch.', 0),
       message('Konichiwassup', 'Taishi Ch.', 0),
       message('hello there', 'Taishi', AuthorType.mchad),
-    ]
+    ];
     messages.forEach(source.set);
     expect(aggregate()).toEqual(messages);
   });
