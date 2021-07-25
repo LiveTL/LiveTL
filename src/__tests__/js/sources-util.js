@@ -1,14 +1,14 @@
 import { writable } from 'svelte/store';
 
-import { removeDuplicateMessage } from '../../js/sources-util.js';
+import { removeDuplicateMessages } from '../../js/sources-util.js';
 import { AuthorType } from '../../js/constants.js';
 
 
 const createTestObjects = () => {
   const source = writable(null);
-  const withoutDups = removeDuplicateMessage(source);
+  const withoutDups = removeDuplicateMessages(source);
   const aggregate = [];
-  source.subscribe($m => {
+  withoutDups.subscribe($m => {
     if ($m) aggregate.push($m);
   });
   return { source, withoutDups, aggregate: () => aggregate };

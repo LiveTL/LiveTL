@@ -7,7 +7,7 @@ import { Message } from './types.js';
  * @param {Readable<Message>} source
  * @return {Readable<Message>}
  */
-export function removeDuplicateMessage(source) {
+export function removeDuplicateMessages(source) {
   let lastText = '';
   // return derived(source, $msg => {
   //   if ($msg == null || $msg.text.trim() == lastText.trim()) return;
