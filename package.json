@@ -45,7 +45,6 @@
     "svelte": "^3.5.1",
     "svelte-jester": "^1.3.1",
     "svelte-loader": "^3.1.2",
-    "svelte-materialify": "^0.3.6",
     "svelte-preprocess": "^4.6.9",
     "typescript": "^4.3.5",
     "vue-loader": "^15.9.7",
@@ -66,6 +65,7 @@
     "jquery": "^3.6.0",
     "jquery-ui-bundle": "^1.12.1-migrate",
     "ssri": "^8.0.1",
+    "svelte-materialify": "^0.3.6",
     "vue": "^2.6.12",
     "vuetify": "^2.4.9",
     "youtube-iframe": "^1.0.3"
