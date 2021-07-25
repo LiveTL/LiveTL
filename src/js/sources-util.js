@@ -9,9 +9,9 @@ import { Message } from './types.js';
  */
 export function removeDuplicateMessages(source) {
   let lastText = '';
-  // return derived(source, $msg => {
-  //   if ($msg == null || $msg.text.trim() == lastText.trim()) return;
-  //   lastText = $msg.text;
-  //   return $msg;
-  // });
+  return derived(source, $msg => {
+    if ($msg == null || $msg.text.trim() == lastText.trim()) return;
+    lastText = $msg.text;
+    return $msg;
+  });
 }
