@@ -19,7 +19,7 @@
     VideoSide,
     ChatSplit,
     paramsContinuation,
-    paramsIsReplay,
+    paramsIsVOD,
     paramsEmbedded
   } from '../js/constants.js';
   import ChatEmbed from './ChatEmbed.svelte';
@@ -155,7 +155,7 @@
               <ChatEmbed
                 videoId={paramsVideoId}
                 continuation={paramsContinuation}
-                isReplay={paramsIsReplay}
+                isReplay={paramsIsVOD}
               />
             </Wrapper>
           </div>
