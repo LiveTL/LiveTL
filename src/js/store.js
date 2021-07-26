@@ -69,7 +69,8 @@ export const
   enableAPITLs = SS('enableAPITLs', true),
   enableExportButtons = SS('enableExportButtons', true),
   enableFullscreenButton = SS('enableFullscreenButton', true),
-  autoPrefixTag = SS('autoPrefixTag', '[$filterLang]');
+  autoPrefixTag = SS('autoPrefixTag', '[$filterLang]'),
+  macroTrigger = SS('macroTrigger', '/');
 
 // Non-persistant stores
 export const updatePopupActive = writable(false);

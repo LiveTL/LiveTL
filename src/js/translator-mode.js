@@ -3,7 +3,8 @@ import { compose, dbg } from './utils.js';
 // eslint-disable-next-line no-unused-vars
 import { get, writable, Writable } from 'svelte/store';
 // eslint-disable-next-line no-unused-vars
-import { doTranslatorMode, doAutoPrefix, language, macros, autoPrefixTag } from './store.js';
+import { doTranslatorMode, doAutoPrefix, language, macros, autoPrefixTag, macroTrigger } from './store.js';
+// TODO ACTUALLY USE macroTrigger
 import { languageNameCode } from './constants.js';
 
 export function omniComplete(initialWords) {
