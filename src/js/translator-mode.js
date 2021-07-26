@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
-import { compose, dbg } from './utils.js';
+import { compose, dbg, escapeRegExp } from './utils.js';
 // eslint-disable-next-line no-unused-vars
-import { get, writable, Writable } from 'svelte/store';
+import { derived, get, writable, Readable, Writable } from 'svelte/store';
 // eslint-disable-next-line no-unused-vars
 import { doTranslatorMode, doAutoPrefix, language, macros, autoPrefixTag, macroTrigger } from './store.js';
 // TODO ACTUALLY USE macroTrigger
@@ -75,6 +75,8 @@ function macroStoreValueToLookup(value) {
 export function macroSystem(initialMacros) {
   let macros = {...initialMacros} || {};
   let completion = omniComplete(Object.keys(macros));
+  const getSplitTextPattern = leader => new RegExp(`[\w${leader}]+`, 'g');
+  let splitTextPattern = getSplitTextPattern('/');
 
   /** @type {(name: String, expansion: String) => void} */
   const addMacro = (name, expansion) => {
@@ -90,7 +92,7 @@ export function macroSystem(initialMacros) {
   };
 
   /** @type {(text: String) => [String, Array<String>]} */
-  const splitText = text => [text, text.matchAll(/[\w/]+/g)];
+  const splitText = text => [text, text.matchAll(splitTextPattern)];
   /** @type {([input: String, split: Array<String>]) => String} */
   const replaceSplitText = ([input, split]) => {
     const replaced = [];
@@ -126,11 +128,19 @@ export function macroSystem(initialMacros) {
     });
   };
 
+  /** @type {(store: Readable<String>) => void} */
+  const syncLeaderWith = store => {
+    derived(store, escapeRegExp).subscribe($leader => {
+      splitTextPattern = getSplitTextPattern($leader);
+    });
+  };
+
   return {
     addMacro,
     complete,
     completeEnd,
     getMacro,
+    syncLeaderWith,
     syncWith,
     replaceText,
   };

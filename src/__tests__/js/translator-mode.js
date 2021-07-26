@@ -111,4 +111,14 @@ describe('macro system', () => {
     const { complete } = macroSystem(macros);
     expect(complete('[en] /k')).toEqual(['kan', 'kiara']);
   });
+
+  it('syncs leader character with store', () => {
+    const { complete, syncLeaderWith } = macroSystem(macros);
+    const leaderStore = writable('/');
+    syncLeaderWith(leaderStore);
+    expect(complete('[en] /k')).toEqual(['kan', 'kiara']);
+    leaderStore.set(',')
+    expect(complete('[en] /k')).toEqual([]);
+    expect(complete('[en] ,k')).toEqual(['kan', 'kiara']);
+  });
 });

@@ -49,3 +49,7 @@ export const sortBy = attr => arr => arr.sort((l, r) => l[attr] - r[attr]);
 export const sleep = ms => new Promise((res, rej) => {
   setTimeout(res, ms);
 });
+
+// https://stackoverflow.com/questions/3115150/how-to-escape-regular-expression-special-characters-using-javascript
+/** @type {(text: String) => String} */
+export const escapeRegExp = text => text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
