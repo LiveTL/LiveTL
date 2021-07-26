@@ -7,12 +7,21 @@
   import Toggle from '../options/Toggle.svelte';
   import { macros, doAutoPrefix, doTranslatorMode, autoPrefixTag, macroTrigger } from '../../js/store.js';
 
+  const leaderCharRules = [
+    leader => leader.length == 1 || 'Please input a single character',
+  ];
+
   const emptyMacro = { name: '', expansion: '', enabled: true };
 
   const cleanUpMacros =
     () => $macros = $macros.filter(m => m.name + m.expansion);
 
   const createNewMacro = () => $macros = [...cleanUpMacros(), emptyMacro];
+
+  $: macroLeader = $macroTrigger;
+  $: if (leaderCharRules[0](macroLeader) === true) {
+    macroTrigger.set(macroLeader);
+  }
 
   onMount(() => setTimeout(cleanUpMacros));
 </script>
@@ -40,8 +49,8 @@
         </Subheader>
       </Col>
     </Row>
-    <TextField bind:value={$macroTrigger}
-      >Macro trigger string
+    <TextField rules={leaderCharRules} bind:value={macroLeader}>
+      Macro trigger character
     </TextField>
     {#each $macros as macro, id}
       <CustomMacro {...macro} {id} />
