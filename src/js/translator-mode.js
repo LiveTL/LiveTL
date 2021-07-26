@@ -115,7 +115,7 @@ export function macroSystem(initialMacros) {
   const replaceText = compose(replaceSplitText, splitText);
   /** @type {(text: String, completion: String) => String} */
   const completeEnd = (text, completion) => {
-    return text.replace(/\/([\w]+)$/, completion);
+    return text.replace(completionMatchPattern, completion);
   };
     /** @type {(text: String) => Array<String>} */
   const complete = text => {
@@ -182,6 +182,7 @@ export function translatorMode(
   const focusedRecommendation = () => get(focusRec);
 
   macrosys.syncWith(macros);
+  macrosys.syncLeaderWith(macroTrigger);
 
   const replaceText = text => focusedRecommendation()
     ? macrosys.completeEnd(text, macrosys.getMacro(focusedRecommendation()))
