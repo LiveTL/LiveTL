@@ -146,7 +146,7 @@ export function macroSystem(initialMacros) {
  * @param {HTMLElement} chatBox the actual input element (second #input)
  * @param {Writable<String>} content a store to view the content of the chatbox, do not modify
  * @param {Writable<String[]>} recommendations a store to view the recommendations, do not modify
- * @param {Writable<String | null>} focusRec a store to set the focussed recommendation
+ * @param {Writable<String | null>} focusRec a store to set the focused recommendation
  */
 export function translatorMode(
   [container, chatBox],
@@ -162,12 +162,12 @@ export function translatorMode(
   const isKey = key => e => e.key === key;
   const isTab = isKey('Tab');
   const isEnter = isKey('Enter');
-  const focussedRecommendation = () => get(focusRec);
+  const focusedRecommendation = () => get(focusRec);
 
   macrosys.syncWith(macros);
 
-  const replaceText = text => focussedRecommendation()
-    ? macrosys.completeEnd(text, macrosys.getMacro(focussedRecommendation()))
+  const replaceText = text => focusedRecommendation()
+    ? macrosys.completeEnd(text, macrosys.getMacro(focusedRecommendation()))
     : macrosys.replaceText(text);
 
   const setChatboxText = text => {
