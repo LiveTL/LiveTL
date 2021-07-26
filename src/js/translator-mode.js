@@ -75,7 +75,7 @@ function macroStoreValueToLookup(value) {
 export function macroSystem(initialMacros) {
   let macros = {...initialMacros} || {};
   let completion = omniComplete(Object.keys(macros));
-  const getSplitTextPattern = leader => new RegExp(`[\w${leader}]+`, 'g');
+  const getSplitTextPattern = leader => new RegExp(`[\\w${leader}]+`, 'g');
   let splitTextPattern = getSplitTextPattern('/');
 
   /** @type {(name: String, expansion: String) => void} */

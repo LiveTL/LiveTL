@@ -117,7 +117,7 @@ describe('macro system', () => {
     const leaderStore = writable('/');
     syncLeaderWith(leaderStore);
     expect(complete('[en] /k')).toEqual(['kan', 'kiara']);
-    leaderStore.set(',')
+    leaderStore.set(',');
     expect(complete('[en] /k')).toEqual([]);
     expect(complete('[en] ,k')).toEqual(['kan', 'kiara']);
   });
