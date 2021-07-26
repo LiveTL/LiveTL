@@ -68,7 +68,8 @@ export const
   enableMchadTLs = SS('enableMchadTLs', true),
   enableAPITLs = SS('enableAPITLs', true),
   enableExportButtons = SS('enableExportButtons', true),
-  enableFullscreenButton = SS('enableFullscreenButton', true);
+  enableFullscreenButton = SS('enableFullscreenButton', true),
+  autoPrefixTag = SS('autoPrefixTag', '[$filterLang]');
 
 // Non-persistant stores
 export const updatePopupActive = writable(false);
