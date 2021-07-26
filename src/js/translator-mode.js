@@ -75,8 +75,13 @@ function macroStoreValueToLookup(value) {
 export function macroSystem(initialMacros) {
   let macros = {...initialMacros} || {};
   let completion = omniComplete(Object.keys(macros));
+  const defaultLeader = '/';
+
   const getSplitTextPattern = leader => new RegExp(`[\\w${leader}]+`, 'g');
-  let splitTextPattern = getSplitTextPattern('/');
+  const getCompletionMatchPattern = leader => new RegExp(`${leader}([\\w]+)$`);
+
+  let splitTextPattern = getSplitTextPattern(defaultLeader);
+  let completionMatchPattern = getCompletionMatchPattern(defaultLeader);
 
   /** @type {(name: String, expansion: String) => void} */
   const addMacro = (name, expansion) => {
@@ -112,10 +117,10 @@ export function macroSystem(initialMacros) {
   const completeEnd = (text, completion) => {
     return text.replace(/\/([\w]+)$/, completion);
   };
-  /** @type {(text: String) => Array<String>} */
+    /** @type {(text: String) => Array<String>} */
   const complete = text => {
     try {
-      return completion.complete(text.match(/\/([\w]+)$/)[1]);
+      return completion.complete(text.match(completionMatchPattern)[1]);
     }
     catch (e) { return []; }
   };
@@ -132,6 +137,7 @@ export function macroSystem(initialMacros) {
   const syncLeaderWith = store => {
     derived(store, escapeRegExp).subscribe($leader => {
       splitTextPattern = getSplitTextPattern($leader);
+      completionMatchPattern = getCompletionMatchPattern($leader);
     });
   };
 
