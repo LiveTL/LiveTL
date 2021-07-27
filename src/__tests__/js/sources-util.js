@@ -49,7 +49,7 @@ describe('message duplication mitigation', () =>{
       message('Haachama: *enlightened noises', 'Taishi', '00:10:18', AuthorType.mchad),
       message('Haachama: *eats spider', 'Taishi ch.', '00:10:20', 0),
       message('Haachama: *enlightened noises', 'Taishi ch.', '10:25', 0),
-    ]
+    ];
     const expectedMessages = [
       messages[0],
       messages[1],
