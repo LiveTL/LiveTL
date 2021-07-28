@@ -98,5 +98,6 @@ export const getArchive = videoId => readable(null, async set => {
 /** @type {(videoId: String) => Readable<Message>} */
 export const getLiveTranslations = videoId => derived(sseToStream(apiLiveLink(videoId)), $data => {
   if ($data?.VideoId !== videoId || !enableAPITLs.get()) return;
+  if ($data?.Start / 1000 < window.player.getDuration() - 10) return; // if the timestamp of the translation is more than 10 seconds of the timestamp of the player, ignore it
   return transformApiTl($data);
 });
