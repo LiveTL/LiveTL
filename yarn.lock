@@ -6207,6 +6207,11 @@ readdirp@~3.5.0:
   dependencies:
     picomatch "^2.2.1"
 
+reconnecting-eventsource@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/reconnecting-eventsource/-/reconnecting-eventsource-1.1.0.tgz#df55bde4c575babadeca3c730a2f204e8a1d42de"
+  integrity sha512-KJbQG1iZOC4IRBccT1mOodzKp5YM9gC1H4L6LgDmmXx+4U3pabhb+UF0UI0u+Lck1cvb4oyAuihaQqTbKnslqQ==
+
 redent@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/redent/-/redent-3.0.0.tgz#e557b7998316bb53c9f1f56fa626352c6963059f"

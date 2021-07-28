@@ -5,11 +5,12 @@ import { APITranslation, Message, ScriptMessage, UnixTimestamp } from './types.j
 import { AuthorType, paramsIsVOD } from './constants.js';
 import { formatTimestampMillis, sortBy, suppress, toJson } from './utils.js';
 import { enableAPITLs, timestamp } from './store.js';
+import ReconnectingEventSource from 'reconnecting-eventsource';
 
 export const sseToStream = link => readable(null, set => {
   if (paramsIsVOD) return () => { };
 
-  const source = new EventSource(link);
+  const source = new ReconnectingEventSource(link);
 
   source.onmessage = event => {
     suppress(() => set(JSON.parse(event.data)));
