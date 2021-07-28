@@ -55,12 +55,12 @@ export const AuthorType = {
 
 export const languages = [
   { code: 'en', name: 'English', lang: 'English', tag: 'en-US' },
-  { code: 'jp', name: 'Japanese', lang: '日本語', tag: 'jp-JP' },
+  { code: 'ja', name: 'Japanese', lang: '日本語', tag: 'ja-JP' },
   { code: 'es', name: 'Spanish', lang: 'Español', tag: 'es-MX' },
   { code: 'id', name: 'Indonesian', lang: 'Bahasa Indonesia', tag: 'id-ID' },
-  { code: 'kr', name: 'Korean', lang: '한국', tag: 'ko-KR' },
-  { code: 'ch', name: 'Chinese', lang: '中文', tag: 'zh-CN' },
-  { code: 'ru', name: 'Russian', lang: 'русский', tag: 'ru-RO' },
+  { code: 'ko', name: 'Korean', lang: '한국어', tag: 'ko-KR' },
+  { code: 'zh', name: 'Chinese', lang: '中文', tag: 'zh-CN' },
+  { code: 'ru', name: 'Russian', lang: 'русский', tag: 'ru-RU' },
   { code: 'fr', name: 'French', lang: 'Français', tag: 'fr-FR' }
 ];
 
