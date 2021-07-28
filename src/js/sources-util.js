@@ -42,4 +42,8 @@ const isRecentMessage = (mostRecent, latency) => msg =>
 
 /** @type {(msg: Message) => (otherMsg: Message) => Boolean} */
 const isDuplicateOf = msg => otherMsg =>
-  msg.text.trim() === otherMsg.text.trim() && msg.types !== otherMsg.types;
+  removeWhitespace(msg.text) === removeWhitespace(otherMsg.text) &&
+    msg.types !== otherMsg.types;
+
+/** @type {(text: String) => String} */
+const removeWhitespace = text => text.trim().replace(/(\W)\W+/g, '$1');
