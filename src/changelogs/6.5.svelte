@@ -23,13 +23,25 @@
     </div>
   </ExpansionPanel>
   <ExpansionPanel>
-    <span slot="header">What's next for Android</span>
+    <span slot="header">MChad Improvements</span>
     <div>
-      Many of you may know that the Android app has been stuck on LiveTL v5 for
-      many months. We are currently hard at work on upgrading the app to the
-      newest version (v6). It's almost ready, so be sure to join our
+      There is now a duplicate message checker to prevent messages from MChad
+      users showing up twice. Additionally, we have addressed several issues
+      with MChad stopping mid-stream.
+    </div>
+  </ExpansionPanel>
+  <ExpansionPanel>
+    <span slot="header">What's next</span>
+    <div>
+      <h2>Android</h2>
+      Many of you may know that the Android app has been stuck on LiveTL v5 for many
+      months. We are currently hard at work on upgrading the app to the newest version
+      (v6). It's almost ready, so be sure to join our
       <a href="https://discord.gg/uJrV3tmthg" target="_blank">Discord server</a>
       and sign up for the Android beta role to be notified when it's ready!
+      <h2>Extension</h2>
+      We will be working on a migration to TypeScript and Smelte to make the interface
+      more efficient and snappy. Stay tuned!
     </div>
   </ExpansionPanel>
 </ExpansionPanels>
