@@ -1068,6 +1068,11 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
+"@livetl/api-wrapper@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@livetl/api-wrapper/-/api-wrapper-0.2.0.tgz#17a154781fc7aa0a1cf8ed281e81518e53fdbe4c"
+  integrity sha512-pR4+varDGNFjY6fOfD6KMlAZuS17399O+PC4FdQSwJNaogOoVZp7iPCctYLf/Txtt/X+RIRpSK2E6vBPWWzVtg==
+
 "@mdi/js@^5.9.55":
   version "5.9.55"
   resolved "https://registry.yarnpkg.com/@mdi/js/-/js-5.9.55.tgz#8f5bc4d924c23f30dab20545ddc768e778bbc882"

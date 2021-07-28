@@ -3,9 +3,10 @@ import { derived, get, readable, Readable } from 'svelte/store';
 // eslint-disable-next-line no-unused-vars
 import { APITranslation, Message, ScriptMessage } from './types.js';
 import { AuthorType, paramsIsVOD } from './constants.js';
-import { formatTimestampMillis, sortBy, toJson } from './utils.js';
+import { formatTimestampMillis, sortBy } from './utils.js';
 import { enableAPITLs, timestamp } from './store.js';
 import ReconnectingEventSource from 'reconnecting-eventsource';
+import { getTranslationNotificationsEndpointUrl, getTranslators, loadTranslations } from '@livetl/api-wrapper/src/api';
 
 export const sseToStream = link => readable(null, set => {
   if (paramsIsVOD) return () => { };
@@ -55,41 +56,35 @@ export const archiveStreamFromScript = script => readable(null, set => {
   });
 });
 
-/** @type {(endpoint: String) => String} */
-const url = endpoint => `https://api.livetl.app${endpoint}`;
-
 /** @type {(id: String) => String)} */
 const authorName = (() => {
   const lookup = new Map();
   const addTranslator = translator => lookup.set(translator.userID, translator.displayName);
   const addTranslators = translators => translators.forEach(addTranslator);
-  fetch(url('/translators/registered')).then(toJson).then(addTranslators);
+  getTranslators().then(addTranslators);
   return lookup.get.bind(lookup);
 })();
 
-/** @type {(videoId: String) => String} */
-const apiLiveLink = videoId => url(`/translations/stream?videoId=${videoId}&languageCode=en`);
-
-/** @type {(videoId: String) => String} */
-const apiArchiveLink = videoId => url(`/translations/${videoId}/en`);
-
 /** @type {(apitl: APITranslation) => ScriptMessage} */
 const transformApiTl = apitl => ({
-  text: apitl.TranslatedText,
-  messageArray: [{ type: 'text', text: apitl.TranslatedText }],
-  author: authorName(apitl.TranslatorId),
-  timestamp: formatTimestampMillis(apitl.Start),
-  unix: Math.floor(apitl.Start / 1000),
+  text: apitl.translatedText,
+  messageArray: [{ type: 'text', text: apitl.translatedText }],
+  author: authorName(apitl.translatorId),
+  timestamp: formatTimestampMillis(apitl.start),
+  unix: Math.floor(apitl.start / 1000),
   types: AuthorType.api
 });
 
 /** @type {(videoId: String) => Readable<Message>} */
 export const getArchive = videoId => readable(null, async set => {
-  const script = await fetch(apiArchiveLink(videoId))
-    .then(toJson)
-    .then(s => s.map(transformApiTl))
-    .then(sortBy('unix'));
+  // TODO server side filtering of translators in the blacklist
+  const apiResponse = await loadTranslations(videoId, 'en'); // TODO FIXME don't hardcode to en
+  if (typeof apiResponse !== 'object') {
+    console.debug(`Got error message "${apiResponse}" when loading translations from API`);
+    return;
+  }
 
+  const script = sortBy('unix')(apiResponse.map(transformApiTl));
   return archiveStreamFromScript(script).subscribe(tl => {
     if (enableAPITLs.get())
       set(tl);
@@ -97,8 +92,8 @@ export const getArchive = videoId => readable(null, async set => {
 });
 
 /** @type {(videoId: String) => Readable<Message>} */
-export const getLiveTranslations = videoId => derived(sseToStream(apiLiveLink(videoId)), $data => {
-  if ($data?.VideoId !== videoId || !enableAPITLs.get()) return;
-  if ($data?.Start / 1000 < window.player.getDuration() - 10) return; // if the timestamp of the translation is more than 10 seconds of the timestamp of the player, ignore it
+export const getLiveTranslations = videoId => derived(sseToStream(getTranslationNotificationsEndpointUrl(videoId, 'en')), $data => { // TODO FIXME don't hardcode to en
+  if ($data?.videoId !== videoId || !enableAPITLs.get()) return;
+  if ($data?.start / 1000 < window.player.getDuration() - 10) return; // if the timestamp of the translation is more than 10 seconds of the timestamp of the player, ignore it
   return transformApiTl($data);
 });
