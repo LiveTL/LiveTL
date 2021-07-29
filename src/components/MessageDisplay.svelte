@@ -8,6 +8,7 @@
   import Message from './Message.svelte';
   import { Checkbox } from 'svelte-materialify/src';
   import { sources, combineStores } from '../js/sources.js';
+  import { removeDuplicateMessages } from '../js/sources-util.js';
   import MessageDisplayWrapper from './MessageDisplayWrapper.svelte';
   import '../css/splash.css';
   import {
@@ -29,10 +30,11 @@
   let bottomMsg = null;
   let unsubscribe = null;
   onMount(() => {
-    const { cleanUp, store: source } = combineStores(
+    const { cleanUp, store: sourceWithDups } = combineStores(
       sources.translations,
       sources.mod,
     );
+    const source = removeDuplicateMessages(sourceWithDups);
     const sourceUnsub = source.subscribe(n => {
       if (n) {
         items.push({...n, index: items.length});
