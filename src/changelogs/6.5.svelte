@@ -7,7 +7,7 @@
   <ExpansionPanel>
     <span slot="header">Translator mode is here!</span>
     <div>
-      Translators can now make use of our all-new auto-prefixing and macros
+      Translators can now make use of our all-new auto-prefixing and macro
       system. No longer do you have to type [en] before every message! You can
       enable translator mode in the settings menu under the "Chat" tab.
       <img
