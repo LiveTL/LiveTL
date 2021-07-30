@@ -26,7 +26,7 @@
 
   $: document.body.style.fontSize = Math.round($livetlFontSize) + 'px';
   export let direction;
-  /** @type {{ text: String, author: String, timestamp: String, authorId: string, messageId: string, hidden: boolean, messageArray: any[] }[]}*/
+  /** @type {{ text: String, author: String, timestamp: String, authorId: string, messageId: string, hidden: boolean, messageArray: any[], deleted: boolean }[]}*/
   export let items = [];
 
   let bottomMsg = null;
@@ -47,7 +47,8 @@
       if ($ytcDeleteBehaviour === YtcDeleteBehaviour.HIDE) {
         items[i].hidden = true;
       } else if ($ytcDeleteBehaviour === YtcDeleteBehaviour.PLACEHOLDER) {
-        items[i].messageArray = bonkOrDeletion.replacedMessage; //FIXME: The object gets replaced but UI doesn't update
+        items[i].messageArray = bonkOrDeletion.replacedMessage;
+        items[i].deleted = true;
       }
     };
     const bonkUnsub = sources.ytcBonks.subscribe(bonks => {
@@ -122,6 +123,8 @@
         message={item}
         hidden={item.hidden}
         showTimestamp={$showTimestamp}
+        deleted={item.deleted}
+        messageArray={item.messageArray}
         on:hide={() => (item.hidden = true)}
         on:ban={banMessage(item)}
       >

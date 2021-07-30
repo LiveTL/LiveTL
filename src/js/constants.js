@@ -97,7 +97,7 @@ export const YtcDeleteBehaviour = {
 };
 
 export const ytcDeleteValues = [
-  {name: 'Hide TL', value: YtcDeleteBehaviour.HIDE},
+  {name: 'Hide message', value: YtcDeleteBehaviour.HIDE},
   {name: 'Show placeholder', value: YtcDeleteBehaviour.PLACEHOLDER},
   {name: 'Do nothing', value: YtcDeleteBehaviour.NOTHING}
 ];
