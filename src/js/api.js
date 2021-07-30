@@ -1,18 +1,37 @@
 // eslint-disable-next-line no-unused-vars
-import { get, derived, readable, Readable } from 'svelte/store';
+import { derived, get, readable, Readable } from 'svelte/store';
 // eslint-disable-next-line no-unused-vars
-import { APITranslation, Message, ScriptMessage, UnixTimestamp } from './types.js';
+import { APITranslation, Message, ScriptMessage } from './types.js';
 import { AuthorType, paramsIsVOD } from './constants.js';
-import { formatTimestampMillis, sortBy, suppress, toJson } from './utils.js';
+import { formatTimestampMillis, sortBy, toJson } from './utils.js';
 import { enableAPITLs, timestamp } from './store.js';
+import ReconnectingEventSource from 'reconnecting-eventsource';
 
 export const sseToStream = link => readable(null, set => {
   if (paramsIsVOD) return () => { };
 
-  const source = new EventSource(link);
+  const source = new ReconnectingEventSource(link);
 
   source.onmessage = event => {
-    suppress(() => set(JSON.parse(event.data)));
+    // regex to handle informational messages from the LTL API, *should* work for MChad, as according to their docs all messages are immediately parsable to JSON
+    const match = event.data.match(/^(\w{1,}): (.*)/); // we can use match groups to split the string for us
+    if (match !== null) {
+      switch (match[1].toUpperCase()) {
+      case 'CONNECTED':
+        console.info(`API SSE: ${match[2]}`);
+        return;
+      case 'WARN':
+        console.warn(`API SSE Warning: ${match[2]}`);
+        return;
+      case 'ERROR':
+        console.error(`API SSE Error: ${match[2]}`);
+        source.close();
+        return;
+      }
+    }
+
+    const jsonData = JSON.parse(event.data);
+    set(jsonData);
   };
 
   return function stop() {
@@ -56,11 +75,11 @@ const apiArchiveLink = videoId => url(`/translations/${videoId}/en`);
 
 /** @type {(apitl: APITranslation) => ScriptMessage} */
 const transformApiTl = apitl => ({
-  text: apitl.translatedText,
-  messageArray: [{ type: 'text', text: apitl.translatedText }],
-  author: authorName(apitl.translatorId),
-  timestamp: formatTimestampMillis(apitl.start),
-  unix: Math.floor(apitl.start / 1000),
+  text: apitl.TranslatedText,
+  messageArray: [{ type: 'text', text: apitl.TranslatedText }],
+  author: authorName(apitl.TranslatorId),
+  timestamp: formatTimestampMillis(apitl.Start),
+  unix: Math.floor(apitl.Start / 1000),
   types: AuthorType.api
 });
 
@@ -79,6 +98,7 @@ export const getArchive = videoId => readable(null, async set => {
 
 /** @type {(videoId: String) => Readable<Message>} */
 export const getLiveTranslations = videoId => derived(sseToStream(apiLiveLink(videoId)), $data => {
-  if ($data?.videoId !== videoId || !enableAPITLs.get()) return;
+  if ($data?.VideoId !== videoId || !enableAPITLs.get()) return;
+  if ($data?.Start / 1000 < window.player.getDuration() - 10) return; // if the timestamp of the translation is more than 10 seconds of the timestamp of the player, ignore it
   return transformApiTl($data);
 });
