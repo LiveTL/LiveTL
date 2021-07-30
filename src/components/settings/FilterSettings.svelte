@@ -6,7 +6,8 @@
     customFilters,
     channelFilters,
     enableMchadTLs,
-    enableAPITLs
+    enableAPITLs,
+    ytcDeleteBehaviour
   } from '../../js/store.js';
   import {
     Row,
@@ -17,7 +18,7 @@
   } from 'svelte-materialify/src';
   import { mdiPlus } from '@mdi/js';
   import { addFilter, cleanupFilters } from '../../js/filter.js';
-  import { languageNameValues } from '../../js/constants.js';
+  import { languageNameValues, ytcDeleteValues } from '../../js/constants.js';
   import CheckOption from '../options/Toggle.svelte';
   import CustomFilter from '../options/CustomFilter.svelte';
   import SelectOption from '../options/Dropdown.svelte';
@@ -36,6 +37,11 @@
   name="Language filter"
   store={language}
   items={languageNameValues}
+/>
+<SelectOption
+  name="When messages are deleted by moderators:"
+  store={ytcDeleteBehaviour}
+  items={ytcDeleteValues}
 />
 <CheckOption name="Show moderator messages" store={showModMessage} />
 <MultiDropdown

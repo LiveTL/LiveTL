@@ -15,16 +15,18 @@
     channelFilters,
     livetlFontSize,
     showTimestamp,
+    ytcDeleteBehaviour
   } from '../js/store.js';
   import {
-    TextDirection
+    TextDirection,
+    YtcDeleteBehaviour
   } from '../js/constants.js';
 
   import IntroMessage from './IntroMessage.svelte';
 
   $: document.body.style.fontSize = Math.round($livetlFontSize) + 'px';
   export let direction;
-  /** @type {{ text: String, author: String, timestamp: String, authorId: string, messageId: string, hidden: boolean }[]}*/
+  /** @type {{ text: String, author: String, timestamp: String, authorId: string, messageId: string, hidden: boolean, messageArray: any[] }[]}*/
   export let items = [];
 
   let bottomMsg = null;
@@ -41,27 +43,36 @@
       }
       items = items;
     });
+    const hideOrReplace = (i, bonkOrDeletion) => {
+      if ($ytcDeleteBehaviour === YtcDeleteBehaviour.HIDE) {
+        items[i].hidden = true;
+      } else if ($ytcDeleteBehaviour === YtcDeleteBehaviour.PLACEHOLDER) {
+        items[i].messageArray = bonkOrDeletion.replacedMessage; //FIXME: The object gets replaced but UI doesn't update
+      }
+    };
     const bonkUnsub = sources.ytcBonks.subscribe(bonks => {
       if (!bonks || bonks.length < 1) return;
-      items = items.filter(item => {
-        for (const bonk of bonks) {
-          if (bonk.authorId !== item.authorId) continue;
-          console.debug('Bonked', { bonk, item });
-          return false;
-        }
-        return true;
-      });
+
+      for (let i = items.length - 1; i >= 0; --i) {
+        bonks.some(bonk => {
+          if (items[i].authorId !== bonk.authorId) return false;
+          hideOrReplace(i, bonk);
+          return true;
+        });
+      }
     });
     const deletetionUnsub = sources.ytcDeletions.subscribe(deletions => {
       if (!deletions || deletions.length < 1) return;
-      items = items.filter(item => {
-        for (const deletion of deletions) {
-          if (deletion.messageId !== item.messageId) continue;
-          console.debug('Deleted', { deletion, item });
-          return false;
-        }
-        return true;
-      });
+      console.debug($ytcDeleteBehaviour);
+
+      for (let i = items.length - 1; i >= 0; --i) {
+        deletions.some(deletion => {
+          if (items[i].messageId !== deletion.messageId) return false;
+          hideOrReplace(i, deletion);
+          return true;
+        });
+      }
+
     });
     unsubscribe = () => {
       cleanUp();
