@@ -10,6 +10,11 @@
       Translators can now make use of our all-new auto-prefixing and macros
       system. No longer do you have to type [en] before every message! You can
       enable translator mode in the settings menu under the "Chat" tab.
+      <img
+        src="./img/TLMode.png"
+        style="width: 100%; height: auto;"
+        alt="screenshot"
+      />
     </div>
   </ExpansionPanel>
   <ExpansionPanel>
@@ -31,17 +36,13 @@
     </div>
   </ExpansionPanel>
   <ExpansionPanel>
-    <span slot="header">What's next</span>
+    <span slot="header">What's next for Android</span>
     <div>
-      <h2>Android</h2>
       Many of you may know that the Android app has been stuck on LiveTL v5 for many
       months. We are currently hard at work on upgrading the app to the newest version
       (v6). It's almost ready, so be sure to join our
       <a href="https://discord.gg/uJrV3tmthg" target="_blank">Discord server</a>
       and sign up for the Android beta role to be notified when it's ready!
-      <h2>Extension</h2>
-      We will be working on a migration to TypeScript and Smelte to make the interface
-      more efficient and snappy. Stay tuned!
     </div>
   </ExpansionPanel>
 </ExpansionPanels>
