@@ -24,7 +24,7 @@
 
   $: document.body.style.fontSize = Math.round($livetlFontSize) + 'px';
   export let direction;
-  /** @type {{ text: String, author: String, timestamp: String }[]}*/
+  /** @type {{ text: String, author: String, timestamp: String, authorId: string, messageId: string, hidden: boolean }[]}*/
   export let items = [];
 
   let bottomMsg = null;
@@ -41,9 +41,33 @@
       }
       items = items;
     });
+    const bonkUnsub = sources.ytcBonks.subscribe(bonks => {
+      if (!bonks || bonks.length < 1) return;
+      items = items.filter(item => {
+        for (const bonk of bonks) {
+          if (bonk.authorId !== item.authorId) continue;
+          console.debug('Bonked', { bonk, item });
+          return false;
+        }
+        return true;
+      });
+    });
+    const deletetionUnsub = sources.ytcDeletions.subscribe(deletions => {
+      if (!deletions || deletions.length < 1) return;
+      items = items.filter(item => {
+        for (const deletion of deletions) {
+          if (deletion.messageId !== item.messageId) continue;
+          console.debug('Deleted', { deletion, item });
+          return false;
+        }
+        return true;
+      });
+    });
     unsubscribe = () => {
       cleanUp();
       sourceUnsub();
+      bonkUnsub();
+      deletetionUnsub();
     };
   });
   onDestroy(() => unsubscribe());
@@ -63,12 +87,12 @@
   export let selectedItems = [];
 
   const banMessage = item => () => {
-    channelFilters.set(item.id, {
-      ...channelFilters.get(item.id),
+    channelFilters.set(item.authorId, {
+      ...channelFilters.get(item.authorId),
       name: item.author,
       blacklist: true,
     });
-    items = items.filter(i => i.id != item.id);
+    items = items.filter(i => i.authorId != item.authorId);
   };
 
   $: if (!isSelecting) selectedItems = [];
