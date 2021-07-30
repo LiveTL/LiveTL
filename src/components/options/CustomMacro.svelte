@@ -33,12 +33,12 @@
   <Col>
     <TextField dense bind:value={expansion}>Expansion</TextField>
   </Col>
-  <Checkbox bind:checked={enabled} />
-  <!--
-    @Kento, @ChrRubin, can you see whether width should also be set to 3.5em?
-    Idk which looks better
-  -->
-  <Button icon class="red-text" style="height: 3.5em;" on:click={deleteMacro}>
-    <Icon path={mdiDelete} />
-  </Button>
+  <div style="display: flex;">
+    <Checkbox bind:checked={enabled} />
+    <div style="height: 100%; display: flex; align-items: center; padding-right: 5px;">
+      <Button icon class="red-text" on:click={deleteMacro}>
+        <Icon path={mdiDelete} />
+      </Button>
+    </div>
+  </div>
 </Row>
