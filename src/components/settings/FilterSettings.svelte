@@ -23,6 +23,7 @@
   import CustomFilter from '../options/CustomFilter.svelte';
   import SelectOption from '../options/Dropdown.svelte';
   import MultiDropdown from '../options/MultiDropdown.svelte';
+  import { Radio } from 'svelte-materialify/src';
 
   function createNewFilter() {
     cleanupFilters();
@@ -31,17 +32,14 @@
 
   onMount(cleanupFilters);
 
+  $: deleteBehaviourGroup = $ytcDeleteBehaviour;
+  $: ytcDeleteBehaviour.set(deleteBehaviourGroup);
 </script>
 
 <SelectOption
   name="Language filter"
   store={language}
   items={languageNameValues}
-/>
-<SelectOption
-  name="When messages are deleted by moderators:"
-  store={ytcDeleteBehaviour}
-  items={ytcDeleteValues}
 />
 <CheckOption name="Show moderator messages" store={showModMessage} />
 <MultiDropdown
@@ -52,6 +50,12 @@
   setBool={(n, v) =>
     channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}
 />
+<Subheader>When messages are deleted by moderators:</Subheader>
+{#each [...ytcDeleteValues.keys()] as key}
+  <Radio bind:group={deleteBehaviourGroup} value={key} style='padding-bottom: 5px;' color='blue'>
+    {ytcDeleteValues.get(key)}
+  </Radio>
+{/each}
 <Row>
   <Col>
     <Subheader>External translation sources</Subheader>
