@@ -21,12 +21,13 @@
     TextDirection,
     YtcDeleteBehaviour
   } from '../js/constants.js';
-
   import IntroMessage from './IntroMessage.svelte';
+  // eslint-disable-next-line no-unused-vars
+  import { MessageItem } from '../js/types.js';
 
   $: document.body.style.fontSize = Math.round($livetlFontSize) + 'px';
   export let direction;
-  /** @type {{ text: String, author: String, timestamp: String, authorId: string, messageId: string, hidden: boolean, messageArray: any[], deleted: boolean }[]}*/
+  /** @type {{ text: String, author: String, timestamp: String, authorId: string, messageId: string, hidden: boolean, messageArray: MessageItem[], deleted: boolean }[]}*/
   export let items = [];
 
   let bottomMsg = null;
