@@ -44,7 +44,7 @@
 />
 <CheckOption name="Show moderator messages" store={showModMessage} />
 <MultiDropdown
-  name="Blocked users"
+  name="Blocked users (YouTube chat)"
   store={channelFilters}
   getDisplayName={(n, v) => v.name}
   getBool={n => channelFilters.get(n).blacklist}
@@ -66,7 +66,7 @@
 </Row>
 {#if $enableMchadTLs}
   <MultiDropdown
-    name="Blocked MCHAD translators"
+    name="Blocked users (MChad)"
     store={mchadUsers}
   />
 {/if}
