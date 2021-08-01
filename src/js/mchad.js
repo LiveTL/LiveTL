@@ -3,10 +3,9 @@ import { MCHAD, AuthorType } from './constants.js';
 import { Message, MCHADTL, MCHADStreamItem, MCHADLiveRoom, MCHADArchiveRoom, Seconds, UnixTimestamp } from './types.js';
 // eslint-disable-next-line no-unused-vars
 import { derived, get, readable, Readable } from 'svelte/store';
-import { availableMchadUsers, enableMchadTLs, mchadUsers } from './store.js';
+import { enableMchadTLs, mchadUsers } from './store.js';
 import { combineArr, formatTimestampMillis, sleep, sortBy } from './utils.js';
 import { archiveStreamFromScript, sseToStream } from './api.js';
-import { runIfTranslation } from './filter.js';
 
 /** @typedef {(unix: UnixTimestamp) => String} UnixTransformer */
 
