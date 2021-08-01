@@ -214,3 +214,21 @@ export const replaceFirstTranslation = msg => {
   }
   return { ...msg, messageArray };
 };
+
+/**
+ * Runs a callback if the message is a translation and returns whether it was a translation
+ *
+ * @type {(msg: Message, callback: (msg: Message) => void) => Boolean}
+ */
+export const runIfTranslation = (msg, callback) => {
+  if (!msg.text.trim()) return false;
+  const parsed = parseTranslation(msg.text.trim());
+  if (isTranslation(parsed)) {
+    callback({
+      ...replaceFirstTranslation(msg),
+      text: parsed.msg
+    });
+    return true;
+  }
+  return false;
+};

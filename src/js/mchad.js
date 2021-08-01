@@ -6,6 +6,7 @@ import { derived, get, readable, Readable } from 'svelte/store';
 import { enableMchadTLs } from './store.js';
 import { combineArr, formatTimestampMillis, sleep, sortBy } from './utils.js';
 import { archiveStreamFromScript, sseToStream } from './api.js';
+import { runIfTranslation } from './filter.js';
 
 /** @typedef {(unix: UnixTimestamp) => String} UnixTransformer */
 
@@ -126,17 +127,20 @@ export const getRoomTranslations = room => derived(streamRoom(room.Nick), (data,
   }
 });
 
-/** @type {(videoId: String, retryInterval: Seconds) => MCHADLiveRoom} */
-const getLiveRoomWithRetry = async (videoId, retryInterval) => {
+/** @type {(videoId: String, retryInterval: Seconds) => MCHADLiveRoom[]} */
+const getLiveRoomsWithRetry = async (videoId, retryInterval) => {
   while (1) {
     const { live } = await getRooms(videoId);
-    if (live.length) return live[0];
+    if (live.length) return live;
     await sleep(retryInterval * 1000);
   }
 };
 
 /** @type {(videoId: String) => Readable<Message>} */
 export const getLiveTranslations = videoId => readable(null, async set => {
-  const room = await getLiveRoomWithRetry(videoId, 30);
-  return getRoomTranslations(room).subscribe(set);
+  const rooms = await getLiveRoomsWithRetry(videoId, 30);
+  const unsubscribes = rooms.map(room => getRoomTranslations(room).subscribe(msg => {
+    runIfTranslation(msg, set);
+  }));
+  return () => unsubscribes.forEach(u => u());
 });
