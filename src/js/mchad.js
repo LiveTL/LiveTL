@@ -77,15 +77,20 @@ export const getArchive = videoId => readable(null, async set => {
 
   const addUnix = tl => ({...tl, unix: archiveTimeToInt(tl.timestamp)});
 
-  const script = await getArchiveFromRoom(vod[0])
+  const getScript = room => getArchiveFromRoom(room)
     .then(s => s.map(addUnix))
     .then(s => s.filter(e => e.unix >= 0))
     .then(sortBy('unix'));
+  const scripts = await Promise.all(vod.map(getScript));
 
-  return archiveStreamFromScript(script).subscribe(tl => {
-    if (enableMchadTLs.get())
-      set(tl);
-  });
+  const unsubscribes = scripts
+    .map(archiveStreamFromScript)
+    .map(stream => stream.subscribe(tl => {
+      if (enableMchadTLs.get())
+        runIfTranslationset(tl, set);
+    }));
+
+  return () => unsubscribes.forEach(u => u());
 });
 
 /** @type {(room: String) => Readable<MCHADStreamItem>} */
@@ -140,7 +145,9 @@ const getLiveRoomsWithRetry = async (videoId, retryInterval) => {
 export const getLiveTranslations = videoId => readable(null, async set => {
   const rooms = await getLiveRoomsWithRetry(videoId, 30);
   const unsubscribes = rooms.map(room => getRoomTranslations(room).subscribe(msg => {
-    runIfTranslation(msg, set);
+    if (enableMchadTLs.get()) {
+      runIfTranslation(msg, set);
+    }
   }));
   return () => unsubscribes.forEach(u => u());
 });
