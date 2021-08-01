@@ -6,7 +6,8 @@
     customFilters,
     channelFilters,
     enableMchadTLs,
-    enableAPITLs
+    enableAPITLs,
+    mchadUsers
   } from '../../js/store.js';
   import {
     Row,
@@ -45,6 +46,10 @@
   getBool={n => channelFilters.get(n).blacklist}
   setBool={(n, v) =>
     channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}
+/>
+<MultiDropdown
+  name="Blocked MCHAD translators"
+  store={mchadUsers}
 />
 <Row>
   <Col>

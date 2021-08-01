@@ -3,7 +3,7 @@ import { MCHAD, AuthorType } from './constants.js';
 import { Message, MCHADTL, MCHADStreamItem, MCHADLiveRoom, MCHADArchiveRoom, Seconds, UnixTimestamp } from './types.js';
 // eslint-disable-next-line no-unused-vars
 import { derived, get, readable, Readable } from 'svelte/store';
-import { enableMchadTLs } from './store.js';
+import { availableMchadUsers, enableMchadTLs, mchadUsers } from './store.js';
 import { combineArr, formatTimestampMillis, sleep, sortBy } from './utils.js';
 import { archiveStreamFromScript, sseToStream } from './api.js';
 import { runIfTranslation } from './filter.js';
@@ -70,6 +70,9 @@ export async function getArchiveFromRoom(room) {
   return script.map(toMessage);
 }
 
+/** @type {(script: Message[]) => String} */
+const getScriptAuthor = script => script[0].author;
+
 /** @type {(videoId: String) => Readable<Message>} */
 export const getArchive = videoId => readable(null, async set => {
   const { vod } = await getRooms(videoId);
@@ -82,11 +85,14 @@ export const getArchive = videoId => readable(null, async set => {
     .then(s => s.filter(e => e.unix >= 0))
     .then(sortBy('unix'));
   const scripts = await Promise.all(vod.map(getScript));
+  scripts.map(getScriptAuthor).forEach(author => {
+    mchadUsers.set(author, mchadUsers.get(author));
+  });
 
   const unsubscribes = scripts
     .map(archiveStreamFromScript)
     .map(stream => stream.subscribe(tl => {
-      if (enableMchadTLs.get())
+      if (tl && enableMchadTLs.get() && !mchadUsers.get(tl.author))
         set(tl);
     }));
 
@@ -145,8 +151,8 @@ const getLiveRoomsWithRetry = async (videoId, retryInterval) => {
 export const getLiveTranslations = videoId => readable(null, async set => {
   const rooms = await getLiveRoomsWithRetry(videoId, 30);
   const unsubscribes = rooms.map(room => getRoomTranslations(room).subscribe(msg => {
-    if (enableMchadTLs.get()) {
-      runIfTranslation(msg, set);
+    if (msg && enableMchadTLs.get() && !mchadUsers.get(msg.author)) {
+      set(msg);
     }
   }));
   return () => unsubscribes.forEach(u => u());

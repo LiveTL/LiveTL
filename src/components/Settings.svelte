@@ -16,6 +16,7 @@
 
   let wrapper = null;
   function redrawSlider() {
+    if (wrapper == null) return;
     const sliderElement = wrapper.querySelector('.ltl-settings-slider');
     const activeTab = wrapper.querySelector(
       '.ltl-settings-tabs .s-tab.s-slide-item.active'

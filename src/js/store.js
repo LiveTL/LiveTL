@@ -68,10 +68,14 @@ export const
   enableMchadTLs = SS('enableMchadTLs', true),
   enableAPITLs = SS('enableAPITLs', true),
   enableExportButtons = SS('enableExportButtons', true),
-  enableFullscreenButton = SS('enableFullscreenButton', true);
+  enableFullscreenButton = SS('enableFullscreenButton', true),
+  mchadUsers = LS('mchadUsers', false);
 
 // Non-persistant stores
 export const updatePopupActive = writable(false);
 export const videoTitle = writable('LiveTL');
 export const timestamp = writable(0);
 export const faviconURL = writable('/48x48.png');
+export const availableMchadUsers = writable([]);
+
+window.mchadUsers = mchadUsers
