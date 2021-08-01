@@ -47,10 +47,6 @@
   setBool={(n, v) =>
     channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}
 />
-<MultiDropdown
-  name="Blocked MCHAD translators"
-  store={mchadUsers}
-/>
 <Row>
   <Col>
     <Subheader>External translation sources</Subheader>
@@ -58,6 +54,12 @@
     <CheckOption name="MChad (volunteer translators)" store={enableMchadTLs} />
   </Col>
 </Row>
+{#if $enableMchadTLs}
+  <MultiDropdown
+    name="Blocked MCHAD translators"
+    store={mchadUsers}
+  />
+{/if}
 <div class="filter-options">
   <Row>
     <Col>
