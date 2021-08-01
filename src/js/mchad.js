@@ -87,7 +87,7 @@ export const getArchive = videoId => readable(null, async set => {
     .map(archiveStreamFromScript)
     .map(stream => stream.subscribe(tl => {
       if (enableMchadTLs.get())
-        runIfTranslationset(tl, set);
+        set(tl);
     }));
 
   return () => unsubscribes.forEach(u => u());

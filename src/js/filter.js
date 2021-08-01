@@ -224,7 +224,7 @@ export const replaceFirstTranslation = msg => {
  * @type {(msg: Message, callback: (msg: Message) => void) => Boolean}
  */
 export const runIfTranslation = (msg, callback) => {
-  if (!msg.text.trim()) return false;
+  if (!msg?.text.trim()) return false;
   const parsed = parseTranslation(msg.text.trim());
   if (isTranslation(parsed)) {
     callback({
