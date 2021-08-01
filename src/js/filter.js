@@ -205,6 +205,8 @@ export function cleanupFilters() {
 const lang = () => languageNameCode[language.get()];
 
 export const isTranslation = parsed => parsed && isLangMatch(parsed.lang, lang()) && parsed.msg;
+const isOtherLangTranslation = parsed =>
+  parsed && !isLangMatch(parsed.lang, lang()) && parsed.msg;
 
 /** @type {(msg: Message) => Message} */
 export const replaceFirstTranslation = msg => {
@@ -216,7 +218,8 @@ export const replaceFirstTranslation = msg => {
 };
 
 /**
- * Runs a callback if the message is a translation and returns whether it was a translation
+ * Runs a callback if the message is a translation or if no translation is detected
+ * and returns whether it ran
  *
  * @type {(msg: Message, callback: (msg: Message) => void) => Boolean}
  */
@@ -228,6 +231,10 @@ export const runIfTranslation = (msg, callback) => {
       ...replaceFirstTranslation(msg),
       text: parsed.msg
     });
+    return true;
+  }
+  if (!isOtherLangTranslation(parsed)) {
+    callback(msg);
     return true;
   }
   return false;
