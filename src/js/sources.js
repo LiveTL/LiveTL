@@ -1,24 +1,27 @@
 import { Queue } from './queue';
 import { compose } from './utils';
 // eslint-disable-next-line no-unused-vars
-import { writable, Writable, Readable } from 'svelte/store';
+import { derived, writable, Writable, Readable } from 'svelte/store';
 // eslint-disable-next-line no-unused-vars
 import { Message } from './types.js';
 import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted, authorWhitelisted, authorBlacklisted } from './filter';
 import { channelFilters, language, showModMessage, timestamp } from './store';
 import { paramsVideoId, AuthorType, languageNameCode, paramsPopout, paramsTabId, paramsFrameId } from './constants';
 import { checkAndSpeak } from './speech.js';
+import { removeDuplicateMessages } from './sources-util.js';
 import * as MCHAD from './mchad.js';
 import * as API from './api.js';
 
 
-/** @type {{ translations: Writable<Message>, mod: Writable<Message>, ytc: Writable<Message>, mchad: Readable<Message>, api: Readable<Message>}} */
+/** @type {{ ytcTranslations: Writable<Message>, mod: Writable<Message>, ytc: Writable<Message>, translations: Writable<Message>, mchad: Readable<Message>, api: Readable<Message>, ytcBonks: Writable<any[]>, ytcDeletions:Writable<any[]> }} */
 export const sources = {
   ytcTranslations: writable(null),
   mod: writable(null),
   ytc: ytcSource(window).ytc,
   mchad: combineStores(MCHAD.getArchive(paramsVideoId), MCHAD.getLiveTranslations(paramsVideoId)).store,
   api: combineStores(API.getArchive(paramsVideoId), API.getLiveTranslations(paramsVideoId)).store,
+  ytcBonks: writable(null),
+  ytcDeletions: writable(null),
 };
 
 /** @type {(id: String) => Boolean} */
@@ -28,7 +31,7 @@ const userBlacklisted = id => channelFilters.get(id).blacklist;
 const isWhitelisted = msg => textWhitelisted(msg.text) || authorWhitelisted(msg.author);
 
 /** @type {(msg: Message) => Boolean} */
-const isBlacklisted = msg => textBlacklisted(msg.text) || userBlacklisted(msg.id) || authorBlacklisted(msg.author);
+const isBlacklisted = msg => textBlacklisted(msg.text) || userBlacklisted(msg.authorId) || authorBlacklisted(msg.author);
 
 /** @type {(msg: Message) => Boolean} */
 const isMod = msg => (msg.types & AuthorType.moderator) || (msg.types & AuthorType.owner);
@@ -36,7 +39,7 @@ const isMod = msg => (msg.types & AuthorType.moderator) || (msg.types & AuthorTy
 /** @type {(msg: Message) => Boolean} */
 const showIfMod = msg => isMod(msg) && showModMessage.get();
 
-/** @type {(store: Writable<Message>) => (msg: Message, text: String | undefined) => void} */
+/** @type {(store: Writable<Message>) => (msg: Message, text?: String) => void} */
 const setStoreMessage =
   store => (msg, text) => store.set({ ...msg, text: text ?? msg.text });
 
@@ -107,15 +110,28 @@ export function combineStores(...stores) {
   };
 }
 
-function ytcToMsg({ message, timestamp, author: { name: author, id, types } }) {
-  const text = message
+/**
+ * @returns {Message}
+ */
+function ytcToMsg(ytcMessage) {
+  const text = ytcMessage.message
     .filter(item => item.type === 'text' || item.type === 'link')
     .map(item => item.text)
     .join('');
-  const typeFlag = types.reduce((flag, t) => flag | AuthorType[t], 0);
-  return { text, timestamp, author, id, types: typeFlag, messageArray: message };
+  const author = ytcMessage.author;
+  const typeFlag = author.types.reduce((flag, t) => flag | AuthorType[t], 0);
+  return {
+    text,
+    timestamp: ytcMessage.timestamp,
+    author: author.name,
+    authorId: author.id,
+    types: typeFlag,
+    messageArray: ytcMessage.message,
+    messageId: ytcMessage.messageId
+  };
 }
 
+/**@param {Window} window */
 export function ytcSource(window) {
   /** @type {Writable<Message>} */
   const ytc = writable(null);
@@ -204,10 +220,20 @@ export function ytcSource(window) {
     }
   });
 
+  const filterDeleted = (message, bonks, deletions) => {
+    return !(bonks.some((b) => b.authorId === message.author.id) ||
+      deletions.some((d) => d.messageId === message.messageId));
+  };
+
   port.onMessage.addListener((payload) => {
     if (payload.type === 'actionChunk') {
       firstChunkReceived = true;
-      pushMessagesToQueue(payload.messages);
+      const messages = payload.messages.filter(
+        (m) => filterDeleted(m, payload.bonks, payload.deletions)
+      );
+      sources.ytcBonks.set(payload.bonks);
+      sources.ytcDeletions.set(payload.deletions);
+      pushMessagesToQueue(messages);
       if (!isPollingProgress() && !payload.isReplay) {
         startVideoProgressUpdatePolling();
       }
@@ -230,11 +256,11 @@ function message(author, msg, timestamp) {
 }
 
 attachFilters(sources.ytcTranslations, sources.mod, sources.ytc);
-sources.translations = combineStores(
+sources.translations = removeDuplicateMessages(combineStores(
   sources.ytcTranslations,
   sources.mchad,
   sources.api
-).store;
+).store);
 attachSpeechSynth(sources.translations);
 
 export class DummyYTCEventSource {

@@ -58,7 +58,7 @@ export const languages = [
   { code: 'jp', name: 'Japanese', lang: '日本語', tag: 'jp-JP' },
   { code: 'es', name: 'Spanish', lang: 'Español', tag: 'es-MX' },
   { code: 'id', name: 'Indonesian', lang: 'Bahasa Indonesia', tag: 'id-ID' },
-  { code: 'kr', name: 'Korean', lang: '한국', tag: 'ko-KR' },
+  { code: 'kr', name: 'Korean', lang: '한국어', tag: 'ko-KR' },
   { code: 'ch', name: 'Chinese', lang: '中文', tag: 'zh-CN' },
   { code: 'ru', name: 'Russian', lang: 'русский', tag: 'ru-RO' },
   { code: 'fr', name: 'French', lang: 'Français', tag: 'fr-FR' }
@@ -89,3 +89,16 @@ export const paramsEmbedded = params.get('embedded');
 export const paramsContinuation = params.get('continuation');
 export const paramsIsVOD = params.get('isReplay');
 export const paramsEmbedDomain = params.get('embed_domain');
+
+/** @enum {String} */
+export const YtcDeleteBehaviour = {
+  HIDE: 'HIDE',
+  PLACEHOLDER: 'PLACEHOLDER',
+  NOTHING: 'NOTHING'
+};
+
+export const ytcDeleteValues = new Map([
+  [YtcDeleteBehaviour.HIDE, 'Hide message'],
+  [YtcDeleteBehaviour.PLACEHOLDER, 'Show placeholder'],
+  [YtcDeleteBehaviour.NOTHING, 'Do nothing']
+]);
