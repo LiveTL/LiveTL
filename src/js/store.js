@@ -1,4 +1,4 @@
-import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit } from './constants.js';
+import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour } from './constants.js';
 import { LookupStore, SyncStore } from './storage.js';
 import { writable } from 'svelte/store';
 
@@ -69,7 +69,8 @@ export const
   enableAPITLs = SS('enableAPITLs', true),
   enableExportButtons = SS('enableExportButtons', true),
   enableFullscreenButton = SS('enableFullscreenButton', true),
-  mchadUsers = LS('mchadUsers', false);
+  mchadUsers = LS('mchadUsers', false),
+  ytcDeleteBehaviour = SS('ytcDeleteBehaviour', YtcDeleteBehaviour.HIDE);
 
 // Non-persistant stores
 export const updatePopupActive = writable(false);

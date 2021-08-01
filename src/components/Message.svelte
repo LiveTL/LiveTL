@@ -15,8 +15,14 @@
   export let showTimestamp = false;
   export let thin = false;
   export let inanimate = true;
+  export let deleted = false;
+  export let messageArray = null;
 
   const dispatch = createEventDispatcher();
+
+  if (!messageArray && message) {
+    messageArray = message.messageArray;
+  }
 
   $: moderator = message.types & AuthorType.moderator;
   $: owner = message.types & AuthorType.owner;
@@ -27,12 +33,13 @@
   class="message"
   class:inanimate
   class:thin
+  class:deleted
   style="display: {hidden ? 'none' : 'block'}"
 >
   <!-- For screenshot checkmark -->
   <slot />
 
-  {#each message.messageArray as msg}
+  {#each messageArray as msg}
     {#if msg.type === 'text'}
       <span>{msg.text}</span>
     {:else if msg.type === 'link'}
@@ -108,6 +115,7 @@
   .info {
     font-size: 0.75em;
     color: lightgray;
+    font-style: normal;
   }
 
   .chat-link {
@@ -125,5 +133,10 @@
     background-color: rgba(255, 255, 255, 0.25);
     padding: 2px;
     border-radius: 5px;
+  }
+
+  .deleted {
+    font-style: italic;
+    color: #898888;
   }
 </style>

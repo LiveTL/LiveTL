@@ -89,3 +89,16 @@ export const paramsEmbedded = params.get('embedded');
 export const paramsContinuation = params.get('continuation');
 export const paramsIsVOD = params.get('isReplay');
 export const paramsEmbedDomain = params.get('embed_domain');
+
+/** @enum {String} */
+export const YtcDeleteBehaviour = {
+  HIDE: 'HIDE',
+  PLACEHOLDER: 'PLACEHOLDER',
+  NOTHING: 'NOTHING'
+};
+
+export const ytcDeleteValues = new Map([
+  [YtcDeleteBehaviour.HIDE, 'Hide message'],
+  [YtcDeleteBehaviour.PLACEHOLDER, 'Show placeholder'],
+  [YtcDeleteBehaviour.NOTHING, 'Do nothing']
+]);

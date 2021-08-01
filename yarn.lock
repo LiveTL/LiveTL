@@ -7113,7 +7113,7 @@ svelte-loader@^3.1.2:
     svelte-dev-helper "^1.1.9"
     svelte-hmr "^0.14.2"
 
-svelte-materialify@^0.3.6:
+svelte-materialify@0.3.6:
   version "0.3.6"
   resolved "https://registry.yarnpkg.com/svelte-materialify/-/svelte-materialify-0.3.6.tgz#a2d4c42ddfcca4bd36625b0481c8daa62dae3b4d"
   integrity sha512-tiENt0PkgIGa2alIAu3pAVUakQwNpWpxiudUDNyVo0igDuvPzXy/39R+wvPdM4HabjYUdsfoghiOsUcpHCLxIg==
