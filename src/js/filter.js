@@ -1,6 +1,6 @@
 import { languageNameCode } from './constants.js';
 import { customFilters, language } from './store.js';
-import { not, composeOr } from './utils.js';
+import { escapeRegExp, not, composeOr } from './utils.js';
 // import {
 //   textWhitelist,
 //   textBlacklist,
@@ -167,12 +167,6 @@ export function isLangMatch(textLang, currentLang) {
       currentLang.lang.toLowerCase().startsWith(s)
     )
   ));
-}
-
-
-// https://stackoverflow.com/questions/3115150/how-to-escape-regular-expression-special-characters-using-javascript
-function escapeRegExp(text) {
-  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
 
 export function addFilter(chatAuthor, plainReg, showBlock, rule) {

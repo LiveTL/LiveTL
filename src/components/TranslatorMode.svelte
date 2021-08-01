@@ -9,7 +9,7 @@
   const recommendations = writable([]);
   const focusRec = writable(null);
 
-  let focussed = 0;
+  let focused = 0;
 
   const chatbox = container.querySelectorAll('#input')[1];
   const hide = el => el.style.display = 'none';
@@ -21,7 +21,7 @@
     if (e.key === 'Tab') {
       e.stopPropagation();
       setTimeout(hideRipples);
-      focussed++;
+      focused++;
     }
   };
 
@@ -34,8 +34,8 @@
 
   container.cleanUpCbs.push(() => chatbox.removeEventListener('keydown', onKeydown));
   $: reclen = $recommendations.length;
-  $: focussed = reclen == 0 ? 0 : focussed % reclen;
-  $: focusRec.set(reclen ? $recommendations[focussed] : null);
+  $: focused = reclen == 0 ? 0 : focused % reclen;
+  $: focusRec.set(reclen ? $recommendations[focused] : null);
 </script>
 
 <!-- The translation recommendations -->
@@ -45,12 +45,12 @@
 {/if}
 <div class="recommends">
   {#each $recommendations as recommend, i}
-    <div class:focussed={i == focussed}>{recommend}</div>
+    <div class:focused={i == focused}>{recommend}</div>
   {/each}
 </div>
 
 <style>
-  .focussed {
+  .focused {
     color: #0099FF;
   }
 

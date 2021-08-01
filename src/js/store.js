@@ -70,6 +70,8 @@ export const
   enableExportButtons = SS('enableExportButtons', true),
   enableFullscreenButton = SS('enableFullscreenButton', true),
   mchadUsers = LS('mchadUsers', false),
+  autoPrefixTag = SS('autoPrefixTag', '[$filterLang]'),
+  macroTrigger = SS('macroTrigger', '/'),
   ytcDeleteBehaviour = SS('ytcDeleteBehaviour', YtcDeleteBehaviour.HIDE);
 
 // Non-persistant stores
