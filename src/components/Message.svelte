@@ -16,9 +16,13 @@
   export let thin = false;
   export let inanimate = true;
   export let deleted = false;
-  export let messageArray = [];
+  export let messageArray = null;
 
   const dispatch = createEventDispatcher();
+
+  if (!messageArray && message) {
+    messageArray = message.messageArray;
+  }
 
   $: moderator = message.types & AuthorType.moderator;
   $: owner = message.types & AuthorType.owner;
