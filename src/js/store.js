@@ -77,5 +77,3 @@ export const videoTitle = writable('LiveTL');
 export const timestamp = writable(0);
 export const faviconURL = writable('/48x48.png');
 export const availableMchadUsers = writable([]);
-
-window.mchadUsers = mchadUsers

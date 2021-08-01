@@ -17,6 +17,7 @@
     showTimestamp,
   } from '../js/store.js';
   import {
+    AuthorType,
     TextDirection
   } from '../js/constants.js';
 
@@ -63,11 +64,15 @@
   export let selectedItems = [];
 
   const banMessage = item => () => {
-    channelFilters.set(item.id, {
-      ...channelFilters.get(item.id),
-      name: item.author,
-      blacklist: true,
-    });
+    if (item.types & AuthorType.mchad) {
+      mchadUsers.set(item.author, true);
+    } else {
+      channelFilters.set(item.id, {
+        ...channelFilters.get(item.id),
+        name: item.author,
+        blacklist: true,
+      });
+    }
     items = items.filter(i => i.id != item.id);
   };
 
