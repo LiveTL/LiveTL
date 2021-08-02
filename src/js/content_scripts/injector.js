@@ -1,9 +1,7 @@
 import { mdiOpenInNew, mdiYoutubeTv, mdiIframeArray } from '@mdi/js';
 import { getFrameInfoAsync, createPopup } from '../../submodules/chat/scripts/chat-utils.js';
-import fixMemLeaks from '../../submodules/chat/src/plugins/ytc-fix-memleaks.js';
+import { fixLeaks } from '../../submodules/chat/src/plugins/ytc-fix-memleaks.js';
 import { paramsEmbedDomain } from '../constants.js';
-
-fixMemLeaks();
 
 for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) {
   window.addEventListener(eventName, e => e.stopImmediatePropagation(), true);
@@ -107,6 +105,10 @@ const constructParams = () => {
 };
 
 async function loaded() {
+  const script = document.createElement('script');
+  script.innerHTML = `(${fixLeaks.toString()})();`;
+  document.body.appendChild(script);
+
   const elem = document.querySelector('yt-live-chat-app');
   elem.style.minWidth = '0px';
   elem.style.minHeight = '0px';

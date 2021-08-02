@@ -5,11 +5,19 @@
 
 <ExpansionPanels bind:value>
   <ExpansionPanel>
-    <span slot="header">MChad TLer blacklisted</span>
+    <span slot="header">MChad TLer blacklisting is here!</span>
     <div>
       MChad users are now handled as individual users, just like translators in
       the YouTube chat! No longer do you need to keep seeing Korean TLers when
       trying to get EN translations.
+    </div>
+  </ExpansionPanel>
+  <ExpansionPanel>
+    <span slot="header">YouTube chat optimization</span>
+    <div>
+      We added a script to fix a memory leak in the YouTube chat. Special thanks
+      to <a href="https://twitter.com/laversheet" target="_blank">@laversheet</a
+      >!
     </div>
   </ExpansionPanel>
 </ExpansionPanels>
