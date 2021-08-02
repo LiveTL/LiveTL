@@ -15,6 +15,7 @@
     Col,
     Button,
     Icon,
+    Radio,
     Subheader
   } from 'svelte-materialify/src';
   import { mdiPlus } from '@mdi/js';
@@ -24,7 +25,7 @@
   import CustomFilter from '../options/CustomFilter.svelte';
   import SelectOption from '../options/Dropdown.svelte';
   import MultiDropdown from '../options/MultiDropdown.svelte';
-  import { Radio } from 'svelte-materialify/src';
+  import BlockedUsers from '../BlockedUsers.svelte';
 
   function createNewFilter() {
     cleanupFilters();
@@ -43,29 +44,7 @@
   items={languageNameValues}
 />
 <CheckOption name="Show moderator messages" store={showModMessage} />
-<Subheader style="height: 1.5rem; margin-top: 1.5rem;">
-  Blocked Users
-</Subheader>
-<Row>
-  <Col style="padding-top:0px;">
-    <MultiDropdown
-      name="YouTube chat"
-      store={channelFilters}
-      getDisplayName={(n, v) => v.name}
-      getBool={n => channelFilters.get(n).blacklist}
-      setBool={(n, v) =>
-        channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}
-    />
-  </Col>
-  {#if $enableMchadTLs}
-    <Col style="padding-top:0px">
-      <MultiDropdown
-        name="MChad"
-        store={mchadUsers}
-      />
-    </Col>
-  {/if}
-</Row>
+<BlockedUsers />
 <Subheader>When messages are deleted by moderators:</Subheader>
 {#each [...ytcDeleteValues.keys()] as key}
   <Radio bind:group={deleteBehaviourGroup} value={key} style='padding-bottom: 5px;' color='blue'>
