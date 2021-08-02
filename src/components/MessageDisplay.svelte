@@ -14,6 +14,7 @@
   import {
     channelFilters,
     livetlFontSize,
+    mchadUsers,
     showTimestamp,
     ytcDeleteBehaviour
   } from '../js/store.js';

@@ -199,8 +199,6 @@ export function cleanupFilters() {
 const lang = () => languageNameCode[language.get()];
 
 export const isTranslation = parsed => parsed && isLangMatch(parsed.lang, lang()) && parsed.msg;
-const isOtherLangTranslation = parsed =>
-  parsed && !isLangMatch(parsed.lang, lang()) && parsed.msg;
 
 /** @type {(msg: Message) => Message} */
 export const replaceFirstTranslation = msg => {
