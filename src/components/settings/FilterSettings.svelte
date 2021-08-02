@@ -43,14 +43,29 @@
   items={languageNameValues}
 />
 <CheckOption name="Show moderator messages" store={showModMessage} />
-<MultiDropdown
-  name="Blocked users (YouTube chat)"
-  store={channelFilters}
-  getDisplayName={(n, v) => v.name}
-  getBool={n => channelFilters.get(n).blacklist}
-  setBool={(n, v) =>
-    channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}
-/>
+<Subheader style="height: 1.5rem; margin-top: 1.5rem;">
+  Blocked Users
+</Subheader>
+<Row>
+  <Col style="padding-top:0px;">
+    <MultiDropdown
+      name="YouTube chat"
+      store={channelFilters}
+      getDisplayName={(n, v) => v.name}
+      getBool={n => channelFilters.get(n).blacklist}
+      setBool={(n, v) =>
+        channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}
+    />
+  </Col>
+  {#if $enableMchadTLs}
+    <Col style="padding-top:0px">
+      <MultiDropdown
+        name="MChad"
+        store={mchadUsers}
+      />
+    </Col>
+  {/if}
+</Row>
 <Subheader>When messages are deleted by moderators:</Subheader>
 {#each [...ytcDeleteValues.keys()] as key}
   <Radio bind:group={deleteBehaviourGroup} value={key} style='padding-bottom: 5px;' color='blue'>
@@ -64,12 +79,6 @@
     <CheckOption name="MChad (volunteer translators)" store={enableMchadTLs} />
   </Col>
 </Row>
-{#if $enableMchadTLs}
-  <MultiDropdown
-    name="Blocked users (MChad)"
-    store={mchadUsers}
-  />
-{/if}
 <div class="filter-options">
   <Row>
     <Col>

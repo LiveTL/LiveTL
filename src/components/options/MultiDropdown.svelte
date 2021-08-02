@@ -50,7 +50,7 @@
 <div class="dropdown">
   <Menu offsetY={false} closeOnClick={false}>
     <div class="dropdown-label" slot="activator" bind:this={field}>
-      <TextField disabled={null} solo={true} value={name} readonly />
+      <TextField disabled={null} solo value={name} readonly />
     </div>
 
     {#if items.length}
@@ -84,7 +84,6 @@
 
 <style>
   .dropdown {
-    margin-top: 20px;
     width: 100%;
   }
 
