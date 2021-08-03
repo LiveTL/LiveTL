@@ -69,6 +69,7 @@ export const
   enableAPITLs = SS('enableAPITLs', true),
   enableExportButtons = SS('enableExportButtons', true),
   enableFullscreenButton = SS('enableFullscreenButton', true),
+  mchadUsers = LS('mchadUsers', false),
   autoPrefixTag = SS('autoPrefixTag', '[$filterLang]'),
   macroTrigger = SS('macroTrigger', '/'),
   ytcDeleteBehaviour = SS('ytcDeleteBehaviour', YtcDeleteBehaviour.HIDE);
@@ -78,3 +79,4 @@ export const updatePopupActive = writable(false);
 export const videoTitle = writable('LiveTL');
 export const timestamp = writable(0);
 export const faviconURL = writable('/48x48.png');
+export const availableMchadUsers = writable([]);

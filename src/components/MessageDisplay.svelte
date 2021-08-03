@@ -14,10 +14,12 @@
   import {
     channelFilters,
     livetlFontSize,
+    mchadUsers,
     showTimestamp,
     ytcDeleteBehaviour
   } from '../js/store.js';
   import {
+    AuthorType,
     TextDirection,
     YtcDeleteBehaviour
   } from '../js/constants.js';
@@ -100,11 +102,15 @@
   export let selectedItems = [];
 
   const banMessage = item => () => {
-    channelFilters.set(item.authorId, {
-      ...channelFilters.get(item.authorId),
-      name: item.author,
-      blacklist: true,
-    });
+    if (item.types & AuthorType.mchad) {
+      mchadUsers.set(item.author, true);
+    } else {
+      channelFilters.set(item.authorId, {
+        ...channelFilters.get(item.authorId),
+        name: item.author,
+        blacklist: true,
+      });
+    }
     items = items.filter(i => i.authorId != item.authorId);
   };
 
