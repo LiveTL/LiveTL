@@ -1,6 +1,9 @@
 import { mdiOpenInNew, mdiYoutubeTv, mdiIframeArray } from '@mdi/js';
 import { getFrameInfoAsync, createPopup } from '../../submodules/chat/scripts/chat-utils.js';
+import fixMemLeaks from '../../submodules/chat/src/plugins/ytc-fix-memleaks.js';
 import { paramsEmbedDomain } from '../constants.js';
+
+fixMemLeaks();
 
 for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) {
   window.addEventListener(eventName, e => e.stopImmediatePropagation(), true);
