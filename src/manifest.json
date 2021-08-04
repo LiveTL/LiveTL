@@ -31,9 +31,9 @@
       ],
       "js": [
         "chat-interceptor.bundle.js",
+        "chat.bundle.js",
         "injector.bundle.js",
-        "translatormode.bundle.js",
-        "chat.bundle.js"
+        "translatormode.bundle.js"
       ],
       "all_frames": true
     }
