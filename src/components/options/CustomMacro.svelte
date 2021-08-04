@@ -16,7 +16,7 @@
 
   const deleteMacro = () => {
     $macros = $macros.filter((_, i) => i != id);
-  }
+  };
 
   $: saveValues({ name, expansion, enabled });
   $: if (field) {

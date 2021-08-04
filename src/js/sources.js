@@ -5,6 +5,7 @@ import { derived, writable, Writable, Readable } from 'svelte/store';
 // eslint-disable-next-line no-unused-vars
 import { Message } from './types.js';
 import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted, authorWhitelisted, authorBlacklisted } from './filter';
+import { isTranslation, replaceFirstTranslation } from './filter';
 import { channelFilters, language, showModMessage, timestamp } from './store';
 import { paramsVideoId, AuthorType, languageNameCode, paramsPopout, paramsTabId, paramsFrameId } from './constants';
 import { checkAndSpeak } from './speech.js';
@@ -42,19 +43,6 @@ const showIfMod = msg => isMod(msg) && showModMessage.get();
 /** @type {(store: Writable<Message>) => (msg: Message, text?: String) => void} */
 const setStoreMessage =
   store => (msg, text) => store.set({ ...msg, text: text ?? msg.text });
-
-const lang = () => languageNameCode[language.get()];
-
-const isTranslation = parsed => parsed && isLangMatch(parsed.lang, lang()) && parsed.msg;
-
-/** @type {(msg: Message) => Message} */
-const replaceFirstTranslation = msg => {
-  const messageArray = [...msg.messageArray];
-  if (messageArray[0].type === 'text') {
-    messageArray[0].text = parseTranslation(messageArray[0].text).msg;
-  }
-  return { ...msg, messageArray };
-};
 
 /**
  * @param {Writable<Message>} translations 
