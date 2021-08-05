@@ -19,6 +19,7 @@
   export let messageArray = null;
 
   const dispatch = createEventDispatcher();
+  const dispatcher = name => () => dispatch(name, message);
 
   if (!messageArray && message) {
     messageArray = message.messageArray;
@@ -58,14 +59,14 @@
     {/if}
     <span>{timestamp}</span>
     <span class="message-actions">
-      <span title="Spotlight user" class="blue-highlight">
+      <span title="Spotlight user" class="blue-highlight" on:click={dispatcher('spotlight')}>
         <Icon path={mdiSpotlight} size="1em" />
       </span>
-      <span title="Hide user" class="red-highlight" on:click={() => dispatch('hide')}>
+      <span title="Hide user" class="red-highlight" on:click={dispatcher('hide')}>
         <Icon path={mdiEyeOffOutline} size="1em" />
       </span>
 
-      <span title="Ban user" class="red-highlight" on:click={() => dispatch('ban')}>
+      <span title="Ban user" class="red-highlight" on:click={dispatcher('ban')}>
         <Icon path={mdiAccountRemove} size="1em" />
       </span>
     </span>
