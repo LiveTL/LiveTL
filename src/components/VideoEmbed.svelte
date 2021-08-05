@@ -2,6 +2,7 @@
   import YouTubeIframeLoader from 'youtube-iframe';
   import { faviconURL, videoSide } from '../js/store.js';
   import { VideoSide } from '../js/constants.js';
+  import { suppress } from '../js/utils.js';
 
   export let videoId;
   YouTubeIframeLoader.load(YT => {
@@ -16,10 +17,12 @@
       },
       events: {
         onStateChange() {
-          const data = window.player.getVideoData();
-          if (data.author.includes('Marine Ch.')) {
-            faviconURL.set('/img/blfavicon.ico');
-          }
+          suppress(() => {
+            const data = window?.player?.getVideoData();
+            if (data?.author?.includes('Marine Ch.')) {
+              faviconURL.set('/img/blfavicon.ico');
+            }
+          });
         }
       }
     });

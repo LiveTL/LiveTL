@@ -1,21 +1,30 @@
 import App from '../../components/TranslatorMode.svelte';
 
-const newbody = document.createElement('body');
-const container = document.querySelector('#input').parentElement;
+let app;
 
-newbody.classList.add('ltl-tl-mode');
+(() => {
+  const newbody = document.createElement('body');
+  const container = document.querySelector('#input')?.parentElement;
 
-container.querySelectorAll('.ltl-tl-mode').forEach(e => e.remove());
-container.appendChild(newbody);
-container.cleanUpCbs = container.cleanUpCbs || [];
-
-const app = new App({
-  target: newbody,
-  props: {
-    container,
+  if (!container) {
+    console.log('#input not found, not injecting translator mode.');
+    return;
   }
-});
+  
+  newbody.classList.add('ltl-tl-mode');
+  
+  container.querySelectorAll('.ltl-tl-mode').forEach(e => e.remove());
+  container.appendChild(newbody);
+  container.cleanUpCbs = container.cleanUpCbs || [];
+  
+  app = new App({
+    target: newbody,
+    props: {
+      container,
+    }
+  });
 
-window.app = app;
+  window.app = app;
+})();
 
 export default app;

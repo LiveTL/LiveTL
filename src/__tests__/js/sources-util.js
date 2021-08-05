@@ -74,6 +74,20 @@ describe('message duplication mitigation', () =>{
     expect(aggregate()).toEqual(messages);
   });
 
+  it('lets non-duplicate messages of same source through', () => {
+    const { aggregate, source } = createTestObjects();
+    const messages = [
+      message('Konichiwassup', 'Taishi', '00:10:00', 0),
+      message('hello there', 'Taishi Ch.', '10:05',  0),
+      message('good translation', 'Taishi', '00:10:12', 0),
+      message('another good translation', 'Taishi Ch.', '10:18', 0),
+      message('puhehehe', 'Taishi Ch.', '10:30', 0),
+      message('hehe', 'Taishi', '00:10:40', 0),
+    ];
+    messages.forEach(source.set);
+    expect(aggregate()).toEqual(messages);
+  });
+
   it('admits duplicate messages of inside the last 10 seconds and from same source', () => {
     const { aggregate, source } = createTestObjects();
     const messages = [

@@ -22,6 +22,7 @@
   let wrapper = null;
 
   function setThumb() {
+    if (wrapper == null) return;
     let e = wrapper.querySelector('.s-slider__tooltip');
     if (e) {
       e.setAttribute('data-content', Math.round(scaledBack));
