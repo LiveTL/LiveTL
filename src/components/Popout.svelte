@@ -101,7 +101,7 @@
     screenshotRenderWidth.set(renderWidthInt);
   }
 
-  
+
   function toggleFullScreen() {
     if (
       (document.fullScreenElement && document.fullScreenElement !== null) ||
