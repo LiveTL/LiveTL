@@ -72,6 +72,12 @@
     }
   }
   let elem = null;
+
+  // Prevent null translations from resetting captions
+  let captionText = text;
+  $: if ($translations) {
+    captionText = $translations.text;
+  }
 </script>
 
 <div
@@ -88,7 +94,7 @@
 "
 >
   <div class="captionSegment" bind:this={elem}>
-    {$translations ? $translations.text : text}
+    {captionText}
   </div>
 </div>
 
