@@ -6,7 +6,7 @@
   import { AuthorType } from '../js/constants.js';
   import { createEventDispatcher } from 'svelte';
   import { Icon } from 'svelte-materialify/src';
-  import { mdiEyeOffOutline, mdiAccountRemove, mdiCheckCircle, mdiSpotlight } from '@mdi/js';
+  import { mdiEyeOffOutline, mdiAccountRemove, mdiCheckCircle, mdiPin } from '@mdi/js';
   import '../css/splash.css';
 
   /** @type {Message} */
@@ -60,7 +60,7 @@
     <span>{timestamp}</span>
     <span class="message-actions">
       <span title="Spotlight user" class="blue-highlight" on:click={dispatcher('spotlight')}>
-        <Icon path={mdiSpotlight} size="1em" />
+        <Icon path={mdiPin} size="1em" />
       </span>
       <span title="Hide user" class="red-highlight" on:click={dispatcher('hide')}>
         <Icon path={mdiEyeOffOutline} size="1em" />
