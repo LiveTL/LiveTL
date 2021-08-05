@@ -9,7 +9,8 @@
     captionWidth,
     captionFontSize,
     enableCaptionTimeout,
-    captionDuration
+    captionDuration,
+    spotlightedTranslator
   } from '../js/store.js';
   export let text = `
   Captions captured from the chat will appear here. Try moving and resizing!
@@ -75,8 +76,11 @@
 
   // Prevent null translations from resetting captions
   let captionText = text;
+  $: spot = $spotlightedTranslator;
   $: if ($translations) {
-    captionText = $translations.text;
+    if (spot && spot == $translations.authorId || spot == null) {
+      captionText = $translations.text;
+    }
   }
 </script>
 
