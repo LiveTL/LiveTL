@@ -16,6 +16,7 @@
     livetlFontSize,
     mchadUsers,
     showTimestamp,
+    spotlightedTranslator,
     ytcDeleteBehaviour
   } from '../js/store.js';
   import {
@@ -115,6 +116,9 @@
   };
 
   $: if (!isSelecting) selectedItems = [];
+  $: if (items && $spotlightedTranslator) {
+    items = items.filter(msg => msg.authorId === $spotlightedTranslator);
+  }
 </script>
 
 <MessageDisplayWrapper>
@@ -134,6 +138,7 @@
         messageArray={item.messageArray}
         on:hide={() => (item.hidden = true)}
         on:ban={banMessage(item)}
+        on:spotlight={e => spotlightedTranslator.set(e.detail.authorId)}
       >
         {#if isSelecting}
           <Checkbox bind:group={selectedItems} value={item} />
