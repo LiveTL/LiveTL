@@ -6,7 +6,7 @@
   import { AuthorType } from '../js/constants.js';
   import { createEventDispatcher } from 'svelte';
   import { Icon } from 'svelte-materialify/src';
-  import { mdiEyeOffOutline, mdiAccountRemove, mdiCheckCircle } from '@mdi/js';
+  import { mdiEyeOffOutline, mdiAccountRemove, mdiCheckCircle, mdiSpotlight } from '@mdi/js';
   import '../css/splash.css';
 
   /** @type {Message} */
@@ -58,11 +58,14 @@
     {/if}
     <span>{timestamp}</span>
     <span class="message-actions">
-      <span class="red-highlight" on:click={() => dispatch('hide')}>
+      <span title="Spotlight user" class="blue-highlight">
+        <Icon path={mdiSpotlight} size="1em" />
+      </span>
+      <span title="Hide user" class="red-highlight" on:click={() => dispatch('hide')}>
         <Icon path={mdiEyeOffOutline} size="1em" />
       </span>
 
-      <span class="red-highlight" on:click={() => dispatch('ban')}>
+      <span title="Ban user" class="red-highlight" on:click={() => dispatch('ban')}>
         <Icon path={mdiAccountRemove} size="1em" />
       </span>
     </span>
@@ -100,8 +103,12 @@
     cursor: pointer;
   }
 
-  .message-actions .red-highlight :global(.s-icon:hover) {
+  .red-highlight :global(.s-icon:hover) {
     color: #ff2873;
+  }
+
+  .blue-highlight :global(.s-icon:hover) {
+    color: #2196f3;
   }
 
   .moderator {
