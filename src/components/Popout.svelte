@@ -200,39 +200,55 @@
           </Tooltip>
         {/if}
         {#if !settingsOpen && $enableExportButtons}
-          <Button
-            fab
-            size="small"
-            on:click={() => {
-              toggleSelecting();
-              selectOperation = saveScreenshot;
-            }}
-          >
-            <Icon path={isSelecting ? mdiCheck : mdiCamera} />
-          </Button>
-          <Button
-            fab
-            size="small"
-            on:click={() => {
-              toggleSelecting();
-              selectOperation = saveDownload;
-            }}
-          >
-            <Icon path={isSelecting ? mdiCheck : mdiDownload} />
-          </Button>
+          <!-- Screenshot button -->
+          <Tooltip bottom>
+            <Button
+              fab
+              size="small"
+              on:click={() => {
+                toggleSelecting();
+                selectOperation = saveScreenshot;
+              }}
+            >
+              <Icon path={isSelecting ? mdiCheck : mdiCamera} />
+            </Button>
+            <span slot="tip">Screenshot translations</span>
+          </Tooltip>
+          <!-- Export translations button -->
+          <Tooltip bottom>
+            <Button
+              fab
+              size="small"
+              on:click={() => {
+                toggleSelecting();
+                selectOperation = saveDownload;
+              }}
+            >
+              <Icon path={isSelecting ? mdiCheck : mdiDownload} />
+            </Button>
+            <span slot="tip">Export translations log (txt)</span>
+          </Tooltip>
         {/if}
         {#if !settingsOpen && $enableFullscreenButton}
-          <Button fab size="small" on:click={toggleFullScreen}>
-            <Icon path={mdiFullscreen} />
-          </Button>
+          <!-- Fullscreen button -->
+          <Tooltip bottom>
+            <Button fab size="small" on:click={toggleFullScreen}>
+              <Icon path={mdiFullscreen} />
+            </Button>
+            <span slot="tip">Toggle fullscreen</span>
+          </Tooltip>
         {/if}
-        <Button
-          fab
-          size="small"
-          on:click={() => (settingsOpen = !settingsOpen)}
-        >
-          <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
-        </Button>
+        <!-- Settings button -->
+        <Tooltip bottom>
+          <Button
+            fab
+            size="small"
+            on:click={() => (settingsOpen = !settingsOpen)}
+          >
+            <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
+          </Button>
+          <span slot="tip">{settingsOpen ? 'Close settings' : 'Open settings'}</span>
+        </Tooltip>
       {/if}
     </div>
   </div>
