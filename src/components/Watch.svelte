@@ -12,7 +12,9 @@
     chatSize,
     chatZoom,
     showCaption,
-    chatSplit
+    chatSplit,
+    autoVertical,
+    videoSideSetting
   } from '../js/store.js';
   import {
     paramsVideoId,
@@ -25,6 +27,10 @@
   import ChatEmbed from './ChatEmbed.svelte';
   import Popout from './Popout.svelte';
   import Captions from './Captions.svelte';
+  import {
+    onMount,
+  } from 'svelte';
+
   document.title = 'LiveTL';
   let isResizing = false;
   let chatElem, vidElem, ltlElem;
@@ -86,6 +92,14 @@
     });
   };
   $: setTimeout(() => changeSide($videoSide, $chatSplit), 0);
+
+  function orientationChangeCallback() {
+    $videoSide = ($autoVertical && window.innerHeight > window.innerWidth) ? VideoSide.TOP : $videoSideSetting;
+  }
+  window.addEventListener('resize', orientationChangeCallback);
+  videoSideSetting.subscribe(orientationChangeCallback);
+  autoVertical.subscribe(orientationChangeCallback);
+  onMount(orientationChangeCallback);
 </script>
 
 <div

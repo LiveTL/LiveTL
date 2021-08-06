@@ -34,7 +34,7 @@ export const
   chatZoom = SS('chatZoom', defaultZoom),
   showTimestamp = SS('showTimestamp', true),
   textDirection = SS('textDirection', TextDirection.BOTTOM),
-  videoSide = SS('videoSide', VideoSide.LEFT, false),
+  videoSideSetting = SS('videoSide', VideoSide.LEFT, false),
   showCaption = SS('showCaption', true),
   captionDuration = SS('captionDuration', 10),
   captionFontSize = SS('captionFontSize', 18),
@@ -72,9 +72,12 @@ export const
   mchadUsers = LS('mchadUsers', false),
   autoPrefixTag = SS('autoPrefixTag', '[$filterLang]'),
   macroTrigger = SS('macroTrigger', '/'),
-  ytcDeleteBehaviour = SS('ytcDeleteBehaviour', YtcDeleteBehaviour.HIDE);
+  ytcDeleteBehaviour = SS('ytcDeleteBehaviour', YtcDeleteBehaviour.HIDE),
+  autoVertical = SS('autoVertical', true);
 
 // Non-persistant stores
+
+export const videoSide = writable(videoSideSetting.get());
 export const updatePopupActive = writable(false);
 export const videoTitle = writable('LiveTL');
 export const timestamp = writable(0);

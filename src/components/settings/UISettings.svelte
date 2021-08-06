@@ -2,6 +2,7 @@
   import {
     captionDuration,
     captionFontSize,
+    videoSideSetting,
     videoSide,
     chatZoom,
     livetlFontSize,
@@ -13,7 +14,8 @@
     enableCaptionTimeout,
     chatSplit,
     enableExportButtons,
-    enableFullscreenButton
+    enableFullscreenButton,
+    autoVertical
   } from '../../js/store.js';
   import { ChatSplit, TextDirection, VideoSide } from '../../js/constants.js';
   import CheckOption from '../options/Toggle.svelte';
@@ -22,6 +24,8 @@
   import FontDemo from '../FontDemo.svelte';
   import ImportExport from '../ImportExport.svelte';
   export let isStandalone = false;
+
+  videoSideSetting.subscribe(value => $videoSide = value);
 </script>
 
 <ImportExport />
@@ -40,8 +44,14 @@
     <EnumOption
       name="Video side:"
       options={Object.keys(VideoSide)}
-      store={videoSide}
+      store={videoSideSetting}
     />
+    <div style="margin-bottom: 10px;">
+      <CheckOption
+        name="Override layout settings when entering vertical mode"
+        store={autoVertical}
+      />
+    </div>
     <EnumOption
       name="Chat split:"
       options={Object.keys(ChatSplit)}
@@ -84,7 +94,4 @@
   name="Show screenshot and download buttons"
   store={enableExportButtons}
 />
-<CheckOption
-  name="Show fullscreen button"
-  store={enableFullscreenButton}
-/>
+<CheckOption name="Show fullscreen button" store={enableFullscreenButton} />
