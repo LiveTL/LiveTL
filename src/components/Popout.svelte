@@ -1,12 +1,12 @@
 <script>
   import { afterUpdate, tick } from 'svelte';
   import { fade } from 'svelte/transition';
-  import { Button, Icon, MaterialApp, TextField } from 'svelte-materialify/src';
-  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload, mdiFullscreen  } from '@mdi/js';
+  import { Button, Icon, MaterialApp, TextField, Tooltip } from 'svelte-materialify/src';
+  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload, mdiFullscreen, mdiPin  } from '@mdi/js';
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
   import { TextDirection, paramsVideoTitle, paramsEmbedded } from '../js/constants.js';
-  import { faviconURL, textDirection, screenshotRenderWidth, videoTitle, enableExportButtons, updatePopupActive, enableFullscreenButton } from '../js/store.js';
+  import { faviconURL, textDirection, screenshotRenderWidth, videoTitle, enableExportButtons, updatePopupActive, enableFullscreenButton, spotlightedTranslator } from '../js/store.js';
   import MessageDisplay from './MessageDisplay.svelte';
   import ScreenshotExport from './ScreenshotExport.svelte';
   import Updates from './Updates.svelte';
@@ -186,6 +186,19 @@
         </div>
       {/if}
       {#if !isSelecting}
+        {#if !settingsOpen && $spotlightedTranslator}
+          <!-- Un-spotlight translator button -->
+          <Tooltip bottom>
+            <Button
+              fab
+              size="small"
+              on:click={() => spotlightedTranslator.set(null)}
+            >
+              <Icon path={mdiPin} />
+            </Button>
+            <span slot="tip">Remove spotlight</span>
+          </Tooltip>
+        {/if}
         {#if !settingsOpen && $enableExportButtons}
           <Button
             fab
