@@ -1,11 +1,11 @@
 // eslint-disable-next-line no-unused-vars
-import { compose, dbg } from './utils.js';
+import { compose, dbg, escapeRegExp } from './utils.js';
 // eslint-disable-next-line no-unused-vars
-import { get, writable, Writable } from 'svelte/store';
+import { derived, get, writable, Readable, Writable } from 'svelte/store';
 // eslint-disable-next-line no-unused-vars
-import { doTranslatorMode, doAutoPrefix, language, macros } from './store.js';
+import { doTranslatorMode, doAutoPrefix, language, macros, autoPrefixTag, macroTrigger } from './store.js';
+// TODO ACTUALLY USE macroTrigger
 import { languageNameCode } from './constants.js';
-
 
 export function omniComplete(initialWords) {
   let words = initialWords || [];
@@ -75,6 +75,13 @@ function macroStoreValueToLookup(value) {
 export function macroSystem(initialMacros) {
   let macros = {...initialMacros} || {};
   let completion = omniComplete(Object.keys(macros));
+  const defaultLeader = '/';
+
+  const getSplitTextPattern = leader => new RegExp(`[\\w${leader}]+`, 'g');
+  const getCompletionMatchPattern = leader => new RegExp(`${leader}([\\w]+)$`);
+
+  let splitTextPattern = getSplitTextPattern(defaultLeader);
+  let completionMatchPattern = getCompletionMatchPattern(defaultLeader);
 
   /** @type {(name: String, expansion: String) => void} */
   const addMacro = (name, expansion) => {
@@ -90,7 +97,7 @@ export function macroSystem(initialMacros) {
   };
 
   /** @type {(text: String) => [String, Array<String>]} */
-  const splitText = text => [text, text.matchAll(/[\w/]+/g)];
+  const splitText = text => [text, text.matchAll(splitTextPattern)];
   /** @type {([input: String, split: Array<String>]) => String} */
   const replaceSplitText = ([input, split]) => {
     const replaced = [];
@@ -108,12 +115,12 @@ export function macroSystem(initialMacros) {
   const replaceText = compose(replaceSplitText, splitText);
   /** @type {(text: String, completion: String) => String} */
   const completeEnd = (text, completion) => {
-    return text.replace(/\/([\w]+)$/, completion);
+    return text.replace(completionMatchPattern, completion);
   };
-  /** @type {(text: String) => Array<String>} */
+    /** @type {(text: String) => Array<String>} */
   const complete = text => {
     try {
-      return completion.complete(text.match(/\/([\w]+)$/)[1]);
+      return completion.complete(text.match(completionMatchPattern)[1]);
     }
     catch (e) { return []; }
   };
@@ -126,49 +133,66 @@ export function macroSystem(initialMacros) {
     });
   };
 
+  /** @type {(store: Readable<String>) => void} */
+  const syncLeaderWith = store => {
+    derived(store, escapeRegExp).subscribe($leader => {
+      splitTextPattern = getSplitTextPattern($leader);
+      completionMatchPattern = getCompletionMatchPattern($leader);
+    });
+  };
+
   return {
     addMacro,
     complete,
     completeEnd,
     getMacro,
+    syncLeaderWith,
     syncWith,
     replaceText,
   };
 }
 
+/**
+ * Does the non-rendering part of translator mode.
+ *
+ * Features:
+ *   - auto-prefix
+ *   - macros
+ *
+ * @param {HTMLElement} container the container for the input element (first #input)
+ * @param {HTMLElement} chatBox the actual input element (second #input)
+ * @param {Writable<String>} content a store to view the content of the chatbox, do not modify
+ * @param {Writable<String[]>} recommendations a store to view the recommendations, do not modify
+ * @param {Writable<String | null>} focusRec a store to set the focused recommendation
+ */
 export function translatorMode(
   [container, chatBox],
   content,
   recommendations,
   focusRec,
 ) {
+  // initial macros will be cleared during sync
   const macrosys = macroSystem({ en: '[en]', peko: 'pekora', ero: 'erofi' });
-  const invisible = '‍';
-  // eslint-disable-next-line no-unused-vars
-  const invisiReg = new RegExp(invisible, 'g');
+  // use nbsp as it won't break when adding space to the end
+  const nbsp = ' ';
   const oneRecommend = () => get(recommendations).length === 1;
   const isKey = key => e => e.key === key;
   const isTab = isKey('Tab');
-  const isSpace = isKey(' ');
   const isEnter = isKey('Enter');
-  const isCharData = m => m.type === 'characterData';
-  const focussed = () => get(focusRec);
+  const focusedRecommendation = () => get(focusRec);
 
   macrosys.syncWith(macros);
+  macrosys.syncLeaderWith(macroTrigger);
 
-  const replaceText = text => focussed()
-    ? macrosys.completeEnd(text, macrosys.getMacro(focussed()))
+  const replaceText = text => focusedRecommendation()
+    ? macrosys.completeEnd(text, macrosys.getMacro(focusedRecommendation()))
     : macrosys.replaceText(text);
-
-  const removeLastSpace = text => text.endsWith(' ')
-    ? text.substring(0, text.length - 1)
-    : text;
 
   const setChatboxText = text => {
     const carPos = caretPos();
     const atEnd = caretAtEnd();
     if (text) container.setAttribute('has-text', '');
-    chatBox.textContent = text + invisible;
+    chatBox.textContent = text;
     setChatCaret(atEnd ? null : carPos);
     updateStores();
   };
@@ -178,67 +202,55 @@ export function translatorMode(
     updateContent();
   };
 
-  // eslint-disable-next-line no-unused-vars
-  const spaceIf = cond => cond ? ' ' : '';
-  const setChatCaret =
-    pos => setCaret(chatBox, pos == null ? text().length : pos);
+  const setChatCaret = pos =>
+    setCaret(chatBox, pos == null ? text().length : pos);
   const caretPos = () => getCaretCharOffset(chatBox);
   const caretAtEnd = () => caretPos() == text().length;
   const text = () => chatBox.textContent;
-  // TODO
-  // eslint-disable-next-line no-constant-condition
-  const autoPrefixTag = () => /* doAutoPrefix.get() */ false ? langTag() + invisible : '';
-  const textWithoutLastSpace = compose(removeLastSpace, text);
+  const autoPrefixTag = () => doAutoPrefix.get() ? langTag() + nbsp : '';
   const updateRecommendations =
     compose(recommendations.set, macrosys.complete, text);
   const updateContent = compose(content.set, text);
   const setAutoPrefix = compose(setChatboxText, autoPrefixTag);
   const doubleTimeout = cb => setTimeout(() => setTimeout(cb));
 
-  // Keydown event
-  let e = null;
-
-  const onKeyDown = $e => {
+  const onKeyDown = e => {
     if (!get(doTranslatorMode)) return;
-    e = $e;
-    if (isTab(e) && oneRecommend()) substituteInChatbox();
+    if (isTab(e) && oneRecommend()) expandMacrosInChatbox();
     if (isTab(e)) doubleTimeout(setChatCaret);
     if (isEnter(e)) doubleTimeout(setAutoPrefix);
   };
 
-  const substituteInChatbox = () => {
-    const newText = replaceText(textWithoutLastSpace()) + ' ';
-    if (newText != text()) {
-      setTimeout(() => setChatboxText(newText));
+  const expandMacrosInChatbox = () => {
+    const newText = replaceText(text().trimEnd()) + nbsp;
+    if (newText.trim() != text().trim()) {
+      setChatboxText(newText);
     }
   };
 
-  const onMutation = () => {
+  const onFocus = () => {
+    if (!get(doTranslatorMode) || text() !== '') return;
+    setTimeout(setAutoPrefix);
+  };
+
+  const onInput = e => {
     if (!get(doTranslatorMode)) return;
-    if (isSpace(e)) {
-      substituteInChatbox();
+    if (e.data === ' ') {
+      expandMacrosInChatbox();
     }
     updateStores();
   };
 
-  const onFocus = () => setTimeout(setAutoPrefix);
-
-  const processMutations = mutations => mutations
-    .filter(isCharData)
-    .forEach(onMutation);
-
-  const chatBoxObserver = new MutationObserver(processMutations);
-
   const cleanUps = [
     () => chatBox.removeEventListener('keydown', onKeyDown),
     () => chatBox.removeEventListener('focus', onFocus),
-    () => chatBoxObserver.disconnect(),
+    () => chatBox.removeEventListener('input', onInput),
   ];
   if (chatBox.cleanUpTlMode) chatBox.cleanUpTlMode();
   chatBox.cleanUpTlMode = () => cleanUps.forEach(c => c());
   chatBox.addEventListener('keydown', onKeyDown);
   chatBox.addEventListener('focus', onFocus);
-  chatBoxObserver.observe(container, { subtree: true, characterData: true });
+  chatBox.addEventListener('input', onInput);
 }
 
 function setCaret(el, pos) {
@@ -275,4 +287,4 @@ function getCaretCharOffset(element) {
   return caretOffset;
 }
 
-const langTag = () => `[${languageNameCode[language.get()].code}] `;
+const langTag = () => autoPrefixTag.get().replace(/\$filterLang/gi, languageNameCode[language.get()].code);

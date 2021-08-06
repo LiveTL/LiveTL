@@ -1,5 +1,6 @@
-import { customFilters } from './store.js';
-import { not, composeOr } from './utils.js';
+import { languageNameCode } from './constants.js';
+import { customFilters, language } from './store.js';
+import { escapeRegExp, not, composeOr } from './utils.js';
 // import {
 //   textWhitelist,
 //   textBlacklist,
@@ -10,6 +11,8 @@ import { not, composeOr } from './utils.js';
 //   regexAuthorWhitelist,
 //   regexAuthorBlacklist
 // } from './store.js';
+// eslint-disable-next-line no-unused-vars
+import { Message } from './types.js';
 // eslint-disable-next-line no-unused-vars
 import { SyncStore } from './storage.js';
 import { derived } from 'svelte/store';
@@ -166,12 +169,6 @@ export function isLangMatch(textLang, currentLang) {
   ));
 }
 
-
-// https://stackoverflow.com/questions/3115150/how-to-escape-regular-expression-special-characters-using-javascript
-function escapeRegExp(text) {
-  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-}
-
 export function addFilter(chatAuthor, plainReg, showBlock, rule) {
   const filters = customFilters.get();
   const ids = filters.map(f => f.id);
@@ -198,3 +195,16 @@ export function deleteFilter(id) {
 export function cleanupFilters() {
   customFilters.set(customFilters.get().filter(f => f.rule));
 }
+
+const lang = () => languageNameCode[language.get()];
+
+export const isTranslation = parsed => parsed && isLangMatch(parsed.lang, lang()) && parsed.msg;
+
+/** @type {(msg: Message) => Message} */
+export const replaceFirstTranslation = msg => {
+  const messageArray = [...msg.messageArray];
+  if (messageArray[0].type === 'text') {
+    messageArray[0].text = parseTranslation(messageArray[0].text).msg;
+  }
+  return { ...msg, messageArray };
+};

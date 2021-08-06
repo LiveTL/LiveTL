@@ -83,32 +83,90 @@ describe('macro system', () => {
     kan: 'kanata',
   };
 
-  it('adds macros', () => {
-    const { addMacro, getMacro } = macroSystem();
-    addMacro('bot', 'botan');
-    expect(getMacro('bot')).toBe('botan');
+  describe('default behaviour', () => {
+    it('adds macros', () => {
+      const { addMacro, getMacro } = macroSystem();
+      addMacro('bot', 'botan');
+      expect(getMacro('bot')).toBe('botan');
+    });
+
+    it('replaces text with full macros', () => {
+      const { replaceText } = macroSystem(macros);
+      expect(replaceText('/en /peko: hello there, /naki: dochi dochi'))
+        .toBe('[en] pekora: hello there, ayame: dochi dochi');
+    });
+
+    it('replaces text with partial macros', () => {
+      const { replaceText } = macroSystem(macros);
+      expect(replaceText('/e /pe: hello there, /n: dochi dochi'))
+        .toBe('[en] pekora: hello there, ayame: dochi dochi');
+    });
+
+    it('doesn\'t replace escaped macros', () => {
+      const { replaceText } = macroSystem(macros);
+      const text = '//e //pe: hello there, //n: dochi dochi';
+      expect(replaceText(text)).toBe(text);
+    });
+
+    it('generates completions', () => {
+      const { complete } = macroSystem(macros);
+      expect(complete('[en] /k')).toEqual(['kan', 'kiara']);
+    });
   });
 
-  it('replaces text with full macros', () => {
-    const { replaceText } = macroSystem(macros);
-    expect(replaceText('/en /peko: hello there, /naki: dochi dochi'))
-      .toBe('[en] pekora: hello there, ayame: dochi dochi');
-  });
+  describe('syncing leader character with store', () => {
+    const setupMacrosys = () => {
+      const sys = macroSystem(macros);
+      const leaderStore = writable('/');
+      sys.syncLeaderWith(leaderStore);
+      return {
+        ...sys,
+        leaderStore
+      };
+    };
 
-  it('replaces text with partial macros', () => {
-    const { replaceText } = macroSystem(macros);
-    expect(replaceText('/e /pe: hello there, /n: dochi dochi'))
-      .toBe('[en] pekora: hello there, ayame: dochi dochi');
-  });
+    it('can generate completions with the synced leader', () => {
+      const { complete, leaderStore } = setupMacrosys();
+      expect(complete('[en] /k')).toEqual(['kan', 'kiara']);
 
-  it('doesn\'t replace escaped macros', () => {
-    const { replaceText } = macroSystem(macros);
-    const text = '//e //pe: hello there, //n: dochi dochi';
-    expect(replaceText(text)).toBe(text);
-  });
+      leaderStore.set(',');
 
-  it('generates completions', () => {
-    const { complete } = macroSystem(macros);
-    expect(complete('[en] /k')).toEqual(['kan', 'kiara']);
+      expect(complete('[en] /k')).toEqual([]);
+      expect(complete('[en] ,k')).toEqual(['kan', 'kiara']);
+    });
+
+    it('can replace text with full macros with the synced leader', () => {
+      const { leaderStore, replaceText } = setupMacrosys();
+      expect(replaceText('/en /peko: hello there, /naki: dochi dochi'))
+        .toBe('[en] pekora: hello there, ayame: dochi dochi');
+
+      leaderStore.set(',');
+
+      expect(replaceText(',en ,peko: hello there, ,naki: dochi dochi'))
+        .toBe('[en] pekora: hello there, ayame: dochi dochi');
+    });
+
+    it('replaces text with partial macros with the synced leader', () => {
+      const { leaderStore, replaceText } = setupMacrosys();
+      expect(replaceText('/e /pe: hello there, /n: dochi dochi'))
+        .toBe('[en] pekora: hello there, ayame: dochi dochi');
+
+      leaderStore.set(',');
+
+      expect(replaceText(',e ,pe: hello there, ,n: dochi dochi'))
+        .toBe('[en] pekora: hello there, ayame: dochi dochi');
+
+    });
+
+    it('doesn\'t replace escaped macros with the synced leader', () => {
+      const { leaderStore, replaceText } = setupMacrosys();
+      const text = '//e //pe: hello there, //n: dochi dochi';
+      expect(replaceText(text)).toBe(text);
+
+      leaderStore.set(',');
+
+      const commaLeaderText = text.replace(/\//g, ',');
+      expect(replaceText(commaLeaderText)).toBe(commaLeaderText);
+    });
   });
 });

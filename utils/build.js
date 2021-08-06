@@ -1,4 +1,4 @@
-const mode = process.argv.indexOf('production') != -1 ? 'production' : 'development';
+const mode = (process.argv.indexOf('production') || process.argv.indexOf('android')) != -1 ? 'production' : 'development';
 process.env.NODE_ENV = process.env.NODE_ENV || mode;
 
 var webpack = require('webpack'),

@@ -1,4 +1,4 @@
-import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit } from './constants.js';
+import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour } from './constants.js';
 import { LookupStore, SyncStore } from './storage.js';
 import { writable } from 'svelte/store';
 
@@ -68,10 +68,15 @@ export const
   enableMchadTLs = SS('enableMchadTLs', true),
   enableAPITLs = SS('enableAPITLs', true),
   enableExportButtons = SS('enableExportButtons', true),
-  enableFullscreenButton = SS('enableFullscreenButton', true);
+  enableFullscreenButton = SS('enableFullscreenButton', true),
+  mchadUsers = LS('mchadUsers', false),
+  autoPrefixTag = SS('autoPrefixTag', '[$filterLang]'),
+  macroTrigger = SS('macroTrigger', '/'),
+  ytcDeleteBehaviour = SS('ytcDeleteBehaviour', YtcDeleteBehaviour.HIDE);
 
 // Non-persistant stores
 export const updatePopupActive = writable(false);
 export const videoTitle = writable('LiveTL');
 export const timestamp = writable(0);
 export const faviconURL = writable('/48x48.png');
+export const availableMchadUsers = writable([]);

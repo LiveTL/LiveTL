@@ -171,8 +171,10 @@ def test_embed_tl_scroll(web):
 
     # Scroll to the top
     switch_to_embed_frame(web)
-    web.execute_script("document.querySelector('.message-display-wrapper .message').scrollIntoView()")
-    assert retry_bool(scroll_to_bottom_buttons), "scroll to bottom button isn't displayed"
+    @retry
+    def _():
+        web.execute_script("document.querySelector('.message-display-wrapper .message').scrollIntoView()")
+        assert scroll_to_bottom_buttons(), "scroll to bottom button isn't displayed"
     scroll_to_bottom_buttons()[0].click()
     time.sleep(1) # button doesn't immediately go away
     assert retry_bool(lambda: not scroll_to_bottom_buttons()), "scroll to bottom button is still displayed"

@@ -1,6 +1,7 @@
-import { openWindow, sendToBackground } from '../bgmessage.js';
 import { mdiOpenInNew, mdiYoutubeTv, mdiIframeArray } from '@mdi/js';
-import { BROWSER, Browser } from '../constants.js';
+import { getFrameInfoAsync, createPopup } from '../../submodules/chat/scripts/chat-utils.js';
+import { fixLeaks } from '../../submodules/chat/src/plugins/ytc-fix-memleaks.js';
+import { paramsEmbedDomain } from '../constants.js';
 
 for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) {
   window.addEventListener(eventName, e => e.stopImmediatePropagation(), true);
@@ -93,7 +94,21 @@ const makeButton = (text, callback, color='rgb(0, 153, 255)', icon='') => {
   `;
 };
 
-function loaded() {
+const constructParams = () => {
+  const params = new URLSearchParams(window.location.search);
+  const v = params.get('v') || (new URLSearchParams(window.parent.location.search).get('v'));
+  params.set('video', v);
+  if (window.location.pathname.includes('live_chat_replay')) {
+    params.set('isReplay', true);
+  }
+  return params;
+};
+
+async function loaded() {
+  const script = document.createElement('script');
+  script.innerHTML = `(${fixLeaks.toString()})();`;
+  document.body.appendChild(script);
+
   const elem = document.querySelector('yt-live-chat-app');
   elem.style.minWidth = '0px';
   elem.style.minHeight = '0px';
@@ -116,76 +131,76 @@ function loaded() {
   const style = document.createElement('style');
   style.innerHTML = css;
   body.appendChild(style);
-  const insertButtons = async () => {
-    try {
-      document.querySelectorAll('.livetlButtonWrapper').forEach(item => item.remove());
-      let params = new URLSearchParams(window.location.search);
-      const constructParams = () => {
-        params = new URLSearchParams(window.location.search);
-        params.set('video', (params.get('v') || (new URLSearchParams(window.parent.location.search).get('v'))));
-        if (window.location.pathname.includes('live_chat_replay')) params.set('isReplay', true);
-        return params;
-      };
-      if (params.get('embed_domain') ||
-          new URL(window.parent.location.href).hostname == new URL(window.location.href).hostname){
-        makeButton('Open LiveTL', () => {
-        // eslint-disable-next-line no-undef
-          window.top.location = chrome.runtime.getURL(`watch.html?${constructParams().toString()}`);
-        }, undefined, mdiYoutubeTv);
-        const tabid = await sendToBackground({
-          type:'tabid'
-        });
-        window.addEventListener('message', d => {
-          if (d.data['yt-player-video-progress']) {
-            sendToBackground({
-              type: 'message',
-              data: { ...d.data, tabid },
-            });
-          }
-        });
-        makeButton('TL Popout', () => {
-          let popoutParams = constructParams();
-          popoutParams.set('tabid', tabid);
-          try {
-            popoutParams.set('title', window.parent.document.querySelector('#container > .title').textContent);
-          // eslint-disable-next-line no-empty
-          } catch(e) {
-          }
-          // eslint-disable-next-line no-undef
-          openWindow(chrome.runtime.getURL(`popout.html?${popoutParams.toString()}`));
-        }, undefined, mdiOpenInNew);
-        makeButton('Embed TLs', () => {
-          let embeddedParams = constructParams();
-          embeddedParams.set('embedded', true);
-          embeddedParams.set('tabid', tabid);
-          document.body.outerHTML = '';
-          const iframe = document.createElement('iframe');
-          iframe.style.width = '100%';
-          iframe.style.height = '100%';
-          iframe.style.position = 'fixed';
-          // eslint-disable-next-line no-undef
-          iframe.src = chrome.runtime.getURL(`watch.html?${embeddedParams.toString()}`);
-          document.body.appendChild(iframe);
-          window.addEventListener('message', d => {
-            iframe.contentWindow.postMessage(d.data, '*');
-          });
-        }, undefined, mdiIframeArray);
-      }
-      // eslint-disable-next-line no-empty
-    } catch(e) {
+
+  const frameInfo = await getFrameInfoAsync();
+  window.parent.postMessage({ type: 'frameInfo', frameInfo: frameInfo }, '*');
+
+  if (document.querySelector('.livetlButtonWrapper')) {
+    console.debug('LTL buttons already injected. Skipping injection');
+    return;
+  }
+
+  if (paramsEmbedDomain === chrome.runtime.id) {
+    console.debug('Chat is in extension, not injecting LTL buttons.');
+    return;
+  }
+
+  /** Start buttons injections */
+  makeButton('Open LiveTL', () => {
+    window.top.location =
+      chrome.runtime.getURL(`watch.html?${constructParams()}`);
+  }, undefined, mdiYoutubeTv);
+  makeButton('TL Popout', () => {
+    const popoutParams = constructParams();
+    popoutParams.set('popout', true);
+    popoutParams.set('tabid', frameInfo.tabId);
+    popoutParams.set('frameid', frameInfo.frameId);
+    try{
+      popoutParams.set(
+        'title',
+        window.parent.document.querySelector('#container > .title').textContent
+      );
     }
-  };
-  insertButtons();
-  setInterval(()=>{
-    if (document.querySelector('.livetlButtonWrapper')) return;
-    insertButtons();
-  }, 100);
+    catch (e) {
+      if (e instanceof DOMException) {
+        console.debug('Ignored expected CORS error', { e });
+      }
+      else {
+        throw e;
+      }
+    }
+    createPopup(
+      chrome.runtime.getURL(`popout.html?${popoutParams}`)
+    );
+  }, undefined, mdiOpenInNew);
+  makeButton('Embed TLs', () => {
+    const embeddedParams = constructParams();
+    embeddedParams.set('embedded', true);
+    embeddedParams.set('tabid', frameInfo.tabId);
+    embeddedParams.set('frameid', frameInfo.frameId);
+    document.body.outerHTML = '';
+    const iframe = document.createElement('iframe');
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.style.position = 'fixed';
+    iframe.src = chrome.runtime.getURL(`watch.html?${embeddedParams}`);
+    document.body.appendChild(iframe);
+    window.addEventListener('message', d => {
+      iframe.contentWindow.postMessage(d.data, '*');
+    });
+  }, undefined, mdiIframeArray);
 }
 
-
-window.addEventListener('message', packet=>{
+window.addEventListener('message', (packet) => {
   if (packet.origin !== window.origin) window.postMessage(packet.data);
 });
 
-if (BROWSER === Browser.FIREFOX) loaded();
-else window.addEventListener('load', loaded);
+/**
+ * Load on DOMContentLoaded or later.
+ * Does not matter unless run_at is specified in manifest.
+ */
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loaded);
+} else {
+  loaded();
+}

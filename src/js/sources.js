@@ -1,24 +1,28 @@
 import { Queue } from './queue';
 import { compose } from './utils';
 // eslint-disable-next-line no-unused-vars
-import { writable, Writable, Readable } from 'svelte/store';
+import { derived, writable, Writable, Readable } from 'svelte/store';
 // eslint-disable-next-line no-unused-vars
 import { Message } from './types.js';
 import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted, authorWhitelisted, authorBlacklisted } from './filter';
+import { isTranslation, replaceFirstTranslation } from './filter';
 import { channelFilters, language, showModMessage, timestamp } from './store';
-import { videoId, AuthorType, languageNameCode } from './constants';
+import { paramsVideoId, AuthorType, languageNameCode, paramsPopout, paramsTabId, paramsFrameId } from './constants';
 import { checkAndSpeak } from './speech.js';
+import { removeDuplicateMessages } from './sources-util.js';
 import * as MCHAD from './mchad.js';
 import * as API from './api.js';
 
 
-/** @type {{ translations: Writable<Message>, mod: Writable<Message>, ytc: Writable<Message>, mchad: Readable<Message>, api: Readable<Message>}} */
+/** @type {{ ytcTranslations: Writable<Message>, mod: Writable<Message>, ytc: Writable<Message>, translations: Writable<Message>, mchad: Readable<Message>, api: Readable<Message>, ytcBonks: Writable<any[]>, ytcDeletions:Writable<any[]> }} */
 export const sources = {
   ytcTranslations: writable(null),
   mod: writable(null),
   ytc: ytcSource(window).ytc,
-  mchad: combineStores(MCHAD.getArchive(videoId), MCHAD.getLiveTranslations(videoId)).store,
-  api: combineStores(API.getArchive(videoId), API.getLiveTranslations(videoId)).store,
+  mchad: combineStores(MCHAD.getArchive(paramsVideoId), MCHAD.getLiveTranslations(paramsVideoId)).store,
+  api: combineStores(API.getArchive(paramsVideoId), API.getLiveTranslations(paramsVideoId)).store,
+  ytcBonks: writable(null),
+  ytcDeletions: writable(null),
 };
 
 /** @type {(id: String) => Boolean} */
@@ -28,7 +32,7 @@ const userBlacklisted = id => channelFilters.get(id).blacklist;
 const isWhitelisted = msg => textWhitelisted(msg.text) || authorWhitelisted(msg.author);
 
 /** @type {(msg: Message) => Boolean} */
-const isBlacklisted = msg => textBlacklisted(msg.text) || userBlacklisted(msg.id) || authorBlacklisted(msg.author);
+const isBlacklisted = msg => textBlacklisted(msg.text) || userBlacklisted(msg.authorId) || authorBlacklisted(msg.author);
 
 /** @type {(msg: Message) => Boolean} */
 const isMod = msg => (msg.types & AuthorType.moderator) || (msg.types & AuthorType.owner);
@@ -36,22 +40,9 @@ const isMod = msg => (msg.types & AuthorType.moderator) || (msg.types & AuthorTy
 /** @type {(msg: Message) => Boolean} */
 const showIfMod = msg => isMod(msg) && showModMessage.get();
 
-/** @type {(store: Writable<Message>) => (msg: Message, text: String | undefined) => void} */
+/** @type {(store: Writable<Message>) => (msg: Message, text?: String) => void} */
 const setStoreMessage =
-  store => (msg, text) => store.set({...msg, text: text ?? msg.text});
-
-const lang = () => languageNameCode[language.get()];
-
-const isTranslation = parsed => parsed && isLangMatch(parsed.lang, lang()) && parsed.msg;
-
-/** @type {(msg: Message) => Message} */
-const replaceFirstTranslation = msg => {
-  const messageArray = [...msg.messageArray];
-  if (messageArray[0].type === 'text') {
-    messageArray[0].text = parseTranslation(messageArray[0].text).msg;
-  }
-  return {...msg, messageArray};
-};
+  store => (msg, text) => store.set({ ...msg, text: text ?? msg.text });
 
 /**
  * @param {Writable<Message>} translations 
@@ -107,35 +98,28 @@ export function combineStores(...stores) {
   };
 }
 
-function getYTCData(unparsed) {
-  try {
-    const data = JSON.parse(JSON.stringify(unparsed.data));
-    return typeof data == 'string' ? JSON.parse(data) : data;
-  } catch (e) { return {}; }
-}
-
-function ytcToMsg({ message, timestamp, author: { name: author, id, types } }) {
-  const text = message
+/**
+ * @returns {Message}
+ */
+function ytcToMsg(ytcMessage) {
+  const text = ytcMessage.message
     .filter(item => item.type === 'text' || item.type === 'link')
     .map(item => item.text)
     .join('');
-  const typeFlag = types.reduce((flag, t) => flag | AuthorType[t], 0);
-  return { text, timestamp, author, id, types: typeFlag, messageArray: message };
+  const author = ytcMessage.author;
+  const typeFlag = author.types.reduce((flag, t) => flag | AuthorType[t], 0);
+  return {
+    text,
+    timestamp: ytcMessage.timestamp,
+    author: author.name,
+    authorId: author.id,
+    types: typeFlag,
+    messageArray: ytcMessage.message,
+    messageId: ytcMessage.messageId
+  };
 }
 
-function forwardPostMessages(window) {
-  try {
-    const connectionName = BigInt(new URLSearchParams(window.location.search).get('tabid'));
-    if (window.chrome && window.chrome.runtime) {
-      window.chrome.runtime.onMessage.addListener((request) => {
-        if (BigInt(request.data.tabid) == connectionName) window.postMessage(request.data);
-      });
-    }
-  // eslint-disable-next-line no-empty
-  } catch(e) {
-  }
-}
-
+/**@param {Window} window */
 export function ytcSource(window) {
   /** @type {Writable<Message>} */
   const ytc = writable(null);
@@ -157,13 +141,13 @@ export function ytcSource(window) {
   };
 
   const pushAllQueuedToStore = () => pushQueuedToStore(() => true);
-  const pushUpToCurrentToStore =
-    currentTime => pushQueuedToStore(q => q.top.data.timestamp < currentTime);
+  const pushUpToCurrentToStore = (currentTime) =>
+    pushQueuedToStore(q => q.top.data.timestamp <= currentTime);
 
-  const scrubbedOrSkipped =
-    time => progress.previous != null && Math.abs(progress.previous - time) > 1;
+  const scrubbedOrSkipped = (time) =>
+    time == null || Math.abs(progress.previous - time) > 1;
 
-  const videoProgressUpdated = time => {
+  const videoProgressUpdated = (time) => {
     if (time < 0) return;
     if (scrubbedOrSkipped(time)) {
       pushAllQueuedToStore();
@@ -176,11 +160,7 @@ export function ytcSource(window) {
 
   const updateVideoProgressBeforeMessages = data => {
     if (!isPollingProgress() && firstChunkReceived) {
-      if (data.event === 'infoDelivery') {
-        videoProgressUpdated(data.info.currentTime);
-      } else if (data['yt-player-video-progress']) {
-        videoProgressUpdated(data['yt-player-video-progress']);
-      }
+      videoProgressUpdated(data);
     }
   };
 
@@ -191,34 +171,65 @@ export function ytcSource(window) {
     runQueue();
   };
 
-  const getTimestamp = (data, message) => data.isReplay
-    ? message.showtime
-    : (Date.now() + message.showtime) / 1000;
-
-  const extractToMsg = data => message => ({
-    timestamp: getTimestamp(data, message), message
+  const extractToMsg = (message) => ({
+    timestamp: message.showtime / 1000,
+    message
   });
 
-  const pushMessagesToQueue = data => data.messages
+  const pushMessagesToQueue = (messages) => messages
     .sort(lessMsg)
-    .map(extractToMsg(data))
+    .map(extractToMsg)
     .forEach(item => queued.push(item));
 
-  window.addEventListener('message', d => {
-    const data = getYTCData(d);
-    updateVideoProgressBeforeMessages(data);
-    
-    if (data.type === 'messageChunk') {
-      firstChunkReceived = true;
-      pushMessagesToQueue(data);
-      if (!isPollingProgress() && !data.isReplay) {
-        startVideoProgressUpdatePolling();
+  /** Connect to background messaging as client */
+  const port = chrome.runtime.connect();
+  let portRegistered = false;
+  const registerClient = (frameInfo) => {
+    port.postMessage({
+      type: 'registerClient',
+      frameInfo: frameInfo,
+      getInitialData: false
+    });
+    portRegistered = true;
+  };
+
+  if (paramsPopout && !portRegistered) {
+    registerClient(
+      {
+        tabId: parseInt(paramsTabId),
+        frameId: parseInt(paramsFrameId)
       }
+    );
+  }
+
+  window.addEventListener('message', (d) => {
+    if (!paramsPopout && d.data.type === 'frameInfo' && !portRegistered) {
+      registerClient(d.data.frameInfo);
     }
   });
 
-  forwardPostMessages(window);
-  
+  const filterDeleted = (message, bonks, deletions) => {
+    return !(bonks.some((b) => b.authorId === message.author.id) ||
+      deletions.some((d) => d.messageId === message.messageId));
+  };
+
+  port.onMessage.addListener((payload) => {
+    if (payload.type === 'actionChunk') {
+      firstChunkReceived = true;
+      const messages = payload.messages.filter(
+        (m) => filterDeleted(m, payload.bonks, payload.deletions)
+      );
+      sources.ytcBonks.set(payload.bonks);
+      sources.ytcDeletions.set(payload.deletions);
+      pushMessagesToQueue(messages);
+      if (!isPollingProgress() && !payload.isReplay) {
+        startVideoProgressUpdatePolling();
+      }
+    } else if (payload.type === 'playerProgress') {
+      updateVideoProgressBeforeMessages(payload.playerProgress);
+    }
+  });
+
   return { ytc, cleanUp };
 }
 
@@ -233,11 +244,11 @@ function message(author, msg, timestamp) {
 }
 
 attachFilters(sources.ytcTranslations, sources.mod, sources.ytc);
-sources.translations = combineStores(
+sources.translations = removeDuplicateMessages(combineStores(
   sources.ytcTranslations,
   sources.mchad,
   sources.api
-).store;
+).store);
 attachSpeechSynth(sources.translations);
 
 export class DummyYTCEventSource {
@@ -264,7 +275,7 @@ export class DummyYTCEventSource {
       {
         type: 'messageChunk',
         isReplay: false,
-        messages: [ message('Author 5', 'hello again', '03:19 PM') ]
+        messages: [message('Author 5', 'hello again', '03:19 PM')]
       }
     ];
   }
