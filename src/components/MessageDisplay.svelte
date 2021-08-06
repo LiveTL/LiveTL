@@ -116,9 +116,6 @@
   };
 
   $: if (!isSelecting) selectedItems = [];
-  $: if (items && $spotlightedTranslator) {
-    items = items.filter(msg => msg.authorId === $spotlightedTranslator);
-  }
 </script>
 
 <MessageDisplayWrapper>
