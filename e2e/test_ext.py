@@ -60,6 +60,7 @@ def run_on(*args):
 def test_injection(web):
     web.get(chilled_cow)
     time.sleep(5)
+    mute_video(web)
 
     web.switch_to.frame(web.find_elements_by_css_selector("#chatframe")[0])
 
@@ -180,6 +181,38 @@ def test_embed_tl_scroll(web):
     assert retry_bool(lambda: not scroll_to_bottom_buttons()), "scroll to bottom button is still displayed"
 
 
+@run_on(all_)
+def test_ltlui_captions(web):
+    open_ltlui(web, mio_phas)
+    ltlui_play(web)
+    ltlui_seek(web, 0)
+
+    caption = get_caption(web)
+    is_different_caption = partial(retry_bool, lambda: get_caption(web) != caption)
+
+    assert "Captions captured from the chat will appear here." in caption, \
+        "Initial caption not displaying"
+
+    new_tls = 0
+    for minutes in range(0, 41, 10):
+        ltlui_seek(web, minutes * 60)
+        new_tls += is_different_caption()
+
+    assert new_tls >= 3, "There were not enough new captions enough times"
+
+
+def get_caption(web):
+    return web.find_elements_by_css_selector(".captionSegment")[0].text.strip()
+
+
+def ltlui_seek(web, seconds):
+    web.execute_script(f"window.player.seekTo({int(seconds)})")
+
+
+def ltlui_play(web):
+    web.execute_script("window.player.mute(); window.player.playVideo()")
+
+
 def open_mio_embed(web):
     open_embed(web, mio_phas)
     switch_to_youtube_parent_frame(web)
@@ -210,6 +243,23 @@ def browser_str(driver):
 
 
 def open_embed(web, site=chilled_cow):
+    open_livetl(web, 2, site)
+    time.sleep(5)
+    mute_video()
+
+    # switch to embed frame
+    web.switch_to.frame(web.find_elements_by_css_selector("iframe")[0])
+    close_update_dialogue(web)
+
+
+
+def open_ltlui(web, site):
+    open_livetl(web, 0, site)
+    time.sleep(5)
+    close_update_dialogue(web)
+
+
+def open_livetl(web, button_index, site):
     web.get(site)
     time.sleep(5)
 
@@ -217,15 +267,10 @@ def open_embed(web, site=chilled_cow):
 
     @retry
     def _():
-        *_, embed_button = web.find_elements_by_css_selector(".livetlButtonWrapper > span")
+        web.find_elements_by_css_selector(".livetlButtonWrapper > span")[button_index]
 
-    *_, embed_button = web.find_elements_by_css_selector(".livetlButtonWrapper > span")
-    embed_button.click()
-    time.sleep(5)
-
-    # switch to embed frame
-    web.switch_to.frame(web.find_elements_by_css_selector("iframe")[0])
-    close_update_dialogue(web)
+    button = web.find_elements_by_css_selector(".livetlButtonWrapper > span")[button_index]
+    button.click()
 
 
 def retry(cb, amount=30, interval=1):
@@ -268,8 +313,13 @@ def switch_to_embed_frame(web):
     web.switch_to.frame(web.find_elements_by_css_selector("iframe")[0])
 
 
+def mute_video(web):
+    web.execute_script("document.querySelector('video').muted = true")
+
+
 def play_video(web):
     with suppress(Exception):
+        mute_video(web)
         web.find_elements_by_css_selector(".ytp-large-play-button")[0].click()
 
 
