@@ -75,7 +75,7 @@
 
   // Prevent null translations from resetting captions
   let captionText = text;
-  $: if ($translations) {
+  $: if ($translations && $translations.text != captionText) {
     captionText = $translations.text;
   }
 </script>
