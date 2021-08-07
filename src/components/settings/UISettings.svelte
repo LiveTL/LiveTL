@@ -2,7 +2,7 @@
   import {
     captionDuration,
     captionFontSize,
-    videoSide,
+    videoSideSetting,
     chatZoom,
     livetlFontSize,
     doSpeechSynth,
@@ -13,7 +13,8 @@
     enableCaptionTimeout,
     chatSplit,
     enableExportButtons,
-    enableFullscreenButton
+    enableFullscreenButton,
+    autoVertical
   } from '../../js/store.js';
   import { ChatSplit, TextDirection, VideoSide } from '../../js/constants.js';
   import CheckOption from '../options/Toggle.svelte';
@@ -40,8 +41,14 @@
     <EnumOption
       name="Video side:"
       options={Object.keys(VideoSide)}
-      store={videoSide}
+      store={videoSideSetting}
     />
+    <div style="margin-bottom: 10px;">
+      <CheckOption
+        name="Enter vertical mode when window is thin"
+        store={autoVertical}
+      />
+    </div>
     <EnumOption
       name="Chat split:"
       options={Object.keys(ChatSplit)}
@@ -84,7 +91,4 @@
   name="Show screenshot and download buttons"
   store={enableExportButtons}
 />
-<CheckOption
-  name="Show fullscreen button"
-  store={enableFullscreenButton}
-/>
+<CheckOption name="Show fullscreen button" store={enableFullscreenButton} />

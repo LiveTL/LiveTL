@@ -12,7 +12,7 @@
     chatSize,
     chatZoom,
     showCaption,
-    chatSplit
+    chatSplit,
   } from '../js/store.js';
   import {
     paramsVideoId,
@@ -25,6 +25,7 @@
   import ChatEmbed from './ChatEmbed.svelte';
   import Popout from './Popout.svelte';
   import Captions from './Captions.svelte';
+
   document.title = 'LiveTL';
   let isResizing = false;
   let chatElem, vidElem, ltlElem;
