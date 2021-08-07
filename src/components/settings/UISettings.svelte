@@ -45,7 +45,7 @@
     />
     <div style="margin-bottom: 10px;">
       <CheckOption
-        name="Override layout settings when entering vertical mode"
+        name="Enter vertical mode when window is thin"
         store={autoVertical}
       />
     </div>

@@ -25,7 +25,6 @@
   import ChatEmbed from './ChatEmbed.svelte';
   import Popout from './Popout.svelte';
   import Captions from './Captions.svelte';
-  import { onMount } from 'svelte';
 
   document.title = 'LiveTL';
   let isResizing = false;
