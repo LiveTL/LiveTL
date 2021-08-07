@@ -1,6 +1,6 @@
 import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour } from './constants.js';
 import { LookupStore, SyncStore } from './storage.js';
-import { writable } from 'svelte/store';
+import { writable, derived } from 'svelte/store';
 
 /**
  * @template T
@@ -77,7 +77,13 @@ export const
 
 // Non-persistant stores
 
-export const videoSide = writable(videoSideSetting.get());
+export const windowDims = writable({
+  width: 0,
+  height: 0
+});
+export const videoSide = derived([videoSideSetting, autoVertical, windowDims], ([$videoSideSetting, $autoVertical, $windowDims]) => (
+  $autoVertical && $windowDims.height > $windowDims.width ? VideoSide.TOP : $videoSideSetting
+));
 export const updatePopupActive = writable(false);
 export const videoTitle = writable('LiveTL');
 export const timestamp = writable(0);

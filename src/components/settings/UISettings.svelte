@@ -3,7 +3,6 @@
     captionDuration,
     captionFontSize,
     videoSideSetting,
-    videoSide,
     chatZoom,
     livetlFontSize,
     doSpeechSynth,
@@ -24,8 +23,6 @@
   import FontDemo from '../FontDemo.svelte';
   import ImportExport from '../ImportExport.svelte';
   export let isStandalone = false;
-
-  videoSideSetting.subscribe(value => $videoSide = value);
 </script>
 
 <ImportExport />
