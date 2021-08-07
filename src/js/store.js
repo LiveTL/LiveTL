@@ -1,6 +1,7 @@
 import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour } from './constants.js';
 import { LookupStore, SyncStore } from './storage.js';
-import { writable, readable } from 'svelte/store';
+import { writable, readable, derived, Readable } from 'svelte/store';
+import { compose } from './utils.js';
 
 /**
  * @template T
@@ -77,22 +78,36 @@ export const
 
 // Non-persistant stores
 
-export const videoSide = readable(videoSideSetting.get(), (set) => {
-  const orientationCallback = () => {
-    if (autoVertical.get()) {
-      // this is the important part
-      set(window.innerHeight > window.innerWidth ? VideoSide.TOP : videoSideSetting.get());
-    }
-  };
-  window.addEventListener('resize', orientationCallback);
-  const unsubAutoVerticalListener = autoVertical.subscribe(orientationCallback);
-  const unsubVideoSideSettingListener = videoSideSetting.subscribe(orientationCallback);
-  return () => {
-    window.removeEventListener('resize', orientationCallback);
-    unsubAutoVerticalListener();
-    unsubVideoSideSettingListener();
-  };
+/** @typedef {{width: Number, height: Number}} WindowDimension */
+/** @type {Readable<WindowDimension>} */
+const getWindowDims = () => ({ width: window.innerWidth, height: window.innerHeight });
+export const windowSize = readable(getWindowDims(), set => {
+  const cb = compose(set, getWindowDims);
+  window.addEventListener('resize', cb);
+  return () => window.removeEventListener('resize', cb);
 });
+const videoSideDepends = [videoSideSetting, autoVertical, windowSize];
+export const videoSide = derived(videoSideDepends, ([$videoSide, $autoVert, $windims]) => {
+  const { width, height } = $windims;
+  return $autoVert && height > width ? VideoSide.TOP : $videoSide;
+}, videoSideSetting.get());
+
+// export const videoSide = readable(videoSideSetting.get(), (set) => {
+//   const orientationCallback = () => {
+//     if (autoVertical.get()) {
+//       // this is the important part
+//       set(window.innerHeight > window.innerWidth ? VideoSide.TOP : videoSideSetting.get());
+//     }
+//   };
+//   window.addEventListener('resize', orientationCallback);
+//   const unsubAutoVerticalListener = autoVertical.subscribe(orientationCallback);
+//   const unsubVideoSideSettingListener = videoSideSetting.subscribe(orientationCallback);
+//   return () => {
+//     window.removeEventListener('resize', orientationCallback);
+//     unsubAutoVerticalListener();
+//     unsubVideoSideSettingListener();
+//   };
+// });
 export const updatePopupActive = writable(false);
 export const videoTitle = writable('LiveTL');
 export const timestamp = writable(0);
