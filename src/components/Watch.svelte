@@ -13,7 +13,6 @@
     chatZoom,
     showCaption,
     chatSplit,
-    windowDims
   } from '../js/store.js';
   import {
     paramsVideoId,
@@ -89,18 +88,7 @@
     });
   };
   $: setTimeout(() => changeSide($videoSide, $chatSplit), 0);
-
-  function orientationChangeCallback() {
-    $windowDims = {
-      height: window.innerHeight,
-      width: window.innerWidth
-    };
-  }
-
-  onMount(orientationChangeCallback);
 </script>
-
-<svelte:window on:resize={orientationChangeCallback} />
 
 <div
   style="
