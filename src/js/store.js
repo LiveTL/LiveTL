@@ -92,22 +92,6 @@ export const videoSide = derived(videoSideDepends, ([$videoSide, $autoVert, $win
   return $autoVert && height > width ? VideoSide.TOP : $videoSide;
 }, videoSideSetting.get());
 
-// export const videoSide = readable(videoSideSetting.get(), (set) => {
-//   const orientationCallback = () => {
-//     if (autoVertical.get()) {
-//       // this is the important part
-//       set(window.innerHeight > window.innerWidth ? VideoSide.TOP : videoSideSetting.get());
-//     }
-//   };
-//   window.addEventListener('resize', orientationCallback);
-//   const unsubAutoVerticalListener = autoVertical.subscribe(orientationCallback);
-//   const unsubVideoSideSettingListener = videoSideSetting.subscribe(orientationCallback);
-//   return () => {
-//     window.removeEventListener('resize', orientationCallback);
-//     unsubAutoVerticalListener();
-//     unsubVideoSideSettingListener();
-//   };
-// });
 export const updatePopupActive = writable(false);
 export const videoTitle = writable('LiveTL');
 export const timestamp = writable(0);
