@@ -49,12 +49,12 @@
         store={autoVertical}
       />
     </div>
-    <EnumOption
-      name="Chat split:"
-      options={Object.keys(ChatSplit)}
-      store={chatSplit}
-    />
   {/if}
+  <EnumOption
+    name="Chat split:"
+    options={Object.keys(ChatSplit)}
+    store={chatSplit}
+  />
 </div>
 <CheckOption name="Show timestamps" store={showTimestamp} />
 {#if !isStandalone}
