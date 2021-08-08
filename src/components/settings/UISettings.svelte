@@ -16,7 +16,7 @@
     enableFullscreenButton,
     autoVertical
   } from '../../js/store.js';
-  import { ChatSplit, TextDirection, VideoSide } from '../../js/constants.js';
+  import { ChatSplit, TextDirection, VideoSide, paramsEmbedded } from '../../js/constants.js';
   import CheckOption from '../options/Toggle.svelte';
   import SliderOption from '../options/Slider.svelte';
   import EnumOption from '../options/Radio.svelte';
@@ -50,11 +50,13 @@
       />
     </div>
   {/if}
-  <EnumOption
-    name="Chat split:"
-    options={Object.keys(ChatSplit)}
-    store={chatSplit}
-  />
+  {#if !isStandalone || paramsEmbedded}
+    <EnumOption
+      name="Chat split:"
+      options={Object.keys(ChatSplit)}
+      store={chatSplit}
+    />
+  {/if}
 </div>
 <CheckOption name="Show timestamps" store={showTimestamp} />
 {#if !isStandalone}
