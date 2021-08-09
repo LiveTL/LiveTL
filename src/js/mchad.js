@@ -123,6 +123,7 @@ const mchadToMessage = (author, timestampTransform) => data => ({
   text: data.Stext,
   messageArray: [{ type: 'text', text: data.Stext }],
   author,
+  authorId: author,
   timestamp: timestampTransform(data.Stime),
   types: AuthorType.mchad
 });

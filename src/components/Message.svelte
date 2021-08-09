@@ -65,7 +65,6 @@
       <span title="Hide user" class="red-highlight" on:click={dispatcher('hide')}>
         <Icon path={mdiEyeOffOutline} size="1em" />
       </span>
-
       <span title="Ban user" class="red-highlight" on:click={dispatcher('ban')}>
         <Icon path={mdiAccountRemove} size="1em" />
       </span>
