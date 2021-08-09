@@ -2,7 +2,7 @@
   import { afterUpdate, tick } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { Button, Icon, MaterialApp, TextField, Tooltip } from 'svelte-materialify/src';
-  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload, mdiFullscreen, mdiPin  } from '@mdi/js';
+  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload, mdiFullscreen, mdiPinOff } from '@mdi/js';
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
   import { TextDirection, paramsVideoTitle, paramsEmbedded } from '../js/constants.js';
@@ -195,7 +195,7 @@
                 size="small"
                 on:click={() => spotlightedTranslator.set(null)}
               >
-                <Icon path={mdiPin} />
+                <Icon path={mdiPinOff} />
               </Button>
             </div>
             <span slot="tip">Remove spotlight</span>
