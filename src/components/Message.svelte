@@ -6,7 +6,8 @@
   import { AuthorType } from '../js/constants.js';
   import { createEventDispatcher } from 'svelte';
   import { Icon } from 'svelte-materialify/src';
-  import { mdiEyeOffOutline, mdiAccountRemove, mdiCheckCircle, mdiPin } from '@mdi/js';
+  import { mdiEyeOffOutline, mdiAccountRemove, mdiCheckCircle, mdiPin, mdiPinOff } from '@mdi/js';
+  import { spotlightedTranslator } from '../js/store.js';
   import '../css/splash.css';
 
   /** @type {Message} */
@@ -28,6 +29,16 @@
   $: moderator = message.types & AuthorType.moderator;
   $: owner = message.types & AuthorType.owner;
   $: timestamp = showTimestamp ? `(${message.timestamp})` : '';
+
+  const spotlightDispatch = dispatcher('spotlight');
+
+  function toggleSpotlight() {
+    if ($spotlightedTranslator) {
+      $spotlightedTranslator = null;
+    } else {
+      spotlightDispatch();
+    }
+  }
 </script>
 
 <div
@@ -59,10 +70,18 @@
     {/if}
     <span>{timestamp}</span>
     <span class="message-actions">
-      <span title="Spotlight user" class="blue-highlight" on:click={dispatcher('spotlight')}>
-        <Icon path={mdiPin} size="1em" />
+      <span
+        title="Spotlight user"
+        class="blue-highlight"
+        on:click={toggleSpotlight}
+      >
+        <Icon path={$spotlightedTranslator ? mdiPinOff : mdiPin} size="1em" />
       </span>
-      <span title="Hide user" class="red-highlight" on:click={dispatcher('hide')}>
+      <span
+        title="Hide user"
+        class="red-highlight"
+        on:click={dispatcher('hide')}
+      >
         <Icon path={mdiEyeOffOutline} size="1em" />
       </span>
       <span title="Ban user" class="red-highlight" on:click={dispatcher('ban')}>
