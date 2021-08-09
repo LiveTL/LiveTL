@@ -1,6 +1,6 @@
 <script>
   import { afterUpdate, tick } from 'svelte';
-  import { fade } from 'svelte/transition';
+  import { fade, fly } from 'svelte/transition';
   import { Button, Icon, MaterialApp, TextField, Tooltip } from 'svelte-materialify/src';
   import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload, mdiFullscreen, mdiPin  } from '@mdi/js';
   import Options from './Options.svelte';
@@ -189,13 +189,15 @@
         {#if !settingsOpen && $spotlightedTranslator}
           <!-- Un-spotlight translator button -->
           <Tooltip bottom>
-            <Button
-              fab
-              size="small"
-              on:click={() => spotlightedTranslator.set(null)}
-            >
-              <Icon path={mdiPin} />
-            </Button>
+            <div transition:fly={{ y: -50, duration: 600 }}>
+              <Button
+                fab
+                size="small"
+                on:click={() => spotlightedTranslator.set(null)}
+              >
+                <Icon path={mdiPin} />
+              </Button>
+            </div>
             <span slot="tip">Remove spotlight</span>
           </Tooltip>
         {/if}
