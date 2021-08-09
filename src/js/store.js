@@ -1,6 +1,7 @@
 import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour } from './constants.js';
 import { LookupStore, SyncStore } from './storage.js';
-import { writable } from 'svelte/store';
+import { writable, readable, derived, Readable } from 'svelte/store';
+import { compose } from './utils.js';
 
 /**
  * @template T
@@ -34,7 +35,7 @@ export const
   chatZoom = SS('chatZoom', defaultZoom),
   showTimestamp = SS('showTimestamp', true),
   textDirection = SS('textDirection', TextDirection.BOTTOM),
-  videoSide = SS('videoSide', VideoSide.LEFT, false),
+  videoSideSetting = SS('videoSide', VideoSide.LEFT, false),
   showCaption = SS('showCaption', true),
   captionDuration = SS('captionDuration', 10),
   captionFontSize = SS('captionFontSize', 18),
@@ -72,9 +73,25 @@ export const
   mchadUsers = LS('mchadUsers', false),
   autoPrefixTag = SS('autoPrefixTag', '[$filterLang]'),
   macroTrigger = SS('macroTrigger', '/'),
-  ytcDeleteBehaviour = SS('ytcDeleteBehaviour', YtcDeleteBehaviour.HIDE);
+  ytcDeleteBehaviour = SS('ytcDeleteBehaviour', YtcDeleteBehaviour.HIDE),
+  autoVertical = SS('autoVertical', true);
 
 // Non-persistant stores
+
+/** @typedef {{width: Number, height: Number}} WindowDimension */
+/** @type {Readable<WindowDimension>} */
+const getWindowDims = () => ({ width: window.innerWidth, height: window.innerHeight });
+export const windowSize = readable(getWindowDims(), set => {
+  const cb = compose(set, getWindowDims);
+  window.addEventListener('resize', cb);
+  return () => window.removeEventListener('resize', cb);
+});
+const videoSideDepends = [videoSideSetting, autoVertical, windowSize];
+export const videoSide = derived(videoSideDepends, ([$videoSide, $autoVert, $windims]) => {
+  const { width, height } = $windims;
+  return $autoVert && height > width ? VideoSide.TOP : $videoSide;
+}, videoSideSetting.get());
+
 export const updatePopupActive = writable(false);
 export const videoTitle = writable('LiveTL');
 export const timestamp = writable(0);
