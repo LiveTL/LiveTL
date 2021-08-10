@@ -6,7 +6,7 @@ import { derived, writable, Writable, Readable } from 'svelte/store';
 import { Message } from './types.js';
 import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted, authorWhitelisted, authorBlacklisted } from './filter';
 import { isTranslation, replaceFirstTranslation } from './filter';
-import { channelFilters, language, showModMessage, timestamp } from './store';
+import { channelFilters, language, showModMessage, spotlightedTranslator, timestamp } from './store';
 import { paramsVideoId, AuthorType, languageNameCode, paramsPopout, paramsTabId, paramsFrameId } from './constants';
 import { checkAndSpeak } from './speech.js';
 import { removeDuplicateMessages } from './sources-util.js';
@@ -68,6 +68,16 @@ function attachFilters(translations, mod, ytc) {
     else if (showIfMod(message)) {
       setModMessage(message);
     }
+  });
+}
+
+/**
+ * @param {Readable<Message>} translations
+ * @return {Readable<Message>}
+ */
+function attachSpotlight(translations) {
+  return derived([translations, spotlightedTranslator], ([$msg, $spot]) => {
+    if ($spot === null || $spot === $msg?.authorId) return $msg;
   });
 }
 
@@ -244,6 +254,9 @@ function message(author, msg, timestamp) {
 }
 
 attachFilters(sources.ytcTranslations, sources.mod, sources.ytc);
+['ytcTranslations', 'mchad', 'api', 'mod'].forEach(k => {
+  sources[k] = attachSpotlight(sources[k]);
+});
 sources.translations = removeDuplicateMessages(combineStores(
   sources.ytcTranslations,
   sources.mchad,

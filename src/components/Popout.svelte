@@ -1,12 +1,13 @@
 <script>
   import { afterUpdate, tick } from 'svelte';
-  import { fade } from 'svelte/transition';
-  import { Button, Icon, MaterialApp, TextField } from 'svelte-materialify/src';
-  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload, mdiFullscreen  } from '@mdi/js';
+  import { fade, fly } from 'svelte/transition';
+  import { Button, Icon, MaterialApp, TextField, Tooltip } from 'svelte-materialify/src';
+  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload, mdiFullscreen } from '@mdi/js';
+  import { mdiAccountVoiceOff } from '../js/svg.js';
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
   import { TextDirection, paramsVideoTitle, paramsEmbedded } from '../js/constants.js';
-  import { faviconURL, textDirection, screenshotRenderWidth, videoTitle, enableExportButtons, updatePopupActive, enableFullscreenButton } from '../js/store.js';
+  import { faviconURL, textDirection, screenshotRenderWidth, videoTitle, enableExportButtons, updatePopupActive, enableFullscreenButton, spotlightedTranslator } from '../js/store.js';
   import MessageDisplay from './MessageDisplay.svelte';
   import ScreenshotExport from './ScreenshotExport.svelte';
   import Updates from './Updates.svelte';
@@ -186,40 +187,71 @@
         </div>
       {/if}
       {#if !isSelecting}
+        {#if !settingsOpen && $spotlightedTranslator}
+          <!-- Un-spotlight translator button -->
+          <Tooltip bottom>
+            <div transition:fly={{ x: -500, duration: 600 }}>
+              <Button
+                fab
+                size="small"
+                on:click={() => spotlightedTranslator.set(null)}
+              >
+                <Icon path={mdiAccountVoiceOff} />
+              </Button>
+            </div>
+            <span slot="tip">Show other translators</span>
+          </Tooltip>
+        {/if}
         {#if !settingsOpen && $enableExportButtons}
-          <Button
-            fab
-            size="small"
-            on:click={() => {
-              toggleSelecting();
-              selectOperation = saveScreenshot;
-            }}
-          >
-            <Icon path={isSelecting ? mdiCheck : mdiCamera} />
-          </Button>
-          <Button
-            fab
-            size="small"
-            on:click={() => {
-              toggleSelecting();
-              selectOperation = saveDownload;
-            }}
-          >
-            <Icon path={isSelecting ? mdiCheck : mdiDownload} />
-          </Button>
+          <!-- Screenshot button -->
+          <Tooltip bottom>
+            <Button
+              fab
+              size="small"
+              on:click={() => {
+                toggleSelecting();
+                selectOperation = saveScreenshot;
+              }}
+            >
+              <Icon path={isSelecting ? mdiCheck : mdiCamera} />
+            </Button>
+            <span slot="tip">Screenshot translations</span>
+          </Tooltip>
+          <!-- Export translations button -->
+          <Tooltip bottom>
+            <Button
+              fab
+              size="small"
+              on:click={() => {
+                toggleSelecting();
+                selectOperation = saveDownload;
+              }}
+            >
+              <Icon path={isSelecting ? mdiCheck : mdiDownload} />
+            </Button>
+            <span slot="tip">Export translations log (txt)</span>
+          </Tooltip>
         {/if}
         {#if !settingsOpen && $enableFullscreenButton}
-          <Button fab size="small" on:click={toggleFullScreen}>
-            <Icon path={mdiFullscreen} />
-          </Button>
+          <!-- Fullscreen button -->
+          <Tooltip bottom>
+            <Button fab size="small" on:click={toggleFullScreen}>
+              <Icon path={mdiFullscreen} />
+            </Button>
+            <span slot="tip">Toggle fullscreen</span>
+          </Tooltip>
         {/if}
-        <Button
-          fab
-          size="small"
-          on:click={() => (settingsOpen = !settingsOpen)}
-        >
-          <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
-        </Button>
+        <!-- Settings button -->
+        <Tooltip bottom>
+          <Button
+            fab
+            size="small"
+            on:click={() => (settingsOpen = !settingsOpen)}
+          >
+            <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
+          </Button>
+          <span slot="tip">{settingsOpen ? 'Close settings' : 'Open settings'}</span>
+        </Tooltip>
       {/if}
     </div>
   </div>

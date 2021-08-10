@@ -42,8 +42,17 @@ const isRecentMessage = (mostRecent, latency) => msg =>
 
 /** @type {(msg: Message) => (otherMsg: Message) => Boolean} */
 const isDuplicateOf = msg => otherMsg =>
+  messageEquals(msg, otherMsg) || messageDup(msg, otherMsg);
+
+/** @type {(msg: Message, otherMsg: Message) => Boolean} */
+const messageDup = (msg, otherMsg) =>
   removeWhitespace(msg.text) === removeWhitespace(otherMsg.text) &&
     msg.types !== otherMsg.types;
+
+/** @type {(msg: Message, otherMsg: Message) => Boolean} */
+const messageEquals = (msg, otherMsg) => msg.text === otherMsg.text &&
+  msg.timestamp === otherMsg.timestamp &&
+  msg.authorId === otherMsg.authorId;
 
 /** @type {(text: String) => String} */
 const removeWhitespace = text => text.trim().replace(/(\W)\W+/g, '$1');
