@@ -2,7 +2,8 @@
   import { afterUpdate, tick } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { Button, Icon, MaterialApp, TextField, Tooltip } from 'svelte-materialify/src';
-  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload, mdiFullscreen, mdiPinOff } from '@mdi/js';
+  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload, mdiFullscreen } from '@mdi/js';
+  import { mdiAccountVoiceOff } from '../js/svg.js';
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
   import { TextDirection, paramsVideoTitle, paramsEmbedded } from '../js/constants.js';
@@ -189,16 +190,16 @@
         {#if !settingsOpen && $spotlightedTranslator}
           <!-- Un-spotlight translator button -->
           <Tooltip bottom>
-            <div transition:fly={{ y: -50, duration: 600 }}>
+            <div transition:fly={{ x: -500, duration: 600 }}>
               <Button
                 fab
                 size="small"
                 on:click={() => spotlightedTranslator.set(null)}
               >
-                <Icon path={mdiPinOff} />
+                <Icon path={mdiAccountVoiceOff} />
               </Button>
             </div>
-            <span slot="tip">Remove spotlight</span>
+            <span slot="tip">Show other translators</span>
           </Tooltip>
         {/if}
         {#if !settingsOpen && $enableExportButtons}

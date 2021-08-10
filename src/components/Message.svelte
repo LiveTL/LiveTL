@@ -6,7 +6,8 @@
   import { AuthorType } from '../js/constants.js';
   import { createEventDispatcher } from 'svelte';
   import { Icon } from 'svelte-materialify/src';
-  import { mdiEyeOffOutline, mdiAccountRemove, mdiCheckCircle, mdiPin, mdiPinOff } from '@mdi/js';
+  import { mdiEyeOffOutline, mdiAccountRemove, mdiCheckCircle, mdiAccountVoice } from '@mdi/js';
+  import { mdiAccountVoiceOff } from '../js/svg.js';
   import { spotlightedTranslator } from '../js/store.js';
   import '../css/splash.css';
 
@@ -61,20 +62,20 @@
     <span>{timestamp}</span>
     <span class="message-actions">
       <span
-        title="Spotlight user"
+        title="{$spotlightedTranslator ? 'Show other translators' : `Only show ${message.author}`}"
         class="blue-highlight"
         on:click={dispatcher('spotlight')}
       >
-        <Icon path={$spotlightedTranslator ? mdiPinOff : mdiPin} size="1em" />
+        <Icon path={$spotlightedTranslator ? mdiAccountVoiceOff : mdiAccountVoice} size="1em" />
       </span>
       <span
-        title="Hide user"
+        title="Hide message"
         class="red-highlight"
         on:click={dispatcher('hide')}
       >
         <Icon path={mdiEyeOffOutline} size="1em" />
       </span>
-      <span title="Ban user" class="red-highlight" on:click={dispatcher('ban')}>
+      <span title="Ban {message.author}" class="red-highlight" on:click={dispatcher('ban')}>
         <Icon path={mdiAccountRemove} size="1em" />
       </span>
     </span>
