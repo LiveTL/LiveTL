@@ -22,23 +22,13 @@
   const dispatch = createEventDispatcher();
   const dispatcher = name => () => dispatch(name, message);
 
-  if (!messageArray && message) {
+  $: if (!messageArray && message) {
     messageArray = message.messageArray;
   }
 
   $: moderator = message.types & AuthorType.moderator;
   $: owner = message.types & AuthorType.owner;
   $: timestamp = showTimestamp ? `(${message.timestamp})` : '';
-
-  const spotlightDispatch = dispatcher('spotlight');
-
-  function toggleSpotlight() {
-    if ($spotlightedTranslator) {
-      $spotlightedTranslator = null;
-    } else {
-      spotlightDispatch();
-    }
-  }
 </script>
 
 <div
@@ -73,7 +63,7 @@
       <span
         title="Spotlight user"
         class="blue-highlight"
-        on:click={toggleSpotlight}
+        on:click={dispatcher('spotlight')}
       >
         <Icon path={$spotlightedTranslator ? mdiPinOff : mdiPin} size="1em" />
       </span>

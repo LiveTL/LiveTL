@@ -138,7 +138,9 @@
         messageArray={item.messageArray}
         on:hide={() => (item.hidden = true)}
         on:ban={banMessage(item)}
-        on:spotlight={e => spotlightedTranslator.set(e.detail.authorId)}
+        on:spotlight={e => spotlightedTranslator.set(
+          $spotlightedTranslator ? null : e.detail.authorId
+        )}
       >
         {#if isSelecting}
           <Checkbox bind:group={selectedItems} value={item} />
