@@ -1,4 +1,4 @@
-const isAndroid = false;
+export const isAndroid = false;
 // DO NOT EDIT THE ABOVE LINE, it will be updated by webpack.
 export const storageVersion = 'v0-alpha';
 
