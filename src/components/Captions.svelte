@@ -11,6 +11,7 @@
     enableCaptionTimeout,
     captionDuration,
   } from '../js/store.js';
+  import { checkAndSpeak } from '../js/speech.js';
   import { displayedMessages } from '../js/aggregate-source.js';
   export let text = `
   Captions captured from the chat will appear here. Try moving and resizing!
@@ -69,7 +70,7 @@
   // Prevent null translations from resetting captions
   let captionText = text;
   $: if (translation != null && translation != captionText) {
-    captionText = translation;
+    checkAndSpeak(captionText = translation);
   }
 
   $: if (captionText) {
@@ -79,7 +80,7 @@
       elem.offsetWidth; // force reflow
       elem.style.display = 'block';
     }
-  };
+  }
 </script>
 
 <div

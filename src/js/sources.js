@@ -8,7 +8,6 @@ import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlac
 import { isTranslation, replaceFirstTranslation } from './filter';
 import { language, showModMessage, spotlightedTranslator, timestamp } from './store';
 import { paramsVideoId, AuthorType, languageNameCode, paramsPopout, paramsTabId, paramsFrameId } from './constants';
-import { checkAndSpeak } from './speech.js';
 import * as MCHAD from './mchad.js';
 import * as API from './api.js';
 
@@ -64,17 +63,6 @@ function attachFilters(translations, mod, ytc) {
     else if (showIfMod(message)) {
       setModMessage(message);
     }
-  });
-}
-
-/**
- * @param {Writable<Message>} translations
- * @return {() => void} cleanup
- */
-function attachSpeechSynth(translations) {
-  return translations.subscribe(message => {
-    if (message)
-      checkAndSpeak(message.text);
   });
 }
 
@@ -245,7 +233,6 @@ sources.translations = combineStores(
   sources.mchad,
   sources.api
 ).store;
-attachSpeechSynth(sources.translations);
 
 export class DummyYTCEventSource {
   constructor() {
