@@ -12,7 +12,7 @@
     captionDuration,
   } from '../js/store.js';
   import { checkAndSpeak } from '../js/speech.js';
-  import { displayedMessages } from '../js/aggregate-source.js';
+  import { displayedMessages } from '../js/sources-aggregate.js';
   export let text = `
   Captions captured from the chat will appear here. Try moving and resizing!
   You can also disable floating captions or make captions disappear

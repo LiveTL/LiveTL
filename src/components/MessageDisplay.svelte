@@ -67,7 +67,6 @@
   };
 
   $: if (!isSelecting) selectedItems = [];
-  $: console.log(items);
 </script>
 
 <MessageDisplayWrapper>

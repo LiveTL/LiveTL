@@ -11,7 +11,7 @@
   import MessageDisplay from './MessageDisplay.svelte';
   import ScreenshotExport from './ScreenshotExport.svelte';
   import Updates from './Updates.svelte';
-  import { displayedMessages } from '../js/aggregate-source.js';
+  import { displayedMessages } from '../js/sources-aggregate.js';
   import { saveAs } from 'file-saver';
   let settingsOpen = false;
   export let isResizing = false;
