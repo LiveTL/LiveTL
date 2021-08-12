@@ -119,6 +119,7 @@
   $: if ($spotlightedTranslator) {
     items = items.filter(msg => msg.authorId === $spotlightedTranslator);
   }
+  $: console.log(items);
 </script>
 
 <MessageDisplayWrapper>
