@@ -1,4 +1,3 @@
-import { derived, Readable } from 'svelte/store';
 import { Message, Seconds } from './types.js';
 
 /**
@@ -19,7 +18,7 @@ export function removeDuplicateMessages(msgs, sourceLatency=10) {
     return true;
   };
   return msgs.filter(Boolean).filter(isUnique);
-};
+}
 
 /** @type {(msg: Message) => Seconds} */
 const messageTime = msg => {
