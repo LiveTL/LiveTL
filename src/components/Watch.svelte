@@ -28,7 +28,7 @@
   import Captions from './Captions.svelte';
 
   document.title = 'LiveTL';
-  let isResizing = false;
+  import { isResizing } from '../js/store.js';
   let chatElem, vidElem, ltlElem;
   const resizable = (selector, info) => {
     j(typeof selector == 'string' ? document.querySelector(selector) : selector).resizable(info);
@@ -40,7 +40,7 @@
     ].forEach(item => {
       const [elem, prop, store] = item;
       if (!elem) return;
-      if (isResizing) {
+      if ($isResizing) {
         // elem.style.width = elem.clientWidth;
         // elem.style.height = elem.clientHeight;
       } else {
@@ -60,7 +60,7 @@
   let chatSideElem;
 
   const resizeCallback = () => {
-    isResizing = !isResizing;
+    $isResizing = !$isResizing;
     convertPxAndPercent();
   };
   const changeSide = () => {
@@ -119,7 +119,7 @@
             : ''}"
           bind:this={vidElem}
         >
-          <Wrapper {isResizing}>
+          <Wrapper>
             <VideoEmbed videoId={paramsVideoId} />
           </Wrapper>
         </div>
@@ -148,7 +148,6 @@
             bind:this={chatElem}
           >
             <Wrapper
-              {isResizing}
               zoom={$chatZoom}
               style={$chatSplit == ChatSplit.VERTICAL
                 ? 'padding-right: 10px;'
@@ -162,7 +161,7 @@
             </Wrapper>
           </div>
           <div class="tile autoscale" bind:this={ltlElem}>
-            <Popout {isResizing} />
+            <Popout />
           </div>
         </div>
       </div>

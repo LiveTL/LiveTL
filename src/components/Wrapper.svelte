@@ -1,7 +1,7 @@
 <script>
   import { delayed } from '../js/utils.js';
 
-  export let isResizing;
+  import { isResizing } from '../js/store.js';
   export let zoom = NaN;
   export let style = '';
   let factor;
@@ -22,7 +22,7 @@
 
 <div
   style="
-    display: {isResizing
+    display: {$isResizing
     ? 'none'
     : 'grid'};
     width: {inverse}%;

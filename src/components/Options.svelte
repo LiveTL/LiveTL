@@ -1,7 +1,6 @@
 <script>
   import { MaterialApp } from 'svelte-materialify/src';
   import Settings from './Settings.svelte';
-  export let isResizing = false;
   export let active = false;
 
   // Hot reload window.mchad
@@ -17,7 +16,7 @@
 <MaterialApp theme="dark">
   <div class="wrapper">
     <div class="app">
-      <Settings {isResizing} bind:active />
+      <Settings bind:active />
     </div>
     <slot />
   </div>
@@ -43,5 +42,4 @@
     height: 100%;
     position: absolute;
   }
-
 </style>

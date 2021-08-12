@@ -12,8 +12,8 @@
   import ScreenshotExport from './ScreenshotExport.svelte';
   import Updates from './Updates.svelte';
   import { saveAs } from 'file-saver';
+  import { isResizing } from '../js/store.js';
   let settingsOpen = false;
-  export let isResizing = false;
   $videoTitle = paramsVideoTitle || $videoTitle;
   $: document.title = $videoTitle || 'LiveTL Popout';
 
@@ -153,7 +153,7 @@
   <div
     class="settings-button d-flex"
     class:bottom-float={$textDirection === TextDirection.TOP}
-    class:d-none={isResizing}
+    class:d-none={$isResizing}
   >
     {#if isSelecting}
       <h6 class="floating-text">
@@ -267,9 +267,9 @@
       {/if}
     </div>
   </div>
-  <Wrapper {isResizing} on:scroll={updateWrapper} bind:this={wrapper}>
+  <Wrapper on:scroll={updateWrapper} bind:this={wrapper}>
     <div class:d-none={!settingsOpen}>
-      <Options {isResizing} bind:active={settingsOpen} />
+      <Options bind:active={settingsOpen} />
     </div>
     <div class:d-none={settingsOpen}>
       <MessageDisplay
@@ -282,7 +282,7 @@
       />
     </div>
   </Wrapper>
-  {#if !(isResizing || settingsOpen)}
+  {#if !($isResizing || settingsOpen)}
     {#if !isAtRecent}
       <div
         class="recent-button"

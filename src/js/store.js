@@ -99,3 +99,4 @@ export const faviconURL = writable('/48x48.png');
 export const availableMchadUsers = writable([]);
 export const spotlightedTranslator = writable(null);
 export const displayMode = writable(paramsEmbedded ? DisplayMode.EMBEDDED : DisplayMode.FULLPAGE);
+export const isResizing = writable(false);

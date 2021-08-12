@@ -6,8 +6,7 @@
   import FilterSettings from './settings/FilterSettings.svelte';
   import TranslatorMode from './settings/TranslatorMode.svelte';
   import About from './About.svelte';
-
-  export let isResizing = false;
+  import { isResizing } from '../js/store.js';
 
   const settings = [
     { name: 'Interface', component: UISettings, icon: mdiBrush },
@@ -37,7 +36,7 @@
 
   let callRedrawSlider = false;
   let wasResizing = false;
-  $: wasResizing = !isResizing;
+  $: wasResizing = !$isResizing;
   beforeUpdate(() => {
     if (wasResizing) {
       callRedrawSlider = true;
