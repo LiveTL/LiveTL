@@ -28,11 +28,11 @@ const hidden = derived(sessionHidden, $hidden => new Set($hidden));
 export const capturedMessages = readable([], set => {
   let items = [];
 
-  const { cleanUp, store: sourceWithDups } = combineStores(
+  const { cleanUp, store: source } = combineStores(
     sources.translations,
     sources.mod,
   );
-  const source = removeDuplicateMessages(sourceWithDups);
+
   const sourceUnsub = source.subscribe(msg => {
     if (msg) {
       set(items = [...items, {...msg, index: items.length}]);
@@ -80,8 +80,9 @@ export const capturedMessages = readable([], set => {
 const dispDepends = [capturedMessages, allBanned, hidden, spotlightedTranslator];
 export const displayedMessages = derived(dispDepends, ([$items, $banned, $hidden, $spot]) => {
   const attrNotIn = (set, attr) => item => !set.has(item[attr]);
-  return $items
+  $items = $items
     ?.filter(attrNotIn($banned, 'authorId'))
     ?.filter(attrNotIn($hidden, 'messageId'))
     ?.filter($spot ? msg => msg.authorId === $spot : () => true) ?? [];
+  return removeDuplicateMessages($items);
 });

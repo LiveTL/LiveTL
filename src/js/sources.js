@@ -9,7 +9,6 @@ import { isTranslation, replaceFirstTranslation } from './filter';
 import { language, showModMessage, spotlightedTranslator, timestamp } from './store';
 import { paramsVideoId, AuthorType, languageNameCode, paramsPopout, paramsTabId, paramsFrameId } from './constants';
 import { checkAndSpeak } from './speech.js';
-import { removeDuplicateMessages } from './sources-util.js';
 import * as MCHAD from './mchad.js';
 import * as API from './api.js';
 
@@ -65,16 +64,6 @@ function attachFilters(translations, mod, ytc) {
     else if (showIfMod(message)) {
       setModMessage(message);
     }
-  });
-}
-
-/**
- * @param {Readable<Message>} translations
- * @return {Readable<Message>}
- */
-function attachSpotlight(translations) {
-  return derived([translations, spotlightedTranslator], ([$msg, $spot]) => {
-    if ($spot === null || $spot === $msg?.authorId) return $msg;
   });
 }
 
@@ -251,14 +240,11 @@ function message(author, msg, timestamp) {
 }
 
 attachFilters(sources.ytcTranslations, sources.mod, sources.ytc);
-['ytcTranslations', 'mchad', 'api', 'mod'].forEach(k => {
-  sources[k] = attachSpotlight(sources[k]);
-});
-sources.translations = removeDuplicateMessages(combineStores(
+sources.translations = combineStores(
   sources.ytcTranslations,
   sources.mchad,
   sources.api
-).store);
+).store;
 attachSpeechSynth(sources.translations);
 
 export class DummyYTCEventSource {
