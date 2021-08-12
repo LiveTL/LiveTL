@@ -16,7 +16,6 @@
   export let isResizing = false;
   $videoTitle = paramsVideoTitle || $videoTitle;
   $: document.title = $videoTitle || 'LiveTL Popout';
-  export let isStandalone = paramsEmbedded ? true : false;
 
   let wrapper;
   let messageDisplay;
@@ -270,7 +269,7 @@
   </div>
   <Wrapper {isResizing} on:scroll={updateWrapper} bind:this={wrapper}>
     <div class:d-none={!settingsOpen}>
-      <Options {isStandalone} {isResizing} bind:active={settingsOpen} />
+      <Options {isResizing} bind:active={settingsOpen} />
     </div>
     <div class:d-none={settingsOpen}>
       <MessageDisplay

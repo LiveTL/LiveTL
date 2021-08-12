@@ -7,7 +7,6 @@
   import TranslatorMode from './settings/TranslatorMode.svelte';
   import About from './About.svelte';
 
-  export let isStandalone = false;
   export let isResizing = false;
 
   const settings = [
@@ -93,7 +92,7 @@
               <div
                 style="font-size: 16px !important; margin: 15px 0px 15px 0px;"
               >
-                <svelte:component this={component} {isStandalone} />
+                <svelte:component this={component} />
               </div>
             </TabContent>
           {/each}

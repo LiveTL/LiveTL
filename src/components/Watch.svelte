@@ -13,6 +13,7 @@
     chatZoom,
     showCaption,
     chatSplit,
+    displayMode
   } from '../js/store.js';
   import {
     paramsVideoId,
@@ -20,7 +21,7 @@
     ChatSplit,
     paramsContinuation,
     paramsIsVOD,
-    paramsEmbedded
+    DisplayMode
   } from '../js/constants.js';
   import ChatEmbed from './ChatEmbed.svelte';
   import Popout from './Popout.svelte';
@@ -35,7 +36,7 @@
   const convertPxAndPercent = () => {
     [
       [chatElem, $chatSplit == ChatSplit.VERTICAL ? 'width' : 'height', chatSize],
-      [paramsEmbedded ? null : vidElem, $videoSide == VideoSide.TOP ? 'height' : 'width', videoPanelSize]
+      [$displayMode === DisplayMode.FULLPAGE ? vidElem : null, $videoSide == VideoSide.TOP ? 'height' : 'width', videoPanelSize]
     ].forEach(item => {
       const [elem, prop, store] = item;
       if (!elem) return;
@@ -97,7 +98,7 @@
   height: calc(100% - 40px);"
 >
   <MaterialApp theme="dark">
-    {#if !paramsEmbedded && $showCaption}
+    {#if $displayMode === DisplayMode.FULLPAGE && $showCaption}
       <Captions />
     {/if}
     <div
@@ -106,7 +107,7 @@
         {$videoSide == VideoSide.TOP ? 'horizontal' : 'vertical'} 
         {$videoSide == VideoSide.RIGHT ? 'reversed' : ''}"
     >
-      {#if !paramsEmbedded}
+      {#if $displayMode === DisplayMode.FULLPAGE}
         <div
           class="tile resizable"
           style="{($videoSide == VideoSide.TOP ? 'height' : `width`) +

@@ -14,15 +14,15 @@
     chatSplit,
     enableExportButtons,
     enableFullscreenButton,
-    autoVertical
+    autoVertical,
+    displayMode
   } from '../../js/store.js';
-  import { ChatSplit, TextDirection, VideoSide, paramsEmbedded } from '../../js/constants.js';
+  import { ChatSplit, TextDirection, VideoSide, DisplayMode } from '../../js/constants.js';
   import CheckOption from '../options/Toggle.svelte';
   import SliderOption from '../options/Slider.svelte';
   import EnumOption from '../options/Radio.svelte';
   import FontDemo from '../FontDemo.svelte';
   import ImportExport from '../ImportExport.svelte';
-  export let isStandalone = false;
 </script>
 
 <ImportExport />
@@ -37,7 +37,7 @@
     options={Object.keys(TextDirection)}
     store={textDirection}
   />
-  {#if !isStandalone}
+  {#if $displayMode !== DisplayMode.POPOUT}
     <EnumOption
       name="Video side:"
       options={Object.keys(VideoSide)}
@@ -50,7 +50,7 @@
       />
     </div>
   {/if}
-  {#if !isStandalone || paramsEmbedded}
+  {#if $displayMode === DisplayMode.FULLPAGE}
     <EnumOption
       name="Chat split:"
       options={Object.keys(ChatSplit)}
@@ -59,7 +59,7 @@
   {/if}
 </div>
 <CheckOption name="Show timestamps" store={showTimestamp} />
-{#if !isStandalone}
+{#if $displayMode !== DisplayMode.POPOUT}
   <CheckOption name="Show captions" store={showCaption} />
 {/if}
 {#if $showCaption}

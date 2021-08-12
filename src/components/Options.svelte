@@ -1,7 +1,6 @@
 <script>
   import { MaterialApp } from 'svelte-materialify/src';
   import Settings from './Settings.svelte';
-  export let isStandalone = false;
   export let isResizing = false;
   export let active = false;
 
@@ -18,7 +17,7 @@
 <MaterialApp theme="dark">
   <div class="wrapper">
     <div class="app">
-      <Settings {isStandalone} {isResizing} bind:active />
+      <Settings {isResizing} bind:active />
     </div>
     <slot />
   </div>
