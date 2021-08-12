@@ -6,7 +6,7 @@
   import { mdiAccountVoiceOff } from '../js/svg.js';
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
-  import { TextDirection, paramsVideoTitle, paramsEmbedded } from '../js/constants.js';
+  import { TextDirection, paramsVideoTitle, paramsEmbedded, isAndroid } from '../js/constants.js';
   import { faviconURL, textDirection, screenshotRenderWidth, videoTitle, enableExportButtons, updatePopupActive, enableFullscreenButton, spotlightedTranslator } from '../js/store.js';
   import MessageDisplay from './MessageDisplay.svelte';
   import ScreenshotExport from './ScreenshotExport.svelte';
@@ -82,12 +82,18 @@
       d => `${d.author} (${d.timestamp}): ${d.text}`
     );
     if (toSave.length) {
-      const blob = new Blob([
-        toSave.join('\n')], {
-        type: 'text/plain;charset=utf-8'
+      const saveStr = toSave.join('\n');
+      if (isAndroid) {
+        // @ts-ignore
+        window.nativeJavascriptInterface.downloadText(saveStr, textFilename);
+      } else {
+        const blob = new Blob([
+          saveStr
+        ], {
+          type: 'text/plain;charset=utf-8'
+        });
+        saveAs(blob, textFilename);
       }
-      );
-      saveAs(blob, textFilename);
     }
     toggleSelecting();
     selectOperation = () => {};
@@ -104,6 +110,11 @@
 
 
   function toggleFullScreen() {
+    if (isAndroid) { 
+      // @ts-ignore
+      window.nativeJavascriptInterface.toggleFullscreen();
+      return;
+    }
     if (
       (document.fullScreenElement && document.fullScreenElement !== null) ||
       (!document.mozFullScreen && !document.webkitIsFullScreen)
@@ -250,7 +261,9 @@
           >
             <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
           </Button>
-          <span slot="tip">{settingsOpen ? 'Close settings' : 'Open settings'}</span>
+          <span slot="tip"
+            >{settingsOpen ? 'Close settings' : 'Open settings'}</span
+          >
         </Tooltip>
       {/if}
     </div>
