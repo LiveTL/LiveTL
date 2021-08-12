@@ -13,7 +13,8 @@
     chatZoom,
     showCaption,
     chatSplit,
-    displayMode
+    displayMode,
+    isResizing
   } from '../js/store.js';
   import {
     paramsVideoId,
@@ -28,7 +29,6 @@
   import Captions from './Captions.svelte';
 
   document.title = 'LiveTL';
-  import { isResizing } from '../js/store.js';
   let chatElem, vidElem, ltlElem;
   const resizable = (selector, info) => {
     j(typeof selector == 'string' ? document.querySelector(selector) : selector).resizable(info);

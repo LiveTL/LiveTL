@@ -7,12 +7,11 @@
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
   import { TextDirection, paramsVideoTitle, paramsEmbedded, isAndroid } from '../js/constants.js';
-  import { faviconURL, textDirection, screenshotRenderWidth, videoTitle, enableExportButtons, updatePopupActive, enableFullscreenButton, spotlightedTranslator } from '../js/store.js';
+  import { faviconURL, textDirection, screenshotRenderWidth, videoTitle, enableExportButtons, updatePopupActive, enableFullscreenButton, spotlightedTranslator, isResizing } from '../js/store.js';
   import MessageDisplay from './MessageDisplay.svelte';
   import ScreenshotExport from './ScreenshotExport.svelte';
   import Updates from './Updates.svelte';
   import { saveAs } from 'file-saver';
-  import { isResizing } from '../js/store.js';
   let settingsOpen = false;
   $videoTitle = paramsVideoTitle || $videoTitle;
   $: document.title = $videoTitle || 'LiveTL Popout';
