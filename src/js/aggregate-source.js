@@ -82,6 +82,6 @@ export const displayedMessages = derived(dispDepends, ([$items, $banned, $hidden
   const attrNotIn = (set, attr) => item => !set.has(item[attr]);
   return $items
     ?.filter(attrNotIn($banned, 'authorId'))
-    ?.filter(attrNotIn($hidden, 'messageId')) // TODO add messageId attr to mchad messages
+    ?.filter(attrNotIn($hidden, 'messageId'))
     ?.filter($spot ? msg => msg.authorId === $spot : () => true) ?? [];
 });
