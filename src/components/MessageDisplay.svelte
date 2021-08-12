@@ -17,6 +17,7 @@
     mchadUsers,
     showTimestamp,
     spotlightedTranslator,
+    sessionHidden,
     ytcDeleteBehaviour
   } from '../js/store.js';
   import {
@@ -34,59 +35,6 @@
   export let items = [];
 
   let bottomMsg = null;
-  let unsubscribe = null;
-  onMount(() => {
-    const { cleanUp, store: sourceWithDups } = combineStores(
-      sources.translations,
-      sources.mod,
-    );
-    const source = removeDuplicateMessages(sourceWithDups);
-    const sourceUnsub = source.subscribe(n => {
-      if (n) {
-        items.push({...n, index: items.length});
-      }
-      items = items;
-    });
-    const hideOrReplace = (i, bonkOrDeletion) => {
-      if ($ytcDeleteBehaviour === YtcDeleteBehaviour.HIDE) {
-        items[i].hidden = true;
-      } else if ($ytcDeleteBehaviour === YtcDeleteBehaviour.PLACEHOLDER) {
-        items[i].messageArray = bonkOrDeletion.replacedMessage;
-        items[i].deleted = true;
-      }
-    };
-    const bonkUnsub = sources.ytcBonks.subscribe(bonks => {
-      if (!bonks || bonks.length < 1) return;
-
-      for (let i = items.length - 1; i >= 0; --i) {
-        bonks.some(bonk => {
-          if (items[i].authorId !== bonk.authorId) return false;
-          hideOrReplace(i, bonk);
-          return true;
-        });
-      }
-    });
-    const deletetionUnsub = sources.ytcDeletions.subscribe(deletions => {
-      if (!deletions || deletions.length < 1) return;
-      console.debug($ytcDeleteBehaviour);
-
-      for (let i = items.length - 1; i >= 0; --i) {
-        deletions.some(deletion => {
-          if (items[i].messageId !== deletion.messageId) return false;
-          hideOrReplace(i, deletion);
-          return true;
-        });
-      }
-
-    });
-    unsubscribe = () => {
-      cleanUp();
-      sourceUnsub();
-      bonkUnsub();
-      deletetionUnsub();
-    };
-  });
-  onDestroy(() => unsubscribe());
 
   export function scrollToRecent() {
     bottomMsg.scrollIntoView({
@@ -112,13 +60,13 @@
         blacklist: true,
       });
     }
-    items = items.filter(i => i.authorId != item.authorId);
+  };
+
+  const hideMessage = item => () => {
+    $sessionHidden = [...$sessionHidden, item.messageId];
   };
 
   $: if (!isSelecting) selectedItems = [];
-  $: if ($spotlightedTranslator) {
-    items = items.filter(msg => msg.authorId === $spotlightedTranslator);
-  }
   $: console.log(items);
 </script>
 
@@ -137,7 +85,7 @@
         showTimestamp={$showTimestamp}
         deleted={item.deleted}
         messageArray={item.messageArray}
-        on:hide={() => (item.hidden = true)}
+        on:hide={hideMessage(item)}
         on:ban={banMessage(item)}
         on:spotlight={e => spotlightedTranslator.set(
           $spotlightedTranslator ? null : e.detail.authorId

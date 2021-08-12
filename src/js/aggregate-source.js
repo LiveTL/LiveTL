@@ -1,7 +1,29 @@
-import { readable, derived } from 'svelte/store';
-import { sources } from './sources.js';
-import { ytcDeleteBehaviour, sessionBanned, sessionHidden, spotlightedTranslator } from './store.js';
+import { readable, derived, Readable } from 'svelte/store';
+import { combineStores, sources } from './sources.js';
+import { removeDuplicateMessages } from './sources-util.js';
+import { ytcDeleteBehaviour, sessionHidden, spotlightedTranslator } from './store.js';
+import { channelFilters, mchadUsers } from './store.js';
 import { YtcDeleteBehaviour } from './constants.js';
+
+/** @type {Readable<String[]>} */
+const channelBlacklisted = derived(channelFilters, $chan => $chan
+  .filter(c => c.blacklist)
+  .map(c => c.name)
+);
+
+/** @type {Readable<String[]>} */
+const mchadBlacklisted = derived(mchadUsers, $mchad => $mchad
+  .filter(m => m[1])
+  .map(m => m[0])
+);
+
+/** @type {Readable<Set<String>>} */
+export const allBanned = derived([channelBlacklisted, mchadBlacklisted], ([$chan, $mchad]) => {
+  return new Set([...$chan, ...$mchad]);
+}, []);
+
+/** @type {Readable<Set<String>>} */
+const hidden = derived(sessionHidden, $hidden => new Set($hidden));
 
 export const capturedMessages = readable([], set => {
   let items = [];
@@ -19,13 +41,13 @@ export const capturedMessages = readable([], set => {
 
   const hideOrReplaceMsg = bonkOrDeletion => {
     switch (ytcDeleteBehaviour.get()) {
-      case YtcDeleteBehaviour.HIDE:
-        return { hidden: true };
-      case YtcDeleteBehaviour.PLACEHOLDER:
-        return { messageArray: bonkOrDeletion.replacedMessage, deleted: true };
+    case YtcDeleteBehaviour.HIDE:
+      return { hidden: true };
+    case YtcDeleteBehaviour.PLACEHOLDER:
+      return { messageArray: bonkOrDeletion.replacedMessage, deleted: true };
     }
     return null;
-  }
+  };
 
   const hideOrReplace = (i, bonkOrDeletion) => {
     const msgModifications = hideOrReplace(bonkOrDeletion);
@@ -51,15 +73,15 @@ export const capturedMessages = readable([], set => {
     cleanUp();
     sourceUnsub();
     bonkUnsub();
-    deletetionUnsub();
+    deletionUnsub();
   };
 });
 
-const dispDepends = [capturedMessages, sessionBanned, sessionHidden, spotlightedTranslator];
+const dispDepends = [capturedMessages, allBanned, hidden, spotlightedTranslator];
 export const displayedMessages = derived(dispDepends, ([$items, $banned, $hidden, $spot]) => {
   const attrNotIn = (set, attr) => item => !set.has(item[attr]);
   return $items
-    .filter(attrNotIn(new Set(...$banned), 'authorId'))
-    .filter(attrNotIn(new Set(...$hidden), 'messageId')) // TODO add messageId attr to mchad messages
-    .filter($spot ? msg => msg.authorId === $spot : () => true);
+    ?.filter(attrNotIn($banned, 'authorId'))
+    ?.filter(attrNotIn($hidden, 'messageId')) // TODO add messageId attr to mchad messages
+    ?.filter($spot ? msg => msg.authorId === $spot : () => true) ?? [];
 });
