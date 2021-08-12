@@ -18,13 +18,13 @@
   );
 
   export const isAtTop = delayed(() => div.scrollTop === 0, true);
+
+  $: displayProperty = $isResizing ? 'none' : 'grid';
 </script>
 
 <div
   style="
-    display: {$isResizing
-    ? 'none'
-    : 'grid'};
+    display: {displayProperty};
     width: {inverse}%;
     height: {inverse}%;
     transform-origin: 0px 0px;

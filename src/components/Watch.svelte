@@ -35,8 +35,8 @@
   };
   const convertPxAndPercent = () => {
     [
-      [chatElem, $chatSplit == ChatSplit.VERTICAL ? 'width' : 'height', chatSize],
-      [$displayMode === DisplayMode.FULLPAGE ? vidElem : null, $videoSide == VideoSide.TOP ? 'height' : 'width', videoPanelSize]
+      [chatElem, isChatVertical ? 'width' : 'height', chatSize],
+      [isFullPage ? vidElem : null, isTopSide ? 'height' : 'width', videoPanelSize]
     ].forEach(item => {
       const [elem, prop, store] = item;
       if (!elem) return;
@@ -68,26 +68,32 @@
       elem.remove();
     });
     
-    resizable($videoSide == VideoSide.RIGHT ? chatSideElem : vidElem, {
-      handles: $videoSide == VideoSide.TOP ? 's' : 'e',
+    resizable(isRightSide ? chatSideElem : vidElem, {
+      handles: isTopSide ? 's' : 'e',
       start: resizeCallback,
       stop: resizeCallback,
       resize: (_, dataobj) => {
-        if ($videoSide == VideoSide.RIGHT) {
+        if (isRightSide) {
           $videoPanelSize = Math.min(100, Math.max(0, (1 - (dataobj.size.width / window.innerWidth)) * 100));
         }
       },
       containment: 'body'
     });
     resizable(chatElem, {
-      handles: $chatSplit == ChatSplit.VERTICAL ? 'e' : 's',
+      handles: isChatVertical ? 'e' : 's',
       start: resizeCallback,
       stop: resizeCallback,
       resize: () => {},
       containment: 'body'
     });
   };
-  $: setTimeout(() => changeSide($videoSide, $chatSplit), 0);
+  $: $videoSide, $chatSplit, setTimeout(changeSide, 0);
+
+  $: isRightSide = $videoSide == VideoSide.RIGHT;
+  $: isTopSide = $videoSide == VideoSide.TOP;
+  $: isLeftSide = $videoSide == VideoSide.LEFT;
+  $: isFullPage = $displayMode === DisplayMode.FULLPAGE;
+  $: isChatVertical = $chatSplit == ChatSplit.VERTICAL;
 </script>
 
 <div
@@ -98,23 +104,22 @@
   height: calc(100% - 40px);"
 >
   <MaterialApp theme="dark">
-    {#if $displayMode === DisplayMode.FULLPAGE && $showCaption}
+    {#if isFullPage && $showCaption}
       <Captions />
     {/if}
     <div
       id="mainUI"
       class="flex 
-        {$videoSide == VideoSide.TOP ? 'horizontal' : 'vertical'} 
-        {$videoSide == VideoSide.RIGHT ? 'reversed' : ''}"
+        {isTopSide ? 'horizontal' : 'vertical'} 
+        {isRightSide ? 'reversed' : ''}"
     >
-      {#if $displayMode === DisplayMode.FULLPAGE}
+      {#if isFullPage}
         <div
           class="tile resizable"
-          style="{($videoSide == VideoSide.TOP ? 'height' : `width`) +
-            `: ${$videoPanelSize}%;`}
-            {$videoSide == VideoSide.LEFT
+          style="{(isTopSide ? 'height' : `width`) + `: ${$videoPanelSize}%;`}
+            {isLeftSide
             ? 'min-width: 10px;'
-            : $videoSide == VideoSide.TOP
+            : isTopSide
             ? 'min-height: 10px'
             : ''}"
           bind:this={vidElem}
@@ -127,21 +132,21 @@
       <div
         class="tile autoscale"
         bind:this={chatSideElem}
-        style={$videoSide == VideoSide.TOP ? 'min-width: 100% !important;' : ''}
+        style={isTopSide ? 'min-width: 100% !important;' : ''}
       >
         <div
-          class="flex {$chatSplit == ChatSplit.VERTICAL
+          class="flex {isChatVertical
             ? 'vertical'
             : 'horizontal'}"
           style="
-            {$videoSide == VideoSide.RIGHT ? 'width: calc(100% - 10px);' : ''}"
+            {isRightSide ? 'width: calc(100% - 10px);' : ''}"
         >
           <div
             class="tile resizable"
-            style="{$chatSplit == ChatSplit.VERTICAL
+            style="{isChatVertical
               ? 'width'
               : 'height'}: {$chatSize}%;
-                min-{$chatSplit == ChatSplit.VERTICAL
+                min-{isChatVertical
               ? 'width'
               : 'height'}: 10px;
             "
@@ -149,7 +154,7 @@
           >
             <Wrapper
               zoom={$chatZoom}
-              style={$chatSplit == ChatSplit.VERTICAL
+              style={isChatVertical
                 ? 'padding-right: 10px;'
                 : 'padding-bottom: 10px;'}
             >
