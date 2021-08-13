@@ -6,18 +6,16 @@
   import { mdiAccountVoiceOff } from '../js/svg.js';
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
-  import { TextDirection, paramsVideoTitle, paramsEmbedded, isAndroid } from '../js/constants.js';
-  import { faviconURL, textDirection, screenshotRenderWidth, videoTitle, enableExportButtons, updatePopupActive, enableFullscreenButton, spotlightedTranslator } from '../js/store.js';
+  import { TextDirection, paramsVideoTitle, isAndroid } from '../js/constants.js';
+  import { faviconURL, textDirection, screenshotRenderWidth, videoTitle, enableExportButtons, updatePopupActive, enableFullscreenButton, spotlightedTranslator, isResizing } from '../js/store.js';
   import MessageDisplay from './MessageDisplay.svelte';
   import ScreenshotExport from './ScreenshotExport.svelte';
   import Updates from './Updates.svelte';
   import { displayedMessages } from '../js/sources-aggregate.js';
   import { saveAs } from 'file-saver';
   let settingsOpen = false;
-  export let isResizing = false;
   $videoTitle = paramsVideoTitle || $videoTitle;
   $: document.title = $videoTitle || 'LiveTL Popout';
-  export let isStandalone = paramsEmbedded ? true : false;
 
   let wrapper;
   let messageDisplay;
@@ -154,7 +152,7 @@
   <div
     class="settings-button d-flex"
     class:bottom-float={$textDirection === TextDirection.TOP}
-    class:d-none={isResizing}
+    class:d-none={$isResizing}
   >
     {#if isSelecting}
       <h6 class="floating-text">
@@ -268,9 +266,9 @@
       {/if}
     </div>
   </div>
-  <Wrapper {isResizing} on:scroll={updateWrapper} bind:this={wrapper}>
+  <Wrapper on:scroll={updateWrapper} bind:this={wrapper}>
     <div class:d-none={!settingsOpen}>
-      <Options {isStandalone} {isResizing} bind:active={settingsOpen} />
+      <Options bind:active={settingsOpen} />
     </div>
     <div class:d-none={settingsOpen}>
       <MessageDisplay
@@ -283,7 +281,7 @@
       />
     </div>
   </Wrapper>
-  {#if !(isResizing || settingsOpen)}
+  {#if !($isResizing || settingsOpen)}
     {#if !isAtRecent}
       <div
         class="recent-button"

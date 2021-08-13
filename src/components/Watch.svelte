@@ -13,6 +13,8 @@
     chatZoom,
     showCaption,
     chatSplit,
+    displayMode,
+    isResizing
   } from '../js/store.js';
   import {
     paramsVideoId,
@@ -20,26 +22,25 @@
     ChatSplit,
     paramsContinuation,
     paramsIsVOD,
-    paramsEmbedded
+    DisplayMode
   } from '../js/constants.js';
   import ChatEmbed from './ChatEmbed.svelte';
   import Popout from './Popout.svelte';
   import Captions from './Captions.svelte';
 
   document.title = 'LiveTL';
-  let isResizing = false;
   let chatElem, vidElem, ltlElem;
   const resizable = (selector, info) => {
     j(typeof selector == 'string' ? document.querySelector(selector) : selector).resizable(info);
   };
   const convertPxAndPercent = () => {
     [
-      [chatElem, $chatSplit == ChatSplit.VERTICAL ? 'width' : 'height', chatSize],
-      [paramsEmbedded ? null : vidElem, $videoSide == VideoSide.TOP ? 'height' : 'width', videoPanelSize]
+      [chatElem, isChatVertical ? 'width' : 'height', chatSize],
+      [isFullPage ? vidElem : null, isTopSide ? 'height' : 'width', videoPanelSize]
     ].forEach(item => {
       const [elem, prop, store] = item;
       if (!elem) return;
-      if (isResizing) {
+      if ($isResizing) {
         // elem.style.width = elem.clientWidth;
         // elem.style.height = elem.clientHeight;
       } else {
@@ -59,7 +60,7 @@
   let chatSideElem;
 
   const resizeCallback = () => {
-    isResizing = !isResizing;
+    $isResizing = !$isResizing;
     convertPxAndPercent();
   };
   const changeSide = () => {
@@ -67,58 +68,62 @@
       elem.remove();
     });
     
-    resizable($videoSide == VideoSide.RIGHT ? chatSideElem : vidElem, {
-      handles: $videoSide == VideoSide.TOP ? 's' : 'e',
+    resizable(isRightSide ? chatSideElem : vidElem, {
+      handles: isTopSide ? 's' : 'e',
       start: resizeCallback,
       stop: resizeCallback,
       resize: (_, dataobj) => {
-        if ($videoSide == VideoSide.RIGHT) {
+        if (isRightSide) {
           $videoPanelSize = Math.min(100, Math.max(0, (1 - (dataobj.size.width / window.innerWidth)) * 100));
         }
       },
       containment: 'body'
     });
     resizable(chatElem, {
-      handles: $chatSplit == ChatSplit.VERTICAL ? 'e' : 's',
+      handles: isChatVertical ? 'e' : 's',
       start: resizeCallback,
       stop: resizeCallback,
       resize: () => {},
       containment: 'body'
     });
   };
-  $: setTimeout(() => changeSide($videoSide, $chatSplit), 0);
+  $: $videoSide, $chatSplit, setTimeout(changeSide, 0);
+
+  $: isRightSide = $videoSide == VideoSide.RIGHT;
+  $: isTopSide = $videoSide == VideoSide.TOP;
+  $: isLeftSide = $videoSide == VideoSide.LEFT;
+  $: isFullPage = $displayMode === DisplayMode.FULLPAGE;
+  $: isChatVertical = $chatSplit == ChatSplit.VERTICAL;
+
+  $: chatElemStyle = (
+    isChatVertical ? `width: ${$chatSize}%; min-width: `: `height: ${$chatSize}%; min-height: `
+  ) + '10px;';
+  $: videoContainerStyle = (
+    (isTopSide ? 'height' : 'width') + `: ${$videoPanelSize}%; ` + 
+    (isLeftSide ? 'min-width: 10px;' : (isTopSide ? 'min-height: 10px;': ''))
+  );
+  $: chatElemParentStyle = isRightSide ? 'width: calc(100% - 10px);' : '';
 </script>
 
-<div
-  style="
-  margin: 20px 0px 0px 20px;
-  position: relative;
-  width: 100vw;
-  height: calc(100% - 40px);"
->
+<div class="watch-wrapper">
   <MaterialApp theme="dark">
-    {#if !paramsEmbedded && $showCaption}
+    {#if isFullPage && $showCaption}
       <Captions />
     {/if}
     <div
       id="mainUI"
-      class="flex 
-        {$videoSide == VideoSide.TOP ? 'horizontal' : 'vertical'} 
-        {$videoSide == VideoSide.RIGHT ? 'reversed' : ''}"
+      class="flex"
+      class:horizontal={isTopSide}
+      class:vertical={!isTopSide}
+      class:reversed={isRightSide}
     >
-      {#if !paramsEmbedded}
+      {#if isFullPage}
         <div
           class="tile resizable"
-          style="{($videoSide == VideoSide.TOP ? 'height' : `width`) +
-            `: ${$videoPanelSize}%;`}
-            {$videoSide == VideoSide.LEFT
-            ? 'min-width: 10px;'
-            : $videoSide == VideoSide.TOP
-            ? 'min-height: 10px'
-            : ''}"
+          style={videoContainerStyle}
           bind:this={vidElem}
         >
-          <Wrapper {isResizing}>
+          <Wrapper>
             <VideoEmbed videoId={paramsVideoId} />
           </Wrapper>
         </div>
@@ -126,32 +131,20 @@
       <div
         class="tile autoscale"
         bind:this={chatSideElem}
-        style={$videoSide == VideoSide.TOP ? 'min-width: 100% !important;' : ''}
+        style={isTopSide ? 'min-width: 100% !important;' : ''}
       >
         <div
-          class="flex {$chatSplit == ChatSplit.VERTICAL
-            ? 'vertical'
-            : 'horizontal'}"
-          style="
-            {$videoSide == VideoSide.RIGHT ? 'width: calc(100% - 10px);' : ''}"
+          class="flex {isChatVertical ? 'vertical' : 'horizontal'}"
+          style={chatElemParentStyle}
         >
           <div
             class="tile resizable"
-            style="{$chatSplit == ChatSplit.VERTICAL
-              ? 'width'
-              : 'height'}: {$chatSize}%;
-                min-{$chatSplit == ChatSplit.VERTICAL
-              ? 'width'
-              : 'height'}: 10px;
-            "
+            style={chatElemStyle}
             bind:this={chatElem}
           >
             <Wrapper
-              {isResizing}
               zoom={$chatZoom}
-              style={$chatSplit == ChatSplit.VERTICAL
-                ? 'padding-right: 10px;'
-                : 'padding-bottom: 10px;'}
+              style={`padding-${isChatVertical ? 'right' : 'left'}: 10px;`}
             >
               <ChatEmbed
                 videoId={paramsVideoId}
@@ -161,7 +154,7 @@
             </Wrapper>
           </div>
           <div class="tile autoscale" bind:this={ltlElem}>
-            <Popout {isResizing} />
+            <Popout />
           </div>
         </div>
       </div>
@@ -170,6 +163,12 @@
 </div>
 
 <style>
+  .watch-wrapper {
+    margin: 20px 0px 0px 20px;
+    position: relative;
+    width: 100vw;
+    height: calc(100% - 40px);
+  }
   .horizontal {
     flex-direction: column;
   }

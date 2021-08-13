@@ -1,4 +1,4 @@
-import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour } from './constants.js';
+import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour, DisplayMode, paramsEmbedded } from './constants.js';
 import { LookupStore, SyncStore } from './storage.js';
 import { writable, readable, derived, Readable } from 'svelte/store';
 import { compose } from './utils.js';
@@ -98,4 +98,6 @@ export const timestamp = writable(0);
 export const faviconURL = writable('/48x48.png');
 export const availableMchadUsers = writable([]);
 export const spotlightedTranslator = writable(null);
+export const displayMode = writable(paramsEmbedded ? DisplayMode.EMBEDDED : DisplayMode.FULLPAGE);
+export const isResizing = writable(false);
 export const sessionHidden = writable([]);
