@@ -20,9 +20,55 @@ export function removeDuplicateMessages(msgs, sourceLatency=10) {
   return msgs.filter(Boolean).filter(isUnique);
 }
 
+/**
+ * Find authors that send messages at a specified frequency.
+ *
+ * @param {Message[]} msgs
+ * @param {Number} amountOfMsgs amount of msgs in the spam frequency
+ * @param {Seconds} time the time between the first spam message and the latest
+ * @return {String[]} authorIds
+ */
+export function getSpamAuthors(msgs, amountOfMsgs, time) {
+  const authors = [];
+
+  index(msgs).by('authorId').forEach((messages, author) => {
+    if (containsSpam(messages, amountOfMsgs, time)) {
+      authors.push(author);
+    }
+  });
+
+  return authors;
+}
+
+/** @type {(msgs: Message[], amount: Number, time: Seconds) => Boolean} */
+const containsSpam = (msgs, amount, time) => {
+  let beg = 0;
+  const timestamps = msgs.map(messageTime);
+  for (const [i, timestamp] of timestamps.entries()) {
+    // advance beg pointer until it is time seconds behind timestamp
+    while (timestamp - timestamps[beg] > time) beg++;
+    if (i - beg + 1 >= amount) return true;
+  }
+  return false;
+};
+
+/** @type {(msgs: Message[]) => { by: (attr: String) => Map<String, Message[]> }} */
+const index = msgs => ({ by(attr) {
+  const msgsByAttr = new Map();
+  
+  for (const msg of msgs) {
+    if (!msgsByAttr.has(msg[attr])) {
+      msgsByAttr.set(msg[attr], []);
+    }
+    msgsByAttr.get(msg[attr]).push(msg);
+  }
+
+  return msgsByAttr;
+}});
+
 /** @type {(msg: Message) => Seconds} */
 const messageTime = msg => {
-  const timeSegments = msg.timestamp.split(':').map(m => parseInt(m));
+  const timeSegments = msg.timestamp.split(' ')[0].split(':').map(m => parseInt(m));
   if (timeSegments.length === 3) {
     const [hours, minutes, seconds] = timeSegments;
     return hours * 3600 + minutes * 60 + seconds;

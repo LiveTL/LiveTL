@@ -1,15 +1,19 @@
+/* eslint-disable no-undef */
 import { writable } from 'svelte/store';
 
-import { removeDuplicateMessages } from '../../js/sources-util.js';
+import { removeDuplicateMessages, getSpamAuthors } from '../../js/sources-util.js';
 import { AuthorType } from '../../js/constants.js';
 
 
-const message = (text, author, timestamp, types) => ({
+let msgIds = 0;
+
+const message = (text, author, timestamp, types=0) => ({
   text,
   messageArray: [{ type: 'text', text }],
   author,
+  authorId: author,
   timestamp,
-  id: '9',
+  messageId: ++msgIds,
   types
 });
 
@@ -90,5 +94,45 @@ describe('message duplication mitigation', () =>{
       message('Konichiwassup', 'Shrek Wazowski', '00:20:00', 0),
     ];
     expect(removeDuplicateMessages(messages)).toEqual(messages);
+  });
+});
+
+describe('spam author identification', () => {
+  it('flags a spam author', () => {
+    const messages = [
+      message('Spam', 'anti', '12:35'),
+      message('Spam', 'anti', '12:35'),
+      message('Spam', 'anti', '12:35'),
+      message('Spam', 'anti', '12:36'),
+      message('Spam', 'anti', '12:36'),
+      message('Not spam', 'kento', '12:36'),
+      message('Spam', 'anti', '12:36'),
+      message('Spam', 'anti', '12:36'),
+    ];
+    expect(getSpamAuthors(messages, 6, 1)).toContain('anti');
+  });
+
+  it('doesn\'t flag regular frequent authors', () => {
+    const messages = [
+      message('Spam', 'anti', '12:35'),
+      message('Spam', 'anti', '12:35'),
+      message('Not spam', 'kento', '12:35'),
+      message('Spam', 'anti', '12:36'),
+      message('Spam', 'anti', '12:36'),
+      message('Not spam', 'kento', '12:36'),
+      message('Spam', 'anti', '12:36'),
+      message('Spam', 'anti', '12:36'),
+      message('Not spam', 'kento', '12:37'),
+    ];
+    expect(getSpamAuthors(messages, 6, 1)).not.toContain('kento');
+  });
+
+  it('doesn\'t flag regular authors when many are messaging at a time', () => {
+    const messages = [
+      message('College apps im dying', 'kento', '12:35'),
+      message('Give me ur feet hachama', 'shrek', '12:35'),
+      message('Hello there', 'taishi', '12:35'),
+    ];
+    expect(getSpamAuthors(messages, 3, 1)).toEqual([]);
   });
 });
