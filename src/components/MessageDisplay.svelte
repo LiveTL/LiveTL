@@ -7,7 +7,6 @@
   } from 'svelte';
   import Message from './Message.svelte';
   import { Checkbox } from 'svelte-materialify/src';
-  import { sources, combineStores } from '../js/sources.js';
   import { removeDuplicateMessages } from '../js/sources-util.js';
   import MessageDisplayWrapper from './MessageDisplayWrapper.svelte';
   import '../css/splash.css';
@@ -16,14 +15,11 @@
     livetlFontSize,
     mchadUsers,
     showTimestamp,
-    spotlightedTranslator,
-    sessionHidden,
-    ytcDeleteBehaviour
+    spotlightedTranslator
   } from '../js/store.js';
   import {
     AuthorType,
-    TextDirection,
-    YtcDeleteBehaviour
+    TextDirection
   } from '../js/constants.js';
   import IntroMessage from './IntroMessage.svelte';
   // eslint-disable-next-line no-unused-vars
