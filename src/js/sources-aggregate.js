@@ -1,8 +1,8 @@
 import { readable, derived, Readable } from 'svelte/store';
 import { combineStores, sources } from './sources.js';
-import { removeDuplicateMessages } from './sources-util.js';
+import { getSpamAuthors, removeDuplicateMessages } from './sources-util.js';
 import { ytcDeleteBehaviour, sessionHidden, spotlightedTranslator } from './store.js';
-import { channelFilters, mchadUsers } from './store.js';
+import { channelFilters, mchadUsers, spamMsgAmount, spamMsgInterval } from './store.js';
 import { YtcDeleteBehaviour } from './constants.js';
 
 /** @type {Readable<String[]>} */
@@ -77,12 +77,18 @@ export const capturedMessages = readable([], set => {
   };
 });
 
-const dispDepends = [capturedMessages, allBanned, hidden, spotlightedTranslator];
-export const displayedMessages = derived(dispDepends, ([$items, $banned, $hidden, $spot]) => {
+const dispDepends =
+  [capturedMessages, allBanned, hidden, spotlightedTranslator, spamMsgAmount, spamMsgInterval];
+
+const dispTransform = ([$items, $banned, $hidden, $spot, $spamAmt, $spamInt]) => {
   const attrNotIn = (set, attr) => item => !set.has(item[attr]);
+  const spammers = new Set(...getSpamAuthors($items, $spamAmt, $spamInt));
   $items = $items
     ?.filter(attrNotIn($banned, 'authorId'))
     ?.filter(attrNotIn($hidden, 'messageId'))
+    ?.filter(attrNotIn(spammers, 'authorId'))
     ?.filter($spot ? msg => msg.authorId === $spot : () => true) ?? [];
   return removeDuplicateMessages($items);
-});
+};
+
+export const displayedMessages = derived(dispDepends, dispTransform);

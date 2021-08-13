@@ -74,7 +74,9 @@ export const
   autoPrefixTag = SS('autoPrefixTag', '[$filterLang]'),
   macroTrigger = SS('macroTrigger', '/'),
   ytcDeleteBehaviour = SS('ytcDeleteBehaviour', YtcDeleteBehaviour.HIDE),
-  autoVertical = SS('autoVertical', true);
+  autoVertical = SS('autoVertical', true),
+  spamMsgAmount = SS('spamMsgAmount', 6),
+  spamMsgInterval = SS('spamMsgInterval', 1);
 
 // Non-persistant stores
 
