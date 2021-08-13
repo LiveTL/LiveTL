@@ -1,25 +1,23 @@
-import { derived, Readable } from 'svelte/store';
 import { Message, Seconds } from './types.js';
 
 /**
  * Removes duplicate messages that come from mchad sync with ytc
  *
- * @param {Readable<Message>} source
+ * @param {Message[]} msgs
  * @param {Seconds} sourceLatency the amount of lag between ytc and other sources
- * @return {Readable<Message>}
+ * @return {Message[]} 
  */
-export function removeDuplicateMessages(source, sourceLatency=10) {
+export function removeDuplicateMessages(msgs, sourceLatency=10) {
   let lastMessages = [];
-  return derived(source, $msg => {
-    if ($msg == null) return;
-
+  const isUnique = msg => {
     lastMessages = lastMessages
-      .filter(isRecentMessage($msg, sourceLatency));
+      .filter(isRecentMessage(msg, sourceLatency));
 
-    if (lastMessages.some(isDuplicateOf($msg))) return;
-    lastMessages.push($msg);
-    return $msg;
-  });
+    if (lastMessages.some(isDuplicateOf(msg))) return false;
+    lastMessages.push(msg);
+    return true;
+  };
+  return msgs.filter(Boolean).filter(isUnique);
 }
 
 /** @type {(msg: Message) => Seconds} */

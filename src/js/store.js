@@ -98,3 +98,4 @@ export const timestamp = writable(0);
 export const faviconURL = writable('/48x48.png');
 export const availableMchadUsers = writable([]);
 export const spotlightedTranslator = writable(null);
+export const sessionHidden = writable([]);
