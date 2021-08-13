@@ -7,14 +7,14 @@ import { YtcDeleteBehaviour } from './constants.js';
 
 /** @type {Readable<String[]>} */
 const channelBlacklisted = derived(channelFilters, $chan => $chan
-  .filter(c => c.blacklist)
-  .map(c => c.name)
+  .filter(([_id, filter]) => filter.blacklist)
+  .map(([id, _filter]) => id)
 );
 
 /** @type {Readable<String[]>} */
 const mchadBlacklisted = derived(mchadUsers, $mchad => $mchad
-  .filter(m => m[1])
-  .map(m => m[0])
+  .filter(([_name, banned]) => banned)
+  .map(([name, _banned]) => name)
 );
 
 /** @type {Readable<Set<String>>} */
