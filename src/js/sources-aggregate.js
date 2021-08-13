@@ -50,7 +50,7 @@ export const capturedMessages = readable([], set => {
   };
 
   const hideOrReplace = (i, bonkOrDeletion) => {
-    const msgModifications = hideOrReplace(bonkOrDeletion);
+    const msgModifications = hideOrReplaceMsg(bonkOrDeletion);
     if (!msgModifications) return;
     const before = items.slice(0, i);
     const after = items.slice(i + 1);

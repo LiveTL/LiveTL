@@ -15,7 +15,8 @@
     livetlFontSize,
     mchadUsers,
     showTimestamp,
-    spotlightedTranslator
+    spotlightedTranslator,
+    sessionHidden
   } from '../js/store.js';
   import {
     AuthorType,
