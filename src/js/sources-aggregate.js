@@ -77,8 +77,11 @@ export const capturedMessages = readable([], set => {
   };
 });
 
+const spamStores = [spamMsgAmount, spamMsgInterval]
+  .map(store => derived(store, Math.ceil));
+
 const dispDepends =
-  [capturedMessages, allBanned, hidden, spotlightedTranslator, spamMsgAmount, spamMsgInterval];
+  [capturedMessages, allBanned, hidden, spotlightedTranslator, ...spamStores];
 
 const dispTransform = ([$items, $banned, $hidden, $spot, $spamAmt, $spamInt]) => {
   const attrNotIn = (set, attr) => item => !set.has(item[attr]);
