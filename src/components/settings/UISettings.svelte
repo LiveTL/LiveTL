@@ -37,7 +37,7 @@
     options={Object.keys(TextDirection)}
     store={textDirection}
   />
-  {#if $displayMode !== DisplayMode.POPOUT}
+  {#if $displayMode === DisplayMode.FULLPAGE}
     <EnumOption
       name="Video side:"
       options={Object.keys(VideoSide)}
@@ -49,8 +49,6 @@
         store={autoVertical}
       />
     </div>
-  {/if}
-  {#if $displayMode === DisplayMode.FULLPAGE}
     <EnumOption
       name="Chat split:"
       options={Object.keys(ChatSplit)}
@@ -59,29 +57,29 @@
   {/if}
 </div>
 <CheckOption name="Show timestamps" store={showTimestamp} />
-{#if $displayMode !== DisplayMode.POPOUT}
+{#if $displayMode === DisplayMode.FULLPAGE}
   <CheckOption name="Show captions" store={showCaption} />
-{/if}
-{#if $showCaption}
-  <SliderOption
-    name="Caption font size"
-    store={captionFontSize}
-    min={9}
-    max={54}
-    thumb
-  />
-  <CheckOption
-    name="Make captions disappear when inactive"
-    store={enableCaptionTimeout}
-  />
-  {#if $enableCaptionTimeout}
+  {#if $showCaption}
     <SliderOption
-      name="Disappear after (seconds)"
-      store={captionDuration}
-      min={1}
-      max={61}
+      name="Caption font size"
+      store={captionFontSize}
+      min={9}
+      max={54}
       thumb
     />
+    <CheckOption
+      name="Make captions disappear when inactive"
+      store={enableCaptionTimeout}
+    />
+    {#if $enableCaptionTimeout}
+      <SliderOption
+        name="Disappear after (seconds)"
+        store={captionDuration}
+        min={1}
+        max={61}
+        thumb
+      />
+    {/if}
   {/if}
 {/if}
 <!-- {/if} -->

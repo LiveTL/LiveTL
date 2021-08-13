@@ -99,7 +99,7 @@
     isChatVertical ? `width: ${$chatSize}%; min-width: `: `height: ${$chatSize}%; min-height: `
   ) + '10px;';
   $: videoContainerStyle = (
-    (isTopSide ? 'height' : `width`) + `: ${$videoPanelSize}%; ` + 
+    (isTopSide ? 'height' : 'width') + `: ${$videoPanelSize}%; ` + 
     (isLeftSide ? 'min-width: 10px;' : (isTopSide ? 'min-height: 10px;': ''))
   );
   $: chatElemParentStyle = isRightSide ? 'width: calc(100% - 10px);' : '';

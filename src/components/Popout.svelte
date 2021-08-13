@@ -6,7 +6,7 @@
   import { mdiAccountVoiceOff } from '../js/svg.js';
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
-  import { TextDirection, paramsVideoTitle, paramsEmbedded, isAndroid } from '../js/constants.js';
+  import { TextDirection, paramsVideoTitle, isAndroid } from '../js/constants.js';
   import { faviconURL, textDirection, screenshotRenderWidth, videoTitle, enableExportButtons, updatePopupActive, enableFullscreenButton, spotlightedTranslator, isResizing } from '../js/store.js';
   import MessageDisplay from './MessageDisplay.svelte';
   import ScreenshotExport from './ScreenshotExport.svelte';
