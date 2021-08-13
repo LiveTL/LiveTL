@@ -4,16 +4,6 @@ import { removeDuplicateMessages } from '../../js/sources-util.js';
 import { AuthorType } from '../../js/constants.js';
 
 
-const createTestObjects = () => {
-  const source = writable(null);
-  const withoutDups = removeDuplicateMessages(source);
-  const aggregate = [];
-  withoutDups.subscribe($m => {
-    if ($m) aggregate.push($m);
-  });
-  return { source, withoutDups, aggregate: () => aggregate };
-};
-
 const message = (text, author, timestamp, types) => ({
   text,
   messageArray: [{ type: 'text', text }],
@@ -26,7 +16,6 @@ const message = (text, author, timestamp, types) => ({
 
 describe('message duplication mitigation', () =>{ 
   it('filters duplicate messages from another source within the past 10 seconds', () => {
-    const { aggregate, source } = createTestObjects();
     const messages = [
       message('Konichiwassup', 'Taishi', '00:10:00', AuthorType.mchad),
       message('hello there', 'Taishi', '00:10:12',  AuthorType.mchad),
@@ -36,13 +25,11 @@ describe('message duplication mitigation', () =>{
       messages[0],
       messages[1]
     ];
-    messages.forEach(source.set);
-    expect(aggregate()).toEqual(expectedMessages);
+    expect(removeDuplicateMessages(messages)).toEqual(expectedMessages);
   });
 
   // test case is based off a situation that happened
   it('catches cases of duplicates where there are messages sent in between', () => {
-    const { aggregate, source } = createTestObjects();
     const messages = [
       message('Haachama: *eats spider', 'Taishi', '00:10:14', AuthorType.mchad),
       message('Cook me and eat me Haachama pls', 'Shrek Wazowski', '10:15', 0),
@@ -55,13 +42,11 @@ describe('message duplication mitigation', () =>{
       messages[1],
       messages[2],
     ];
-    messages.forEach(source.set);
-    expect(aggregate()).toEqual(expectedMessages);
+    expect(removeDuplicateMessages(messages)).toEqual(expectedMessages);
   });
 
   // needed for repeated tls like '*explains meme' with other tls in between
   it('lets messages that are duplicates of a message outside of the last 10 seconds through', () => {
-    const { aggregate, source } = createTestObjects();
     const messages = [
       message('Konichiwassup', 'Taishi', '00:10:00', AuthorType.mchad),
       message('hello there', 'Taishi Ch.', '10:05',  0),
@@ -70,12 +55,10 @@ describe('message duplication mitigation', () =>{
       message('Konichiwassup', 'Taishi Ch.', '10:30', 0),
       message('hello there', 'Taishi', '00:10:40', AuthorType.mchad),
     ];
-    messages.forEach(source.set);
-    expect(aggregate()).toEqual(messages);
+    expect(removeDuplicateMessages(messages)).toEqual(messages);
   });
 
   it('lets non-duplicate messages of same source through', () => {
-    const { aggregate, source } = createTestObjects();
     const messages = [
       message('Konichiwassup', 'Taishi', '00:10:00', 0),
       message('hello there', 'Taishi Ch.', '10:05',  0),
@@ -84,12 +67,10 @@ describe('message duplication mitigation', () =>{
       message('puhehehe', 'Taishi Ch.', '10:30', 0),
       message('hehe', 'Taishi', '00:10:40', 0),
     ];
-    messages.forEach(source.set);
-    expect(aggregate()).toEqual(messages);
+    expect(removeDuplicateMessages(messages)).toEqual(messages);
   });
 
   it('admits duplicate messages of inside the last 10 seconds and from same source', () => {
-    const { aggregate, source } = createTestObjects();
     const messages = [
       message('*Explains meme', 'Taishi', '00:10:00', AuthorType.mchad),
       message('*Explains meme', 'Taishi Ch.', '10:05', 0),
@@ -99,18 +80,15 @@ describe('message duplication mitigation', () =>{
       messages[0],
       messages[2],
     ];
-    messages.forEach(source.set);
-    expect(aggregate()).toEqual(expectedMessages);
+    expect(removeDuplicateMessages(messages)).toEqual(expectedMessages);
   });
 
   it('lets non-duplicate messages through', () => {
-    const { aggregate, source} = createTestObjects();
     const messages = [
       message('Hey there', 'Taishi', '00:19:20', AuthorType.mchad),
       message('Hello there', 'Taishi Ch.', '00:19:22', 0),
       message('Konichiwassup', 'Shrek Wazowski', '00:20:00', 0),
     ];
-    messages.forEach(source.set);
-    expect(aggregate()).toEqual(messages);
+    expect(removeDuplicateMessages(messages)).toEqual(messages);
   });
 });

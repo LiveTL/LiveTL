@@ -11,6 +11,7 @@
   import MessageDisplay from './MessageDisplay.svelte';
   import ScreenshotExport from './ScreenshotExport.svelte';
   import Updates from './Updates.svelte';
+  import { displayedMessages } from '../js/sources-aggregate.js';
   import { saveAs } from 'file-saver';
   let settingsOpen = false;
   $videoTitle = paramsVideoTitle || $videoTitle;
@@ -54,11 +55,10 @@
   }
 
   let selectedItems = [];
-  let allItems = [];
   let selectedItemCount = 0;
 
   function selectAllItems() {
-    selectedItems = [...allItems];
+    selectedItems = [...displayedMessages];
   }
 
   let selectOperation = () => {};
@@ -277,7 +277,7 @@
         on:afterUpdate={onMessageDisplayAfterUpdate}
         bind:isSelecting
         bind:selectedItems
-        bind:items={allItems}
+        items={$displayedMessages}
       />
     </div>
   </Wrapper>

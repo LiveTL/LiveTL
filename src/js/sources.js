@@ -6,10 +6,8 @@ import { derived, writable, Writable, Readable } from 'svelte/store';
 import { Message } from './types.js';
 import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted, authorWhitelisted, authorBlacklisted } from './filter';
 import { isTranslation, replaceFirstTranslation } from './filter';
-import { channelFilters, language, showModMessage, spotlightedTranslator, timestamp } from './store';
+import { language, showModMessage, spotlightedTranslator, timestamp } from './store';
 import { paramsVideoId, AuthorType, languageNameCode, paramsPopout, paramsTabId, paramsFrameId } from './constants';
-import { checkAndSpeak } from './speech.js';
-import { removeDuplicateMessages } from './sources-util.js';
 import * as MCHAD from './mchad.js';
 import * as API from './api.js';
 
@@ -25,14 +23,11 @@ export const sources = {
   ytcDeletions: writable(null),
 };
 
-/** @type {(id: String) => Boolean} */
-const userBlacklisted = id => channelFilters.get(id).blacklist;
-
 /** @type {(msg: Message) => Boolean} */
 const isWhitelisted = msg => textWhitelisted(msg.text) || authorWhitelisted(msg.author);
 
 /** @type {(msg: Message) => Boolean} */
-const isBlacklisted = msg => textBlacklisted(msg.text) || userBlacklisted(msg.authorId) || authorBlacklisted(msg.author);
+const isBlacklisted = msg => textBlacklisted(msg.text) || authorBlacklisted(msg.author);
 
 /** @type {(msg: Message) => Boolean} */
 const isMod = msg => (msg.types & AuthorType.moderator) || (msg.types & AuthorType.owner);
@@ -68,27 +63,6 @@ function attachFilters(translations, mod, ytc) {
     else if (showIfMod(message)) {
       setModMessage(message);
     }
-  });
-}
-
-/**
- * @param {Readable<Message>} translations
- * @return {Readable<Message>}
- */
-function attachSpotlight(translations) {
-  return derived([translations, spotlightedTranslator], ([$msg, $spot]) => {
-    if ($spot === null || $spot === $msg?.authorId) return $msg;
-  });
-}
-
-/**
- * @param {Writable<Message>} translations
- * @return {() => void} cleanup
- */
-function attachSpeechSynth(translations) {
-  return translations.subscribe(message => {
-    if (message)
-      checkAndSpeak(message.text);
   });
 }
 
@@ -254,15 +228,11 @@ function message(author, msg, timestamp) {
 }
 
 attachFilters(sources.ytcTranslations, sources.mod, sources.ytc);
-['ytcTranslations', 'mchad', 'api', 'mod'].forEach(k => {
-  sources[k] = attachSpotlight(sources[k]);
-});
-sources.translations = removeDuplicateMessages(combineStores(
+sources.translations = combineStores(
   sources.ytcTranslations,
   sources.mchad,
   sources.api
-).store);
-attachSpeechSynth(sources.translations);
+).store;
 
 export class DummyYTCEventSource {
   constructor() {

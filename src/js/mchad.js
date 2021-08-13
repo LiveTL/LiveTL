@@ -118,12 +118,15 @@ const archiveTimeToInt = archiveTime => archiveTime
   .map((t, i) => t * Math.pow(60, 2 - i))
   .reduce((l, r) => l + r);
 
+let mchadTLCounter = 0;
+
 /** @type {(author: String, timestampTransform: UnixTransformer) => (data: MCHADTL) => Message} */
 const mchadToMessage = (author, timestampTransform) => data => ({
   text: data.Stext,
   messageArray: [{ type: 'text', text: data.Stext }],
   author,
   authorId: author,
+  messageId: ++mchadTLCounter,
   timestamp: timestampTransform(data.Stime),
   types: AuthorType.mchad
 });
