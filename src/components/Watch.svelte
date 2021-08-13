@@ -96,7 +96,7 @@
   $: isChatVertical = $chatSplit == ChatSplit.VERTICAL;
 
   $: chatElemStyle = (
-    isChatVertical ? `width: ${$chatSize}%; min-width: `: `height: ${chatSize}%; min-height: `
+    isChatVertical ? `width: ${$chatSize}%; min-width: `: `height: ${$chatSize}%; min-height: `
   ) + '10px;';
   $: videoContainerStyle = (
     (isTopSide ? 'height' : `width`) + `: ${$videoPanelSize}%; ` + 
