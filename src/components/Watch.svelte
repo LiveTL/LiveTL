@@ -103,6 +103,7 @@
     (isLeftSide ? 'min-width: 10px;' : (isTopSide ? 'min-height: 10px;': ''))
   );
   $: chatElemParentStyle = isRightSide ? 'width: calc(100% - 10px);' : '';
+  $: chatWrapperStyle = `padding-${isChatVertical ? 'right' : 'bottom'}: 10px;`;
 </script>
 
 <div class="watch-wrapper">
@@ -144,7 +145,7 @@
           >
             <Wrapper
               zoom={$chatZoom}
-              style={`padding-${isChatVertical ? 'right' : 'left'}: 10px;`}
+              style={chatWrapperStyle}
             >
               <ChatEmbed
                 videoId={paramsVideoId}
