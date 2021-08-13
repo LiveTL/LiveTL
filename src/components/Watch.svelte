@@ -94,34 +94,33 @@
   $: isLeftSide = $videoSide == VideoSide.LEFT;
   $: isFullPage = $displayMode === DisplayMode.FULLPAGE;
   $: isChatVertical = $chatSplit == ChatSplit.VERTICAL;
+
+  $: chatElemStyle = (
+    isChatVertical ? `width: ${$chatSize}%; min-width: `: `height: ${chatSize}%; min-height: `
+  ) + '10px;';
+  $: videoContainerStyle = (
+    (isTopSide ? 'height' : `width`) + `: ${$videoPanelSize}%; ` + 
+    (isLeftSide ? 'min-width: 10px;' : (isTopSide ? 'min-height: 10px;': ''))
+  );
+  $: chatElemParentStyle = isRightSide ? 'width: calc(100% - 10px);' : '';
 </script>
 
-<div
-  style="
-  margin: 20px 0px 0px 20px;
-  position: relative;
-  width: 100vw;
-  height: calc(100% - 40px);"
->
+<div class="watch-wrapper">
   <MaterialApp theme="dark">
     {#if isFullPage && $showCaption}
       <Captions />
     {/if}
     <div
       id="mainUI"
-      class="flex 
-        {isTopSide ? 'horizontal' : 'vertical'} 
-        {isRightSide ? 'reversed' : ''}"
+      class="flex"
+      class:horizontal={isTopSide}
+      class:vertical={!isTopSide}
+      class:reversed={isRightSide}
     >
       {#if isFullPage}
         <div
           class="tile resizable"
-          style="{(isTopSide ? 'height' : `width`) + `: ${$videoPanelSize}%;`}
-            {isLeftSide
-            ? 'min-width: 10px;'
-            : isTopSide
-            ? 'min-height: 10px'
-            : ''}"
+          style={videoContainerStyle}
           bind:this={vidElem}
         >
           <Wrapper>
@@ -135,28 +134,17 @@
         style={isTopSide ? 'min-width: 100% !important;' : ''}
       >
         <div
-          class="flex {isChatVertical
-            ? 'vertical'
-            : 'horizontal'}"
-          style="
-            {isRightSide ? 'width: calc(100% - 10px);' : ''}"
+          class="flex {isChatVertical ? 'vertical' : 'horizontal'}"
+          style={chatElemParentStyle}
         >
           <div
             class="tile resizable"
-            style="{isChatVertical
-              ? 'width'
-              : 'height'}: {$chatSize}%;
-                min-{isChatVertical
-              ? 'width'
-              : 'height'}: 10px;
-            "
+            style={chatElemStyle}
             bind:this={chatElem}
           >
             <Wrapper
               zoom={$chatZoom}
-              style={isChatVertical
-                ? 'padding-right: 10px;'
-                : 'padding-bottom: 10px;'}
+              style={`padding-${isChatVertical ? 'right' : 'left'}: 10px;`}
             >
               <ChatEmbed
                 videoId={paramsVideoId}
@@ -175,6 +163,12 @@
 </div>
 
 <style>
+  .watch-wrapper {
+    margin: 20px 0px 0px 20px;
+    position: relative;
+    width: 100vw;
+    height: calc(100% - 40px);
+  }
   .horizontal {
     flex-direction: column;
   }
