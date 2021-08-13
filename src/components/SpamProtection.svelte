@@ -4,8 +4,11 @@
   import Slider from './options/Slider.svelte';
   import Toggle from './options/Toggle.svelte';
 
-  $: amount = `${Math.ceil($spamMsgAmount)}`.padStart(2, ' ');
-  $: interval = `${Math.ceil($spamMsgInterval)}`.padStart(2, ' ');
+  const nbsp = ' ';
+
+  $: amount = `${Math.ceil($spamMsgAmount)}`.padStart(2, nbsp);
+  $: interval = `${Math.ceil($spamMsgInterval)}`.padStart(2, nbsp);
+  $: intervalPlural = Math.ceil($spamMsgInterval) == 1 ? nbsp : 's';
 </script>
 
 <Toggle name="Spam protection" store={enableSpamProtection} />
@@ -14,12 +17,14 @@
     name="Spam authors post at least {amount} messages"
     store={spamMsgAmount}
     min={2}
-    max={100}
+    max={98}
+    suffix=""
   />
   <Slider
-    name="every {interval} seconds"
+    name="every {interval} second{intervalPlural}"
     store={spamMsgInterval}
     min={1}
-    max={100}
+    max={98}
+    suffix=""
   />
 {/if}
