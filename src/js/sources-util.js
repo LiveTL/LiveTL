@@ -20,9 +20,12 @@ export function removeDuplicateMessages(msgs, sourceLatency=10) {
   return msgs.filter(Boolean).filter(isUnique);
 }
 
+/** @type {(msg: Message) => Seconds} */
+const messageTime = msg => msg.timestampMs / 1000;
+
 /** @type {(mostRecent: Message, latency: Number) => (msg: Message) => Boolean} */
 const isRecentMessage = (mostRecent, latency) => msg =>
-  (mostRecent.timestampMs / 1000) - (msg.timestampMs / 1000) <= latency;
+  messageTime(mostRecent) - messageTime(msg) <= latency;
 
 /** @type {(msg: Message) => (otherMsg: Message) => Boolean} */
 const isDuplicateOf = msg => otherMsg =>
