@@ -1,5 +1,4 @@
 <script>
-  import { Subheader } from 'svelte-materialify/src';
   import { enableSpamProtection, spamMsgAmount, spamMsgInterval } from '../js/store.js';
   import Slider from './options/Slider.svelte';
   import Toggle from './options/Toggle.svelte';

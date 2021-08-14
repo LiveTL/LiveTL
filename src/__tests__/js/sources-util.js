@@ -1,6 +1,4 @@
 /* eslint-disable no-undef */
-import { writable } from 'svelte/store';
-
 import { removeDuplicateMessages, getSpamAuthors } from '../../js/sources-util.js';
 import { AuthorType } from '../../js/constants.js';
 
