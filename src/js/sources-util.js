@@ -21,18 +21,7 @@ export function removeDuplicateMessages(msgs, sourceLatency=10) {
 }
 
 /** @type {(msg: Message) => Seconds} */
-const messageTime = msg => {
-  const timeSegments = msg.timestamp.split(':').map(m => parseInt(m));
-  if (timeSegments.length === 3) {
-    const [hours, minutes, seconds] = timeSegments;
-    return hours * 3600 + minutes * 60 + seconds;
-  }
-  if (timeSegments.length === 2) {
-    const [minutes, seconds] = timeSegments;
-    return minutes * 60 + seconds;
-  }
-  throw new Error('Invalid timestamp format');
-};
+const messageTime = msg => msg.timestampMs / 1000;
 
 /** @type {(mostRecent: Message, latency: Number) => (msg: Message) => Boolean} */
 const isRecentMessage = (mostRecent, latency) => msg =>
