@@ -38,7 +38,7 @@ const messageDup = (msg, otherMsg) =>
 
 /** @type {(msg: Message, otherMsg: Message) => Boolean} */
 const messageEquals = (msg, otherMsg) => msg.text === otherMsg.text &&
-  msg.timestamp === otherMsg.timestamp &&
+  msg.timestampMs === otherMsg.timestampMs &&
   msg.authorId === otherMsg.authorId;
 
 /** @type {(text: String) => String} */
