@@ -99,8 +99,7 @@ function ytcToMsg(ytcMessage) {
     authorId: author.id,
     types: typeFlag,
     messageArray: ytcMessage.message,
-    messageId: ytcMessage.messageId,
-    timestampMs: ytcMessage.showtime
+    messageId: ytcMessage.messageId
   };
 }
 
