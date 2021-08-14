@@ -1,11 +1,14 @@
 {
+  "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
+    "outDir": "./build/",
     "baseUrl": "./src",
+    "allowJs": true,
     "checkJs": true,
     "noEmit": true,
     "strict": true,
-    "lib": ["dom", "es5"],
-    "target": "es5"
+    "lib": ["DOM"],
+    "target": "ES6"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "build"]
