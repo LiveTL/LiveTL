@@ -85,7 +85,7 @@ const dispDepends =
 
 const dispTransform = ([$items, $banned, $hidden, $spot, $spamAmt, $spamInt]) => {
   const attrNotIn = (set, attr) => item => !set.has(item[attr]);
-  const spammers = new Set(...getSpamAuthors($items, $spamAmt, $spamInt));
+  const spammers = new Set(getSpamAuthors($items, $spamAmt, $spamInt));
   $items = $items
     ?.filter(attrNotIn($banned, 'authorId'))
     ?.filter(attrNotIn($hidden, 'messageId'))
