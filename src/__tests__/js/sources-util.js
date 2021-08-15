@@ -109,7 +109,7 @@ describe('spam author identification', () => {
       message('Spam', 'anti', 1236000),
       message('Spam', 'anti', 1236000),
     ];
-    expect(getSpamAuthors(messages, 6, 1)).toContain('anti');
+    expect(getSpamAuthors(messages, 6, 1).flat()).toContain('anti');
   });
 
   it('doesn\'t flag regular frequent authors', () => {
@@ -124,7 +124,7 @@ describe('spam author identification', () => {
       message('Spam', 'anti', 1236000),
       message('Not spam', 'kento', 1237000),
     ];
-    expect(getSpamAuthors(messages, 6, 1)).not.toContain('kento');
+    expect(getSpamAuthors(messages, 6, 1).flat()).not.toContain('kento');
   });
 
   it('doesn\'t flag regular authors when many are messaging at a time', () => {
