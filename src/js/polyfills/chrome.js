@@ -53,6 +53,7 @@
       // 'portID': [] // store callbacks that are waiting for a message event on a specific port
     }
   };
+  window.chromePolyfillStorage = polyfillStorage;
 
   function propagate(data) {
     document.querySelectorAll('iframe').forEach(iframe => {
@@ -60,8 +61,12 @@
     });
   }
 
+  function getRandom() {
+    return Math.random().toString(36).substr(2, 9);
+  }
+
   function sendMessage(data, callback = null) { // send message to background polyfill
-    const randomMessageID = Date.now(); // generate some sort of id to identify the message
+    const randomMessageID = getRandom(); // generate some sort of id to identify the message
     if (callback) {
       polyfillStorage.awaitingCallbacks[randomMessageID] = callback; // store callback
     }
@@ -87,7 +92,7 @@
       },
       connect() {
         // connect is done from the content script only
-        const portID = Date.now(); // generate a random port id
+        const portID = getRandom(); // generate a random port id
         sendMessage({
           event: 'connectPort',
           portID

@@ -6,10 +6,8 @@ import { derived, writable, Writable, Readable } from 'svelte/store';
 import { Message } from './types.js';
 import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted, authorWhitelisted, authorBlacklisted } from './filter';
 import { isTranslation, replaceFirstTranslation } from './filter';
-import { channelFilters, language, showModMessage, timestamp } from './store';
+import { language, showModMessage, spotlightedTranslator, timestamp } from './store';
 import { paramsVideoId, AuthorType, languageNameCode, paramsPopout, paramsTabId, paramsFrameId } from './constants';
-import { checkAndSpeak } from './speech.js';
-import { removeDuplicateMessages } from './sources-util.js';
 import * as MCHAD from './mchad.js';
 import * as API from './api.js';
 
@@ -25,14 +23,11 @@ export const sources = {
   ytcDeletions: writable(null),
 };
 
-/** @type {(id: String) => Boolean} */
-const userBlacklisted = id => channelFilters.get(id).blacklist;
-
 /** @type {(msg: Message) => Boolean} */
 const isWhitelisted = msg => textWhitelisted(msg.text) || authorWhitelisted(msg.author);
 
 /** @type {(msg: Message) => Boolean} */
-const isBlacklisted = msg => textBlacklisted(msg.text) || userBlacklisted(msg.authorId) || authorBlacklisted(msg.author);
+const isBlacklisted = msg => textBlacklisted(msg.text) || authorBlacklisted(msg.author);
 
 /** @type {(msg: Message) => Boolean} */
 const isMod = msg => (msg.types & AuthorType.moderator) || (msg.types & AuthorType.owner);
@@ -72,17 +67,6 @@ function attachFilters(translations, mod, ytc) {
 }
 
 /**
- * @param {Writable<Message>} translations
- * @return {() => void} cleanup
- */
-function attachSpeechSynth(translations) {
-  return translations.subscribe(message => {
-    if (message)
-      checkAndSpeak(message.text);
-  });
-}
-
-/**
  * @template T
  * @param  {...Writable<T>} stores 
  * @returns {{ store: Writable<T>, cleanUp: VoidFunction}}
@@ -115,7 +99,8 @@ function ytcToMsg(ytcMessage) {
     authorId: author.id,
     types: typeFlag,
     messageArray: ytcMessage.message,
-    messageId: ytcMessage.messageId
+    messageId: ytcMessage.messageId,
+    timestampMs: ytcMessage.showtime
   };
 }
 
@@ -244,12 +229,11 @@ function message(author, msg, timestamp) {
 }
 
 attachFilters(sources.ytcTranslations, sources.mod, sources.ytc);
-sources.translations = removeDuplicateMessages(combineStores(
+sources.translations = combineStores(
   sources.ytcTranslations,
   sources.mchad,
   sources.api
-).store);
-attachSpeechSynth(sources.translations);
+).store;
 
 export class DummyYTCEventSource {
   constructor() {
