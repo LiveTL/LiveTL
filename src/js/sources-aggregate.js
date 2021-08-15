@@ -4,7 +4,7 @@ import { combineStores, sources } from './sources.js';
 import { getSpamAuthors, removeDuplicateMessages } from './sources-util.js';
 import { ytcDeleteBehaviour, sessionHidden, spotlightedTranslator } from './store.js';
 import { channelFilters, mchadUsers, spamMsgAmount, spamMsgInterval } from './store.js';
-import { spammersDetected } from './store.js';
+import { enableSpamProtection, spammersDetected } from './store.js';
 import { YtcDeleteBehaviour } from './constants.js';
 
 /**
@@ -95,13 +95,18 @@ export const capturedMessages = readable([], set => {
 const spamStores = [spamMsgAmount, spamMsgInterval]
   .map(store => derived(store, Math.round));
 
-const dispDepends =
-  [capturedMessages, allBanned, hidden, spotlightedTranslator, ...spamStores, whitelistedSpam];
+const dispDepends = [
+  ...[capturedMessages, allBanned, hidden, spotlightedTranslator],
+  ...[...spamStores, whitelistedSpam, enableSpamProtection]
+];
 
-const dispTransform = ([$items, $banned, $hidden, $spot, $spamAmt, $spamInt, $whitelisted]) => {
+const dispTransform =
+  ([$items, $banned, $hidden, $spot, $spamAmt, $spamInt, $whitelisted, $enSpam]) => {
+
   const attrNotIn = (set, attr) => item => !set.has(item[attr]);
-  const spammers = getSpamAuthors($items, $spamAmt, $spamInt)
-    .filter(([id]) => !$whitelisted(id));
+  const spammers = $enSpam
+      ? getSpamAuthors($items, $spamAmt, $spamInt).filter(([id]) => !$whitelisted(id))
+      : [];
   const spammerIds = new Set(spammers.map(([id]) => id));
   spammers.forEach(markSpam);
 
