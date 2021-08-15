@@ -76,8 +76,8 @@ export const
   ytcDeleteBehaviour = SS('ytcDeleteBehaviour', YtcDeleteBehaviour.HIDE),
   autoVertical = SS('autoVertical', true),
   enableSpamProtection = SS('enableSpamProtection', true),
-  spamMsgAmount = SS('spamMsgAmount', 5.9),
-  spamMsgInterval = SS('spamMsgInterval', 0.9);
+  spamMsgAmount = SS('spamMsgAmount', 5),
+  spamMsgInterval = SS('spamMsgInterval', 10);
 
 // Non-persistant stores
 

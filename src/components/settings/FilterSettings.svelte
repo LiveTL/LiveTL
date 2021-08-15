@@ -79,4 +79,7 @@
 </div>
 
 <style>
+  :global(.s-subheader) {
+    padding-left: 0px !important;
+  }
 </style>
