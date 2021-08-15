@@ -29,11 +29,13 @@ const notSpammer = lookupStoreToList(spammersDetected, f => !f);
 export const allBanned = toSet(channelBlacklisted, mchadBlacklisted);
 export const notSpamStore = toSet(notSpammer);
 
-/** @type {Readable<(msg: Message) => Boolean>} */
-const whitelistedSpam = derived(notSpamStore, $set => msg => $set.has(msg.authorId));
+/** @type {Readable<(authorId: String) => Boolean>} */
+const whitelistedSpam = derived(notSpamStore, $set => id => $set.has(id));
 
-/** @type {(msg: Message) => Void} */
-const markSpam = msg => spammersDetected.set(msg.author, true);
+/** @type {(authorId) => Void} */
+const markSpam = authorId => {
+  if (!spammersDetected.has(authorId)) spammersDetected.set(authorId, true);
+};
 
 const hidden = toSet(sessionHidden);
 
