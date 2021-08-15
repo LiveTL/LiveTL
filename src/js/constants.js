@@ -21,6 +21,13 @@ export const TextDirection = {
   BOTTOM: 'BOTTOM'
 };
 
+/** @enum {String} */
+export const DisplayMode = {
+  POPOUT: 'POPOUT',
+  EMBEDDED: 'EMBEDDED',
+  FULLPAGE: 'FULLPAGE'
+};
+
 // Js enum omegalul
 /** @enum {number} */
 export const Browser = {

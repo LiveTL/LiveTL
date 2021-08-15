@@ -6,7 +6,7 @@
 
 <MaterialApp theme="dark">
   <Wrapper>
-    <Options isStandalone />
+    <Options />
   </Wrapper>
 </MaterialApp>
 
