@@ -10,6 +10,7 @@ const message = (text, author, timestampMs, types=0) => ({
   text,
   messageArray: [{ type: 'text', text }],
   author,
+  authorId: author,
   timestampMs,
   id: '9',
   messageId: ++msgIds,
