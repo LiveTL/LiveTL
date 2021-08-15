@@ -6,7 +6,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { version, description } = require('./package.json');
 const BannerPlugin = webpack.BannerPlugin;
-const { VueLoaderPlugin } = require('vue-loader');
+// const { VueLoaderPlugin } = require('vue-loader');
 const { preprocess } = require('./svelte.config');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const FileManagerPlugin = require('filemanager-webpack-plugin');
@@ -55,13 +55,17 @@ module.exports = (env, options) => {
       background: path.join(__dirname, 'src', 'js', 'pages', 'background.js'),
       watch: path.join(__dirname, 'src', 'js', 'pages', 'watch.js'),
       welcome: path.join(__dirname, 'src', 'js', 'pages', 'welcome.js'),
-      hyperchat: path.join(__dirname, 'src', 'js', 'pages', 'hyperchat.js'),
+      // hyperchat: path.join(__dirname, 'src', 'js', 'pages', 'hyperchat.js'),
       translatormode: path.join(__dirname, 'src', 'js', 'pages', 'translatormode.js'),
       injector: path.join(__dirname, 'src', 'js', 'content_scripts', 'injector.js'),
-      chat: path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat.js'),
-      'chat-interceptor': path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat-interceptor.js'),
-      'chat-background': path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat-background.js')
+      // chat: path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat.js'),
+      // 'chat-interceptor': path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat-interceptor.js'),
+      // 'chat-background': path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat-background.js'),
       // chrome: path.join(__dirname, 'src', 'js', 'polyfills', 'chrome.js')
+      'chat-interceptor': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-interceptor.ts'),
+      'chat-background': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-background.ts'),
+      chat: path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-injector.ts'),
+      hyperchat: path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'hyperchat.ts')
     },
     output: {
       path: path.join(__dirname, 'build'),
@@ -76,23 +80,32 @@ module.exports = (env, options) => {
     module: {
       rules: [
         {
-          test: /src\/submodules\/chat\/scripts\/chat(-background)?\.js$/,
+          test: /src\/submodules\/chat\/src\/ts\/chat-constants\.ts$/,
           loader: 'string-replace-loader',
           options: {
-            search: 'const isLiveTL = false;',
-            replace: 'const isLiveTL = true;'
+            multiple: [
+              {
+                search: 'export const isLiveTL = false;',
+                replace: 'export const isLiveTL = true;'
+              },
+              {
+                search: 'export const isAndroid = false;',
+                replace: `export const isAndroid = ${isAndroid};`
+              }
+            ]
           }
-        }, {
-          test: /.*/,
-          use: [{
-            loader: 'string-replace-loader',
-            options: {
-              search: 'const isAndroid = false;',
-              replace: `const isAndroid = ${isAndroid};`
-            }
-          }],
-          enforce: 'post'
         },
+        // {
+        //   test: /.*/,
+        //   use: [{
+        //     loader: 'string-replace-loader',
+        //     options: {
+        //       search: 'const isAndroid = false;',
+        //       replace: `const isAndroid = ${isAndroid};`
+        //     }
+        //   }],
+        //   enforce: 'post'
+        // },
         {
           include: [
             path.resolve(__dirname, 'node_modules/jquery-ui-touch-punch')
@@ -125,12 +138,12 @@ module.exports = (env, options) => {
           // include: /.*/
           // exclude: /node_modules/
         },
-        {
-          test: /\.html$/,
-          loader: 'html-loader',
-          exclude: /node_modules/,
-          enforce: 'post' // Fix vue-loader issues
-        },
+        // {
+        //   test: /\.html$/,
+        //   loader: 'html-loader',
+        //   exclude: /node_modules/,
+        //   enforce: 'post' // Fix vue-loader issues
+        // },
         {
           test: /\.svelte$/,
           use: {
@@ -152,10 +165,10 @@ module.exports = (env, options) => {
             fullySpecified: false
           }
         },
-        {
-          test: /\.vue$/,
-          loader: 'vue-loader'
-        },
+        // {
+        //   test: /\.vue$/,
+        //   loader: 'vue-loader'
+        // },
         // {
         //   test: /\.s(c|a)ss$/,
         //   use: [
@@ -251,11 +264,18 @@ module.exports = (env, options) => {
       new FileManagerPlugin({
         events: {
           onEnd: {
-            delete: ['./build/hyperchat/hyperchat.bundle.js'],
+            delete: [
+              './build/hyperchat/hyperchat.bundle.js',
+              './build/hyperchat/hyperchat.css'
+            ],
             move: [
               {
                 source: './build/hyperchat.bundle.js',
                 destination: './build/hyperchat/hyperchat.bundle.js'
+              },
+              {
+                source: './build/hyperchat.css',
+                destination: './build/hyperchat/hyperchat.css'
               }
             ]
           }
@@ -291,7 +311,7 @@ module.exports = (env, options) => {
         chunks: ['background', 'chat-background'],
         chunksSortMode: 'manual'
       }),
-      new VueLoaderPlugin(),
+      // new VueLoaderPlugin(),
       new HtmlWebpackPlugin({
         template: path.join(__dirname, 'src', 'empty.html'),
         filename: 'hyperchat/index.html',

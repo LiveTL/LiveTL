@@ -4,11 +4,12 @@
     "outDir": "./build/",
     "baseUrl": "./src",
     "allowJs": true,
-    "checkJs": true,
-    "noEmit": true,
+    "checkJs": false,
     "strict": true,
     "lib": ["DOM"],
-    "target": "ES6"
+    "target": "ES6",
+    "resolveJsonModule": true,
+    "typeRoots": ["./node_modules/@types", "./src/ts", "./src/submodules/chat/src/ts"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "build"]
