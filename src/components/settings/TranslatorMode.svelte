@@ -1,11 +1,12 @@
 <script>
   import { Col, Row, Subheader, Button, Icon, ExpansionPanels, ExpansionPanel, TextField } from 'svelte-materialify/src';
-  import { mdiPlus } from '@mdi/js';
+  import { mdiInformation, mdiPlus } from '@mdi/js';
   import { onMount } from 'svelte';
 
   import CustomMacro from '../options/CustomMacro.svelte';
   import Toggle from '../options/Toggle.svelte';
   import { macros, doAutoPrefix, doTranslatorMode, autoPrefixTag, macroTrigger } from '../../js/store.js';
+  import { isAndroid } from '../../js/constants.js';
 
   const leaderCharRules = [
     leader => leader.length == 1 || 'Please input a single character',
@@ -26,7 +27,7 @@
   onMount(() => setTimeout(cleanUpMacros));
 </script>
 
-<Toggle name="Translator mode" store={doTranslatorMode} />
+<Toggle name="Translator mode" store={doTranslatorMode} disabled={isAndroid} />
 {#if $doTranslatorMode}
   <div style="margin-top: 20px;">
     <Toggle name="Auto-prefix chat messages" store={doAutoPrefix} />
@@ -80,4 +81,11 @@
       </ExpansionPanels>
     </Row>
   </div>
+{/if}
+{#if isAndroid}
+  <p>
+    <Icon path={mdiInformation} />
+    Some features are only supported on the desktop LiveTL extension. Get LiveTL
+    on Chrome, Firefox, etc. to use these features!
+  </p>
 {/if}

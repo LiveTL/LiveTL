@@ -9,16 +9,18 @@
     captionWidth,
     captionFontSize,
     enableCaptionTimeout,
-    captionDuration
+    captionDuration,
   } from '../js/store.js';
+  import { checkAndSpeak } from '../js/speech.js';
+  import { displayedMessages } from '../js/sources-aggregate.js';
   export let text = `
   Captions captured from the chat will appear here. Try moving and resizing!
   You can also disable floating captions or make captions disappear
   when inactive in the settings menu.
   `;
-  import { sources } from '../js/sources.js';
   let captionElem = null;
-  const { translations } = sources;
+
+  $: translation = $displayedMessages[$displayedMessages.length - 1]?.text;
 
   function stop() {
     const width = captionElem.clientWidth;
@@ -63,7 +65,15 @@
     clearTimeout(timeout);
   }
 
-  $: if ($translations) {
+  let elem = null;
+
+  // Prevent null translations from resetting captions
+  let captionText = text;
+  $: if (translation != null && translation != captionText) {
+    checkAndSpeak(captionText = translation);
+  }
+
+  $: if (captionText) {
     if ($enableCaptionTimeout) captionTimeout();
     if (elem) {
       elem.style.display = 'none';
@@ -71,7 +81,6 @@
       elem.style.display = 'block';
     }
   }
-  let elem = null;
 </script>
 
 <div
@@ -88,7 +97,7 @@
 "
 >
   <div class="captionSegment" bind:this={elem}>
-    {$translations ? $translations.text : text}
+    {captionText}
   </div>
 </div>
 

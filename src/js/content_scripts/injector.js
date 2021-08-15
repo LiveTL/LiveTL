@@ -192,7 +192,7 @@ async function loaded() {
 }
 
 window.addEventListener('message', (packet) => {
-  if (packet.origin !== window.origin) window.postMessage(packet.data);
+  if (packet.origin !== window.origin && !packet.data.type) window.postMessage(packet.data);
 });
 
 /**

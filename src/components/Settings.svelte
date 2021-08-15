@@ -6,9 +6,7 @@
   import FilterSettings from './settings/FilterSettings.svelte';
   import TranslatorMode from './settings/TranslatorMode.svelte';
   import About from './About.svelte';
-
-  export let isStandalone = false;
-  export let isResizing = false;
+  import { isResizing } from '../js/store.js';
 
   const settings = [
     { name: 'Interface', component: UISettings, icon: mdiBrush },
@@ -38,7 +36,7 @@
 
   let callRedrawSlider = false;
   let wasResizing = false;
-  $: wasResizing = !isResizing;
+  $: wasResizing = !$isResizing;
   beforeUpdate(() => {
     if (wasResizing) {
       callRedrawSlider = true;
@@ -93,7 +91,7 @@
               <div
                 style="font-size: 16px !important; margin: 15px 0px 15px 0px;"
               >
-                <svelte:component this={component} {isStandalone} />
+                <svelte:component this={component} />
               </div>
             </TabContent>
           {/each}

@@ -50,6 +50,7 @@ yarn build android # android
 yarn test # jest
 yarn test:watch # autotest
 yarn format # lint
+yarn e2e # run e2e tests
 ```
 Load the `build` directory in Chrome developer mode.
 

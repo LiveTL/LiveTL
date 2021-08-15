@@ -1,7 +1,7 @@
 <script>
   import { delayed } from '../js/utils.js';
 
-  export let isResizing;
+  import { isResizing } from '../js/store.js';
   export let zoom = NaN;
   export let style = '';
   let factor;
@@ -18,13 +18,13 @@
   );
 
   export const isAtTop = delayed(() => div.scrollTop === 0, true);
+
+  $: displayProperty = $isResizing ? 'none' : 'grid';
 </script>
 
 <div
   style="
-    display: {isResizing
-    ? 'none'
-    : 'grid'};
+    display: {displayProperty};
     width: {inverse}%;
     height: {inverse}%;
     transform-origin: 0px 0px;
