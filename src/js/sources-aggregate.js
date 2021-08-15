@@ -93,7 +93,7 @@ export const capturedMessages = readable([], set => {
 });
 
 const spamStores = [spamMsgAmount, spamMsgInterval]
-  .map(store => derived(store, Math.ceil));
+  .map(store => derived(store, Math.round));
 
 const dispDepends =
   [capturedMessages, allBanned, hidden, spotlightedTranslator, ...spamStores, whitelistedSpam];
