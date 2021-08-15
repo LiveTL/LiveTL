@@ -6,10 +6,9 @@
   import Toggle from './options/Toggle.svelte';
   import MultiDropdown from './options/MultiDropdown.svelte';
 
-  $: amount = `${Math.ceil($spamMsgAmount)}`;
-  $: interval = `${Math.ceil($spamMsgInterval)}`;
-  $: intervalPlural = Math.ceil($spamMsgInterval) == 1 ? '' : 's';
-  $: console.log('SPAM', $spammersDetected);
+  $: amount = `${Math.round($spamMsgAmount)}`;
+  $: interval = `${Math.round($spamMsgInterval)}`;
+  $: intervalPlural = Math.round($spamMsgInterval) == 1 ? '' : 's';
 </script>
 
 <Toggle name="Spam protection" store={enableSpamProtection} />
