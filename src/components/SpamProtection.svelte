@@ -13,7 +13,7 @@
 
 <Toggle name="Spam protection" store={enableSpamProtection} />
 {#if $enableSpamProtection}
-  <Subheader style="height: 2rem; margin-top: 1.5rem;">
+  <Subheader style="height: 2rem;">
     Hide spammers that send {amount} or more messages within {interval} second{intervalPlural}
   </Subheader>
   <div class="spam-sliders">
