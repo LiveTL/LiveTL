@@ -4,9 +4,9 @@
   import Slider from './options/Slider.svelte';
   import Toggle from './options/Toggle.svelte';
 
-  $: amount = `${Math.ceil($spamMsgAmount)}`;
-  $: interval = `${Math.ceil($spamMsgInterval)}`;
-  $: intervalPlural = Math.ceil($spamMsgInterval) == 1 ? '' : 's';
+  $: amount = `${Math.round($spamMsgAmount)}`;
+  $: interval = `${Math.round($spamMsgInterval)}`;
+  $: intervalPlural = Math.round($spamMsgInterval) == 1 ? '' : 's';
 </script>
 
 <Toggle name="Spam protection" store={enableSpamProtection} />
