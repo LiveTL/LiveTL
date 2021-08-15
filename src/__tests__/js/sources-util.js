@@ -25,7 +25,7 @@ describe('message duplication mitigation', () =>{
       messages[0],
       messages[1]
     ];
-    expect(removeDuplicateMessages(messages)).toEqual(expectedMessages);
+    expect(removeDuplicateMessages(messages, 10)).toEqual(expectedMessages);
   });
 
   // test case is based off a situation that happened
@@ -42,7 +42,7 @@ describe('message duplication mitigation', () =>{
       messages[1],
       messages[2],
     ];
-    expect(removeDuplicateMessages(messages)).toEqual(expectedMessages);
+    expect(removeDuplicateMessages(messages, 10)).toEqual(expectedMessages);
   });
 
   // needed for repeated tls like '*explains meme' with other tls in between
@@ -55,7 +55,7 @@ describe('message duplication mitigation', () =>{
       message('Konichiwassup', 'Taishi Ch.', 130000, 0),
       message('hello there', 'Taishi', 140000, AuthorType.mchad),
     ];
-    expect(removeDuplicateMessages(messages)).toEqual(messages);
+    expect(removeDuplicateMessages(messages, 10)).toEqual(messages);
   });
 
   it('lets non-duplicate messages of same source through', () => {
@@ -67,7 +67,7 @@ describe('message duplication mitigation', () =>{
       message('puhehehe', 'Taishi Ch.', 130000, 0),
       message('hehe', 'Taishi', 140000, 0),
     ];
-    expect(removeDuplicateMessages(messages)).toEqual(messages);
+    expect(removeDuplicateMessages(messages, 10)).toEqual(messages);
   });
 
   it('admits duplicate messages of inside the last 10 seconds and from same source', () => {
@@ -80,7 +80,7 @@ describe('message duplication mitigation', () =>{
       messages[0],
       messages[2],
     ];
-    expect(removeDuplicateMessages(messages)).toEqual(expectedMessages);
+    expect(removeDuplicateMessages(messages, 10)).toEqual(expectedMessages);
   });
 
   it('lets non-duplicate messages through', () => {
@@ -89,6 +89,6 @@ describe('message duplication mitigation', () =>{
       message('Hello there', 'Taishi Ch.', 100000, 0),
       message('Konichiwassup', 'Shrek Wazowski', 200000, 0),
     ];
-    expect(removeDuplicateMessages(messages)).toEqual(messages);
+    expect(removeDuplicateMessages(messages, 10)).toEqual(messages);
   });
 });
