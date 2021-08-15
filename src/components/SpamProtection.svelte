@@ -11,37 +11,39 @@
   $: intervalPlural = Math.round($spamMsgInterval) == 1 ? '' : 's';
 </script>
 
-<Toggle name="Spam protection" store={enableSpamProtection} />
-{#if $enableSpamProtection}
-  <Subheader style="height: 2rem;">
-    Hide spammers that send {amount} or more messages within {interval} second{intervalPlural}
-  </Subheader>
-  <div class="spam-sliders">
-    <Slider
-      name="Spam detection threshold:"
-      store={spamMsgAmount}
-      min={2}
-      max={101}
-      suffix=""
-    />
-    <Slider
-      name="Spam detection timeframe:"
-      store={spamMsgInterval}
-      min={1}
-      max={100}
-      suffix=""
-    />
-  </div>
+<div style="margin-top: 1.5rem;">
+  <Toggle name="Spam protection" store={enableSpamProtection} />
+  {#if $enableSpamProtection}
+    <Subheader style="height: 2rem;">
+      Hide spammers that send {amount} or more messages within {interval} second{intervalPlural}
+    </Subheader>
+    <div class="spam-sliders">
+      <Slider
+        name="Spam detection threshold:"
+        store={spamMsgAmount}
+        min={2}
+        max={101}
+        suffix=""
+      />
+      <Slider
+        name="Spam detection timeframe:"
+        store={spamMsgInterval}
+        min={1}
+        max={100}
+        suffix=""
+      />
+    </div>
 
-  <MultiDropdown
-    name="Detected spammers"
-    store={spammersDetected}
-    getDisplayName={(_id, v) => v.author}
-    getBool={id => spammersDetected.get(id).spam}
-    setBool={(id, spam) =>
-      spammersDetected.set(id, { ...spammersDetected.get(id), spam })}
-  />
-{/if}
+    <MultiDropdown
+      name="Detected spammers"
+      store={spammersDetected}
+      getDisplayName={(_id, v) => v.author}
+      getBool={id => spammersDetected.get(id).spam}
+      setBool={(id, spam) =>
+        spammersDetected.set(id, { ...spammersDetected.get(id), spam })}
+    />
+  {/if}
+</div>
 
 <style>
   .spam-sliders {
