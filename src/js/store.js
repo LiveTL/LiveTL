@@ -77,7 +77,8 @@ export const
   autoVertical = SS('autoVertical', true),
   enableSpamProtection = SS('enableSpamProtection', true),
   spamMsgAmount = SS('spamMsgAmount', 5),
-  spamMsgInterval = SS('spamMsgInterval', 10);
+  spamMsgInterval = SS('spamMsgInterval', 10),
+  spammersDetected = LS('spammersDetected', false);
 
 // Non-persistant stores
 

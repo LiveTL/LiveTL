@@ -1,29 +1,41 @@
 import { readable, derived, Readable } from 'svelte/store';
+import { not } from './utils.js';
 import { combineStores, sources } from './sources.js';
 import { getSpamAuthors, removeDuplicateMessages } from './sources-util.js';
 import { ytcDeleteBehaviour, sessionHidden, spotlightedTranslator } from './store.js';
 import { channelFilters, mchadUsers, spamMsgAmount, spamMsgInterval } from './store.js';
+import { spammersDetected } from './store.js';
 import { YtcDeleteBehaviour } from './constants.js';
 
-/** @type {Readable<String[]>} */
-const channelBlacklisted = derived(channelFilters, $chan => $chan
-  .filter(([_id, filter]) => filter.blacklist)
-  .map(([id, _filter]) => id)
+/**
+ * @template {T}
+ * @type {(store: Readable<T>, getBool: (val: T) => Boolean) => Readable<String[]>}
+ */
+const lookupStoreToList = (store, getBool=Boolean) => derived(store, $val => $val
+  .filter(([_id, val]) => getBool(val))
+  .map(([id, _val]) => id)
 );
 
-/** @type {Readable<String[]>} */
-const mchadBlacklisted = derived(mchadUsers, $mchad => $mchad
-  .filter(([_name, banned]) => banned)
-  .map(([name, _banned]) => name)
-);
+/**
+ * @template {T}
+ * @type {(stores: Readable<T[]>) => Readable<Set<T>>}
+ */
+const toSet = (...stores) => derived(stores, ($stores) => new Set($stores.flat()), new Set([]));
 
-/** @type {Readable<Set<String>>} */
-export const allBanned = derived([channelBlacklisted, mchadBlacklisted], ([$chan, $mchad]) => {
-  return new Set([...$chan, ...$mchad]);
-}, []);
+const channelBlacklisted = lookupStoreToList(channelFilters, f => f.blacklist);
+const mchadBlacklisted = lookupStoreToList(mchadUsers);
+const notSpammer = lookupStoreToList(spammersDetected, f => !f);
 
-/** @type {Readable<Set<String>>} */
-const hidden = derived(sessionHidden, $hidden => new Set($hidden));
+export const allBanned = toSet(channelBlacklisted, mchadBlacklisted);
+export const notSpamStore = toSet(notSpammer);
+
+/** @type {Readable<(msg: Message) => Boolean>} */
+const whitelistedSpam = derived(notSpamStore, $set => msg => $set.has(msg.authorId));
+
+/** @type {(msg: Message) => Void} */
+const markSpam = msg => spammersDetected.set(msg.author, true);
+
+const hidden = toSet(sessionHidden);
 
 export const capturedMessages = readable([], set => {
   let items = [];
@@ -81,11 +93,14 @@ const spamStores = [spamMsgAmount, spamMsgInterval]
   .map(store => derived(store, Math.ceil));
 
 const dispDepends =
-  [capturedMessages, allBanned, hidden, spotlightedTranslator, ...spamStores];
+  [capturedMessages, allBanned, hidden, spotlightedTranslator, ...spamStores, whitelistedSpam];
 
-const dispTransform = ([$items, $banned, $hidden, $spot, $spamAmt, $spamInt]) => {
+const dispTransform = ([$items, $banned, $hidden, $spot, $spamAmt, $spamInt, $whitelisted]) => {
   const attrNotIn = (set, attr) => item => !set.has(item[attr]);
-  const spammers = new Set(getSpamAuthors($items, $spamAmt, $spamInt));
+  const spammers = new Set(getSpamAuthors($items, $spamAmt, $spamInt).filter(not($whitelisted)));
+
+  spammers.forEach(markSpam);
+
   $items = $items
     ?.filter(attrNotIn($banned, 'authorId'))
     ?.filter(attrNotIn($hidden, 'messageId'))
