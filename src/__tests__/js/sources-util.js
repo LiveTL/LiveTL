@@ -119,8 +119,8 @@ describe('spam author identification', () => {
       message('Spam', 'anti', 1236000),
       message('Spam', 'anti', 1236000),
       message('Not spam', 'kento', 1236000),
-      message('Spam', 'anti', 1236000'),
-      message('Spam', 'anti', 1236000'),
+      message('Spam', 'anti', 1236000),
+      message('Spam', 'anti', 1236000),
       message('Not spam', 'kento', 1237000),
     ];
     expect(getSpamAuthors(messages, 6, 1)).not.toContain('kento');
