@@ -26,14 +26,14 @@ export function removeDuplicateMessages(msgs, sourceLatency=60) {
  * @param {Message[]} msgs
  * @param {Number} amountOfMsgs amount of msgs in the spam frequency
  * @param {Seconds} time the time between the first spam message and the latest
- * @return {String[]} authorIds
+ * @return {String[][]} array of [authorId, authorName]
  */
 export function getSpamAuthors(msgs, amountOfMsgs, time) {
   const authors = [];
 
   index(msgs).by('authorId').forEach((messages, author) => {
     if (containsSpam(messages, amountOfMsgs, time)) {
-      authors.push(author);
+      authors.push([author, messages[0].author]);
     }
   });
 

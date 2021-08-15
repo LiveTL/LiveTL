@@ -24,7 +24,7 @@ const toSet = (...stores) => derived(stores, ($stores) => new Set($stores.flat()
 
 const channelBlacklisted = lookupStoreToList(channelFilters, f => f.blacklist);
 const mchadBlacklisted = lookupStoreToList(mchadUsers);
-const notSpammer = lookupStoreToList(spammersDetected, f => !f);
+const notSpammer = lookupStoreToList(spammersDetected, f => !f.spam);
 
 export const allBanned = toSet(channelBlacklisted, mchadBlacklisted);
 export const notSpamStore = toSet(notSpammer);
@@ -32,9 +32,10 @@ export const notSpamStore = toSet(notSpammer);
 /** @type {Readable<(authorId: String) => Boolean>} */
 const whitelistedSpam = derived(notSpamStore, $set => id => $set.has(id));
 
-/** @type {(authorId) => Void} */
-const markSpam = authorId => {
-  if (!spammersDetected.has(authorId)) spammersDetected.set(authorId, true);
+/** @type {([authorId: String, author: String]) => Void} */
+const markSpam = ([authorId, author]) => {
+  if (!spammersDetected.has(authorId))
+    spammersDetected.set(authorId, { authorId, author, spam: true });
 };
 
 const hidden = toSet(sessionHidden);
@@ -99,14 +100,15 @@ const dispDepends =
 
 const dispTransform = ([$items, $banned, $hidden, $spot, $spamAmt, $spamInt, $whitelisted]) => {
   const attrNotIn = (set, attr) => item => !set.has(item[attr]);
-  const spammers = new Set(getSpamAuthors($items, $spamAmt, $spamInt).filter(not($whitelisted)));
-
+  const spammers = getSpamAuthors($items, $spamAmt, $spamInt)
+    .filter(([id]) => !$whitelisted(id));
+  const spammerIds = new Set(spammers.map(([id]) => id));
   spammers.forEach(markSpam);
 
   $items = $items
     ?.filter(attrNotIn($banned, 'authorId'))
     ?.filter(attrNotIn($hidden, 'messageId'))
-    ?.filter(attrNotIn(spammers, 'authorId'))
+    ?.filter(attrNotIn(spammerIds, 'authorId'))
     ?.filter($spot ? msg => msg.authorId === $spot : () => true) ?? [];
   return removeDuplicateMessages($items);
 };

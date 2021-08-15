@@ -33,7 +33,14 @@
     />
   </div>
 
-  <MultiDropdown name="Detected spammers" store={spammersDetected} />
+  <MultiDropdown
+    name="Detected spammers"
+    store={spammersDetected}
+    getDisplayName={(_id, v) => v.author}
+    getBool={id => spammersDetected.get(id).spam}
+    setBool={(id, spam) =>
+      spammersDetected.set(id, { ...spammersDetected.get(id), spam })}
+  />
 {/if}
 
 <style>
