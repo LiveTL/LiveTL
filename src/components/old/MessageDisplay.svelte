@@ -1,7 +1,14 @@
 <script>
-  import { afterUpdate, createEventDispatcher } from 'svelte';
-  import Message from './Message.svelte';
-  import MessageDisplayWrapper from './MessageDisplayWrapper.svelte';
+  import {
+    afterUpdate,
+    onMount,
+    onDestroy,
+    createEventDispatcher
+  } from 'svelte';
+  import Message from '../Message.svelte';
+  import { Checkbox } from 'svelte-materialify/src';
+  import { removeDuplicateMessages } from '../../js/sources-util.js';
+  import MessageDisplayWrapper from '../MessageDisplayWrapper.svelte';
   import '../css/splash.css';
   import {
     channelFilters,
@@ -10,15 +17,14 @@
     showTimestamp,
     spotlightedTranslator,
     sessionHidden
-  } from '../js/store.js';
+  } from '../../js/store.js';
   import {
     AuthorType,
     TextDirection
-  } from '../js/constants.js';
-  import IntroMessage from './IntroMessage.svelte';
+  } from '../../js/constants.js';
+  import IntroMessage from '../IntroMessage.svelte';
   // eslint-disable-next-line no-unused-vars
   import { MessageItem } from '../js/types.js';
-  import Checkbox from './common/Checkbox.svelte';
 
   $: document.body.style.fontSize = Math.round($livetlFontSize) + 'px';
   export let direction;
@@ -82,7 +88,7 @@
         )}
       >
         {#if isSelecting}
-          <Checkbox bind:group={selectedItems} value={item} wrapperClass="inline-flex" />
+          <Checkbox bind:group={selectedItems} value={item} />
         {/if}
       </Message>
     {/each}
