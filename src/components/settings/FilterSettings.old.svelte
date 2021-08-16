@@ -4,8 +4,10 @@
     showModMessage,
     language,
     customFilters,
+    channelFilters,
     enableMchadTLs,
     enableAPITLs,
+    mchadUsers,
     ytcDeleteBehaviour
   } from '../../js/store.js';
   import {
@@ -19,10 +21,11 @@
   import { mdiPlus } from '@mdi/js';
   import { addFilter, cleanupFilters } from '../../js/filter.js';
   import { languageNameValues, ytcDeleteValues } from '../../js/constants.js';
+  import CheckOption from '../options/Toggle.svelte';
   import CustomFilter from '../options/CustomFilter.svelte';
   import SelectOption from '../options/Dropdown.svelte';
+  import MultiDropdown from '../options/MultiDropdown.svelte';
   import BlockedUsers from '../BlockedUsers.svelte';
-  import Checkbox from '../common/CheckboxStore.svelte';
 
   function createNewFilter() {
     cleanupFilters();
@@ -40,7 +43,7 @@
   store={language}
   items={languageNameValues}
 />
-<Checkbox name="Show moderator messages" store={showModMessage} />
+<CheckOption name="Show moderator messages" store={showModMessage} />
 <BlockedUsers />
 <Subheader>When messages are deleted by moderators:</Subheader>
 {#each [...ytcDeleteValues.keys()] as key}
@@ -51,8 +54,8 @@
 <Row>
   <Col>
     <Subheader>External translation sources</Subheader>
-    <Checkbox name="LiveTL API" store={enableAPITLs} />
-    <Checkbox name="MChad (volunteer translators)" store={enableMchadTLs} />
+    <CheckOption name="LiveTL API" store={enableAPITLs} />
+    <CheckOption name="MChad (volunteer translators)" store={enableMchadTLs} />
   </Col>
 </Row>
 <div class="filter-options">

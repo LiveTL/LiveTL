@@ -4,9 +4,9 @@
   import { onMount } from 'svelte';
 
   import CustomMacro from '../options/CustomMacro.svelte';
+  import Toggle from '../options/Toggle.svelte';
   import { macros, doAutoPrefix, doTranslatorMode, autoPrefixTag, macroTrigger } from '../../js/store.js';
   import { isAndroid } from '../../js/constants.js';
-  import Checkbox from '../common/CheckboxStore.svelte';
 
   const leaderCharRules = [
     leader => leader.length == 1 || 'Please input a single character',
@@ -27,10 +27,10 @@
   onMount(() => setTimeout(cleanUpMacros));
 </script>
 
-<Checkbox name="Translator mode" store={doTranslatorMode} disabled={isAndroid} />
+<Toggle name="Translator mode" store={doTranslatorMode} disabled={isAndroid} />
 {#if $doTranslatorMode}
   <div style="margin-top: 20px;">
-    <Checkbox name="Auto-prefix chat messages" store={doAutoPrefix} />
+    <Toggle name="Auto-prefix chat messages" store={doAutoPrefix} />
 
     {#if $doAutoPrefix}
       <TextField style="margin-top: 20px;" bind:value={$autoPrefixTag}

@@ -1,8 +1,7 @@
 <script>
-  import { Button, Icon, Row, Col, TextField } from 'svelte-materialify/src';
+  import { Button, Icon, Row, Col, Checkbox, TextField } from 'svelte-materialify/src';
   import { mdiDelete } from '@mdi/js';
   import { macros } from '../../js/store.js';
-  import Checkbox from '../common/Checkbox.svelte';
 
   export let name;
   export let expansion;
@@ -34,7 +33,7 @@
   <Col>
     <TextField dense bind:value={expansion}>Expansion</TextField>
   </Col>
-  <div class="flex items-center">
+  <div style="display: flex;">
     <Checkbox bind:checked={enabled} />
     <div style="height: 100%; display: flex; align-items: center; padding-right: 5px;">
       <Button icon class="red-text" on:click={deleteMacro}>

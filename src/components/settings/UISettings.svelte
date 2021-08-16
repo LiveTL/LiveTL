@@ -18,11 +18,11 @@
     displayMode
   } from '../../js/store.js';
   import { ChatSplit, TextDirection, VideoSide, DisplayMode } from '../../js/constants.js';
-  import CheckOption from '../options/Toggle.svelte';
   import EnumOption from '../options/Radio.svelte';
   import FontDemo from '../FontDemo.svelte';
   import ImportExport from '../ImportExport.svelte';
   import Slider from '../common/SliderStore.svelte';
+  import Checkbox from '../common/CheckboxStore.svelte';
 </script>
 
 <ImportExport />
@@ -44,7 +44,7 @@
       store={videoSideSetting}
     />
     <div style="margin-bottom: 10px;">
-      <CheckOption
+      <Checkbox
         name="Enter vertical mode when window is thin"
         store={autoVertical}
       />
@@ -56,9 +56,9 @@
     />
   {/if}
 </div>
-<CheckOption name="Show timestamps" store={showTimestamp} />
+<Checkbox name="Show timestamps" store={showTimestamp} />
 {#if $displayMode === DisplayMode.FULLPAGE}
-  <CheckOption name="Show captions" store={showCaption} />
+  <Checkbox name="Show captions" store={showCaption} />
   {#if $showCaption}
     <Slider
       name="Caption font size"
@@ -66,7 +66,7 @@
       min={9}
       max={54}
     />
-    <CheckOption
+    <Checkbox
       name="Make captions disappear when inactive"
       store={enableCaptionTimeout}
     />
@@ -81,12 +81,12 @@
   {/if}
 {/if}
 <!-- {/if} -->
-<CheckOption name="Read-aloud mode" store={doSpeechSynth} />
+<Checkbox name="Read-aloud mode" store={doSpeechSynth} />
 {#if $doSpeechSynth}
   <Slider name="Speech volume" store={speechVolume} min={0} max={1} step={0.01} />
 {/if}
-<CheckOption
+<Checkbox
   name="Show screenshot and download buttons"
   store={enableExportButtons}
 />
-<CheckOption name="Show fullscreen button" store={enableFullscreenButton} />
+<Checkbox name="Show fullscreen button" store={enableFullscreenButton} />

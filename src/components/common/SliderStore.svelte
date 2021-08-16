@@ -18,7 +18,7 @@
   $: store.set(value);
 </script>
 
-<div class="flex flex-row items-center">
+<div class="flex flex-row py-1 items-center">
   {#if name !== ''}
     <div>
       {name}:
