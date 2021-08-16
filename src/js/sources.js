@@ -1,16 +1,21 @@
-import { Queue } from './queue';
 import { compose } from './utils';
 // eslint-disable-next-line no-unused-vars
 import { derived, writable, Writable, Readable } from 'svelte/store';
 // eslint-disable-next-line no-unused-vars
 import { Message } from './types.js';
-import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted, authorWhitelisted, authorBlacklisted } from './filter';
-import { isTranslation, replaceFirstTranslation } from './filter';
-import { language, showModMessage, spotlightedTranslator, timestamp } from './store';
-import { paramsVideoId, AuthorType, languageNameCode, paramsPopout, paramsTabId, paramsFrameId } from './constants';
+import {
+  parseTranslation,
+  isWhitelisted as textWhitelisted,
+  isBlacklisted as textBlacklisted,
+  authorWhitelisted,
+  authorBlacklisted,
+  isTranslation,
+  replaceFirstTranslation
+} from './filter';
+import { showModMessage } from './store';
+import { paramsVideoId, AuthorType, paramsPopout, paramsTabId, paramsFrameId } from './constants';
 import * as MCHAD from './mchad.js';
 import * as API from './api.js';
-
 
 /** @type {{ ytcTranslations: Writable<Message>, mod: Writable<Message>, ytc: Writable<Message>, translations: Writable<Message>, mchad: Readable<Message>, api: Readable<Message>, ytcBonks: Writable<any[]>, ytcDeletions:Writable<any[]> }} */
 export const sources = {
@@ -20,7 +25,7 @@ export const sources = {
   mchad: combineStores(MCHAD.getArchive(paramsVideoId), MCHAD.getLiveTranslations(paramsVideoId)).store,
   api: combineStores(API.getArchive(paramsVideoId), API.getLiveTranslations(paramsVideoId)).store,
   ytcBonks: writable(null),
-  ytcDeletions: writable(null),
+  ytcDeletions: writable(null)
 };
 
 /** @type {(msg: Message) => Boolean} */
@@ -40,12 +45,12 @@ const setStoreMessage =
   store => (msg, text) => store.set({ ...msg, text: text ?? msg.text });
 
 /**
- * @param {Writable<Message>} translations 
+ * @param {Writable<Message>} translations
  * @param {Writable<Message>} mod
- * @param {Writable<Message>} ytc 
+ * @param {Writable<Message>} ytc
  * @return {() => void} cleanup
  */
-function attachFilters(translations, mod, ytc) {
+function attachFilters (translations, mod, ytc) {
   const setTranslation = setStoreMessage(translations);
   const setModMessage = setStoreMessage(mod);
 
@@ -56,11 +61,9 @@ function attachFilters(translations, mod, ytc) {
     if (!text) return;
     if (isTranslation(parsed)) {
       setTranslation(replaceFirstTranslation(message), parsed.msg);
-    }
-    else if (isWhitelisted(message)) {
+    } else if (isWhitelisted(message)) {
       setTranslation(message);
-    }
-    else if (showIfMod(message)) {
+    } else if (showIfMod(message)) {
       setModMessage(message);
     }
   });
@@ -68,24 +71,25 @@ function attachFilters(translations, mod, ytc) {
 
 /**
  * @template T
- * @param  {...Writable<T>} stores 
+ * @param  {...Writable<T>} stores
  * @returns {{ store: Writable<T>, cleanUp: VoidFunction}}
  */
-export function combineStores(...stores) {
+export function combineStores (...stores) {
   const combined = writable(null);
   const unsubscribes = stores.map(s => s.subscribe(v => combined.set(v)));
   return {
     store: combined,
-    cleanUp() {
+    cleanUp () {
       unsubscribes.forEach(u => u());
     }
   };
 }
 
 /**
+ * @param {Ytc.ParsedMessage} ytcMessage
  * @returns {Message}
  */
-function ytcToMsg(ytcMessage) {
+function ytcToMsg (ytcMessage) {
   const text = ytcMessage.message
     .filter(item => item.type === 'text' || item.type === 'link')
     .map(item => item.text)
@@ -103,69 +107,14 @@ function ytcToMsg(ytcMessage) {
   };
 }
 
-/**@param {Window} window */
-export function ytcSource(window) {
+/** @param {Window} window */
+export function ytcSource (window) {
   /** @type {Writable<Message>} */
   const ytc = writable(null);
-  const lessMsg = (m1, m2) => m1.showtime - m2.showtime;
-  const queued = new Queue();
-  let interval = null;
-  let firstChunkReceived = false;
-
-  const progress = { previous: null };
   const newMessage = compose(ytc.set, ytcToMsg);
-  const cleanUp = () => clearInterval(interval);
 
-  const isPollingProgress = () => !!interval;
-
-  const pushQueuedToStore = condition => {
-    while (queued.top != null && condition(queued)) {
-      newMessage(queued.pop().data.message);
-    }
-  };
-
-  const pushAllQueuedToStore = () => pushQueuedToStore(() => true);
-  const pushUpToCurrentToStore = (currentTime) =>
-    pushQueuedToStore(q => q.top.data.timestamp <= currentTime);
-
-  const scrubbedOrSkipped = (time) =>
-    time == null || Math.abs(progress.previous - time) > 1;
-
-  const videoProgressUpdated = (time) => {
-    if (time < 0) return;
-    if (scrubbedOrSkipped(time)) {
-      pushAllQueuedToStore();
-    } else {
-      pushUpToCurrentToStore(time);
-    }
-    progress.previous = time;
-    timestamp.set(time);
-  };
-
-  const updateVideoProgressBeforeMessages = data => {
-    if (!isPollingProgress() && firstChunkReceived) {
-      videoProgressUpdated(data);
-    }
-  };
-
-  const runQueue = compose(videoProgressUpdated, x => x / 1000, Date.now);
-
-  const startVideoProgressUpdatePolling = () => {
-    interval = setInterval(runQueue, 250);
-    runQueue();
-  };
-
-  const extractToMsg = (message) => ({
-    timestamp: message.showtime / 1000,
-    message
-  });
-
-  const pushMessagesToQueue = (messages) => messages
-    .sort(lessMsg)
-    .map(extractToMsg)
-    .forEach(item => queued.push(item));
-
-  /** Connect to background messaging as client */
+  /* Connect to background messaging as client */
+  /** @type {Chat.Port} */
   const port = chrome.runtime.connect();
   let portRegistered = false;
   const registerClient = (frameInfo) => {
@@ -192,32 +141,24 @@ export function ytcSource(window) {
     }
   });
 
-  const filterDeleted = (message, bonks, deletions) => {
-    return !(bonks.some((b) => b.authorId === message.author.id) ||
-      deletions.some((d) => d.messageId === message.messageId));
-  };
-
-  port.onMessage.addListener((payload) => {
-    if (payload.type === 'actionChunk') {
-      firstChunkReceived = true;
-      const messages = payload.messages.filter(
-        (m) => filterDeleted(m, payload.bonks, payload.deletions)
-      );
-      sources.ytcBonks.set(payload.bonks);
-      sources.ytcDeletions.set(payload.deletions);
-      pushMessagesToQueue(messages);
-      if (!isPollingProgress() && !payload.isReplay) {
-        startVideoProgressUpdatePolling();
-      }
-    } else if (payload.type === 'playerProgress') {
-      updateVideoProgressBeforeMessages(payload.playerProgress);
+  port.onMessage.addListener((response) => {
+    switch (response.type) {
+      case 'message':
+        newMessage(response.message);
+        break;
+      case 'bonk': // TODO: No need to use arrays anymore
+        sources.ytcBonks.set([response.bonk]);
+        break;
+      case 'delete':
+        sources.ytcDeletions.set([response.deletion]);
+        break;
     }
   });
 
-  return { ytc, cleanUp };
+  return { ytc, cleanUp: () => port.disconnect() };
 }
 
-function message(author, msg, timestamp) {
+function message (author, msg, timestamp) {
   const showtime = timestamp
     .split(':')
     .map(e => parseInt(e))
@@ -235,7 +176,7 @@ sources.translations = combineStores(
 ).store;
 
 export class DummyYTCEventSource {
-  constructor() {
+  constructor () {
     this.subs = [];
     this.events = [
       { event: 'infoDelivery', info: { currentTime: 0 } },
@@ -263,7 +204,7 @@ export class DummyYTCEventSource {
     ];
   }
 
-  async start() {
+  async start () {
     for (const data of this.events) {
       for (const sub of this.subs) {
         await sub({ data });
@@ -271,7 +212,7 @@ export class DummyYTCEventSource {
     }
   }
 
-  addEventListener(_eventType, cb) {
+  addEventListener (_eventType, cb) {
     this.subs.push(cb);
   }
 }
