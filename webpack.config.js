@@ -265,8 +265,8 @@ module.exports = (env, options) => {
         events: {
           onEnd: {
             delete: [
-              './build/hyperchat/hyperchat.bundle.js',
-              './build/hyperchat/hyperchat.css'
+              './build/hyperchat/hyperchat.bundle.js'
+              // './build/hyperchat/hyperchat.css'
             ],
             move: [
               {
@@ -342,8 +342,13 @@ module.exports = (env, options) => {
     config.devtool = 'eval-cheap-module-source-map';
     config.plugins.push(new webpack.HotModuleReplacementPlugin());
     config.devServer = {
-      host: 'http://localhost:3000/',
-      disableHostCheck: true
+      host: 'localhost',
+      port: 3000,
+      disableHostCheck: true,
+      hot: true,
+      contentBase: path.join(__dirname, '../build'),
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      writeToDisk: true // write-file-webpack-plugin no longer needed
     };
   }
 

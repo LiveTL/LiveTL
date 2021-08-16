@@ -8,7 +8,7 @@
     "build-prod": "webpack --mode production",
     "build-android": "webpack --mode production --env android",
     "package": "node utils/package.js",
-    "start": "node utils/webserver.js",
+    "start": "webpack serve",
     "ss": "node utils/screenshot.js",
     "update:list": "node utils/genlist.js",
     "type:check": "tsc -p jsconfig.json",
