@@ -43,7 +43,7 @@
     "eslint-plugin-import": "2",
     "eslint-plugin-node": "11",
     "eslint-plugin-promise": "4",
-    "eslint-plugin-svelte3": "^3.1.2",
+    "eslint-plugin-svelte3": "^3.2.0",
     "file-loader": "6.2.0",
     "filemanager-webpack-plugin": "^6.1.4",
     "fs-extra": "7.0.1",
