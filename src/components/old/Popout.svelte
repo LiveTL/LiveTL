@@ -13,10 +13,6 @@
   import Updates from './Updates.svelte';
   import { displayedMessages } from '../js/sources-aggregate.js';
   import { saveAs } from 'file-saver';
-  import dark from 'smelte/src/dark';
-
-  dark().set(true);
-
   let settingsOpen = false;
   $videoTitle = paramsVideoTitle || $videoTitle;
   $: document.title = $videoTitle || 'LiveTL Popout';

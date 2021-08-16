@@ -20,7 +20,7 @@
   import { ChatSplit, TextDirection, VideoSide, DisplayMode } from '../../js/constants.js';
   import EnumOption from '../options/Radio.svelte';
   import FontDemo from '../FontDemo.svelte';
-  import ImportExport from '../ImportExport.svelte';
+  import ImportExport from './ImportExport.svelte';
   import Slider from '../common/SliderStore.svelte';
   import Checkbox from '../common/CheckboxStore.svelte';
 </script>
