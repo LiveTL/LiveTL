@@ -1,19 +1,20 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const smelteTailwind = require('smelte/tailwind.config.js');
 
-const defaultSmelteConfig = smelteTailwind({});
+const colors = {
+  primary: '#2196F3',
+  secondary: '#03A9F4',
+  error: '#f44336',
+  success: '#4caf50',
+  alert: '#ff9800',
+  blue: '#2196f3',
+  dark: '#212121'
+};
+
+const defaultSmelteConfig = smelteTailwind({ colors });
 
 const smelteConfig = {
-  // Uncomment to override smelte default colors
-  // colors: {
-  //   primary: '#b027b0',
-  //   secondary: '#009688',
-  //   error: '#f44336',
-  //   success: '#4caf50',
-  //   alert: '#ff9800',
-  //   blue: '#2196f3',
-  //   dark: '#212121'
-  // },
+  colors,
   darkMode: true,
   config: {
     ...defaultSmelteConfig,

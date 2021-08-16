@@ -5,7 +5,7 @@
   import UISettings from './settings/UISettings.svelte';
   import FilterSettings from './settings/FilterSettings.svelte';
   import TranslatorMode from './settings/TranslatorMode.svelte';
-  import About from './About.svelte';
+  import About from './settings/About.svelte';
   import { isResizing } from '../js/store.js';
 
   const settings = [

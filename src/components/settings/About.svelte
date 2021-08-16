@@ -1,7 +1,7 @@
 <script>
   import { ExpansionPanel, ExpansionPanels } from 'svelte-materialify/src';
-  import opencollective from '../plugins/opencollective.json';
-  import gh from '../plugins/gh.json';
+  import opencollective from '../../plugins/opencollective.json';
+  import gh from '../../plugins/gh.json';
 
   const compareAttr = attr => (a, b) => a[attr] - b[attr];
   const reverseCompare = cmp => (a, b) => -cmp(a, b);

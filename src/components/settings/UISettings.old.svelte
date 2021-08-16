@@ -19,17 +19,17 @@
   } from '../../js/store.js';
   import { ChatSplit, TextDirection, VideoSide, DisplayMode } from '../../js/constants.js';
   import CheckOption from '../options/Toggle.svelte';
+  import SliderOption from '../options/Slider.svelte';
   import EnumOption from '../options/Radio.svelte';
   import FontDemo from '../FontDemo.svelte';
   import ImportExport from '../ImportExport.svelte';
-  import Slider from '../common/SliderStore.svelte';
 </script>
 
 <ImportExport />
 <!-- {#if !isStandalone} -->
-<Slider name="Chat zoom" store={chatZoom} min={0.5} max={2} step={0.1} />
+<SliderOption name="Chat zoom" store={chatZoom} />
 <!-- {/if} -->
-<Slider name="Font size" store={livetlFontSize} min={9} max={54} />
+<SliderOption name="Font size" store={livetlFontSize} min={9} max={54} thumb />
 <FontDemo fontSize={$livetlFontSize} />
 <div>
   <EnumOption
@@ -60,22 +60,24 @@
 {#if $displayMode === DisplayMode.FULLPAGE}
   <CheckOption name="Show captions" store={showCaption} />
   {#if $showCaption}
-    <Slider
+    <SliderOption
       name="Caption font size"
       store={captionFontSize}
       min={9}
       max={54}
+      thumb
     />
     <CheckOption
       name="Make captions disappear when inactive"
       store={enableCaptionTimeout}
     />
     {#if $enableCaptionTimeout}
-      <Slider
+      <SliderOption
         name="Disappear after (seconds)"
         store={captionDuration}
         min={1}
         max={61}
+        thumb
       />
     {/if}
   {/if}
@@ -83,7 +85,7 @@
 <!-- {/if} -->
 <CheckOption name="Read-aloud mode" store={doSpeechSynth} />
 {#if $doSpeechSynth}
-  <Slider name="Speech volume" store={speechVolume} min={0} max={1} step={0.01} />
+  <SliderOption name="Speech volume" store={speechVolume} min={0} max={1} />
 {/if}
 <CheckOption
   name="Show screenshot and download buttons"
