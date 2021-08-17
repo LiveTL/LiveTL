@@ -5,6 +5,7 @@
   import '../plugins/jquery.ui.touch-punch';
   import VideoEmbed from './VideoEmbed.svelte';
   import Wrapper from './Wrapper.svelte';
+  import { MaterialApp } from 'svelte-materialify/src';
   import {
     videoSide,
     videoPanelSize,
@@ -66,7 +67,7 @@
     document.querySelectorAll('#mainUI .ui-resizable-handle').forEach(elem => {
       elem.remove();
     });
-    
+
     resizable(isRightSide ? chatSideElem : vidElem, {
       handles: isTopSide ? 's' : 'e',
       start: resizeCallback,
@@ -106,58 +107,60 @@
 </script>
 
 <div class="watch-wrapper">
-  {#if isFullPage && $showCaption}
-    <Captions />
-  {/if}
-  <div
-    id="mainUI"
-    class="flex"
-    class:horizontal={isTopSide}
-    class:vertical={!isTopSide}
-    class:reversed={isRightSide}
-  >
-    {#if isFullPage}
-      <div
-        class="tile resizable"
-        style={videoContainerStyle}
-        bind:this={vidElem}
-      >
-        <Wrapper>
-          <VideoEmbed videoId={paramsVideoId} />
-        </Wrapper>
-      </div>
+  <MaterialApp theme="dark">
+    {#if isFullPage && $showCaption}
+      <Captions />
     {/if}
     <div
-      class="tile autoscale"
-      bind:this={chatSideElem}
-      style={isTopSide ? 'min-width: 100% !important;' : ''}
+      id="mainUI"
+      class="flex"
+      class:horizontal={isTopSide}
+      class:vertical={!isTopSide}
+      class:reversed={isRightSide}
     >
-      <div
-        class="flex {isChatVertical ? 'vertical' : 'horizontal'}"
-        style={chatElemParentStyle}
-      >
+      {#if isFullPage}
         <div
           class="tile resizable"
-          style={chatElemStyle}
-          bind:this={chatElem}
+          style={videoContainerStyle}
+          bind:this={vidElem}
         >
-          <Wrapper
-            zoom={$chatZoom}
-            style={chatWrapperStyle}
-          >
-            <ChatEmbed
-              videoId={paramsVideoId}
-              continuation={paramsContinuation}
-              isReplay={paramsIsVOD}
-            />
+          <Wrapper>
+            <VideoEmbed videoId={paramsVideoId} />
           </Wrapper>
         </div>
-        <div class="tile autoscale" bind:this={ltlElem}>
-          <Popout />
+      {/if}
+      <div
+        class="tile autoscale"
+        bind:this={chatSideElem}
+        style={isTopSide ? 'min-width: 100% !important;' : ''}
+      >
+        <div
+          class="flex {isChatVertical ? 'vertical' : 'horizontal'}"
+          style={chatElemParentStyle}
+        >
+          <div
+            class="tile resizable"
+            style={chatElemStyle}
+            bind:this={chatElem}
+          >
+            <Wrapper
+              zoom={$chatZoom}
+              style={chatWrapperStyle}
+            >
+              <ChatEmbed
+                videoId={paramsVideoId}
+                continuation={paramsContinuation}
+                isReplay={paramsIsVOD}
+              />
+            </Wrapper>
+          </div>
+          <div class="tile autoscale" bind:this={ltlElem}>
+            <Popout />
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </MaterialApp>
 </div>
 
 <style>

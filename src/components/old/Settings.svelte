@@ -1,6 +1,6 @@
 <script>
   import { beforeUpdate, afterUpdate } from 'svelte';
-  import { Icon, Tabs, Tab, TabContent, Tooltip } from 'svelte-materialify/src';
+  import { Icon, Tabs, Tab, TabContent, Tooltip, MaterialApp } from 'svelte-materialify/src';
   import { mdiBrush, mdiChat, mdiFilter, mdiHelp } from '@mdi/js';
   import UISettings from './settings/UISettings.svelte';
   import FilterSettings from './settings/FilterSettings.svelte';
@@ -55,49 +55,51 @@
 
 <svelte:window on:resize={redrawSlider} />
 
-<div
-  style="display: flex; align-items: center; justify-content: center;"
-  bind:this={wrapper}
->
+<MaterialApp theme="dark">
   <div
-    class="settings-container"
-    style="max-width: calc(min(500px, 100%)); width: 100%;"
+    style="display: flex; align-items: center; justify-content: center;"
+    bind:this={wrapper}
   >
-    <Tabs
-      grow
-      fixedTabs
-      class="ltl-settings-tabs"
-      sliderClass="ltl-settings-slider"
+    <div
+      class="settings-container"
+      style="max-width: calc(min(500px, 100%)); width: 100%;"
     >
-      <div slot="tabs">
-        {#each settings as { icon, name }}
-          <Tab>
-            <Tooltip bottom>
-              <div slot="tip">
-                <div style="text-align: center">{name}</div>
-              </div>
-              <div style="width: 100%; height: 100%;">
-                <Icon path={icon} />
-              </div>
-            </Tooltip>
-          </Tab>
-        {/each}
-      </div>
+      <Tabs
+        grow
+        fixedTabs
+        class="ltl-settings-tabs"
+        sliderClass="ltl-settings-slider"
+      >
+        <div slot="tabs">
+          {#each settings as { icon, name }}
+            <Tab>
+              <Tooltip bottom>
+                <div slot="tip">
+                  <div style="text-align: center">{name}</div>
+                </div>
+                <div style="width: 100%; height: 100%;">
+                  <Icon path={icon} />
+                </div>
+              </Tooltip>
+            </Tab>
+          {/each}
+        </div>
 
-      <div>
-        {#each settings as { component }}
-          <TabContent>
-            <div
-              style="font-size: 16px !important; margin: 15px 0px 15px 0px;"
-            >
-              <svelte:component this={component} />
-            </div>
-          </TabContent>
-        {/each}
-      </div>
-    </Tabs>
+        <div>
+          {#each settings as { component }}
+            <TabContent>
+              <div
+                style="font-size: 16px !important; margin: 15px 0px 15px 0px;"
+              >
+                <svelte:component this={component} />
+              </div>
+            </TabContent>
+          {/each}
+        </div>
+      </Tabs>
+    </div>
   </div>
-</div>
+</MaterialApp>
 
 <style>
   :global(label > .option-label) {

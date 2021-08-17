@@ -74,15 +74,15 @@ export const languages = [
 export const languageConversionTable = {};
 export const languageNameCode = {};
 export const languageNameValues = languages.map(lang => ({
-  name: createLangSelectionName(lang), value: lang.lang
+  text: createLangSelectionName(lang), value: lang.lang
 }));
 
 function createLangSelectionName(lang) {
   return `${lang.name} (${lang.lang})`;
 }
 
-languages.forEach(i => languageConversionTable[createLangSelectionName(i)] = i);
-languages.forEach(lang => languageNameCode[lang.lang] = lang);
+languages.forEach(i => (languageConversionTable[createLangSelectionName(i)] = i));
+languages.forEach(lang => (languageNameCode[lang.lang] = lang));
 
 export const MCHAD = 'https://repo.mchatx.org';
 
@@ -109,3 +109,18 @@ export const ytcDeleteValues = new Map([
   [YtcDeleteBehaviour.PLACEHOLDER, 'Show placeholder'],
   [YtcDeleteBehaviour.NOTHING, 'Do nothing']
 ]);
+
+export const showBlockItems = [
+  { text: 'show', value: 'show' },
+  { text: 'block', value: 'block' }
+];
+
+export const plainRegexItems = [
+  { text: 'plain', value: 'plain' },
+  { text: 'regex', value: 'regex' }
+];
+
+export const chatAuthorItems = [
+  { text: 'message', value: 'chat' },
+  { text: 'author', value: 'author' }
+];

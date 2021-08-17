@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
   import {
     showModMessage,
@@ -20,11 +20,11 @@
   import { addFilter, cleanupFilters } from '../../js/filter.js';
   import { languageNameValues, ytcDeleteValues } from '../../js/constants.js';
   import CustomFilter from '../options/CustomFilter.svelte';
-  import SelectOption from '../options/Dropdown.svelte';
   import BlockedUsers from '../BlockedUsers.svelte';
   import Checkbox from '../common/CheckboxStore.svelte';
+  import Dropdown from '../common/DropdownStore.svelte';
 
-  function createNewFilter() {
+  function createNewFilter () {
     cleanupFilters();
     addFilter('chat', 'plain', 'show', '');
   }
@@ -35,7 +35,7 @@
   $: ytcDeleteBehaviour.set(deleteBehaviourGroup);
 </script>
 
-<SelectOption
+<Dropdown
   name="Language filter"
   store={language}
   items={languageNameValues}
@@ -72,6 +72,3 @@
     <CustomFilter {...rule} />
   {/each}
 </div>
-
-<style>
-</style>

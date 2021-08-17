@@ -1,7 +1,7 @@
 <script>
   import { afterUpdate, tick } from 'svelte';
   import { fade, fly } from 'svelte/transition';
-  import { Button, Icon, MaterialApp, TextField, Tooltip } from 'svelte-materialify/src';
+  import { Button, Icon, TextField, Tooltip } from 'svelte-materialify/src';
   import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload, mdiFullscreen } from '@mdi/js';
   import { mdiAccountVoiceOff } from '../js/svg.js';
   import Options from './Options.svelte';
@@ -27,15 +27,15 @@
 
   const updateWrapper = () => [wrapper.isAtBottom(), wrapper.isAtTop(), setTimeout(checkAtRecent)];
 
-  function checkAtRecent() {
+  function checkAtRecent () {
     if (wrapper == null) return;
     isAtRecent =
       ($textDirection === TextDirection.BOTTOM && wrapper.isAtBottom()) ||
       ($textDirection === TextDirection.TOP && wrapper.isAtTop());
   }
 
-  function onMessageDisplayAfterUpdate() {
-    if (isAtRecent && !settingsOpen){
+  function onMessageDisplayAfterUpdate () {
+    if (isAtRecent && !settingsOpen) {
       messageDisplay.scrollToRecent();
     }
   }
@@ -106,13 +106,13 @@
   $: textFilename = `${$videoTitle}.txt`;
   let renderWidthInt = null;
   $: renderWidthInt = parseInt(renderWidth);
-  $: if(screenshotRenderWidth) {
+  $: if (screenshotRenderWidth) {
     screenshotRenderWidth.set(renderWidthInt);
   }
 
 
-  function toggleFullScreen() {
-    if (isAndroid) { 
+  function toggleFullScreen () {
+    if (isAndroid) {
       // @ts-ignore
       window.nativeJavascriptInterface.toggleFullscreen();
       return;
@@ -147,7 +147,7 @@
   <link rel="shortcut icon" href={$faviconURL} type="image/png" />
 </svelte:head>
 
-<MaterialApp theme="dark">
+<div>
   <div>
     <ScreenshotExport bind:renderQueue bind:renderWidth={renderWidthInt} />
   </div>
@@ -271,10 +271,9 @@
     </div>
   </div>
   <Wrapper on:scroll={updateWrapper} bind:this={wrapper}>
-    <div class:d-none={!settingsOpen}>
+    {#if settingsOpen}
       <Options bind:active={settingsOpen} />
-    </div>
-    <div class:d-none={settingsOpen}>
+    {:else}
       <MessageDisplay
         direction={$textDirection}
         bind:this={messageDisplay}
@@ -283,7 +282,7 @@
         bind:selectedItems
         items={$displayedMessages}
       />
-    </div>
+    {/if}
   </Wrapper>
   {#if !($isResizing || settingsOpen)}
     {#if !isAtRecent}
@@ -310,7 +309,7 @@
       </div>
     {/if}
   {/if}
-</MaterialApp>
+</div>
 
 <style>
   .settings-button {

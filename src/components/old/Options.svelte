@@ -1,4 +1,5 @@
 <script>
+  import { MaterialApp } from 'svelte-materialify/src';
   import Settings from './Settings.svelte';
   export let active = false;
 
@@ -12,12 +13,14 @@
   });
 </script>
 
-<div class="wrapper">
-  <div class="app">
-    <Settings bind:active />
+<MaterialApp theme="dark">
+  <div class="wrapper">
+    <div class="app">
+      <Settings bind:active />
+    </div>
+    <slot />
   </div>
-  <slot />
-</div>
+</MaterialApp>
 
 <style>
   .wrapper {

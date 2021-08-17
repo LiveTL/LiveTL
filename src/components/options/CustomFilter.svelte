@@ -1,9 +1,10 @@
-<script>
-  import { Col, Row, TextField } from 'svelte-materialify/src';
+<script lang="ts">
   import { writable } from 'svelte/store';
   import { onMount } from 'svelte';
-  import Dropdown from './Dropdown.svelte';
   import { modifyFilter, deleteFilter } from '../../js/filter.js';
+  import Dropdown from '../common/DropdownStore.svelte';
+  import { showBlockItems, plainRegexItems, chatAuthorItems } from '../../js/constants.js';
+  import { TextField } from 'smelte';
 
   export let rule = '';
   export let showBlock = 'show';
@@ -11,27 +12,20 @@
   export let chatAuthor = 'chat';
   export let id = '';
 
-  let div;
+  let div: HTMLElement;
   let maxRuleLength = 0;
-  let sShowBlock = writable(showBlock);
-  let sPlainReg = writable(plainReg);
-  let sChatAuthor = writable(chatAuthor);
-  const getItems = values => values.map(v => ({ name: v, value: v }));
-  let showBlockItems = getItems(['show', 'block']);
-  let plainRegItems = getItems(['plain', 'regex']);
-  let chatAuthorItems = getItems(['chat', 'author']);
-  const style = `
-    padding-right: 0px;
-  `;
-  $: maxRuleLength = Math.max(maxRuleLength, rule.length);
-  $: $sShowBlock,
-  $sPlainReg,
-  $sChatAuthor,
-  rule,
-  (() => {
-    modifyFilter(id, $sChatAuthor, $sPlainReg, $sShowBlock, rule);
+  const sShowBlock = writable(showBlock);
+  const sPlainReg = writable(plainReg);
+  const sChatAuthor = writable(chatAuthor);
+
+  const updateFilter = (showBlock: string, plainRegex: string, chatAuthor: string, rule: string) => {
+    modifyFilter(id, chatAuthor, plainRegex, showBlock, rule);
     if (!rule && maxRuleLength) deleteFilter(id);
-  })();
+  };
+
+  $: maxRuleLength = Math.max(maxRuleLength, rule.length);
+  $: updateFilter($sShowBlock, $sPlainReg, $sChatAuthor, rule);
+
   onMount(() => {
     div.scrollIntoView({
       behavior: 'smooth',
@@ -39,59 +33,17 @@
       inline: 'nearest'
     });
   });
-
-  let width = 0;
-  let field;
-  $: if (field) {
-    field.querySelector('input[type=text]').focus();
-  }
 </script>
 
-<div
-  bind:this={div}
-  class="wrap {width <= 350 ? 'vertical' : ''}"
-  bind:clientWidth={width}
->
-  <Row>
-    <Col class="center-top" {style}>
-      <Dropdown store={sShowBlock} items={showBlockItems} />
-    </Col>
-    <Col class="center-top" {style}>
-      <Dropdown store={sPlainReg} items={plainRegItems} />
-    </Col>
-    <Col class="center-top" {style}>
-      <Dropdown store={sChatAuthor} items={chatAuthorItems} />
-    </Col>
-    <Col style={style + 'flex-basis: 100%; margin: 0px 0px 0px 0px;'}>
-      <span bind:this={field}>
-        <TextField dense clearable bind:value={rule} />
-      </span>
-    </Col>
-  </Row>
+<div class="flex flex-col flex-wrap rounded bg-gray-800 p-2" bind:this={div}>
+  <div class="flex flex-row gap-2">
+    <Dropdown dense store={sShowBlock} items={showBlockItems} />
+    <Dropdown dense store={sPlainReg} items={plainRegexItems} />
+    <Dropdown dense store={sChatAuthor} items={chatAuthorItems} />
+  </div>
+  <div class="flex flex-row">
+    <div class="flex-1">
+      <TextField dense bind:value={rule}/>
+    </div>
+  </div>
 </div>
-
-<style>
-  :global(.center-top *) {
-    padding-top: auto;
-    padding-bottom: auto;
-    margin-top: 0px;
-  }
-
-  :global(.center-top) {
-    padding-top: 0px;
-    padding-bottom: 0px;
-  }
-  .wrap {
-    margin-bottom: 12px;
-    background-color: rgba(255, 255, 255, 0.075);
-    padding: 10px;
-    border-radius: 5px;
-  }
-  .wrap :global(.s-row) {
-    padding-right: 12px;
-  }
-  .vertical :global(.s-row:first-of-type) {
-    flex-direction: column;
-    padding-right: 12px;
-  }
-</style>
