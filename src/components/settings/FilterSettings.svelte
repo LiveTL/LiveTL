@@ -4,10 +4,8 @@
     showModMessage,
     language,
     customFilters,
-    channelFilters,
     enableMchadTLs,
     enableAPITLs,
-    mchadUsers,
     ytcDeleteBehaviour
   } from '../../js/store.js';
   import {
@@ -24,7 +22,6 @@
   import CheckOption from '../options/Toggle.svelte';
   import CustomFilter from '../options/CustomFilter.svelte';
   import SelectOption from '../options/Dropdown.svelte';
-  import MultiDropdown from '../options/MultiDropdown.svelte';
   import BlockedUsers from '../BlockedUsers.svelte';
   import SpamProtection from '../SpamProtection.svelte';
 

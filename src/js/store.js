@@ -1,5 +1,6 @@
 import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour, DisplayMode, paramsEmbedded } from './constants.js';
 import { LookupStore, SyncStore } from './storage.js';
+// eslint-disable-next-line no-unused-vars
 import { writable, readable, derived, Readable } from 'svelte/store';
 import { compose } from './utils.js';
 

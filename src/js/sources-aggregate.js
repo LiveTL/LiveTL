@@ -1,5 +1,5 @@
+// eslint-disable-next-line no-unused-vars
 import { readable, derived, Readable } from 'svelte/store';
-import { not } from './utils.js';
 import { combineStores, sources } from './sources.js';
 import { getSpamAuthors, removeDuplicateMessages } from './sources-util.js';
 import { ytcDeleteBehaviour, sessionHidden, spotlightedTranslator } from './store.js';
@@ -103,19 +103,19 @@ const dispDepends = [
 const dispTransform =
   ([$items, $banned, $hidden, $spot, $spamAmt, $spamInt, $whitelisted, $enSpam]) => {
 
-  const attrNotIn = (set, attr) => item => !set.has(item[attr]);
-  const spammers = $enSpam
+    const attrNotIn = (set, attr) => item => !set.has(item[attr]);
+    const spammers = $enSpam
       ? getSpamAuthors($items, $spamAmt, $spamInt).filter(([id]) => !$whitelisted(id))
       : [];
-  const spammerIds = new Set(spammers.map(([id]) => id));
-  spammers.forEach(markSpam);
+    const spammerIds = new Set(spammers.map(([id]) => id));
+    spammers.forEach(markSpam);
 
-  $items = $items
-    ?.filter(attrNotIn($banned, 'authorId'))
-    ?.filter(attrNotIn($hidden, 'messageId'))
-    ?.filter(attrNotIn(spammerIds, 'authorId'))
-    ?.filter($spot ? msg => msg.authorId === $spot : () => true) ?? [];
-  return removeDuplicateMessages($items);
-};
+    $items = $items
+      ?.filter(attrNotIn($banned, 'authorId'))
+      ?.filter(attrNotIn($hidden, 'messageId'))
+      ?.filter(attrNotIn(spammerIds, 'authorId'))
+      ?.filter($spot ? msg => msg.authorId === $spot : () => true) ?? [];
+    return removeDuplicateMessages($items);
+  };
 
 export const displayedMessages = derived(dispDepends, dispTransform);
