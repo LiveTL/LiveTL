@@ -37,6 +37,7 @@
 <Radio
   store={ytcDeleteBehaviour}
   map={ytcDeleteMap}
+  vertical
 />
 <div>
   <h6>External translation sources</h6>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Writable } from 'svelte/store';
-  import { RadioButtonGroup } from 'smelte';
+  import { RadioButtonGroup, RadioButton } from 'smelte';
 
   type RadioItem = { value: string, label: string };
 
@@ -10,6 +10,8 @@
   export let items: RadioItem[] = [];
   /** Map to generate items with. Will overwrite `items` prop. */
   export let map: Map<string, string> | null = null;
+  /** Vertical variant. */
+  export let vertical = false;
 
   const mapToRadioItem = (map: Map<string, string>) => {
     const items = [];
@@ -25,13 +27,20 @@
   $: selected = $store;
   $: store.set(selected);
 
-  const classes = 'flex gap-3 flex-wrap';
-  const buttonClasses = 'cursor-pointer z-0';
+  const classes = `flex ${vertical ? 'flex-col' : 'gap-3 flex-wrap'}`;
+  const buttonClasses = 'inline-flex block items-center cursor-pointer z-0';
 </script>
 
 <RadioButtonGroup
   {classes}
-  {items}
   bind:selected
   {buttonClasses}
-/>
+  {items}
+  let:item
+>
+  <RadioButton
+    bind:selected
+    classes={buttonClasses}
+    {...item}
+  />
+</RadioButtonGroup>
