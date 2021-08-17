@@ -72,7 +72,7 @@ const apiLiveLink = (videoId, lang) =>
   url(`/translations/stream?videoId=${videoId}&languageCode=${lang}`);
 
 /** @type {Readable<String>} */
-const langCode = derived(language, $lang => languageNameCode[$lang.lang].code);
+const langCode = derived(language, $lang => languageNameCode[$lang].code);
 
 /** @type {(videoId: String) => Readable<String>} */
 const apiArchiveLink = videoId => derived(
