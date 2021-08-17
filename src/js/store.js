@@ -28,6 +28,8 @@ const sampleFilter = {
   id: ''
 };
 
+const sampleSpam = { author: '', authorId: '', spam: false };
+
 // Settings
 export const
   language = SS('language', 'English'),
@@ -74,7 +76,11 @@ export const
   autoPrefixTag = SS('autoPrefixTag', '[$filterLang]'),
   macroTrigger = SS('macroTrigger', '/'),
   ytcDeleteBehaviour = SS('ytcDeleteBehaviour', YtcDeleteBehaviour.HIDE),
-  autoVertical = SS('autoVertical', true);
+  autoVertical = SS('autoVertical', true),
+  enableSpamProtection = SS('enableSpamProtection', true),
+  spamMsgAmount = SS('spamMsgAmount', 5),
+  spamMsgInterval = SS('spamMsgInterval', 10),
+  spammersDetected = LS('spammersDetected', [sampleSpam].slice(1));
 
 // Non-persistant stores
 

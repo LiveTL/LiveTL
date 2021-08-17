@@ -13,9 +13,9 @@
   Blocked Users
 </Subheader>
 
-<Row>
+<Row class="flex-dropdown-row">
   {#if !somethingActive || ytcActive}
-    <Col style="padding-top:0px;">
+    <Col style="margin-right: var(--blocked-button-padding);">
       <MultiDropdown
         name="YouTube chat"
         store={channelFilters}
@@ -28,7 +28,7 @@
     </Col>
   {/if}
   {#if $enableMchadTLs && (!somethingActive || mchadActive)}
-    <Col style="padding-top:0px">
+    <Col style="margin-left: var(--blocked-button-padding);">
       <MultiDropdown
         name="MChad"
         store={mchadUsers}
@@ -37,3 +37,16 @@
     </Col>
   {/if}
 </Row>
+
+
+<style>
+  :global(.flex-dropdown-row) {
+    max-width: 100%;
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+  }
+  :global(.flex-dropdown-row .s-col) {
+    padding: 0px !important;
+    --blocked-button-padding: 5px;
+  }
+</style>

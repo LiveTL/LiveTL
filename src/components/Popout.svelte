@@ -361,4 +361,7 @@
     vertical-align: top !important;
     margin-left: 5px;
   }
+  :global(.dropdown .s-text-field__wrapper, .s-select .s-text-field__wrapper) {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
 </style>
