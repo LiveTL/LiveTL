@@ -2,9 +2,9 @@
 import { derived, get, readable, Readable } from 'svelte/store';
 // eslint-disable-next-line no-unused-vars
 import { APITranslation, Message, ScriptMessage } from './types.js';
-import { AuthorType, paramsIsVOD } from './constants.js';
+import { AuthorType, paramsIsVOD, languageNameCode } from './constants.js';
 import { formatTimestampMillis, sortBy, toJson } from './utils.js';
-import { enableAPITLs, timestamp } from './store.js';
+import { enableAPITLs, language, timestamp } from './store.js';
 import ReconnectingEventSource from 'reconnecting-eventsource';
 
 export const sseToStream = link => readable(null, set => {
@@ -67,8 +67,9 @@ const authorName = (() => {
   return lookup.get.bind(lookup);
 })();
 
-/** @type {(videoId: String) => String} */
-const apiLiveLink = videoId => url(`/translations/stream?videoId=${videoId}&languageCode=en`);
+/** @type {(videoId: String, lang: String) => String} */
+const apiLiveLink = (videoId, lang) =>
+  url(`/translations/stream?videoId=${videoId}&languageCode=${lang}`);
 
 /** @type {(videoId: String) => String} */
 const apiArchiveLink = videoId => url(`/translations/${videoId}/en`);
@@ -96,9 +97,17 @@ export const getArchive = videoId => readable(null, async set => {
   });
 });
 
+/** @type {(videoId: String) => Readable<APITranslation>} */
+const apiLiveStream = videoId => derived(
+  language,
+  $lang => sseToStream(apiLiveLink(videoId, languageNameCode[$lang].code))
+);
+
 /** @type {(videoId: String) => Readable<Message>} */
-export const getLiveTranslations = videoId => derived(sseToStream(apiLiveLink(videoId)), $data => {
-  if ($data?.VideoId !== videoId || !enableAPITLs.get()) return;
-  if ($data?.Start / 1000 < window.player.getDuration() - 10) return; // if the timestamp of the translation is more than 10 seconds of the timestamp of the player, ignore it
-  return transformApiTl($data);
+export const getLiveTranslations = videoId => derived(apiLiveStream(videoId), ($stream, set) => {
+  return $stream.subscribe($data => {
+    if ($data?.VideoId !== videoId || !enableAPITLs.get()) return;
+    if ($data?.Start / 1000 < window.player.getDuration() - 10) return; // if the timestamp of the translation is more than 10 seconds of the timestamp of the player, ignore it
+    set(transformApiTl($data));
+  });
 });
