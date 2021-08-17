@@ -4,7 +4,7 @@
   import { modifyFilter, deleteFilter } from '../../js/filter.js';
   import Dropdown from '../common/DropdownStore.svelte';
   import { showBlockItems, plainRegexItems, chatAuthorItems } from '../../js/constants.js';
-  import { TextField } from 'smelte';
+  import TextField from '../common/TextField.svelte';
 
   export let rule = '';
   export let showBlock = 'show';
@@ -35,7 +35,7 @@
   });
 </script>
 
-<div class="flex flex-col flex-wrap rounded bg-gray-800 p-2" bind:this={div}>
+<div class="flex flex-col flex-wrap rounded bg-gray-800 p-2 gap-2" bind:this={div}>
   <div class="flex flex-row gap-2">
     <Dropdown dense store={sShowBlock} items={showBlockItems} />
     <Dropdown dense store={sPlainReg} items={plainRegexItems} />

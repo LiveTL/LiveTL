@@ -4,7 +4,7 @@
   // eslint-disable-next-line no-undef
   type T = $$Generic;
 
-  export let value: T | undefined;
+  export let value: T | null = null;
   export let group: T[] = [];
   export let label = '';
   export let disabled = false;

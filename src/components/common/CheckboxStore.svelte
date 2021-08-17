@@ -4,9 +4,10 @@
 
   export let name = '';
   export let store: Writable<boolean>;
+  export let disabled = false;
 
   $: value = $store;
   $: store.set(value);
 </script>
 
-<Checkbox bind:checked={value} label={name} />
+<Checkbox bind:checked={value} label={name} {disabled} />

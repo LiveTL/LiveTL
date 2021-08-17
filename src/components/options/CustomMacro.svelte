@@ -1,45 +1,45 @@
 <script>
-  import { Button, Icon, Row, Col, TextField } from 'svelte-materialify/src';
   import { mdiDelete } from '@mdi/js';
   import { macros } from '../../js/store.js';
   import Checkbox from '../common/Checkbox.svelte';
+  import SvgButton from '../../submodules/chat/src/components/common/SvgButton.svelte';
+  import TextField from '../common/TextField.svelte';
 
   export let name;
   export let expansion;
   export let enabled;
   export let id;
 
-  let field;
-
   const saveValues = newMacro => {
-    $macros = $macros.map((m, i) => i == id ? newMacro : m);
+    $macros = $macros.map((m, i) => i === id ? newMacro : m);
   };
 
   const deleteMacro = () => {
-    $macros = $macros.filter((_, i) => i != id);
+    $macros = $macros.filter((_, i) => i !== id);
   };
 
   $: saveValues({ name, expansion, enabled });
-  $: if (field) {
-    field.querySelector('input[type=text]').focus();
-  }
 </script>
 
-<Row>
-  <Col>
-    <span bind:this={field}>
-      <TextField dense bind:value={name}>Name</TextField>
-    </span>
-  </Col>
-  <Col>
-    <TextField dense bind:value={expansion}>Expansion</TextField>
-  </Col>
-  <div class="flex items-center">
-    <Checkbox bind:checked={enabled} />
-    <div style="height: 100%; display: flex; align-items: center; padding-right: 5px;">
-      <Button icon class="red-text" on:click={deleteMacro}>
-        <Icon path={mdiDelete} />
-      </Button>
-    </div>
+<div class="flex flex-row items-center gap-2 my-2">
+  <div>
+    <TextField bind:value={name} placeholder="Name" dense />
   </div>
-</Row>
+  <div>
+    <TextField bind:value={expansion} placeholder="Expansion" dense />
+  </div>
+  <div class="flex-initial">
+    <Checkbox bind:checked={enabled} />
+  </div>
+  <div class="flex-initial">
+    <SvgButton
+      path={mdiDelete}
+      transparent
+      xPadding='1'
+      yPadding='0'
+      color='error'
+      on:click={deleteMacro}
+      size='24px'
+    />
+  </div>
+</div>

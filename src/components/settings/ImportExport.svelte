@@ -2,9 +2,10 @@
   import { mdiCheck, mdiClipboardOutline } from '@mdi/js';
   import { importStores, exportStores } from '../../js/storage.js';
   import { compose } from '../../js/utils.js';
-  import { Button, TextField } from 'smelte';
+  import { Button } from 'smelte';
   import Dialog from '../common/Dialog.svelte';
   import SvgButton from '../../submodules/chat/src/components/common/SvgButton.svelte';
+  import TextField from '../common/TextField.svelte';
 
   let isImporting = false;
   let value = '';

@@ -35,12 +35,15 @@ module.exports = {
       'error',
       'unix'
     ],
-    semi: [
+    semi: 'off',
+    '@typescript-eslint/semi': [
       'error',
       'always'
     ],
-    'no-extra-semi': 'error',
-    'no-unused-vars': [
+    'no-extra-semi': 'off',
+    '@typescript-eslint/no-extra-semi': 'error',
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': [
       'error',
       {
         varsIgnorePattern: '^_',

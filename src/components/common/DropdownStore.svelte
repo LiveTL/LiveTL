@@ -1,8 +1,7 @@
 <script lang="ts">
   import type { Writable } from 'svelte/store';
   import { Select } from 'smelte';
-  // NOTE: styles are fucked cause MaterialApp from svelte-materialify
-  
+
   type DropdownItem = ({value:string, text: string}|string);
 
   export let name = '';
