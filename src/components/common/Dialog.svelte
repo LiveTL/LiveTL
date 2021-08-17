@@ -1,8 +1,11 @@
 <script lang="ts">
   import { Dialog } from 'smelte';
 
+  /** Dialog title. */
   export let title = '';
+  /** Whether dialog is shown. */
   export let value = false;
+  /** Expanded width variant. */
   export let expandWidth = false;
 </script>
 

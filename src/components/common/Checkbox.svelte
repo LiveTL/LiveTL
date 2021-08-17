@@ -4,11 +4,17 @@
   // eslint-disable-next-line no-undef
   type T = $$Generic;
 
+  /** Value of checkbox. See `group` prop. */
   export let value: T | null = null;
+  /** For use with `bind:group`. Adds/Removes `value` prop in the bound array when checked state changes. */
   export let group: T[] = [];
+  /** Checkbox label. */
   export let label = '';
+  /** Checkbox disabed state. */
   export let disabled = false;
+  /** Checkbox checked state. */
   export let checked = false;
+  /** Classes of the internal Checkbox parent div. */
   export let wrapperClass = '';
 
   $: if (value != null) {

@@ -35,8 +35,8 @@
     <SvgButton
       path={mdiDelete}
       transparent
-      xPadding='1'
-      yPadding='0'
+      px='1'
+      py='0'
       color='error'
       on:click={deleteMacro}
       size='24px'

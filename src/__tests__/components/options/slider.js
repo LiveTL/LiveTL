@@ -7,7 +7,7 @@ import userEvent from '@testing-library/user-event';
 
 // eslint-disable-next-line no-unused-vars
 import { get, writable } from 'svelte/store';
-import Slider from '../../../components/options/Slider.svelte';
+import Slider from '../../../components/old/Slider.svelte';
 
 describe('slider', () => {
   it('displays title', () => {

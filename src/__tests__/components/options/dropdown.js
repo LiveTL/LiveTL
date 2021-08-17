@@ -4,7 +4,7 @@ import '@testing-library/jest-dom/extend-expect';
 import { render, fireEvent } from '@testing-library/svelte';
 
 import { get, writable } from 'svelte/store';
-import Dropdown from '../../../components/options/Dropdown.svelte';
+import Dropdown from '../../../components/old/Dropdown.svelte';
 
 
 describe('Dropdown', () => {

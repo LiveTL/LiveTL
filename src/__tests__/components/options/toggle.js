@@ -4,7 +4,7 @@ import '@testing-library/jest-dom/extend-expect';
 import { render, fireEvent } from '@testing-library/svelte';
 
 import { get, writable } from 'svelte/store';
-import Toggle from '../../../components/options/Toggle.svelte';
+import Toggle from '../../../components/old/Toggle.svelte';
 
 
 describe('Toggle', () => {

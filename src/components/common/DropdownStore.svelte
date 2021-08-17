@@ -4,9 +4,13 @@
 
   type DropdownItem = ({value:string, text: string}|string);
 
+  /** Dropdown label. */
   export let name = '';
+  /** Writable store for value updates. */
   export let store: Writable<string>;
+  /** Dropdown items. */
   export let items: DropdownItem[] = [];
+  /** Dense variant. */
   export let dense = false;
 
   $: value = $store;
