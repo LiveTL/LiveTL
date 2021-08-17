@@ -9,17 +9,33 @@ export const VideoSide = {
   TOP: 'TOP'
 };
 
+export const videoSideMap = new Map([
+  [VideoSide.LEFT, 'Left'],
+  [VideoSide.RIGHT, 'Right'],
+  [VideoSide.TOP, 'Top']
+]);
+
 /** @enum {String} */
 export const ChatSplit = {
   HORIZONTAL: 'HORIZONTAL',
   VERTICAL: 'VERTICAL'
 };
 
+export const chatSplitMap = new Map([
+  [ChatSplit.HORIZONTAL, 'Vertical'],
+  [ChatSplit.VERTICAL, 'Horizontal']
+]);
+
 /** @enum {String} */
 export const TextDirection = {
   TOP: 'TOP',
   BOTTOM: 'BOTTOM'
 };
+
+export const textDirectionMap = new Map([
+  [TextDirection.TOP, 'Top'],
+  [TextDirection.BOTTOM, 'Bottom']
+]);
 
 /** @enum {String} */
 export const DisplayMode = {
@@ -77,7 +93,7 @@ export const languageNameValues = languages.map(lang => ({
   text: createLangSelectionName(lang), value: lang.lang
 }));
 
-function createLangSelectionName(lang) {
+function createLangSelectionName (lang) {
   return `${lang.name} (${lang.lang})`;
 }
 
@@ -104,7 +120,7 @@ export const YtcDeleteBehaviour = {
   NOTHING: 'NOTHING'
 };
 
-export const ytcDeleteValues = new Map([
+export const ytcDeleteMap = new Map([
   [YtcDeleteBehaviour.HIDE, 'Hide message'],
   [YtcDeleteBehaviour.PLACEHOLDER, 'Show placeholder'],
   [YtcDeleteBehaviour.NOTHING, 'Do nothing']

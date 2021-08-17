@@ -4,7 +4,7 @@ import { render, fireEvent } from '@testing-library/svelte';
 
 import { get, writable } from 'svelte/store';
 
-import Radio from '../../../components/options/Radio.svelte';
+import Radio from '../../../components/old/Radio.svelte';
 
 describe('Radio', () => {
   const name = 'Test option';

@@ -8,21 +8,15 @@
     enableAPITLs,
     ytcDeleteBehaviour
   } from '../../js/store.js';
-  import {
-    Row,
-    Col,
-    Button,
-    Icon,
-    Radio,
-    Subheader
-  } from 'svelte-materialify/src';
   import { mdiPlus } from '@mdi/js';
   import { addFilter, cleanupFilters } from '../../js/filter.js';
-  import { languageNameValues, ytcDeleteValues } from '../../js/constants.js';
+  import { languageNameValues, ytcDeleteMap } from '../../js/constants.js';
   import CustomFilter from '../options/CustomFilter.svelte';
   import BlockedUsers from '../BlockedUsers.svelte';
   import Checkbox from '../common/CheckboxStore.svelte';
   import Dropdown from '../common/DropdownStore.svelte';
+  import Radio from '../common/RadioGroupStore.svelte';
+  import SvgButton from '../../submodules/chat/src/components/common/SvgButton.svelte';
 
   function createNewFilter () {
     cleanupFilters();
@@ -30,9 +24,6 @@
   }
 
   onMount(cleanupFilters);
-
-  $: deleteBehaviourGroup = $ytcDeleteBehaviour;
-  $: ytcDeleteBehaviour.set(deleteBehaviourGroup);
 </script>
 
 <Dropdown
@@ -42,32 +33,27 @@
 />
 <Checkbox name="Show moderator messages" store={showModMessage} />
 <BlockedUsers />
-<Subheader>When messages are deleted by moderators:</Subheader>
-{#each [...ytcDeleteValues.keys()] as key}
-  <Radio bind:group={deleteBehaviourGroup} value={key} style='padding-bottom: 5px;' color='blue'>
-    {ytcDeleteValues.get(key)}
-  </Radio>
-{/each}
-<Row>
-  <Col>
-    <Subheader>External translation sources</Subheader>
-    <Checkbox name="LiveTL API" store={enableAPITLs} />
-    <Checkbox name="MChad (volunteer translators)" store={enableMchadTLs} />
-  </Col>
-</Row>
-<div class="filter-options">
-  <Row>
-    <Col>
-      <Subheader>Custom filters</Subheader>
-    </Col>
-    <Col style="padding-right: 2px;">
-      <Subheader style="float: right; padding-right: 0px">
-        <Button icon on:click={createNewFilter}>
-          <Icon path={mdiPlus} />
-        </Button>
-      </Subheader>
-    </Col>
-  </Row>
+<h6>When messages are deleted by moderators:</h6>
+<Radio
+  store={ytcDeleteBehaviour}
+  map={ytcDeleteMap}
+/>
+<div>
+  <h6>External translation sources</h6>
+  <Checkbox name="LiveTL API" store={enableAPITLs} />
+  <Checkbox name="MChad (volunteer translators)" store={enableMchadTLs} />
+</div>
+<div class="p-2 rounded bg-gray-800">
+  <div class="flex flex-row items-center">
+    <h6 class="flex-1 pl-2">Custom filters</h6>
+    <SvgButton
+      transparent
+      path={mdiPlus}
+      on:click={createNewFilter}
+      color="white"
+      add="flex-none self-end"
+    />
+  </div>
   {#each $customFilters as rule, i}
     <CustomFilter {...rule} />
   {/each}

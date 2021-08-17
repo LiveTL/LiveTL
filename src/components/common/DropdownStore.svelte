@@ -2,7 +2,7 @@
   import type { Writable } from 'svelte/store';
   import { Select } from 'smelte';
 
-  type DropdownItem = ({value:string, text: string}|string);
+  type DropdownItem = { value: string, text: string } | string;
 
   /** Dropdown label. */
   export let name = '';

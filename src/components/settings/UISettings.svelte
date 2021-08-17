@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import {
     captionDuration,
     captionFontSize,
@@ -17,12 +17,17 @@
     autoVertical,
     displayMode
   } from '../../js/store.js';
-  import { ChatSplit, TextDirection, VideoSide, DisplayMode } from '../../js/constants.js';
-  import EnumOption from '../options/Radio.svelte';
+  import {
+    DisplayMode,
+    textDirectionMap,
+    videoSideMap,
+    chatSplitMap
+  } from '../../js/constants.js';
   import FontDemo from './FontDemo.svelte';
   import ImportExport from './ImportExport.svelte';
   import Slider from '../common/SliderStore.svelte';
   import Checkbox from '../common/CheckboxStore.svelte';
+  import Radio from '../common/RadioGroupStore.svelte';
 </script>
 
 <ImportExport />
@@ -32,30 +37,32 @@
 <Slider name="Font size" store={livetlFontSize} min={9} max={54} />
 <FontDemo fontSize={$livetlFontSize} />
 <div>
-  <EnumOption
-    name="Text direction:"
-    options={Object.keys(TextDirection)}
+  <h6>Text direction:</h6>
+  <Radio
     store={textDirection}
+    map={textDirectionMap}
   />
-  {#if $displayMode === DisplayMode.FULLPAGE}
-    <EnumOption
-      name="Video side:"
-      options={Object.keys(VideoSide)}
-      store={videoSideSetting}
-    />
-    <div style="margin-bottom: 10px;">
-      <Checkbox
-        name="Enter vertical mode when window is thin"
-        store={autoVertical}
-      />
-    </div>
-    <EnumOption
-      name="Chat split:"
-      options={Object.keys(ChatSplit)}
-      store={chatSplit}
-    />
-  {/if}
 </div>
+{#if $displayMode === DisplayMode.FULLPAGE}
+  <div>
+    <h6>Video side:</h6>
+    <Radio
+      store={videoSideSetting}
+      map={videoSideMap}
+    />
+    <Checkbox
+      name="Enter vertical mode when window is thin"
+      store={autoVertical}
+    />
+  </div>
+  <div>
+    <h6>Chat split:</h6>
+    <Radio
+      store={chatSplit}
+      map={chatSplitMap}
+    />
+  </div>
+{/if}
 <Checkbox name="Show timestamps" store={showTimestamp} />
 {#if $displayMode === DisplayMode.FULLPAGE}
   <Checkbox name="Show captions" store={showCaption} />
