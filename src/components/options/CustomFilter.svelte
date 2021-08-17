@@ -35,7 +35,7 @@
   });
 </script>
 
-<div class="flex flex-col flex-wrap rounded bg-gray-800 gap-2" bind:this={div}>
+<div class="flex flex-col flex-wrap rounded gap-2" bind:this={div}>
   <div class="flex flex-row gap-2">
     <Dropdown dense store={sShowBlock} items={showBlockItems} />
     <Dropdown dense store={sPlainReg} items={plainRegexItems} />

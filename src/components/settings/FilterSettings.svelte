@@ -16,7 +16,7 @@
   import Checkbox from '../common/CheckboxStore.svelte';
   import Dropdown from '../common/DropdownStore.svelte';
   import Radio from '../common/RadioGroupStore.svelte';
-  import SvgButton from '../../submodules/chat/src/components/common/SvgButton.svelte';
+  import Card from '../common/Card.svelte';
 
   function createNewFilter () {
     cleanupFilters();
@@ -44,18 +44,12 @@
   <Checkbox name="LiveTL API" store={enableAPITLs} />
   <Checkbox name="MChad (volunteer translators)" store={enableMchadTLs} />
 </div>
-<div class="p-2 rounded bg-gray-800">
-  <div class="flex flex-row items-center">
-    <h6 class="flex-1 pl-2">Custom filters</h6>
-    <SvgButton
-      transparent
-      path={mdiPlus}
-      on:click={createNewFilter}
-      color="white"
-      add="flex-none self-end"
-    />
-  </div>
-  {#each $customFilters as rule, i}
+<Card
+  title="Custom filters"
+  titleButtonPath={mdiPlus}
+  titleButtonOnClick={createNewFilter}
+>
+  {#each $customFilters as rule}
     <CustomFilter {...rule} />
   {/each}
-</div>
+</Card>

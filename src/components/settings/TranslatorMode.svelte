@@ -8,7 +8,7 @@
   import { isAndroid } from '../../js/constants.js';
   import Checkbox from '../common/CheckboxStore.svelte';
   import TextField from '../common/TextField.svelte';
-  import SvgButton from '../../submodules/chat/src/components/common/SvgButton.svelte';
+  import Card from '../common/Card.svelte';
 
   const leaderCharRules = [
     {
@@ -41,17 +41,11 @@
       label="Tag to prepend ($filterLang is replaced by your filter language)"
     />
   {/if}
-  <div class="p-2 rounded bg-gray-800">
-    <div class="flex flex-row items-center">
-      <h6 class="flex-1 pl-2">Macros</h6>
-      <SvgButton
-        transparent
-        path={mdiPlus}
-        on:click={createNewMacro}
-        color="white"
-        add="flex-none self-end"
-      />
-    </div>
+  <Card
+    title="Macros"
+    titleButtonPath={mdiPlus}
+    titleButtonOnClick={createNewMacro}
+  >
     <TextField
       rules={leaderCharRules}
       bind:value={macroLeader}
@@ -60,7 +54,7 @@
     {#each $macros as macro, id}
       <CustomMacro {...macro} {id} />
     {/each}
-  </div>
+  </Card>
   <Row>
     <ExpansionPanels>
       <ExpansionPanel>

@@ -28,72 +28,80 @@
   import Slider from '../common/SliderStore.svelte';
   import Checkbox from '../common/CheckboxStore.svelte';
   import Radio from '../common/RadioGroupStore.svelte';
+  import Card from '../common/Card.svelte';
 </script>
 
 <ImportExport />
-<!-- {#if !isStandalone} -->
-<Slider name="Chat zoom" store={chatZoom} min={0.5} max={2} step={0.1} />
-<!-- {/if} -->
-<Slider name="Font size" store={livetlFontSize} min={9} max={54} />
-<FontDemo fontSize={$livetlFontSize} />
-<div>
-  <h6>Text direction:</h6>
-  <Radio
-    store={textDirection}
-    map={textDirectionMap}
-  />
-</div>
-{#if $displayMode === DisplayMode.FULLPAGE}
-  <div>
-    <h6>Video side:</h6>
+<Card title="Font">
+  <Slider name="Chat zoom" store={chatZoom} min={0.5} max={2} step={0.1} />
+  <Slider name="Font size" store={livetlFontSize} min={9} max={54} />
+  <FontDemo fontSize={$livetlFontSize} />
+</Card>
+<Card title="Layout">
+  <div class="flex items-center gap-2">
+    <h6>Text direction:</h6>
     <Radio
-      store={videoSideSetting}
-      map={videoSideMap}
+      store={textDirection}
+      map={textDirectionMap}
     />
+  </div>
+  {#if $displayMode === DisplayMode.FULLPAGE}
+    <div class="flex items-center gap-2">
+      <h6>Video side:</h6>
+      <Radio
+        store={videoSideSetting}
+        map={videoSideMap}
+      />
+    </div>
+    <div class="flex items-center gap-2">
+      <h6>Chat split:</h6>
+      <Radio
+        store={chatSplit}
+        map={chatSplitMap}
+      />
+    </div>
     <Checkbox
-      name="Enter vertical mode when window is thin"
+      name="Automatically adjust layout when window is thin"
       store={autoVertical}
     />
-  </div>
-  <div>
-    <h6>Chat split:</h6>
-    <Radio
-      store={chatSplit}
-      map={chatSplitMap}
-    />
-  </div>
-{/if}
-<Checkbox name="Show timestamps" store={showTimestamp} />
-{#if $displayMode === DisplayMode.FULLPAGE}
-  <Checkbox name="Show captions" store={showCaption} />
-  {#if $showCaption}
-    <Slider
-      name="Caption font size"
-      store={captionFontSize}
-      min={9}
-      max={54}
-    />
-    <Checkbox
-      name="Make captions disappear when inactive"
-      store={enableCaptionTimeout}
-    />
-    {#if $enableCaptionTimeout}
-      <Slider
-        name="Disappear after (seconds)"
-        store={captionDuration}
-        min={1}
-        max={61}
-      />
-    {/if}
   {/if}
+</Card>
+<Card title="General">
+  <Checkbox name="Show timestamps" store={showTimestamp} />
+  <Checkbox
+    name="Show screenshot and download buttons"
+    store={enableExportButtons}
+  />
+  <Checkbox name="Show fullscreen button" store={enableFullscreenButton} />
+</Card>
+{#if $displayMode === DisplayMode.FULLPAGE}
+  <Card title="Captions">
+    <Checkbox name="Show captions" store={showCaption} />
+    {#if $showCaption}
+      <Slider
+        name="Caption font size"
+        store={captionFontSize}
+        min={9}
+        max={54}
+      />
+      <Checkbox
+        name="Make captions disappear when inactive"
+        store={enableCaptionTimeout}
+      />
+      {#if $enableCaptionTimeout}
+        <Slider
+          name="Disappear after (seconds)"
+          store={captionDuration}
+          min={1}
+          max={61}
+        />
+      {/if}
+    {/if}
+  </Card>
 {/if}
-<!-- {/if} -->
-<Checkbox name="Read-aloud mode" store={doSpeechSynth} />
-{#if $doSpeechSynth}
-  <Slider name="Speech volume" store={speechVolume} min={0} max={1} step={0.01} />
-{/if}
-<Checkbox
-  name="Show screenshot and download buttons"
-  store={enableExportButtons}
-/>
-<Checkbox name="Show fullscreen button" store={enableFullscreenButton} />
+<Card title="Speech">
+  <Checkbox name="Enable read-aloud mode" store={doSpeechSynth} />
+  {#if $doSpeechSynth}
+    <Slider name="Speech volume" store={speechVolume} min={0} max={1} step={0.01} />
+  {/if}
+</Card>
