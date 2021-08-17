@@ -71,8 +71,14 @@ const authorName = (() => {
 const apiLiveLink = (videoId, lang) =>
   url(`/translations/stream?videoId=${videoId}&languageCode=${lang}`);
 
-/** @type {(videoId: String) => String} */
-const apiArchiveLink = videoId => url(`/translations/${videoId}/en`);
+/** @type {Readable<String>} */
+const langCode = derived(language, $lang => languageNameCode[$lang.lang].code);
+
+/** @type {(videoId: String) => Readable<String>} */
+const apiArchiveLink = videoId => derived(
+  langCode,
+  $lang => url(`/translations/${videoId}/${$lang}`)
+);
 
 /** @type {(apitl: APITranslation) => ScriptMessage} */
 const transformApiTl = apitl => ({
@@ -85,8 +91,8 @@ const transformApiTl = apitl => ({
 });
 
 /** @type {(videoId: String) => Readable<Message>} */
-export const getArchive = videoId => readable(null, async set => {
-  const script = await fetch(apiArchiveLink(videoId))
+export const getArchive = videoId => derived(apiArchiveLink(videoId), async ($link, set) => {
+  const script = await fetch($link)
     .then(toJson)
     .then(s => s.map(transformApiTl))
     .then(sortBy('unix'));
