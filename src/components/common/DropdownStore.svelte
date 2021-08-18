@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Writable } from 'svelte/store';
-  import { Select } from 'smelte';
+  import Select from 'smelte/src/components/Select';
 
   type DropdownItem = { value: string, text: string } | string;
 

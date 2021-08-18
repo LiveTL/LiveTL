@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { SyncStore } from 'js/storage';
   import { mdiRestore } from '@mdi/js';
-  import { Slider } from 'smelte';
+  import Slider from 'smelte/src/components/Slider';
   import SvgButton from '../../submodules/chat/src/components/common/SvgButton.svelte';
 
   /** SyncStore for value updates. */

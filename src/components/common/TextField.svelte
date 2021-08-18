@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TextField } from 'smelte';
+  import TextField from 'smelte/src/components/TextField';
 
   type Rule = {
     /** Callback function to assert input value. */

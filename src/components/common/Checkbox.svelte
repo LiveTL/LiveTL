@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Checkbox, SelectionLabel } from 'smelte';
+  import Checkbox, { Label } from 'smelte/src/components/Checkbox';
 
   // eslint-disable-next-line no-undef
   type T = $$Generic;
@@ -46,7 +46,7 @@
 >
   <div slot="label">
     {#if label !== ''}
-      <SelectionLabel slot="label" {disabled} {label} classes={labelClasses} />
+      <Label slot="label" {disabled} {label} classes={labelClasses} />
     {/if}
   </div>
 </Checkbox>

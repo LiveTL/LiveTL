@@ -2,7 +2,7 @@
   import { mdiCheck, mdiClipboardOutline } from '@mdi/js';
   import { importStores, exportStores } from '../../js/storage.js';
   import { compose } from '../../js/utils.js';
-  import { Button } from 'smelte';
+  import Button from 'smelte/src/components/Button';
   import Dialog from '../common/Dialog.svelte';
   import SvgButton from '../../submodules/chat/src/components/common/SvgButton.svelte';
   import TextField from '../common/TextField.svelte';

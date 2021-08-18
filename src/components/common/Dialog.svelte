@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Dialog } from 'smelte';
+  import Dialog from 'smelte/src/components/Dialog';
 
   /** Dialog title. */
   export let title = '';

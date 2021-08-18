@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { SvelteComponent } from 'svelte';
-  import { Tabs, Tab, TabButton } from 'smelte';
+  import { Tabs, Tab, TabButton } from 'smelte/src/components/Tabs';
 
   type TabsItem = {
     id: string;
@@ -13,7 +13,7 @@
   export let items: TabsItem[] = [];
 
   const classes = 'y-0 items-center relative z-20';
-  const tabButtonClasses = 'duration-100 relative overflow-hidden text-center w-full p-2 cursor-pointer flex mx-auto items-center text-sm';
+  const tabButtonClasses = 'duration-75 relative overflow-hidden text-center w-full p-2 cursor-pointer flex mx-auto items-center text-sm';
 </script>
 
 <div>
@@ -23,6 +23,7 @@
     let:item
     {items}
     {classes}
+    indicator={false}
   >
     <TabButton
       slot="item"

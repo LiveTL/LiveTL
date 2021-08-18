@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Writable } from 'svelte/store';
-  import { RadioButtonGroup, RadioButton } from 'smelte';
+  import { RadioButtonGroup, RadioButton } from 'smelte/src/components/RadioButton';
 
   type RadioItem = { value: string, label: string };
 
