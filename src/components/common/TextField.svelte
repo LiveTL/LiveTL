@@ -1,5 +1,6 @@
 <script lang="ts">
   import TextField from 'smelte/src/components/TextField';
+  import { noop } from 'svelte/internal';
 
   type Rule = {
     /** Callback function to assert input value. */
@@ -26,6 +27,8 @@
   export let error: string | false = false;
   /** Rules to assert input value. */
   export let rules: Rule[] = [];
+  /** Show clear button. */
+  export let clearable = false;
 
   const checkRule = (value: string) => {
     const hasError = rules.some((rule) => {
@@ -56,4 +59,7 @@
   {textarea}
   {add}
   {error}
+  append={clearable ? 'cancel' : ''}
+  on:click-append={clearable ? () => (value = '') : noop}
+  iconClass={clearable ? 'cursor-pointer' : ''}
 />

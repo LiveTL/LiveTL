@@ -35,15 +35,15 @@
   });
 </script>
 
-<div class="flex flex-col flex-wrap rounded gap-2" bind:this={div}>
-  <div class="flex flex-row gap-2">
-    <Dropdown dense store={sShowBlock} items={showBlockItems} />
-    <Dropdown dense store={sPlainReg} items={plainRegexItems} />
-    <Dropdown dense store={sChatAuthor} items={chatAuthorItems} />
+<div class="flex flex-col rounded gap-2" bind:this={div}>
+  <div class="flex flex-row gap-2 flex-wrap">
+    <Dropdown dense store={sShowBlock} items={showBlockItems} class="w-32 flex-shrink-0 flex-auto" />
+    <Dropdown dense store={sPlainReg} items={plainRegexItems} class="w-32 flex-shrink-0 flex-auto" />
+    <Dropdown dense store={sChatAuthor} items={chatAuthorItems} class="w-32 flex-shrink-0 flex-auto" />
   </div>
   <div class="flex flex-row">
     <div class="flex-1">
-      <TextField dense bind:value={rule}/>
+      <TextField dense bind:value={rule} clearable />
     </div>
   </div>
 </div>
