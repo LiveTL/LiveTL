@@ -11,6 +11,7 @@
   export let color = 'blue';
   export let step = null;
   export let thumb = false;
+  export let suffix = ':';
 
   let diff = max - min;
   $: value = Math.max(0, Math.min(100, value));
@@ -70,7 +71,7 @@
 <div bind:this={wrapper}>
   <Slider bind:value {color} {step} {thumb}>
     <div slot="default">
-      {name}:
+      {name}{suffix}
     </div>
     <div slot="append-outer">
       <div class="reset-button">
