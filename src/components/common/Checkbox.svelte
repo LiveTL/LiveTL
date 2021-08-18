@@ -34,6 +34,7 @@
   }
 
   const classes = 'inline-flex items-center cursor-pointer z-10';
+  const labelClasses = 'decoration-clone pl-2 cursor-pointer text-gray-700 dark:text-gray-300';
 </script>
 
 <Checkbox
@@ -45,7 +46,7 @@
 >
   <div slot="label">
     {#if label !== ''}
-      <SelectionLabel slot="label" {disabled} {label} />
+      <SelectionLabel slot="label" {disabled} {label} classes={labelClasses} />
     {/if}
   </div>
 </Checkbox>

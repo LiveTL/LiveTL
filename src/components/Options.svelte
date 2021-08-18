@@ -1,6 +1,5 @@
 <script>
   import Settings from './Settings.svelte';
-  export let active = false;
 
   // Hot reload window.mchad
   // TODO delete before pr
@@ -12,31 +11,4 @@
   });
 </script>
 
-<div class="wrapper">
-  <div class="app">
-    <Settings bind:active />
-  </div>
-  <slot />
-</div>
-
-<style>
-  .wrapper {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .app {
-    padding: 0px !important;
-    justify-content: center;
-    height: 100%;
-  }
-  :global(body) {
-    margin: 0px 0px;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-  }
-</style>
+<Settings />

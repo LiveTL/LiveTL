@@ -272,7 +272,7 @@
   </div>
   <Wrapper on:scroll={updateWrapper} bind:this={wrapper}>
     {#if settingsOpen}
-      <Options bind:active={settingsOpen} />
+      <Options />
     {:else}
       <MessageDisplay
         direction={$textDirection}
