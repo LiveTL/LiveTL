@@ -17,4 +17,11 @@
       />
     </div>
   </ExpansionPanel>
+  <ExpansionPanel>
+    <span slot="header">Fixes for read-aloud mode</span>
+    <div>
+      Read-aloud mode was broken for users who had caption mode disabled. This
+      caption setting dependence has now been patched.
+    </div>
+  </ExpansionPanel>
 </ExpansionPanels>
