@@ -32,12 +32,12 @@
 </script>
 
 <ImportExport />
-<Card title="Font">
+<Card title="Font" icon="format_size">
   <Slider name="Chat zoom" store={chatZoom} min={0.5} max={2} step={0.1} />
   <Slider name="Font size" store={livetlFontSize} min={9} max={54} />
   <FontDemo fontSize={$livetlFontSize} />
 </Card>
-<Card title="Layout">
+<Card title="Layout" icon="monitor">
   <div class="flex items-center gap-2">
     <h6>Text direction:</h6>
     <Radio
@@ -66,7 +66,7 @@
     />
   {/if}
 </Card>
-<Card title="General">
+<Card title="General" icon="tune">
   <Checkbox name="Show timestamps" store={showTimestamp} />
   <Checkbox
     name="Show screenshot and download buttons"
@@ -75,7 +75,7 @@
   <Checkbox name="Show fullscreen button" store={enableFullscreenButton} />
 </Card>
 {#if $displayMode === DisplayMode.FULLPAGE}
-  <Card title="Captions">
+  <Card title="Captions" icon="subtitles">
     <Checkbox name="Show captions" store={showCaption} />
     {#if $showCaption}
       <Slider
@@ -99,7 +99,7 @@
     {/if}
   </Card>
 {/if}
-<Card title="Speech">
+<Card title="Speech" icon="record_voice_over">
   <Checkbox name="Enable read-aloud mode" store={doSpeechSynth} />
   {#if $doSpeechSynth}
     <Slider name="Speech volume" store={speechVolume} min={0} max={1} step={0.01} />

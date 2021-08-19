@@ -31,19 +31,26 @@
   store={language}
   items={languageNameValues}
 />
-<Checkbox name="Show moderator messages" store={showModMessage} />
+<div class="mt-6">
+  <Checkbox name="Show moderator and owner messages" store={showModMessage} />
+</div>
 <BlockedUsers />
-<h6>When messages are deleted by moderators:</h6>
-<Radio
-  store={ytcDeleteBehaviour}
-  map={ytcDeleteMap}
-  vertical
-/>
-<div>
-  <h6>External translation sources</h6>
+<Card
+  title="When messages are deleted by moderators:"
+>
+  <Radio
+    store={ytcDeleteBehaviour}
+    map={ytcDeleteMap}
+    vertical
+  />
+</Card>
+<Card
+  title="External translation sources"
+  gap={0}
+>
   <Checkbox name="LiveTL API" store={enableAPITLs} />
   <Checkbox name="MChad (volunteer translators)" store={enableMchadTLs} />
-</div>
+</Card>
 <Card
   title="Custom filters"
   titleButtonPath={mdiPlus}

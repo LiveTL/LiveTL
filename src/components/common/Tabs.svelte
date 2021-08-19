@@ -11,9 +11,19 @@
 
   export let selected: string | null = null;
   export let items: TabsItem[] = [];
+  export let maxButtonWidth: number | null = null;
+
+  const getTabButtonClasses = (maxButtonWidth: number | null) => {
+    const defaultClasses = 'duration-75 relative overflow-hidden ' +
+      'text-center p-2 cursor-pointer flex mx-auto items-center text-sm';
+    if (maxButtonWidth == null) {
+      return defaultClasses + ' w-full';
+    }
+    return defaultClasses + ` w-${maxButtonWidth} flex-shrink-0 flex-auto`;
+  };
 
   const classes = 'y-0 items-center relative z-20';
-  const tabButtonClasses = 'duration-75 relative overflow-hidden text-center w-full p-2 cursor-pointer flex mx-auto items-center text-sm';
+  $: tabButtonClasses = getTabButtonClasses(maxButtonWidth);
 </script>
 
 <div>

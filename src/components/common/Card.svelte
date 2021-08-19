@@ -1,16 +1,34 @@
 <script lang="ts">
   import { noop } from 'svelte/internal';
   import SvgButton from '../../submodules/chat/src/components/common/SvgButton.svelte';
+  import Icon from 'smelte/src/components/Icon';
 
   export let color = 'dark';
   export let title = '';
   export let titleButtonPath = '';
   export let titleButtonOnClick: (e: MouseEvent) => void = noop;
+  export let gap = 2;
+  export let icon = '';
+
+  const getContentClasses = (gap: number) => {
+    const defaultClasses = 'px-3 flex flex-col';
+    if (gap > 0) {
+      return defaultClasses + ` gap-${gap}`;
+    }
+    return defaultClasses;
+  };
+
+  $: contentClasses = getContentClasses(gap);
 </script>
 
 <div class="rounded bg-{color}-600 ovevrflow-hidden my-3">
   <div class="rounded-t p-2 flex flex-row items-center bg-{color}-800">
-    <div class="flex-1 pl-2">
+    <div class="flex-1 pl-2 flex gap-3 items-center">
+      <slot name="title-icon">
+        {#if icon !== ''}
+          <Icon>{icon}</Icon>
+        {/if}
+      </slot>
       <slot name="title">
         {#if title !== ''}
           <h6>{title}</h6>
@@ -30,7 +48,7 @@
       </slot>
     </div>
   </div>
-  <div class="px-3 flex flex-col gap-2">
+  <div class={contentClasses}>
     <slot/>
   </div>
 </div>

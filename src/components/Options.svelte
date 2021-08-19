@@ -11,4 +11,6 @@
   });
 </script>
 
-<Settings />
+<div class="bg-dark-700">
+  <Settings />
+</div>

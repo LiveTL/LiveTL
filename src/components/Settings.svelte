@@ -16,4 +16,5 @@
 <Tabs
   selected="1"
   items={settings}
+  maxButtonWidth={24}
 />
