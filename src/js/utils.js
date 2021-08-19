@@ -55,6 +55,6 @@ export const sleep = ms => new Promise((res, _rej) => {
 export const escapeRegExp = text => text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 
 
-export const getAllVoices = () => speechSynthesis.getVoices();
+export const getAllVoices = () => window.speechSynthesis.getVoices();
 export const getAllVoiceNames = () => getAllVoices().map(voice => voice.name);
 export const getVoiceMap = () => new Map(getAllVoices().map(v => [v.name, v]));

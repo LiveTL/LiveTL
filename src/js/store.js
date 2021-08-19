@@ -101,15 +101,24 @@ export const videoSide = derived(videoSideDepends, ([$videoSide, $autoVert, $win
   const { width, height } = $windims;
   return $autoVert && height > width ? VideoSide.TOP : $videoSide;
 }, videoSideSetting.get());
-export const speechVoice = readable(undefined, set => {
+export const voiceNames = readable(getAllVoiceNames(), set => {
+  const cb = () => set(getAllVoiceNames());
+  window.addEventListener('load', cb);
+  return () => window.removeEventListener('load', cb);
+});
+export const speechVoice = readable(getAllVoiceNames()[0], set => {
   const cb = () => set(getAllVoiceNames()[0]);
   window.addEventListener('load', cb);
-  const unsub = speechVoiceName.subscribe(() => set(getVoiceMap()[speechVoiceName.get()]));
+  const unlisten = () => window.removeEventListener('load', cb);
+  const unsub = speechVoiceName.subscribe(() => {
+    set(getVoiceMap()[speechVoiceName.get()]);
+    unlisten();
+  });
   return () => {
-    window.removeEventListener('load', cb);
+    unlisten();
     unsub();
   };
-}); 
+});
 
 export const updatePopupActive = writable(false);
 export const videoTitle = writable('LiveTL');
