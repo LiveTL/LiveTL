@@ -102,22 +102,21 @@ export const videoSide = derived(videoSideDepends, ([$videoSide, $autoVert, $win
   return $autoVert && height > width ? VideoSide.TOP : $videoSide;
 }, videoSideSetting.get());
 export const voiceNames = readable(getAllVoiceNames(), set => {
-  const cb = () => set(getAllVoiceNames());
-  window.addEventListener('load', cb);
-  return () => window.removeEventListener('load', cb);
-});
-export const speechVoice = readable(getAllVoiceNames()[0], set => {
-  const cb = () => set(getAllVoiceNames()[0]);
-  window.addEventListener('load', cb);
-  const unlisten = () => window.removeEventListener('load', cb);
-  const unsub = speechVoiceName.subscribe(() => {
-    set(getVoiceMap()[speechVoiceName.get()]);
-    unlisten();
-  });
-  return () => {
-    unlisten();
+  const cb = () => {
+    set(getAllVoiceNames());
     unsub();
   };
+  const unsub = () => window.removeEventListener('load', cb);
+  window.addEventListener('load', cb);
+  return unsub;
+});
+export const speechSpeaker = readable(getVoiceMap()[speechVoiceName.get()], set => {
+  const cb = () => set(getVoiceMap().get(speechVoiceName.get()));
+  const unsub = [
+    speechVoiceName.subscribe(cb),
+    voiceNames.subscribe(cb)
+  ];
+  return unsub.forEach(u => u());
 });
 
 export const updatePopupActive = writable(false);
