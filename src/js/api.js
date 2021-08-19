@@ -2,9 +2,9 @@
 import { derived, get, readable, Readable } from 'svelte/store';
 // eslint-disable-next-line no-unused-vars
 import { APITranslation, Message, ScriptMessage } from './types.js';
-import { AuthorType, paramsIsVOD } from './constants.js';
+import { AuthorType, paramsIsVOD, languageNameCode } from './constants.js';
 import { formatTimestampMillis, sortBy } from './utils.js';
-import { enableAPITLs, timestamp } from './store.js';
+import { enableAPITLs, language, timestamp } from './store.js';
 import ReconnectingEventSource from 'reconnecting-eventsource';
 import { getTranslationNotificationsEndpointUrl, getTranslators, loadTranslations } from '@livetl/api-wrapper/src/api';
 
@@ -65,6 +65,9 @@ const authorName = (() => {
   return lookup.get.bind(lookup);
 })();
 
+/** @type {Readable<String>} */
+const langCode = derived(language, $lang => languageNameCode[$lang].code);
+
 /** @type {(apitl: APITranslation) => ScriptMessage} */
 const transformApiTl = apitl => ({
   text: apitl.translatedText,
@@ -76,23 +79,30 @@ const transformApiTl = apitl => ({
 });
 
 /** @type {(videoId: String) => Readable<Message>} */
-export const getArchive = videoId => readable(null, async set => {
+export const getArchive = videoId => derived(langCode, async ($lang, set) => {
   // TODO server side filtering of translators in the blacklist
-  const apiResponse = await loadTranslations(videoId, 'en'); // TODO FIXME don't hardcode to en
+  const apiResponse = await loadTranslations(videoId, $lang);
   if (typeof apiResponse !== 'object') {
     console.debug(`Got error message "${apiResponse}" when loading translations from API`);
     return;
   }
 
   const script = sortBy('unix')(apiResponse.map(transformApiTl));
-  return archiveStreamFromScript(script).subscribe(tl => {
+  return archiveStreamFromScript(script).subscribe($tl => {
     if (enableAPITLs.get())
-      set(tl);
+      set($tl);
   });
+
 });
 
+/** @type {(videoId: String) => Readable<APITranslation>} */
+const apiLiveStream = videoId => derived(
+  langCode,
+  $lang => sseToStream(getTranslationNotificationsEndpointUrl(videoId, $lang))
+);
+
 /** @type {(videoId: String) => Readable<Message>} */
-export const getLiveTranslations = videoId => derived(sseToStream(getTranslationNotificationsEndpointUrl(videoId, 'en')), $data => { // TODO FIXME don't hardcode to en
+export const getLiveTranslations = videoId => derived(apiLiveStream(videoId), $data => {
   if ($data?.videoId !== videoId || !enableAPITLs.get()) return;
   if ($data?.start / 1000 < window.player.getDuration() - 10) return; // if the timestamp of the translation is more than 10 seconds of the timestamp of the player, ignore it
   return transformApiTl($data);
