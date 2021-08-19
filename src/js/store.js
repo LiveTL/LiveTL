@@ -110,14 +110,10 @@ export const voiceNames = readable(getAllVoiceNames(), set => {
   window.addEventListener('load', cb);
   return unsub;
 });
-export const speechSpeaker = readable(getVoiceMap()[speechVoiceName.get()], set => {
-  const cb = () => set(getVoiceMap().get(speechVoiceName.get()));
-  const unsub = [
-    speechVoiceName.subscribe(cb),
-    voiceNames.subscribe(cb)
-  ];
-  return unsub.forEach(u => u());
-});
+export const speechSpeaker = derived(
+  [speechVoiceName, voiceNames],
+  ([$speechVoiceName, _$voiceNames]) => getVoiceMap().get($speechVoiceName),
+);
 
 export const updatePopupActive = writable(false);
 export const videoTitle = writable('LiveTL');
