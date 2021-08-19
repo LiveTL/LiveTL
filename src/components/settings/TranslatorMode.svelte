@@ -1,14 +1,14 @@
 <script>
-  import { Row, Icon, ExpansionPanels, ExpansionPanel } from 'svelte-materialify/src';
-  import { mdiInformation, mdiPlus } from '@mdi/js';
+  import { mdiPlus } from '@mdi/js';
   import { onMount } from 'svelte';
-
   import CustomMacro from '../options/CustomMacro.svelte';
   import { macros, doAutoPrefix, doTranslatorMode, autoPrefixTag, macroTrigger } from '../../js/store.js';
   import { isAndroid } from '../../js/constants.js';
   import Checkbox from '../common/CheckboxStore.svelte';
   import TextField from '../common/TextField.svelte';
   import Card from '../common/Card.svelte';
+  import ExpandingCard from '../common/ExpandingCard.svelte';
+  import Icon from 'smelte/src/components/Icon';
 
   const leaderCharRules = [
     {
@@ -55,34 +55,31 @@
       <CustomMacro {...macro} {id} />
     {/each}
   </Card>
-  <Row>
-    <ExpansionPanels>
-      <ExpansionPanel>
-        <span slot="header">How to use macros</span>
-        <p>
-          Macros are identified by a name and will expand to the expansion
-          when typed.
-        </p>
-        <p>To add a macro, press the + icon next to "Macros".</p>
-        <p>
-          To use macros, type the macro trigger string in chat and start
-          typing in the name of a macro. (ex. /mymacro)
-        </p>
-        <p>
-          Suggestions will appear under the chat entry box which can be cycled
-          through with the tab key.
-        </p>
-        <p>
-          When you have your macro suggestion highlighted, hit space and the
-          macro will expand.
-        </p>
-      </ExpansionPanel>
-    </ExpansionPanels>
-  </Row>
+  <ExpandingCard title="How to use macros" icon="info">
+    <div class="text-base p-2 flex flex-col gap-4">
+      <p>
+        Macros are identified by a name and will expand to the expansion
+        when typed.
+      </p>
+      <p>To add a macro, press the + icon next to "Macros".</p>
+      <p>
+        To use macros, type the macro trigger string in chat and start
+        typing in the name of a macro. (ex. /mymacro)
+      </p>
+      <p>
+        Suggestions will appear under the chat entry box which can be cycled
+        through with the tab key.
+      </p>
+      <p>
+        When you have your macro suggestion highlighted, hit space and the
+        macro will expand.
+      </p>
+    </div>
+  </ExpandingCard>
 {/if}
 {#if isAndroid}
   <p>
-    <Icon path={mdiInformation} />
+    <Icon>info</Icon>
     Some features are only supported on the desktop LiveTL extension. Get LiveTL
     on Chrome, Firefox, etc. to use these features!
   </p>
