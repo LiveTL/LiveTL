@@ -41,16 +41,16 @@
   $: active, setTimeout(() => windowResized($windowSize), 0);
 </script>
 
-<div bind:this={elem}>
+<div bind:this={elem} class="wrapped">
   <Select bind:value {items} solo bind:active>{name}</Select>
 </div>
 
 <style>
-  :global(.s-text-field__input) {
+  .wrapped :global(.s-text-field__input) {
     display: flex;
     align-items: center;
   }
-  :global(.s-text-field__input label) {
+  .wrapped :global(.s-text-field__input label) {
     top: unset !important;
   }
 </style>

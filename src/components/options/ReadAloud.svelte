@@ -2,6 +2,7 @@
   import {
     doSpeechSynth,
     speechVoiceName,
+    speechVoiceNameSetting,
     speechSpeed,
     speechVolume,
     voiceNames
@@ -17,7 +18,7 @@
       value: i.toString()
     }));
   $: store.set(selectableLanguages.find(l => l.name == $speechVoiceName)?.value || '0');
-  $: speechVoiceName.set($voiceNames[$store]);
+  $: speechVoiceNameSetting.set($voiceNames[$store]);
 </script>
 
 <CheckOption name="Read-aloud mode" store={doSpeechSynth} />
@@ -26,7 +27,7 @@
   <SliderOption name="Speech speed" store={speechSpeed} min={0.5} max={2} />
   <Dropdown
     name="Speech synthesis voice"
-    label={$speechVoiceName}
+    label={$speechVoiceName || 'Loading voices...'}
     {store}
     items={selectableLanguages}
   />

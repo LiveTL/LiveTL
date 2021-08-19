@@ -83,7 +83,7 @@ export const
   spamMsgAmount = SS('spamMsgAmount', 5),
   spamMsgInterval = SS('spamMsgInterval', 10),
   spammersDetected = LS('spammersDetected', [sampleSpam].slice(1)),
-  speechVoiceName = SS('speechVoiceName', ''),
+  speechVoiceNameSetting = SS('speechVoiceNameSetting', ''),
   speechSpeed = SS('speechSpeed', 1);
 
 // Non-persistant stores
@@ -110,6 +110,15 @@ export const voiceNames = readable(getAllVoiceNames(), set => {
   window.addEventListener('load', cb);
   return unsub;
 });
+export const speechVoiceName = derived(
+  [speechVoiceNameSetting, voiceNames],
+  ([$speechVoiceNameSetting, $voiceNames]) => {
+    return (
+      $voiceNames.includes($speechVoiceNameSetting) ?
+        $speechVoiceNameSetting : $voiceNames[0]
+    ); 
+  },
+);
 export const speechSpeaker = derived(
   [speechVoiceName, voiceNames],
   ([$speechVoiceName, _$voiceNames]) => getVoiceMap().get($speechVoiceName),
