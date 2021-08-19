@@ -124,7 +124,7 @@ export const displayedMessages = derived(dispDepends, dispTransform);
 export const captionText = readable(defaultCaption, set => {
   let text = defaultCaption;
   return displayedMessages.subscribe($msgs => {
-    const $translation = $msgs[$msgs.length - 1]?.text ?? '';
+    const $translation = $msgs[$msgs.length - 1]?.text;
     if ($translation != null && $translation != text) {
       set(text = $translation);
     }
