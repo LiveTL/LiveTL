@@ -1,4 +1,5 @@
-import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour, DisplayMode, paramsEmbedded, AllVoiceNames } from './constants.js';
+import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour, DisplayMode, paramsEmbedded } from './constants.js';
+import { getAllVoiceNames, getVoiceMap } from './utils.js';
 import { LookupStore, SyncStore } from './storage.js';
 // eslint-disable-next-line no-unused-vars
 import { writable, readable, derived, Readable } from 'svelte/store';
@@ -82,7 +83,7 @@ export const
   spamMsgAmount = SS('spamMsgAmount', 5),
   spamMsgInterval = SS('spamMsgInterval', 10),
   spammersDetected = LS('spammersDetected', [sampleSpam].slice(1)),
-  speechVoice = SS('speechVoice', AllVoiceNames[0]),
+  speechVoiceName = SS('speechVoiceName', ''),
   speechSpeed = SS('speechSpeed', 1);
 
 // Non-persistant stores
@@ -100,6 +101,15 @@ export const videoSide = derived(videoSideDepends, ([$videoSide, $autoVert, $win
   const { width, height } = $windims;
   return $autoVert && height > width ? VideoSide.TOP : $videoSide;
 }, videoSideSetting.get());
+export const speechVoice = readable(undefined, set => {
+  const cb = () => set(getAllVoiceNames()[0]);
+  window.addEventListener('load', cb);
+  const unsub = speechVoiceName.subscribe(() => set(getVoiceMap()[speechVoiceName.get()]));
+  return () => {
+    window.removeEventListener('load', cb);
+    unsub();
+  };
+}); 
 
 export const updatePopupActive = writable(false);
 export const videoTitle = writable('LiveTL');
