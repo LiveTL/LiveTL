@@ -109,3 +109,6 @@ export const ytcDeleteValues = new Map([
   [YtcDeleteBehaviour.PLACEHOLDER, 'Show placeholder'],
   [YtcDeleteBehaviour.NOTHING, 'Do nothing']
 ]);
+
+export const AllVoices = speechSynthesis.getVoices();
+export const AllVoiceNames = AllVoices.map(voice => voice.name);

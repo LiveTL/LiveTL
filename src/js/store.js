@@ -1,4 +1,4 @@
-import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour, DisplayMode, paramsEmbedded } from './constants.js';
+import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour, DisplayMode, paramsEmbedded, AllVoiceNames } from './constants.js';
 import { LookupStore, SyncStore } from './storage.js';
 // eslint-disable-next-line no-unused-vars
 import { writable, readable, derived, Readable } from 'svelte/store';
@@ -81,7 +81,9 @@ export const
   enableSpamProtection = SS('enableSpamProtection', true),
   spamMsgAmount = SS('spamMsgAmount', 5),
   spamMsgInterval = SS('spamMsgInterval', 10),
-  spammersDetected = LS('spammersDetected', [sampleSpam].slice(1));
+  spammersDetected = LS('spammersDetected', [sampleSpam].slice(1)),
+  speechVoice = SS('speechVoice', AllVoiceNames[0]),
+  speechSpeed = SS('speechSpeed', 1);
 
 // Non-persistant stores
 
