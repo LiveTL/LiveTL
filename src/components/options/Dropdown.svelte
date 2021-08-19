@@ -1,5 +1,6 @@
 <script>
   import { Select } from 'svelte-materialify/src';
+  import { windowSize } from '../../js/store.js';
 
   export let name = '';
   export let store = null;
@@ -26,6 +27,18 @@
       elem.querySelector('input').value = label || value;
     }, 0);
   }
+
+  function windowResized(size) {
+    if (elem) {
+      const list = elem.querySelector('.s-menu');
+      if (list) {
+        const bounds = list.getBoundingClientRect()
+        list.style.height = `${Math.min(bounds.height, size.height - bounds.y)}px`;
+      }
+    }
+  }
+  
+  $: active, setTimeout(() => windowResized($windowSize), 0);
 </script>
 
 <div bind:this={elem}>
