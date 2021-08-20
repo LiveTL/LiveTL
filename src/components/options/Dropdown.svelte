@@ -32,7 +32,7 @@
     if (elem) {
       const list = elem.querySelector('.s-menu');
       if (list) {
-        const bounds = list.getBoundingClientRect()
+        const bounds = list.getBoundingClientRect();
         list.style.height = `${Math.min(bounds.height, size.height - bounds.y)}px`;
       }
     }

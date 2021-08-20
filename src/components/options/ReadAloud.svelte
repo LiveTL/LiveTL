@@ -14,9 +14,9 @@
 
   const store = writable('0');
   $: selectableLanguages = $voiceNames.map((n, i) => ({
-      name: n,
-      value: i.toString()
-    }));
+    name: n,
+    value: i.toString()
+  }));
   $: store.set(selectableLanguages.find(l => l.name == $speechVoiceName)?.value || '0');
   $: speechVoiceNameSetting.set($voiceNames[$store]);
 </script>
