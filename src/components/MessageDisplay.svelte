@@ -1,50 +1,34 @@
 <script>
   import {
     afterUpdate,
-    onMount,
-    onDestroy,
     createEventDispatcher
   } from 'svelte';
   import Message from './Message.svelte';
   import { Checkbox } from 'svelte-materialify/src';
-  import { sources, combineStores } from '../js/sources.js';
   import MessageDisplayWrapper from './MessageDisplayWrapper.svelte';
   import '../css/splash.css';
   import {
     channelFilters,
     livetlFontSize,
+    mchadUsers,
     showTimestamp,
+    spotlightedTranslator,
+    sessionHidden
   } from '../js/store.js';
   import {
+    AuthorType,
     TextDirection
   } from '../js/constants.js';
-
   import IntroMessage from './IntroMessage.svelte';
+  // eslint-disable-next-line no-unused-vars
+  import { MessageItem } from '../js/types.js';
 
   $: document.body.style.fontSize = Math.round($livetlFontSize) + 'px';
   export let direction;
-  /** @type {{ text: String, author: String, timestamp: String }[]}*/
+  /** @type {{ text: String, author: String, timestamp: String, authorId: string, messageId: string, hidden: boolean, messageArray: MessageItem[], deleted: boolean }[]}*/
   export let items = [];
 
   let bottomMsg = null;
-  let unsubscribe = null;
-  onMount(() => {
-    const { cleanUp, store: source } = combineStores(
-      sources.translations,
-      sources.mod,
-    );
-    const sourceUnsub = source.subscribe(n => {
-      if (n) {
-        items.push({...n, index: items.length});
-      }
-      items = items;
-    });
-    unsubscribe = () => {
-      cleanUp();
-      sourceUnsub();
-    };
-  });
-  onDestroy(() => unsubscribe());
 
   export function scrollToRecent() {
     bottomMsg.scrollIntoView({
@@ -61,12 +45,19 @@
   export let selectedItems = [];
 
   const banMessage = item => () => {
-    channelFilters.set(item.id, {
-      ...channelFilters.get(item.id),
-      name: item.author,
-      blacklist: true,
-    });
-    items = items.filter(i => i.id != item.id);
+    if (item.types & AuthorType.mchad) {
+      mchadUsers.set(item.author, true);
+    } else {
+      channelFilters.set(item.authorId, {
+        ...channelFilters.get(item.authorId),
+        name: item.author,
+        blacklist: true,
+      });
+    }
+  };
+
+  const hideMessage = item => () => {
+    $sessionHidden = [...$sessionHidden, item.messageId];
   };
 
   $: if (!isSelecting) selectedItems = [];
@@ -85,8 +76,13 @@
         message={item}
         hidden={item.hidden}
         showTimestamp={$showTimestamp}
-        on:hide={() => (item.hidden = true)}
+        deleted={item.deleted}
+        messageArray={item.messageArray}
+        on:hide={hideMessage(item)}
         on:ban={banMessage(item)}
+        on:spotlight={e => spotlightedTranslator.set(
+          $spotlightedTranslator ? null : e.detail.authorId
+        )}
       >
         {#if isSelecting}
           <Checkbox bind:group={selectedItems} value={item} />

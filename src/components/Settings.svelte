@@ -1,21 +1,23 @@
 <script>
   import { beforeUpdate, afterUpdate } from 'svelte';
-  import { Tabs, Tab, TabContent, MaterialApp } from 'svelte-materialify/src';
+  import { Icon, Tabs, Tab, TabContent, Tooltip, MaterialApp } from 'svelte-materialify/src';
+  import { mdiBrush, mdiChat, mdiFilter, mdiHelp } from '@mdi/js';
   import UISettings from './settings/UISettings.svelte';
   import FilterSettings from './settings/FilterSettings.svelte';
+  import TranslatorMode from './settings/TranslatorMode.svelte';
   import About from './About.svelte';
-
-  export let isStandalone = false;
-  export let isResizing = false;
+  import { isResizing } from '../js/store.js';
 
   const settings = [
-    { name: 'Interface', component: UISettings },
-    { name: 'Filters', component: FilterSettings },
-    { name: 'About', component: About },
+    { name: 'Interface', component: UISettings, icon: mdiBrush },
+    { name: 'Filters', component: FilterSettings, icon: mdiFilter },
+    { name: 'Chat', component: TranslatorMode, icon: mdiChat },
+    { name: 'About', component: About, icon: mdiHelp },
   ];
 
   let wrapper = null;
   function redrawSlider() {
+    if (wrapper == null) return;
     const sliderElement = wrapper.querySelector('.ltl-settings-slider');
     const activeTab = wrapper.querySelector(
       '.ltl-settings-tabs .s-tab.s-slide-item.active'
@@ -34,7 +36,7 @@
 
   let callRedrawSlider = false;
   let wasResizing = false;
-  $: wasResizing = !isResizing;
+  $: wasResizing = !$isResizing;
   beforeUpdate(() => {
     if (wasResizing) {
       callRedrawSlider = true;
@@ -58,17 +60,28 @@
     style="display: flex; align-items: center; justify-content: center;"
     bind:this={wrapper}
   >
-    <div style="max-width: calc(min(500px, 100%)); width: 100%;">
+    <div
+      class="settings-container"
+      style="max-width: calc(min(500px, 100%)); width: 100%;"
+    >
       <Tabs
         grow
         fixedTabs
-        showArrows={false}
         class="ltl-settings-tabs"
         sliderClass="ltl-settings-slider"
       >
         <div slot="tabs">
-          {#each settings as { name }}
-            <Tab>{name}</Tab>
+          {#each settings as { icon, name }}
+            <Tab>
+              <Tooltip bottom>
+                <div slot="tip">
+                  <div style="text-align: center">{name}</div>
+                </div>
+                <div style="width: 100%; height: 100%;">
+                  <Icon path={icon} />
+                </div>
+              </Tooltip>
+            </Tab>
           {/each}
         </div>
 
@@ -78,7 +91,7 @@
               <div
                 style="font-size: 16px !important; margin: 15px 0px 15px 0px;"
               >
-                <svelte:component this={component} {isStandalone} />
+                <svelte:component this={component} />
               </div>
             </TabContent>
           {/each}
@@ -105,4 +118,23 @@
     padding: 0px 10px 0px 10px;
   }
 
+  .settings-container :global(.s-tooltip__wrapper) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .settings-container :global(.s-tab) {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+
+  /* Center all icons horizontally and vertically */
+  .settings-container :global(.s-tab i) {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
 </style>

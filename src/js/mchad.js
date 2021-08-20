@@ -3,11 +3,12 @@ import { MCHAD, AuthorType } from './constants.js';
 import { Message, MCHADTL, MCHADStreamItem, MCHADLiveRoom, MCHADArchiveRoom, Seconds, UnixTimestamp } from './types.js';
 // eslint-disable-next-line no-unused-vars
 import { derived, get, readable, Readable } from 'svelte/store';
-import { enableMchadTLs } from './store.js';
+import { enableMchadTLs, mchadUsers } from './store.js';
 import { combineArr, formatTimestampMillis, sleep, sortBy } from './utils.js';
 import { archiveStreamFromScript, sseToStream } from './api.js';
 
-/** @typedef {(unix: UnixTimestamp) => String} UnixTransformer */
+/** @typedef {(unix: UnixTimestamp) => String} UnixToTimestamp */
+/** @typedef {(unix: UnixTimestamp) => number} UnixToNumber */
 
 
 /** @type {(videoId: String) => (links: String[]) => Promise<MCHADLiveRoom[] | MCHADArchiveRoom[]>} */
@@ -65,9 +66,12 @@ export async function getArchiveFromRoom(room) {
     firstTime = startmatch[0].Stime;
   }
     
-  const toMessage = mchadToMessage(room.Room, archiveUnixToTimestamp(firstTime));
+  const toMessage = mchadToMessage(room.Room, archiveUnixToTimestamp(firstTime), archiveUnixToNumber(firstTime));
   return script.map(toMessage);
 }
+
+/** @type {(script: Message[]) => String} */
+const getScriptAuthor = script => script[0].author;
 
 /** @type {(videoId: String) => Readable<Message>} */
 export const getArchive = videoId => readable(null, async set => {
@@ -76,15 +80,23 @@ export const getArchive = videoId => readable(null, async set => {
 
   const addUnix = tl => ({...tl, unix: archiveTimeToInt(tl.timestamp)});
 
-  const script = await getArchiveFromRoom(vod[0])
+  const getScript = room => getArchiveFromRoom(room)
     .then(s => s.map(addUnix))
     .then(s => s.filter(e => e.unix >= 0))
     .then(sortBy('unix'));
-
-  return archiveStreamFromScript(script).subscribe(tl => {
-    if (enableMchadTLs.get())
-      set(tl);
+  const scripts = await Promise.all(vod.map(getScript));
+  scripts.map(getScriptAuthor).forEach(author => {
+    mchadUsers.set(author, mchadUsers.get(author));
   });
+
+  const unsubscribes = scripts
+    .map(archiveStreamFromScript)
+    .map(stream => stream.subscribe(tl => {
+      if (tl && enableMchadTLs.get() && !mchadUsers.get(tl.author))
+        set(tl);
+    }));
+
+  return () => unsubscribes.forEach(u => u());
 });
 
 /** @type {(room: String) => Readable<MCHADStreamItem>} */
@@ -93,12 +105,15 @@ const streamRoom = room => sseToStream(`${MCHAD}/Listener?room=${room}`);
 /** @type {(time: String) => String} */
 const removeSeconds = time => time.replace(/:\d\d /, ' ');
 
-/** @type {UnixTransformer} */
-const unixToTimestamp = unix =>
+/** @type {UnixToTimestamp} */
+const liveUnixToTimestamp = unix =>
   removeSeconds(new Date(unix).toLocaleString('en-us').split(', ')[1]);
 
-/** @type {(startUnix: UnixTimestamp) => UnixTransformer} */
+/** @type {(startUnix: UnixTimestamp) => UnixToTimestamp} */
 const archiveUnixToTimestamp = startUnix => unix => formatTimestampMillis(unix - startUnix);
+
+/** @type {(startUnix: UnixTimestamp) => UnixToNumber} */
+const archiveUnixToNumber = startUnix => unix => unix - startUnix;
 
 /** @type {(archiveTime: String) => Number} */
 const archiveTimeToInt = archiveTime => archiveTime
@@ -107,36 +122,46 @@ const archiveTimeToInt = archiveTime => archiveTime
   .map((t, i) => t * Math.pow(60, 2 - i))
   .reduce((l, r) => l + r);
 
-/** @type {(author: String, timestampTransform: UnixTransformer) => (data: MCHADTL) => Message} */
-const mchadToMessage = (author, timestampTransform) => data => ({
+let mchadTLCounter = 0;
+
+/** @type {(author: String, unixToString: UnixToTimestamp, unixToNumber: UnixToNumber) => (data: MCHADTL) => Message} */
+const mchadToMessage = (author, unixToTimestamp, unixToNumber) => data => ({
   text: data.Stext,
   messageArray: [{ type: 'text', text: data.Stext }],
   author,
-  timestamp: timestampTransform(data.Stime),
-  types: AuthorType.mchad
+  authorId: author,
+  messageId: ++mchadTLCounter,
+  timestamp: unixToTimestamp(data.Stime),
+  types: AuthorType.mchad,
+  timestampMs: unixToNumber(data.Stime)
 });
 
 /** @type {(room: MCHADLiveRoom) => Readable<Message>} */
 export const getRoomTranslations = room => derived(streamRoom(room.Nick), (data, set) => {
   if (!enableMchadTLs.get()) return;
   const flag = data?.flag;
-  const toMessage = mchadToMessage(room.Nick, unixToTimestamp);
+  const toMessage = mchadToMessage(room.Nick, liveUnixToTimestamp, (unix) => unix);
   if (flag === 'insert' || flag === 'update') {
     set(toMessage(data.content));
   }
 });
 
-/** @type {(videoId: String, retryInterval: Seconds) => MCHADLiveRoom} */
-const getLiveRoomWithRetry = async (videoId, retryInterval) => {
-  while (1) {
+/** @type {(videoId: String, retryInterval: Seconds) => MCHADLiveRoom[]} */
+const getLiveRoomsWithRetry = async (videoId, retryInterval) => {
+  for (;;) {
     const { live } = await getRooms(videoId);
-    if (live.length) return live[0];
+    if (live.length) return live;
     await sleep(retryInterval * 1000);
   }
 };
 
 /** @type {(videoId: String) => Readable<Message>} */
 export const getLiveTranslations = videoId => readable(null, async set => {
-  const room = await getLiveRoomWithRetry(videoId, 30);
-  return getRoomTranslations(room).subscribe(set);
+  const rooms = await getLiveRoomsWithRetry(videoId, 30);
+  const unsubscribes = rooms.map(room => getRoomTranslations(room).subscribe(msg => {
+    if (msg && enableMchadTLs.get() && !mchadUsers.get(msg.author)) {
+      set(msg);
+    }
+  }));
+  return () => unsubscribes.forEach(u => u());
 });

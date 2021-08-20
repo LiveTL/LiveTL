@@ -1,5 +1,8 @@
 name: E2E Tests
-on: push
+on:
+  push:
+    branches-ignore:
+      - smelte
 jobs:
   e2e-test:
     runs-on: ubuntu-latest
@@ -32,4 +35,10 @@ jobs:
     - name: Build extension
       run: yarn e2e:build
     - name: Run tests
-      run: DISCORD_REPORT_HOOK=${{ secrets.DISCORD_WEBHOOK }} pytest --tests-per-worker 1 e2e
+      uses: nick-invision/retry@v2
+      with:
+        max_attempts: 3
+        retry_on: any
+        timeout_minutes: 10
+        command: |
+          DISCORD_REPORT_HOOK=${{ secrets.DISCORD_WEBHOOK }} pytest --tests-per-worker 1 e2e

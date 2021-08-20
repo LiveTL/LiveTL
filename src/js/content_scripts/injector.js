@@ -1,5 +1,6 @@
 import { mdiOpenInNew, mdiYoutubeTv, mdiIframeArray } from '@mdi/js';
 import { getFrameInfoAsync, createPopup } from '../../submodules/chat/scripts/chat-utils.js';
+import { fixLeaks } from '../../submodules/chat/src/plugins/ytc-fix-memleaks.js';
 import { paramsEmbedDomain } from '../constants.js';
 
 for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) {
@@ -104,6 +105,10 @@ const constructParams = () => {
 };
 
 async function loaded() {
+  const script = document.createElement('script');
+  script.innerHTML = `(${fixLeaks.toString()})();`;
+  document.body.appendChild(script);
+
   const elem = document.querySelector('yt-live-chat-app');
   elem.style.minWidth = '0px';
   elem.style.minHeight = '0px';
@@ -187,7 +192,7 @@ async function loaded() {
 }
 
 window.addEventListener('message', (packet) => {
-  if (packet.origin !== window.origin) window.postMessage(packet.data);
+  if (packet.origin !== window.origin && !packet.data.type) window.postMessage(packet.data);
 });
 
 /**

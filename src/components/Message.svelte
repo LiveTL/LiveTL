@@ -6,7 +6,9 @@
   import { AuthorType } from '../js/constants.js';
   import { createEventDispatcher } from 'svelte';
   import { Icon } from 'svelte-materialify/src';
-  import { mdiEyeOffOutline, mdiAccountRemove, mdiCheckCircle } from '@mdi/js';
+  import { mdiEyeOffOutline, mdiAccountRemove, mdiCheckCircle, mdiAccountVoice } from '@mdi/js';
+  import { mdiAccountVoiceOff } from '../js/svg.js';
+  import { spotlightedTranslator } from '../js/store.js';
   import '../css/splash.css';
 
   /** @type {Message} */
@@ -15,8 +17,15 @@
   export let showTimestamp = false;
   export let thin = false;
   export let inanimate = true;
+  export let deleted = false;
+  export let messageArray = null;
 
   const dispatch = createEventDispatcher();
+  const dispatcher = name => () => dispatch(name, message);
+
+  $: if (!messageArray && message) {
+    messageArray = message.messageArray;
+  }
 
   $: moderator = message.types & AuthorType.moderator;
   $: owner = message.types & AuthorType.owner;
@@ -27,12 +36,13 @@
   class="message"
   class:inanimate
   class:thin
+  class:deleted
   style="display: {hidden ? 'none' : 'block'}"
 >
   <!-- For screenshot checkmark -->
   <slot />
 
-  {#each message.messageArray as msg}
+  {#each messageArray as msg}
     {#if msg.type === 'text'}
       <span>{msg.text}</span>
     {:else if msg.type === 'link'}
@@ -51,11 +61,21 @@
     {/if}
     <span>{timestamp}</span>
     <span class="message-actions">
-      <span class="red-highlight" on:click={() => dispatch('hide')}>
+      <span
+        title="{$spotlightedTranslator ? 'Show other translators' : `Only show ${message.author}`}"
+        class="blue-highlight"
+        on:click={dispatcher('spotlight')}
+      >
+        <Icon path={$spotlightedTranslator ? mdiAccountVoiceOff : mdiAccountVoice} size="1em" />
+      </span>
+      <span
+        title="Hide message"
+        class="red-highlight"
+        on:click={dispatcher('hide')}
+      >
         <Icon path={mdiEyeOffOutline} size="1em" />
       </span>
-
-      <span class="red-highlight" on:click={() => dispatch('ban')}>
+      <span title="Ban {message.author}" class="red-highlight" on:click={dispatcher('ban')}>
         <Icon path={mdiAccountRemove} size="1em" />
       </span>
     </span>
@@ -93,8 +113,12 @@
     cursor: pointer;
   }
 
-  .message-actions .red-highlight :global(.s-icon:hover) {
+  .red-highlight :global(.s-icon:hover) {
     color: #ff2873;
+  }
+
+  .blue-highlight :global(.s-icon:hover) {
+    color: #2196f3;
   }
 
   .moderator {
@@ -108,6 +132,7 @@
   .info {
     font-size: 0.75em;
     color: lightgray;
+    font-style: normal;
   }
 
   .chat-link {
@@ -125,5 +150,10 @@
     background-color: rgba(255, 255, 255, 0.25);
     padding: 2px;
     border-radius: 5px;
+  }
+
+  .deleted {
+    font-style: italic;
+    color: #898888;
   }
 </style>

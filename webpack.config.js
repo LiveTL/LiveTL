@@ -172,7 +172,7 @@ var options = {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV)
     }),
-    new BannerPlugin({
+    ...(isAndroid ? [new BannerPlugin({
       banner: fileSystem.readFileSync(
         path.join(__dirname, 'src', 'js', 'polyfills', 'chrome.js')
       ).toString().replace(
@@ -180,7 +180,7 @@ var options = {
         `const MANIFEST_OBJECT = ${manifest};`
       ),
       raw: true,
-    }),
+    })] : []),
     new CopyWebpackPlugin({
       patterns: [
         {

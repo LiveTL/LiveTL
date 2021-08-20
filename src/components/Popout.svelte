@@ -1,21 +1,21 @@
 <script>
   import { afterUpdate, tick } from 'svelte';
-  import { fade } from 'svelte/transition';
-  import { Button, Icon, MaterialApp, TextField } from 'svelte-materialify/src';
-  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload, mdiFullscreen  } from '@mdi/js';
+  import { fade, fly } from 'svelte/transition';
+  import { Button, Icon, MaterialApp, TextField, Tooltip } from 'svelte-materialify/src';
+  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload, mdiFullscreen } from '@mdi/js';
+  import { mdiAccountVoiceOff } from '../js/svg.js';
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
-  import { TextDirection, paramsVideoTitle, paramsEmbedded } from '../js/constants.js';
-  import { faviconURL, textDirection, screenshotRenderWidth, videoTitle, enableExportButtons, updatePopupActive, enableFullscreenButton } from '../js/store.js';
+  import { TextDirection, paramsVideoTitle, isAndroid } from '../js/constants.js';
+  import { faviconURL, textDirection, screenshotRenderWidth, videoTitle, enableExportButtons, updatePopupActive, enableFullscreenButton, spotlightedTranslator, isResizing } from '../js/store.js';
   import MessageDisplay from './MessageDisplay.svelte';
   import ScreenshotExport from './ScreenshotExport.svelte';
   import Updates from './Updates.svelte';
+  import { displayedMessages } from '../js/sources-aggregate.js';
   import { saveAs } from 'file-saver';
   let settingsOpen = false;
-  export let isResizing = false;
   $videoTitle = paramsVideoTitle || $videoTitle;
   $: document.title = $videoTitle || 'LiveTL Popout';
-  export let isStandalone = paramsEmbedded ? true : false;
 
   let wrapper;
   let messageDisplay;
@@ -55,11 +55,10 @@
   }
 
   let selectedItems = [];
-  let allItems = [];
   let selectedItemCount = 0;
 
   function selectAllItems() {
-    selectedItems = [...allItems];
+    selectedItems = [...displayedMessages];
   }
 
   let selectOperation = () => {};
@@ -81,12 +80,18 @@
       d => `${d.author} (${d.timestamp}): ${d.text}`
     );
     if (toSave.length) {
-      const blob = new Blob([
-        toSave.join('\n')], {
-        type: 'text/plain;charset=utf-8'
+      const saveStr = toSave.join('\n');
+      if (isAndroid) {
+        // @ts-ignore
+        window.nativeJavascriptInterface.downloadText(saveStr, textFilename);
+      } else {
+        const blob = new Blob([
+          saveStr
+        ], {
+          type: 'text/plain;charset=utf-8'
+        });
+        saveAs(blob, textFilename);
       }
-      );
-      saveAs(blob, textFilename);
     }
     toggleSelecting();
     selectOperation = () => {};
@@ -101,8 +106,13 @@
     screenshotRenderWidth.set(renderWidthInt);
   }
 
-  
+
   function toggleFullScreen() {
+    if (isAndroid) { 
+      // @ts-ignore
+      window.nativeJavascriptInterface.toggleFullscreen();
+      return;
+    }
     if (
       (document.fullScreenElement && document.fullScreenElement !== null) ||
       (!document.mozFullScreen && !document.webkitIsFullScreen)
@@ -142,7 +152,7 @@
   <div
     class="settings-button d-flex"
     class:bottom-float={$textDirection === TextDirection.TOP}
-    class:d-none={isResizing}
+    class:d-none={$isResizing}
   >
     {#if isSelecting}
       <h6 class="floating-text">
@@ -186,46 +196,79 @@
         </div>
       {/if}
       {#if !isSelecting}
+        {#if !settingsOpen && $spotlightedTranslator}
+          <!-- Un-spotlight translator button -->
+          <Tooltip bottom>
+            <div transition:fly={{ x: -500, duration: 600 }}>
+              <Button
+                fab
+                size="small"
+                on:click={() => spotlightedTranslator.set(null)}
+              >
+                <Icon path={mdiAccountVoiceOff} />
+              </Button>
+            </div>
+            <span slot="tip">Show other translators</span>
+          </Tooltip>
+        {/if}
         {#if !settingsOpen && $enableExportButtons}
-          <Button
-            fab
-            size="small"
-            on:click={() => {
-              toggleSelecting();
-              selectOperation = saveScreenshot;
-            }}
-          >
-            <Icon path={isSelecting ? mdiCheck : mdiCamera} />
-          </Button>
-          <Button
-            fab
-            size="small"
-            on:click={() => {
-              toggleSelecting();
-              selectOperation = saveDownload;
-            }}
-          >
-            <Icon path={isSelecting ? mdiCheck : mdiDownload} />
-          </Button>
+          <!-- Screenshot button -->
+          <Tooltip bottom>
+            <Button
+              fab
+              size="small"
+              on:click={() => {
+                toggleSelecting();
+                selectOperation = saveScreenshot;
+              }}
+            >
+              <Icon path={isSelecting ? mdiCheck : mdiCamera} />
+            </Button>
+            <span slot="tip">Screenshot translations</span>
+          </Tooltip>
+          <!-- Export translations button -->
+          <Tooltip bottom>
+            <Button
+              fab
+              size="small"
+              on:click={() => {
+                toggleSelecting();
+                selectOperation = saveDownload;
+              }}
+            >
+              <Icon path={isSelecting ? mdiCheck : mdiDownload} />
+            </Button>
+            <span slot="tip">Export translations log (txt)</span>
+          </Tooltip>
         {/if}
         {#if !settingsOpen && $enableFullscreenButton}
-          <Button fab size="small" on:click={toggleFullScreen}>
-            <Icon path={mdiFullscreen} />
-          </Button>
+          <!-- Fullscreen button -->
+          <Tooltip bottom>
+            <Button fab size="small" on:click={toggleFullScreen}>
+              <Icon path={mdiFullscreen} />
+            </Button>
+            <span slot="tip">Toggle fullscreen</span>
+          </Tooltip>
         {/if}
-        <Button
-          fab
-          size="small"
-          on:click={() => (settingsOpen = !settingsOpen)}
-        >
-          <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
-        </Button>
+        <!-- Settings button -->
+        <Tooltip bottom>
+          <Button
+            fab
+            size="small"
+            on:click={() => (settingsOpen = !settingsOpen)}
+          >
+            <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
+          </Button>
+          <span slot="tip"
+            >{settingsOpen ? 'Close settings' : 'Open settings'}</span
+          >
+        </Tooltip>
       {/if}
     </div>
   </div>
-  <Wrapper {isResizing} on:scroll={updateWrapper} bind:this={wrapper}>
+  <Wrapper on:scroll={updateWrapper} bind:this={wrapper}>
     <div class:d-none={!settingsOpen}>
-      <Options {isStandalone} {isResizing} bind:active={settingsOpen} />
+      <Options bind:active={settingsOpen} />
     </div>
     <div class:d-none={settingsOpen}>
       <MessageDisplay
@@ -234,11 +277,11 @@
         on:afterUpdate={onMessageDisplayAfterUpdate}
         bind:isSelecting
         bind:selectedItems
-        bind:items={allItems}
+        items={$displayedMessages}
       />
     </div>
   </Wrapper>
-  {#if !(isResizing || settingsOpen)}
+  {#if !($isResizing || settingsOpen)}
     {#if !isAtRecent}
       <div
         class="recent-button"
@@ -317,5 +360,8 @@
   :global(.s-btn) {
     vertical-align: top !important;
     margin-left: 5px;
+  }
+  :global(.dropdown .s-text-field__wrapper, .s-select .s-text-field__wrapper) {
+    background-color: rgba(255, 255, 255, 0.05);
   }
 </style>

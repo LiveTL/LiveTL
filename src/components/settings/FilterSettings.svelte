@@ -4,24 +4,26 @@
     showModMessage,
     language,
     customFilters,
-    channelFilters,
     enableMchadTLs,
-    enableAPITLs
+    enableAPITLs,
+    ytcDeleteBehaviour
   } from '../../js/store.js';
   import {
     Row,
     Col,
     Button,
     Icon,
+    Radio,
     Subheader
   } from 'svelte-materialify/src';
   import { mdiPlus } from '@mdi/js';
   import { addFilter, cleanupFilters } from '../../js/filter.js';
-  import { languageNameValues } from '../../js/constants.js';
+  import { languageNameValues, ytcDeleteValues } from '../../js/constants.js';
   import CheckOption from '../options/Toggle.svelte';
   import CustomFilter from '../options/CustomFilter.svelte';
   import SelectOption from '../options/Dropdown.svelte';
-  import MultiDropdown from '../options/MultiDropdown.svelte';
+  import BlockedUsers from '../BlockedUsers.svelte';
+  import SpamProtection from '../SpamProtection.svelte';
 
   function createNewFilter() {
     cleanupFilters();
@@ -30,6 +32,8 @@
 
   onMount(cleanupFilters);
 
+  $: deleteBehaviourGroup = $ytcDeleteBehaviour;
+  $: ytcDeleteBehaviour.set(deleteBehaviourGroup);
 </script>
 
 <SelectOption
@@ -38,14 +42,14 @@
   items={languageNameValues}
 />
 <CheckOption name="Show moderator messages" store={showModMessage} />
-<MultiDropdown
-  name="Blocked users"
-  store={channelFilters}
-  getDisplayName={(n, v) => v.name}
-  getBool={n => channelFilters.get(n).blacklist}
-  setBool={(n, v) =>
-    channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}
-/>
+<BlockedUsers />
+<SpamProtection />
+<Subheader>When messages are deleted by moderators:</Subheader>
+{#each [...ytcDeleteValues.keys()] as key}
+  <Radio bind:group={deleteBehaviourGroup} value={key} style='padding-bottom: 5px;' color='blue'>
+    {ytcDeleteValues.get(key)}
+  </Radio>
+{/each}
 <Row>
   <Col>
     <Subheader>External translation sources</Subheader>
@@ -72,4 +76,7 @@
 </div>
 
 <style>
+  :global(.s-subheader) {
+    padding-left: 0px !important;
+  }
 </style>

@@ -4,6 +4,7 @@ dist
 secrets.*.js
 package-lock.json
 .vscode
+.idea/
 *.swp
 *.log
 __pycache__/

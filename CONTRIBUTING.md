@@ -56,11 +56,8 @@ if you have not yet set up a local development environment with the instructions
 **If you have difficulty starting up your environments, do _not_ open an issue. Message one of the admins or ask for
 help on the [discord server](https://discord.gg/uJrV3tmthg).**
 
-- `make` will build the firefox and chrome extensions
-    - The unpacked extension for each browser will be in `build/` and the packed extensions will be in `dist/`
-- `make test` will run the available tests
-    - The environment variables `DISABLE_CHROME` and `LEVEL` can be set to control the testing behavior.
-    - The argument of `py` can be given to `make test` can change which python version is used.
+- `yarn start` will start the development server in hmr mode
+- `yarn test:watch` will run the tests in watch mode
 - `make clean` will clear the build
 - In firefox, use about:debuggging to load the extension.
 - In chromium-based browsers, load an unpacked extension in the extension menu.
@@ -76,24 +73,29 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 ## Directory structure
 
 .\
-├── LiveTL - extension\
-│ ├── css - css files\
-│ ├── icons - icons to use\
-│ └── js - the main js files\
-│ └── lib - modules that will be concatenated to the main `frame.js` file\
-├── about - about github page\
-├── build - build files\
-│ ├── chrome\
-│ │ └── LiveTL - chrome unpacked extension\
-│ ├── common - common files to be bundled in both extensions\
-│ └── firefox\
-│ └── LiveTL - firefox unpacked extension\
-├── dist - distribution files\
-│ ├── chrome - contains chrome zipped extension\
-│ └── firefox - contains firefox zipped extension\
-├── embed - embedding chat\
-├── img - image files to be shown on github\
-└── tests - test files to be run
+├── build - build files that get hot reloaded\
+├── dist - two zips, one for firefox and one for chrome\
+├── e2e - python selenium tests\
+├── img - images used in LiveTL README and docs\
+├── src\
+│   ├── changelogs - changelog components\
+│   │   ├── common\
+│   │   └── img\
+│   ├── components - general svelte components, mostly flat component directory structure\
+│   │   ├── options - svelte components that are types of options to be composed in settings\
+│   │   └── settings - each settings page\
+│   ├── css - pretty much nothing lmao\
+│   ├── img - images available in the extension\
+│   ├── js - all our modules\
+│   │   ├── content_scripts - has the injector script that injects the LiveTL buttons\
+│   │   ├── pages - the exports of the svelte components that represent each LiveTL page\
+│   │   └── polyfills - polyfills we use\
+│   ├── plugins - plugins for injection to our script\
+│   ├── submodules - submodules\
+│   │   └── chat - the chat optimizer of [Hyperchat](https://www.github.com/LiveTL/HyperChat)\
+│   └── __tests__ - tests that match the directory structure of `src`\
+├── theme - theming for svelte-materialify\
+└── utils - utility scripts for yarn commands
 
 ## Other
 

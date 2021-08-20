@@ -2,7 +2,7 @@
 /** @typedef {{type: 'link', url: String, text: String}} LinkMessage */
 /** @typedef {{type: 'emote', src: String}} EmoteMessage */
 /** @typedef {TextMessage | LinkMessage | EmoteMessage} MessageItem */
-/** @typedef {{text: String, messageArray: MessageItem[], author: String, timestamp: String, id: String, types: Number}} Message */
+/** @typedef {{text: String, messageArray: MessageItem[], author: String, timestamp: String, types: Number, authorId: string, messageId: string, timestampMs: number}} Message */
 
 /** @typedef {Number} Seconds */
 /** @typedef {Number} UnixTimestamp */

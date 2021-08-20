@@ -1,6 +1,8 @@
-import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit } from './constants.js';
+import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour, DisplayMode, paramsEmbedded } from './constants.js';
 import { LookupStore, SyncStore } from './storage.js';
-import { writable } from 'svelte/store';
+// eslint-disable-next-line no-unused-vars
+import { writable, readable, derived, Readable } from 'svelte/store';
+import { compose } from './utils.js';
 
 /**
  * @template T
@@ -27,6 +29,8 @@ const sampleFilter = {
   id: ''
 };
 
+const sampleSpam = { author: '', authorId: '', spam: false };
+
 // Settings
 export const
   language = SS('language', 'English'),
@@ -34,7 +38,7 @@ export const
   chatZoom = SS('chatZoom', defaultZoom),
   showTimestamp = SS('showTimestamp', true),
   textDirection = SS('textDirection', TextDirection.BOTTOM),
-  videoSide = SS('videoSide', VideoSide.LEFT, false),
+  videoSideSetting = SS('videoSide', VideoSide.LEFT, false),
   showCaption = SS('showCaption', true),
   captionDuration = SS('captionDuration', 10),
   captionFontSize = SS('captionFontSize', 18),
@@ -68,10 +72,39 @@ export const
   enableMchadTLs = SS('enableMchadTLs', true),
   enableAPITLs = SS('enableAPITLs', true),
   enableExportButtons = SS('enableExportButtons', true),
-  enableFullscreenButton = SS('enableFullscreenButton', true);
+  enableFullscreenButton = SS('enableFullscreenButton', true),
+  mchadUsers = LS('mchadUsers', false),
+  autoPrefixTag = SS('autoPrefixTag', '[$filterLang]'),
+  macroTrigger = SS('macroTrigger', '/'),
+  ytcDeleteBehaviour = SS('ytcDeleteBehaviour', YtcDeleteBehaviour.HIDE),
+  autoVertical = SS('autoVertical', true),
+  enableSpamProtection = SS('enableSpamProtection', true),
+  spamMsgAmount = SS('spamMsgAmount', 5),
+  spamMsgInterval = SS('spamMsgInterval', 10),
+  spammersDetected = LS('spammersDetected', [sampleSpam].slice(1));
 
 // Non-persistant stores
+
+/** @typedef {{width: Number, height: Number}} WindowDimension */
+/** @type {Readable<WindowDimension>} */
+const getWindowDims = () => ({ width: window.innerWidth, height: window.innerHeight });
+export const windowSize = readable(getWindowDims(), set => {
+  const cb = compose(set, getWindowDims);
+  window.addEventListener('resize', cb);
+  return () => window.removeEventListener('resize', cb);
+});
+const videoSideDepends = [videoSideSetting, autoVertical, windowSize];
+export const videoSide = derived(videoSideDepends, ([$videoSide, $autoVert, $windims]) => {
+  const { width, height } = $windims;
+  return $autoVert && height > width ? VideoSide.TOP : $videoSide;
+}, videoSideSetting.get());
+
 export const updatePopupActive = writable(false);
 export const videoTitle = writable('LiveTL');
 export const timestamp = writable(0);
 export const faviconURL = writable('/48x48.png');
+export const availableMchadUsers = writable([]);
+export const spotlightedTranslator = writable(null);
+export const displayMode = writable(paramsEmbedded ? DisplayMode.EMBEDDED : DisplayMode.FULLPAGE);
+export const isResizing = writable(false);
+export const sessionHidden = writable([]);
