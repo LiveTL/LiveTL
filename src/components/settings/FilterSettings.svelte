@@ -12,7 +12,7 @@
   import { addFilter, cleanupFilters } from '../../js/filter.js';
   import { languageNameValues, ytcDeleteMap } from '../../js/constants.js';
   import CustomFilter from '../options/CustomFilter.svelte';
-  import BlockedUsers from '../BlockedUsers.svelte';
+  import BlockedUsers from './BlockedUsers.svelte';
   import Checkbox from '../common/CheckboxStore.svelte';
   import Dropdown from '../common/DropdownStore.svelte';
   import Radio from '../common/RadioGroupStore.svelte';

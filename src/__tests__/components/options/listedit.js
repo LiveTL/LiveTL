@@ -5,7 +5,7 @@ import { render } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
 
 import { get, writable } from 'svelte/store';
-import ListEdit from '../../../components/options/ListEdit.svelte';
+import ListEdit from '../../../components/old/ListEdit.svelte';
 
 describe('editable list', () => {
   const items = ['hello', 'there'];
