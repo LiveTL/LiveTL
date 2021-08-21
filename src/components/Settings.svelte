@@ -56,10 +56,7 @@
 <svelte:window on:resize={redrawSlider} />
 
 <MaterialApp theme="dark">
-  <div
-    style="display: flex; align-items: center; justify-content: center;"
-    bind:this={wrapper}
-  >
+  <div class="settings-parent" bind:this={wrapper}>
     <div
       class="settings-container"
       style="max-width: calc(min(500px, 100%)); width: 100%;"
@@ -102,6 +99,13 @@
 </MaterialApp>
 
 <style>
+  .settings-parent {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    height: 100% !important;
+    overflow: hidden;
+  }
   :global(label > .option-label) {
     padding-top: 0px;
     top: 0px;
@@ -116,6 +120,15 @@
   }
   :global(.s-window) {
     padding: 0px 10px 0px 10px;
+    height: 100%;
+  }
+
+  :global(.s-tabs) {
+    height: 100%;
+  }
+
+  .settings-container {
+    height: 100%;
   }
 
   .settings-container :global(.s-tooltip__wrapper) {
