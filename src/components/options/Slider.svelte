@@ -69,7 +69,7 @@
 </script>
 
 <div bind:this={wrapper}>
-  <Slider bind:value {color} {step} thumb={thumb ? true : false}>
+  <Slider bind:value {color} {step} thumb={Boolean(thumb)}>
     <div slot="default">
       {name}{suffix}
     </div>
