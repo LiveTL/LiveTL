@@ -56,6 +56,7 @@ module.exports = {
   },
   globals: {
     Ytc: 'readonly',
-    Chat: 'readonly'
+    Chat: 'readonly',
+    Ltl: 'readonly'
   }
 };
