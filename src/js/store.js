@@ -1,4 +1,5 @@
 import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour, DisplayMode, paramsEmbedded } from './constants.js';
+import { getAllVoiceNames, getVoiceMap } from './utils.js';
 import { LookupStore, SyncStore } from './storage.js';
 // eslint-disable-next-line no-unused-vars
 import { writable, readable, derived, Readable } from 'svelte/store';
@@ -81,7 +82,9 @@ export const
   enableSpamProtection = SS('enableSpamProtection', true),
   spamMsgAmount = SS('spamMsgAmount', 5),
   spamMsgInterval = SS('spamMsgInterval', 10),
-  spammersDetected = LS('spammersDetected', [sampleSpam].slice(1));
+  spammersDetected = LS('spammersDetected', [sampleSpam].slice(1)),
+  speechVoiceNameSetting = SS('speechVoiceNameSetting', ''),
+  speechSpeed = SS('speechSpeed', 1);
 
 // Non-persistant stores
 
@@ -98,6 +101,28 @@ export const videoSide = derived(videoSideDepends, ([$videoSide, $autoVert, $win
   const { width, height } = $windims;
   return $autoVert && height > width ? VideoSide.TOP : $videoSide;
 }, videoSideSetting.get());
+export const voiceNames = readable(getAllVoiceNames(), set => {
+  const cb = () => {
+    set(getAllVoiceNames());
+    unsub();
+  };
+  const unsub = () => window.removeEventListener('load', cb);
+  window.addEventListener('load', cb);
+  return unsub;
+});
+export const speechVoiceName = derived(
+  [speechVoiceNameSetting, voiceNames],
+  ([$speechVoiceNameSetting, $voiceNames]) => {
+    return (
+      $voiceNames.includes($speechVoiceNameSetting) ?
+        $speechVoiceNameSetting : $voiceNames[0]
+    ); 
+  },
+);
+export const speechSpeaker = derived(
+  [speechVoiceName, voiceNames],
+  ([$speechVoiceName, _$voiceNames]) => getVoiceMap().get($speechVoiceName),
+);
 
 export const updatePopupActive = writable(false);
 export const videoTitle = writable('LiveTL');

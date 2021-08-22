@@ -5,7 +5,8 @@ import { getSpamAuthors, removeDuplicateMessages } from './sources-util.js';
 import { ytcDeleteBehaviour, sessionHidden, spotlightedTranslator } from './store.js';
 import { channelFilters, mchadUsers, spamMsgAmount, spamMsgInterval } from './store.js';
 import { enableSpamProtection, spammersDetected } from './store.js';
-import { YtcDeleteBehaviour } from './constants.js';
+import { defaultCaption, YtcDeleteBehaviour } from './constants.js';
+import { checkAndSpeak } from './speech.js';
 
 /**
  * @template {T}
@@ -119,3 +120,17 @@ const dispTransform =
   };
 
 export const displayedMessages = derived(dispDepends, dispTransform);
+
+export const captionText = readable(defaultCaption, set => {
+  let text = defaultCaption;
+  return displayedMessages.subscribe($msgs => {
+    const $translation = $msgs[$msgs.length - 1]?.text;
+    if ($translation != null && $translation != text) {
+      set(text = $translation);
+    }
+  });
+});
+
+// hmr
+if (window.unsubDictation) window.unsubDictation();
+window.unsubDictation = captionText.subscribe($txt => $txt !== defaultCaption && checkAndSpeak($txt));

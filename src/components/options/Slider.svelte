@@ -26,7 +26,7 @@
     if (wrapper == null) return;
     let e = wrapper.querySelector('.s-slider__tooltip');
     if (e) {
-      e.setAttribute('data-content', Math.round(scaledBack));
+      e.setAttribute('data-content', typeof thumb != 'boolean' ? thumb : Math.round(scaledBack));
     }
   }
 
@@ -69,7 +69,7 @@
 </script>
 
 <div bind:this={wrapper}>
-  <Slider bind:value {color} {step} {thumb}>
+  <Slider bind:value {color} {step} thumb={Boolean(thumb)}>
     <div slot="default">
       {name}{suffix}
     </div>

@@ -5,17 +5,15 @@
     videoSideSetting,
     chatZoom,
     livetlFontSize,
-    doSpeechSynth,
     showCaption,
     showTimestamp,
-    speechVolume,
     textDirection,
     enableCaptionTimeout,
     chatSplit,
     enableExportButtons,
     enableFullscreenButton,
     autoVertical,
-    displayMode
+    displayMode,
   } from '../../js/store.js';
   import { ChatSplit, TextDirection, VideoSide, DisplayMode } from '../../js/constants.js';
   import CheckOption from '../options/Toggle.svelte';
@@ -23,6 +21,7 @@
   import EnumOption from '../options/Radio.svelte';
   import FontDemo from '../FontDemo.svelte';
   import ImportExport from '../ImportExport.svelte';
+  import ReadAloud from '../options/ReadAloud.svelte';
 </script>
 
 <ImportExport />
@@ -83,10 +82,7 @@
   {/if}
 {/if}
 <!-- {/if} -->
-<CheckOption name="Read-aloud mode" store={doSpeechSynth} />
-{#if $doSpeechSynth}
-  <SliderOption name="Speech volume" store={speechVolume} min={0} max={1} />
-{/if}
+<ReadAloud />
 <CheckOption
   name="Show screenshot and download buttons"
   store={enableExportButtons}
