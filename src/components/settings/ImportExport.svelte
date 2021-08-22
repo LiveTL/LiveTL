@@ -76,7 +76,6 @@
     {/if}
     <span>Click the clipboard icon to copy your settings.</span>
   {/if}
-  <!-- Note: color is overwritten by MaterialApp from svelte-materialify. -->
   <div slot="actions">
     <SvgButton
       path={isImporting ? mdiCheck : mdiClipboardOutline}

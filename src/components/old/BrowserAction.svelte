@@ -1,6 +1,6 @@
 <script>
-  import Options from '../components/Options.svelte';
-  import Wrapper from './Wrapper.svelte';
+  import Options from '../Options.svelte';
+  import Wrapper from '../Wrapper.svelte';
   import { MaterialApp } from 'svelte-materialify/src';
 </script>
 
