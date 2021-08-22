@@ -109,9 +109,3 @@ export const ytcDeleteValues = new Map([
   [YtcDeleteBehaviour.PLACEHOLDER, 'Show placeholder'],
   [YtcDeleteBehaviour.NOTHING, 'Do nothing']
 ]);
-
-export const defaultCaption = `
-Captions captured from the chat will appear here. Try moving and resizing!
-You can also disable floating captions or make captions disappear
-when inactive in the settings menu.
-`;
