@@ -46,7 +46,7 @@ export const suppress = cb => {
 export const sortBy = attr => arr => arr.sort((l, r) => l[attr] - r[attr]);
 
 /** @type {(ms: Number) => Promise} */
-export const sleep = ms => new Promise((res, _rej) => {
+export const sleep = ms => new Promise((res, rej) => {
   setTimeout(res, ms);
 });
 

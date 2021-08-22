@@ -4,8 +4,10 @@
     showModMessage,
     language,
     customFilters,
+    channelFilters,
     enableMchadTLs,
     enableAPITLs,
+    mchadUsers,
     ytcDeleteBehaviour
   } from '../../js/store.js';
   import {
@@ -22,8 +24,8 @@
   import CheckOption from '../options/Toggle.svelte';
   import CustomFilter from '../options/CustomFilter.svelte';
   import SelectOption from '../options/Dropdown.svelte';
+  import MultiDropdown from '../options/MultiDropdown.svelte';
   import BlockedUsers from '../BlockedUsers.svelte';
-  import SpamProtection from '../SpamProtection.svelte';
 
   function createNewFilter() {
     cleanupFilters();
@@ -43,7 +45,6 @@
 />
 <CheckOption name="Show moderator messages" store={showModMessage} />
 <BlockedUsers />
-<SpamProtection />
 <Subheader>When messages are deleted by moderators:</Subheader>
 {#each [...ytcDeleteValues.keys()] as key}
   <Radio bind:group={deleteBehaviourGroup} value={key} style='padding-bottom: 5px;' color='blue'>
@@ -76,7 +77,4 @@
 </div>
 
 <style>
-  :global(.s-subheader) {
-    padding-left: 0px !important;
-  }
 </style>

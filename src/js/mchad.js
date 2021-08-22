@@ -148,7 +148,7 @@ export const getRoomTranslations = room => derived(streamRoom(room.Nick), (data,
 
 /** @type {(videoId: String, retryInterval: Seconds) => MCHADLiveRoom[]} */
 const getLiveRoomsWithRetry = async (videoId, retryInterval) => {
-  for (;;) {
+  while (1) {
     const { live } = await getRooms(videoId);
     if (live.length) return live;
     await sleep(retryInterval * 1000);

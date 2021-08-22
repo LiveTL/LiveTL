@@ -168,15 +168,7 @@ export class LookupStore {
    * @return {T}
    */
   get(key) {
-    return this._lookup[key] ?? this.defaultValue;
-  }
-
-  /**
-   * @param {String} key
-   * @return {Boolean}
-   */
-  has(key) {
-    return this._lookup[key] != null;
+    return this._lookup[key] || this.defaultValue;
   }
 
   /**

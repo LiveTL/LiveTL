@@ -4,10 +4,10 @@ import { compose } from './utils';
 import { derived, writable, Writable, Readable } from 'svelte/store';
 // eslint-disable-next-line no-unused-vars
 import { Message } from './types.js';
-import { parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted, authorWhitelisted, authorBlacklisted } from './filter';
+import { isLangMatch, parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted, authorWhitelisted, authorBlacklisted } from './filter';
 import { isTranslation, replaceFirstTranslation } from './filter';
-import { showModMessage, timestamp } from './store';
-import { paramsVideoId, AuthorType, paramsPopout, paramsTabId, paramsFrameId } from './constants';
+import { language, showModMessage, spotlightedTranslator, timestamp } from './store';
+import { paramsVideoId, AuthorType, languageNameCode, paramsPopout, paramsTabId, paramsFrameId } from './constants';
 import * as MCHAD from './mchad.js';
 import * as API from './api.js';
 
