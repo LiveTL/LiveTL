@@ -54,4 +54,7 @@
   .spam-sliders :global(.s-input__slot) {
     margin-bottom: 0px !important;
   }
+  code {
+    margin: 0px 5px 0px 5px;
+  }
 </style>
