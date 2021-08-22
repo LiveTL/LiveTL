@@ -1,5 +1,6 @@
 import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour, DisplayMode, paramsEmbedded } from './constants.js';
 import { LookupStore, SyncStore } from './storage.js';
+// eslint-disable-next-line no-unused-vars
 import { writable, readable, derived, Readable } from 'svelte/store';
 import { compose } from './utils.js';
 
@@ -27,6 +28,8 @@ const sampleFilter = {
   rule: '',
   id: ''
 };
+
+const sampleSpam = { author: '', authorId: '', spam: false };
 
 // Settings
 export const
@@ -74,7 +77,11 @@ export const
   autoPrefixTag = SS('autoPrefixTag', '[$filterLang]'),
   macroTrigger = SS('macroTrigger', '/'),
   ytcDeleteBehaviour = SS('ytcDeleteBehaviour', YtcDeleteBehaviour.HIDE),
-  autoVertical = SS('autoVertical', true);
+  autoVertical = SS('autoVertical', true),
+  enableSpamProtection = SS('enableSpamProtection', true),
+  spamMsgAmount = SS('spamMsgAmount', 5),
+  spamMsgInterval = SS('spamMsgInterval', 10),
+  spammersDetected = LS('spammersDetected', [sampleSpam].slice(1));
 
 // Non-persistant stores
 

@@ -1,13 +1,10 @@
 <script>
   import {
     afterUpdate,
-    onMount,
-    onDestroy,
     createEventDispatcher
   } from 'svelte';
   import Message from './Message.svelte';
   import { Checkbox } from 'svelte-materialify/src';
-  import { removeDuplicateMessages } from '../js/sources-util.js';
   import MessageDisplayWrapper from './MessageDisplayWrapper.svelte';
   import '../css/splash.css';
   import {
