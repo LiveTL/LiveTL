@@ -36,7 +36,7 @@
   {#if showReset}
     <div class="flex-none">
       <Button
-        icon="restore"
+        icon="refresh"
         py="px"
         px="3"
         on:click={() => store.reset()}
