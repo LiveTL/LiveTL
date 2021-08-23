@@ -82,9 +82,11 @@
   .badges {
     margin-top: 10px;
     font-size: 0.75em;
+    display: flex;
   }
   .badges img {
     height: 1.5em;
+    margin: 0px 2px 0px 2px;
   }
   .heading {
     display: flex;
