@@ -5,8 +5,7 @@
   import { createEventDispatcher } from 'svelte';
   import { spotlightedTranslator } from '../js/store.js';
   import '../css/splash.css';
-  import Chip from 'smelte/src/components/Chip';
-  import Icon from 'smelte/src/components/Icon';
+  import Icon from './common/Icon.svelte';
   import Menu from './common/Menu.svelte';
 
   // TODO: test mchad & deletion
@@ -70,7 +69,7 @@
 
 {#if !hidden}
   <div
-    class="flex flex-row gap-2 m-1 p-1 rounded bg-gray-800 text-base items-center"
+    class="flex flex-row gap-2 m-1 py-2 pr-1 rounded bg-gray-800 text-base items-center"
     on:mouseover={() => (focused = true)}
     on:focus={() => (focused = true)}
     on:mouseout={() => (focused = false)}
@@ -82,7 +81,7 @@
     </div>
     <div class="flex-1">
       <!-- Message content-->
-      <span class="mr-1">
+      <span class="mr-1 text-white align-middle">
         {#each messageArray as msg}
           {#if msg.type === 'text'}
             <span class={deletedClass}>{msg.text}</span>
@@ -101,18 +100,19 @@
       </span>
       <!-- Author & timestamp -->
       <span class="text-sm text-gray-700 dark:text-gray-400">
-        <span class="{nameColorClass} inline-block">{message.author}</span>
+        <span class="{nameColorClass} inline-block align-middle">{message.author}</span>
         {#if mchad}
-          <span>
-            <Chip icon="check_circle" selectable={false}>Mchad TL</Chip>
+          <span class="bg-gray-700 px-1 rounded inline-flex gap-1 items-center dark:text-gray-300 align-middle">
+            <Icon block={false} class="inline" small>check_circle</Icon>
+            <span>Mchad TL</span>
           </span>
         {/if}
-        <span>{timestamp}</span>
+        <span class="inline-block align-middle">{timestamp}</span>
       </span>
     </div>
     <!-- Menu -->
     <Menu items={menuItems} visible={focused}>
-      <Icon slot="activator" class="block">more_vert</Icon>
+      <Icon slot="activator">more_vert</Icon>
     </Menu>
   </div>
 {/if}

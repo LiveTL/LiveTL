@@ -1,6 +1,6 @@
 <script>
   import Select from 'smelte/src/components/Select';
-  import Icon from 'smelte/src/components/Icon';
+  import Icon from '../common/Icon.svelte';
   // I legit can't understand LookupStore to migrate this to TS lol
 
   export let name = '';

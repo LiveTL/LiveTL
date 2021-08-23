@@ -8,7 +8,7 @@
   import TextField from '../common/TextField.svelte';
   import Card from '../common/Card.svelte';
   import ExpandingCard from '../common/ExpandingCard.svelte';
-  import Icon from 'smelte/src/components/Icon';
+  import Icon from '../common/Icon.svelte';
 
   const leaderCharRules = [
     {

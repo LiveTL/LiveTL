@@ -2,7 +2,7 @@
   import { noop } from 'svelte/internal';
   // TODO: Might change to material icons font instead of mdi
   import SvgButton from '../../submodules/chat/src/components/common/SvgButton.svelte';
-  import Icon from 'smelte/src/components/Icon';
+  import Icon from './Icon.svelte';
 
   export let color = 'dark';
   export let title = '';
@@ -30,19 +30,19 @@
     on:click={headerOnClick}
   >
     <div class="flex-1 pl-2 flex gap-3 items-center">
-      <slot name="title-icon">
+      <slot name="header-start">
         {#if icon !== ''}
           <Icon>{icon}</Icon>
         {/if}
       </slot>
-      <slot name="title">
+      <slot name="header-title">
         {#if title !== ''}
           <h6>{title}</h6>
         {/if}
       </slot>
     </div>
     <div class="flex-none self-end">
-      <slot name="title-button">
+      <slot name="header-end">
         {#if titleButtonPath !== ''}
           <SvgButton
             transparent
