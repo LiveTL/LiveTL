@@ -7,7 +7,7 @@ import { Message, Seconds } from './types.js';
  * @param {Seconds} sourceLatency the amount of lag between ytc and other sources
  * @return {Message[]} 
  */
-export function removeDuplicateMessages(msgs, sourceLatency=10) {
+export function removeDuplicateMessages(msgs, sourceLatency=60) {
   let lastMessages = [];
   const isUnique = msg => {
     lastMessages = lastMessages
@@ -21,18 +21,7 @@ export function removeDuplicateMessages(msgs, sourceLatency=10) {
 }
 
 /** @type {(msg: Message) => Seconds} */
-const messageTime = msg => {
-  const timeSegments = msg.timestamp.split(':').map(m => parseInt(m));
-  if (timeSegments.length === 3) {
-    const [hours, minutes, seconds] = timeSegments;
-    return hours * 3600 + minutes * 60 + seconds;
-  }
-  if (timeSegments.length === 2) {
-    const [minutes, seconds] = timeSegments;
-    return minutes * 60 + seconds;
-  }
-  throw new Error('Invalid timestamp format');
-};
+const messageTime = msg => msg.timestampMs / 1000;
 
 /** @type {(mostRecent: Message, latency: Number) => (msg: Message) => Boolean} */
 const isRecentMessage = (mostRecent, latency) => msg =>
@@ -49,7 +38,7 @@ const messageDup = (msg, otherMsg) =>
 
 /** @type {(msg: Message, otherMsg: Message) => Boolean} */
 const messageEquals = (msg, otherMsg) => msg.text === otherMsg.text &&
-  msg.timestamp === otherMsg.timestamp &&
+  msg.timestampMs === otherMsg.timestampMs &&
   msg.authorId === otherMsg.authorId;
 
 /** @type {(text: String) => String} */
