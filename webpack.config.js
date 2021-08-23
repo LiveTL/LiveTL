@@ -65,7 +65,7 @@ module.exports = (env, options) => {
       'chat-interceptor': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-interceptor.ts'),
       'chat-background': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-background.ts'),
       chat: path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-injector.ts'),
-      hyperchat: path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'hyperchat.ts')
+      'hyperchat/hyperchat': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'hyperchat.ts')
     },
     output: {
       path: path.join(__dirname, 'build'),
@@ -261,26 +261,26 @@ module.exports = (env, options) => {
           }
         ]
       }),
-      new FileManagerPlugin({
-        events: {
-          onEnd: {
-            delete: [
-              './build/hyperchat/hyperchat.bundle.js'
-              // './build/hyperchat/hyperchat.css'
-            ],
-            move: [
-              {
-                source: './build/hyperchat.bundle.js',
-                destination: './build/hyperchat/hyperchat.bundle.js'
-              },
-              {
-                source: './build/hyperchat.css',
-                destination: './build/hyperchat/hyperchat.css'
-              }
-            ]
-          }
-        }
-      }),
+      // new FileManagerPlugin({
+      //   events: {
+      //     onEnd: {
+      //       delete: [
+      //         './build/hyperchat/hyperchat.bundle.js'
+      //         // './build/hyperchat/hyperchat.css'
+      //       ],
+      //       move: [
+      //         {
+      //           source: './build/hyperchat.bundle.js',
+      //           destination: './build/hyperchat/hyperchat.bundle.js'
+      //         },
+      //         {
+      //           source: './build/hyperchat.css',
+      //           destination: './build/hyperchat/hyperchat.css'
+      //         }
+      //       ]
+      //     }
+      //   }
+      // }),
       new HtmlWebpackPlugin({
         template: path.join(__dirname, 'src', 'empty.html'),
         filename: 'watch.html',
@@ -315,7 +315,7 @@ module.exports = (env, options) => {
       new HtmlWebpackPlugin({
         template: path.join(__dirname, 'src', 'empty.html'),
         filename: 'hyperchat/index.html',
-        chunks: ['hyperchat'],
+        chunks: ['hyperchat/hyperchat'],
         chunksSortMode: 'manual'
       }),
       new MiniCssExtractPlugin({ filename: '[name].css' })
