@@ -1,6 +1,6 @@
 export interface Queue<T> {
   clear(): void;
-  pop(): T;
+  pop(): T | undefined;
   push(item: T): void;
 }
 
@@ -17,13 +17,15 @@ export function queue<T>(): Queue<T> {
     last = top_;
   }
 
-  function pop(): T {
+  function pop(): T | undefined {
     const front = top_;
-    top_ = top_.next_;
-    if (front === last) {
-      last = null;
+    if (front) {
+      top_ = top_?.next_ || null;
+      if (front === last) {
+        last = null;
+      }
+      return front.data;
     }
-    return front.data;
   }
 
   function push(item: T) {
