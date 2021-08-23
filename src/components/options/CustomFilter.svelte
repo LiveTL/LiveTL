@@ -1,6 +1,6 @@
 <script lang="ts">
   import { writable } from 'svelte/store';
-  import { onMount } from 'svelte';
+  // import { onMount } from 'svelte';
   import { modifyFilter, deleteFilter } from '../../js/filter.js';
   import Dropdown from '../common/DropdownStore.svelte';
   import { showBlockItems, plainRegexItems, chatAuthorItems } from '../../js/constants.js';
@@ -26,13 +26,13 @@
   $: maxRuleLength = Math.max(maxRuleLength, rule.length);
   $: updateFilter($sShowBlock, $sPlainReg, $sChatAuthor, rule);
 
-  onMount(() => {
-    div.scrollIntoView({
-      behavior: 'smooth',
-      block: 'nearest',
-      inline: 'nearest'
-    });
-  });
+  // onMount(() => {
+  //   div.scrollIntoView({
+  //     behavior: 'smooth',
+  //     block: 'nearest',
+  //     inline: 'nearest'
+  //   });
+  // });
 </script>
 
 <div class="flex flex-col rounded gap-2" bind:this={div}>
