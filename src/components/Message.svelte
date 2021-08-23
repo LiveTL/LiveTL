@@ -82,7 +82,7 @@
       <!-- For screenshot checkmark -->
       <slot />
     </div>
-    <div class="flex-1 ml-2">
+    <div class="flex-1 mx-2">
       <!-- Message content-->
       <span class="mr-1 text-white align-middle">
         {#each messageArray as msg}
@@ -115,7 +115,7 @@
     </div>
     <!-- Menu -->
     {#if !screenshot && !isSelecting}
-      <Menu items={menuItems} visible={focused} class="ml-2">
+      <Menu items={menuItems} visible={focused} class="mr-2">
         <Icon slot="activator">more_vert</Icon>
       </Menu>
     {/if}

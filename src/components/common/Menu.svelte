@@ -14,7 +14,6 @@
   export let width = 'max';
   export let visible = true;
 
-  let selected = '';
   let open = false;
   let activator: HTMLElement | undefined;
   let listDiv: HTMLElement | undefined;
@@ -22,12 +21,12 @@
   let windowInnerWidth = 0;
   let offset = '';
 
-  const onSelectedChange = (selected?: string) => {
-    const item = items.find((i) => i.value === selected);
+  const onListChange = (e: CustomEvent<string>) => {
+    open = false;
+    const item = items.find((i) => i.value === e.detail);
     if (!item || !item.onClick) return;
 
     item.onClick();
-    item.selected = false;
   };
 
   const onOpenChange = async (open: boolean) => {
@@ -57,7 +56,6 @@
     offset = `${offsetY} ${offsetX}`;
   };
 
-  $: onSelectedChange(selected);
   $: onOpenChange(open);
   $: listClasses = 'absolute bg-white rounded shadow z-20 dark:bg-dark-500 ' +
     `w-${width} ${offset}`;
@@ -86,11 +84,10 @@
           bind:this={listDiv}
         >
           <List
-            bind:value={selected}
             select
             dense
             {items}
-            on:change={() => (open = false)}
+            on:change={onListChange}
           />
         </div>
       {/if}
