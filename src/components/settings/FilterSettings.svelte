@@ -8,7 +8,6 @@
     enableAPITLs,
     ytcDeleteBehaviour
   } from '../../js/store.js';
-  import { mdiPlus } from '@mdi/js';
   import { addFilter, cleanupFilters } from '../../js/filter.js';
   import { languageNameValues, ytcDeleteMap } from '../../js/constants.js';
   import CustomFilter from '../options/CustomFilter.svelte';
@@ -53,8 +52,8 @@
 </Card>
 <Card
   title="Custom filters"
-  titleButtonPath={mdiPlus}
-  titleButtonOnClick={createNewFilter}
+  headerEndIcon="add"
+  headerEndIconOnClick={createNewFilter}
 >
   {#each $customFilters as rule}
     <CustomFilter {...rule} />

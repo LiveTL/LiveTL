@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { mdiCheck, mdiClipboardOutline } from '@mdi/js';
   import { importStores, exportStores } from '../../js/storage.js';
   import { compose } from '../../js/utils.js';
   import Button from 'smelte/src/components/Button';
   import Dialog from '../common/Dialog.svelte';
-  import SvgButton from '../../submodules/chat/src/components/common/SvgButton.svelte';
   import TextField from '../common/TextField.svelte';
+  import IconButton from '../common/IconButton.svelte';
 
   let isImporting = false;
   let value = '';
@@ -74,14 +73,13 @@
     {#if success}
       <div class="mb-2 text-success-500">{success}</div>
     {/if}
-    <span>Click the clipboard icon to copy your settings.</span>
+    <span>Click the copy icon to copy your settings.</span>
   {/if}
   <div slot="actions">
-    <SvgButton
-      path={isImporting ? mdiCheck : mdiClipboardOutline}
-      transparent
-      color="success"
+    <IconButton
+      icon={isImporting ? 'check' : 'content_copy'}
       on:click={isImporting ? onImportRequest : exportToClipboard}
+      color="success"
     />
   </div>
 </Dialog>

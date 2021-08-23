@@ -1,13 +1,11 @@
 <script lang="ts">
   import { noop } from 'svelte/internal';
-  // TODO: Might change to material icons font instead of mdi
-  import SvgButton from '../../submodules/chat/src/components/common/SvgButton.svelte';
   import Icon from './Icon.svelte';
 
   export let color = 'dark';
   export let title = '';
-  export let titleButtonPath = '';
-  export let titleButtonOnClick: (e: MouseEvent) => void = noop;
+  export let headerEndIcon = '';
+  export let headerEndIconOnClick: (e: MouseEvent) => void = noop;
   export let gap = 2;
   export let icon = '';
   export let addHeaderClasses = '';
@@ -43,13 +41,10 @@
     </div>
     <div class="flex-none self-end">
       <slot name="header-end">
-        {#if titleButtonPath !== ''}
-          <SvgButton
-            transparent
-            path={titleButtonPath}
-            on:click={titleButtonOnClick}
-            color="white"
-          />
+        {#if headerEndIcon !== ''}
+          <Icon on:click={headerEndIconOnClick} class="cursor-pointer">
+            {headerEndIcon}
+          </Icon>
         {/if}
       </slot>
     </div>

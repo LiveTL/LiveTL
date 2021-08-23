@@ -1,5 +1,4 @@
 <script>
-  import { mdiPlus } from '@mdi/js';
   import { onMount } from 'svelte';
   import CustomMacro from '../options/CustomMacro.svelte';
   import { macros, doAutoPrefix, doTranslatorMode, autoPrefixTag, macroTrigger } from '../../js/store.js';
@@ -43,8 +42,8 @@
   {/if}
   <Card
     title="Macros"
-    titleButtonPath={mdiPlus}
-    titleButtonOnClick={createNewMacro}
+    headerEndIcon="add"
+    headerEndIconOnClick={createNewMacro}
   >
     <TextField
       rules={leaderCharRules}

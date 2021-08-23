@@ -1,8 +1,7 @@
 <script lang="ts">
   import type { SyncStore } from 'js/storage';
-  import { mdiRestore } from '@mdi/js';
   import Slider from 'smelte/src/components/Slider';
-  import SvgButton from '../../submodules/chat/src/components/common/SvgButton.svelte';
+  import Button from './IconButton.svelte';
 
   /** SyncStore for value updates. */
   export let store: SyncStore<number>;
@@ -36,13 +35,13 @@
   </div>
   {#if showReset}
     <div class="flex-none">
-      <SvgButton
-        path={mdiRestore}
-        on:click={() => store.reset()}
-        round={false}
-        size="20px"
+      <Button
+        icon="restore"
         py="px"
         px="3"
+        on:click={() => store.reset()}
+        transparent={false}
+        round={false}
       />
     </div>
   {/if}

@@ -1,9 +1,8 @@
 <script>
-  import { mdiDelete } from '@mdi/js';
   import { macros } from '../../js/store.js';
   import Checkbox from '../common/Checkbox.svelte';
-  import SvgButton from '../../submodules/chat/src/components/common/SvgButton.svelte';
   import TextField from '../common/TextField.svelte';
+  import Button from '../common/IconButton';
 
   export let name;
   export let expansion;
@@ -21,7 +20,7 @@
   $: saveValues({ name, expansion, enabled });
 </script>
 
-<div class="flex flex-row items-center gap-2 my-2">
+<div class="flex flex-row items-center gap-2">
   <div>
     <TextField bind:value={name} placeholder="Name" dense />
   </div>
@@ -32,14 +31,10 @@
     <Checkbox bind:checked={enabled} />
   </div>
   <div class="flex-initial">
-    <SvgButton
-      path={mdiDelete}
-      transparent
-      px='1'
-      py='0'
-      color='error'
+    <Button
+      icon="delete"
+      color="error"
       on:click={deleteMacro}
-      size='24px'
     />
   </div>
 </div>
