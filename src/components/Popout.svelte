@@ -1,9 +1,7 @@
 <script>
   import { afterUpdate, tick } from 'svelte';
   import { fade, fly } from 'svelte/transition';
-  import { Button, Icon, TextField, Tooltip } from 'svelte-materialify/src';
-  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload, mdiFullscreen } from '@mdi/js';
-  import { mdiAccountVoiceOff } from '../js/svg.js';
+  import { Tooltip } from 'svelte-materialify/src';
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
   import { TextDirection, paramsVideoTitle, isAndroid } from '../js/constants.js';
@@ -14,6 +12,8 @@
   import { displayedMessages } from '../js/sources-aggregate.js';
   import { saveAs } from 'file-saver';
   import dark from 'smelte/src/dark';
+  import Button from './common/IconButton.svelte';
+  import TextField from './common/TextField.svelte';
 
   dark().set(true);
 
@@ -25,6 +25,7 @@
   let messageDisplay;
   let isAtRecent = true;
 
+  // FIXME: Scroll to latest button broke again
   const updateWrapper = () => [wrapper.isAtBottom(), wrapper.isAtTop(), setTimeout(checkAtRecent)];
 
   function checkAtRecent () {
@@ -54,32 +55,32 @@
 
   let isSelecting = false;
 
-  function toggleSelecting() {
+  function toggleSelecting () {
     isSelecting = !isSelecting;
   }
 
   let selectedItems = [];
   let selectedItemCount = 0;
 
-  function selectAllItems() {
+  function selectAllItems () {
     selectedItems = [...displayedMessages];
   }
 
   let selectOperation = () => {};
 
-  function getSelectedItems() {
+  function getSelectedItems () {
     return selectedItems.filter(d => !d.hidden);
   }
 
   $: selectedItems, selectedItemCount = getSelectedItems().length;
 
-  function saveScreenshot() {
+  function saveScreenshot () {
     renderQueue = getSelectedItems();
     toggleSelecting();
     selectOperation = () => {};
   }
 
-  function saveDownload() {
+  function saveDownload () {
     const toSave = getSelectedItems().map(
       d => `${d.author} (${d.timestamp}): ${d.text}`
     );
@@ -154,49 +155,56 @@
 
   <Updates bind:active={$updatePopupActive} />
   <div
-    class="settings-button d-flex"
-    class:bottom-float={$textDirection === TextDirection.TOP}
-    class:d-none={$isResizing}
+    class="flex flex-row gap-2 absolute right-0 p-1 z-50"
+    class:bottom-0={$textDirection === TextDirection.TOP}
+    class:top-0={$textDirection === TextDirection.BOTTOM}
+    class:hidden={$isResizing}
   >
     {#if isSelecting}
-      <h6 class="floating-text">
+      <h6 class="inline p-2 bg-dark-700 flex-none h-full self-center">
         {selectedItemCount} TLs selected
       </h6>
-      {#if selectOperation == saveScreenshot}
+      {#if selectOperation === saveScreenshot}
         <TextField
           dense
           bind:value={renderWidth}
-          filled
-          rules={[item => (isNaN(parseInt(item)) ? 'Invalid width' : true)]}
-          class="width-input">Width (px)</TextField
-        >
-      {/if}
-      {#if selectOperation == saveDownload}
+          rules={[{ assert: item => (!isNaN(parseInt(item))), error: 'Invalid width' }]}
+          label="Width (px)"
+        />
+      {:else if selectOperation === saveDownload}
         <TextField
           dense
           bind:value={textFilename}
-          filled
-          rules={[item => (!item ? 'Invalid filename' : true)]}
-          class="filename-input">Filename</TextField
-        >
+          rules={[{ assert: item => (item), error: 'Invalid filename' }]}
+          label="Filename"
+        />
       {/if}
     {/if}
-    <div class="d-flex">
+    <div class="flex gap-2">
       {#if isSelecting}
-        <div class="blue-text">
-          <Button fab size="small" on:click={selectAllItems}>
-            <Icon path={mdiExpandAllOutline} />
-          </Button>
+        <div class="flex-shrink-0">
+          <Button
+            icon="select_all"
+            color="blue"
+            on:click={selectAllItems}
+            transparent={false}
+          />
         </div>
-        <div class="green-text">
-          <Button fab size="small" on:click={selectOperation}>
-            <Icon path={mdiCheck} />
-          </Button>
+        <div class="flex-shrink-0">
+          <Button
+            icon="check"
+            color="success"
+            on:click={selectOperation}
+            transparent={false}
+          />
         </div>
-        <div class:red-text={isSelecting}>
-          <Button fab size="small" on:click={toggleSelecting}>
-            <Icon path={mdiClose} />
-          </Button>
+        <div class="flex-shrink-0">
+          <Button
+            icon="close"
+            color="error"
+            on:click={toggleSelecting}
+            transparent={false}
+          />
         </div>
       {/if}
       {#if !isSelecting}
@@ -205,12 +213,11 @@
           <Tooltip bottom>
             <div transition:fly={{ x: -500, duration: 600 }}>
               <Button
-                fab
-                size="small"
+                icon="voice_over_off"
                 on:click={() => spotlightedTranslator.set(null)}
-              >
-                <Icon path={mdiAccountVoiceOff} />
-              </Button>
+                color="dark"
+                transparent={false}
+              />
             </div>
             <span slot="tip">Show other translators</span>
           </Tooltip>
@@ -219,50 +226,50 @@
           <!-- Screenshot button -->
           <Tooltip bottom>
             <Button
-              fab
-              size="small"
+              icon={isSelecting ? 'check' : 'photo_camera'}
               on:click={() => {
                 toggleSelecting();
                 selectOperation = saveScreenshot;
               }}
-            >
-              <Icon path={isSelecting ? mdiCheck : mdiCamera} />
-            </Button>
+              color="dark"
+              transparent={false}
+            />
             <span slot="tip">Screenshot translations</span>
           </Tooltip>
           <!-- Export translations button -->
           <Tooltip bottom>
             <Button
-              fab
-              size="small"
+              icon={isSelecting ? 'check' : 'download'}
               on:click={() => {
                 toggleSelecting();
                 selectOperation = saveDownload;
               }}
-            >
-              <Icon path={isSelecting ? mdiCheck : mdiDownload} />
-            </Button>
+              color="dark"
+              transparent={false}
+            />
             <span slot="tip">Export translations log (txt)</span>
           </Tooltip>
         {/if}
         {#if !settingsOpen && $enableFullscreenButton}
           <!-- Fullscreen button -->
           <Tooltip bottom>
-            <Button fab size="small" on:click={toggleFullScreen}>
-              <Icon path={mdiFullscreen} />
-            </Button>
+            <Button
+              icon="fullscreen"
+              on:click={toggleFullScreen}
+              color="dark"
+              transparent={false}
+            />
             <span slot="tip">Toggle fullscreen</span>
           </Tooltip>
         {/if}
         <!-- Settings button -->
         <Tooltip bottom>
           <Button
-            fab
-            size="small"
+            icon={settingsOpen ? 'close' : 'settings'}
             on:click={() => (settingsOpen = !settingsOpen)}
-          >
-            <Icon path={settingsOpen ? mdiClose : mdiCogOutline} />
-          </Button>
+            color="dark"
+            transparent={false}
+          />
           <span slot="tip"
             >{settingsOpen ? 'Close settings' : 'Open settings'}</span
           >
@@ -287,41 +294,28 @@
   {#if !($isResizing || settingsOpen)}
     {#if !isAtRecent}
       <div
-        class="recent-button"
-        class:bottom-float={$textDirection !== TextDirection.TOP}
+        class="absolute left-1/2 transform -translate-x-1/2 p-2 z-50"
+        class:bottom-0={$textDirection === TextDirection.BOTTOM}
+        class:top-0={$textDirection === TextDirection.TOP}
         transition:fade|local={{ duration: 150 }}
       >
         <!-- scroll and reload isbottom and istop functions on click -->
         <Button
-          fab
-          size="small"
-          on:click={() => messageDisplay.scrollToRecent()}
-          on:click={updateWrapper}
-          class="elevation-3"
-          style="background-color: #0287C3; border-color: #0287C3;"
-        >
-          <Icon
-            path={$textDirection === TextDirection.TOP
-              ? mdiArrowUp
-              : mdiArrowDown}
-          />
-        </Button>
+          icon={$textDirection === TextDirection.TOP
+            ? 'arrow_upward'
+            : 'arrow_downward'}
+          on:click={() => {
+            messageDisplay.scrollToRecent();
+            updateWrapper();
+          }}
+          transparent={false}
+        />
       </div>
     {/if}
   {/if}
 </div>
 
 <style>
-  .settings-button {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    padding: 5px;
-    z-index: 100;
-    flex-direction: row;
-    align-items: center;
-    flex-wrap: wrap;
-  }
   .settings-button :global(.s-input) {
     display: inline-flex;
     background-color: var(--theme-surface);
@@ -332,27 +326,6 @@
   }
   .settings-button :global(.filename-input) {
     width: 15em;
-  }
-  .floating-text {
-    display: inline;
-    margin-right: 5px;
-    vertical-align: text-bottom;
-    background-color: var(--theme-surface);
-    border-radius: 5px;
-    padding: 5px;
-  }
-  .recent-button {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 5px;
-    z-index: 100;
-    top: 0px;
-    display: unset;
-  }
-  .bottom-float {
-    bottom: 0px;
-    top: unset;
   }
   :global(body) {
     overflow: hidden;
