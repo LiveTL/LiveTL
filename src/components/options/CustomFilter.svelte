@@ -12,7 +12,7 @@
   export let chatAuthor = 'chat';
   export let id = '';
 
-  let div: HTMLElement;
+  let div: HTMLElement | undefined;
   let maxRuleLength = 0;
   const sShowBlock = writable(showBlock);
   const sPlainReg = writable(plainReg);

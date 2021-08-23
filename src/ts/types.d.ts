@@ -16,5 +16,7 @@ declare namespace Ltl {
     types: AuthorType;
     authorId: string;
     messageId: string;
+    hidden?: boolean;
+    deleted?: boolean;
   };
 }

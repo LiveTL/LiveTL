@@ -16,8 +16,8 @@
 
   let selected = '';
   let open = false;
-  let activator: HTMLElement;
-  let listDiv: HTMLElement;
+  let activator: HTMLElement | undefined;
+  let listDiv: HTMLElement | undefined;
   let windowInnerHeight = 0;
   let windowInnerWidth = 0;
   let offset = '';
@@ -34,6 +34,10 @@
     if (!open) return;
 
     await tick(); // Wait for listDiv to exist
+    if (!activator || !listDiv) {
+      console.error('Menu activator or listDiv undefined');
+      return;
+    }
 
     let offsetY: string;
     let offsetX: string;
@@ -65,7 +69,7 @@
   bind:innerWidth={windowInnerWidth}
 />
 
-<div class={open || visible ? 'visible' : 'invisible'}>
+<div class="{open || visible ? 'visible' : 'invisible'} {$$props.class}">
   <Menu {items} bind:open>
     <div
       on:click={() => (open = !open)}

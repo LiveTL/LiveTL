@@ -13,10 +13,10 @@
   export let message: Ltl.Message;
   export let hidden = false;
   export let showTimestamp = false;
-  export const thin = false;
-  export const inanimate = true;
+  export let screenshot = false;
   export let deleted = false;
   export let messageArray: Ytc.ParsedRun[] = [];
+  export let isSelecting = false;
   let focused = false;
 
   const dispatch = createEventDispatcher();
@@ -65,11 +65,14 @@
   $: timestamp = showTimestamp ? `(${message.timestamp})` : '';
   $: nameColorClass = generateNameColorClass(moderator, owner);
   $: deletedClass = deleted ? 'text-deleted-light dark:text-deleted-dark italic' : '';
+  $: classes = 'flex flex-row m-1 rounded bg-gray-800 ' +
+    'text-base items-center ' +
+    `${screenshot ? 'animate-none p-1' : 'py-2'}`;
 </script>
 
 {#if !hidden}
   <div
-    class="flex flex-row gap-2 m-1 py-2 pr-1 rounded bg-gray-800 text-base items-center"
+    class={classes}
     on:mouseover={() => (focused = true)}
     on:focus={() => (focused = true)}
     on:mouseout={() => (focused = false)}
@@ -79,7 +82,7 @@
       <!-- For screenshot checkmark -->
       <slot />
     </div>
-    <div class="flex-1">
+    <div class="flex-1 ml-2">
       <!-- Message content-->
       <span class="mr-1 text-white align-middle">
         {#each messageArray as msg}
@@ -111,8 +114,10 @@
       </span>
     </div>
     <!-- Menu -->
-    <Menu items={menuItems} visible={focused}>
-      <Icon slot="activator">more_vert</Icon>
-    </Menu>
+    {#if !screenshot && !isSelecting}
+      <Menu items={menuItems} visible={focused} class="ml-2">
+        <Icon slot="activator">more_vert</Icon>
+      </Menu>
+    {/if}
   </div>
 {/if}
