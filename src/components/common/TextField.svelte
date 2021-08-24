@@ -39,12 +39,10 @@
     if (!hasError) error = false;
   };
 
-  $: my = dense ? '1' : '2';
-  $: inputPb = dense ? '1' : '2';
-  $: inputPt = dense ? '4' : '6';
-
-  $: classes = `my-${my} relative text-gray-600 dark:text-gray-100`;
-  $: inputClasses = `pb-${inputPb} pt-${inputPt} px-4 rounded-t text-black dark:text-gray-100 w-full`;
+  $: classes = 'relative text-gray-600 dark:text-gray-100 ' +
+    `${dense ? 'my-1' : 'my-2'}`;
+  $: inputClasses = 'px-4 rounded-t text-black dark:text-gray-100 w-full ' +
+    `${dense ? 'pb-1 pt-4' : 'pb-2 pt-6'}`;
 
   $: checkRule(value);
 </script>

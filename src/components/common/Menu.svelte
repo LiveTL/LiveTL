@@ -11,7 +11,6 @@
   };
 
   export let items: MenuItem[];
-  export let width = 'max';
   export let visible = true;
 
   let open = false;
@@ -58,7 +57,7 @@
 
   $: onOpenChange(open);
   $: listClasses = 'absolute bg-white rounded shadow z-20 dark:bg-dark-500 ' +
-    `w-${width} ${offset}`;
+    `w-max ${offset}`;
   // TODO: Max width based on popout size
 </script>
 

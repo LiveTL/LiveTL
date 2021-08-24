@@ -45,7 +45,7 @@
 </Card>
 <Card
   title="External translation sources"
-  gap={0}
+  noGap
 >
   <Checkbox name="LiveTL API" store={enableAPITLs} />
   <Checkbox name="MChad (volunteer translators)" store={enableMchadTLs} />

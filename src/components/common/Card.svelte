@@ -2,29 +2,20 @@
   import { noop } from 'svelte/internal';
   import Icon from './Icon.svelte';
 
-  export let color = 'dark';
   export let title = '';
   export let headerEndIcon = '';
   export let headerEndIconOnClick: (e: MouseEvent) => void = noop;
-  export let gap = 2;
+  export let noGap = false;
   export let icon = '';
   export let addHeaderClasses = '';
   export let headerOnClick: (e: MouseEvent) => void = noop;
 
-  const getContentClasses = (gap: number) => {
-    const defaultClasses = 'px-3 flex flex-col';
-    if (gap > 0) {
-      return defaultClasses + ` gap-${gap}`;
-    }
-    return defaultClasses;
-  };
-
-  $: contentClasses = getContentClasses(gap);
+  $: contentClasses = `px-3 flex flex-col ${noGap ? '' : 'gap-2'}`;
 </script>
 
-<div class="rounded bg-{color}-600 ovevrflow-hidden my-3">
+<div class="rounded bg-dark-600 ovevrflow-hidden my-3">
   <div
-    class="rounded-t p-2 flex flex-row items-center bg-{color}-800 {addHeaderClasses}"
+    class="rounded-t p-2 flex flex-row items-center bg-dark-800 {addHeaderClasses}"
     on:click={headerOnClick}
   >
     <div class="flex-1 pl-2 flex gap-3 items-center">

@@ -13,8 +13,4 @@
   ];
 </script>
 
-<Tabs
-  selected="1"
-  items={settings}
-  maxButtonWidth={24}
-/>
+<Tabs selected="1" items={settings} />

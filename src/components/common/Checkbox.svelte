@@ -34,7 +34,8 @@
   }
 
   const classes = 'inline-flex items-center cursor-pointer z-10';
-  const labelClasses = 'decoration-clone pl-2 cursor-pointer text-gray-700 dark:text-gray-300';
+  const labelClasses = 'decoration-clone pl-2 cursor-pointer text-gray-700 ' +
+    'dark:text-gray-300';
 </script>
 
 <Checkbox

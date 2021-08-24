@@ -37,8 +37,6 @@
     <div class="flex-none">
       <Button
         icon="refresh"
-        py="px"
-        px="3"
         on:click={() => store.reset()}
         transparent={false}
         round={false}
