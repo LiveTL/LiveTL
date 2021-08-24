@@ -9,7 +9,7 @@
   export let expandWidth = false;
 </script>
 
-<Dialog bind:value class={expandWidth ? 'w-full mx-2' : ''}>
+<Dialog bind:value class="{expandWidth ? 'w-full mx-2' : ''} {$$props.class}">
   <slot name="title" slot="title">
     <h6>{title}</h6>
   </slot>

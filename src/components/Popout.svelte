@@ -155,7 +155,7 @@
 
   <Updates bind:active={$updatePopupActive} />
   <div
-    class="flex flex-row gap-2 absolute right-0 p-1 z-50"
+    class="flex flex-row gap-2 absolute right-0 p-1 z-20"
     class:bottom-0={$textDirection === TextDirection.TOP}
     class:top-0={$textDirection === TextDirection.BOTTOM}
     class:hidden={$isResizing}
@@ -294,7 +294,7 @@
   {#if !($isResizing || settingsOpen)}
     {#if !isAtRecent}
       <div
-        class="absolute left-1/2 transform -translate-x-1/2 p-2 z-50"
+        class="absolute left-1/2 transform -translate-x-1/2 p-2 z-20"
         class:bottom-0={$textDirection === TextDirection.BOTTOM}
         class:top-0={$textDirection === TextDirection.TOP}
         transition:fade|local={{ duration: 150 }}
