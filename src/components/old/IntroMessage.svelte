@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
   import { BROWSER, Browser, TextDirection } from '../js/constants.js';
   import { updatePopupActive, textDirection, welcomeDismissed } from '../js/store.js';
   import Minimizer from './Minimizer.svelte';
@@ -34,29 +34,34 @@
   const { version } = window.chrome.runtime.getManifest();
 </script>
 
-<div class="rounded bg-gray-900 text-base px-2 py-1 m-1 flex flex-col gap-1">
-  {#if $textDirection === TextDirection.BOTTOM}
+<div class="message">
+  {#if $textDirection == TextDirection.BOTTOM}
     <Minimizer />
   {/if}
   {#if !$welcomeDismissed}
-    <h5>Welcome to LiveTL!</h5>
-  {/if}
-  <h6>Translations picked up from the chat will appear here.</h6>
-  {#if !$welcomeDismissed}
-    <div>
-      <a
-        class="text-sm text-blue-400 underline"
-        href="https://livetl.app/"
-        target="about:blank"
-        on:click={(e) => {
-          e.preventDefault();
-          updatePopupActive.set(true);
-        }}
-      >
-        See what's new in v{version}
-      </a>
+    <div class="heading">
+      <h2>Welcome to LiveTL!</h2>
     </div>
-    <div class="flex flex-wrap gap-1 py-2">
+  {/if}
+  <div class="subheading">
+    Translations picked up from the chat will appear here.
+    {#if !$welcomeDismissed}
+      <p style="font-size: 0.8em;">
+        <a
+          href="https://livetl.app/"
+          target="about:blank"
+          on:click={(e) => {
+            e.preventDefault();
+            updatePopupActive.set(true);
+          }}
+        >
+          See what's new in v{version}
+        </a>
+      </p>
+    {/if}
+  </div>
+  {#if !$welcomeDismissed}
+    <div class="badges">
       {#each badges as { name, src, href }}
         <a {href}>
           <img alt={name} {src} />
@@ -64,7 +69,45 @@
       {/each}
     </div>
   {/if}
-  {#if $textDirection === TextDirection.TOP}
+  {#if $textDirection == TextDirection.TOP}
     <Minimizer />
   {/if}
 </div>
+
+<style>
+  h2 {
+    font-size: 1.5em;
+    line-height: 1.5em;
+  }
+  .badges {
+    margin-top: 10px;
+    font-size: 0.75em;
+    display: flex;
+  }
+  .badges img {
+    height: 1.5em;
+    margin: 0px 2px 0px 2px;
+  }
+  .heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .subheading {
+    font-size: 1em;
+  }
+
+  .badges a {
+    color: inherit !important;
+    text-decoration: none;
+  }
+
+  .message {
+    --margin: 5px;
+    margin: var(--margin);
+    padding: calc(1.5 * var(--margin));
+    width: calc(100% - 2 * var(--margin));
+    animation: splash 1s normal forwards ease-in-out;
+    border-radius: var(--margin);
+  }
+</style>
