@@ -7,9 +7,12 @@
   export let value = false;
   /** Expanded width variant. */
   export let expandWidth = false;
+  
+  $: classes = (expandWidth ? 'w-full mx-2' : '') + ' ' +
+    ($$props.class ? $$props.class : '');
 </script>
 
-<Dialog bind:value class="{expandWidth ? 'w-full mx-2' : ''} {$$props.class}">
+<Dialog bind:value class={classes}>
   <slot name="title" slot="title">
     <h6>{title}</h6>
   </slot>

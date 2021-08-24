@@ -187,7 +187,7 @@
             icon="select_all"
             color="blue"
             on:click={selectAllItems}
-            transparent={false}
+            filled
           />
         </div>
         <div class="flex-shrink-0">
@@ -195,7 +195,7 @@
             icon="check"
             color="success"
             on:click={selectOperation}
-            transparent={false}
+            filled
           />
         </div>
         <div class="flex-shrink-0">
@@ -203,7 +203,7 @@
             icon="close"
             color="error"
             on:click={toggleSelecting}
-            transparent={false}
+            filled
           />
         </div>
       {/if}
@@ -216,7 +216,7 @@
                 icon="voice_over_off"
                 on:click={() => spotlightedTranslator.set(null)}
                 color="dark"
-                transparent={false}
+                filled
               />
             </div>
             <span slot="tip">Show other translators</span>
@@ -232,7 +232,7 @@
                 selectOperation = saveScreenshot;
               }}
               color="dark"
-              transparent={false}
+              filled
             />
             <span slot="tip">Screenshot translations</span>
           </Tooltip>
@@ -245,7 +245,7 @@
                 selectOperation = saveDownload;
               }}
               color="dark"
-              transparent={false}
+              filled
             />
             <span slot="tip">Export translations log (txt)</span>
           </Tooltip>
@@ -257,7 +257,7 @@
               icon="fullscreen"
               on:click={toggleFullScreen}
               color="dark"
-              transparent={false}
+              filled
             />
             <span slot="tip">Toggle fullscreen</span>
           </Tooltip>
@@ -268,7 +268,7 @@
             icon={settingsOpen ? 'close' : 'settings'}
             on:click={() => (settingsOpen = !settingsOpen)}
             color="dark"
-            transparent={false}
+            filled
           />
           <span slot="tip"
             >{settingsOpen ? 'Close settings' : 'Open settings'}</span
@@ -308,7 +308,7 @@
             messageDisplay.scrollToRecent();
             updateWrapper();
           }}
-          transparent={false}
+          filled
         />
       </div>
     {/if}

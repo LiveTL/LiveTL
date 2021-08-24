@@ -3,15 +3,27 @@
 
   export let icon: string;
   export let color = 'primary';
-  export let transparent = true;
-  export let round = true;
+  export let filled = false;
+  export let noRound = false;
+  export let noPadding = false;
+  export let iconClass = '';
+
+  const getAdd = (noRound: boolean, noPadding: boolean) => {
+    let c = '';
+    if (!noRound) c += ' rounded-full';
+    if (!noPadding) c += ' p-2';
+
+    return c + ' ' + ($$props.class ? $$props.class : '');
+  };
+  $: add = getAdd(noRound, noPadding);
 </script>
 
 <Button
   {icon}
   {color}
-  text={transparent}
+  text={!filled}
   remove="p-4 px-4 rounded-full"
-  add={round ? 'p-2 rounded-full' : 'py-px px-3'}
+  {add}
   on:click
+  {iconClass}
 />

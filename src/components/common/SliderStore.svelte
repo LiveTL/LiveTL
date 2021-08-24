@@ -38,8 +38,10 @@
       <Button
         icon="refresh"
         on:click={() => store.reset()}
-        transparent={false}
-        round={false}
+        filled
+        noRound
+        noPadding
+        class="py-px px-3"
       />
     </div>
   {/if}

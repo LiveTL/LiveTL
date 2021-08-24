@@ -56,6 +56,8 @@
   };
 
   $: onOpenChange(open);
+  $: classes = (open || visible ? 'visible' : 'invisible') + ' ' +
+    ($$props.class ? $$props.class : '');
   $: listClasses = 'absolute bg-white rounded shadow z-20 dark:bg-dark-500 ' +
     `w-max ${offset}`;
   // TODO: Max width based on popout size
@@ -66,7 +68,7 @@
   bind:innerWidth={windowInnerWidth}
 />
 
-<div class="{open || visible ? 'visible' : 'invisible'} {$$props.class}">
+<div class={classes}>
   <Menu {items} bind:open>
     <div
       on:click={() => (open = !open)}

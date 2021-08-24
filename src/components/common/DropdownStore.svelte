@@ -16,7 +16,8 @@
   $: value = $store;
   $: store.set(value);
 
-  const classes = `cursor-pointer relative ${$$props.class}`;
+  const classes = 'cursor-pointer relative ' +
+    ($$props.class ? $$props.class : '');
 </script>
 
 <Select

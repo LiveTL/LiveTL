@@ -7,7 +7,7 @@
 </script>
 
 <Icon
-  class="{block ? 'block' : ''} {$$props.class}"
+  class="{block ? 'block' : ''} {$$props.class ? $$props.class : ''}"
   on:click
   {small}
   {xs}
