@@ -1,5 +1,6 @@
 <script>
-  import { MaterialApp } from 'svelte-materialify/src';
+  import dark from 'smelte/src/dark';
+  dark().set(true);
 
   const links = [{
     text: 'LiveTL Website',
@@ -49,10 +50,10 @@
 </script>
 
 <svelte:head>
-  <link rel="shortcut icon" href="48x48.png" type="image/png">
+  <link rel="shortcut icon" href="48x48.png" type="image/png" />
 </svelte:head>
 
-<MaterialApp theme="dark">
+<div style="margin: 20px;">
   <h1>Thank you for installing LiveTL!</h1>
   <h3>
     To get started, visit any YouTube stream or archive and open the chat. There
@@ -81,11 +82,15 @@
   <h3>
     <ul>
       {#each links as link}
-        <li><a href={link.href} target="_blank">{link.text}</a></li>
+        <li>
+          <a href={link.href} target="_blank" class="text-blue-400 underline"
+            >{link.text}</a
+          >
+        </li>
       {/each}
     </ul>
   </h3>
-</MaterialApp>
+</div>
 
 <style>
   img {
@@ -105,5 +110,4 @@
   :global(.s-app) {
     padding: 25px;
   }
-
 </style>

@@ -318,7 +318,6 @@
 <style>
   .settings-button :global(.s-input) {
     display: inline-flex;
-    background-color: var(--theme-surface);
     border-radius: 5px;
   }
   .settings-button :global(.width-input) {

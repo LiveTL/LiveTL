@@ -58,7 +58,6 @@
 
 <style>
   #renderElement {
-    background-color: var(--theme-surface);
     z-index: -1;
     position: fixed;
     top: 0px;
