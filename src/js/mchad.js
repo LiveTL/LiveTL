@@ -90,7 +90,7 @@ export const getArchive = videoId => readable(null, async set => {
     .then(s => s.filter(e => e.unix >= 0))
     .then(sortBy('unix'));
   const scripts = await Promise.all(vod.map(getScript))
-    .then(scripts => scripts.filter(isNotEmpty))
+    .then(scripts => scripts.filter(isNotEmpty));
 
   scripts.map(getScriptAuthor).forEach(author => {
     mchadUsers.set(author, mchadUsers.get(author));
