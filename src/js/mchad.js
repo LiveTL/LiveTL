@@ -40,6 +40,12 @@ export async function getRooms(videoId) {
   return { live, vod };
 }
 
+/** @type {(script: MCHADTL[]) => Number} */
+const getFirstTime = script =>
+  script.filter(s => /--.*Stream.*Start.*--/i.test(s.Stext))?.Stime
+    ?? script[0]?.Stime
+    ?? 0;
+
 /**
  * @param {MCHADArchiveRoom} room
  * @returns {Message[]}
@@ -59,19 +65,18 @@ export async function getArchiveFromRoom(room) {
       link: room.Link
     })
   }).then(toJson).catch(() => []);
+
+  const firstTime = getFirstTime(script);
   
-  let { Stime: firstTime } = [...script, { Stime: 0 }][0];
-  const startmatch = script.filter(e => (e.Stext.match(/--.*Stream.*Start.*--/i) != null));
-  if (startmatch.length != 0){
-    firstTime = startmatch[0].Stime;
-  }
-    
   const toMessage = mchadToMessage(room.Room, archiveUnixToTimestamp(firstTime), archiveUnixToNumber(firstTime));
   return script.map(toMessage);
 }
 
 /** @type {(script: Message[]) => String} */
 const getScriptAuthor = script => script[0].author;
+
+/** @type {(arr: Array) => Boolean} */
+const isNotEmpty = arr => arr.length != 0;
 
 /** @type {(videoId: String) => Readable<Message>} */
 export const getArchive = videoId => readable(null, async set => {
@@ -84,7 +89,9 @@ export const getArchive = videoId => readable(null, async set => {
     .then(s => s.map(addUnix))
     .then(s => s.filter(e => e.unix >= 0))
     .then(sortBy('unix'));
-  const scripts = await Promise.all(vod.map(getScript));
+  const scripts = await Promise.all(vod.map(getScript))
+    .then(scripts => scripts.filter(isNotEmpty))
+
   scripts.map(getScriptAuthor).forEach(author => {
     mchadUsers.set(author, mchadUsers.get(author));
   });
