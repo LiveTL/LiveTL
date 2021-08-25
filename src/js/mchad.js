@@ -42,7 +42,7 @@ export async function getRooms(videoId) {
 
 /** @type {(script: MCHADTL[]) => Number} */
 const getFirstTime = script =>
-  script.filter(s => /--.*Stream.*Start.*--/i.test(s.Stext))?.Stime
+  script.find(s => /--.*Stream.*Start.*--/i.test(s.Stext))?.Stime
     ?? script[0]?.Stime
     ?? 0;
 
