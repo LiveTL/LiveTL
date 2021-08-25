@@ -1,7 +1,7 @@
 <script>
   import { afterUpdate, tick } from 'svelte';
   import { fade, fly } from 'svelte/transition';
-  import { Tooltip } from 'svelte-materialify/src';
+  import Tooltip from '../submodules/chat/src/components/common/Tooltip.svelte';
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
   import { TextDirection, paramsVideoTitle, isAndroid } from '../js/constants.js';
@@ -168,14 +168,16 @@
         <TextField
           dense
           bind:value={renderWidth}
-          rules={[{ assert: item => (!isNaN(parseInt(item))), error: 'Invalid width' }]}
+          rules={[
+            { assert: item => !isNaN(parseInt(item)), error: 'Invalid width' }
+          ]}
           label="Width (px)"
         />
       {:else if selectOperation === saveDownload}
         <TextField
           dense
           bind:value={textFilename}
-          rules={[{ assert: item => (item), error: 'Invalid filename' }]}
+          rules={[{ assert: item => item, error: 'Invalid filename' }]}
           label="Filename"
         />
       {/if}
@@ -211,7 +213,7 @@
         {#if !settingsOpen && $spotlightedTranslator}
           <!-- Un-spotlight translator button -->
           <Tooltip bottom>
-            <div transition:fly={{ x: -500, duration: 600 }}>
+            <div slot="activator" transition:fly={{ x: -500, duration: 600 }}>
               <Button
                 icon="voice_over_off"
                 on:click={() => spotlightedTranslator.set(null)}
@@ -219,13 +221,14 @@
                 filled
               />
             </div>
-            <span slot="tip">Show other translators</span>
+            <span>Show other translators</span>
           </Tooltip>
         {/if}
         {#if !settingsOpen && $enableExportButtons}
           <!-- Screenshot button -->
           <Tooltip bottom>
             <Button
+              slot="activator"
               icon={isSelecting ? 'check' : 'photo_camera'}
               on:click={() => {
                 toggleSelecting();
@@ -234,11 +237,12 @@
               color="dark"
               filled
             />
-            <span slot="tip">Screenshot translations</span>
+            <span>Screenshot translations</span>
           </Tooltip>
           <!-- Export translations button -->
           <Tooltip bottom>
             <Button
+              slot="activator"
               icon={isSelecting ? 'check' : 'download'}
               on:click={() => {
                 toggleSelecting();
@@ -247,30 +251,32 @@
               color="dark"
               filled
             />
-            <span slot="tip">Export translations log (txt)</span>
+            <span>Export translations log (txt)</span>
           </Tooltip>
         {/if}
         {#if !settingsOpen && $enableFullscreenButton}
           <!-- Fullscreen button -->
           <Tooltip bottom>
             <Button
+              slot="activator"
               icon="fullscreen"
               on:click={toggleFullScreen}
               color="dark"
               filled
             />
-            <span slot="tip">Toggle fullscreen</span>
+            <span>Toggle fullscreen</span>
           </Tooltip>
         {/if}
         <!-- Settings button -->
         <Tooltip bottom>
           <Button
+            slot="activator"
             icon={settingsOpen ? 'close' : 'settings'}
             on:click={() => (settingsOpen = !settingsOpen)}
             color="dark"
             filled
           />
-          <span slot="tip"
+          <span
             >{settingsOpen ? 'Close settings' : 'Open settings'}</span
           >
         </Tooltip>
