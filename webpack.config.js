@@ -46,6 +46,8 @@ var options = {
     translatormode: path.join(__dirname, 'src', 'js', 'pages', 'translatormode.js'),
     injector: path.join(__dirname, 'src', 'js', 'content_scripts', 'injector.js'),
     chat: path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat.js'),
+    video_embedder: path.join(__dirname, 'src', 'js', 'content_scripts', 'video_embedder.js'),
+    video_embed: path.join(__dirname, 'src', 'js', 'content_scripts', 'video_embed.js'),
     'chat-interceptor': path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat-interceptor.js'),
     'chat-background': path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat-background.js'),
     // chrome: path.join(__dirname, 'src', 'js', 'polyfills', 'chrome.js')

@@ -1,36 +1,16 @@
 <script>
-  import YouTubeIframeLoader from 'youtube-iframe';
-  import { faviconURL, videoSide } from '../js/store.js';
+  import { videoSide } from '../js/store.js';
   import { VideoSide } from '../js/constants.js';
-  import { suppress } from '../js/utils.js';
-
+  import { onMount } from 'svelte';
+  let player = undefined;
   export let videoId;
-  YouTubeIframeLoader.load(YT => {
-    window.player = new YT.Player('player', {
-      height: '100%',
-      width: '100%',
-      videoId,
-      autoplay: 1,
-      playerVars: {
-        autoplay: 1,
-        fs: 0
-      },
-      events: {
-        onStateChange() {
-          suppress(() => {
-            const data = window?.player?.getVideoData();
-            if (data?.author?.includes('Marine Ch.')) {
-              faviconURL.set('/img/blfavicon.ico');
-            }
-          });
-        }
-      }
-    });
+  onMount(() => {
+    player.src = `https://www.youtube.com/error?video=${videoId}`;
   });
 </script>
 
 <div class="wrapper" class:left-video={$videoSide == VideoSide.LEFT}>
-  <div id="player" />
+  <iframe title="video" bind:this={player} class="video" />
 </div>
 
 <!--<style src="../css/iframe.css"></style>-->
@@ -41,5 +21,11 @@
   }
   .wrapper {
     overflow: hidden;
+  }
+  .video {
+    border: 0px;
+    margin: 0px;
+    width: 100%;
+    height: 100%;
   }
 </style>
