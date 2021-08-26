@@ -1,11 +1,19 @@
 <script>
-  import { videoSide } from '../js/store.js';
+  import { videoSide, faviconURL } from '../js/store.js';
   import { VideoSide } from '../js/constants.js';
+  import { suppress } from '../js/utils.js';
   import { onMount } from 'svelte';
   let player = undefined;
   export let videoId;
   onMount(() => {
     player.src = `https://www.youtube.com/error?video=${videoId}`;
+    window.addEventListener('message', e => {
+      suppress(() =>{
+        if (e.data.type === 'marine-easter-egg') {
+          faviconURL.set('/img/blfavicon.ico');
+        }
+      });
+    });
   });
 </script>
 

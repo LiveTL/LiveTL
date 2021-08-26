@@ -1,4 +1,5 @@
 import YouTubeIframeLoader from 'youtube-iframe';
+import { suppress } from '../utils.js';
 
 const params = new URLSearchParams(window.location.search);
 const video = params.get('video');
@@ -17,6 +18,16 @@ if (video) {
         fs: 0
       },
       events: {
+        onStateChange() {
+          suppress(() => {
+            const data = window?.player?.getVideoData();
+            if (data?.author?.includes('Marine Ch.')) {
+              window.parent.postMessage({
+                type: 'marine-easter-egg'
+              }, '*');
+            }
+          });
+        }
       }
     });
   });
