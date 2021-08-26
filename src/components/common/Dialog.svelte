@@ -1,10 +1,11 @@
 <script lang="ts">
   import Dialog from 'smelte/src/components/Dialog';
+  import Button from './IconButton.svelte';
 
   /** Dialog title. */
   export let title = '';
   /** Whether dialog is shown. */
-  export let value = false;
+  export let active = false;
   /** Expanded width variant. */
   export let expandWidth = false;
   
@@ -12,10 +13,15 @@
     ($$props.class ? $$props.class : '');
 </script>
 
-<Dialog bind:value class={classes}>
-  <slot name="title" slot="title">
-    <h6>{title}</h6>
-  </slot>
+<Dialog bind:value={active} class={classes}>
+  <div slot="title" class="flex flex-row items-center">
+    <div class="flex-1">
+      <slot name="title">
+        <h6>{title}</h6>
+      </slot>
+    </div>
+    <Button color="gray" icon="close" on:click={() => (active = false)} />
+  </div>
   <slot />
   <slot name="actions" slot="actions" />
 </Dialog>

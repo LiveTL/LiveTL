@@ -54,7 +54,7 @@
 </div>
 
 <Dialog
-  bind:value={active}
+  bind:active
   title="{isImporting ? 'Import' : 'Export'} Settings"
   expandWidth
 >

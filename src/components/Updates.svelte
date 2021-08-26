@@ -33,7 +33,7 @@
   onDestroy(() => unsubscribe());
 </script>
 
-<Dialog bind:value={active} class="max-w-lg m-5 z-50 rounded-lg">
+<Dialog bind:active class="max-w-lg m-5 z-50 rounded-lg">
   <div slot="title" class="text-center">
     <h5>New Update!</h5>
     <h6>Here's what's new in LiveTL version {version}:</h6>
