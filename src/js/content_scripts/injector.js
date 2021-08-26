@@ -17,7 +17,7 @@ const styleLiveTLButton = (a, color) => {
   a.style.display = 'inline-block';
   // a.style.boxShadow = 'rgb(194 194 194) 0px 0px 4px 1px inset';
 };
-  
+
 const setLiveTLButtonAttributes = (a) => {
   [
     'yt-simple-endpoint',
@@ -61,8 +61,8 @@ const getLiveTLButton = (color) => {
   return a;
 };
 
-const makeButton = (text, callback, color='rgb(0, 153, 255)', icon='') => {
-  let a = document.createElement('span');
+const makeButton = (text, callback, color = 'rgb(0, 153, 255)', icon = '') => {
+  const a = document.createElement('span');
   a.style.flexGrow = 1;
   a.style.flexBasis = 0;
   a.style.position = 'relative';
@@ -150,17 +150,15 @@ async function loaded() {
     popoutParams.set('popout', true);
     popoutParams.set('tabid', frameInfo.tabId);
     popoutParams.set('frameid', frameInfo.frameId);
-    try{
+    try {
       popoutParams.set(
         'title',
         window.parent.document.querySelector('#container > .title').textContent
       );
-    }
-    catch (e) {
+    } catch (e) {
       if (e instanceof DOMException) {
         console.debug('Ignored expected CORS error', { e });
-      }
-      else {
+      } else {
         throw e;
       }
     }

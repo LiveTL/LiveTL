@@ -73,7 +73,7 @@ function macroStoreValueToLookup(value) {
 }
 
 export function macroSystem(initialMacros) {
-  let macros = {...initialMacros} || {};
+  let macros = { ...initialMacros } || {};
   let completion = omniComplete(Object.keys(macros));
   const defaultLeader = '/';
 
@@ -88,7 +88,7 @@ export function macroSystem(initialMacros) {
     macros[name] = expansion;
     completion.addWord(name);
   };
-  
+
   /** @type {(name: String) => String | null} */
   const getMacro = name => {
     if (macros[name]) return macros[name];
@@ -102,10 +102,10 @@ export function macroSystem(initialMacros) {
   const replaceSplitText = ([input, split]) => {
     const replaced = [];
     let lastIdx = 0;
-    for (const { '0': text, index } of split) {
+    for (const { 0: text, index } of split) {
       const replacement = getMacro(text.substring(1));
       replaced.push(input.substring(lastIdx, index));
-      replaced.push(replacement ? replacement : text);
+      replaced.push(replacement || text);
       lastIdx = index + text.length;
     }
     replaced.push(input.substring(lastIdx));
@@ -121,8 +121,7 @@ export function macroSystem(initialMacros) {
   const complete = text => {
     try {
       return completion.complete(text.match(completionMatchPattern)[1]);
-    }
-    catch (e) { return []; }
+    } catch (e) { return []; }
   };
 
   // one-way syncing
@@ -148,7 +147,7 @@ export function macroSystem(initialMacros) {
     getMacro,
     syncLeaderWith,
     syncWith,
-    replaceText,
+    replaceText
   };
 }
 
@@ -169,7 +168,7 @@ export function translatorMode(
   [container, chatBox],
   content,
   recommendations,
-  focusRec,
+  focusRec
 ) {
   // initial macros will be cleared during sync
   const macrosys = macroSystem({ en: '[en]', peko: 'pekora', ero: 'erofi' });
@@ -244,7 +243,7 @@ export function translatorMode(
   const cleanUps = [
     () => chatBox.removeEventListener('keydown', onKeyDown),
     () => chatBox.removeEventListener('focus', onFocus),
-    () => chatBox.removeEventListener('input', onInput),
+    () => chatBox.removeEventListener('input', onInput)
   ];
   if (chatBox.cleanUpTlMode) chatBox.cleanUpTlMode();
   chatBox.cleanUpTlMode = () => cleanUps.forEach(c => c());
@@ -263,22 +262,19 @@ function setCaret(el, pos) {
   el.focus();
 }
 
-
 // https://stackoverflow.com/a/30400227
 function getCaretCharOffset(element) {
-  var caretOffset = 0;
+  let caretOffset = 0;
 
   if (window.getSelection) {
-    var range = window.getSelection().getRangeAt(0);
-    var preCaretRange = range.cloneRange();
+    const range = window.getSelection().getRangeAt(0);
+    const preCaretRange = range.cloneRange();
     preCaretRange.selectNodeContents(element);
     preCaretRange.setEnd(range.endContainer, range.endOffset);
     caretOffset = preCaretRange.toString().length;
-  } 
-
-  else if (document.selection && document.selection.type != 'Control') {
-    var textRange = document.selection.createRange();
-    var preCaretTextRange = document.body.createTextRange();
+  } else if (document.selection && document.selection.type != 'Control') {
+    const textRange = document.selection.createRange();
+    const preCaretTextRange = document.body.createTextRange();
     preCaretTextRange.moveToElementText(element);
     preCaretTextRange.setEndPoint('EndToEnd', textRange);
     caretOffset = preCaretTextRange.text.length;

@@ -50,7 +50,7 @@ const setStoreMessage =
  * @param {Writable<Message>} ytc
  * @return {() => void} cleanup
  */
-function attachFilters (translations, mod, ytc) {
+function attachFilters(translations, mod, ytc) {
   const setTranslation = setStoreMessage(translations);
   const setModMessage = setStoreMessage(mod);
 
@@ -74,12 +74,12 @@ function attachFilters (translations, mod, ytc) {
  * @param  {...Writable<T>} stores
  * @returns {{ store: Writable<T>, cleanUp: VoidFunction}}
  */
-export function combineStores (...stores) {
+export function combineStores(...stores) {
   const combined = writable(null);
   const unsubscribes = stores.map(s => s.subscribe(v => combined.set(v)));
   return {
     store: combined,
-    cleanUp () {
+    cleanUp() {
       unsubscribes.forEach(u => u());
     }
   };
@@ -89,7 +89,7 @@ export function combineStores (...stores) {
  * @param {Ytc.ParsedMessage} ytcMessage
  * @returns {Message}
  */
-function ytcToMsg (ytcMessage) {
+function ytcToMsg(ytcMessage) {
   const text = ytcMessage.message
     .filter(item => item.type === 'text' || item.type === 'link')
     .map(item => item.text)
@@ -109,7 +109,7 @@ function ytcToMsg (ytcMessage) {
 }
 
 /** @param {Window} window */
-export function ytcSource (window) {
+export function ytcSource(window) {
   /** @type {Writable<Message>} */
   const ytc = writable(null);
   const newMessage = compose(ytc.set, ytcToMsg);
@@ -159,7 +159,7 @@ export function ytcSource (window) {
   return { ytc, cleanUp: () => port.disconnect() };
 }
 
-function message (author, msg, timestamp) {
+function message(author, msg, timestamp) {
   const showtime = timestamp
     .split(':')
     .map(e => parseInt(e))
@@ -177,7 +177,7 @@ sources.translations = combineStores(
 ).store;
 
 export class DummyYTCEventSource {
-  constructor () {
+  constructor() {
     this.subs = [];
     this.events = [
       { event: 'infoDelivery', info: { currentTime: 0 } },
@@ -205,7 +205,7 @@ export class DummyYTCEventSource {
     ];
   }
 
-  async start () {
+  async start() {
     for (const data of this.events) {
       for (const sub of this.subs) {
         await sub({ data });
@@ -213,7 +213,7 @@ export class DummyYTCEventSource {
     }
   }
 
-  addEventListener (_eventType, cb) {
+  addEventListener(_eventType, cb) {
     this.subs.push(cb);
   }
 }

@@ -63,7 +63,6 @@ function userFilter(ufilters, transform = filter => filter) {
     : false;
 }
 
-
 export const textWhitelisted = userFilter(textWhitelist);
 export const textBlacklisted = userFilter(textBlacklist);
 export const plaintextWhitelisted = userFilter(plaintextWhitelist, escapeRegExp);
@@ -91,9 +90,8 @@ export const authorBlacklisted = composeOr(
   regAuthorBlacklisted, plainAuthorBlacklisted
 );
 
-
 /**
- * @param {String} message 
+ * @param {String} message
  * @returns {{lang: String, msg: String} | undefined}
  */
 export function parseTranslation(message) {
@@ -153,8 +151,8 @@ export function removeEmojis(str) {
 }
 
 /**
- * @param {String} textLang 
- * @param {{ code: String, name: String, lang: String }} currentLang 
+ * @param {String} textLang
+ * @param {{ code: String, name: String, lang: String }} currentLang
  * @returns {Boolean}
  */
 export function isLangMatch(textLang, currentLang) {

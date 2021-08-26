@@ -49,6 +49,11 @@ module.exports = {
         varsIgnorePattern: '^_',
         argsIgnorePattern: '^_'
       }
+    ],
+    'space-before-function-paren': 'off',
+    '@typescript-eslint/space-before-function-paren': [
+      'error',
+      'never'
     ]
   },
   settings: {

@@ -12,17 +12,17 @@
   let error = '';
   let success = '';
 
-  function onImport () {
+  function onImport() {
     isImporting = true;
     active = true;
   }
 
-  function onExport () {
+  function onExport() {
     isImporting = false;
     active = true;
   }
 
-  function onImportRequest () {
+  function onImportRequest() {
     try {
       importStores(value);
       close();

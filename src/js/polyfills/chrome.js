@@ -45,7 +45,7 @@
     }));
   }
 
-  let polyfillStorage = {
+  const polyfillStorage = {
     awaitingCallbacks: {}, // store callbacks that are waiting for a response
     onConnectCallbacks: [], // store callbacks that are waiting for a connection
     onMessageCallbacks: [], // store callbacks that are waiting for a message event
@@ -270,4 +270,4 @@
       console.debug('Unknown error while handling postmessage:', e);
     }
   });
-}) ();
+})();

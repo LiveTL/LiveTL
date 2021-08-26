@@ -21,7 +21,7 @@
     checked = group.indexOf(value) >= 0;
   }
 
-  function groupUpdate () {
+  function groupUpdate() {
     if (value == null) return;
 
     const i = group.indexOf(value);

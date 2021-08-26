@@ -10,17 +10,17 @@ let app;
     console.log('#input not found, not injecting translator mode.');
     return;
   }
-  
+
   newbody.classList.add('ltl-tl-mode');
-  
+
   container.querySelectorAll('.ltl-tl-mode').forEach(e => e.remove());
   container.appendChild(newbody);
   container.cleanUpCbs = container.cleanUpCbs || [];
-  
+
   app = new App({
     target: newbody,
     props: {
-      container,
+      container
     }
   });
 

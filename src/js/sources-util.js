@@ -5,9 +5,9 @@ import { Message, Seconds } from './types.js';
  *
  * @param {Message[]} msgs
  * @param {Seconds} sourceLatency the amount of lag between ytc and other sources
- * @return {Message[]} 
+ * @return {Message[]}
  */
-export function removeDuplicateMessages(msgs, sourceLatency=60) {
+export function removeDuplicateMessages(msgs, sourceLatency = 60) {
   let lastMessages = [];
   const isUnique = msg => {
     lastMessages = lastMessages

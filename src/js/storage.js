@@ -8,21 +8,21 @@ export const storage = new Storage(storageVersion);
 /** @type {{ byName: StoreLookup, byMangled: StoreLookup }} */
 const stores = {
   byName: new Map(),
-  byMangled: new Map(),
+  byMangled: new Map()
 };
 
 /**
  * Store that synchronizes with extension storage.
- * 
+ *
  * @template T
  */
 export class SyncStore {
   /**
-   * @param {String} name 
-   * @param {T} defaultValue 
-   * @param {Storage} storageBackend 
+   * @param {String} name
+   * @param {T} defaultValue
+   * @param {Storage} storageBackend
    */
-  constructor(name, defaultValue, storageBackend=null, updateAcrossSessions=true) {
+  constructor(name, defaultValue, storageBackend = null, updateAcrossSessions = true) {
     this.name = name;
     this.defaultValue = defaultValue;
     const store = writable(defaultValue);
@@ -57,7 +57,7 @@ export class SyncStore {
   }
 
   /**
-   * @param {T} value 
+   * @param {T} value
    */
   set(value) {
     this._store.set(value);
@@ -74,7 +74,7 @@ export class SyncStore {
   }
 
   /**
-   * @param {(n: T) => T} callback 
+   * @param {(n: T) => T} callback
    */
   update(callback) {
     this._store.update(callback);
@@ -89,7 +89,7 @@ export class SyncStore {
   }
 
   /**
-   * @param {(n: T) => void} callback 
+   * @param {(n: T) => void} callback
    * @returns {() => void}
    */
   subscribe(callback) {
@@ -108,16 +108,16 @@ export class SyncStore {
 
 /**
  * Lookup store that synchronizes with extension storage.
- * 
+ *
  * @template T
  */
 export class LookupStore {
   /**
-   * @param {String} name 
-   * @param {T} defaultValue 
-   * @param {Storage} storageBackend 
+   * @param {String} name
+   * @param {T} defaultValue
+   * @param {Storage} storageBackend
    */
-  constructor(name, defaultValue, storageBackend=null, updateAcrossSessions=true) {
+  constructor(name, defaultValue, storageBackend = null, updateAcrossSessions = true) {
     this.name = name;
     this.defaultValue = defaultValue;
     this._storage = storageBackend || storage;
@@ -150,7 +150,7 @@ export class LookupStore {
 
   /**
    * @private
-   * @param {String} key 
+   * @param {String} key
    */
   mangleKey(key) {
     return `${this.name}:$$${key}`;
@@ -215,7 +215,6 @@ export class LookupStore {
     this._subscribers.set(id, callback);
     callback(Object.entries(this._lookup));
     return () => this._subscribers.delete(id);
-    
   }
 
   async _saveOneKeyValue(key, value) {
@@ -250,19 +249,19 @@ export function importStores(data) {
   });
 }
 
-function mangleStorageKey(key, version='') {
+function mangleStorageKey(key, version = '') {
   return `${version || storage.version}$$${key}`;
 }
 
-async function getStorage(key, version='') {
+async function getStorage(key, version = '') {
   const versionKey = mangleStorageKey(key, version);
   const result = await this.rawGet(versionKey);
   return result ? result[versionKey] : result;
 }
 
-async function setStorage(key, value, version='') {
+async function setStorage(key, value, version = '') {
   const versionKey = mangleStorageKey(key, version);
-  let obj = {};
+  const obj = {};
   obj[versionKey] = value;
   return await this.rawSet(obj);
 }
@@ -272,57 +271,57 @@ Storage.prototype.set = setStorage;
 
 /**
  * @constructor
- * @param {String} version 
+ * @param {String} version
  */
 export function Storage(version) {
   this.version = version;
 
   switch (BROWSER) {
-  case Browser.ANDROID:
-    this.rawGet = async key => {
-      let data = {};
-      try {
-        data[key] = JSON.parse(localStorage[key]);
-      } catch (e) {
-        data[key] = localStorage[key];
-      }
-      return data;
-    };
+    case Browser.ANDROID:
+      this.rawGet = async key => {
+        const data = {};
+        try {
+          data[key] = JSON.parse(localStorage[key]);
+        } catch (e) {
+          data[key] = localStorage[key];
+        }
+        return data;
+      };
 
-    this.rawSet = async obj => {
-      let key = Object.keys(obj)[0];
-      localStorage[key] = JSON.stringify(obj[key]);
-    };
-    break;
-  case Browser.FIREFOX:
+      this.rawSet = async obj => {
+        const key = Object.keys(obj)[0];
+        localStorage[key] = JSON.stringify(obj[key]);
+      };
+      break;
+    case Browser.FIREFOX:
     // @ts-ignore
-    browser.storage.onChanged.addListener(updateChangedStores);
-    this.rawGet = async (key) => {
+      browser.storage.onChanged.addListener(updateChangedStores);
+      this.rawGet = async(key) => {
       // @ts-ignore
-      return await browser.storage.local.get(key);
-    };
+        return await browser.storage.local.get(key);
+      };
 
-    this.rawSet = async (obj) => {
+      this.rawSet = async(obj) => {
       // @ts-ignore
-      return await browser.storage.local.set(obj);
-    };
-    break;
-  default:
+        return await browser.storage.local.set(obj);
+      };
+      break;
+    default:
     // @ts-ignore
-    chrome.storage.onChanged.addListener(updateChangedStores);
-    this.rawGet = (key) => {
-      return new Promise((res) => {
+      chrome.storage.onChanged.addListener(updateChangedStores);
+      this.rawGet = (key) => {
+        return new Promise((res) => {
         // @ts-ignore
-        chrome.storage.local.get(key, res);
-      });
-    };
+          chrome.storage.local.get(key, res);
+        });
+      };
 
-    this.rawSet = (obj) => {
-      return new Promise((res) => {
+      this.rawSet = (obj) => {
+        return new Promise((res) => {
         // @ts-ignore
-        chrome.storage.local.set(obj, res);
-      });
-    };
+          chrome.storage.local.set(obj, res);
+        });
+      };
   }
 }
 

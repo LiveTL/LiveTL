@@ -1,8 +1,7 @@
 import { readable, derived, Readable } from 'svelte/store';
 import { combineStores, sources } from './sources.js';
 import { removeDuplicateMessages } from './sources-util.js';
-import { ytcDeleteBehaviour, sessionHidden, spotlightedTranslator } from './store.js';
-import { channelFilters, mchadUsers } from './store.js';
+import { ytcDeleteBehaviour, sessionHidden, spotlightedTranslator, channelFilters, mchadUsers } from './store.js';
 import { YtcDeleteBehaviour } from './constants.js';
 
 /** @type {Readable<String[]>} */
@@ -30,21 +29,21 @@ export const capturedMessages = readable([], set => {
 
   const { cleanUp, store: source } = combineStores(
     sources.translations,
-    sources.mod,
+    sources.mod
   );
 
   const sourceUnsub = source.subscribe(msg => {
     if (msg) {
-      set(items = [...items, {...msg, index: items.length}]);
+      set(items = [...items, { ...msg, index: items.length }]);
     }
   });
 
   const hideOrReplaceMsg = bonkOrDeletion => {
     switch (ytcDeleteBehaviour.get()) {
-    case YtcDeleteBehaviour.HIDE:
-      return { hidden: true };
-    case YtcDeleteBehaviour.PLACEHOLDER:
-      return { messageArray: bonkOrDeletion.replacedMessage, deleted: true };
+      case YtcDeleteBehaviour.HIDE:
+        return { hidden: true };
+      case YtcDeleteBehaviour.PLACEHOLDER:
+        return { messageArray: bonkOrDeletion.replacedMessage, deleted: true };
     }
     return null;
   };
@@ -54,7 +53,7 @@ export const capturedMessages = readable([], set => {
     if (!msgModifications) return;
     const before = items.slice(0, i);
     const after = items.slice(i + 1);
-    set(items = [...before, {...items[i], ...msgModifications}, ...after]);
+    set(items = [...before, { ...items[i], ...msgModifications }, ...after]);
   };
 
   const delOrBonkSub = (source, diffAttr) => source.subscribe(events => {

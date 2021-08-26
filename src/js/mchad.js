@@ -10,10 +10,9 @@ import { archiveStreamFromScript, sseToStream } from './api.js';
 /** @typedef {(unix: UnixTimestamp) => String} UnixToTimestamp */
 /** @typedef {(unix: UnixTimestamp) => number} UnixToNumber */
 
-
 /** @type {(videoId: String) => (links: String[]) => Promise<MCHADLiveRoom[] | MCHADArchiveRoom[]>} */
 const getRoomCreator = videoId => {
-  const addVideoId = room => ({...room, videoId});
+  const addVideoId = room => ({ ...room, videoId });
   const getRoom = link =>
     fetch(link).then(r => r.json()).then(r => r.map(addVideoId)).catch(() => []);
 
@@ -21,7 +20,7 @@ const getRoomCreator = videoId => {
 };
 
 /**
- * @param {String} videoId 
+ * @param {String} videoId
  * @returns {{ live: MCHADLiveRoom[], vod: MCHADArchiveRoom[] }}
  */
 export async function getRooms(videoId) {
@@ -35,7 +34,7 @@ export async function getRooms(videoId) {
     `${MCHAD}/Archive?link=YT_${videoId}`
   ];
 
-  const [ live, vod ] = await Promise.all([liveLinks, vodLinks].map(getRooms_));
+  const [live, vod] = await Promise.all([liveLinks, vodLinks].map(getRooms_));
 
   return { live, vod };
 }
@@ -52,20 +51,20 @@ export async function getArchiveFromRoom(room) {
   const script = await fetch(`${MCHAD}/Archive`, {
     method: 'POST',
     headers: {
-      'Accept': 'application/json, text/plain, */*',
+      Accept: 'application/json, text/plain, */*',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       link: room.Link
     })
   }).then(toJson).catch(() => []);
-  
+
   let { Stime: firstTime } = [...script, { Stime: 0 }][0];
   const startmatch = script.filter(e => (e.Stext.match(/--.*Stream.*Start.*--/i) != null));
-  if (startmatch.length != 0){
+  if (startmatch.length != 0) {
     firstTime = startmatch[0].Stime;
   }
-    
+
   const toMessage = mchadToMessage(room.Room, archiveUnixToTimestamp(firstTime), archiveUnixToNumber(firstTime));
   return script.map(toMessage);
 }
@@ -78,7 +77,7 @@ export const getArchive = videoId => readable(null, async set => {
   const { vod } = await getRooms(videoId);
   if (vod.length == 0) return () => { };
 
-  const addUnix = tl => ({...tl, unix: archiveTimeToInt(tl.timestamp)});
+  const addUnix = tl => ({ ...tl, unix: archiveTimeToInt(tl.timestamp) });
 
   const getScript = room => getArchiveFromRoom(room)
     .then(s => s.map(addUnix))
@@ -92,8 +91,7 @@ export const getArchive = videoId => readable(null, async set => {
   const unsubscribes = scripts
     .map(archiveStreamFromScript)
     .map(stream => stream.subscribe(tl => {
-      if (tl && enableMchadTLs.get() && !mchadUsers.get(tl.author))
-        set(tl);
+      if (tl && enableMchadTLs.get() && !mchadUsers.get(tl.author)) { set(tl); }
     }));
 
   return () => unsubscribes.forEach(u => u());
@@ -147,7 +145,7 @@ export const getRoomTranslations = room => derived(streamRoom(room.Nick), (data,
 });
 
 /** @type {(videoId: String, retryInterval: Seconds) => MCHADLiveRoom[]} */
-const getLiveRoomsWithRetry = async (videoId, retryInterval) => {
+const getLiveRoomsWithRetry = async(videoId, retryInterval) => {
   while (1) {
     const { live } = await getRooms(videoId);
     if (live.length) return live;

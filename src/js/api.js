@@ -17,16 +17,16 @@ export const sseToStream = link => readable(null, set => {
     const match = event.data.match(/^(\w{1,}): (.*)/); // we can use match groups to split the string for us
     if (match !== null) {
       switch (match[1].toUpperCase()) {
-      case 'CONNECTED':
-        console.info(`API SSE: ${match[2]}`);
-        return;
-      case 'WARN':
-        console.warn(`API SSE Warning: ${match[2]}`);
-        return;
-      case 'ERROR':
-        console.error(`API SSE Error: ${match[2]}`);
-        source.close();
-        return;
+        case 'CONNECTED':
+          console.info(`API SSE: ${match[2]}`);
+          return;
+        case 'WARN':
+          console.warn(`API SSE Warning: ${match[2]}`);
+          return;
+        case 'ERROR':
+          console.error(`API SSE Error: ${match[2]}`);
+          source.close();
+          return;
       }
     }
 
@@ -91,8 +91,7 @@ export const getArchive = videoId => readable(null, async set => {
     .then(sortBy('unix'));
 
   return archiveStreamFromScript(script).subscribe(tl => {
-    if (enableAPITLs.get())
-      set(tl);
+    if (enableAPITLs.get()) { set(tl); }
   });
 });
 

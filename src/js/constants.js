@@ -93,7 +93,7 @@ export const languageNameValues = languages.map(lang => ({
   text: createLangSelectionName(lang), value: lang.lang
 }));
 
-function createLangSelectionName (lang) {
+function createLangSelectionName(lang) {
   return `${lang.name} (${lang.lang})`;
 }
 

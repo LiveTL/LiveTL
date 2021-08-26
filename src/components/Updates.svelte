@@ -10,14 +10,14 @@
 
   export let active = false;
 
-  function setLastVersion () {
+  function setLastVersion() {
     active = false;
   }
 
   let Changelogs;
   let unsubscribe = () => { };
 
-  onMount(async () => {
+  onMount(async() => {
     Changelogs = (await import(`../changelogs/${version}.svelte`)).default;
 
     await lastVersion.loaded;

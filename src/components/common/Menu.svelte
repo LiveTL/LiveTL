@@ -28,7 +28,7 @@
     item.onClick();
   };
 
-  const onOpenChange = async (open: boolean) => {
+  const onOpenChange = async(open: boolean) => {
     if (!open) return;
 
     await tick(); // Wait for listDiv to exist

@@ -28,14 +28,14 @@
   // FIXME: Scroll to latest button broke again
   const updateWrapper = () => [wrapper.isAtBottom(), wrapper.isAtTop(), setTimeout(checkAtRecent)];
 
-  function checkAtRecent () {
+  function checkAtRecent() {
     if (wrapper == null) return;
     isAtRecent =
       ($textDirection === TextDirection.BOTTOM && wrapper.isAtBottom()) ||
       ($textDirection === TextDirection.TOP && wrapper.isAtTop());
   }
 
-  function onMessageDisplayAfterUpdate () {
+  function onMessageDisplayAfterUpdate() {
     if (isAtRecent && !settingsOpen) {
       messageDisplay.scrollToRecent();
     }
@@ -55,32 +55,32 @@
 
   let isSelecting = false;
 
-  function toggleSelecting () {
+  function toggleSelecting() {
     isSelecting = !isSelecting;
   }
 
   let selectedItems = [];
   let selectedItemCount = 0;
 
-  function selectAllItems () {
+  function selectAllItems() {
     selectedItems = [...displayedMessages];
   }
 
   let selectOperation = () => {};
 
-  function getSelectedItems () {
+  function getSelectedItems() {
     return selectedItems.filter(d => !d.hidden);
   }
 
   $: selectedItems, selectedItemCount = getSelectedItems().length;
 
-  function saveScreenshot () {
+  function saveScreenshot() {
     renderQueue = getSelectedItems();
     toggleSelecting();
     selectOperation = () => {};
   }
 
-  function saveDownload () {
+  function saveDownload() {
     const toSave = getSelectedItems().map(
       d => `${d.author} (${d.timestamp}): ${d.text}`
     );
@@ -112,7 +112,7 @@
   }
 
 
-  function toggleFullScreen () {
+  function toggleFullScreen() {
     if (isAndroid) {
       // @ts-ignore
       window.nativeJavascriptInterface.toggleFullscreen();

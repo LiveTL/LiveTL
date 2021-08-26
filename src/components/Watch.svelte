@@ -30,7 +30,7 @@
   document.title = 'LiveTL';
   let chatElem, vidElem, ltlElem;
   const resizable = (selector, info) => {
-    j(typeof selector == 'string' ? document.querySelector(selector) : selector).resizable(info);
+    j(typeof selector === 'string' ? document.querySelector(selector) : selector).resizable(info);
   };
   const convertPxAndPercent = () => {
     [
@@ -66,7 +66,7 @@
     document.querySelectorAll('#mainUI .ui-resizable-handle').forEach(elem => {
       elem.remove();
     });
-    
+  
     resizable(isRightSide ? chatSideElem : vidElem, {
       handles: isTopSide ? 's' : 'e',
       start: resizeCallback,
@@ -95,11 +95,11 @@
   $: isChatVertical = $chatSplit == ChatSplit.VERTICAL;
 
   $: chatElemStyle = (
-    isChatVertical ? `width: ${$chatSize}%; min-width: `: `height: ${$chatSize}%; min-height: `
+    isChatVertical ? `width: ${$chatSize}%; min-width: ` : `height: ${$chatSize}%; min-height: `
   ) + '10px;';
   $: videoContainerStyle = (
-    (isTopSide ? 'height' : 'width') + `: ${$videoPanelSize}%; ` + 
-    (isLeftSide ? 'min-width: 10px;' : (isTopSide ? 'min-height: 10px;': ''))
+    (isTopSide ? 'height' : 'width') + `: ${$videoPanelSize}%; ` +
+    (isLeftSide ? 'min-width: 10px;' : (isTopSide ? 'min-height: 10px;' : ''))
   );
   $: chatElemParentStyle = isRightSide ? 'width: calc(100% - 10px);' : '';
   $: chatWrapperStyle = `padding-${isChatVertical ? 'right' : 'bottom'}: 10px;`;

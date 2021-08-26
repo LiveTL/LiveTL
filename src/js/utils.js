@@ -37,8 +37,7 @@ export const toJson = r => r.json();
 export const suppress = cb => {
   try {
     cb();
-  }
-  catch (e) {
+  } catch (e) {
     return undefined;
   }
 };

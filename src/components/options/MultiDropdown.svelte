@@ -9,7 +9,7 @@
   export let getBool = (key) => store.get(key);
   export let setBool = (key, val) => store.set(key, val);
 
-  function convertLookup (lookup) {
+  function convertLookup(lookup) {
     return [...lookup]
       .filter(([key]) => key && getBool(key))
       .map(([key, value]) => ({ key, item: getDisplayName(key, value) }));

@@ -26,7 +26,7 @@
 
   let bottomMsg: HTMLElement | undefined;
 
-  export function scrollToRecent () {
+  export function scrollToRecent() {
     if (!bottomMsg) {
       console.error('bottomMsg undefined');
       return;

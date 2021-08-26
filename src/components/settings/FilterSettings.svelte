@@ -17,7 +17,7 @@
   import Radio from '../common/RadioGroupStore.svelte';
   import Card from '../common/Card.svelte';
 
-  function createNewFilter () {
+  function createNewFilter() {
     cleanupFilters();
     addFilter('chat', 'plain', 'show', '');
   }

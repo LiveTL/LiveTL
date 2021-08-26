@@ -9,7 +9,7 @@
     captionWidth,
     captionFontSize,
     enableCaptionTimeout,
-    captionDuration,
+    captionDuration
   } from '../js/store.js';
   import { checkAndSpeak } from '../js/speech.js';
   import { displayedMessages } from '../js/sources-aggregate.js';
