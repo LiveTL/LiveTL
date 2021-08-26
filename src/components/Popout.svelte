@@ -212,7 +212,7 @@
       {#if !isSelecting}
         {#if !settingsOpen && $spotlightedTranslator}
           <!-- Un-spotlight translator button -->
-          <Tooltip bottom>
+          <Tooltip>
             <div slot="activator" transition:fly={{ x: -500, duration: 600 }}>
               <Button
                 icon="voice_over_off"
@@ -226,7 +226,7 @@
         {/if}
         {#if !settingsOpen && $enableExportButtons}
           <!-- Screenshot button -->
-          <Tooltip bottom>
+          <Tooltip>
             <Button
               slot="activator"
               icon={isSelecting ? 'check' : 'photo_camera'}
@@ -240,7 +240,7 @@
             <span>Screenshot translations</span>
           </Tooltip>
           <!-- Export translations button -->
-          <Tooltip bottom>
+          <Tooltip>
             <Button
               slot="activator"
               icon={isSelecting ? 'check' : 'download'}
@@ -256,7 +256,7 @@
         {/if}
         {#if !settingsOpen && $enableFullscreenButton}
           <!-- Fullscreen button -->
-          <Tooltip bottom>
+          <Tooltip>
             <Button
               slot="activator"
               icon="fullscreen"
@@ -268,7 +268,7 @@
           </Tooltip>
         {/if}
         <!-- Settings button -->
-        <Tooltip bottom>
+        <Tooltip>
           <Button
             slot="activator"
             icon={settingsOpen ? 'close' : 'settings'}
