@@ -16,7 +16,7 @@
   {icon}
 >
   {#if expanded}
-    <div transition:slide|local={{ duration: slideDuration }}>
+    <div transition:slide|local={{ duration: slideDuration }} class="p-2">
       <slot />
     </div>
   {/if}

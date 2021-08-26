@@ -252,10 +252,6 @@ module.exports = (env, options) => {
             }
           },
           {
-            from: 'src/changelogs/img',
-            to: 'img'
-          },
-          {
             from: 'src/img/blfavicon.ico',
             to: 'img'
           }
