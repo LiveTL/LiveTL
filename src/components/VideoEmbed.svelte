@@ -3,22 +3,37 @@
   import { VideoSide } from '../js/constants.js';
   import { suppress } from '../js/utils.js';
   import { onMount } from 'svelte';
+  import { ProgressCircular } from 'svelte-materialify';
   let player = undefined;
   export let videoId;
+  let loaded = false;
   onMount(() => {
     player.src = `https://www.youtube.com/error?video=${videoId}`;
     window.addEventListener('message', e => {
       suppress(() =>{
+        console.log(e.data);
         if (e.data.type === 'marine-easter-egg') {
           faviconURL.set('/img/blfavicon.ico');
+        } else if (e.data.type === 'video-embed-loaded') {
+          loaded = true;
         }
       });
     });
   });
 </script>
 
+{#if !loaded}
+  <div class="progress">
+    <ProgressCircular indeterminate color="primary" />
+  </div>
+{/if}
 <div class="wrapper" class:left-video={$videoSide == VideoSide.LEFT}>
-  <iframe title="video" bind:this={player} class="video" />
+  <iframe
+    title="video"
+    bind:this={player}
+    class="video"
+    class:hidden={!loaded}
+  />
 </div>
 
 <!--<style src="../css/iframe.css"></style>-->
@@ -35,5 +50,16 @@
     margin: 0px;
     width: 100%;
     height: 100%;
+  }
+  .hidden {
+    opacity: 0% !important;
+  }
+  .progress {
+    display: flex;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
   }
 </style>

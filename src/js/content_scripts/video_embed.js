@@ -7,6 +7,9 @@ const video = params.get('video');
 if (video) {
   document.body.innerHTML = '<div id="player"></div>';
   document.body.style.overflow = 'hidden';
+  window.parent.postMessage({
+    type: 'video-embed-loaded'
+  }, '*');
   YouTubeIframeLoader.load(YT => {
     window.player = new YT.Player('player', {
       height: '100%',
