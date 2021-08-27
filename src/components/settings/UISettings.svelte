@@ -27,7 +27,7 @@
   import Checkbox from '../common/CheckboxStore.svelte';
   import Radio from '../common/RadioGroupStore.svelte';
   import Card from '../common/Card.svelte';
-  import ReadAloud from '../options/ReadAloud.svelte';
+  import ReadAloud from './ReadAloud.svelte';
 </script>
 
 <ImportExport />
