@@ -22,14 +22,14 @@
       second{intervalPlural}
     </small>
     <Slider
-      name="Spam detection threshold:"
+      name="Spam detection threshold"
       store={spamMsgAmount}
       min={2}
       max={101}
       step={1}
     />
     <Slider
-      name="Spam detection timeframe:"
+      name="Spam detection timeframe"
       store={spamMsgInterval}
       min={1}
       max={100}
