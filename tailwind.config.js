@@ -3,7 +3,7 @@ const smelteTailwind = require('smelte/tailwind.config.js');
 
 const colors = {
   primary: '#2196F3',
-  secondary: '#03A9F4',
+  secondary: '#3f51b5',
   error: '#f44336',
   success: '#4caf50',
   alert: '#ff9800',
