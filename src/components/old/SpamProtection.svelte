@@ -1,10 +1,10 @@
 <script>
   import { Subheader } from 'svelte-materialify/src';
-  import { enableSpamProtection } from '../js/store.js';
-  import { spammersDetected, spamMsgAmount, spamMsgInterval } from '../js/store.js';
+  import { enableSpamProtection } from '../../js/store.js';
+  import { spammersDetected, spamMsgAmount, spamMsgInterval } from '../../js/store.js';
   import Slider from './options/Slider.svelte';
   import Toggle from './options/Toggle.svelte';
-  import MultiDropdown from './options/MultiDropdown.svelte';
+  import MultiDropdown from '../options/MultiDropdown.svelte';
 
   $: amount = `${Math.round($spamMsgAmount)}`;
   $: interval = `${Math.round($spamMsgInterval)}`;
