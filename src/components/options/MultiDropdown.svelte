@@ -16,7 +16,10 @@
   }
 
   $: items = convertLookup($store);
-  // TODO: need to figure out css of list to be the size of popout
+  const optionsClasses = 'divide-y divide-gray-600 absolute left-0 ' +
+    'bg-white rounded shadow min-w-full w-max z-20 dark:bg-dark-500 ' +
+    'max-h-60 overflow-auto';
+  // TODO: need to figure out max width
 </script>
 
 <Select
@@ -25,7 +28,7 @@
 >
   <div
     slot="options"
-    class="divide-y divide-gray-600 absolute left-0 bg-white rounded shadow min-w-full w-max z-20 dark:bg-dark-500"
+    class={optionsClasses}
     on:click|stopPropagation
   >
     {#if items.length}

@@ -18,6 +18,8 @@
 
   const classes = 'cursor-pointer relative ' +
     ($$props.class ? $$props.class : '');
+  const optionsClasses = 'absolute left-0 bg-white rounded shadow w-full ' +
+    'z-20 dark:bg-dark-500 max-h-60 overflow-auto';
 </script>
 
 <Select
@@ -26,4 +28,5 @@
   {items}
   {classes}
   {dense}
+  {optionsClasses}
 />
