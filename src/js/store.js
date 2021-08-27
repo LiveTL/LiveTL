@@ -1,5 +1,7 @@
 import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour, DisplayMode, paramsEmbedded } from './constants.js';
+import { getAllVoiceNames, getVoiceMap } from './utils.js';
 import { LookupStore, SyncStore } from './storage.js';
+// eslint-disable-next-line no-unused-vars
 import { writable, readable, derived, Readable } from 'svelte/store';
 import { compose } from './utils.js';
 
@@ -28,9 +30,10 @@ const sampleFilter = {
   id: ''
 };
 
+const sampleSpam = { author: '', authorId: '', spam: false };
+
 // Settings
-export const
-  language = SS('language', 'English');
+export const language = SS('language', 'English');
 export const showModMessage = SS('showModMessage', true);
 export const chatZoom = SS('chatZoom', defaultZoom);
 export const showTimestamp = SS('showTimestamp', true);
@@ -75,6 +78,12 @@ export const autoPrefixTag = SS('autoPrefixTag', '[$filterLang]');
 export const macroTrigger = SS('macroTrigger', '/');
 export const ytcDeleteBehaviour = SS('ytcDeleteBehaviour', YtcDeleteBehaviour.HIDE);
 export const autoVertical = SS('autoVertical', true);
+export const enableSpamProtection = SS('enableSpamProtection', true);
+export const spamMsgAmount = SS('spamMsgAmount', 5);
+export const spamMsgInterval = SS('spamMsgInterval', 10);
+export const spammersDetected = LS('spammersDetected', [sampleSpam].slice(1));
+export const speechVoiceNameSetting = SS('speechVoiceNameSetting', '');
+export const speechSpeed = SS('speechSpeed', 1);
 
 // Non-persistant stores
 
@@ -91,6 +100,28 @@ export const videoSide = derived(videoSideDepends, ([$videoSide, $autoVert, $win
   const { width, height } = $windims;
   return $autoVert && height > width ? VideoSide.TOP : $videoSide;
 }, videoSideSetting.get());
+export const voiceNames = readable(getAllVoiceNames(), set => {
+  const cb = () => {
+    set(getAllVoiceNames());
+    unsub();
+  };
+  const unsub = () => window.removeEventListener('load', cb);
+  window.addEventListener('load', cb);
+  return unsub;
+});
+export const speechVoiceName = derived(
+  [speechVoiceNameSetting, voiceNames],
+  ([$speechVoiceNameSetting, $voiceNames]) => {
+    return (
+      $voiceNames.includes($speechVoiceNameSetting) ?
+        $speechVoiceNameSetting : $voiceNames[0]
+    ); 
+  },
+);
+export const speechSpeaker = derived(
+  [speechVoiceName, voiceNames],
+  ([$speechVoiceName, _$voiceNames]) => getVoiceMap().get($speechVoiceName),
+);
 
 export const updatePopupActive = writable(false);
 export const videoTitle = writable('LiveTL');

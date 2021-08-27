@@ -11,6 +11,7 @@
   export let color = 'blue';
   export let step = null;
   export let thumb = false;
+  export let suffix = ':';
 
   let diff = max - min;
   $: value = Math.max(0, Math.min(100, value));
@@ -25,7 +26,7 @@
     if (wrapper == null) return;
     let e = wrapper.querySelector('.s-slider__tooltip');
     if (e) {
-      e.setAttribute('data-content', Math.round(scaledBack));
+      e.setAttribute('data-content', typeof thumb != 'boolean' ? thumb : Math.round(scaledBack));
     }
   }
 
@@ -68,9 +69,9 @@
 </script>
 
 <div bind:this={wrapper}>
-  <Slider bind:value {color} {step} {thumb}>
+  <Slider bind:value {color} {step} thumb={Boolean(thumb)}>
     <div slot="default">
-      {name}:
+      {name}{suffix}
     </div>
     <div slot="append-outer">
       <div class="reset-button">

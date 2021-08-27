@@ -1,6 +1,6 @@
 {
   "name": "LiveTL",
-  "version": "6.6.3",
+  "version": "6.7.2",
   "description": "Get live translations for YouTube streams, crowdsourced from multilingual viewers!",
   "scripts": {
     "build": "node utils/build.js",
@@ -17,7 +17,8 @@
     "e2e:build": "yarn build production && yarn package && cp dist/LiveTL-Firefox.zip dist/LiveTL-Firefox.xpi",
     "e2e:test": "pytest --tests-per-worker auto e2e",
     "e2e": "yarn e2e:build && yarn e2e:test",
-    "format": "eslint --fix ."
+    "format": "eslint --fix .",
+    "format:check": "eslint --fix-dry-run"
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.13.8",

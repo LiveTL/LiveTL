@@ -1,6 +1,7 @@
 # LiveTL - Translation Filter for Streams
 
 [![Tests](https://github.com/LiveTL/LiveTL/actions/workflows/tests.yaml/badge.svg)](https://github.com/LiveTL/LiveTL/actions/workflows/tests.yaml)
+[![E2E Tests](https://github.com/LiveTL/LiveTL/actions/workflows/tests-e2e.yml/badge.svg)](https://github.com/LiveTL/LiveTL/actions/workflows/tests-e2e.yml)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg)](https://github.com/standard/semistandard)
 [![Contributors](https://img.shields.io/github/contributors/LiveTL/LiveTL)](https://github.com/LiveTL/LiveTL/contributors)

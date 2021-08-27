@@ -140,3 +140,9 @@ export const chatAuthorItems = [
   { text: 'message', value: 'chat' },
   { text: 'author', value: 'author' }
 ];
+
+export const defaultCaption = `
+Captions captured from the chat will appear here. Try moving and resizing!
+You can also disable floating captions or make captions disappear
+when inactive in the settings menu.
+`;

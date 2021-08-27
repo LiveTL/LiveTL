@@ -5,10 +5,8 @@
     videoSideSetting,
     chatZoom,
     livetlFontSize,
-    doSpeechSynth,
     showCaption,
     showTimestamp,
-    speechVolume,
     textDirection,
     enableCaptionTimeout,
     chatSplit,
@@ -29,6 +27,7 @@
   import Checkbox from '../common/CheckboxStore.svelte';
   import Radio from '../common/RadioGroupStore.svelte';
   import Card from '../common/Card.svelte';
+  import ReadAloud from '../options/ReadAloud.svelte';
 </script>
 
 <ImportExport />
@@ -99,9 +98,4 @@
     {/if}
   </Card>
 {/if}
-<Card title="Speech" icon="record_voice_over">
-  <Checkbox name="Enable read-aloud mode" store={doSpeechSynth} />
-  {#if $doSpeechSynth}
-    <Slider name="Speech volume" store={speechVolume} min={0} max={1} step={0.01} />
-  {/if}
-</Card>
+<ReadAloud />

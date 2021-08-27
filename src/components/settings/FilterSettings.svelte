@@ -16,6 +16,7 @@
   import Dropdown from '../common/DropdownStore.svelte';
   import Radio from '../common/RadioGroupStore.svelte';
   import Card from '../common/Card.svelte';
+  import SpamProtection from '../SpamProtection.svelte';
 
   function createNewFilter() {
     cleanupFilters();
@@ -34,6 +35,7 @@
   <Checkbox name="Show moderator and owner messages" store={showModMessage} />
 </div>
 <BlockedUsers />
+<SpamProtection />
 <Card
   title="When messages are deleted by moderators:"
 >

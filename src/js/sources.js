@@ -12,7 +12,7 @@ import {
   isTranslation,
   replaceFirstTranslation
 } from './filter';
-import { showModMessage } from './store';
+import { showModMessage, timestamp } from './store';
 import { paramsVideoId, AuthorType, paramsPopout, paramsTabId, paramsFrameId } from './constants';
 import * as MCHAD from './mchad.js';
 import * as API from './api.js';

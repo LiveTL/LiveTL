@@ -1,28 +1,53 @@
+// eslint-disable-next-line no-unused-vars
 import { readable, derived, Readable } from 'svelte/store';
 import { combineStores, sources } from './sources.js';
-import { removeDuplicateMessages } from './sources-util.js';
-import { ytcDeleteBehaviour, sessionHidden, spotlightedTranslator, channelFilters, mchadUsers } from './store.js';
-import { YtcDeleteBehaviour } from './constants.js';
+import { getSpamAuthors, removeDuplicateMessages } from './sources-util.js';
+import {
+  ytcDeleteBehaviour,
+  sessionHidden,
+  spotlightedTranslator,
+  channelFilters,
+  mchadUsers,
+  spamMsgAmount,
+  spamMsgInterval,
+  enableSpamProtection,
+  spammersDetected
+} from './store.js';
+import { defaultCaption, YtcDeleteBehaviour } from './constants.js';
+import { checkAndSpeak } from './speech.js';
 
-/** @type {Readable<String[]>} */
-const channelBlacklisted = derived(channelFilters, $chan => $chan
-  .filter(([_id, filter]) => filter.blacklist)
-  .map(([id, _filter]) => id)
+/**
+ * @template {T}
+ * @type {(store: Readable<T>, getBool: (val: T) => Boolean) => Readable<String[]>}
+ */
+const lookupStoreToList = (store, getBool=Boolean) => derived(store, $val => $val
+  .filter(([_id, val]) => getBool(val))
+  .map(([id, _val]) => id)
 );
 
-/** @type {Readable<String[]>} */
-const mchadBlacklisted = derived(mchadUsers, $mchad => $mchad
-  .filter(([_name, banned]) => banned)
-  .map(([name, _banned]) => name)
-);
+/**
+ * @template {T}
+ * @type {(stores: Readable<T[]>) => Readable<Set<T>>}
+ */
+const toSet = (...stores) => derived(stores, ($stores) => new Set($stores.flat()), new Set([]));
 
-/** @type {Readable<Set<String>>} */
-export const allBanned = derived([channelBlacklisted, mchadBlacklisted], ([$chan, $mchad]) => {
-  return new Set([...$chan, ...$mchad]);
-}, []);
+const channelBlacklisted = lookupStoreToList(channelFilters, f => f.blacklist);
+const mchadBlacklisted = lookupStoreToList(mchadUsers);
+const notSpammer = lookupStoreToList(spammersDetected, f => !f.spam);
 
-/** @type {Readable<Set<String>>} */
-const hidden = derived(sessionHidden, $hidden => new Set($hidden));
+export const allBanned = toSet(channelBlacklisted, mchadBlacklisted);
+export const notSpamStore = toSet(notSpammer);
+
+/** @type {Readable<(authorId: String) => Boolean>} */
+const whitelistedSpam = derived(notSpamStore, $set => id => $set.has(id));
+
+/** @type {([authorId: String, author: String]) => Void} */
+const markSpam = ([authorId, author]) => {
+  if (!spammersDetected.has(authorId))
+    spammersDetected.set(authorId, { authorId, author, spam: true });
+};
+
+const hidden = toSet(sessionHidden);
 
 export const capturedMessages = readable([], set => {
   let items = [];
@@ -76,12 +101,44 @@ export const capturedMessages = readable([], set => {
   };
 });
 
-const dispDepends = [capturedMessages, allBanned, hidden, spotlightedTranslator];
-export const displayedMessages = derived(dispDepends, ([$items, $banned, $hidden, $spot]) => {
-  const attrNotIn = (set, attr) => item => !set.has(item[attr]);
-  $items = $items
-    ?.filter(attrNotIn($banned, 'authorId'))
-    ?.filter(attrNotIn($hidden, 'messageId'))
-    ?.filter($spot ? msg => msg.authorId === $spot : () => true) ?? [];
-  return removeDuplicateMessages($items);
+const spamStores = [spamMsgAmount, spamMsgInterval]
+  .map(store => derived(store, Math.round));
+
+const dispDepends = [
+  ...[capturedMessages, allBanned, hidden, spotlightedTranslator],
+  ...[...spamStores, whitelistedSpam, enableSpamProtection]
+];
+
+const dispTransform =
+  ([$items, $banned, $hidden, $spot, $spamAmt, $spamInt, $whitelisted, $enSpam]) => {
+
+    const attrNotIn = (set, attr) => item => !set.has(item[attr]);
+    const spammers = $enSpam
+      ? getSpamAuthors($items, $spamAmt, $spamInt).filter(([id]) => !$whitelisted(id))
+      : [];
+    const spammerIds = new Set(spammers.map(([id]) => id));
+    spammers.forEach(markSpam);
+
+    $items = $items
+      ?.filter(attrNotIn($banned, 'authorId'))
+      ?.filter(attrNotIn($hidden, 'messageId'))
+      ?.filter(attrNotIn(spammerIds, 'authorId'))
+      ?.filter($spot ? msg => msg.authorId === $spot : () => true) ?? [];
+    return removeDuplicateMessages($items);
+  };
+
+export const displayedMessages = derived(dispDepends, dispTransform);
+
+export const captionText = readable(defaultCaption, set => {
+  let text = defaultCaption;
+  return displayedMessages.subscribe($msgs => {
+    const $translation = $msgs[$msgs.length - 1]?.text;
+    if ($translation != null && $translation != text) {
+      set(text = $translation);
+    }
+  });
 });
+
+// hmr
+if (window.unsubDictation) window.unsubDictation();
+window.unsubDictation = captionText.subscribe($txt => $txt !== defaultCaption && checkAndSpeak($txt));
