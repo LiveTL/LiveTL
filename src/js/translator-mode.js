@@ -96,9 +96,9 @@ export function macroSystem(initialMacros) {
     return possibleMacros.length == 1 ? macros[possibleMacros[0]] : null;
   };
 
-  /** @type {(text: String) => [String, Array<String>]} */
+  /** @type {(text: String) => [String, IterableIterator<RegExpMatchArray>]} */
   const splitText = text => [text, text.matchAll(splitTextPattern)];
-  /** @type {([input: String, split: Array<String>]) => String} */
+  /** @type {([input: String, split: IterableIterator<RegExpMatchArray>]) => String} */
   const replaceSplitText = ([input, split]) => {
     const replaced = [];
     let lastIdx = 0;
