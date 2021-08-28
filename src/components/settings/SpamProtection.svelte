@@ -6,6 +6,8 @@
   import Slider from '../common/SliderStore.svelte';
   import Checkbox from '../common/CheckboxStore.svelte';
 
+  export let boundingDiv;
+
   const codeClass = 'px-1 bg-gray-700';
 
   $: amount = `${Math.round($spamMsgAmount)}`;
@@ -42,6 +44,7 @@
       getBool={id => spammersDetected.get(id).spam}
       setBool={(id, spam) =>
         spammersDetected.set(id, { ...spammersDetected.get(id), spam })}
+      {boundingDiv}
     />
   {/if}
 </Card>

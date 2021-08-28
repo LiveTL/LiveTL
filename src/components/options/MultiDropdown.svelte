@@ -9,10 +9,10 @@
   export let getDisplayName = (key, value) => `${key}` || value;
   export let getBool = (key) => store.get(key);
   export let setBool = (key, val) => store.set(key, val);
+  export let boundingDiv = null;
 
   let showList = false;
   let div = null;
-  let windowInnerHeight = 0;
   let offsetY = '';
 
   function convertLookup(lookup) {
@@ -23,7 +23,7 @@
 
   const onShowListChange = async(showList) => {
     if (!showList) return;
-    offsetY = await getDropdownOffsetY(div, windowInnerHeight);
+    offsetY = await getDropdownOffsetY(div, boundingDiv);
   };
 
   $: items = convertLookup($store);
@@ -34,8 +34,6 @@
     'dark:bg-dark-500 max-h-60 overflow-auto ' + offsetY;
   // TODO: need to figure out max width
 </script>
-
-<svelte:window bind:innerHeight={windowInnerHeight} />
 
 <div bind:this={div} class={$$props.class ? $$props.class : ''}>
   <Select

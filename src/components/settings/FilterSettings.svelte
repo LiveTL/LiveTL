@@ -23,41 +23,46 @@
     addFilter('chat', 'plain', 'show', '');
   }
 
+  let div: HTMLElement;
+
   onMount(cleanupFilters);
 </script>
 
-<Dropdown
-  name="Language filter"
-  store={language}
-  items={languageNameValues}
-/>
-<div class="mt-6">
-  <Checkbox name="Show moderator and owner messages" store={showModMessage} />
-</div>
-<BlockedUsers />
-<SpamProtection />
-<Card
-  title="When messages are deleted by moderators:"
->
-  <Radio
-    store={ytcDeleteBehaviour}
-    map={ytcDeleteMap}
-    vertical
+<div bind:this={div}>
+  <Dropdown
+    name="Language filter"
+    store={language}
+    items={languageNameValues}
+    boundingDiv={div}
   />
-</Card>
-<Card
-  title="External translation sources"
-  noGap
->
-  <Checkbox name="LiveTL API" store={enableAPITLs} />
-  <Checkbox name="MChad (volunteer translators)" store={enableMchadTLs} />
-</Card>
-<Card
-  title="Custom filters"
-  headerEndIcon="add"
-  headerEndIconOnClick={createNewFilter}
->
-  {#each $customFilters as rule}
-    <CustomFilter {...rule} />
-  {/each}
-</Card>
+  <div class="mt-6">
+    <Checkbox name="Show moderator and owner messages" store={showModMessage} />
+  </div>
+  <BlockedUsers boundingDiv={div} />
+  <SpamProtection boundingDiv={div} />
+  <Card
+    title="When messages are deleted by moderators:"
+  >
+    <Radio
+      store={ytcDeleteBehaviour}
+      map={ytcDeleteMap}
+      vertical
+    />
+  </Card>
+  <Card
+    title="External translation sources"
+    noGap
+  >
+    <Checkbox name="LiveTL API" store={enableAPITLs} />
+    <Checkbox name="MChad (volunteer translators)" store={enableMchadTLs} />
+  </Card>
+  <Card
+    title="Custom filters"
+    headerEndIcon="add"
+    headerEndIconOnClick={createNewFilter}
+  >
+    {#each $customFilters as rule}
+      <CustomFilter {...rule} boundingDiv={div} />
+    {/each}
+  </Card>
+</div>

@@ -13,18 +13,19 @@
   export let items: DropdownItem[] = [];
   /** Dense variant. */
   export let dense = false;
+  /** Parent div used to determine top/bottom */
+  export let boundingDiv: HTMLElement;
 
   $: value = $store;
   $: store.set(value);
 
   let showList = false;
   let div: HTMLElement;
-  let windowInnerHeight = 0;
   let offsetY = '';
 
   const onShowListChange = async(showList: boolean) => {
     if (!showList) return;
-    offsetY = await getDropdownOffsetY(div, windowInnerHeight);
+    offsetY = await getDropdownOffsetY(div, boundingDiv);
   };
 
   $: onShowListChange(showList);
@@ -32,8 +33,6 @@
   $: optionsClasses = 'dropdown-options absolute left-0 bg-white rounded ' +
     'shadow w-full z-20 dark:bg-dark-500 max-h-60 overflow-auto ' + offsetY;
 </script>
-
-<svelte:window bind:innerHeight={windowInnerHeight} />
 
 <div bind:this={div} class={$$props.class ? $$props.class : ''}>
   <Select

@@ -11,6 +11,7 @@
   export let plainReg = 'plain';
   export let chatAuthor = 'chat';
   export let id = '';
+  export let boundingDiv: HTMLElement;
 
   let div: HTMLElement | undefined;
   let maxRuleLength = 0;
@@ -37,9 +38,9 @@
 
 <div class="flex flex-col rounded gap-2" bind:this={div}>
   <div class="flex flex-row gap-2 flex-wrap">
-    <Dropdown dense store={sShowBlock} items={showBlockItems} class="w-32 flex-shrink-0 flex-auto" />
-    <Dropdown dense store={sPlainReg} items={plainRegexItems} class="w-32 flex-shrink-0 flex-auto" />
-    <Dropdown dense store={sChatAuthor} items={chatAuthorItems} class="w-32 flex-shrink-0 flex-auto" />
+    <Dropdown dense store={sShowBlock} items={showBlockItems} class="w-32 flex-shrink-0 flex-auto" {boundingDiv} />
+    <Dropdown dense store={sPlainReg} items={plainRegexItems} class="w-32 flex-shrink-0 flex-auto" {boundingDiv} />
+    <Dropdown dense store={sChatAuthor} items={chatAuthorItems} class="w-32 flex-shrink-0 flex-auto" {boundingDiv} />
   </div>
   <div class="flex flex-row">
     <div class="flex-1">

@@ -28,74 +28,79 @@
   import Radio from '../common/RadioGroupStore.svelte';
   import Card from '../common/Card.svelte';
   import ReadAloud from './ReadAloud.svelte';
+
+  let div: HTMLElement;
 </script>
 
-<ImportExport />
-<Card title="Font" icon="format_size">
-  <Slider name="Chat zoom" store={chatZoom} min={0.5} max={2} step={0.1} />
-  <Slider name="Font size" store={livetlFontSize} min={9} max={54} />
-  <FontDemo fontSize={$livetlFontSize} />
-</Card>
-<Card title="Layout" icon="monitor">
-  <div class="flex items-center gap-2">
-    <h6>Text direction:</h6>
-    <Radio
-      store={textDirection}
-      map={textDirectionMap}
-    />
-  </div>
-  {#if $displayMode === DisplayMode.FULLPAGE}
+<div bind:this={div}>
+  <ImportExport />
+  <Card title="Font" icon="format_size">
+    <Slider name="Chat zoom" store={chatZoom} min={0.5} max={2} step={0.1} />
+    <Slider name="Font size" store={livetlFontSize} min={9} max={54} />
+    <FontDemo fontSize={$livetlFontSize} />
+  </Card>
+  <Card title="Layout" icon="monitor">
     <div class="flex items-center gap-2">
-      <h6>Video side:</h6>
+      <h6>Text direction:</h6>
       <Radio
-        store={videoSideSetting}
-        map={videoSideMap}
+        store={textDirection}
+        map={textDirectionMap}
       />
     </div>
-    <div class="flex items-center gap-2">
-      <h6>Chat split:</h6>
-      <Radio
-        store={chatSplit}
-        map={chatSplitMap}
-      />
-    </div>
-    <Checkbox
-      name="Automatically adjust layout when window is thin"
-      store={autoVertical}
-    />
-  {/if}
-</Card>
-<Card title="General" icon="tune">
-  <Checkbox name="Show timestamps" store={showTimestamp} />
-  <Checkbox
-    name="Show screenshot and download buttons"
-    store={enableExportButtons}
-  />
-  <Checkbox name="Show fullscreen button" store={enableFullscreenButton} />
-</Card>
-{#if $displayMode === DisplayMode.FULLPAGE}
-  <Card title="Captions" icon="subtitles">
-    <Checkbox name="Show captions" store={showCaption} />
-    {#if $showCaption}
-      <Slider
-        name="Caption font size"
-        store={captionFontSize}
-        min={9}
-        max={54}
-      />
-      <Checkbox
-        name="Make captions disappear when inactive"
-        store={enableCaptionTimeout}
-      />
-      {#if $enableCaptionTimeout}
-        <Slider
-          name="Disappear after (seconds)"
-          store={captionDuration}
-          min={1}
-          max={61}
+    {#if $displayMode === DisplayMode.FULLPAGE}
+      <div class="flex items-center gap-2">
+        <h6>Video side:</h6>
+        <Radio
+          store={videoSideSetting}
+          map={videoSideMap}
         />
-      {/if}
+      </div>
+      <div class="flex items-center gap-2">
+        <h6>Chat split:</h6>
+        <Radio
+          store={chatSplit}
+          map={chatSplitMap}
+        />
+      </div>
+      <Checkbox
+        name="Automatically adjust layout when window is thin"
+        store={autoVertical}
+      />
     {/if}
   </Card>
-{/if}
-<ReadAloud />
+  <Card title="General" icon="tune">
+    <Checkbox name="Show timestamps" store={showTimestamp} />
+    <Checkbox
+      name="Show screenshot and download buttons"
+      store={enableExportButtons}
+    />
+    <Checkbox name="Show fullscreen button" store={enableFullscreenButton} />
+  </Card>
+  {#if $displayMode === DisplayMode.FULLPAGE}
+    <Card title="Captions" icon="subtitles">
+      <Checkbox name="Show captions" store={showCaption} />
+      {#if $showCaption}
+        <Slider
+          name="Caption font size"
+          store={captionFontSize}
+          min={9}
+          max={54}
+        />
+        <Checkbox
+          name="Make captions disappear when inactive"
+          store={enableCaptionTimeout}
+        />
+        {#if $enableCaptionTimeout}
+          <Slider
+            name="Disappear after (seconds)"
+            store={captionDuration}
+            min={1}
+            max={61}
+          />
+        {/if}
+      {/if}
+    </Card>
+  {/if}
+  <ReadAloud boundingDiv={div} />
+</div>
+

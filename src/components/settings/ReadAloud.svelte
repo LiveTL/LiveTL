@@ -13,6 +13,8 @@
   import Checkbox from '../common/CheckboxStore.svelte';
   import Dropdown from '../common/DropdownStore.svelte';
 
+  export let boundingDiv: HTMLElement;
+
   const store = writable('0');
   $: selectableLanguages = $voiceNames.map((n, i) => ({
     text: n,
@@ -31,6 +33,7 @@
       name="Speech synthesis voice"
       {store}
       items={selectableLanguages}
+      {boundingDiv}
     />
   {/if}
 </Card>
