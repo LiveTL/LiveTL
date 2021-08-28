@@ -59,8 +59,7 @@
   $: classes = (open || visible ? 'visible' : 'invisible') + ' ' +
     ($$props.class ? $$props.class : '');
   $: listClasses = 'absolute bg-white rounded shadow z-20 dark:bg-dark-500 ' +
-    `w-max ${offset}`;
-  // TODO: Max width based on popout size
+    `max-w-xs w-max ${offset}`;
 </script>
 
 <svelte:window
