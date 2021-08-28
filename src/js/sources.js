@@ -153,6 +153,9 @@ export function ytcSource(window) {
       case 'delete':
         sources.ytcDeletions.set([response.deletion]);
         break;
+      case 'playerProgress':
+        timestamp.set(response.playerProgress);
+        break;
     }
   });
 
