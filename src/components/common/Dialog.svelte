@@ -20,7 +20,7 @@
         <h6>{title}</h6>
       </slot>
     </div>
-    <Button color="gray" icon="close" on:click={() => (active = false)} />
+    <Button color="error" icon="close" on:click={() => (active = false)} />
   </div>
   <slot />
   <slot name="actions" slot="actions" />

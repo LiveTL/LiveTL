@@ -172,6 +172,7 @@
             { assert: item => !isNaN(parseInt(item)), error: 'Invalid width' }
           ]}
           label="Width (px)"
+          class="w-28"
         />
       {:else if selectOperation === saveDownload}
         <TextField
@@ -179,6 +180,7 @@
           bind:value={textFilename}
           rules={[{ assert: item => item, error: 'Invalid filename' }]}
           label="Filename"
+          class="w-60"
         />
       {/if}
     {/if}
@@ -322,27 +324,7 @@
 </div>
 
 <style>
-  .settings-button :global(.s-input) {
-    display: inline-flex;
-    border-radius: 5px;
-  }
-  .settings-button :global(.width-input) {
-    width: 7em;
-  }
-  .settings-button :global(.filename-input) {
-    width: 15em;
-  }
   :global(body) {
     overflow: hidden;
-  }
-  :global(.s-app) {
-    height: 100%;
-  }
-  :global(.s-btn) {
-    vertical-align: top !important;
-    margin-left: 5px;
-  }
-  :global(.dropdown .s-text-field__wrapper, .s-select .s-text-field__wrapper) {
-    background-color: rgba(255, 255, 255, 0.05);
   }
 </style>

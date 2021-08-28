@@ -1,6 +1,5 @@
 <script>
-  import dark from 'smelte/src/dark';
-  dark().set(true);
+  import { MaterialApp } from 'svelte-materialify/src';
 
   const links = [{
     text: 'LiveTL Website',
@@ -50,45 +49,61 @@
 </script>
 
 <svelte:head>
-  <link rel="shortcut icon" href="48x48.png" type="image/png" />
+  <link rel="shortcut icon" href="48x48.png" type="image/png">
 </svelte:head>
 
-<div style="margin: 20px;">
-  <h3>Thank you for installing LiveTL!</h3>
-  <h5>
+<MaterialApp theme="dark">
+  <h1>Thank you for installing LiveTL!</h1>
+  <h3>
     To get started, visit any YouTube stream or archive and open the chat. There
     will be new buttons to activate LiveTL at the bottom of the chat box.
-  </h5>
+  </h3>
 
   <img
     src="https://raw.githubusercontent.com/LiveTL/LiveTL/develop/img/buttons.png"
     alt="img"
-    class="w-full lg:w-1/2 my-2"
   />
 
-  <h4>Frequently Asked Questions</h4>
-  <h5>
-    <ul class="list-disc list-inside divide-y divide-gray-700">
+  <h1>Frequently Asked Questions</h1>
+  <h3>
+    <ul>
       {#each questions as q}
-        <li class="py-1">
+        <li>
           <strong>{q.prompt}</strong>
           <br />
           {q.response}
         </li>
       {/each}
     </ul>
-  </h5>
+  </h3>
 
-  <h4>Links</h4>
-  <h5>
-    <ul class="list-disc list-inside">
+  <h1>Links</h1>
+  <h3>
+    <ul>
       {#each links as link}
-        <li>
-          <a href={link.href} target="_blank" class="text-blue-400 underline"
-            >{link.text}</a
-          >
-        </li>
+        <li><a href={link.href} target="_blank">{link.text}</a></li>
       {/each}
     </ul>
-  </h5>
-</div>
+  </h3>
+</MaterialApp>
+
+<style>
+  img {
+    max-width: calc(2 * 100vh / 3);
+    width: 100%;
+  }
+
+  h1 {
+    font-size: 2rem;
+    line-height: 4rem;
+  }
+  h3 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  :global(.s-app) {
+    padding: 25px;
+  }
+
+</style>

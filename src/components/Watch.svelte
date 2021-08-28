@@ -218,6 +218,7 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    z-index: 5 !important;
   }
   :global(.ui-resizable-e) {
     width: var(--bar);

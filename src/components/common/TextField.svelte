@@ -40,7 +40,7 @@
   };
 
   $: classes = 'relative text-gray-600 dark:text-gray-100 ' +
-    `${dense ? 'my-1' : 'my-2'}`;
+    `${dense ? 'my-1' : 'my-2'} ${$$props.class ? $$props.class : ''}`;
   $: inputClasses = 'px-4 rounded-t text-black dark:text-gray-100 w-full ' +
     `${dense ? 'pb-1 pt-4' : 'pb-2 pt-6'}`;
 

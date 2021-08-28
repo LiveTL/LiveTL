@@ -71,7 +71,7 @@
 </script>
 
 <div
-  class="captionsBox z-20 absolute cursor-move text-center"
+  class="captionsBox"
   bind:this={captionElem}
   style="
   top: min(max({$captionTop}%, calc(0% - 20px)), calc(100% - 30px));
@@ -83,23 +83,32 @@
     : 'none'};
 "
 >
-  <div
-    class="captionSegment break-words m-5 py-1.5 px-2.5 bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm"
-    bind:this={elem}
-  >
+  <div class="captionSegment" bind:this={elem}>
     {$captionText}
   </div>
 </div>
 
 <style>
   .captionsBox {
+    z-index: 150;
     animation-iteration-count: 1;
+    position: absolute;
+    cursor: move;
     min-width: 50px;
+    text-align: center;
   }
 
   .captionSegment {
+    color: #e5e5e5;
+    word-wrap: break-word;
+    word-break: break-word;
+    background-color: rgba(0, 0, 0, 0.8);
+    margin: 0px 20px 0px 20px;
+    padding: 5px 10px;
     animation-iteration-count: 1;
     animation: splash 1s normal forwards ease-in-out;
+    margin: 20px;
+    backdrop-filter: blur(5px);
   }
   .captionsBox :global(.ui-resizable-handle) {
     height: calc(100% - 40px);
