@@ -91,6 +91,7 @@ export function macroSystem(initialMacros) {
   
   /** @type {(name: String) => String | null} */
   const getMacro = name => {
+    if (name === '') return null;
     if (macros[name]) return macros[name];
     const possibleMacros = completion.complete(name);
     return possibleMacros.length == 1 ? macros[possibleMacros[0]] : null;
