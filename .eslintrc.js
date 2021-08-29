@@ -28,7 +28,9 @@ module.exports = {
         'no-multiple-empty-lines': [
           'error',
           { max: 2 }
-        ]
+        ],
+        // Causes false positives with reactive and auto subscriptions
+        '@typescript-eslint/strict-boolean-expressions': 'off'
       }
     }
   ],
@@ -56,6 +58,25 @@ module.exports = {
     '@typescript-eslint/space-before-function-paren': [
       'error',
       'never'
+    ],
+    '@typescript-eslint/strict-boolean-expressions': [
+      'error',
+      {
+        allowString: true,
+        allowNumber: true,
+        allowNullableObject: true,
+        allowNullableBoolean: false,
+        allowNullableString: false,
+        allowNullableNumber: false,
+        allowAny: true
+      }
+    ],
+    '@typescript-eslint/prefer-nullish-coalescing': [
+      'error',
+      {
+        ignoreConditionalTests: true,
+        ignoreMixedLogicalExpressions: false
+      }
     ]
   },
   settings: {
