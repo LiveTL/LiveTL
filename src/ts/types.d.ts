@@ -6,17 +6,17 @@ declare namespace Ltl {
     member = 1 << 3,
     mchad = 1 << 4,
     api = 1 << 5
-  };
+  }
 
-  type Message = {
-    text: string;
-    messageArray: Ytc.ParsedRun[];
-    author: string;
-    timestamp: string;
-    types: AuthorType;
-    authorId: string;
-    messageId: string;
-    hidden?: boolean;
-    deleted?: boolean;
-  };
+  interface Message {
+    text: string
+    messageArray: Ytc.ParsedRun[]
+    author: string
+    timestamp: string
+    types: AuthorType
+    authorId: string
+    messageId: string
+    hidden?: boolean
+    deleted?: boolean
+  }
 }

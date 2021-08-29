@@ -11,6 +11,6 @@
     "resolveJsonModule": true,
     "typeRoots": ["./node_modules/@types", "./src/ts", "./src/submodules/chat/src/ts"]
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", ".eslintrc.js", "*.js"],
   "exclude": ["node_modules", "build"]
 }

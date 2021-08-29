@@ -9,7 +9,9 @@ module.exports = {
   extends: 'standard-with-typescript',
   parserOptions: {
     ecmaVersion: 12,
-    sourceType: 'module'
+    sourceType: 'module',
+    project: './tsconfig.json',
+    extraFileExtensions: ['.svelte']
   },
   plugins: [
     'svelte3',
