@@ -32,6 +32,14 @@ const sampleFilter = {
 
 const sampleSpam = { author: '', authorId: '', spam: false };
 
+export const defaultShortcuts = {
+  volumeUp: 'ArrowUp',
+  volumeDown: 'ArrowDown',
+  fullScreen: 'f',
+  mute: 'm',
+  pause: ' '
+};
+
 // Settings
 export const
   language = SS('language', 'English'),
@@ -84,7 +92,8 @@ export const
   spamMsgInterval = SS('spamMsgInterval', 10),
   spammersDetected = LS('spammersDetected', [sampleSpam].slice(1)),
   speechVoiceNameSetting = SS('speechVoiceNameSetting', ''),
-  speechSpeed = SS('speechSpeed', 1);
+  speechSpeed = SS('speechSpeed', 1),
+  keyboardShortcuts = SS('keyboardShortcuts', defaultShortcuts);
 
 // Non-persistant stores
 
