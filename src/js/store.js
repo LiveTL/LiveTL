@@ -37,7 +37,7 @@ export const defaultShortcuts = {
   volumeDown: 'ArrowDown',
   fullScreen: 'f',
   mute: 'm',
-  pause: ' '
+  togglePlayPause: ' '
 };
 
 // Settings

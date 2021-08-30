@@ -54,6 +54,8 @@ export const sleep = ms => new Promise((res, _rej) => {
 /** @type {(text: String) => String} */
 export const escapeRegExp = text => text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 
+/** @type {(num: Number, min: Number, max: Number) => Number} */
+export const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
 export const getAllVoices = () => window.speechSynthesis?.getVoices() || [];
 export const getAllVoiceNames = () => getAllVoices().map(voice => voice.name);

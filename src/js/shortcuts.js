@@ -1,4 +1,5 @@
 import { defaultShortcuts, keyboardShortcuts } from './store.js';
+import { clamp } from './utils.js';
 import derived from 'svelte/store';
 
 export const shortcutMap = derived(keyboardShortcuts, $shorts => {
@@ -14,19 +15,20 @@ export const shortcutMap = derived(keyboardShortcuts, $shorts => {
 
 export const actionMap = new Map([
   ['volumeUp', player => {
-    // TODO
+    player.setVolume(clamp(player.getVolume() + 10, 0, 100));
   }],
   ['volumeDown', player => {
-    // TODO
+    player.setVolume(clamp(player.getVolume() - 10, 0, 100));
   }],
   ['fullScreen', player => {
     // TODO
   }],
   ['mute', player => {
-    // TODO
+    player.mute();
   }],
-  ['pause', player => {
-    // TODO
+  ['togglePlayPause', player => {
+    const paused = player.getPlayerState() == 2;
+    paused ? player.playVideo() : player.pauseVideo();
   }]
 ]);
 
