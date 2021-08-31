@@ -30,6 +30,8 @@
   import ReadAloud from './ReadAloud.svelte';
 
   let div: HTMLElement;
+
+  // FIXME: font size slider doesn't change font size
 </script>
 
 <div bind:this={div}>

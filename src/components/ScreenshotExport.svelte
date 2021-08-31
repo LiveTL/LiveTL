@@ -49,10 +49,12 @@
 
 <Dialog bind:active={image} class="rounded-lg">
   <h5 slot="title">Screenshot</h5>
-  <img
-    class="max-w-full mb-3"
-    src={image}
-    alt="screenshot"
-  />
+  <div class="max-h-96 overflow-y-scroll">
+    <img
+      class="max-w-full mb-3"
+      src={image}
+      alt="screenshot"
+    />
+  </div>
   <p class="text-center text-sm">Right click the image to copy, save, etc.</p>
 </Dialog>

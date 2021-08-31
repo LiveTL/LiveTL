@@ -86,13 +86,22 @@
       containment: 'body'
     });
   };
-  $: $videoSide, $chatSplit, setTimeout(changeSide, 0);
+  $: if ($videoSide || $chatSplit) {
+    setTimeout(changeSide, 0);
+  }
 
-  $: isRightSide = $videoSide == VideoSide.RIGHT;
-  $: isTopSide = $videoSide == VideoSide.TOP;
-  $: isLeftSide = $videoSide == VideoSide.LEFT;
+  const getFlexDirection = (isTopSide, isRightSide) => {
+    if (isRightSide && isTopSide) return 'flex-col-reverse';
+    else if (isRightSide && !isTopSide) return 'flex-row-reverse';
+    else if (!isRightSide && isTopSide) return 'flex-col';
+    else return 'flex-row';
+  };
+
+  $: isRightSide = $videoSide === VideoSide.RIGHT;
+  $: isTopSide = $videoSide === VideoSide.TOP;
+  $: isLeftSide = $videoSide === VideoSide.LEFT;
   $: isFullPage = $displayMode === DisplayMode.FULLPAGE;
-  $: isChatVertical = $chatSplit == ChatSplit.VERTICAL;
+  $: isChatVertical = $chatSplit === ChatSplit.VERTICAL;
 
   $: chatElemStyle = (
     isChatVertical ? `width: ${$chatSize}%; min-width: ` : `height: ${$chatSize}%; min-height: `
@@ -103,22 +112,20 @@
   );
   $: chatElemParentStyle = isRightSide ? 'width: calc(100% - 10px);' : '';
   $: chatWrapperStyle = `padding-${isChatVertical ? 'right' : 'bottom'}: 10px;`;
+  $: flexDirection = getFlexDirection(isTopSide, isRightSide);
 </script>
 
-<div class="watch-wrapper">
+<div class="watch-wrapper relative w-screen bg-dark-500">
   {#if isFullPage && $showCaption}
     <Captions />
   {/if}
   <div
     id="mainUI"
-    class="flex"
-    class:horizontal={isTopSide}
-    class:vertical={!isTopSide}
-    class:reversed={isRightSide}
+    class="flex w-full h-full {flexDirection}"
   >
     {#if isFullPage}
       <div
-        class="tile resizable"
+        class="resizable relative"
         style={videoContainerStyle}
         bind:this={vidElem}
       >
@@ -128,16 +135,16 @@
       </div>
     {/if}
     <div
-      class="tile autoscale"
+      class="flex-1 relative"
       bind:this={chatSideElem}
       style={isTopSide ? 'min-width: 100% !important;' : ''}
     >
       <div
-        class="flex {isChatVertical ? 'vertical' : 'horizontal'}"
+        class="flex w-full h-full {isChatVertical ? 'flex-row' : 'flex-col'}"
         style={chatElemParentStyle}
       >
         <div
-          class="tile resizable"
+          class="relative resizable"
           style={chatElemStyle}
           bind:this={chatElem}
         >
@@ -152,7 +159,7 @@
             />
           </Wrapper>
         </div>
-        <div class="tile autoscale" bind:this={ltlElem}>
+        <div class="relative flex-1" bind:this={ltlElem}>
           <Popout />
         </div>
       </div>
@@ -161,47 +168,10 @@
 </div>
 
 <style>
+  /* The following 2 blocks are workarounds for jquery ui jank */
   .watch-wrapper {
     margin: 20px 0px 0px 20px;
-    position: relative;
-    width: 100vw;
     height: calc(100% - 40px);
-  }
-  .horizontal {
-    flex-direction: column;
-  }
-  .vertical {
-    flex-direction: row;
-  }
-  .vertical.reversed {
-    flex-direction: row-reverse;
-  }
-  .horizontal.reversed {
-    flex-direction: column-reverse;
-  }
-  :root {
-    --bar: 10px;
-  }
-  .vertical > .resizable {
-    height: 100%;
-  }
-  .horizontal > .resizable {
-    width: 100%;
-  }
-  .autoscale {
-    flex: 1;
-  }
-  .tile {
-    /* border: 5px solid blue; */
-    display: flex;
-    overflow: hidden;
-    left: 0px !important;
-    position: relative;
-  }
-  .flex {
-    display: flex;
-    height: 100%;
-    width: 100%;
   }
   :global(body) {
     height: calc(100% + 40px) !important;
@@ -210,6 +180,10 @@
     left: -20px !important;
     margin: 0 !important;
     width: calc(100% + 40px) !important;
+  }
+
+  :root {
+    --bar: 10px;
   }
   :global(.ui-resizable-handle) {
     background-color: #4d4d4d;
@@ -249,19 +223,5 @@
     font-size: 30px;
     transform: translateY(-2px);
     position: absolute;
-  }
-  :global(.s-app) {
-    height: 100%;
-    width: 100%;
-  }
-  :global(*) {
-    word-break: break-word;
-  }
-  :global(html) {
-    overflow: hidden;
-  }
-  :global(.s-tooltip) {
-    margin-left: 20px;
-    margin-top: 20px;
   }
 </style>

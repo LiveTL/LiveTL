@@ -8,7 +8,7 @@
   export let active = false;
   /** Expanded width variant. */
   export let expandWidth = false;
-  
+
   $: classes = (expandWidth ? 'w-full mx-2' : '') + ' ' +
     ($$props.class ? $$props.class : '');
 </script>

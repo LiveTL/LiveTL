@@ -29,12 +29,17 @@
   });
 </script>
 
-<div id="player" class:left-video={$videoSide === VideoSide.LEFT} />
+<div class="wrapper" class:left-video={$videoSide == VideoSide.LEFT}>
+  <div id="player" />
+</div>
 
 <!--<style src="../css/iframe.css"></style>-->
 <style src="../css/iframe.css">
   /* Add 4px cause otherwise, there is visible grey for some reason */
   .left-video {
     width: calc(100% - var(--bar) + 4px);
+  }
+  .wrapper {
+    overflow: hidden;
   }
 </style>

@@ -46,3 +46,15 @@
     </div>
   {/if}
 </div>
+
+<style>
+  :global(input[type=range]::-moz-range-thumb) {
+    height: 10px;
+    width: 10px;
+    border: 0;
+  }
+  :global(input[type=range]:focus::-moz-range-thumb) {
+    height: 10px;
+    width: 10px;
+  }
+</style>

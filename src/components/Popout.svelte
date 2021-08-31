@@ -18,14 +18,13 @@
   dark().set(true);
 
   let settingsOpen = false;
-  $videoTitle = paramsVideoTitle || $videoTitle;
+  videoTitle.set(paramsVideoTitle || $videoTitle);
   $: document.title = $videoTitle || 'LiveTL Popout';
 
   let wrapper;
   let messageDisplay;
   let isAtRecent = true;
 
-  // FIXME: Scroll to latest button broke again
   const updateWrapper = () => [wrapper.isAtBottom(), wrapper.isAtTop(), setTimeout(checkAtRecent)];
 
   function checkAtRecent() {
@@ -62,6 +61,7 @@
   let selectedItems = [];
   let selectedItemCount = 0;
 
+  // FIXME: displayedMessages is not iterable
   function selectAllItems() {
     selectedItems = [...displayedMessages];
   }
@@ -72,7 +72,9 @@
     return selectedItems.filter(d => !d.hidden);
   }
 
-  $: selectedItems, selectedItemCount = getSelectedItems().length;
+  $: if (selectedItems) {
+    selectedItemCount = getSelectedItems().length;
+  }
 
   function saveScreenshot() {
     renderQueue = getSelectedItems();
@@ -111,7 +113,6 @@
     screenshotRenderWidth.set(renderWidthInt);
   }
 
-
   function toggleFullScreen() {
     if (isAndroid) {
       // @ts-ignore
@@ -149,146 +150,146 @@
 </svelte:head>
 
 <div>
-  <div>
-    <ScreenshotExport bind:renderQueue bind:renderWidth={renderWidthInt} />
-  </div>
+  <ScreenshotExport bind:renderQueue bind:renderWidth={renderWidthInt} />
+</div>
 
-  <Updates bind:active={$updatePopupActive} />
-  <div
-    class="flex flex-row gap-2 absolute right-0 p-1 z-20"
-    class:bottom-0={$textDirection === TextDirection.TOP}
-    class:top-0={$textDirection === TextDirection.BOTTOM}
-    class:hidden={$isResizing}
-  >
-    {#if isSelecting}
-      <h6 class="inline p-2 bg-dark-700 flex-none h-full self-center">
-        {selectedItemCount} TLs selected
-      </h6>
-      {#if selectOperation === saveScreenshot}
-        <TextField
-          dense
-          bind:value={renderWidth}
-          rules={[
-            { assert: item => !isNaN(parseInt(item)), error: 'Invalid width' }
-          ]}
-          label="Width (px)"
-          class="w-28"
-        />
-      {:else if selectOperation === saveDownload}
-        <TextField
-          dense
-          bind:value={textFilename}
-          rules={[{ assert: item => item, error: 'Invalid filename' }]}
-          label="Filename"
-          class="w-60"
-        />
-      {/if}
+<Updates bind:active={$updatePopupActive} />
+<div
+  class="flex flex-row gap-2 absolute right-0 p-1 z-20"
+  class:bottom-0={$textDirection === TextDirection.TOP}
+  class:top-0={$textDirection === TextDirection.BOTTOM}
+  class:hidden={$isResizing}
+>
+  {#if isSelecting}
+    <h6 class="inline p-2 bg-dark-700 flex-none h-full self-center">
+      {selectedItemCount} TLs selected
+    </h6>
+    {#if selectOperation === saveScreenshot}
+      <TextField
+        dense
+        bind:value={renderWidth}
+        rules={[
+          { assert: item => !isNaN(parseInt(item)), error: 'Invalid width' }
+        ]}
+        label="Width (px)"
+        class="w-28"
+      />
+    {:else if selectOperation === saveDownload}
+      <TextField
+        dense
+        bind:value={textFilename}
+        rules={[{ assert: item => item, error: 'Invalid filename' }]}
+        label="Filename"
+        class="w-60"
+      />
     {/if}
-    <div class="flex gap-2">
-      {#if isSelecting}
-        <div class="flex-shrink-0">
-          <Button
-            icon="select_all"
-            color="blue"
-            on:click={selectAllItems}
-            filled
-          />
-        </div>
-        <div class="flex-shrink-0">
-          <Button
-            icon="check"
-            color="success"
-            on:click={selectOperation}
-            filled
-          />
-        </div>
-        <div class="flex-shrink-0">
-          <Button
-            icon="close"
-            color="error"
-            on:click={toggleSelecting}
-            filled
-          />
-        </div>
+  {/if}
+  <div class="flex gap-2">
+    {#if isSelecting}
+      <div class="flex-shrink-0">
+        <Button
+          icon="select_all"
+          color="blue"
+          on:click={selectAllItems}
+          filled
+        />
+      </div>
+      <div class="flex-shrink-0">
+        <Button
+          icon="check"
+          color="success"
+          on:click={selectOperation}
+          filled
+        />
+      </div>
+      <div class="flex-shrink-0">
+        <Button
+          icon="close"
+          color="error"
+          on:click={toggleSelecting}
+          filled
+        />
+      </div>
+    {/if}
+    {#if !isSelecting}
+      {#if !settingsOpen && $spotlightedTranslator}
+        <!-- Un-spotlight translator button -->
+        <Tooltip>
+          <div slot="activator" transition:fly={{ x: -500, duration: 600 }}>
+            <Button
+              icon="voice_over_off"
+              on:click={() => spotlightedTranslator.set(null)}
+              color="dark"
+              filled
+            />
+          </div>
+          <span>Show other translators</span>
+        </Tooltip>
       {/if}
-      {#if !isSelecting}
-        {#if !settingsOpen && $spotlightedTranslator}
-          <!-- Un-spotlight translator button -->
-          <Tooltip>
-            <div slot="activator" transition:fly={{ x: -500, duration: 600 }}>
-              <Button
-                icon="voice_over_off"
-                on:click={() => spotlightedTranslator.set(null)}
-                color="dark"
-                filled
-              />
-            </div>
-            <span>Show other translators</span>
-          </Tooltip>
-        {/if}
-        {#if !settingsOpen && $enableExportButtons}
-          <!-- Screenshot button -->
-          <Tooltip>
-            <Button
-              slot="activator"
-              icon={isSelecting ? 'check' : 'photo_camera'}
-              on:click={() => {
-                toggleSelecting();
-                selectOperation = saveScreenshot;
-              }}
-              color="dark"
-              filled
-            />
-            <span>Screenshot translations</span>
-          </Tooltip>
-          <!-- Export translations button -->
-          <Tooltip>
-            <Button
-              slot="activator"
-              icon={isSelecting ? 'check' : 'download'}
-              on:click={() => {
-                toggleSelecting();
-                selectOperation = saveDownload;
-              }}
-              color="dark"
-              filled
-            />
-            <span>Export translations log (txt)</span>
-          </Tooltip>
-        {/if}
-        {#if !settingsOpen && $enableFullscreenButton}
-          <!-- Fullscreen button -->
-          <Tooltip>
-            <Button
-              slot="activator"
-              icon="fullscreen"
-              on:click={toggleFullScreen}
-              color="dark"
-              filled
-            />
-            <span>Toggle fullscreen</span>
-          </Tooltip>
-        {/if}
-        <!-- Settings button -->
+      {#if !settingsOpen && $enableExportButtons}
+        <!-- Screenshot button -->
         <Tooltip>
           <Button
             slot="activator"
-            icon={settingsOpen ? 'close' : 'settings'}
-            on:click={() => (settingsOpen = !settingsOpen)}
+            icon={isSelecting ? 'check' : 'photo_camera'}
+            on:click={() => {
+              toggleSelecting();
+              selectOperation = saveScreenshot;
+            }}
             color="dark"
             filled
           />
-          <span
-            >{settingsOpen ? 'Close settings' : 'Open settings'}</span
-          >
+          <span>Screenshot translations</span>
+        </Tooltip>
+        <!-- Export translations button -->
+        <Tooltip>
+          <Button
+            slot="activator"
+            icon={isSelecting ? 'check' : 'download'}
+            on:click={() => {
+              toggleSelecting();
+              selectOperation = saveDownload;
+            }}
+            color="dark"
+            filled
+          />
+          <span>Export translations log (txt)</span>
         </Tooltip>
       {/if}
-    </div>
+      {#if !settingsOpen && $enableFullscreenButton}
+        <!-- Fullscreen button -->
+        <Tooltip>
+          <Button
+            slot="activator"
+            icon="fullscreen"
+            on:click={toggleFullScreen}
+            color="dark"
+            filled
+          />
+          <span>Toggle fullscreen</span>
+        </Tooltip>
+      {/if}
+      <!-- Settings button -->
+      <Tooltip>
+        <Button
+          slot="activator"
+          icon={settingsOpen ? 'close' : 'settings'}
+          on:click={() => (settingsOpen = !settingsOpen)}
+          color="dark"
+          filled
+        />
+        <span
+          >{settingsOpen ? 'Close settings' : 'Open settings'}</span
+        >
+      </Tooltip>
+    {/if}
   </div>
-  <Wrapper on:scroll={updateWrapper} bind:this={wrapper}>
-    {#if settingsOpen}
-      <Options />
-    {:else}
+</div>
+<Wrapper on:scroll={updateWrapper} bind:this={wrapper}>
+  {#if settingsOpen}
+    <Options />
+  {:else}
+    <div>
       <MessageDisplay
         direction={$textDirection}
         bind:this={messageDisplay}
@@ -297,31 +298,31 @@
         bind:selectedItems
         items={$displayedMessages}
       />
-    {/if}
-  </Wrapper>
-  {#if !($isResizing || settingsOpen)}
-    {#if !isAtRecent}
-      <div
-        class="absolute left-1/2 transform -translate-x-1/2 p-2 z-20"
-        class:bottom-0={$textDirection === TextDirection.BOTTOM}
-        class:top-0={$textDirection === TextDirection.TOP}
-        transition:fade|local={{ duration: 150 }}
-      >
-        <!-- scroll and reload isbottom and istop functions on click -->
-        <Button
-          icon={$textDirection === TextDirection.TOP
-            ? 'arrow_upward'
-            : 'arrow_downward'}
-          on:click={() => {
-            messageDisplay.scrollToRecent();
-            updateWrapper();
-          }}
-          filled
-        />
-      </div>
-    {/if}
+    </div>
   {/if}
-</div>
+</Wrapper>
+{#if !($isResizing || settingsOpen)}
+  {#if !isAtRecent}
+    <div
+      class="absolute left-1/2 transform -translate-x-1/2 p-2 z-20"
+      class:bottom-0={$textDirection === TextDirection.BOTTOM}
+      class:top-0={$textDirection === TextDirection.TOP}
+      transition:fade|local={{ duration: 150 }}
+    >
+      <!-- scroll and reload isbottom and istop functions on click -->
+      <Button
+        icon={$textDirection === TextDirection.TOP
+          ? 'arrow_upward'
+          : 'arrow_downward'}
+        on:click={() => {
+          messageDisplay.scrollToRecent();
+          updateWrapper();
+        }}
+        filled
+      />
+    </div>
+  {/if}
+{/if}
 
 <style>
   :global(body) {

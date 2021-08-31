@@ -29,6 +29,7 @@ module.exports = {
           'error',
           { max: 2 }
         ],
+        '@typescript-eslint/prefer-nullish-coalescing': 'off',
         // Causes false positives with reactive and auto subscriptions
         '@typescript-eslint/strict-boolean-expressions': 'off'
       }
