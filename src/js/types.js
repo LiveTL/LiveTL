@@ -9,7 +9,6 @@
 /** @typedef {String} HexColor */
 /** @typedef {{Stext: String, Stime: UnixTimestamp, CC: HexColor, OC: HexColor}} MCHADTL */
 /** @typedef {MCHADTL & {flag: String}} MCHADStreamItem */
-/** @typedef {String} UnixTransformer */
 
 /** @typedef {String} Nickname */
 /** @typedef {String} StreamTitle */
