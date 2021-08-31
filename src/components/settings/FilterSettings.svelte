@@ -5,16 +5,14 @@
     language,
     customFilters,
     enableMchadTLs,
-    enableAPITLs,
-    ytcDeleteBehaviour
+    enableAPITLs
   } from '../../js/store.js';
   import { addFilter, cleanupFilters } from '../../js/filter.js';
-  import { languageNameValues, ytcDeleteMap } from '../../js/constants.js';
+  import { languageNameValues } from '../../js/constants.js';
   import CustomFilter from '../options/CustomFilter.svelte';
   import BlockedUsers from './BlockedUsers.svelte';
   import Checkbox from '../common/CheckboxStore.svelte';
   import Dropdown from '../common/DropdownStore.svelte';
-  import Radio from '../common/RadioGroupStore.svelte';
   import Card from '../common/Card.svelte';
   import SpamProtection from './SpamProtection.svelte';
 
@@ -41,16 +39,8 @@
   <BlockedUsers boundingDiv={div} />
   <SpamProtection boundingDiv={div} />
   <Card
-    title="When messages are deleted by moderators:"
-  >
-    <Radio
-      store={ytcDeleteBehaviour}
-      map={ytcDeleteMap}
-      vertical
-    />
-  </Card>
-  <Card
     title="External translation sources"
+    icon="cloud"
     noGap
   >
     <Checkbox name="LiveTL API" store={enableAPITLs} />
@@ -58,6 +48,7 @@
   </Card>
   <Card
     title="Custom filters"
+    icon="filter_alt"
     headerEndIcon="add"
     headerEndIconOnClick={createNewFilter}
   >

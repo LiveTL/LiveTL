@@ -120,11 +120,11 @@ export const YtcDeleteBehaviour = {
   NOTHING: 'NOTHING'
 };
 
-export const ytcDeleteMap = new Map([
-  [YtcDeleteBehaviour.HIDE, 'Hide message'],
-  [YtcDeleteBehaviour.PLACEHOLDER, 'Show placeholder'],
-  [YtcDeleteBehaviour.NOTHING, 'Do nothing']
-]);
+export const ytcDeleteItems = [
+  { value: YtcDeleteBehaviour.HIDE, text: 'Hide message' },
+  { value: YtcDeleteBehaviour.PLACEHOLDER, text: 'Show placeholder' },
+  { value: YtcDeleteBehaviour.NOTHING, text: 'Do nothing' }
+];
 
 export const showBlockItems = [
   { text: 'show', value: 'show' },

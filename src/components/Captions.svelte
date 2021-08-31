@@ -71,7 +71,7 @@
 </script>
 
 <div
-  class="captionsBox z-20 absolute cursor-move text-center"
+  class="captionsBox z-30 absolute cursor-move text-center"
   bind:this={captionElem}
   style="
   top: min(max({$captionTop}%, calc(0% - 20px)), calc(100% - 30px));

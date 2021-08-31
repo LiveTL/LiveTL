@@ -42,6 +42,7 @@
   {/if}
   <Card
     title="Macros"
+    icon="text_snippet"
     headerEndIcon="add"
     headerEndIconOnClick={createNewMacro}
   >

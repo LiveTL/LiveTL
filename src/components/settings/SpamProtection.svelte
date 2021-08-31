@@ -1,10 +1,17 @@
 <script>
-  import { enableSpamProtection } from '../../js/store.js';
-  import { spammersDetected, spamMsgAmount, spamMsgInterval } from '../../js/store.js';
+  import {
+    enableSpamProtection,
+    spammersDetected,
+    spamMsgAmount,
+    spamMsgInterval,
+    ytcDeleteBehaviour
+  } from '../../js/store.js';
+  import { ytcDeleteItems } from '../../js/constants.js';
   import MultiDropdown from '../options/MultiDropdown.svelte';
   import Card from '../common/Card.svelte';
   import Slider from '../common/SliderStore.svelte';
   import Checkbox from '../common/CheckboxStore.svelte';
+  import Dropdown from '../common/DropdownStore.svelte';
 
   export let boundingDiv;
 
@@ -16,7 +23,13 @@
 </script>
 
 <Card title="Spam protection" icon="report">
-  <Checkbox name="Enable spam protection" store={enableSpamProtection} />
+  <Dropdown
+    name="When messages are deleted by moderators"
+    store={ytcDeleteBehaviour}
+    items={ytcDeleteItems}
+    boundingDiv={boundingDiv}
+  />
+  <Checkbox name="Enable extra spam protection" store={enableSpamProtection} />
   {#if $enableSpamProtection}
     <small class="p-2 rounded bg-gray-800">
       Hide spammers that send <code class={codeClass}>{amount}</code>

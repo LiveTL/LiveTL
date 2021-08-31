@@ -155,7 +155,7 @@
 
 <Updates bind:active={$updatePopupActive} />
 <div
-  class="flex flex-row gap-2 absolute right-0 p-1 z-20"
+  class="flex flex-row gap-2 absolute right-0 p-1 z-20 flex-wrap"
   class:bottom-0={$textDirection === TextDirection.TOP}
   class:top-0={$textDirection === TextDirection.BOTTOM}
   class:hidden={$isResizing}
@@ -187,28 +187,40 @@
   <div class="flex gap-2">
     {#if isSelecting}
       <div class="flex-shrink-0">
-        <Button
-          icon="select_all"
-          color="blue"
-          on:click={selectAllItems}
-          filled
-        />
+        <Tooltip>
+          <Button
+            slot="activator"
+            icon="select_all"
+            color="blue"
+            on:click={selectAllItems}
+            filled
+          />
+          <span>Select all</span>
+        </Tooltip>
       </div>
       <div class="flex-shrink-0">
-        <Button
-          icon="check"
-          color="success"
-          on:click={selectOperation}
-          filled
-        />
+        <Tooltip>
+          <Button
+            slot="activator"
+            icon="check"
+            color="success"
+            on:click={selectOperation}
+            filled
+          />
+          <span>Export</span>
+        </Tooltip>
       </div>
       <div class="flex-shrink-0">
-        <Button
-          icon="close"
-          color="error"
-          on:click={toggleSelecting}
-          filled
-        />
+        <Tooltip>
+          <Button
+            slot="activator"
+            icon="close"
+            color="error"
+            on:click={toggleSelecting}
+            filled
+          />
+          <span>Close</span>
+        </Tooltip>
       </div>
     {/if}
     {#if !isSelecting}

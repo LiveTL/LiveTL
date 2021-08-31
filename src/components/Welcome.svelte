@@ -53,42 +53,38 @@
   <link rel="shortcut icon" href="48x48.png" type="image/png" />
 </svelte:head>
 
-<div style="margin: 20px;">
+<div class="text-lg p-5 bg-dark-700">
   <h3>Thank you for installing LiveTL!</h3>
-  <h5>
+  <p>
     To get started, visit any YouTube stream or archive and open the chat. There
     will be new buttons to activate LiveTL at the bottom of the chat box.
-  </h5>
+  </p>
 
   <img
     src="https://raw.githubusercontent.com/LiveTL/LiveTL/develop/img/buttons.png"
     alt="img"
-    class="w-full lg:w-1/2 my-2"
+    class="w-full md:w-3/4 lg:w-3/5 my-2"
   />
 
   <h4>Frequently Asked Questions</h4>
-  <h5>
-    <ul class="list-disc list-inside divide-y divide-gray-700">
-      {#each questions as q}
-        <li class="py-1">
-          <strong>{q.prompt}</strong>
-          <br />
-          {q.response}
-        </li>
-      {/each}
-    </ul>
-  </h5>
+  <ul class="list-disc list-inside divide-y divide-gray-700">
+    {#each questions as q}
+      <li class="py-1">
+        <strong>{q.prompt}</strong>
+        <br />
+        {q.response}
+      </li>
+    {/each}
+  </ul>
 
   <h4>Links</h4>
-  <h5>
-    <ul class="list-disc list-inside">
-      {#each links as link}
-        <li>
-          <a href={link.href} target="_blank" class="text-blue-400 underline"
-            >{link.text}</a
-          >
-        </li>
-      {/each}
-    </ul>
-  </h5>
+  <ul class="list-disc list-inside">
+    {#each links as link}
+      <li>
+        <a href={link.href} target="_blank" class="text-blue-400 underline"
+          >{link.text}</a
+        >
+      </li>
+    {/each}
+  </ul>
 </div>

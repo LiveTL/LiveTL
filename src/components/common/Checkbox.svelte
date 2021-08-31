@@ -33,7 +33,7 @@
     group = group;
   }
 
-  const classes = 'inline-flex items-center cursor-pointer z-10';
+  const classes = 'inline-flex items-center cursor-pointer';
   const labelClasses = 'decoration-clone pl-2 cursor-pointer text-gray-700 ' +
     'dark:text-gray-300';
 </script>

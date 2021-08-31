@@ -13,7 +13,7 @@
   export let items: TabsItem[] = [];
   export let buttonFullWidth = false;
 
-  const classes = 'y-0 items-center relative z-20';
+  const classes = 'y-0 items-center relative z-10';
   $: tabButtonClasses = 'duration-75 relative overflow-hidden ' +
       'text-center p-2 cursor-pointer flex mx-auto items-center text-sm ' +
       `${buttonFullWidth ? 'w-full' : 'w-24 flex-shrink-0 flex-auto'}`;

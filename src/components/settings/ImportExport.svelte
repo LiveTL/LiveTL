@@ -49,8 +49,8 @@
 </script>
 
 <div class="flex flex-wrap gap-2 py-1">
-  <Button add="flex-grow" on:click={onImport}>Import Settings</Button>
-  <Button add="flex-grow" on:click={onExport}>Export Settings</Button>
+  <Button add="flex-grow" on:click={onImport} color="dark">Import Settings</Button>
+  <Button add="flex-grow" on:click={onExport} color="dark">Export Settings</Button>
 </div>
 
 <Dialog
