@@ -2,15 +2,15 @@
   import { macros } from '../../js/store.js';
   import Checkbox from '../common/Checkbox.svelte';
   import TextField from '../common/TextField.svelte';
-  import Button from '../common/IconButton';
+  import Button from '../common/IconButton.svelte';
 
   export let name;
   export let expansion;
   export let enabled;
   export let id;
 
-  const saveValues = newMacro => {
-    $macros = $macros.map((m, i) => i === id ? newMacro : m);
+  const saveValues = (newMacro) => {
+    $macros = $macros.map((m, i) => (i === id ? newMacro : m));
   };
 
   const deleteMacro = () => {
@@ -31,10 +31,6 @@
     <Checkbox bind:checked={enabled} />
   </div>
   <div class="flex-initial">
-    <Button
-      icon="delete"
-      color="error"
-      on:click={deleteMacro}
-    />
+    <Button icon="delete" color="error" on:click={deleteMacro} />
   </div>
 </div>
