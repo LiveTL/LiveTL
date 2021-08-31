@@ -1,7 +1,8 @@
 import { mdiOpenInNew, mdiYoutubeTv, mdiIframeArray } from '@mdi/js';
 import { getFrameInfoAsync, createPopup } from '../../submodules/chat/scripts/chat-utils.js';
 import { fixLeaks } from '../../submodules/chat/src/plugins/ytc-fix-memleaks.js';
-import { paramsEmbedDomain } from '../constants.js';
+import { paramsEmbedDomain, AutoLaunchMode } from '../constants.js';
+import { autoLaunchMode } from '../store.js';
 
 for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) {
   window.addEventListener(eventName, e => e.stopImmediatePropagation(), true);
@@ -145,12 +146,11 @@ async function loaded() {
     return;
   }
 
-  /** Start buttons injections */
-  makeButton('Open LiveTL', () => {
+  const openLiveTL = () => {
     window.top.location =
       chrome.runtime.getURL(`watch.html?${constructParams()}`);
-  }, undefined, mdiYoutubeTv);
-  makeButton('TL Popout', () => {
+  };
+  const tlPopout = () => {
     const popoutParams = constructParams();
     popoutParams.set('popout', true);
     popoutParams.set('tabid', frameInfo.tabId);
@@ -172,8 +172,8 @@ async function loaded() {
     createPopup(
       chrome.runtime.getURL(`popout.html?${popoutParams}`)
     );
-  }, undefined, mdiOpenInNew);
-  makeButton('Embed TLs', () => {
+  };
+  const embedTLs = () => {
     const embeddedParams = constructParams();
     embeddedParams.set('embedded', true);
     embeddedParams.set('tabid', frameInfo.tabId);
@@ -188,7 +188,31 @@ async function loaded() {
     window.addEventListener('message', d => {
       iframe.contentWindow.postMessage(d.data, '*');
     });
-  }, undefined, mdiIframeArray);
+  };
+
+  console.log(autoLaunchMode.get());
+  switch (autoLaunchMode.get()) {
+  case AutoLaunchMode.NONE: {
+    break;
+  }
+  case AutoLaunchMode.FULLPAGE: {
+    openLiveTL();
+    break;
+  }
+  case AutoLaunchMode.POPOUT: {
+    tlPopout();
+    break;
+  }
+  case AutoLaunchMode.EMBEDDED: {
+    embedTLs();
+    break;
+  }
+  }
+
+  /** Start buttons injections */
+  makeButton('Open LiveTL', openLiveTL, undefined, mdiYoutubeTv);
+  makeButton('TL Popout', tlPopout, undefined, mdiOpenInNew);
+  makeButton('Embed TLs', embedTLs, undefined, mdiIframeArray);
 }
 
 window.addEventListener('message', (packet) => {

@@ -14,17 +14,33 @@
     enableFullscreenButton,
     autoVertical,
     displayMode,
+    autoLaunchMode
   } from '../../js/store.js';
-  import { ChatSplit, TextDirection, VideoSide, DisplayMode } from '../../js/constants.js';
+  import { ChatSplit, TextDirection, VideoSide, DisplayMode, AutoLaunchMode } from '../../js/constants.js';
   import CheckOption from '../options/Toggle.svelte';
   import SliderOption from '../options/Slider.svelte';
   import EnumOption from '../options/Radio.svelte';
+  import Dropdown from '../options/Dropdown.svelte';
   import FontDemo from '../FontDemo.svelte';
   import ImportExport from '../ImportExport.svelte';
   import ReadAloud from '../options/ReadAloud.svelte';
+  import { transformOpt } from '../../js/utils.js';
 </script>
 
 <ImportExport />
+
+<div style="margin-top: 20px;">
+  <Dropdown
+    name="Auto-launch mode:"
+    items={Object.keys(AutoLaunchMode).map(item => ({
+      name: transformOpt(AutoLaunchMode[item]),
+      value: AutoLaunchMode[item]
+    }))}
+    label={transformOpt($autoLaunchMode)}
+    store={autoLaunchMode}
+  />
+</div>
+
 <!-- {#if !isStandalone} -->
 <SliderOption name="Chat zoom" store={chatZoom} />
 <!-- {/if} -->

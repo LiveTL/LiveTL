@@ -1,16 +1,11 @@
 <script>
   import { Radio } from 'svelte-materialify/src';
+  import { transformOpt } from '../../js/utils.js';
 
   export let name = '';
   export let options = [];
   export let store = null;
   export let color = 'blue';
-
-  const transformOpt = str =>
-    str
-      .trim()
-      .toLowerCase()
-      .replace(/\w\S*/g, w => w.replace(/^\w/, c => c.toUpperCase()));
 
   $: group = $store;
   $: store.set(group);

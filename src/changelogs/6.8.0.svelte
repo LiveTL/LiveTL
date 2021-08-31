@@ -5,6 +5,15 @@
 
 <ExpansionPanels bind:value>
   <ExpansionPanel>
+    <span slot="header">Auto-launch mode!</span>
+    <div>
+      You can now configure LiveTL to automatically launch in a specific mode!
+      If you have the option enabled, LiveTL will either redirect, embed, or
+      pop-up your preferred LiveTL viewing mode as soon as the chat begins
+      loading.
+    </div>
+  </ExpansionPanel>
+  <ExpansionPanel>
     <span slot="header">Video loading fixes</span>
     <div>
       Previously, YouTube and/or streamers could block third-party sites from
