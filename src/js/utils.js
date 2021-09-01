@@ -23,10 +23,7 @@ export const delayed = (fn, start) => {
 
 export const combineArr = arrs => arrs.reduce((l, r) => [...l, ...r], []);
 
-/**
- * @param {Number} millis
- * @returns {String}
- */
+/** @type {UnixTransformer} */
 export function formatTimestampMillis(millis) {
   const time = Math.floor(millis / 1000);
   const hours = Math.floor(time / 3600);
