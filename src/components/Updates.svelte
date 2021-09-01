@@ -15,7 +15,7 @@
 
   let unsubscribe = () => { };
 
-  onMount(async() => {
+  onMount(async () => {
     await lastVersion.loaded;
 
     unsubscribe = lastVersion.subscribe($lv => {

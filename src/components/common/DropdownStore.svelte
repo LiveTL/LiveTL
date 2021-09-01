@@ -23,7 +23,7 @@
   let div: HTMLElement;
   let offsetY = '';
 
-  const onShowListChange = async(showList: boolean) => {
+  const onShowListChange = async (showList: boolean) => {
     if (!showList) return;
     offsetY = await getDropdownOffsetY(div, boundingDiv);
   };

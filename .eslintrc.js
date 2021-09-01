@@ -58,7 +58,9 @@ module.exports = {
     'space-before-function-paren': 'off',
     '@typescript-eslint/space-before-function-paren': [
       'error',
-      'never'
+      {
+        named: 'never'
+      }
     ],
     '@typescript-eslint/strict-boolean-expressions': [
       'error',

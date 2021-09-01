@@ -304,12 +304,12 @@ export function Storage(version) {
     case Browser.FIREFOX:
     // @ts-ignore
       browser.storage.onChanged.addListener(updateChangedStores);
-      this.rawGet = async(key) => {
+      this.rawGet = async (key) => {
       // @ts-ignore
         return await browser.storage.local.get(key);
       };
 
-      this.rawSet = async(obj) => {
+      this.rawSet = async (obj) => {
       // @ts-ignore
         return await browser.storage.local.set(obj);
       };

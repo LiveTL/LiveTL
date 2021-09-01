@@ -14,21 +14,21 @@ describe('Toggle', () => {
     expect(getByText('Toggle option')).toBeInTheDocument();
   });
 
-  it('changes when clicked', async() => {
+  it('changes when clicked', async () => {
     const { getByRole } = render(Toggle, { store: writable(true) });
     const button = getByRole('checkbox');
     await fireEvent.click(button);
     expect(button).toHaveAttribute('aria-checked', 'false');
   });
 
-  it('updates store when clicked', async() => {
+  it('updates store when clicked', async () => {
     const store = writable(true);
     const { getByRole } = render(Toggle, { store });
     await fireEvent.click(getByRole('checkbox'));
     expect(get(store)).toBeFalsy();
   });
 
-  it('updates with the store', async() => {
+  it('updates with the store', async () => {
     const store = writable(true);
     const { getByRole } = render(Toggle, { store });
     const button = getByRole('checkbox');

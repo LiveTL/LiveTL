@@ -48,7 +48,7 @@ describe('omnicompletion', () => {
     expect(getWords().length).toEqual(wordBank.length);
   });
 
-  it('updates subscribers', async() => {
+  it('updates subscribers', async () => {
     const { addWord, addSentence, subscribe } = omniComplete();
     let fired = 0;
     const cb = () => fired++;
@@ -61,7 +61,7 @@ describe('omnicompletion', () => {
     expect(fired).toBe(2);
   });
 
-  it('synchronizes with stores', async() => {
+  it('synchronizes with stores', async () => {
     const { addWord, getWords, syncWith } = omniComplete();
     const store = writable(['hello']);
     syncWith(store);

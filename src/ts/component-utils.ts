@@ -13,7 +13,7 @@ const getRelativeRect = (element: HTMLElement, boundingElement: HTMLElement): Re
   };
 };
 
-export const getDropdownOffsetY = async(div: HTMLElement, boundingDiv: HTMLElement): Promise<string> => {
+export const getDropdownOffsetY = async (div: HTMLElement, boundingDiv: HTMLElement): Promise<string> => {
   await tick();
 
   const wrapper = div.querySelector('.dropdown-wrapper');

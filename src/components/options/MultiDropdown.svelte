@@ -21,7 +21,7 @@
       .map(([key, value]) => ({ key, item: getDisplayName(key, value) }));
   }
 
-  const onShowListChange = async(showList) => {
+  const onShowListChange = async (showList) => {
     if (!showList) return;
     offsetY = await getDropdownOffsetY(div, boundingDiv);
   };
