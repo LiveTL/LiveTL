@@ -1,11 +1,13 @@
 // eslint-disable-next-line no-unused-vars
 import { compose, dbg, escapeRegExp } from './utils.js';
-// eslint-disable-next-line no-unused-vars
-import { derived, get, writable, Readable, Writable } from 'svelte/store';
-// eslint-disable-next-line no-unused-vars
+import { derived, get, writable } from 'svelte/store';
 import { doTranslatorMode, doAutoPrefix, language, macros, autoPrefixTag, macroTrigger } from './store.js';
-// TODO ACTUALLY USE macroTrigger
 import { languageNameCode } from './constants.js';
+
+/**
+ * @typedef {import('svelte/store').Readable} Readable
+ * @typedef {import('svelte/store').Writable} Writable
+ */
 
 export function omniComplete(initialWords) {
   let words = initialWords || [];

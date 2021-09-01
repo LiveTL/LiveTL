@@ -1,9 +1,9 @@
 import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour, DisplayMode, paramsEmbedded } from './constants.js';
-import { getAllVoiceNames, getVoiceMap } from './utils.js';
+import { getAllVoiceNames, getVoiceMap, compose } from './utils.js';
 import { LookupStore, SyncStore } from './storage.js';
-// eslint-disable-next-line no-unused-vars
-import { writable, readable, derived, Readable } from 'svelte/store';
-import { compose } from './utils.js';
+import { writable, readable, derived } from 'svelte/store';
+
+/** @typedef {import('svelte/store').Readable} Readable */
 
 /**
  * @template T
@@ -113,14 +113,15 @@ export const speechVoiceName = derived(
   [speechVoiceNameSetting, voiceNames],
   ([$speechVoiceNameSetting, $voiceNames]) => {
     return (
-      $voiceNames.includes($speechVoiceNameSetting) ?
-        $speechVoiceNameSetting : $voiceNames[0]
-    ); 
-  },
+      $voiceNames.includes($speechVoiceNameSetting)
+        ? $speechVoiceNameSetting
+        : $voiceNames[0]
+    );
+  }
 );
 export const speechSpeaker = derived(
   [speechVoiceName, voiceNames],
-  ([$speechVoiceName, _$voiceNames]) => getVoiceMap().get($speechVoiceName),
+  ([$speechVoiceName, _$voiceNames]) => getVoiceMap().get($speechVoiceName)
 );
 
 export const updatePopupActive = writable(false);

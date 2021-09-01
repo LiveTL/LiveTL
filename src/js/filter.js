@@ -1,21 +1,11 @@
 import { languageNameCode } from './constants.js';
 import { customFilters, language } from './store.js';
 import { escapeRegExp, not, composeOr } from './utils.js';
-// import {
-//   textWhitelist,
-//   textBlacklist,
-//   plaintextWhitelist,
-//   plaintextBlacklist,
-//   plainAuthorWhitelist,
-//   plainAuthorBlacklist,
-//   regexAuthorWhitelist,
-//   regexAuthorBlacklist
-// } from './store.js';
-// eslint-disable-next-line no-unused-vars
-import { Message } from './types.js';
 // eslint-disable-next-line no-unused-vars
 import { SyncStore } from './storage.js';
 import { derived } from 'svelte/store';
+
+/** @typedef {import('./types.js').Message} Message */
 
 const MAX_LANG_TAG_LEN = 7;
 

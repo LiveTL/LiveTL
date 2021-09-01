@@ -1,11 +1,15 @@
-// eslint-disable-next-line no-unused-vars
-import { derived, get, readable, Readable } from 'svelte/store';
-// eslint-disable-next-line no-unused-vars
-import { APITranslation, Message, ScriptMessage } from './types.js';
+import { derived, get, readable } from 'svelte/store';
 import { AuthorType, paramsIsVOD } from './constants.js';
 import { formatTimestampMillis, sortBy, toJson } from './utils.js';
 import { enableAPITLs, timestamp } from './store.js';
 import ReconnectingEventSource from 'reconnecting-eventsource';
+
+/**
+ * @typedef {import('svelte/store').Readable} Readable
+ * @typedef {import('./types.js').APITranslation} APITranslation
+ * @typedef {import('./types.js').Message} Message
+ * @typedef {import('./types.js').ScriptMessage} ScriptMessage
+ */
 
 export const sseToStream = link => readable(null, set => {
   if (paramsIsVOD) return () => { };

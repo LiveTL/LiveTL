@@ -1,8 +1,5 @@
 import { compose } from './utils';
-// eslint-disable-next-line no-unused-vars
-import { derived, writable, Writable, Readable } from 'svelte/store';
-// eslint-disable-next-line no-unused-vars
-import { Message } from './types.js';
+import { derived, writable } from 'svelte/store';
 import {
   parseTranslation,
   isWhitelisted as textWhitelisted,
@@ -16,6 +13,12 @@ import { showModMessage, timestamp } from './store';
 import { paramsVideoId, AuthorType, paramsPopout, paramsTabId, paramsFrameId } from './constants';
 import * as MCHAD from './mchad.js';
 import * as API from './api.js';
+
+/**
+ * @typedef {import('svelte/store').Readable} Readable
+ * @typedef {import('svelte/store').Writable} Writable
+ * @typedef {import('./types.js').Message} Message
+ */
 
 /** @type {{ ytcTranslations: Writable<Message>, mod: Writable<Message>, ytc: Writable<Message>, translations: Writable<Message>, mchad: Readable<Message>, api: Readable<Message>, ytcBonks: Writable<any[]>, ytcDeletions:Writable<any[]> }} */
 export const sources = {

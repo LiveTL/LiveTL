@@ -1,5 +1,4 @@
-// eslint-disable-next-line no-unused-vars
-import { readable, derived, Readable } from 'svelte/store';
+import { readable, derived } from 'svelte/store';
 import { combineStores, sources } from './sources.js';
 import { getSpamAuthors, removeDuplicateMessages } from './sources-util.js';
 import {
@@ -16,11 +15,13 @@ import {
 import { defaultCaption, YtcDeleteBehaviour } from './constants.js';
 import { checkAndSpeak } from './speech.js';
 
+/** @typedef {import('svelte/store').Readable} Readable */
+
 /**
  * @template {T}
  * @type {(store: Readable<T>, getBool: (val: T) => Boolean) => Readable<String[]>}
  */
-const lookupStoreToList = (store, getBool=Boolean) => derived(store, $val => $val
+const lookupStoreToList = (store, getBool = Boolean) => derived(store, $val => $val
   .filter(([_id, val]) => getBool(val))
   .map(([id, _val]) => id)
 );
@@ -43,8 +44,7 @@ const whitelistedSpam = derived(notSpamStore, $set => id => $set.has(id));
 
 /** @type {([authorId: String, author: String]) => Void} */
 const markSpam = ([authorId, author]) => {
-  if (!spammersDetected.has(authorId))
-    spammersDetected.set(authorId, { authorId, author, spam: true });
+  if (!spammersDetected.has(authorId)) { spammersDetected.set(authorId, { authorId, author, spam: true }); }
 };
 
 const hidden = toSet(sessionHidden);
@@ -111,7 +111,6 @@ const dispDepends = [
 
 const dispTransform =
   ([$items, $banned, $hidden, $spot, $spamAmt, $spamInt, $whitelisted, $enSpam]) => {
-
     const attrNotIn = (set, attr) => item => !set.has(item[attr]);
     const spammers = $enSpam
       ? getSpamAuthors($items, $spamAmt, $spamInt).filter(([id]) => !$whitelisted(id))
