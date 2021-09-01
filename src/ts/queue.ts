@@ -1,13 +1,13 @@
 export interface Queue<T> {
-  clear(): void;
-  pop(): T | undefined;
-  push(item: T): void;
+  clear: () => void
+  pop: () => T | undefined
+  push: (item: T) => void
 }
 
 export function queue<T>(): Queue<T> {
-  type Data = {
-    data: T;
-    next_?: Data;
+  interface Data {
+    data: T
+    next_?: Data
   }
   let top_: Data | null = null;
   let last: Data | null = top_;
@@ -40,4 +40,4 @@ export function queue<T>(): Queue<T> {
   }
 
   return { clear, pop, push };
-};
+}

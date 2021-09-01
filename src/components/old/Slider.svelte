@@ -13,7 +13,7 @@
   export let thumb = false;
   export let suffix = ':';
 
-  let diff = max - min;
+  const diff = max - min;
   $: value = Math.max(0, Math.min(100, value));
   $: value = Math.round((($store - min) * 100) / diff + min);
   $: scaledBack = ((value - min) * diff) / 100 + min;
@@ -24,9 +24,9 @@
 
   function setThumb() {
     if (wrapper == null) return;
-    let e = wrapper.querySelector('.s-slider__tooltip');
+    const e = wrapper.querySelector('.s-slider__tooltip');
     if (e) {
-      e.setAttribute('data-content', typeof thumb != 'boolean' ? thumb : Math.round(scaledBack));
+      e.setAttribute('data-content', typeof thumb !== 'boolean' ? thumb : Math.round(scaledBack));
     }
   }
 
@@ -58,7 +58,7 @@
     }
   }
 
-  onMount(async () => {
+  onMount(async() => {
     await tick();
     setThumb();
   });

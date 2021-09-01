@@ -12,7 +12,7 @@
   import Message from './Message.svelte';
   import MessageDisplayWrapper from './MessageDisplayWrapper.svelte';
   $: if (renderQueue.length) {
-    (async () => {
+    (async() => {
       rendering = true;
       await tick();
       const canvas = await html2canvas(renderElement);

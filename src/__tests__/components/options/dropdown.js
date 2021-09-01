@@ -6,7 +6,6 @@ import { render, fireEvent } from '@testing-library/svelte';
 import { get, writable } from 'svelte/store';
 import Dropdown from '../../../components/old/Dropdown.svelte';
 
-
 describe('Dropdown', () => {
   const items = [
     { name: 'test', value: 'testValue' },
@@ -23,7 +22,7 @@ describe('Dropdown', () => {
     expect(label).toBeInTheDocument();
   });
 
-  it('shows choices', async () => {
+  it('shows choices', async() => {
     const store = writable(items[0].value);
     const { getByText, getByDisplayValue } = render(Dropdown, { items, store });
     const button = getByDisplayValue(items[0].value);
@@ -31,7 +30,7 @@ describe('Dropdown', () => {
     items.forEach(item => expect(getByText(item.name)).toBeInTheDocument());
   });
 
-  it('updates with the store', async () => {
+  it('updates with the store', async() => {
     const store = writable(items[0].value);
     const { getByDisplayValue } = render(Dropdown, { items, store });
     await store.set(items[1].value);
@@ -40,7 +39,7 @@ describe('Dropdown', () => {
     }, 1000);
   });
 
-  it('updates the store', async () => {
+  it('updates the store', async() => {
     const store = writable(items[0].value);
     const { getByText, getByDisplayValue } = render(Dropdown, { items, store });
     await fireEvent.click(getByDisplayValue(items[0].value));
@@ -48,7 +47,7 @@ describe('Dropdown', () => {
     expect(get(store)).toEqual(items[1].value);
   });
 
-  it('is blue', async () => {
+  it('is blue', async() => {
     const { getByText, getByDisplayValue } = render(Dropdown, {
       name: 'Dropdown',
       items,

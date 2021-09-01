@@ -25,7 +25,7 @@ describe('editable list', () => {
     expect(getByDisplayValue('there')).toBeInTheDocument();
   });
 
-  it('adds new options', async () => {
+  it('adds new options', async() => {
     const { getByLabelText, getByDisplayValue } = render(ListEdit, {
       name: '', store: writable(items)
     });
@@ -36,7 +36,7 @@ describe('editable list', () => {
     expect(getByDisplayValue('General Kenobi')).toBeInTheDocument();
   });
 
-  it('saves the new options', async () => {
+  it('saves the new options', async() => {
     const store = writable([]);
     const { getByLabelText } = render(ListEdit, { name: '', store });
     const addInput = getByLabelText('Add new (Press enter to save)');

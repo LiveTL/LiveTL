@@ -13,13 +13,13 @@
 
   let div;
   let maxRuleLength = 0;
-  let sShowBlock = writable(showBlock);
-  let sPlainReg = writable(plainReg);
-  let sChatAuthor = writable(chatAuthor);
+  const sShowBlock = writable(showBlock);
+  const sPlainReg = writable(plainReg);
+  const sChatAuthor = writable(chatAuthor);
   const getItems = values => values.map(v => ({ name: v, value: v }));
-  let showBlockItems = getItems(['show', 'block']);
-  let plainRegItems = getItems(['plain', 'regex']);
-  let chatAuthorItems = getItems(['chat', 'author']);
+  const showBlockItems = getItems(['show', 'block']);
+  const plainRegItems = getItems(['plain', 'regex']);
+  const chatAuthorItems = getItems(['chat', 'author']);
   const style = `
     padding-right: 0px;
   `;

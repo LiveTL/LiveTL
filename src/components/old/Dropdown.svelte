@@ -13,7 +13,7 @@
     if (value == null) {
       value = $store;
     }
-    if (typeof value != 'string') {
+    if (typeof value !== 'string') {
       value = value[0];
     }
   }

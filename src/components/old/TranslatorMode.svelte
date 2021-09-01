@@ -9,7 +9,7 @@
   import { isAndroid } from '../../js/constants.js';
 
   const leaderCharRules = [
-    leader => leader.length == 1 || 'Please input a single character',
+    leader => leader.length == 1 || 'Please input a single character'
   ];
 
   const emptyMacro = { name: '', expansion: '', enabled: true };

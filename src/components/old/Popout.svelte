@@ -31,7 +31,7 @@
   }
 
   function onMessageDisplayAfterUpdate() {
-    if (isAtRecent && !settingsOpen){
+    if (isAtRecent && !settingsOpen) {
       messageDisplay.scrollToRecent();
     }
   }
@@ -102,13 +102,13 @@
   $: textFilename = `${$videoTitle}.txt`;
   let renderWidthInt = null;
   $: renderWidthInt = parseInt(renderWidth);
-  $: if(screenshotRenderWidth) {
+  $: if (screenshotRenderWidth) {
     screenshotRenderWidth.set(renderWidthInt);
   }
 
 
   function toggleFullScreen() {
-    if (isAndroid) { 
+    if (isAndroid) {
       // @ts-ignore
       window.nativeJavascriptInterface.toggleFullscreen();
       return;

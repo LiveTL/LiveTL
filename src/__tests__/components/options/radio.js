@@ -21,7 +21,7 @@ describe('Radio', () => {
     expect(getByText('Value 2')).toBeInTheDocument();
   });
 
-  it('updates with the store', async () => {
+  it('updates with the store', async() => {
     const store = writable(options[0]);
     const { getAllByRole } = render(Radio, { name, options, store });
     await store.set(options[1]);
@@ -29,7 +29,7 @@ describe('Radio', () => {
     expect(getAllByRole('radio')[1]).toHaveAttribute('aria-selected', 'true');
   });
 
-  it('updates the store', async () => {
+  it('updates the store', async() => {
     const store = writable(options[0]);
     const { getAllByRole } = render(Radio, { name, options, store });
     await fireEvent.click(getAllByRole('radio')[1]);

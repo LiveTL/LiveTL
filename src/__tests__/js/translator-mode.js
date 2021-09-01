@@ -4,7 +4,7 @@ import { get, writable } from 'svelte/store';
 
 const sleep = time => new Promise(res => setTimeout(res, time));
 
-describe('omnicompletion', () =>{ 
+describe('omnicompletion', () => {
   const wordBank = ['hello', 'there', 'general', 'though', 'that', 'hey'];
 
   it('adds words', () => {
@@ -48,7 +48,7 @@ describe('omnicompletion', () =>{
     expect(getWords().length).toEqual(wordBank.length);
   });
 
-  it('updates subscribers', async () => {
+  it('updates subscribers', async() => {
     const { addWord, addSentence, subscribe } = omniComplete();
     let fired = 0;
     const cb = () => fired++;
@@ -61,7 +61,7 @@ describe('omnicompletion', () =>{
     expect(fired).toBe(2);
   });
 
-  it('synchronizes with stores', async () => {
+  it('synchronizes with stores', async() => {
     const { addWord, getWords, syncWith } = omniComplete();
     const store = writable(['hello']);
     syncWith(store);
@@ -80,7 +80,7 @@ describe('macro system', () => {
     en: '[en]',
     coco: 'coco',
     naki: 'ayame',
-    kan: 'kanata',
+    kan: 'kanata'
   };
 
   describe('default behaviour', () => {
@@ -155,7 +155,6 @@ describe('macro system', () => {
 
       expect(replaceText(',e ,pe: hello there, ,n: dochi dochi'))
         .toBe('[en] pekora: hello there, ayame: dochi dochi');
-
     });
 
     it('doesn\'t replace escaped macros with the synced leader', () => {

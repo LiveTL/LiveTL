@@ -28,7 +28,7 @@
 
   $: document.body.style.fontSize = Math.round($livetlFontSize) + 'px';
   export let direction;
-  /** @type {{ text: String, author: String, timestamp: String, authorId: string, messageId: string, hidden: boolean, messageArray: MessageItem[], deleted: boolean }[]}*/
+  /** @type {{ text: String, author: String, timestamp: String, authorId: string, messageId: string, hidden: boolean, messageArray: MessageItem[], deleted: boolean }[]} */
   export let items = [];
 
   let bottomMsg = null;
@@ -54,7 +54,7 @@
       channelFilters.set(item.authorId, {
         ...channelFilters.get(item.authorId),
         name: item.author,
-        blacklist: true,
+        blacklist: true
       });
     }
   };

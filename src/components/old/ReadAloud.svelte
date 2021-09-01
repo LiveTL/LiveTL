@@ -24,7 +24,7 @@
 <CheckOption name="Read-aloud mode" store={doSpeechSynth} />
 {#if $doSpeechSynth}
   <SliderOption name="Speech volume" store={speechVolume} min={0} max={1} />
-  <SliderOption name="Speech speed" store={speechSpeed} min={0.5} max={2} thumb={Math.round($speechSpeed * 10)/10} />
+  <SliderOption name="Speech speed" store={speechSpeed} min={0.5} max={2} thumb={Math.round($speechSpeed * 10) / 10} />
   <Dropdown
     name="Speech synthesis voice"
     label={$speechVoiceName || 'Loading voices...'}

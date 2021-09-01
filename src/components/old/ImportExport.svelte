@@ -26,8 +26,7 @@
     try {
       importStores(value);
       close();
-    }
-    catch (e) {
+    } catch (e) {
       error = 'Invalid settings syntax';
     }
   }

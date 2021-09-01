@@ -6,7 +6,7 @@
     Icon,
     Menu,
     TextField,
-    ListItem,
+    ListItem
   } from 'svelte-materialify/src';
 
   export let name = '';

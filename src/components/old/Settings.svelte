@@ -12,7 +12,7 @@
     { name: 'Interface', component: UISettings, icon: mdiBrush },
     { name: 'Filters', component: FilterSettings, icon: mdiFilter },
     { name: 'Chat', component: TranslatorMode, icon: mdiChat },
-    { name: 'About', component: About, icon: mdiHelp },
+    { name: 'About', component: About, icon: mdiHelp }
   ];
 
   let wrapper = null;
@@ -28,7 +28,7 @@
       !sliderElement.offsetParent ||
       !activeTab.offsetParent
     )
-      return;
+  { return; }
 
     sliderElement.style.left = `${activeTab.offsetLeft}px`;
     sliderElement.style.width = `${activeTab.offsetWidth}px`;
