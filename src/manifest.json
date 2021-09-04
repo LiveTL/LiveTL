@@ -42,7 +42,7 @@
         "https://www.youtube.com/error*?*"
       ],
       "js": [
-        "video_embedder.bundle.js"
+        "workaround-injector.bundle.js"
       ],
       "all_frames": true
     }

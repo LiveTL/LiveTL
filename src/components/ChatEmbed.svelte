@@ -25,7 +25,7 @@
       }
       if (data.info.videoData) videoTitle.set(data.info.videoData.title);
     } catch (e) {
-      if (iframe && iframe.contentWindow && packet.data.type != 'sendToForeground') {
+      if (iframe && iframe.contentWindow && packet.data.type !== 'sendToForeground') {
         iframe.contentWindow.postMessage(packet.data, '*');
       }
     }

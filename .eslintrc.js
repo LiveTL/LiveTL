@@ -80,6 +80,13 @@ module.exports = {
         ignoreConditionalTests: true,
         ignoreMixedLogicalExpressions: false
       }
+    ],
+    '@typescript-eslint/member-delimiter-style': [
+      'error',
+      {
+        multiline: { delimiter: 'semi', requireLast: true },
+        singleline: { delimiter: 'comma', requireLast: false }
+      }
     ]
   },
   settings: {
@@ -88,6 +95,7 @@ module.exports = {
   globals: {
     Ytc: 'readonly',
     Chat: 'readonly',
-    Ltl: 'readonly'
+    Ltl: 'readonly',
+    YT: 'readonly'
   }
 };

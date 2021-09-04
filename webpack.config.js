@@ -58,8 +58,8 @@ module.exports = (env, options) => {
       // hyperchat: path.join(__dirname, 'src', 'js', 'pages', 'hyperchat.js'),
       translatormode: path.join(__dirname, 'src', 'js', 'pages', 'translatormode.js'),
       injector: path.join(__dirname, 'src', 'js', 'content_scripts', 'injector.js'),
-      video_embedder: path.join(__dirname, 'src', 'js', 'content_scripts', 'video_embedder.js'),
-      video_embed: path.join(__dirname, 'src', 'js', 'content_scripts', 'video_embed.js'),
+      // video_embedder: path.join(__dirname, 'src', 'js', 'content_scripts', 'video_embedder.js'),
+      // video_embed: path.join(__dirname, 'src', 'js', 'content_scripts', 'video_embed.js'),
       // chat: path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat.js'),
       // 'chat-interceptor': path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat-interceptor.js'),
       // 'chat-background': path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat-background.js'),
@@ -67,7 +67,9 @@ module.exports = (env, options) => {
       'chat-interceptor': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-interceptor.ts'),
       'chat-background': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-background.ts'),
       chat: path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-injector.ts'),
-      'hyperchat/hyperchat': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'hyperchat.ts')
+      'hyperchat/hyperchat': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'hyperchat.ts'),
+      'yt-workaround': path.join(__dirname, 'src', 'ts', 'yt-workaround.ts'),
+      'workaround-injector': path.join(__dirname, 'src', 'ts', 'content_scripts', 'workaround-injector.ts')
     },
     output: {
       path: path.join(__dirname, 'build'),

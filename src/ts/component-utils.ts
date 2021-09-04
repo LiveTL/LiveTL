@@ -1,6 +1,6 @@
 import { tick } from 'svelte';
 
-interface Rect {top: number, right: number, bottom: number, left: number}
+interface Rect { top: number, right: number, bottom: number, left: number }
 
 const getRelativeRect = (element: HTMLElement, boundingElement: HTMLElement): Rect => {
   const rect = element.getBoundingClientRect();

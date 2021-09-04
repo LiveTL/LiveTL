@@ -29,6 +29,7 @@
     "@testing-library/user-event": "^13.0.16",
     "@tsconfig/svelte": "^2.0.1",
     "@types/chrome": "^0.0.154",
+    "@types/youtube": "^0.0.45",
     "@typescript-eslint/eslint-plugin": "4",
     "@typescript-eslint/parser": "^4.29.1",
     "autoprefixer": "^10.3.1",
