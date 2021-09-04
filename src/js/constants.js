@@ -1,4 +1,4 @@
-import { transformOpt } from '../../js/utils.js';
+import { transformOpt } from './utils.js';
 
 export const isAndroid = false;
 // DO NOT EDIT THE ABOVE LINE, it will be updated by webpack.
