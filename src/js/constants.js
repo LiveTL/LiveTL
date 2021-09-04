@@ -1,3 +1,5 @@
+import { transformOpt } from '../../js/utils.js';
+
 export const isAndroid = false;
 // DO NOT EDIT THE ABOVE LINE, it will be updated by webpack.
 export const storageVersion = 'v0-alpha';
@@ -41,8 +43,19 @@ export const textDirectionMap = new Map([
 export const DisplayMode = {
   POPOUT: 'POPOUT',
   EMBEDDED: 'EMBEDDED',
-  FULLPAGE: 'FULLPAGE'
+  FULLPAGE: 'FULL PAGE'
 };
+
+/** @enum {String} */
+export const AutoLaunchMode = {
+  NONE: 'NONE',
+  ...DisplayMode
+};
+
+export const autoLaunchModeItems = Object.keys(AutoLaunchMode).map(item => ({
+  text: transformOpt(AutoLaunchMode[item]),
+  value: AutoLaunchMode[item]
+}));
 
 // Js enum omegalul
 /** @enum {number} */

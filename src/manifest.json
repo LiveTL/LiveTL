@@ -36,6 +36,15 @@
         "translatormode.bundle.js"
       ],
       "all_frames": true
+    },
+    {
+      "matches": [
+        "https://www.youtube.com/error*?*"
+      ],
+      "js": [
+        "video_embedder.bundle.js"
+      ],
+      "all_frames": true
     }
   ],
   "web_accessible_resources": [

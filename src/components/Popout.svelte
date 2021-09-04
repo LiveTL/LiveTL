@@ -63,7 +63,7 @@
 
   // FIXME: displayedMessages is not iterable
   function selectAllItems() {
-    selectedItems = [...displayedMessages];
+    selectedItems = [...$displayedMessages];
   }
 
   let selectOperation = () => {};

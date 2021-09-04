@@ -1,4 +1,4 @@
-import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour, DisplayMode, paramsEmbedded } from './constants.js';
+import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour, DisplayMode, paramsEmbedded, AutoLaunchMode } from './constants.js';
 import { getAllVoiceNames, getVoiceMap, compose } from './utils.js';
 import { LookupStore, SyncStore } from './storage.js';
 import { writable, readable, derived } from 'svelte/store';
@@ -21,7 +21,7 @@ const SS = (n, d, s = true) => new SyncStore(n, d, null, s);
  * @returns {LookupStore<T>}
  */
 const LS = (n, d, s = true) => new LookupStore(n, d, null, s);
-const defaultZoom = BROWSER == Browser.ANDROID ? 0.5 : 1;
+const defaultZoom = BROWSER === Browser.ANDROID ? 0.5 : 1;
 const sampleFilter = {
   chatAuthor: 'chat',
   plainReg: 'plain',
@@ -84,6 +84,7 @@ export const spamMsgInterval = SS('spamMsgInterval', 10);
 export const spammersDetected = LS('spammersDetected', [sampleSpam].slice(1));
 export const speechVoiceNameSetting = SS('speechVoiceNameSetting', '');
 export const speechSpeed = SS('speechSpeed', 1);
+export const autoLaunchMode = SS('autoLaunchMode', AutoLaunchMode.NONE);
 
 // Non-persistant stores
 
@@ -130,6 +131,6 @@ export const timestamp = writable(0);
 export const faviconURL = writable('/48x48.png');
 export const availableMchadUsers = writable([]);
 export const spotlightedTranslator = writable(null);
-export const displayMode = writable(paramsEmbedded ? DisplayMode.EMBEDDED : DisplayMode.FULLPAGE);
+export const displayMode = writable(paramsEmbedded != null ? DisplayMode.EMBEDDED : DisplayMode.FULLPAGE);
 export const isResizing = writable(false);
 export const sessionHidden = writable([]);

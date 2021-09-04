@@ -13,13 +13,15 @@
     enableExportButtons,
     enableFullscreenButton,
     autoVertical,
-    displayMode
+    displayMode,
+    autoLaunchMode
   } from '../../js/store.js';
   import {
     DisplayMode,
     textDirectionMap,
     videoSideMap,
-    chatSplitMap
+    chatSplitMap,
+    autoLaunchModeItems
   } from '../../js/constants.js';
   import FontDemo from './FontDemo.svelte';
   import ImportExport from './ImportExport.svelte';
@@ -28,6 +30,7 @@
   import Radio from '../common/RadioGroupStore.svelte';
   import Card from '../common/Card.svelte';
   import ReadAloud from './ReadAloud.svelte';
+  import Dropdown from '../common/DropdownStore.svelte';
 
   let div: HTMLElement;
 
@@ -71,6 +74,12 @@
     {/if}
   </Card>
   <Card title="General" icon="tune">
+    <Dropdown
+      name="Auto-launch mode"
+      store={autoLaunchMode}
+      items={autoLaunchModeItems}
+      boundingDiv={div}
+    />
     <Checkbox name="Show timestamps" store={showTimestamp} />
     <Checkbox
       name="Show screenshot and download buttons"
