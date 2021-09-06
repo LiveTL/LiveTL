@@ -15,6 +15,7 @@
 
   export let boundingDiv;
 
+  let width = 0;
   const codeClass = 'px-1 bg-gray-700';
 
   $: amount = `${Math.round($spamMsgAmount)}`;
@@ -50,14 +51,17 @@
       max={100}
       step={1}
     />
-    <MultiDropdown
-      name="Detected spammers"
-      store={spammersDetected}
-      getDisplayName={(_id, v) => v.author}
-      getBool={id => spammersDetected.get(id).spam}
-      setBool={(id, spam) =>
-        spammersDetected.set(id, { ...spammersDetected.get(id), spam })}
-      {boundingDiv}
-    />
+    <div bind:clientWidth={width}>
+      <MultiDropdown
+        name="Detected spammers"
+        store={spammersDetected}
+        getDisplayName={(_id, v) => v.author}
+        getBool={id => spammersDetected.get(id).spam}
+        setBool={(id, spam) =>
+          spammersDetected.set(id, { ...spammersDetected.get(id), spam })}
+        {boundingDiv}
+        {width}
+      />
+    </div>
   {/if}
 </Card>

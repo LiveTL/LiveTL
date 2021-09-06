@@ -4,10 +4,12 @@
   import Card from '../common/Card.svelte';
 
   export let boundingDiv;
+
+  let width = 0;
 </script>
 
 <Card title="Blocked Users" icon="block">
-  <div class="flex gap-2 flex-wrap">
+  <div class="flex gap-2 flex-wrap" bind:clientWidth={width}>
     <div class="flex-1">
       <MultiDropdown
         name="YouTube chat"
@@ -17,6 +19,7 @@
         setBool={(n, v) =>
           channelFilters.set(n, { ...channelFilters.get(n), blacklist: v })}
         {boundingDiv}
+        {width}
       />
     </div>
     {#if $enableMchadTLs}
@@ -25,6 +28,7 @@
           name="MChad"
           store={mchadUsers}
           {boundingDiv}
+          {width}
         />
       </div>
     {/if}

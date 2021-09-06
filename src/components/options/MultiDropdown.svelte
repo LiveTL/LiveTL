@@ -1,7 +1,7 @@
 <script>
   import Select from 'smelte/src/components/Select';
   import Icon from '../common/Icon.svelte';
-  import { getDropdownOffsetY } from '../../ts/component-utils';
+  import { getDropdownOffsetY, getRelativeRect } from '../../ts/component-utils';
   // I legit can't understand LookupStore to migrate this to TS lol
 
   export let name = '';
@@ -10,10 +10,12 @@
   export let getBool = (key) => store.get(key);
   export let setBool = (key, val) => store.set(key, val);
   export let boundingDiv = null;
+  export let width = 0;
 
   let showList = false;
   let div = null;
   let offsetY = '';
+  let offsetX = '';
 
   function convertLookup(lookup) {
     return [...lookup]
@@ -24,15 +26,21 @@
   const onShowListChange = async (showList) => {
     if (!showList) return;
     offsetY = await getDropdownOffsetY(div, boundingDiv);
+
+    const relativeRect = getRelativeRect(div, boundingDiv);
+    if (relativeRect.left + width > boundingDiv.clientWidth) {
+      offsetX = 'right-0';
+    } else {
+      offsetX = 'left-0';
+    }
   };
 
   $: items = convertLookup($store);
   $: onShowListChange(showList);
   const classes = 'dropdown-wrapper cursor-pointer relative';
-  $: optionsClasses = 'dropdown-options divide-y divide-gray-600 ' +
-    'absolute left-0 bg-white rounded shadow min-w-full w-max z-20 ' +
-    'dark:bg-dark-500 max-h-60 overflow-auto ' + offsetY;
-  // TODO: need to figure out max width
+  $: optionsClasses = 'dropdown-options divide-y divide-gray-600 absolute ' +
+    'bg-white dark:bg-dark-500 rounded shadow z-20 max-h-60 overflow-auto ' +
+    `${offsetY} ${offsetX}`;
 </script>
 
 <div bind:this={div} class={$$props.class ? $$props.class : ''}>
@@ -46,6 +54,7 @@
       slot="options"
       class={optionsClasses}
       on:click|stopPropagation
+      style="width: {width}px;"
     >
       {#if items.length}
         {#each items as item}

@@ -2,7 +2,7 @@ import { tick } from 'svelte';
 
 interface Rect { top: number, right: number, bottom: number, left: number }
 
-const getRelativeRect = (element: HTMLElement, boundingElement: HTMLElement): Rect => {
+export const getRelativeRect = (element: HTMLElement, boundingElement: HTMLElement): Rect => {
   const rect = element.getBoundingClientRect();
   const boundingRect = boundingElement.getBoundingClientRect();
   return {

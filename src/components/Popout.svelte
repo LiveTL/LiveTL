@@ -61,7 +61,6 @@
   let selectedItems = [];
   let selectedItemCount = 0;
 
-  // FIXME: displayedMessages is not iterable
   function selectAllItems() {
     selectedItems = [...$displayedMessages];
   }
