@@ -9,11 +9,11 @@ export function speak(text, volume=0) {
   utterance.voice = get(speechSpeaker);
   utterance.rate = Math.round(speechSpeed.get() * 10)/10;
   utterance.lang = languageNameCode[language.get()].tag;
-  speechSynthesis.speak(utterance);
+  window.speechSynthesis?.speak(utterance);
 }
 
 export function checkAndSpeak(text) {
-  if (doSpeechSynth.get()) {
+  if (window.speechSynthesis && doSpeechSynth.get()) {
     speak(text);
   }
 }
@@ -23,12 +23,12 @@ setTimeout(() => {
   doSpeechSynth.subscribe($doSpeechSynth => {
     if (isInitial || !$doSpeechSynth) {
       isInitial = false;
-      speechSynthesis.cancel();
+      window.speechSynthesis?.cancel();
       return;
     }
     speak('Speech synthesis enabled');
   });
   speechSpeaker.subscribe(_$speechSpeaker => {
-    speechSynthesis.cancel();
+    window.speechSynthesis?.cancel();
   });
 }, 0);
