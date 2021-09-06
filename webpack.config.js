@@ -6,10 +6,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { version, description } = require('./package.json');
 const BannerPlugin = webpack.BannerPlugin;
-// const { VueLoaderPlugin } = require('vue-loader');
 const { preprocess } = require('./svelte.config');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-// const FileManagerPlugin = require('filemanager-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const postcssPlugins = require('./postcss.config.js');
 
@@ -55,15 +53,8 @@ module.exports = (env, options) => {
       background: path.join(__dirname, 'src', 'js', 'pages', 'background.js'),
       watch: path.join(__dirname, 'src', 'js', 'pages', 'watch.js'),
       welcome: path.join(__dirname, 'src', 'js', 'pages', 'welcome.js'),
-      // hyperchat: path.join(__dirname, 'src', 'js', 'pages', 'hyperchat.js'),
       translatormode: path.join(__dirname, 'src', 'js', 'pages', 'translatormode.js'),
       injector: path.join(__dirname, 'src', 'js', 'content_scripts', 'injector.js'),
-      // video_embedder: path.join(__dirname, 'src', 'js', 'content_scripts', 'video_embedder.js'),
-      // video_embed: path.join(__dirname, 'src', 'js', 'content_scripts', 'video_embed.js'),
-      // chat: path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat.js'),
-      // 'chat-interceptor': path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat-interceptor.js'),
-      // 'chat-background': path.join(__dirname, 'src', 'submodules', 'chat', 'scripts', 'chat-background.js'),
-      // chrome: path.join(__dirname, 'src', 'js', 'polyfills', 'chrome.js')
       'chat-interceptor': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-interceptor.ts'),
       'chat-background': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-background.ts'),
       chat: path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-injector.ts'),
@@ -99,17 +90,17 @@ module.exports = (env, options) => {
             ]
           }
         },
-        // {
-        //   test: /.*/,
-        //   use: [{
-        //     loader: 'string-replace-loader',
-        //     options: {
-        //       search: 'const isAndroid = false;',
-        //       replace: `const isAndroid = ${isAndroid};`
-        //     }
-        //   }],
-        //   enforce: 'post'
-        // },
+        {
+          test: /src\/js\/constants\.js$/,
+          use: [{
+            loader: 'string-replace-loader',
+            options: {
+              search: 'const isAndroid = false;',
+              replace: `const isAndroid = ${isAndroid};`
+            }
+          }],
+          enforce: 'post'
+        },
         {
           include: [
             path.resolve(__dirname, 'node_modules/jquery-ui-touch-punch')
@@ -142,12 +133,6 @@ module.exports = (env, options) => {
           // include: /.*/
           // exclude: /node_modules/
         },
-        // {
-        //   test: /\.html$/,
-        //   loader: 'html-loader',
-        //   exclude: /node_modules/,
-        //   enforce: 'post' // Fix vue-loader issues
-        // },
         {
           test: /\.svelte$/,
           use: {
@@ -169,32 +154,6 @@ module.exports = (env, options) => {
             fullySpecified: false
           }
         },
-        // {
-        //   test: /\.vue$/,
-        //   loader: 'vue-loader'
-        // },
-        // {
-        //   test: /\.s(c|a)ss$/,
-        //   use: [
-        //     'vue-style-loader',
-        //     'css-loader',
-        //     {
-        //       loader: 'sass-loader',
-        //       // Requires sass-loader@^7.0.0
-        //       options: {
-        //         implementation: require('sass'),
-        //         indentedSyntax: true // optional
-        //       },
-        //       // Requires >= sass-loader@^8.0.0
-        //       options: {
-        //         implementation: require('sass'),
-        //         sassOptions: {
-        //           indentedSyntax: true // optional
-        //         }
-        //       }
-        //     }
-        //   ]
-        // },
         {
           test: /\.tsx?$/,
           use: 'ts-loader',
@@ -311,7 +270,6 @@ module.exports = (env, options) => {
         chunks: ['background', 'chat-background'],
         chunksSortMode: 'manual'
       }),
-      // new VueLoaderPlugin(),
       new HtmlWebpackPlugin({
         template: path.join(__dirname, 'src', 'empty.html'),
         filename: 'hyperchat/index.html',
