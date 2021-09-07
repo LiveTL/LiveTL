@@ -22,32 +22,36 @@
 
   // send a message to the background script
   function sendToBackground(data, randomMessageID) {
-    window.nativeJavascriptInterface.sendToBackground(JSON.stringify({
-      type: 'sendToBackground',
-      data,
-      randomMessageID,
-      sender: {
-        frameId: window.location.href,
-        tab: {
-          id: window.location.href
+    if (window.nativeJavascriptInterface) {
+      window.nativeJavascriptInterface.sendToBackground(JSON.stringify({
+        type: 'sendToBackground',
+        data,
+        randomMessageID,
+        sender: {
+          frameId: window.location.href,
+          tab: {
+            id: window.location.href
+          }
         }
-      }
-    }));
+      }));
+    }
   }
 
   // send a message to all content scripts
   function sendToForeground(data, randomMessageID) {
-    window.nativeJavascriptInterface.sendToForeground(JSON.stringify({
-      type: 'sendToForeground',
-      data,
-      randomMessageID,
-      sender: {
-        frameId: window.location.href,
-        tab: {
-          id: window.location.href
+    if (window.nativeJavascriptInterface) {
+      window.nativeJavascriptInterface.sendToForeground(JSON.stringify({
+        type: 'sendToForeground',
+        data,
+        randomMessageID,
+        sender: {
+          frameId: window.location.href,
+          tab: {
+            id: window.location.href
+          }
         }
-      }
-    }));
+      }));
+    }
   }
 
   const polyfillStorage = {

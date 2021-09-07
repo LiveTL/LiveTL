@@ -119,7 +119,12 @@ export function ytcSource(window) {
 
   /* Connect to background messaging as client */
   /** @type {Chat.Port} */
-  const port = chrome.runtime.connect();
+  let port;
+  try {
+    port = chrome.runtime.connect();
+  } catch {
+    return { ytc, cleanUp: () => {}};
+  }
   let portRegistered = false;
   const registerClient = (frameInfo) => {
     port.postMessage({
