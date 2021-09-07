@@ -4,9 +4,9 @@
 
   type Rule = {
     /** Callback function to assert input value. */
-    assert: (value: string) => boolean,
+    assert: (value: string) => boolean;
     /** Error message to show when assertion fails. */
-    error: string
+    error: string;
   };
 
   /** Input value. */
@@ -42,7 +42,7 @@
   $: classes = 'relative text-gray-600 dark:text-gray-100 ' +
     `${dense ? 'my-1' : 'my-2'} ${$$props.class ? $$props.class : ''}`;
   $: inputClasses = 'px-4 rounded-t text-black dark:text-gray-100 w-full ' +
-    `${dense ? 'pb-1 pt-4' : 'pb-2 pt-6'}`;
+    `text-base ${dense ? 'pb-1 pt-4' : 'pb-2 pt-6'}`;
 
   $: checkRule(value);
 </script>

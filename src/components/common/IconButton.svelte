@@ -13,7 +13,7 @@
     if (!noRound) c += ' rounded-full';
     if (!noPadding) c += ' p-2';
 
-    return c + ' ' + ($$props.class ? $$props.class : '');
+    return `${c} ${$$props.class ? $$props.class : ''}`;
   };
   $: add = getAdd(noRound, noPadding);
 </script>

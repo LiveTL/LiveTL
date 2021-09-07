@@ -8617,10 +8617,10 @@ slice-ansi@^4.0.0:
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
 
-smelte@^1.1.6:
-  version "1.1.6"
-  resolved "https://registry.yarnpkg.com/smelte/-/smelte-1.1.6.tgz#8da6aadd77303e3e78b908fc792e59d39c1df6b8"
-  integrity sha512-6WXc66UFZ5mff6VfxIAYNa3+cHOQPRev8RUkhTru3Mc/BS7k/6Yf/9dbuWfdHXm8heUNSd2DMg2+j6zasdfONQ==
+smelte@^1.1.8:
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/smelte/-/smelte-1.1.8.tgz#2e5286e880e8924e773014c15872875c1f31c4e8"
+  integrity sha512-lSr2rgzMu+h65dua8spu8Tb2hBQefhk5H7Cbuzs/9rdxNcoBNLaeWWdrgbc779x10002PVR2rP8G9tFO1Q3hbA==
   dependencies:
     autoprefixer "^9.8.6"
     merge-deep "^3.0.3"

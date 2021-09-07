@@ -60,13 +60,12 @@
     $sessionHidden = [...$sessionHidden, item.messageId];
   };
 
-  $: document.body.style.fontSize = Math.round($livetlFontSize) + 'px';
   $: if (!isSelecting) selectedItems = [];
   $: classes = `w-full flex max-h-full ${direction === TextDirection.TOP ? 'self-start flex-col-reverse' : 'self-end flex-col'}`;
 </script>
 
 <MessageDisplayWrapper>
-  <div class={classes}>
+  <div class={classes} style="font-size: {Math.round($livetlFontSize)}px;">
     {#if !hideIntro}
       <IntroMessage />
     {/if}

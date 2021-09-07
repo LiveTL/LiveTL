@@ -1,13 +1,15 @@
 <script lang="ts">
-  import type { ListItemBase } from 'smelte/src/components/List/ListItem';
   import { tick } from 'svelte';
   import { fade } from 'svelte/transition';
   import Menu from 'smelte/src/components/Menu';
   import List from 'smelte/src/components/List';
+  import Icon from './Icon.svelte';
 
-  type MenuItem = ListItemBase & {
+  type MenuItem = {
+    icon: string;
+    value: string;
+    text: string;
     onClick?: () => void;
-    selected?: boolean;
   };
 
   export let items: MenuItem[];
@@ -18,11 +20,11 @@
   let listDiv: HTMLElement | undefined;
   let windowInnerHeight = 0;
   let windowInnerWidth = 0;
-  let offset = '';
+  let offsetX = '';
+  let offsetYStyle = '';
 
-  const onListChange = (e: CustomEvent<string>) => {
+  const onItemClick = (item: MenuItem): void => {
     open = false;
-    const item = items.find((i) => i.value === e.detail);
     if (!item || !item.onClick) return;
 
     item.onClick();
@@ -37,13 +39,12 @@
       return;
     }
 
-    let offsetY: string;
-    let offsetX: string;
     const activatorRect = activator.getBoundingClientRect();
+    const offsetY = activator.clientHeight + 5;
     if (activatorRect.bottom + listDiv.clientHeight > windowInnerHeight) {
-      offsetY = 'bottom-7';
+      offsetYStyle = `bottom: ${offsetY}px;`;
     } else {
-      offsetY = 'top-7';
+      offsetYStyle = `top: ${offsetY}px;`;
     }
 
     if (activatorRect.right + listDiv.clientWidth > windowInnerWidth) {
@@ -51,15 +52,16 @@
     } else {
       offsetX = 'left-0';
     }
-
-    offset = `${offsetY} ${offsetX}`;
   };
 
   $: onOpenChange(open);
   $: classes = (open || visible ? 'visible' : 'invisible') + ' ' +
     ($$props.class ? $$props.class : '');
-  $: listClasses = 'absolute bg-white rounded shadow z-20 dark:bg-dark-500 ' +
-    `max-w-xs w-max ${offset}`;
+  $: menuClasses = 'absolute bg-white rounded shadow z-20 dark:bg-dark-500 ' +
+    `w-max ${offsetX}`;
+  const listItemClasses = 'focus:bg-gray-50 dark-focus:bg-gray-700 ' +
+  'hover:bg-gray-transDark relative overflow-hidden duration-100 ' +
+  'cursor-pointer text-gray-700 dark:text-gray-100 flex items-center z-10';
 </script>
 
 <svelte:window
@@ -68,7 +70,7 @@
 />
 
 <div class={classes}>
-  <Menu {items} bind:open>
+  <Menu bind:open>
     <div
       on:click={() => (open = !open)}
       slot="activator"
@@ -76,21 +78,35 @@
     >
       <slot name="activator" />
     </div>
-    <div slot="menu">
+    <svelte:fragment slot="menu">
       {#if open}
         <div
-          class={listClasses}
-          transition:fade={{ duration: 200 }}
+          class={menuClasses}
+          transition:fade={{ duration: 150 }}
           bind:this={listDiv}
+          style="max-width: 20em; {offsetYStyle}"
         >
           <List
             select
             dense
-            {items}
-            on:change={onListChange}
-          />
+          >
+            <svelte:fragment slot="items">
+              {#each items as item}
+                <li
+                  class={listItemClasses}
+                  on:click={() => onItemClick(item)}
+                  style="padding: 0.5em 1em 0.5em 1em"
+                >
+                  <Icon class="pr-6">
+                    {item.icon}
+                  </Icon>
+                  <span>{item.text}</span>
+                </li>
+              {/each}
+            </svelte:fragment>
+          </List>
         </div>
       {/if}
-    </div>
+    </svelte:fragment>
   </Menu>
 </div>

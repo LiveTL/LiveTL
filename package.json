@@ -91,7 +91,7 @@
     "postcss-input-range": "^4.0.0",
     "postcss-url": "^10.1.3",
     "reconnecting-eventsource": "^1.1.0",
-    "smelte": "^1.1.6",
+    "smelte": "^1.1.8",
     "ssri": "^8.0.1",
     "svelte-materialify": "0.3.6",
     "tailwindcss-elevation": "^1.0.1",

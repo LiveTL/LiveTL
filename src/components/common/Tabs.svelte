@@ -17,14 +17,12 @@
   $: tabButtonClasses = 'duration-75 relative overflow-hidden ' +
       'text-center p-2 cursor-pointer flex mx-auto items-center text-sm ' +
       `${buttonFullWidth ? 'w-full' : 'w-24 flex-shrink-0 flex-auto'}`;
-  // Note: Can't do anything about the TS error below, upstream problem.
 </script>
 
-<div>
+<div class="text-base">
   <Tabs
     {selected}
     let:selected={tabSelected}
-    let:item
     {items}
     {classes}
     indicator={false}
@@ -33,6 +31,7 @@
       slot="item"
       classes={tabButtonClasses}
       bind:selected
+      let:item
       {...item}
     >
       {item.text}

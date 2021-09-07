@@ -125,7 +125,7 @@
   >
     {#if isFullPage}
       <div
-        class="resizable relative"
+        class="resizable relative z-30"
         style={videoContainerStyle}
         bind:this={vidElem}
       >

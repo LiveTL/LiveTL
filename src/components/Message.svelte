@@ -65,8 +65,7 @@
   $: timestamp = showTimestamp ? `(${message.timestamp})` : '';
   $: nameColorClass = generateNameColorClass(moderator, owner);
   $: deletedClass = deleted ? 'text-deleted-light dark:text-deleted-dark italic' : '';
-  $: classes = 'flex flex-row m-1 rounded bg-gray-800 ' +
-    'text-base items-center ' +
+  $: classes = 'flex flex-row m-1 rounded bg-gray-800 items-center ' +
     `${screenshot ? 'animate-none p-1' : 'py-2'}`;
 </script>
 
@@ -77,6 +76,7 @@
     on:focus={() => (focused = true)}
     on:mouseout={() => (focused = false)}
     on:blur={() => (focused = false)}
+    style="font-size: 1em;"
   >
     <div class="flex-none">
       <!-- For screenshot checkmark -->
@@ -102,7 +102,7 @@
         {/each}
       </span>
       <!-- Author & timestamp -->
-      <span class="text-sm text-gray-700 dark:text-gray-400">
+      <span class="text-gray-700 dark:text-gray-400" style="font-size: 0.75em;">
         <span class="{nameColorClass} inline-block align-middle">{message.author}</span>
         {#if mchad}
           <span class="bg-gray-700 px-1 rounded inline-flex gap-1 items-center dark:text-gray-300 align-middle">
@@ -116,7 +116,7 @@
     <!-- Menu -->
     {#if !screenshot && !isSelecting}
       <Menu items={menuItems} visible={focused} class="mr-2">
-        <Icon slot="activator">more_vert</Icon>
+        <Icon slot="activator" style="font-size: 1.25em;">more_vert</Icon>
       </Menu>
     {/if}
   </div>
