@@ -34,20 +34,21 @@
   const { version } = window.chrome.runtime.getManifest();
 </script>
 
-<div class="rounded bg-gray-900 text-base px-2 py-1 m-1 flex flex-col gap-1">
+<div class="rounded bg-gray-900 px-2 py-1 m-1 flex flex-col gap-1">
   {#if $textDirection === TextDirection.BOTTOM}
     <Minimizer />
   {/if}
   {#if !$welcomeDismissed}
-    <h5>Welcome to LiveTL!</h5>
+    <h5 style="font-size: 1.5em;">Welcome to LiveTL!</h5>
   {/if}
-  <h6>Translations picked up from the chat will appear here.</h6>
+  <h6 style="font-size: 1em;">Translations picked up from the chat will appear here.</h6>
   {#if !$welcomeDismissed}
     <div>
       <a
-        class="text-sm text-blue-400 underline"
+        class="text-blue-400 underline"
         href="https://livetl.app/"
         target="about:blank"
+        style="font-size: 0.875em;"
         on:click={(e) => {
           e.preventDefault();
           updatePopupActive.set(true);
@@ -59,7 +60,7 @@
     <div class="flex flex-wrap gap-1 py-2">
       {#each badges as { name, src, href }}
         <a {href}>
-          <img alt={name} {src} />
+          <img alt={name} {src} style="height: 1.1em;" />
         </a>
       {/each}
     </div>
