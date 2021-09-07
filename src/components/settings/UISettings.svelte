@@ -33,8 +33,6 @@
   import Dropdown from '../common/DropdownStore.svelte';
 
   let div: HTMLElement;
-
-  // FIXME: font size slider doesn't change font size
 </script>
 
 <div bind:this={div}>
