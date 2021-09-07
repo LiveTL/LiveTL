@@ -2,7 +2,12 @@
   // chrome api polyfill, injected into both
   // the background script as well as
   // all windows (including subframes)
-  if (window.chrome) return;
+  const LIVETL_ANDROID = 'livetl_android';
+  if (
+    window.chrome &&
+    window.chrome.runtime &&
+    window.chrome.runtime.id == LIVETL_ANDROID
+  ) return;
   const MANIFEST_OBJECT = undefined;
 
   // native js interface injected in all windows and subframes
@@ -76,7 +81,7 @@
   // chrome api polyfill injected in all windows and subframes
   window.chrome = {
     runtime: {
-      id: 'livetl_android',
+      id: LIVETL_ANDROID,
       getURL: path => `https://__local_android_asset_baseurl__/${path}`, // replacement for chrome-extension urls
       getManifest: () => MANIFEST_OBJECT, // can also do a request to an asset
       sendMessage,
