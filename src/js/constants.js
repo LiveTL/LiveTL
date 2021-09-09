@@ -25,7 +25,13 @@ export const TextDirection = {
 export const DisplayMode = {
   POPOUT: 'POPOUT',
   EMBEDDED: 'EMBEDDED',
-  FULLPAGE: 'FULLPAGE'
+  FULLPAGE: 'FULL PAGE'
+};
+
+/** @enum {String} */
+export const AutoLaunchMode = {
+  NONE: 'NONE',
+  ...DisplayMode
 };
 
 // Js enum omegalul

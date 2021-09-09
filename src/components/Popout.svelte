@@ -58,7 +58,7 @@
   let selectedItemCount = 0;
 
   function selectAllItems() {
-    selectedItems = [...displayedMessages];
+    selectedItems = [...$displayedMessages];
   }
 
   let selectOperation = () => {};

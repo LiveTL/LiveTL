@@ -11,7 +11,6 @@
     player.src = `https://www.youtube.com/error?video=${videoId}`;
     window.addEventListener('message', e => {
       suppress(() =>{
-        console.log(e.data);
         if (e.data.type === 'marine-easter-egg') {
           faviconURL.set('/img/blfavicon.ico');
         } else if (e.data.type === 'video-embed-loaded') {
