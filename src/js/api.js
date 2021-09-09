@@ -5,6 +5,7 @@ import { APITranslation, Message, ScriptMessage } from './types.js';
 import { AuthorType, paramsIsVOD } from './constants.js';
 import { formatTimestampMillis, sortBy, toJson } from './utils.js';
 import { enableAPITLs, timestamp } from './store.js';
+import { player } from './polyfills/player.js';
 import ReconnectingEventSource from 'reconnecting-eventsource';
 
 export const sseToStream = link => readable(null, set => {
@@ -97,8 +98,11 @@ export const getArchive = videoId => readable(null, async set => {
 });
 
 /** @type {(videoId: String) => Readable<Message>} */
-export const getLiveTranslations = videoId => derived(sseToStream(apiLiveLink(videoId)), $data => {
+export const getLiveTranslations = videoId => derived(sseToStream(apiLiveLink(videoId)), async $data => {
   if ($data?.VideoId !== videoId || !enableAPITLs.get()) return;
-  if ($data?.Start / 1000 < window.player.getDuration() - 10) return; // if the timestamp of the translation is more than 10 seconds of the timestamp of the player, ignore it
+
+  const duration = await player.getDuration();
+  if ($data?.Start / 1000 < duration - 10) return; // if the timestamp of the translation is more than 10 seconds of the timestamp of the player, ignore it
+
   return transformApiTl($data);
 });
