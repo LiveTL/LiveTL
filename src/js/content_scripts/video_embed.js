@@ -1,5 +1,5 @@
 import YouTubeIframeLoader from 'youtube-iframe';
-import { suppress } from '../utils.js';
+import { clamp, suppress } from '../utils.js';
 
 const params = new URLSearchParams(window.location.search);
 const video = params.get('video');
@@ -36,5 +36,32 @@ if (video) {
   });
   window.addEventListener('message', event => {
     window.parent.postMessage(event.data, '*');
+
+    const player = window.player;
+    if (event?.data?.type === 'shortcut-action') {
+      switch (event?.data?.action) {
+      case 'volumeUp':
+        player.setVolume(clamp(player.getVolume() + 10, 0, 100));
+        break;
+      case 'volumeDown':
+        player.setVolume(clamp(player.getVolume() - 10, 0, 100));
+        break;
+      case 'fullScreen':
+        // TODO
+        break;
+      case 'mute':
+        player.mute();
+        break;
+      case 'togglePlayPause':
+        {
+          const paused = player.getPlayerState() == 2;
+          paused ? player.playVideo() : player.pauseVideo();
+        }
+        break;
+      default:
+        console.debug('Got unknown shortcut action', action);
+        break;
+      }
+    }
   });
 }

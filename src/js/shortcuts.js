@@ -1,6 +1,8 @@
+'use strict';
+
 import { defaultShortcuts, keyboardShortcuts } from './store.js';
 import { clamp } from './utils.js';
-import derived from 'svelte/store';
+import { derived } from 'svelte/store';
 
 export const shortcutMap = derived(keyboardShortcuts, $shorts => {
   const reverseKeyAction = ([key, action]) => [action, key];
@@ -13,25 +15,10 @@ export const shortcutMap = derived(keyboardShortcuts, $shorts => {
   return new Map([...existingShortcuts, ...newShortcuts]);
 });
 
-export const actionMap = new Map([
-  ['volumeUp', player => {
-    player.setVolume(clamp(player.getVolume() + 10, 0, 100));
-  }],
-  ['volumeDown', player => {
-    player.setVolume(clamp(player.getVolume() - 10, 0, 100));
-  }],
-  ['fullScreen', player => {
-    // TODO
-  }],
-  ['mute', player => {
-    player.mute();
-  }],
-  ['togglePlayPause', player => {
-    const paused = player.getPlayerState() == 2;
-    paused ? player.playVideo() : player.pauseVideo();
-  }]
-]);
+export const executeAction = action =>
+  document.querySelector('iframe[title=video]')?.contentWindow?.postMessage({
+    type: 'shortcut-action',
+    action
+  });
 
-export const executeAction = (key, player) => actionMap.has(key)
-  ? actionMap.get(key)(player)
-  : undefined;
+window.executeAction = executeAction;
