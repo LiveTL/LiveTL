@@ -38,11 +38,13 @@ if (video) {
     window.parent.postMessage(event?.data, '*');
     switch (event?.data?.type) {
     case 'yt-player-function-call':
+    {
       const { fn, args } = event.data;
-      const result = window.player[fn](...args);
+      const result = JSON.parse(JSON.stringify(window.player[fn](...args)));
       window.parent.postMessage({
         type: 'yt-player-function-return', result
-      });
+      }, '*');
+    }
     }
   });
 }

@@ -12,7 +12,10 @@ export const player = new Proxy({}, { get(_target, fn, _receiver) {
 
     const unsub = windowMessage.subscribe(e => {
       if (e?.data?.type !== 'yt-player-function-return') return;
-      unsub();
+      // unsub may not be declared yet
+      setTimeout(() => {
+        unsub();
+      });
       res(e.data.result);
     });
 
