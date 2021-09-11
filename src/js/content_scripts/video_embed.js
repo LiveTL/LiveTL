@@ -49,8 +49,8 @@ if (video) {
       case 'fullScreen':
         // TODO
         break;
-      case 'mute':
-        player.mute();
+      case 'toggleMute':
+        player.isMuted() ? player.unMute() : player.mute();
         break;
       case 'togglePlayPause':
         {
