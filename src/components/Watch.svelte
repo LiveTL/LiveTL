@@ -24,6 +24,7 @@
     paramsIsVOD,
     DisplayMode
   } from '../js/constants.js';
+  import { onKeyEvent } from '../js/shortcuts.js';
   import ChatEmbed from './ChatEmbed.svelte';
   import Popout from './Popout.svelte';
   import Captions from './Captions.svelte';
@@ -105,6 +106,8 @@
   $: chatElemParentStyle = isRightSide ? 'width: calc(100% - 10px);' : '';
   $: chatWrapperStyle = `padding-${isChatVertical ? 'right' : 'bottom'}: 10px;`;
 </script>
+
+<svelte:window on:keydown={onKeyEvent} />
 
 <div class="watch-wrapper">
   <MaterialApp theme="dark">

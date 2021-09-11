@@ -59,7 +59,7 @@ if (video) {
         }
         break;
       default:
-        console.debug('Got unknown shortcut action', action);
+        console.debug('Got unknown shortcut action', event?.data?.action);
         break;
       }
     }
