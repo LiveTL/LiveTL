@@ -22,13 +22,13 @@ const executePostMessageAction = action =>
     action
   }, '*');
 
+const focussedOnInput = () => document.activeElement.tagName !== 'BODY';
+
 export const executeAction = action => action == 'fullScreen'
   ? toggleFullScreen()
   : executePostMessageAction(action);
 
 export const onKeyEvent = e => {
-  if (!get(shortcutMap).has(e?.key)) return;
+  if (focussedOnInput() || !get(shortcutMap).has(e?.key)) return;
   executeAction(get(shortcutMap).get(e?.key));
 };
-
-window.executeAction = executeAction;
