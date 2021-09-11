@@ -1,8 +1,8 @@
 name: Check formatting
 on:
-  release:
-    types:
-      - released
+  push:
+    branches-ignore:
+      - smelte
 jobs:
   build:
     runs-on: ubuntu-latest
