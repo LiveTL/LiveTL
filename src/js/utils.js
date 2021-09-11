@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import { UnixTransformer } from './types.js';
+import { isAndroid } from './constants.js';
 
 export const compose = (...args) =>
   ipt => args.reduceRight((val, func) => func(val), ipt);
@@ -69,3 +70,34 @@ export const transformOpt = str =>
   capitalize(str
     .trim()
     .toLowerCase());
+
+
+export const toggleFullScreen = () => {
+  if (isAndroid) {
+    // @ts-ignore
+    window.nativeJavascriptInterface.toggleFullscreen();
+    return;
+  }
+  if (
+    (document.fullScreenElement && document.fullScreenElement !== null) ||
+    (!document.mozFullScreen && !document.webkitIsFullScreen)
+  ) {
+    if (document.documentElement.requestFullScreen) {
+      document.documentElement.requestFullScreen();
+    } else if (document.documentElement.mozRequestFullScreen) {
+      document.documentElement.mozRequestFullScreen();
+    } else if (document.documentElement.webkitRequestFullScreen) {
+      document.documentElement.webkitRequestFullScreen(
+        Element.ALLOW_KEYBOARD_INPUT
+      );
+    }
+  } else {
+    if (document.cancelFullScreen) {
+      document.cancelFullScreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.webkitCancelFullScreen) {
+      document.webkitCancelFullScreen();
+    }
+  }
+};

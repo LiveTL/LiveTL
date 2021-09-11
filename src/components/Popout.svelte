@@ -4,6 +4,7 @@
   import { Button, Icon, MaterialApp, TextField, Tooltip } from 'svelte-materialify/src';
   import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload, mdiFullscreen } from '@mdi/js';
   import { mdiAccountVoiceOff } from '../js/svg.js';
+  import { toggleFullScreen } from '../js/utils.js';
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
   import { TextDirection, paramsVideoTitle, isAndroid } from '../js/constants.js';
@@ -104,37 +105,6 @@
   $: renderWidthInt = parseInt(renderWidth);
   $: if(screenshotRenderWidth) {
     screenshotRenderWidth.set(renderWidthInt);
-  }
-
-
-  function toggleFullScreen() {
-    if (isAndroid) { 
-      // @ts-ignore
-      window.nativeJavascriptInterface.toggleFullscreen();
-      return;
-    }
-    if (
-      (document.fullScreenElement && document.fullScreenElement !== null) ||
-      (!document.mozFullScreen && !document.webkitIsFullScreen)
-    ) {
-      if (document.documentElement.requestFullScreen) {
-        document.documentElement.requestFullScreen();
-      } else if (document.documentElement.mozRequestFullScreen) {
-        document.documentElement.mozRequestFullScreen();
-      } else if (document.documentElement.webkitRequestFullScreen) {
-        document.documentElement.webkitRequestFullScreen(
-          Element.ALLOW_KEYBOARD_INPUT
-        );
-      }
-    } else {
-      if (document.cancelFullScreen) {
-        document.cancelFullScreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.webkitCancelFullScreen) {
-        document.webkitCancelFullScreen();
-      }
-    }
   }
 </script>
 

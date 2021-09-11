@@ -47,7 +47,7 @@ if (video) {
         player.setVolume(clamp(player.getVolume() - 10, 0, 100));
         break;
       case 'fullScreen':
-        // TODO
+        console.debug('Got request for fullscreen, fullscreen must be done in main frame');
         break;
       case 'toggleMute':
         player.isMuted() ? player.unMute() : player.mute();
