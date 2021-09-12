@@ -10,7 +10,6 @@
   import ScreenshotExport from './ScreenshotExport.svelte';
   import Updates from './Updates.svelte';
   import { displayedMessages } from '../js/sources-aggregate.js';
-  import { saveAs } from 'file-saver';
   import dark from 'smelte/src/dark';
   import Button from './common/IconButton.svelte';
   import TextField from './common/TextField.svelte';
@@ -81,7 +80,7 @@
     selectOperation = () => {};
   }
 
-  function saveDownload() {
+  async function saveDownload() {
     const toSave = getSelectedItems().map(
       d => `${d.author} (${d.timestamp}): ${d.text}`
     );
@@ -96,6 +95,7 @@
         ], {
           type: 'text/plain;charset=utf-8'
         });
+        const { default: saveAs } = await import('file-saver');
         saveAs(blob, textFilename);
       }
     }
@@ -289,9 +289,7 @@
           color="dark"
           filled
         />
-        <span
-          >{settingsOpen ? 'Close settings' : 'Open settings'}</span
-        >
+        <span>{settingsOpen ? 'Close settings' : 'Open settings'}</span>
       </Tooltip>
     {/if}
   </div>

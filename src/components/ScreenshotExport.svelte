@@ -1,7 +1,5 @@
 <script>
   import { tick } from 'svelte';
-  import html2canvas from 'html2canvas';
-  window.html2canvas = html2canvas;
   export let renderQueue = [];
   export let renderWidth;
   let renderElement = null;
@@ -16,6 +14,7 @@
     (async () => {
       rendering = true;
       await tick();
+      const { default: html2canvas } = await import('html2canvas');
       const canvas = await html2canvas(renderElement);
       const base64image = canvas.toDataURL('image/png');
       image = base64image;
@@ -50,11 +49,7 @@
 <Dialog bind:active={image} class="rounded-lg">
   <h5 slot="title">Screenshot</h5>
   <div class="max-h-96 overflow-y-scroll">
-    <img
-      class="max-w-full mb-3"
-      src={image}
-      alt="screenshot"
-    />
+    <img class="max-w-full mb-3" src={image} alt="screenshot" />
   </div>
   <p class="text-center text-sm">Right click the image to copy, save, etc.</p>
 </Dialog>
