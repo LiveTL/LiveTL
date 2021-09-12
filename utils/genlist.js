@@ -15,10 +15,23 @@ const keepAttrs = (...attrs) => obj => Object.fromEntries(Object.entries(obj)
 const jsonToArr = (...keys) => obj => keys
   .map(key => obj[key]);
 
-request('https://opencollective.com/livetl/members/all.json', { json: true }, (err, res, body) => {
+const req = request.defaults({
+  headers: { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:92.0) Gecko/20100101 Firefox/92.0' }
+});
+
+req('https://opencollective.com/livetl/members/all.json', { json: true }, (err, _res, body) => {
   if (err) return console.error(err);
   const keys = ['totalAmountDonated', 'profile', 'role', 'name'];
   fs.writeFileSync('./src/plugins/opencollective.json', JSON.stringify({
+    keys,
+    users: body.map(keepAttrs(...keys)).map(jsonToArr(...keys))
+  }));
+});
+
+req('https://api.github.com/repos/LiveTL/LiveTL/contributors', { json: true }, (err, _res, body) => {
+  if (err) return console.error(err);
+  const keys = ['login', 'type'];
+  fs.writeFileSync('./src/plugins/gh.json', JSON.stringify({
     keys,
     users: body.map(keepAttrs(...keys)).map(jsonToArr(...keys))
   }));

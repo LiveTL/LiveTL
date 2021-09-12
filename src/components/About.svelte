@@ -3,8 +3,11 @@
   import opencollective from '../plugins/opencollective.json';
   import gh from '../plugins/gh.json';
 
-  const reverse = ([x, y]) => [y, x];
-  const ocKeys = Object.fromEntries(Object.entries(opencollective.keys).map(reverse));
+  const genKeys = obj =>
+    Object.fromEntries(Object.entries(obj.keys).map(([x, y]) => [y, x]));
+  const ocKeys = genKeys(opencollective);
+  const ghKeys = genKeys(gh);
+
   const compareAttr = attr => (a, b) => a[attr] - b[attr];
   const reverseCompare = cmp => (a, b) => - cmp(a, b);
   const compareDono = reverseCompare(compareAttr(ocKeys.totalAmountDonated));
@@ -22,16 +25,20 @@
     .filter(user => user[ocKeys.role] === 'BACKER')
     .sort(compareDono);
 
-  $: developers = gh
-    .filter(dev => dev.type !== 'Bot');
+  $: developers = gh.users
+    .filter(dev => dev[ghKeys.type] !== 'Bot');
 </script>
 
 <ExpansionPanels multiple>
   <ExpansionPanel>
     <span slot="header">Developers and Contributors</span>
     <ul>
-      {#each developers as { login: name }}
-        <li><a href="https://github.com/{name}" target="_blank">{name}</a></li>
+      {#each developers as dev}
+        <li>
+          <a href="https://github.com/{dev[ghKeys.login]}" target="_blank">
+            {dev[ghKeys.login]}
+          </a>
+        </li>
       {/each}
     </ul>
   </ExpansionPanel>
