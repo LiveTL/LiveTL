@@ -3,9 +3,14 @@
   import gh from '../../plugins/gh.json';
   import ExpandingCard from '../common/ExpandingCard.svelte';
 
+  const genKeys = obj =>
+    Object.fromEntries(Object.entries(obj.keys).map(([x, y]) => [y, x]));
+  const ocKeys = genKeys(opencollective);
+  const ghKeys = genKeys(gh);
+
   const compareAttr = attr => (a, b) => a[attr] - b[attr];
-  const reverseCompare = cmp => (a, b) => -cmp(a, b);
-  const compareDono = reverseCompare(compareAttr('totalAmountDonated'));
+  const reverseCompare = cmp => (a, b) => - cmp(a, b);
+  const compareDono = reverseCompare(compareAttr(ocKeys.totalAmountDonated));
   const uniqueBy = attr => arr => {
     const vals = new Set();
     return arr.filter(v => {
@@ -14,26 +19,26 @@
       return true;
     });
   };
-  const uniqueUsers = uniqueBy('profile');
+  const uniqueUsers = uniqueBy(ocKeys.profile);
 
-  $: donators = uniqueUsers(opencollective)
-    .filter(user => user.role === 'BACKER')
+  $: donators = uniqueUsers(opencollective.users)
+    .filter(user => user[ocKeys.role] === 'BACKER')
     .sort(compareDono);
 
-  $: developers = gh
-    .filter(dev => dev.type !== 'Bot');
+  $: developers = gh.users
+    .filter(dev => dev[ghKeys.type] !== 'Bot');
 </script>
 
 <ExpandingCard title="Developers and Contributors" icon="group">
   <ul class="list-disc underline text-base p-2 list-inside">
-    {#each developers as { login: name }}
+    {#each developers as dev}
       <li>
         <a
-          href="https://github.com/{name}"
+          href="https://github.com/{dev[ghKeys.login]}"
           target="_blank"
           class="text-blue-400"
         >
-          {name}
+          {dev[ghKeys.login]}
         </a>
       </li>
     {/each}
@@ -49,16 +54,16 @@
       Please consider donating through Open Collective!
     </a>
     <ol class="list-decimal p-2 list-inside">
-      {#each donators as { name, totalAmountDonated, profile }}
+      {#each donators as dono}
         <li>
           <a
-            href={profile}
+            href={dono[ocKeys.profile]}
             target="_blank"
             class="text-blue-400 underline"
           >
-            {name}
+            {dono[ocKeys.name]}
           </a>
-          <span class="float-right">${totalAmountDonated}</span>
+          <span class="float-right">${dono[ocKeys.totalAmountDonated]}</span>
         </li>
       {/each}
     </ol>

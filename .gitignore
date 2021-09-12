@@ -8,5 +8,6 @@ package-lock.json
 *.swp
 *.log
 __pycache__/
+.eslintcache
 
 .DS_Store
