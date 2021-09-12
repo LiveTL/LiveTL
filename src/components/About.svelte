@@ -3,9 +3,11 @@
   import opencollective from '../plugins/opencollective.json';
   import gh from '../plugins/gh.json';
 
+  const reverse = ([x, y]) => [y, x];
+  const ocKeys = Object.fromEntries(Object.entries(opencollective.keys).map(reverse));
   const compareAttr = attr => (a, b) => a[attr] - b[attr];
-  const reverseCompare = cmp => (a, b) => -cmp(a, b);
-  const compareDono = reverseCompare(compareAttr('totalAmountDonated'));
+  const reverseCompare = cmp => (a, b) => - cmp(a, b);
+  const compareDono = reverseCompare(compareAttr(ocKeys.totalAmountDonated));
   const uniqueBy = attr => arr => {
     const vals = new Set();
     return arr.filter(v => {
@@ -14,10 +16,10 @@
       return true;
     });
   };
-  const uniqueUsers = uniqueBy('profile');
+  const uniqueUsers = uniqueBy(ocKeys.profile);
 
-  $: donators = uniqueUsers(opencollective)
-    .filter(user => user.role === 'BACKER')
+  $: donators = uniqueUsers(opencollective.users)
+    .filter(user => user[ocKeys.role] === 'BACKER')
     .sort(compareDono);
 
   $: developers = gh
@@ -41,10 +43,10 @@
       </a>
     </p>
     <ol>
-      {#each donators as { name, totalAmountDonated, profile }}
+      {#each donators as dono}
         <li>
-          <a href={profile} target="_blank">{name}</a>
-          <span class="float-right">${totalAmountDonated}</span>
+          <a href={dono[ocKeys.profile]} target="_blank">{dono[ocKeys.name]}</a>
+          <span class="float-right">${dono[ocKeys.totalAmountDonated]}</span>
         </li>
       {/each}
     </ol>
