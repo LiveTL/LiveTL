@@ -43,7 +43,8 @@ export const textDirectionMap = new Map([
 export const DisplayMode = {
   POPOUT: 'POPOUT',
   EMBEDDED: 'EMBEDDED',
-  FULLPAGE: 'FULL PAGE'
+  FULLPAGE: 'FULL PAGE',
+  HOLODEX: 'HOLODEX'
 };
 
 /** @enum {String} */
