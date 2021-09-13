@@ -36,7 +36,7 @@
   let wrapper;
   let messageDisplay;
   let isAtRecent = true;
-  let selectOperation;
+  let selectOperation = null;
 
   const updateWrapper = () => [
     wrapper.isAtBottom(),
@@ -71,8 +71,11 @@
 
   let isSelecting = false;
 
+  let exportFilenameInputComponent, exportActionButtonsComponent;
+
   async function toggleSelecting() {
-    if (!exportFilenameInputComponent) {
+    isSelecting = !isSelecting;
+    if (!exportFilenameInputComponent || !exportActionButtonsComponent) {
       exportFilenameInputComponent = (
         await import('./ExportFilenameInput.svelte')
       ).default;
@@ -80,16 +83,18 @@
         await import('./ExportActionButtons.svelte')
       ).default;
     }
-    isSelecting = !isSelecting;
   }
 
   let selectedItems = [];
+  let selectedItemCount = getSelectedItems().length;
 
   function getSelectedItems() {
     return selectedItems.filter((d) => !d.hidden);
   }
 
-  let exportFilenameInputComponent, exportActionButtonsComponent;
+  function selectAllItems() {
+    selectedItems = [...$displayedMessages];
+  }
 
   async function saveScreenshot() {
     renderQueue = getSelectedItems();
@@ -114,6 +119,14 @@
       }
     }
     toggleSelecting();
+  }
+
+  function selectOperationCallback() {
+    if (selectOperation === SelectOperation.SCREENSHOT) {
+      saveScreenshot();
+    } else if (selectOperation === SelectOperation.DOWNLOAD) {
+      saveDownload();
+    }
   }
 
   function toggleFullScreen() {
@@ -152,15 +165,6 @@
   <link rel="shortcut icon" href={$faviconURL} type="image/png" />
 </svelte:head>
 
-<div>
-  <svelte:component
-    this={exportFilenameInputComponent}
-    bind:renderQueue
-    bind:selectOperation
-    {videoTitle}
-  />
-</div>
-
 <Updates bind:active={$updatePopupActive} />
 <div
   class="flex flex-row gap-2 absolute right-0 p-1 z-20 flex-wrap"
@@ -169,11 +173,21 @@
   class:hidden={$isResizing}
 >
   {#if isSelecting}
-    <svelte:component this={exportFilenameInputComponent} />
+    <svelte:component
+      this={exportFilenameInputComponent}
+      {selectOperation}
+      {selectedItemCount}
+      videoTitle={$videoTitle}
+    />
   {/if}
   <div class="flex gap-2">
     {#if isSelecting}
-      <svelte:component this={exportActionButtonsComponent} />
+      <svelte:component
+        this={exportActionButtonsComponent}
+        on:run={selectOperationCallback}
+        on:cancel={toggleSelecting}
+        on:selectAllItems={selectAllItems}
+      />
     {/if}
     {#if !isSelecting}
       {#if !settingsOpen && $spotlightedTranslator}
