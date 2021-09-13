@@ -166,6 +166,13 @@
       }
     }
   }
+
+  let updateComponent;
+  $: if ($updatePopupActive && !updateComponent) {
+    import('./Updates.svelte').then((component) => {
+      updateComponent = component.default;
+    });
+  }
 </script>
 
 <svelte:window on:resize={updateWrapper} />
@@ -178,8 +185,8 @@
   bind:renderQueue
   renderWidth={$screenshotRenderWidth}
 />
+<svelte:component this={updateComponent} bind:active={$updatePopupActive} />
 
-<Updates bind:active={$updatePopupActive} />
 <div
   class="flex flex-row gap-2 absolute right-0 p-1 z-20 flex-wrap"
   class:bottom-0={$textDirection === TextDirection.TOP}
