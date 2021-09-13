@@ -13,7 +13,7 @@
     showCaption,
     chatSplit,
     displayMode,
-    isResizing
+    isResizing,
   } from '../js/store.js';
   import {
     paramsVideoId,
@@ -21,22 +21,29 @@
     ChatSplit,
     paramsContinuation,
     paramsIsVOD,
-    DisplayMode
+    DisplayMode,
   } from '../js/constants.js';
   import ChatEmbed from './ChatEmbed.svelte';
-  import Popout from './Popout.svelte';
+  import MainPane from './MainPane.svelte';
+  import Options from './Options.svelte';
   import Captions from './Captions.svelte';
 
   document.title = 'LiveTL';
   let chatElem, vidElem, ltlElem;
   const resizable = (selector, info) => {
-    j(typeof selector === 'string' ? document.querySelector(selector) : selector).resizable(info);
+    j(
+      typeof selector === 'string' ? document.querySelector(selector) : selector
+    ).resizable(info);
   };
   const convertPxAndPercent = () => {
     [
       [chatElem, isChatVertical ? 'width' : 'height', chatSize],
-      [isFullPage ? vidElem : null, isTopSide ? 'height' : 'width', videoPanelSize]
-    ].forEach(item => {
+      [
+        isFullPage ? vidElem : null,
+        isTopSide ? 'height' : 'width',
+        videoPanelSize,
+      ],
+    ].forEach((item) => {
       const [elem, prop, store] = item;
       if (!elem) return;
       if ($isResizing) {
@@ -63,27 +70,32 @@
     convertPxAndPercent();
   };
   const changeSide = () => {
-    document.querySelectorAll('#mainUI .ui-resizable-handle').forEach(elem => {
-      elem.remove();
-    });
-  
+    document
+      .querySelectorAll('#mainUI .ui-resizable-handle')
+      .forEach((elem) => {
+        elem.remove();
+      });
+
     resizable(isRightSide ? chatSideElem : vidElem, {
       handles: isTopSide ? 's' : 'e',
       start: resizeCallback,
       stop: resizeCallback,
       resize: (_, dataobj) => {
         if (isRightSide) {
-          $videoPanelSize = Math.min(100, Math.max(0, (1 - (dataobj.size.width / window.innerWidth)) * 100));
+          $videoPanelSize = Math.min(
+            100,
+            Math.max(0, (1 - dataobj.size.width / window.innerWidth) * 100)
+          );
         }
       },
-      containment: 'body'
+      containment: 'body',
     });
     resizable(chatElem, {
       handles: isChatVertical ? 'e' : 's',
       start: resizeCallback,
       stop: resizeCallback,
       resize: () => {},
-      containment: 'body'
+      containment: 'body',
     });
   };
   $: if ($videoSide || $chatSplit) {
@@ -103,13 +115,14 @@
   $: isFullPage = $displayMode === DisplayMode.FULLPAGE;
   $: isChatVertical = $chatSplit === ChatSplit.VERTICAL;
 
-  $: chatElemStyle = (
-    isChatVertical ? `width: ${$chatSize}%; min-width: ` : `height: ${$chatSize}%; min-height: `
-  ) + '10px;';
-  $: videoContainerStyle = (
-    (isTopSide ? 'height' : 'width') + `: ${$videoPanelSize}%; ` +
-    (isLeftSide ? 'min-width: 10px;' : (isTopSide ? 'min-height: 10px;' : ''))
-  );
+  $: chatElemStyle =
+    (isChatVertical
+      ? `width: ${$chatSize}%; min-width: `
+      : `height: ${$chatSize}%; min-height: `) + '10px;';
+  $: videoContainerStyle =
+    (isTopSide ? 'height' : 'width') +
+    `: ${$videoPanelSize}%; ` +
+    (isLeftSide ? 'min-width: 10px;' : isTopSide ? 'min-height: 10px;' : '');
   $: chatElemParentStyle = isRightSide ? 'width: calc(100% - 10px);' : '';
   $: chatWrapperStyle = `padding-${isChatVertical ? 'right' : 'bottom'}: 10px;`;
   $: flexDirection = getFlexDirection(isTopSide, isRightSide);
@@ -119,10 +132,7 @@
   {#if isFullPage && $showCaption}
     <Captions />
   {/if}
-  <div
-    id="mainUI"
-    class="flex w-full h-full {flexDirection}"
-  >
+  <div id="mainUI" class="flex w-full h-full {flexDirection}">
     {#if isFullPage}
       <div
         class="resizable relative z-30"
@@ -148,10 +158,7 @@
           style={chatElemStyle}
           bind:this={chatElem}
         >
-          <Wrapper
-            zoom={$chatZoom}
-            style={chatWrapperStyle}
-          >
+          <Wrapper zoom={$chatZoom} style={chatWrapperStyle}>
             <ChatEmbed
               videoId={paramsVideoId}
               continuation={paramsContinuation}
@@ -160,7 +167,9 @@
           </Wrapper>
         </div>
         <div class="relative flex-1" bind:this={ltlElem}>
-          <Popout />
+          <MainPane>
+            <Options slot="settings" />
+          </MainPane>
         </div>
       </div>
     </div>

@@ -25,6 +25,12 @@ export const ChatSplit = {
   VERTICAL: 'VERTICAL'
 };
 
+/** @enum {String} */
+export const SelectOperation = {
+  SCREENSHOT: 'SCREENSHOT',
+  DOWNLOAD: 'DOWNLOAD'
+};
+
 export const chatSplitMap = new Map([
   [ChatSplit.HORIZONTAL, 'Vertical'],
   [ChatSplit.VERTICAL, 'Horizontal']

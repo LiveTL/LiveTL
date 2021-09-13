@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { BROWSER, Browser, TextDirection } from '../js/constants.js';
-  import { updatePopupActive, textDirection, welcomeDismissed } from '../js/store.js';
+  import { BROWSER, Browser, TextDirection, DisplayMode } from '../js/constants.js';
+  import { updatePopupActive, textDirection, welcomeDismissed, displayMode } from '../js/store.js';
   import Minimizer from './Minimizer.svelte';
   import '../css/splash.css';
 
@@ -39,7 +39,11 @@
     <Minimizer />
   {/if}
   {#if !$welcomeDismissed}
-    <h5 style="font-size: 1.5em;">Welcome to LiveTL!</h5>
+    <h5 style="font-size: 1.5em;">
+      Welcome to LiveTL{#if $displayMode === DisplayMode.HOLODEX}
+        <span style="font-size: 0.75em;">&nbsp;<i>Lite</i></span>
+      {/if}!
+    </h5>
   {/if}
   <h6 style="font-size: 1em;">Translations picked up from the chat will appear here.</h6>
   {#if !$welcomeDismissed}

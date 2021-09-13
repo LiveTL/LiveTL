@@ -53,6 +53,7 @@ module.exports = (env, options) => {
       background: path.join(__dirname, 'src', 'js', 'pages', 'background.js'),
       watch: path.join(__dirname, 'src', 'js', 'pages', 'watch.js'),
       welcome: path.join(__dirname, 'src', 'js', 'pages', 'welcome.js'),
+      lite: path.join(__dirname, 'src', 'js', 'pages', 'lite.js'),
       translatormode: path.join(__dirname, 'src', 'js', 'pages', 'translatormode.js'),
       injector: path.join(__dirname, 'src', 'js', 'content_scripts', 'injector.js'),
       'chat-interceptor': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-interceptor.ts'),
@@ -262,6 +263,12 @@ module.exports = (env, options) => {
         template: path.join(__dirname, 'src', 'empty.html'),
         filename: 'welcome.html',
         chunks: ['welcome'],
+        chunksSortMode: 'manual'
+      }),
+      new HtmlWebpackPlugin({
+        template: path.join(__dirname, 'src', 'empty.html'),
+        filename: 'lite.html',
+        chunks: ['lite'],
         chunksSortMode: 'manual'
       }),
       new HtmlWebpackPlugin({
