@@ -14,17 +14,17 @@
   import Radio from './common/RadioGroupStore.svelte';
   import Card from './common/Card.svelte';
   import ReadAloud from './settings/ReadAloud.svelte';
+  import CommonFilterCards from './settings/CommonFilterCards.svelte';
 
   let div: HTMLElement;
 </script>
 
 <div class="bg-dark-700" bind:this={div}>
   <Card title="About LiveTL" icon="info">
-    <p class="m-4">
-      Insert description and links here.
-    </p>
+    <p class="m-4">Insert description and links here.</p>
   </Card>
   <ImportExport />
+  <CommonFilterCards {div} />
   <Card title="Font" icon="format_size">
     <Slider name="Chat zoom" store={chatZoom} min={0.5} max={2} step={0.1} />
     <Slider name="Font size" store={livetlFontSize} min={9} max={54} />
