@@ -20,6 +20,7 @@
     spotlightedTranslator,
     isResizing,
     displayMode,
+    screenshotRenderWidth,
   } from '../js/store.js';
   import MessageDisplay from './MessageDisplay.svelte';
   import Updates from './Updates.svelte';
@@ -31,6 +32,7 @@
 
   export let settingsOpen = false;
   videoTitle.set(paramsVideoTitle || $videoTitle);
+  $: textFilename = `${$videoTitle || 'LiveTL_Stream_Log'}.txt`;
   $: document.title = $videoTitle || 'LiveTL Popout';
 
   let wrapper;
@@ -71,10 +73,11 @@
 
   let isSelecting = false;
 
-  let exportFilenameInputComponent, exportActionButtonsComponent;
+  let exportFilenameInputComponent,
+    exportActionButtonsComponent,
+    screenshotExportComponent;
 
   async function toggleSelecting() {
-    isSelecting = !isSelecting;
     if (!exportFilenameInputComponent || !exportActionButtonsComponent) {
       exportFilenameInputComponent = (
         await import('./ExportFilenameInput.svelte')
@@ -83,10 +86,11 @@
         await import('./ExportActionButtons.svelte')
       ).default;
     }
+    isSelecting = !isSelecting;
   }
 
   let selectedItems = [];
-  let selectedItemCount = getSelectedItems().length;
+  $: selectedItemCount = getSelectedItems().length;
 
   function getSelectedItems() {
     return selectedItems.filter((d) => !d.hidden);
@@ -97,6 +101,10 @@
   }
 
   async function saveScreenshot() {
+    if (!screenshotExportComponent) {
+      screenshotExportComponent = (await import('./ScreenshotExport.svelte'))
+        .default;
+    }
     renderQueue = getSelectedItems();
     toggleSelecting();
   }
@@ -165,6 +173,12 @@
   <link rel="shortcut icon" href={$faviconURL} type="image/png" />
 </svelte:head>
 
+<svelte:component
+  this={screenshotExportComponent}
+  bind:renderQueue
+  renderWidth={$screenshotRenderWidth}
+/>
+
 <Updates bind:active={$updatePopupActive} />
 <div
   class="flex flex-row gap-2 absolute right-0 p-1 z-20 flex-wrap"
@@ -177,7 +191,7 @@
       this={exportFilenameInputComponent}
       {selectOperation}
       {selectedItemCount}
-      videoTitle={$videoTitle}
+      bind:textFilename
     />
   {/if}
   <div class="flex gap-2">

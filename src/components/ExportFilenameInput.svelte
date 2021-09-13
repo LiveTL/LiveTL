@@ -2,13 +2,11 @@
   import { screenshotRenderWidth } from '../js/store.js';
   import { SelectOperation } from '../js/constants.js';
   import TextField from './common/TextField.svelte';
-  export let videoTitle;
   export let selectedItemCount;
   export let selectOperation;
+  export let textFilename;
 
   let renderWidth = '500';
-  let textFilename = 'LiveTL_Stream_Log.txt';
-  $: textFilename = `${videoTitle}.txt`;
   let renderWidthInt = null;
   $: renderWidthInt = parseInt(renderWidth);
   $: if (screenshotRenderWidth) {
