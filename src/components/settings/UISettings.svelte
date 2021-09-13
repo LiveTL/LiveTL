@@ -83,7 +83,9 @@
       name="Show screenshot and download buttons"
       store={enableExportButtons}
     />
-    <Checkbox name="Show fullscreen button" store={enableFullscreenButton} />
+    {#if $displayMode !== DisplayMode.HOLODEX}
+      <Checkbox name="Show fullscreen button" store={enableFullscreenButton} />
+    {/if}
   </Card>
   {#if $displayMode === DisplayMode.FULLPAGE}
     <Card title="Captions" icon="subtitles">

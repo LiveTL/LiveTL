@@ -1,4 +1,4 @@
-import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour, DisplayMode, paramsEmbedded, AutoLaunchMode } from './constants.js';
+import { isHolodex, Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour, DisplayMode, paramsEmbedded, AutoLaunchMode } from './constants.js';
 import { getAllVoiceNames, getVoiceMap, compose } from './utils.js';
 import { LookupStore, SyncStore } from './storage.js';
 import { writable, readable, derived } from 'svelte/store';
@@ -131,6 +131,10 @@ export const timestamp = writable(0);
 export const faviconURL = writable('/48x48.png');
 export const availableMchadUsers = writable([]);
 export const spotlightedTranslator = writable(null);
-export const displayMode = writable(paramsEmbedded != null ? DisplayMode.EMBEDDED : DisplayMode.FULLPAGE);
+export const displayMode = writable(
+  isHolodex ? DisplayMode.HOLODEX : (
+    paramsEmbedded != null ? DisplayMode.EMBEDDED : DisplayMode.FULLPAGE
+  )
+);
 export const isResizing = writable(false);
 export const sessionHidden = writable([]);
