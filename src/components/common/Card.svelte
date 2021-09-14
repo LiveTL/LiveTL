@@ -15,7 +15,7 @@
 
 <div class="rounded bg-dark-600 ovevrflow-hidden my-3">
   <div
-    class="rounded-t p-2 flex flex-row items-center bg-dark-800 {addHeaderClasses}"
+    class="rounded-t p-2 flex flex-row items-center bg-dark-400 {addHeaderClasses}"
     on:click={headerOnClick}
   >
     <div class="flex-1 pl-2 flex gap-3 items-center">

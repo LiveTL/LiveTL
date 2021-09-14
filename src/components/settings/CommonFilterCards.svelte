@@ -13,15 +13,17 @@
   export let div: HTMLElement;
 </script>
 
-<Dropdown
-  name="Language filter"
-  store={language}
-  items={languageNameValues}
-  boundingDiv={div}
-/>
-<div class="mt-6">
-  <Checkbox name="Show moderator and owner messages" store={showModMessage} />
-</div>
+<Card title="Filters" icon="cloud" noGap>
+  <Dropdown
+    name="Language filter"
+    store={language}
+    items={languageNameValues}
+    boundingDiv={div}
+  />
+  <div class="mt-6">
+    <Checkbox name="Show moderator and owner messages" store={showModMessage} />
+  </div>
+</Card>
 <BlockedUsers boundingDiv={div} />
 <Card title="External translation sources" icon="cloud" noGap>
   <Checkbox name="LiveTL API" store={enableAPITLs} />

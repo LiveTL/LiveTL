@@ -15,6 +15,7 @@
   import Card from './common/Card.svelte';
   import ReadAloud from './settings/ReadAloud.svelte';
   import CommonFilterCards from './settings/CommonFilterCards.svelte';
+  import SpamProtection from './settings/SpamProtection.svelte';
 
   let div: HTMLElement;
 </script>
@@ -23,7 +24,14 @@
   <Card title="About LiveTL" icon="info">
     <p class="m-4">Insert description and links here.</p>
   </Card>
-  <ImportExport />
+  <Card title="General" icon="tune">
+    <ImportExport />
+    <Checkbox name="Show timestamps" store={showTimestamp} />
+    <Checkbox
+      name="Show screenshot and download buttons"
+      store={enableExportButtons}
+    />
+  </Card>
   <CommonFilterCards {div} />
   <Card title="Font" icon="format_size">
     <Slider name="Chat zoom" store={chatZoom} min={0.5} max={2} step={0.1} />
@@ -36,12 +44,12 @@
       <Radio store={textDirection} map={textDirectionMap} />
     </div>
   </Card>
-  <Card title="General" icon="tune">
-    <Checkbox name="Show timestamps" store={showTimestamp} />
-    <Checkbox
-      name="Show screenshot and download buttons"
-      store={enableExportButtons}
-    />
-  </Card>
   <ReadAloud boundingDiv={div} />
+  <SpamProtection boundingDiv={div} />
 </div>
+
+<style>
+  :global(body) {
+    font-size: 1rem;
+  }
+</style>
