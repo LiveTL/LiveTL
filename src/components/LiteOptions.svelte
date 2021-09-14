@@ -1,6 +1,5 @@
 <script lang="ts">
   import {
-    chatZoom,
     livetlFontSize,
     showTimestamp,
     textDirection,
@@ -13,6 +12,7 @@
   import Checkbox from './common/CheckboxStore.svelte';
   import Radio from './common/RadioGroupStore.svelte';
   import Card from './common/Card.svelte';
+  import ExpandingCard from './common/ExpandingCard.svelte';
   import ReadAloud from './settings/ReadAloud.svelte';
   import CommonFilterCards from './settings/CommonFilterCards.svelte';
   import SpamProtection from './settings/SpamProtection.svelte';
@@ -21,10 +21,22 @@
 </script>
 
 <div class="bg-dark-700" bind:this={div}>
-  <Card title="About LiveTL" icon="info">
-    <p class="m-4">Insert description and links here.</p>
-  </Card>
   <Card title="General" icon="tune">
+    <ExpandingCard title="About LiveTL" icon="info">
+      <p class="m-4">
+        LiveTL displays translations for streams and archives. <strong
+          >Translations are provided by volunteer translators, not machines.</strong
+        >
+        <br /><br />
+        Please consider installing the
+        <a
+          href="https://livetl.app/"
+          target="_blank"
+          class="text-blue-400 underline">LiveTL browser extension</a
+        > to access exclusive features like custom filters, floating captions, and
+        translator mode!
+      </p>
+    </ExpandingCard>
     <ImportExport />
     <Checkbox name="Show timestamps" store={showTimestamp} />
     <Checkbox
@@ -34,7 +46,6 @@
   </Card>
   <CommonFilterCards {div} />
   <Card title="Font" icon="format_size">
-    <Slider name="Chat zoom" store={chatZoom} min={0.5} max={2} step={0.1} />
     <Slider name="Font size" store={livetlFontSize} min={9} max={54} />
     <FontDemo fontSize={$livetlFontSize} />
   </Card>

@@ -10,14 +10,14 @@
           ? 1
           : 0
         : direction === TextDirection.TOP
-          ? 1
-          : 0
+        ? 1
+        : 0
     ];
   };
   $: icon = getIcon($welcomeDismissed, $textDirection);
 </script>
 
-<div>
+<div id="wrapper">
   <Button
     {icon}
     noRound
@@ -28,3 +28,9 @@
     iconClass="mx-auto text-lg"
   />
 </div>
+
+<style>
+  #wrapper :global(i) {
+    line-height: 0.5em;
+  }
+</style>
