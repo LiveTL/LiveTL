@@ -1,5 +1,5 @@
 import { compose } from './utils';
-import { derived, writable } from 'svelte/store';
+import { writable, readable } from 'svelte/store';
 import {
   parseTranslation,
   isWhitelisted as textWhitelisted,
@@ -95,7 +95,7 @@ function createThirdPartyStore() {
       if (event?.data?.type === 'third-party-set') {
         set(event.data.message);
       }
-    }
+    };
     window.addEventListener('message', cb);
     return () => window.removeEventListener(cb);
   });
@@ -136,7 +136,7 @@ export function ytcSource(window) {
   try {
     port = chrome.runtime.connect();
   } catch {
-    return { ytc, cleanUp: () => {}};
+    return { ytc, cleanUp: () => {} };
   }
   let portRegistered = false;
   const registerClient = (frameInfo) => {
@@ -148,6 +148,7 @@ export function ytcSource(window) {
     portRegistered = true;
   };
 
+  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
   if (paramsPopout && !portRegistered) {
     registerClient(
       {
@@ -158,6 +159,7 @@ export function ytcSource(window) {
   }
 
   window.addEventListener('message', (d) => {
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (!paramsPopout && d.data.type === 'frameInfo' && !portRegistered) {
       registerClient(d.data.frameInfo);
     }
