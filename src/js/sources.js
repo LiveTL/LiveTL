@@ -27,7 +27,7 @@ export const sources = {
   ytc: ytcSource(window).ytc,
   mchad: combineStores(MCHAD.getArchive(paramsVideoId), MCHAD.getLiveTranslations(paramsVideoId)).store,
   api: combineStores(API.getArchive(paramsVideoId), API.getLiveTranslations(paramsVideoId)).store,
-  thirdParty: writable(null),
+  thirdParty: createThirdPartyStore(),
   ytcBonks: writable(null),
   ytcDeletions: writable(null)
 };
@@ -87,6 +87,18 @@ export function combineStores(...stores) {
       unsubscribes.forEach(u => u());
     }
   };
+}
+
+function createThirdPartyStore() {
+  return readable(null, set => {
+    const cb = event => {
+      if (event?.data?.type === 'third-party-set') {
+        set(event.data.message);
+      }
+    }
+    window.addEventListener('message', cb);
+    return () => window.removeEventListener(cb);
+  });
 }
 
 /**
