@@ -19,6 +19,7 @@
     enableFullscreenButton,
     spotlightedTranslator,
     isResizing,
+    isSelecting,
     displayMode,
     screenshotRenderWidth,
   } from '../js/store.js';
@@ -71,8 +72,6 @@
 
   let renderQueue;
 
-  let isSelecting = false;
-
   let exportFilenameInputComponent,
     exportActionButtonsComponent,
     screenshotExportComponent;
@@ -86,7 +85,7 @@
         await import('./ExportActionButtons.svelte')
       ).default;
     }
-    isSelecting = !isSelecting;
+    $isSelecting = !$isSelecting;
   }
 
   let selectedItems = [];
@@ -193,7 +192,7 @@
   class:top-0={$textDirection === TextDirection.BOTTOM}
   class:hidden={$isResizing}
 >
-  {#if isSelecting}
+  {#if $isSelecting}
     <svelte:component
       this={exportFilenameInputComponent}
       {selectOperation}
@@ -202,7 +201,7 @@
     />
   {/if}
   <div class="flex gap-2">
-    {#if isSelecting}
+    {#if $isSelecting}
       <svelte:component
         this={exportActionButtonsComponent}
         on:run={selectOperationCallback}
@@ -210,7 +209,7 @@
         on:selectAllItems={selectAllItems}
       />
     {/if}
-    {#if !isSelecting}
+    {#if !$isSelecting}
       {#if !settingsOpen && $spotlightedTranslator}
         <!-- Un-spotlight translator button -->
         <Tooltip>
@@ -230,7 +229,7 @@
         <Tooltip>
           <Button
             slot="activator"
-            icon={isSelecting ? 'check' : 'photo_camera'}
+            icon={$isSelecting ? 'check' : 'photo_camera'}
             on:click={() => {
               toggleSelecting();
               selectOperation = SelectOperation.SCREENSHOT;
@@ -244,7 +243,7 @@
         <Tooltip>
           <Button
             slot="activator"
-            icon={isSelecting ? 'check' : 'download'}
+            icon={$isSelecting ? 'check' : 'download'}
             on:click={() => {
               toggleSelecting();
               selectOperation = SelectOperation.DOWNLOAD;
@@ -291,7 +290,6 @@
         direction={$textDirection}
         bind:this={messageDisplay}
         on:afterUpdate={onMessageDisplayAfterUpdate}
-        bind:isSelecting
         bind:selectedItems
         items={$displayedMessages}
       />

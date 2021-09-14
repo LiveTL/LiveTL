@@ -3,7 +3,7 @@
 <script lang="ts">
   import { AuthorType } from '../js/constants.js';
   import { createEventDispatcher } from 'svelte';
-  import { spotlightedTranslator } from '../js/store.js';
+  import { spotlightedTranslator, isSelecting } from '../js/store.js';
   import '../css/splash.css';
   import Icon from './common/Icon.svelte';
   import Menu from './common/Menu.svelte';
@@ -16,7 +16,6 @@
   export let screenshot = false;
   export let deleted = false;
   export let messageArray: Ytc.ParsedRun[] = [];
-  export let isSelecting = false;
   let focused = false;
 
   const dispatch = createEventDispatcher();
@@ -114,7 +113,7 @@
       </span>
     </div>
     <!-- Menu -->
-    {#if !screenshot && !isSelecting}
+    {#if !screenshot && !$isSelecting}
       <Menu items={menuItems} visible={focused} class="mr-2">
         <Icon slot="activator" style="font-size: 1.25em;">more_vert</Icon>
       </Menu>

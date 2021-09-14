@@ -9,18 +9,15 @@
     mchadUsers,
     showTimestamp,
     spotlightedTranslator,
-    sessionHidden
+    sessionHidden,
+    isSelecting,
   } from '../js/store.js';
-  import {
-    AuthorType,
-    TextDirection
-  } from '../js/constants.js';
+  import { AuthorType, TextDirection } from '../js/constants.js';
   import IntroMessage from './IntroMessage.svelte';
   import Checkbox from './common/Checkbox.svelte';
 
   export let direction: TextDirection;
   export let items: Ltl.Message[] = [];
-  export let isSelecting = false;
   export let selectedItems: Ltl.Message[] = [];
   export let hideIntro = false;
 
@@ -35,7 +32,7 @@
     bottomMsg.scrollIntoView({
       behavior: 'auto',
       block: 'nearest',
-      inline: 'nearest'
+      inline: 'nearest',
     });
   }
 
@@ -49,7 +46,7 @@
       channelFilters.set(item.authorId, {
         ...channelFilters.get(item.authorId),
         name: item.author,
-        blacklist: true
+        blacklist: true,
       });
     }
   };
@@ -60,8 +57,12 @@
     $sessionHidden = [...$sessionHidden, item.messageId];
   };
 
-  $: if (!isSelecting) selectedItems = [];
-  $: classes = `w-full flex max-h-full ${direction === TextDirection.TOP ? 'self-start flex-col-reverse' : 'self-end flex-col'}`;
+  $: if (!$isSelecting) selectedItems = [];
+  $: classes = `w-full flex max-h-full ${
+    direction === TextDirection.TOP
+      ? 'self-start flex-col-reverse'
+      : 'self-end flex-col'
+  }`;
 </script>
 
 <MessageDisplayWrapper>
@@ -78,13 +79,17 @@
         messageArray={item.messageArray}
         on:hide={hideMessage(item)}
         on:ban={banMessage(item)}
-        on:spotlight={e => spotlightedTranslator.set(
-          $spotlightedTranslator ? null : e.detail.authorId
-        )}
-        {isSelecting}
+        on:spotlight={(e) =>
+          spotlightedTranslator.set(
+            $spotlightedTranslator ? null : e.detail.authorId
+          )}
       >
-        {#if isSelecting}
-          <Checkbox bind:group={selectedItems} value={item} wrapperClass="inline-flex" />
+        {#if $isSelecting}
+          <Checkbox
+            bind:group={selectedItems}
+            value={item}
+            wrapperClass="inline-flex"
+          />
         {/if}
       </Message>
     {/each}
