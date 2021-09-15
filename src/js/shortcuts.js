@@ -8,12 +8,13 @@ import { derived, get } from 'svelte/store';
 export const shortcutMap = derived(keyboardShortcuts, $shorts => {
   const reverseKeyAction = ([action, key]) => [key, action];
 
-  const existingShortcuts = Object.entries($shorts).map(reverseKeyAction);
+  const savedShortcuts = Object.entries($shorts).map(reverseKeyAction);
+  // shortcuts that were added in update but aren't in storage yet
   const newShortcuts = Object.entries(defaultShortcuts)
     .filter(([_key, action]) => $shorts[action] == null)
     .map(reverseKeyAction);
 
-  return new Map([...existingShortcuts, ...newShortcuts]);
+  return new Map([...newShortcuts, ...savedShortcuts]);
 });
 
 const executePostMessageAction = action =>
