@@ -177,6 +177,10 @@
 </div>
 
 <style>
+  #mainUI {
+    position: absolute;
+    top: 0px;
+  }
   /* The following 2 blocks are workarounds for jquery ui jank */
   .watch-wrapper {
     margin: 20px 0px 0px 20px;

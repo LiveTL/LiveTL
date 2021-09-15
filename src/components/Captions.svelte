@@ -71,7 +71,7 @@
 </script>
 
 <div
-  class="captionsBox z-30 absolute cursor-move text-center"
+  class="captionsBox z-40 absolute cursor-move text-center"
   bind:this={captionElem}
   style="
   top: min(max({$captionTop}%, calc(0% - 20px)), calc(100% - 30px));
@@ -102,8 +102,7 @@
     animation: splash 1s normal forwards ease-in-out;
   }
   .captionsBox :global(.ui-resizable-handle) {
-    height: calc(100% - 40px);
-    margin-top: 20px;
+    height: 100%;
   }
   .captionsBox :global(.ui-resizable-e) {
     transform: translateX(-10px);
