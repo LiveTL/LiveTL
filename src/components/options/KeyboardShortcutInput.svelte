@@ -27,7 +27,7 @@
 <svelte:window on:keydown={recordShortcut} />
 
 {#if isRecording}
-  <span class="option-label">{recordedShortcut}</span>
+  <span class="option-label">{recordedShortcut || 'Press keys...'}</span>
 {:else}
   <Button on:click={() => [isRecording = true, recordedShortcut = '']}>
     {shortcut}
