@@ -1,5 +1,5 @@
 <script>
-  import { Button, Icon, Textarea } from 'svelte-materialify';
+  import { Button, Icon, Textarea } from 'svelte-materialify/src';
   import { mdiCheck, mdiClipboardOutline, mdiClose } from '@mdi/js';
   import { importStores, exportStores } from '../js/storage.js';
   import { compose } from '../js/utils.js';

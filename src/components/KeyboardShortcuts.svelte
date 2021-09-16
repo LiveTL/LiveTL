@@ -1,12 +1,10 @@
 <script>
-  import { Col, Row, Subheader, TextField } from 'svelte-materialify/src';
+  import { Col, Row, Subheader } from 'svelte-materialify/src';
+
   import { keyboardShortcuts } from '../js/store.js';
+  import KeyboardShortcutInput from './options/KeyboardShortcutInput.svelte';
 
   let timeout = null;
-
-  const rules = [
-    key => key.length >= 1 || 'Please input a key'
-  ];
 
   const toDisplayName = actionName => actionName
     .replace(/([A-Z])/g, ' $1')
@@ -17,7 +15,7 @@
     // delay changing shortcut
     timeout = setTimeout(() => {
       const shorts = {...$keyboardShortcuts};
-      shorts[action] = e.target.value;
+      shorts[action] = e.detail.shortcut;
       keyboardShortcuts.set(shorts);
     }, 1000);
   };
@@ -33,7 +31,7 @@
       <span class="option-label">{toDisplayName(action)}</span>
     </Col>
     <Col>
-      <TextField dense on:input={updateKey(action)} {rules} value={key} />
+      <KeyboardShortcutInput on:change={updateKey(action)} shortcut={key} />
     </Col>
   </Row>
 {/each}
