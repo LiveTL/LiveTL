@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import { UnixTransformer } from './types.js';
-import { isAndroid } from './constants.js';
+import { isAndroid, modifierKeys } from './constants.js';
 
 export const compose = (...args) =>
   ipt => args.reduceRight((val, func) => func(val), ipt);
@@ -71,6 +71,19 @@ export const transformOpt = str =>
     .trim()
     .toLowerCase());
 
+const toKeyName = key => {
+  if (!key) return '';
+  if (key == 'Enter') return '<Enter>';
+  if (key == ' ') return '<Space>';
+  return key;
+};
+
+export const keydownToShortcut = e => [
+  e?.shiftKey ? 'shift': '',
+  e?.ctrlKey ? 'ctrl': '',
+  e?.altKey ? 'alt': '',
+  !modifierKeys.has(e?.key) ? toKeyName(e?.key) : ''
+].filter(Boolean).join(' + ');
 
 export const toggleFullScreen = () => {
   if (isAndroid) {

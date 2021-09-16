@@ -1,6 +1,6 @@
 'use strict';
 
-import { toggleFullScreen  } from './utils.js';
+import { keydownToShortcut, toggleFullScreen  } from './utils.js';
 import { defaultShortcuts, keyboardShortcuts } from './store.js';
 import { derived, get } from 'svelte/store';
 
@@ -30,6 +30,8 @@ export const executeAction = action => action == 'fullScreen'
   : executePostMessageAction(action);
 
 export const onKeyEvent = e => {
-  if (focussedOnInput() || !get(shortcutMap).has(e?.key)) return;
-  executeAction(get(shortcutMap).get(e?.key));
+  const keys = keydownToShortcut(e);
+  if (focussedOnInput() || !get(shortcutMap).has(keys)) return;
+  e.preventDefault();
+  executeAction(get(shortcutMap).get(keys));
 };
