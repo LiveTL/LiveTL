@@ -1,17 +1,17 @@
 <script>
   import { beforeUpdate, afterUpdate } from 'svelte';
   import { Icon, Tabs, Tab, TabContent, Tooltip, MaterialApp } from 'svelte-materialify/src';
-  import { mdiBrush, mdiChat, mdiFilter, mdiHelp } from '@mdi/js';
+  import { mdiBrush, mdiChat, mdiFilter, mdiKeyboard, mdiHelp } from '@mdi/js';
   import UISettings from './settings/UISettings.svelte';
   import FilterSettings from './settings/FilterSettings.svelte';
-  import TranslatorMode from './settings/TranslatorMode.svelte';
+  import KeyboardShortcuts from './KeyboardShortcuts.svelte';
   import About from './About.svelte';
   import { isResizing } from '../js/store.js';
 
   const settings = [
     { name: 'Interface', component: UISettings, icon: mdiBrush },
     { name: 'Filters', component: FilterSettings, icon: mdiFilter },
-    { name: 'Chat', component: TranslatorMode, icon: mdiChat },
+    { name: 'Keyboard Shortcuts', component: KeyboardShortcuts, icon: mdiKeyboard },
     { name: 'About', component: About, icon: mdiHelp },
   ];
 

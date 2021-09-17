@@ -24,7 +24,6 @@
   import FontDemo from '../FontDemo.svelte';
   import ImportExport from '../ImportExport.svelte';
   import ReadAloud from '../options/ReadAloud.svelte';
-  import KeyboardShortcuts from '../KeyboardShortcuts.svelte';
   import { transformOpt } from '../../js/utils.js';
 </script>
 
@@ -105,4 +104,3 @@
   store={enableExportButtons}
 />
 <CheckOption name="Show fullscreen button" store={enableFullscreenButton} />
-<KeyboardShortcuts />

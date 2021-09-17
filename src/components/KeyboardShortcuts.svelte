@@ -2,6 +2,7 @@
   import { Col, Row, Subheader } from 'svelte-materialify/src';
 
   import { keyboardShortcuts } from '../js/store.js';
+  import TranslatorMode from './settings/TranslatorMode.svelte';
   import KeyboardShortcutInput from './options/KeyboardShortcutInput.svelte';
 
   let timeout = null;
@@ -35,3 +36,5 @@
     </Col>
   </Row>
 {/each}
+
+<TranslatorMode />
