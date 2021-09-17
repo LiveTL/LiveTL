@@ -1,7 +1,7 @@
 <script>
   import { beforeUpdate, afterUpdate } from 'svelte';
   import { Icon, Tabs, Tab, TabContent, Tooltip, MaterialApp } from 'svelte-materialify/src';
-  import { mdiBrush, mdiChat, mdiFilter, mdiKeyboard, mdiHelp } from '@mdi/js';
+  import { mdiBrush, mdiFilter, mdiKeyboard, mdiHelp } from '@mdi/js';
   import UISettings from './settings/UISettings.svelte';
   import FilterSettings from './settings/FilterSettings.svelte';
   import KeyboardShortcuts from './KeyboardShortcuts.svelte';
