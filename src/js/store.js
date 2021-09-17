@@ -143,3 +143,4 @@ export const spotlightedTranslator = writable(null);
 export const displayMode = writable(paramsEmbedded ? DisplayMode.EMBEDDED : DisplayMode.FULLPAGE);
 export const isResizing = writable(false);
 export const sessionHidden = writable([]);
+export const anyRecordingShortcut = writable(false);
