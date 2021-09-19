@@ -14,7 +14,7 @@
   /** Dense variant. */
   export let dense = false;
   /** Parent div used to determine top/bottom */
-  export let boundingDiv: HTMLElement;
+  export let boundingDiv: HTMLElement | null = null;
 
   $: value = $store;
   $: store.set(value);
@@ -24,7 +24,7 @@
   let offsetY = '';
 
   const onShowListChange = async (showList: boolean) => {
-    if (!showList) return;
+    if (!showList || !boundingDiv) return;
     offsetY = await getDropdownOffsetY(div, boundingDiv);
   };
 

@@ -1,13 +1,7 @@
-/* eslint-disable no-undef */
-import '@testing-library/jest-dom/extend-expect';
-
 import { render } from '@testing-library/svelte';
-// eslint-disable-next-line no-unused-vars
-import userEvent from '@testing-library/user-event';
-
-// eslint-disable-next-line no-unused-vars
-import { get, writable } from 'svelte/store';
-import Slider from '../../../components/old/Slider.svelte';
+// import userEvent from '@testing-library/user-event';
+import { writable } from 'svelte/store';
+import Slider from '../../../components/common/SliderStore.svelte';
 
 describe('slider', () => {
   it('displays title', () => {

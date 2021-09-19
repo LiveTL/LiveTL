@@ -3,7 +3,8 @@ module.exports = {
     browser: true,
     es2021: true,
     node: true,
-    webextensions: true
+    webextensions: true,
+    jest: true
   },
   parser: '@typescript-eslint/parser',
   extends: 'standard-with-typescript',
