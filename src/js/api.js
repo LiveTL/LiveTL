@@ -104,6 +104,6 @@ const apiLiveStream = videoId => derived(
 /** @type {(videoId: String) => Readable<Message>} */
 export const getLiveTranslations = videoId => derived(apiLiveStream(videoId), $data => {
   if ($data?.videoId !== videoId || !enableAPITLs.get()) return;
-  if ($data?.start / 1000 < window.player.getDuration() - 10) return; // if the timestamp of the translation is more than 10 seconds of the timestamp of the player, ignore it
+  if ($data?.start / 1000 < get(timestamp) - 10) return; // ignore if the translation timestamp is > 10s ahead of the player timestamp
   return transformApiTl($data);
 });
