@@ -27,7 +27,7 @@ submit a Pull Request!
 ### Setup
 
 > ℹ LiveTL uses submodules. Make sure to clone the repo with the `--recursive` flag!
-
+>
 > ℹ When pulling, you should also use `git pull --recurse`.
 
 ```bash
@@ -36,29 +36,22 @@ yarn # use yarn, not npm
 
 ### Commands
 
-#### Variables
 ```bash
-# defaults:
-PORT=3000
-NODE_ENV=development
-```
-
-#### Commands
-```bash
-yarn start # dev
-yarn build production # production
-yarn build android # android
+yarn start # devServer
+yarn build:production # production
+yarn build:android # android
 yarn test # jest
 yarn test:watch # autotest
 yarn format # lint
 yarn e2e # run e2e tests
 ```
+
 Load the `build` directory in Chrome developer mode.
 
 ### Hot Reload
+
 Enable `chrome://flags/#allow-insecure-localhost` to use hot module and UI component reloading.
 
 ## Developers
 
 LiveTL is developed by [these fine people](https://github.com/LiveTL/LiveTL/graphs/contributors)!
-

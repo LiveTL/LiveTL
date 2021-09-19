@@ -3,10 +3,9 @@
   "version": "6.8.0",
   "description": "Get live translations for YouTube streams, crowdsourced from multilingual viewers!",
   "scripts": {
-    "build": "node utils/build.js",
-    "build-dev": "webpack --mode development",
-    "build-prod": "webpack --mode production",
-    "build-android": "webpack --mode production --env android",
+    "build": "webpack --mode development",
+    "build:production": "webpack --mode production",
+    "build:android": "webpack --mode production --env android",
     "package": "node utils/package.js",
     "start": "webpack serve",
     "ss": "node utils/screenshot.js",

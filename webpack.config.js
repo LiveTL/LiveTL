@@ -27,7 +27,7 @@ const secretsPath = path.join(__dirname, ('secrets.' + env.NODE_ENV + '.js'));
 
 const fileExtensions = ['jpg', 'jpeg', 'png', 'gif', 'eot', 'otf', 'svg', 'ttf', 'woff', 'woff2'];
 
-const transformManifest = (manifestString, isChrome = false) => {
+const transformManifest = (manifestString, version, isChrome = false) => {
   const newManifest = {
     ...JSON.parse(manifestString),
     description,
@@ -45,6 +45,10 @@ module.exports = (env, options) => {
   const isAndroid = env.android;
   const mode = isAndroid ? 'production' : (options.mode || 'development');
   const prod = mode !== 'development';
+
+  const envVersion = env.version;
+  const hasEnvVersion = (envVersion != null && typeof envVersion === 'string');
+  if (hasEnvVersion) manifest.version = envVersion;
 
   const config = {
     entry: {
@@ -204,14 +208,14 @@ module.exports = (env, options) => {
           {
             from: 'src/manifest.json',
             transform: (content) => {
-              return transformManifest(content);
+              return transformManifest(content, hasEnvVersion ? envVersion : version);
             }
           },
           {
             from: 'src/manifest.json',
             to: 'manifest.chrome.json',
             transform: (content) => {
-              return transformManifest(content, true);
+              return transformManifest(content, hasEnvVersion ? envVersion : version, true);
             }
           },
           {
