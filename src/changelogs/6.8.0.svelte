@@ -31,4 +31,23 @@
       cases. These issues have been fixed.
     </div>
   </ExpansionPanel>
+  <ExpansionPanel>
+    <span slot="header">Translator Kamishiro Taishi's talk show</span>
+    <div>
+      You probably know Kamishiro Taishi, a legendary live translator in the
+      Vtuber community. He will be hosting a new show called TLTalk! TLTalk is a
+      live talkshow that aims to introduce people involved with translating —
+      such as translators and software developers — with a focus on those tied
+      to Hololive and Vtubers in general. <a
+        href="https://www.youtube.com/watch?v=cGcBHb6OcDc"
+        target="_blank"
+        >Make sure to tune in on YouTube!
+        <img
+          src="./img/TLTalk.jpg"
+          style="width: 100%; height: auto;"
+          alt="TLTalk"
+        /></a
+      >
+    </div>
+  </ExpansionPanel>
 </ExpansionPanels>
