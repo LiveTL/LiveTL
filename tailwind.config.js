@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const smelteTailwind = require('smelte/tailwind.config.js');
 
 const colors = {
@@ -11,34 +10,27 @@ const colors = {
   dark: '#212121'
 };
 
-const defaultSmelteConfig = smelteTailwind({ colors });
-
 const smelteConfig = {
   colors,
   darkMode: true,
-  config: {
-    ...defaultSmelteConfig,
-    theme: {
-      ...defaultSmelteConfig.theme,
-      extend: {
-        ...defaultSmelteConfig.theme.extend,
-        colors: {
-          member: {
-            light: '#0E5D10',
-            dark: '#04B301'
-          },
-          moderator: {
-            light: '#2441C0',
-            dark: '#A0BDFC'
-          },
-          owner: {
-            light: '#866518',
-            dark: '#FFD600'
-          },
-          deleted: {
-            light: '#6E6B6B',
-            dark: '#898888'
-          }
+  theme: {
+    extend: {
+      colors: {
+        member: {
+          light: '#0E5D10',
+          dark: '#04B301'
+        },
+        moderator: {
+          light: '#2441C0',
+          dark: '#A0BDFC'
+        },
+        owner: {
+          light: '#866518',
+          dark: '#FFD600'
+        },
+        deleted: {
+          light: '#6E6B6B',
+          dark: '#898888'
         }
       }
     }
