@@ -38,7 +38,6 @@
     }
   }
   
-  $: console.log(items);
   $: active, setTimeout(() => windowResized($windowSize), 0);
 </script>
 

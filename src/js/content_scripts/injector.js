@@ -190,7 +190,6 @@ async function loaded() {
     });
   };
 
-  console.log(autoLaunchMode.get());
   switch (autoLaunchMode.get()) {
   case AutoLaunchMode.NONE: {
     break;
