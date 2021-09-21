@@ -69,7 +69,7 @@ const makeButton = (text, callback, color='rgb(0, 153, 255)', icon='') => {
   a.style.flexBasis = 0;
   a.style.position = 'relative';
   a.appendChild(getLiveTLButton(color));
-  const e = document.querySelector('#input-panel');
+  const e = document.querySelector('yt-live-chat-renderer');
   let elem = e.querySelector('.livetlButtonWrapper');
   if (!elem) {
     elem = document.createElement('div');
