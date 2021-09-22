@@ -1,7 +1,7 @@
 <script>
   import { ExpansionPanel, ExpansionPanels, Icon } from 'svelte-materialify/src';
   import { mdiBug, mdiBullhorn, mdiReload, mdiRocketLaunch } from '@mdi/js';
-  let value = [];
+  let value = [0];
 </script>
 
 <ExpansionPanels bind:value>
