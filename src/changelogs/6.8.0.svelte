@@ -6,7 +6,7 @@
 
 <ExpansionPanels bind:value>
   <ExpansionPanel>
-    <span slot="header"><Icon path={mdiBullhorn} /> SHOUT-OUT: Translator Kamishiro Taishi's talk show</span>
+    <span slot="header"><Icon path={mdiBullhorn} /> Translator Kamishiro Taishi's talk show</span>
     <div>
       You probably know Kamishiro Taishi, a legendary live translator in the
       Vtuber community. He will be hosting a new talk show called TLTalk
