@@ -2,11 +2,12 @@
   import { afterUpdate, tick } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { Button, Icon, MaterialApp, TextField, Tooltip } from 'svelte-materialify/src';
-  import { mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload, mdiFullscreen } from '@mdi/js';
+  import { mdiArrowExpand, mdiClose, mdiCogOutline, mdiArrowDown, mdiArrowUp, mdiCamera, mdiCheck, mdiExpandAllOutline, mdiDownload, mdiFullscreen } from '@mdi/js';
   import { mdiAccountVoiceOff } from '../js/svg.js';
-  import { toggleFullScreen } from '../js/utils.js';
+  import { expandEmbed, toggleFullScreen } from '../js/utils.js';
   import Options from './Options.svelte';
   import Wrapper from './Wrapper.svelte';
+  import { paramsEmbedded  }from '../js/constants.js';
   import { TextDirection, paramsVideoTitle, isAndroid } from '../js/constants.js';
   import { faviconURL, textDirection, screenshotRenderWidth, videoTitle, enableExportButtons, updatePopupActive, enableFullscreenButton, spotlightedTranslator, isResizing } from '../js/store.js';
   import MessageDisplay from './MessageDisplay.svelte';
@@ -211,7 +212,7 @@
             <span slot="tip">Export translations log (txt)</span>
           </Tooltip>
         {/if}
-        {#if !settingsOpen && $enableFullscreenButton}
+        {#if !settingsOpen && $enableFullscreenButton && !paramsEmbedded}
           <!-- Fullscreen button -->
           <Tooltip bottom>
             <Button fab size="small" on:click={toggleFullScreen}>
@@ -233,6 +234,15 @@
             >{settingsOpen ? 'Close settings' : 'Open settings'}</span
           >
         </Tooltip>
+        {#if !settingsOpen && paramsEmbedded}
+          <!-- Expand embed to livetl button -->
+          <Tooltip bottom>
+            <Button fab size="small" on:click={expandEmbed}>
+              <Icon path={mdiArrowExpand}></Icon>
+            </Button>
+            <span slot="tip">Expand LiveTL</span>
+          </Tooltip>
+        {/if}
       {/if}
     </div>
   </div>

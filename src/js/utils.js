@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import { UnixTransformer } from './types.js';
-import { isAndroid, modifierKeys } from './constants.js';
+import { isAndroid, modifierKeys, PostMessage } from './constants.js';
 
 export const compose = (...args) =>
   ipt => args.reduceRight((val, func) => func(val), ipt);
@@ -114,3 +114,7 @@ export const toggleFullScreen = () => {
     }
   }
 };
+
+export const expandEmbed = () => window.parent.postMessage({
+  type: PostMessage.EXPAND_EMBED
+}, '*');

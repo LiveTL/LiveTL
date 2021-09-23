@@ -105,6 +105,11 @@ const constructParams = () => {
   return params;
 };
 
+const openLiveTL = () => {
+  window.top.location =
+    chrome.runtime.getURL(`watch.html?${constructParams()}`);
+};
+
 async function loaded() {
   const script = document.createElement('script');
   script.innerHTML = `(${fixLeaks.toString()})();`;
@@ -146,10 +151,6 @@ async function loaded() {
     return;
   }
 
-  const openLiveTL = () => {
-    window.top.location =
-      chrome.runtime.getURL(`watch.html?${constructParams()}`);
-  };
   const tlPopout = () => {
     const popoutParams = constructParams();
     popoutParams.set('popout', true);
@@ -173,6 +174,7 @@ async function loaded() {
       chrome.runtime.getURL(`popout.html?${popoutParams}`)
     );
   };
+
   const embedTLs = () => {
     const embeddedParams = constructParams();
     embeddedParams.set('embedded', true);
@@ -217,16 +219,11 @@ async function loaded() {
   makeButton('Embed TLs', embedTLs, undefined, mdiIframeArray);
 }
 
-const closeEmbedTl = () => {
-  document.querySelectorAll('#ltl-embed').forEach(iframe => iframe?.cleanUp());
-  window.location.href = window.location.href;
-};
-
 window.addEventListener('message', (packet) => {
   if (packet.origin !== window.origin && !packet.data.type) window.postMessage(packet.data);
   switch (packet?.data?.type) {
-  case PostMessage.CLOSE_EMBED:
-    closeEmbedTl();
+  case PostMessage.EXPAND_EMBED:
+    openLiveTL();
   }
 });
 
