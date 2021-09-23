@@ -221,6 +221,15 @@
             <span slot="tip">Toggle fullscreen</span>
           </Tooltip>
         {/if}
+        {#if !settingsOpen && paramsEmbedded && $enableFullscreenButton}
+          <!-- Expand embed to livetl button -->
+          <Tooltip bottom>
+            <Button fab size="small" on:click={expandEmbed}>
+              <Icon path={mdiArrowExpand}></Icon>
+            </Button>
+            <span slot="tip">Expand LiveTL</span>
+          </Tooltip>
+        {/if}
         <!-- Settings button -->
         <Tooltip bottom>
           <Button
@@ -234,15 +243,6 @@
             >{settingsOpen ? 'Close settings' : 'Open settings'}</span
           >
         </Tooltip>
-        {#if !settingsOpen && paramsEmbedded}
-          <!-- Expand embed to livetl button -->
-          <Tooltip bottom>
-            <Button fab size="small" on:click={expandEmbed}>
-              <Icon path={mdiArrowExpand}></Icon>
-            </Button>
-            <span slot="tip">Expand LiveTL</span>
-          </Tooltip>
-        {/if}
       {/if}
     </div>
   </div>
