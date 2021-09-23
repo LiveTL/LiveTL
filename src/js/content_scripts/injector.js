@@ -1,7 +1,7 @@
 import { mdiOpenInNew, mdiYoutubeTv, mdiIframeArray } from '@mdi/js';
 import { getFrameInfoAsync, createPopup } from '../../submodules/chat/scripts/chat-utils.js';
 import { fixLeaks } from '../../submodules/chat/src/plugins/ytc-fix-memleaks.js';
-import { paramsEmbedDomain, AutoLaunchMode } from '../constants.js';
+import { paramsEmbedDomain, AutoLaunchMode, PostMessage } from '../constants.js';
 import { autoLaunchMode } from '../store.js';
 
 for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) {
@@ -184,10 +184,13 @@ async function loaded() {
     iframe.style.height = '100%';
     iframe.style.position = 'fixed';
     iframe.src = chrome.runtime.getURL(`watch.html?${embeddedParams}`);
+    iframe.id = 'ltl-embed';
     document.body.appendChild(iframe);
-    window.addEventListener('message', d => {
+    const onMessage = d => {
       iframe.contentWindow.postMessage(d.data, '*');
-    });
+    };
+    window.addEventListener('message', onMessage);
+    iframe.cleanUp = () => window.removeEventListener('message', onMessage);
   };
 
   switch (autoLaunchMode.get()) {
@@ -214,8 +217,17 @@ async function loaded() {
   makeButton('Embed TLs', embedTLs, undefined, mdiIframeArray);
 }
 
+const closeEmbedTl = () => {
+  document.querySelectorAll('#ltl-embed').forEach(iframe => iframe?.cleanUp());
+  window.location.href = window.location.href;
+};
+
 window.addEventListener('message', (packet) => {
   if (packet.origin !== window.origin && !packet.data.type) window.postMessage(packet.data);
+  switch (packet?.data?.type) {
+  case PostMessage.CLOSE_EMBED:
+    closeEmbedTl();
+  }
 });
 
 /**

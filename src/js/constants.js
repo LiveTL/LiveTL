@@ -123,3 +123,8 @@ when inactive in the settings menu.
 `;
 
 export const modifierKeys = new Set(['Alt', 'Control', 'Meta', 'Shift']);
+
+/** @enum {String} */
+export const PostMessage = {
+  CLOSE_EMBED: 'close-ltl-embed',
+};
