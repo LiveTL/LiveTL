@@ -1,0 +1,71 @@
+name: Bug Report
+description: File a bug report
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: checkboxes
+    attributes:
+      label: Checklist
+      description: These are some simple guidelines for creating a bug report, make sure your bug report follows all of these guidelines before submitting
+      options:
+        - label: This is an issue for LiveTL, not Hyperchat. I will go to [the Hyperchat repo](https://github.com/LiveTL/HyperChat) to report an issue with Hyperchat.
+          required: true
+        - label: This is an issue for the LiveTL web extension, not LiveTL iOS or LiveTL Android. I will go to the [iOS](https://github.com/LiveTL/ios) or [Android](https://github.com/LiveTL/android) repo to report issues for those platforms.
+          required: true
+        - label: This issue is not a matter of opinion. If it is, I will use the feature suggestion issue template.
+          required: true
+        - label: I have checked for a duplicate or similar issue. I made sure to check closed issues as well. 
+          required: true
+        - label: I am still able to reproduce the issue after I reinstall the extension.
+          required: true
+        - label: I have clear instructions to reproduce the bug, even on another machine.
+          required: true
+        - label: I am not suggesting a feature. If I am, I will use the feature suggestion issue template.
+          required: true
+  - type: textarea
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is. 
+      placeholder: What's wrong?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps To Reproduce
+      description: Step-by-step instructions to reproduce the unexpected behavior
+      placeholder: |
+        1. Go to '...'  
+        
+        2. Click on '...'  
+        
+        3. Scroll down to '...'  
+        
+        4. The error looks like '...'  
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+      placeholder: What's supposed to happen?
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: What browsers are you seeing the problem on?
+      description: You're on the latest version, right? (You can select multiple, so test on as many browsers as you want!)
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Microsoft Edge
+        - Other (Put it in the "Anything else?" section)
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Anything else?
+      description: |
+        Links? References? Screenshots? Other extensions that you have installed? Anything that will give us more context about the issue you are encountering!
+
+        Tip: You can attach images or log files by clicking this area to highlight it and then dragging files in.
