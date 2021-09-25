@@ -101,7 +101,7 @@ export const videoSide = derived(videoSideDepends, ([$videoSide, $autoVert, $win
 
 export const updatePopupActive = writable(false);
 export const videoTitle = writable('LiveTL');
-export const timestamp = writable(0);
+export const timestamp = writable(0); // timestamp in seconds
 export const faviconURL = writable('/48x48.png');
 export const availableMchadUsers = writable([]);
 export const spotlightedTranslator = writable(null);
