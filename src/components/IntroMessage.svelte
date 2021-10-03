@@ -45,7 +45,7 @@
   const { version } = window.chrome.runtime.getManifest();
 </script>
 
-<div class="rounded bg-gray-900 px-2 py-1 m-1 flex flex-col gap-1 leading-none">
+<div class="rounded bg-gray-900 px-2 py-1 m-1 flex flex-col gap-1">
   {#if $textDirection === TextDirection.BOTTOM}
     <Minimizer />
   {/if}

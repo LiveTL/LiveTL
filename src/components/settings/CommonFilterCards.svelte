@@ -13,7 +13,7 @@
   export let div: HTMLElement;
 </script>
 
-<Card title="Filters" icon="cloud" noGap>
+<Card title="Filters" icon="filter_alt" noGap>
   <Dropdown
     name="Language filter"
     store={language}

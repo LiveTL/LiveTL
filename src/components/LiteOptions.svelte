@@ -20,7 +20,7 @@
   let div: HTMLElement;
 </script>
 
-<div class="bg-dark-700" bind:this={div}>
+<div class="bg-dark-700 p-2" bind:this={div}>
   <Card title="General" icon="tune">
     <ExpandingCard title="About LiveTL" icon="info">
       <p class="m-4">

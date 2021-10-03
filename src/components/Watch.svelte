@@ -132,7 +132,7 @@
   {#if isFullPage && $showCaption}
     <Captions />
   {/if}
-  <div id="mainUI" class="flex w-full h-full {flexDirection}">
+  <div id="mainUI" class="flex w-full h-full {flexDirection} top-0 absolute">
     {#if isFullPage}
       <div
         class="resizable relative z-30"
@@ -177,10 +177,6 @@
 </div>
 
 <style>
-  #mainUI {
-    position: absolute;
-    top: 0px;
-  }
   /* The following 2 blocks are workarounds for jquery ui jank */
   .watch-wrapper {
     margin: 20px 0px 0px 20px;
