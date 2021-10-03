@@ -9,7 +9,7 @@
     captionWidth,
     captionFontSize,
     enableCaptionTimeout,
-    captionDuration
+    captionDuration,
   } from '../js/store.js';
   import { captionText } from '../js/sources-aggregate.js';
 
@@ -33,11 +33,11 @@
       const jcap = j(captionElem);
       jcap.draggable({
         stop,
-        containment: document.body
+        containment: document.body,
       });
       jcap.resizable({
         handles: 'e, w',
-        resize: stop
+        resize: stop,
       });
     }, 0);
   }
@@ -72,19 +72,17 @@
 
 <div
   class="captionsBox z-40 absolute cursor-move text-center"
-  bind:this={captionElem}
   style="
   top: min(max({$captionTop}%, calc(0% - 20px)), calc(100% - 30px));
   left: min(max({$captionLeft}%, calc(0% - 20px)), calc(100% - 30px));
   width: max(0%, {$captionWidth}%);
   font-size: {$captionFontSize}px;
-  display: {show
-    ? 'block'
-    : 'none'};
+  display: {show ? 'block' : 'none'};
 "
+  bind:this={captionElem}
 >
   <div
-    class="captionSegment break-words m-5 py-1.5 px-2.5 bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm"
+    class="captionSegment break-words mx-5 py-1.5 px-2.5 bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm"
     bind:this={elem}
   >
     {$captionText}
@@ -103,6 +101,7 @@
   }
   .captionsBox :global(.ui-resizable-handle) {
     height: 100%;
+    position: absolute;
   }
   .captionsBox :global(.ui-resizable-e) {
     transform: translateX(-10px);
