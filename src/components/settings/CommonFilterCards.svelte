@@ -3,7 +3,7 @@
     showModMessage,
     language,
     enableMchadTLs,
-    enableAPITLs,
+    enableAPITLs
   } from '../../js/store.js';
   import { languageNameValues } from '../../js/constants.js';
   import BlockedUsers from './BlockedUsers.svelte';

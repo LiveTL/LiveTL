@@ -3,7 +3,7 @@
     livetlFontSize,
     showTimestamp,
     textDirection,
-    enableExportButtons,
+    enableExportButtons
   } from '../js/store.js';
   import { textDirectionMap } from '../js/constants.js';
   import FontDemo from './settings/FontDemo.svelte';

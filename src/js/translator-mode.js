@@ -1,6 +1,5 @@
-// eslint-disable-next-line no-unused-vars
-import { compose, dbg, escapeRegExp } from './utils.js';
-import { derived, get, writable } from 'svelte/store';
+import { compose, escapeRegExp } from './utils.js';
+import { derived, get } from 'svelte/store';
 import { doTranslatorMode, doAutoPrefix, language, macros, autoPrefixTag, macroTrigger } from './store.js';
 import { languageNameCode } from './constants.js';
 
@@ -70,7 +69,7 @@ export function omniComplete(initialWords) {
 
 function macroStoreValueToLookup(value) {
   const obj = {};
-  value.filter(v => v.enabled).forEach(v => obj[v.name] = v.expansion);
+  value.filter(v => v.enabled).forEach(v => (obj[v.name] = v.expansion));
   return obj;
 }
 
@@ -96,7 +95,7 @@ export function macroSystem(initialMacros) {
     if (name === '') return null;
     if (macros[name]) return macros[name];
     const possibleMacros = completion.complete(name);
-    return possibleMacros.length == 1 ? macros[possibleMacros[0]] : null;
+    return possibleMacros.length === 1 ? macros[possibleMacros[0]] : null;
   };
 
   /** @type {(text: String) => [String, IterableIterator<RegExpMatchArray>]} */
@@ -108,7 +107,7 @@ export function macroSystem(initialMacros) {
     for (const { 0: text, index } of split) {
       const replacement = getMacro(text.substring(1));
       replaced.push(input.substring(lastIdx, index));
-      replaced.push(replacement || text);
+      replaced.push(replacement ?? text);
       lastIdx = index + text.length;
     }
     replaced.push(input.substring(lastIdx));
@@ -207,7 +206,7 @@ export function translatorMode(
   const setChatCaret = pos =>
     setCaret(chatBox, pos == null ? text().length : pos);
   const caretPos = () => getCaretCharOffset(chatBox);
-  const caretAtEnd = () => caretPos() == text().length;
+  const caretAtEnd = () => caretPos() === text().length;
   const text = () => chatBox.textContent;
   const autoPrefixTag = () => doAutoPrefix.get() ? langTag() + nbsp : '';
   const updateRecommendations =
@@ -225,7 +224,7 @@ export function translatorMode(
 
   const expandMacrosInChatbox = () => {
     const newText = replaceText(text().trimEnd()) + nbsp;
-    if (newText.trim() != text().trim()) {
+    if (newText.trim() !== text().trim()) {
       setChatboxText(newText);
     }
   };
@@ -275,7 +274,7 @@ function getCaretCharOffset(element) {
     preCaretRange.selectNodeContents(element);
     preCaretRange.setEnd(range.endContainer, range.endOffset);
     caretOffset = preCaretRange.toString().length;
-  } else if (document.selection && document.selection.type != 'Control') {
+  } else if (document.selection && document.selection.type !== 'Control') {
     const textRange = document.selection.createRange();
     const preCaretTextRange = document.body.createTextRange();
     preCaretTextRange.moveToElementText(element);

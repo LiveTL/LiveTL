@@ -10,7 +10,7 @@
     showTimestamp,
     spotlightedTranslator,
     sessionHidden,
-    isSelecting,
+    isSelecting
   } from '../js/store.js';
   import { AuthorType, TextDirection } from '../js/constants.js';
   import IntroMessage from './IntroMessage.svelte';
@@ -32,7 +32,7 @@
     bottomMsg.scrollIntoView({
       behavior: 'auto',
       block: 'nearest',
-      inline: 'nearest',
+      inline: 'nearest'
     });
   }
 
@@ -46,7 +46,7 @@
       channelFilters.set(item.authorId, {
         ...channelFilters.get(item.authorId),
         name: item.author,
-        blacklist: true,
+        blacklist: true
       });
     }
   };

@@ -9,7 +9,7 @@
     captionWidth,
     captionFontSize,
     enableCaptionTimeout,
-    captionDuration,
+    captionDuration
   } from '../js/store.js';
   import { captionText } from '../js/sources-aggregate.js';
 
@@ -33,11 +33,11 @@
       const jcap = j(captionElem);
       jcap.draggable({
         stop,
-        containment: document.body,
+        containment: document.body
       });
       jcap.resizable({
         handles: 'e, w',
-        resize: stop,
+        resize: stop
       });
     }, 0);
   }
@@ -64,6 +64,7 @@
     if ($enableCaptionTimeout) captionTimeout();
     if (elem) {
       elem.style.display = 'none';
+      // eslint-disable-next-line no-unused-expressions
       elem.offsetWidth; // force reflow
       elem.style.display = 'block';
     }

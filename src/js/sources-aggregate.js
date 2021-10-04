@@ -133,7 +133,7 @@ export const captionText = readable(defaultCaption, set => {
   let text = defaultCaption;
   return displayedMessages.subscribe($msgs => {
     const $translation = $msgs[$msgs.length - 1]?.text;
-    if ($translation != null && $translation != text) {
+    if ($translation != null && $translation !== text) {
       set(text = $translation);
     }
   });

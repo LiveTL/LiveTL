@@ -13,7 +13,7 @@
     showCaption,
     chatSplit,
     displayMode,
-    isResizing,
+    isResizing
   } from '../js/store.js';
   import {
     paramsVideoId,
@@ -21,7 +21,7 @@
     ChatSplit,
     paramsContinuation,
     paramsIsVOD,
-    DisplayMode,
+    DisplayMode
   } from '../js/constants.js';
   import ChatEmbed from './ChatEmbed.svelte';
   import MainPane from './MainPane.svelte';
@@ -41,8 +41,8 @@
       [
         isFullPage ? vidElem : null,
         isTopSide ? 'height' : 'width',
-        videoPanelSize,
-      ],
+        videoPanelSize
+      ]
     ].forEach((item) => {
       const [elem, prop, store] = item;
       if (!elem) return;
@@ -88,14 +88,14 @@
           );
         }
       },
-      containment: 'body',
+      containment: 'body'
     });
     resizable(chatElem, {
       handles: isChatVertical ? 'e' : 's',
       start: resizeCallback,
       stop: resizeCallback,
       resize: () => {},
-      containment: 'body',
+      containment: 'body'
     });
   };
   $: if ($videoSide || $chatSplit) {

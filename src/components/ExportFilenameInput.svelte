@@ -22,7 +22,7 @@
     dense
     bind:value={renderWidth}
     rules={[
-      { assert: (item) => !isNaN(parseInt(item)), error: 'Invalid width' },
+      { assert: (item) => !isNaN(parseInt(item)), error: 'Invalid width' }
     ]}
     label="Width (px)"
     class="w-28"

@@ -8,7 +8,7 @@
     paramsVideoTitle,
     isAndroid,
     DisplayMode,
-    SelectOperation,
+    SelectOperation
   } from '../js/constants.js';
   import {
     faviconURL,
@@ -21,10 +21,9 @@
     isResizing,
     isSelecting,
     displayMode,
-    screenshotRenderWidth,
+    screenshotRenderWidth
   } from '../js/store.js';
   import MessageDisplay from './MessageDisplay.svelte';
-  import Updates from './Updates.svelte';
   import { displayedMessages } from '../js/sources-aggregate.js';
   import dark from 'smelte/src/dark';
   import Button from './common/IconButton.svelte';
@@ -44,7 +43,7 @@
   const updateWrapper = () => [
     wrapper.isAtBottom(),
     wrapper.isAtTop(),
-    setTimeout(checkAtRecent),
+    setTimeout(checkAtRecent)
   ];
 
   function checkAtRecent() {
@@ -119,7 +118,7 @@
         window.nativeJavascriptInterface.downloadText(saveStr, textFilename);
       } else {
         const blob = new Blob([saveStr], {
-          type: 'text/plain;charset=utf-8',
+          type: 'text/plain;charset=utf-8'
         });
         const { default: saveAs } = await import('file-saver');
         saveAs(blob, textFilename);
@@ -254,7 +253,7 @@
           <span>Export translations log (txt)</span>
         </Tooltip>
       {/if}
-      {#if !settingsOpen && $enableFullscreenButton && $displayMode != DisplayMode.HOLODEX}
+      {#if !settingsOpen && $enableFullscreenButton && $displayMode !== DisplayMode.HOLODEX}
         <!-- Fullscreen button -->
         <Tooltip>
           <Button

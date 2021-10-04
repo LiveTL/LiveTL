@@ -10,8 +10,8 @@
           ? 1
           : 0
         : direction === TextDirection.TOP
-        ? 1
-        : 0
+          ? 1
+          : 0
     ];
   };
   $: icon = getIcon($welcomeDismissed, $textDirection);
