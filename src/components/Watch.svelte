@@ -23,6 +23,7 @@
     paramsIsVOD,
     DisplayMode
   } from '../js/constants.js';
+  import { onKeyEvent } from '../js/shortcuts.js';
   import ChatEmbed from './ChatEmbed.svelte';
   import MainPane from './MainPane.svelte';
   import Options from './Options.svelte';
@@ -127,6 +128,8 @@
   $: chatWrapperStyle = `padding-${isChatVertical ? 'right' : 'bottom'}: 10px;`;
   $: flexDirection = getFlexDirection(isTopSide, isRightSide);
 </script>
+
+<svelte:window on:keydown={onKeyEvent} />
 
 <div class="watch-wrapper relative w-screen bg-dark-500">
   {#if isFullPage && $showCaption}

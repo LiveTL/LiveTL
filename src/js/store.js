@@ -32,6 +32,14 @@ const sampleFilter = {
 
 const sampleSpam = { author: '', authorId: '', spam: false };
 
+export const defaultShortcuts = {
+  volumeUp: 'ArrowUp',
+  volumeDown: 'ArrowDown',
+  fullScreen: 'f',
+  toggleMute: 'm',
+  togglePlayPause: '<Space>'
+};
+
 // Settings
 export const language = SS('language', 'English');
 export const showModMessage = SS('showModMessage', true);
@@ -85,6 +93,7 @@ export const spammersDetected = LS('spammersDetected', [sampleSpam].slice(1));
 export const speechVoiceNameSetting = SS('speechVoiceNameSetting', '');
 export const speechSpeed = SS('speechSpeed', 1);
 export const autoLaunchMode = SS('autoLaunchMode', AutoLaunchMode.NONE);
+export const keyboardShortcuts = SS('keyboardShortcuts', defaultShortcuts);
 
 // Non-persistant stores
 
@@ -141,3 +150,4 @@ export const displayMode = writable(
 export const isResizing = writable(false);
 export const isSelecting = writable(false);
 export const sessionHidden = writable([]);
+export const anyRecordingShortcut = writable(false);

@@ -1,4 +1,5 @@
 /** @typedef {import('./types.js').UnixTransformer} UnixTransformer */
+import { isAndroid, modifierKeys } from './constants.js';
 
 export const compose = (...args) =>
   ipt => args.reduceRight((val, func) => func(val), ipt);
@@ -52,11 +53,14 @@ export const sleep = ms => new Promise((res, _rej) => {
 /** @type {(text: String) => String} */
 export const escapeRegExp = text => text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 
+/** @type {(num: Number, min: Number, max: Number) => Number} */
+export const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+
 export const getAllVoices = () => window.speechSynthesis?.getVoices() || [];
 export const getAllVoiceNames = () => getAllVoices().map(voice => voice.name);
 export const getVoiceMap = () => new Map(getAllVoices().map(v => [v.name, v]));
 
-function capitalize(s) {
+export function capitalize(s) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
@@ -64,3 +68,47 @@ export const transformOpt = str =>
   capitalize(str
     .trim()
     .toLowerCase());
+
+const toKeyName = key => {
+  if (!key) return '';
+  if (key === 'Enter') return '<Enter>';
+  if (key === ' ') return '<Space>';
+  return key;
+};
+
+export const keydownToShortcut = e => [
+  e?.shiftKey ? 'shift' : '',
+  e?.ctrlKey ? 'ctrl' : '',
+  e?.altKey ? 'alt' : '',
+  !modifierKeys.has(e?.key) ? toKeyName(e?.key) : ''
+].filter(Boolean).join(' + ');
+
+export const toggleFullScreen = () => {
+  if (isAndroid) {
+    // @ts-ignore
+    window.nativeJavascriptInterface.toggleFullscreen();
+    return;
+  }
+  if (
+    (document.fullScreenElement && document.fullScreenElement !== null) ||
+    (!document.mozFullScreen && !document.webkitIsFullScreen)
+  ) {
+    if (document.documentElement.requestFullScreen) {
+      document.documentElement.requestFullScreen();
+    } else if (document.documentElement.mozRequestFullScreen) {
+      document.documentElement.mozRequestFullScreen();
+    } else if (document.documentElement.webkitRequestFullScreen) {
+      document.documentElement.webkitRequestFullScreen(
+        Element.ALLOW_KEYBOARD_INPUT
+      );
+    }
+  } else {
+    if (document.cancelFullScreen) {
+      document.cancelFullScreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.webkitCancelFullScreen) {
+      document.webkitCancelFullScreen();
+    }
+  }
+};

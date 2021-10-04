@@ -168,3 +168,5 @@ Captions captured from the chat will appear here. Try moving and resizing!
 You can also disable floating captions or make captions disappear
 when inactive in the settings menu.
 `;
+
+export const modifierKeys = new Set(['Alt', 'Control', 'Meta', 'Shift']);
