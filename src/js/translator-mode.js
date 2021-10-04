@@ -107,7 +107,7 @@ export function macroSystem(initialMacros) {
     for (const { 0: text, index } of split) {
       const replacement = getMacro(text.substring(1));
       replaced.push(input.substring(lastIdx, index));
-      replaced.push(replacement ?? text);
+      replaced.push((replacement ?? '') || text);
       lastIdx = index + text.length;
     }
     replaced.push(input.substring(lastIdx));
