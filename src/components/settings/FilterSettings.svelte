@@ -5,6 +5,7 @@
   import CustomFilter from '../options/CustomFilter.svelte';
   import Card from '../common/Card.svelte';
   import CommonFilterCards from './CommonFilterCards.svelte';
+  import SpamProtection from './SpamProtection.svelte';
 
   function createNewFilter() {
     cleanupFilters();
@@ -18,6 +19,7 @@
 
 <div bind:this={div}>
   <CommonFilterCards {div} />
+  <SpamProtection boundingDiv={div} />
   <Card
     title="Custom filters"
     icon="filter_alt"
