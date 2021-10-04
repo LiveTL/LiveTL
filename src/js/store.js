@@ -151,3 +151,4 @@ export const isResizing = writable(false);
 export const isSelecting = writable(false);
 export const sessionHidden = writable([]);
 export const anyRecordingShortcut = writable(false);
+export const videoShortcutAction = writable('');

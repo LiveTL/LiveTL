@@ -9,7 +9,15 @@ if (videoId != null) {
   document.body.style.overflow = 'hidden';
   loadYoutubePlayer(
     videoId,
-    () => window.parent.postMessage({ type: 'video-embed-loaded' }, '*'),
+    (player: YTPlayer, runPlayerAction: (action: string) => void) => {
+      window.parent.postMessage({ type: 'video-embed-loaded' }, '*');
+
+      window.addEventListener('message', event => {
+        if (event.data.type === 'shortcut-action') {
+          runPlayerAction(event.data.action);
+        }
+      });
+    },
     (player: YTPlayer) => {
       if (player.getVideoData().author.includes('Marine Ch.')) {
         window.parent.postMessage({ type: 'marine-easter-egg' }, '*');

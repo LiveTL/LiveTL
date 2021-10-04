@@ -1,13 +1,12 @@
-<script>
+<script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { Button } from 'svelte-materialify/src';
+  import Button from 'smelte/src/components/Button';
 
   import { modifierKeys } from '../../js/constants.js';
   import { anyRecordingShortcut } from '../../js/store.js';
   import { keydownToShortcut } from '../../js/utils.js';
 
-  /** @type {String} */
-  export let shortcut;
+  export let shortcut: string;
 
   let isRecording = false;
   let recordedShortcut = '';
@@ -20,7 +19,7 @@
     anyRecordingShortcut.set(true);
   };
 
-  const recordShortcut = e => {
+  const recordShortcut = (e: KeyboardEvent) => {
     if (!isRecording) return;
     e?.preventDefault();
     recordedShortcut = keydownToShortcut(e);
@@ -37,7 +36,7 @@
 {#if isRecording}
   <span class="option-label">{recordedShortcut || 'Press keys...'}</span>
 {:else}
-  <Button on:click={startRecording} disabled={$anyRecordingShortcut}>
+  <Button on:click={startRecording} disabled={$anyRecordingShortcut} color="dark">
     {shortcut}
   </Button>
 {/if}

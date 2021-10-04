@@ -1,4 +1,5 @@
 import YouTubeIframeLoader from 'youtube-iframe';
+import { clamp } from '../js/utils.js';
 
 const noop = (): any => {};
 
@@ -22,7 +23,7 @@ export interface YTPlayer extends YT.Player {
 
 export const loadYoutubePlayer = (
   videoId: string,
-  onReady: (player: YTPlayer) => void = noop,
+  onReady: (player: YTPlayer, runPlayerAction: (action: string) => void) => void = noop,
   onStateChange: (player: YTPlayer, state: YT.PlayerState) => void = noop
 ): void => {
   YouTubeIframeLoader.load(YT => {
@@ -36,7 +37,36 @@ export const loadYoutubePlayer = (
         fs: 0
       },
       events: {
-        onReady: (event: YT.PlayerEvent) => onReady(event.target as YTPlayer),
+        onReady: (event: YT.PlayerEvent) => {
+          const player = event.target;
+          const runPlayerAction = (action: string): void => {
+            switch (action) {
+              case 'volumeUp':
+                player.setVolume(clamp(player.getVolume() + 10, 0, 100));
+                break;
+              case 'volumeDown':
+                player.setVolume(clamp(player.getVolume() - 10, 0, 100));
+                break;
+              case 'fullScreen':
+                console.debug('Got request for fullscreen, fullscreen must be done in main frame');
+                break;
+              case 'toggleMute':
+                player.isMuted() ? player.unMute() : player.mute();
+                break;
+              case 'togglePlayPause':
+                {
+                  const paused = player.getPlayerState() === 2;
+                  paused ? player.playVideo() : player.pauseVideo();
+                }
+                break;
+              default:
+                console.debug('Got unknown shortcut action', action);
+                break;
+            }
+          };
+
+          onReady(player as YTPlayer, runPlayerAction);
+        },
         onStateChange: (event: YT.OnStateChangeEvent) => onStateChange(player, event.data)
       }
     });

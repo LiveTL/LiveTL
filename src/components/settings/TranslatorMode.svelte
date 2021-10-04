@@ -31,7 +31,7 @@
   onMount(() => setTimeout(cleanUpMacros));
 </script>
 
-<Checkbox name="Translator mode" store={doTranslatorMode} disabled={isAndroid} />
+<Checkbox name="Enable translator mode" store={doTranslatorMode} disabled={isAndroid} />
 {#if $doTranslatorMode}
   <Checkbox name="Auto-prefix chat messages" store={doAutoPrefix} />
   {#if $doAutoPrefix}

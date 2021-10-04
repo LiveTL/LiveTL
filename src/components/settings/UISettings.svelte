@@ -114,4 +114,3 @@
   {/if}
   <ReadAloud boundingDiv={div} />
 </div>
-

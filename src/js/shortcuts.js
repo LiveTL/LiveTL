@@ -1,7 +1,7 @@
 'use strict';
 
-import { keydownToShortcut, toggleFullScreen  } from './utils.js';
-import { defaultShortcuts, keyboardShortcuts } from './store.js';
+import { keydownToShortcut, toggleFullScreen } from './utils.js';
+import { defaultShortcuts, keyboardShortcuts, videoShortcutAction } from './store.js';
 import { derived, get } from 'svelte/store';
 
 // key -> shortcut
@@ -17,17 +17,11 @@ export const shortcutMap = derived(keyboardShortcuts, $shorts => {
   return new Map([...newShortcuts, ...savedShortcuts]);
 });
 
-const executePostMessageAction = action =>
-  document.querySelector('iframe[title=video]')?.contentWindow?.postMessage({
-    type: 'shortcut-action',
-    action
-  }, '*');
-
 const focussedOnInput = () => document.activeElement.tagName !== 'BODY';
 
-export const executeAction = action => action == 'fullScreen'
+export const executeAction = action => action === 'fullScreen'
   ? toggleFullScreen()
-  : executePostMessageAction(action);
+  : videoShortcutAction.set(action);
 
 export const onKeyEvent = e => {
   const keys = keydownToShortcut(e);
