@@ -1,5 +1,3 @@
-import { transformOpt } from './utils.js';
-
 export const isAndroid = false;
 // DO NOT EDIT THE ABOVE LINE, it will be updated by webpack.
 export const isHolodex = false;
@@ -60,6 +58,16 @@ export const AutoLaunchMode = {
   NONE: 'NONE',
   ...DisplayMode
 };
+
+function capitalize(s) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+// This was causing circular dependency when exported in utils.js
+const transformOpt = str =>
+  capitalize(str
+    .trim()
+    .toLowerCase());
 
 export const autoLaunchModeItems = Object.keys(AutoLaunchMode).map(item => ({
   text: transformOpt(AutoLaunchMode[item]),

@@ -60,15 +60,6 @@ export const getAllVoices = () => window.speechSynthesis?.getVoices() || [];
 export const getAllVoiceNames = () => getAllVoices().map(voice => voice.name);
 export const getVoiceMap = () => new Map(getAllVoices().map(v => [v.name, v]));
 
-export function capitalize(s) {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
-export const transformOpt = str =>
-  capitalize(str
-    .trim()
-    .toLowerCase());
-
 const toKeyName = key => {
   if (!key) return '';
   if (key === 'Enter') return '<Enter>';
