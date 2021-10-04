@@ -30,7 +30,7 @@
         {/if}
       </slot>
     </div>
-    <div class="flex-none self-end">
+    <div class="flex-none self-center">
       <slot name="header-end">
         {#if headerEndIcon !== ''}
           <Icon on:click={headerEndIconOnClick} class="cursor-pointer">

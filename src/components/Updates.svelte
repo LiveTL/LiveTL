@@ -30,7 +30,11 @@
 </script>
 
 <div class="fixed z-50">
-  <Dialog bind:active class="max-w-lg m-5 rounded-md">
+  <Dialog
+    bind:active
+    class="max-w-lg m-5 rounded-md"
+    bgColor="bg-white dark:bg-dark-700"
+  >
     <div slot="title" class="text-center">
       <h5>New Update!</h5>
       <h6>Here's what's new in LiveTL version {version}:</h6>
@@ -42,8 +46,8 @@
         your friends! We'd really appreciate it :)
       </h6>
     </div>
-    <div class="text-center">
-      <Button slot="actions" on:click={setLastVersion}>Let's Go!</Button>
+    <div class="text-center pt-4">
+      <Button on:click={setLastVersion}>Let's Go!</Button>
     </div>
   </Dialog>
 </div>

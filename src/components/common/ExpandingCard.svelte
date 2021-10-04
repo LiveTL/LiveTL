@@ -1,7 +1,6 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
   import Card from './Card.svelte';
-  import Icon from './Icon.svelte';
 
   export let title = '';
   export let expanded = false;
@@ -12,15 +11,13 @@
 <Card
   {title}
   headerOnClick={() => (expanded = !expanded)}
-  addHeaderClasses="hover:bg-dark-600 cursor-pointer"
+  addHeaderClasses="hover:bg-dark-500 cursor-pointer"
   {icon}
+  headerEndIcon={expanded ? 'arrow_drop_up' : 'arrow_drop_down'}
 >
   {#if expanded}
     <div transition:slide|local={{ duration: slideDuration }} class="p-2">
       <slot />
     </div>
   {/if}
-  <Icon slot="header-end">
-    {expanded ? 'arrow_drop_up' : 'arrow_drop_down'}
-  </Icon>
 </Card>

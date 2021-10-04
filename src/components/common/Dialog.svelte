@@ -8,12 +8,16 @@
   export let active = false;
   /** Expanded width variant. */
   export let expandWidth = false;
+  /** Background color. Default: 'bg-white dark:bg-dark-400'  */
+  export let bgColor = 'bg-white dark:bg-dark-400';
 
-  $: classes = (expandWidth ? 'w-full mx-2' : '') + ' ' +
-    ($$props.class ? $$props.class : '');
+  $: classes = `items-center z-50 rounded p-4 shadow ${bgColor}` +
+    ' max-h-full overflow-y-auto ' +
+    (expandWidth ? 'w-full mx-2 ' : ' ') +
+    ($$props.class ?? '');
 </script>
 
-<Dialog bind:value={active} class={classes}>
+<Dialog bind:value={active} classes={classes}>
   <div slot="title" class="flex flex-row items-center">
     <div class="flex-1">
       <slot name="title">

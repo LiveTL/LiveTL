@@ -1,5 +1,5 @@
 import { mdiOpenInNew, mdiYoutubeTv, mdiIframeArray } from '@mdi/js';
-import { getFrameInfoAsync, createPopup } from '../../submodules/chat/scripts/chat-utils.js';
+import { getFrameInfoAsync, createPopup } from '../../submodules/chat/src/ts/chat-utils.ts';
 import { paramsEmbedDomain, AutoLaunchMode } from '../constants.js';
 import { autoLaunchMode } from '../store.js';
 
