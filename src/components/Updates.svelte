@@ -29,19 +29,21 @@
   onDestroy(() => unsubscribe());
 </script>
 
-<Dialog bind:active class="max-w-lg m-5 z-50 rounded-md">
-  <div slot="title" class="text-center">
-    <h5>New Update!</h5>
-    <h6>Here's what's new in LiveTL version {version}:</h6>
-  </div>
-  <div>
-    <Changelog bind:version />
-    <h6 class="text-center">
-      If you like this update, please consider sharing this information with
-      your friends! We'd really appreciate it :)
-    </h6>
-  </div>
-  <div class="text-center">
-    <Button slot="actions" on:click={setLastVersion}>Let's Go!</Button>
-  </div>
-</Dialog>
+<div class="fixed z-50">
+  <Dialog bind:active class="max-w-lg m-5 rounded-md">
+    <div slot="title" class="text-center">
+      <h5>New Update!</h5>
+      <h6>Here's what's new in LiveTL version {version}:</h6>
+    </div>
+    <div>
+      <Changelog bind:version />
+      <h6 class="text-center">
+        If you like this update, please consider sharing this information with
+        your friends! We'd really appreciate it :)
+      </h6>
+    </div>
+    <div class="text-center">
+      <Button slot="actions" on:click={setLastVersion}>Let's Go!</Button>
+    </div>
+  </Dialog>
+</div>

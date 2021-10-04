@@ -9,7 +9,7 @@
   const ghKeys = genKeys(gh);
 
   const compareAttr = attr => (a, b) => a[attr] - b[attr];
-  const reverseCompare = cmp => (a, b) => - cmp(a, b);
+  const reverseCompare = cmp => (a, b) => -cmp(a, b);
   const compareDono = reverseCompare(compareAttr(ocKeys.totalAmountDonated));
   const uniqueBy = attr => arr => {
     const vals = new Set();

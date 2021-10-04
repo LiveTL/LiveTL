@@ -17,7 +17,7 @@
   $: icon = getIcon($welcomeDismissed, $textDirection);
 </script>
 
-<div>
+<div id="wrapper">
   <Button
     {icon}
     noRound
@@ -28,3 +28,9 @@
     iconClass="mx-auto text-lg"
   />
 </div>
+
+<style>
+  #wrapper :global(i) {
+    line-height: 0.5em;
+  }
+</style>

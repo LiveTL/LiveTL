@@ -1,7 +1,7 @@
 import { languageNameCode } from './constants.js';
 import { customFilters, language } from './store.js';
 import { escapeRegExp, not, composeOr } from './utils.js';
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { SyncStore } from './storage.js';
 import { derived } from 'svelte/store';
 
@@ -16,9 +16,9 @@ const tokenMap = Object.fromEntries(langTokens);
 const transDelimiters = ['-', ':'];
 const langSplitRe = /\W+/;
 
-const chat = e => e.chatAuthor == 'chat';
-const plain = e => e.plainReg == 'plain';
-const show = e => e.showBlock == 'show';
+const chat = e => e.chatAuthor === 'chat';
+const plain = e => e.plainReg === 'plain';
+const show = e => e.showBlock === 'show';
 const rule = e => e.rule;
 
 const getFilterStore = (f1, f2, f3) => derived(customFilters, $filters => {
@@ -169,14 +169,14 @@ export function addFilter(chatAuthor, plainReg, showBlock, rule) {
 export function modifyFilter(id, chatAuthor, plainReg, showBlock, rule) {
   const newFilters = customFilters.get()
     .map(f => {
-      if (f.id != id) return f;
+      if (f.id !== id) return f;
       return { chatAuthor, plainReg, showBlock, rule, id: f.id };
     });
   customFilters.set(newFilters);
 }
 
 export function deleteFilter(id) {
-  const newFilters = customFilters.get().filter(f => f.id != id);
+  const newFilters = customFilters.get().filter(f => f.id !== id);
   customFilters.set(newFilters);
 }
 

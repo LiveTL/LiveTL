@@ -64,6 +64,7 @@
     if ($enableCaptionTimeout) captionTimeout();
     if (elem) {
       elem.style.display = 'none';
+      // eslint-disable-next-line no-unused-expressions
       elem.offsetWidth; // force reflow
       elem.style.display = 'block';
     }
@@ -71,20 +72,18 @@
 </script>
 
 <div
-  class="captionsBox z-30 absolute cursor-move text-center"
-  bind:this={captionElem}
+  class="captionsBox z-40 absolute cursor-move text-center"
   style="
   top: min(max({$captionTop}%, calc(0% - 20px)), calc(100% - 30px));
   left: min(max({$captionLeft}%, calc(0% - 20px)), calc(100% - 30px));
   width: max(0%, {$captionWidth}%);
   font-size: {$captionFontSize}px;
-  display: {show
-    ? 'block'
-    : 'none'};
+  display: {show ? 'block' : 'none'};
 "
+  bind:this={captionElem}
 >
   <div
-    class="captionSegment break-words m-5 py-1.5 px-2.5 bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm"
+    class="captionSegment break-words mx-5 py-1.5 px-2.5 bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm"
     bind:this={elem}
   >
     {$captionText}
@@ -102,8 +101,8 @@
     animation: splash 1s normal forwards ease-in-out;
   }
   .captionsBox :global(.ui-resizable-handle) {
-    height: calc(100% - 40px);
-    margin-top: 20px;
+    height: 100%;
+    position: absolute;
   }
   .captionsBox :global(.ui-resizable-e) {
     transform: translateX(-10px);

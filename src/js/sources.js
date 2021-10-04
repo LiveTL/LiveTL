@@ -1,5 +1,5 @@
 import { compose } from './utils';
-import { derived, writable } from 'svelte/store';
+import { writable, readable } from 'svelte/store';
 import {
   parseTranslation,
   isWhitelisted as textWhitelisted,
@@ -20,13 +20,14 @@ import * as API from './api.js';
  * @typedef {import('./types.js').Message} Message
  */
 
-/** @type {{ ytcTranslations: Writable<Message>, mod: Writable<Message>, ytc: Writable<Message>, translations: Writable<Message>, mchad: Readable<Message>, api: Readable<Message>, ytcBonks: Writable<any[]>, ytcDeletions:Writable<any[]> }} */
+/** @type {{ ytcTranslations: Writable<Message>, mod: Writable<Message>, ytc: Writable<Message>, translations: Writable<Message>, mchad: Readable<Message>, api: Readable<Message>, ytcBonks: Writable<any[]>, ytcDeletions:Writable<any[]>, thirdParty: Writable<Message> }} */
 export const sources = {
   ytcTranslations: writable(null),
   mod: writable(null),
   ytc: ytcSource(window).ytc,
   mchad: combineStores(MCHAD.getArchive(paramsVideoId), MCHAD.getLiveTranslations(paramsVideoId)).store,
   api: combineStores(API.getArchive(paramsVideoId), API.getLiveTranslations(paramsVideoId)).store,
+  thirdParty: createThirdPartyStore(),
   ytcBonks: writable(null),
   ytcDeletions: writable(null)
 };
@@ -88,6 +89,18 @@ export function combineStores(...stores) {
   };
 }
 
+function createThirdPartyStore() {
+  return readable(null, set => {
+    const cb = event => {
+      if (event?.data?.type === 'third-party-set') {
+        set(event.data.message);
+      }
+    };
+    window.addEventListener('message', cb);
+    return () => window.removeEventListener(cb);
+  });
+}
+
 /**
  * @param {Ytc.ParsedMessage} ytcMessage
  * @returns {Message}
@@ -123,7 +136,7 @@ export function ytcSource(window) {
   try {
     port = chrome.runtime.connect();
   } catch {
-    return { ytc, cleanUp: () => {}};
+    return { ytc, cleanUp: () => {} };
   }
   let portRegistered = false;
   const registerClient = (frameInfo) => {
@@ -135,6 +148,7 @@ export function ytcSource(window) {
     portRegistered = true;
   };
 
+  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
   if (paramsPopout && !portRegistered) {
     registerClient(
       {
@@ -145,6 +159,7 @@ export function ytcSource(window) {
   }
 
   window.addEventListener('message', (d) => {
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (!paramsPopout && d.data.type === 'frameInfo' && !portRegistered) {
       registerClient(d.data.frameInfo);
     }

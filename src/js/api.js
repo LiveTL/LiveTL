@@ -12,7 +12,7 @@ import ReconnectingEventSource from 'reconnecting-eventsource';
  */
 
 export const sseToStream = link => readable(null, set => {
-  if (paramsIsVOD) return () => { };
+  if (paramsIsVOD != null) return () => { };
 
   const source = new ReconnectingEventSource(link);
 

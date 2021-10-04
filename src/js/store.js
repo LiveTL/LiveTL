@@ -132,9 +132,12 @@ export const faviconURL = writable('/48x48.png');
 export const availableMchadUsers = writable([]);
 export const spotlightedTranslator = writable(null);
 export const displayMode = writable(
-  isHolodex ? DisplayMode.HOLODEX : (
-    paramsEmbedded != null ? DisplayMode.EMBEDDED : DisplayMode.FULLPAGE
-  )
+  isHolodex
+    ? DisplayMode.HOLODEX
+    : (
+        paramsEmbedded != null ? DisplayMode.EMBEDDED : DisplayMode.FULLPAGE
+      )
 );
 export const isResizing = writable(false);
+export const isSelecting = writable(false);
 export const sessionHidden = writable([]);

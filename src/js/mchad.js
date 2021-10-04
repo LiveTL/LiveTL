@@ -1,7 +1,7 @@
 import { MCHAD, AuthorType } from './constants.js';
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as Ty from './types.js';
-import { derived, get, readable } from 'svelte/store';
+import { derived, readable } from 'svelte/store';
 import { enableMchadTLs, mchadUsers } from './store.js';
 import { combineArr, formatTimestampMillis, sleep, sortBy } from './utils.js';
 import { archiveStreamFromScript, sseToStream } from './api.js';
@@ -41,9 +41,9 @@ export async function getRooms(videoId) {
 
 /** @type {(script: MCHADTL[]) => Number} */
 const getFirstTime = script =>
-  script.find(s => /--.*Stream.*Start.*--/i.test(s.Stext))?.Stime
-    ?? script[0]?.Stime
-    ?? 0;
+  script.find(s => /--.*Stream.*Start.*--/i.test(s.Stext))?.Stime ??
+    script[0]?.Stime ??
+    0;
 
 /**
  * @param {Ty.MCHADArchiveRoom} room
@@ -51,7 +51,7 @@ const getFirstTime = script =>
  */
 export async function getArchiveFromRoom(room) {
   const meta = await (await fetch(`https://holodex.net/api/v2/videos/${room.videoId}`)).json();
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const start = Math.floor(new Date(meta.start_actual) / 1000);
   const toJson = r => r.json();
   const script = await fetch(`${MCHAD}/Archive`, {
@@ -66,7 +66,7 @@ export async function getArchiveFromRoom(room) {
   }).then(toJson).catch(() => []);
 
   const firstTime = getFirstTime(script);
-  
+
   const toMessage = mchadToMessage(room.Room, archiveUnixToTimestamp(firstTime), archiveUnixToNumber(firstTime));
   return script.map(toMessage);
 }
@@ -75,12 +75,12 @@ export async function getArchiveFromRoom(room) {
 const getScriptAuthor = script => script[0].author;
 
 /** @type {(arr: Array) => Boolean} */
-const isNotEmpty = arr => arr.length != 0;
+const isNotEmpty = arr => arr.length !== 0;
 
 /** @type {(videoId: String) => Readable<Ty.Message>} */
 export const getArchive = videoId => readable(null, async set => {
   const { vod } = await getRooms(videoId);
-  if (vod.length == 0) return () => { };
+  if (vod.length === 0) return () => { };
 
   const addUnix = tl => ({ ...tl, unix: archiveTimeToInt(tl.timestamp) });
 
