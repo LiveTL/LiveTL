@@ -103,3 +103,26 @@ export const toggleFullScreen = () => {
     }
   }
 };
+
+export const constructParams = (embedVideoId = '') => {
+  const params = new URLSearchParams(window.location.search);
+  let v;
+  if (embedVideoId.length > 0) {
+    params.delete('embedded');
+    params.delete('tabid');
+    params.delete('frameid');
+    v = embedVideoId;
+  } else {
+    v = params.get('v') ?? (new URLSearchParams(window.parent.location.search).get('v'));
+  }
+  params.set('video', v);
+  if (window.location.pathname.includes('live_chat_replay')) {
+    params.set('isReplay', true);
+  }
+  return params;
+};
+
+export const openLiveTL = (embedVideoId = '') => {
+  window.top.location =
+    chrome.runtime.getURL(`watch.html?${constructParams(embedVideoId)}`);
+};

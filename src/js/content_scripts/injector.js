@@ -2,6 +2,7 @@ import { mdiOpenInNew, mdiYoutubeTv, mdiIframeArray } from '@mdi/js';
 import { getFrameInfoAsync, createPopup } from '../../submodules/chat/src/ts/chat-utils.ts';
 import { paramsEmbedDomain, AutoLaunchMode } from '../constants.js';
 import { autoLaunchMode } from '../store.js';
+import { constructParams, openLiveTL } from '../utils.js';
 
 for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) {
   window.addEventListener(eventName, e => e.stopImmediatePropagation(), true);
@@ -94,16 +95,6 @@ const makeButton = (text, callback, color = 'rgb(0, 153, 255)', icon = '') => {
   `;
 };
 
-const constructParams = () => {
-  const params = new URLSearchParams(window.location.search);
-  const v = params.get('v') ?? (new URLSearchParams(window.parent.location.search).get('v'));
-  params.set('video', v);
-  if (window.location.pathname.includes('live_chat_replay')) {
-    params.set('isReplay', true);
-  }
-  return params;
-};
-
 async function loaded() {
   const elem = document.querySelector('yt-live-chat-app');
   elem.style.minWidth = '0px';
@@ -141,10 +132,6 @@ async function loaded() {
     return;
   }
 
-  const openLiveTL = () => {
-    window.top.location =
-      chrome.runtime.getURL(`watch.html?${constructParams()}`);
-  };
   const tlPopout = () => {
     const popoutParams = constructParams();
     popoutParams.set('popout', true);

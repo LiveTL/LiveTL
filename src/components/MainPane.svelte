@@ -8,7 +8,9 @@
     paramsVideoTitle,
     isAndroid,
     DisplayMode,
-    SelectOperation
+    SelectOperation,
+    paramsEmbedded,
+    paramsVideoId
   } from '../js/constants.js';
   import {
     faviconURL,
@@ -27,6 +29,7 @@
   import { displayedMessages } from '../js/sources-aggregate.js';
   import dark from 'smelte/src/dark';
   import Button from './common/IconButton.svelte';
+  import { openLiveTL } from '../js/utils.js';
 
   dark().set(true);
 
@@ -253,7 +256,7 @@
           <span>Export translations log (txt)</span>
         </Tooltip>
       {/if}
-      {#if !settingsOpen && $enableFullscreenButton && $displayMode !== DisplayMode.HOLODEX}
+      {#if !settingsOpen && $enableFullscreenButton && $displayMode !== DisplayMode.HOLODEX && !paramsEmbedded}
         <!-- Fullscreen button -->
         <Tooltip>
           <Button
@@ -264,6 +267,17 @@
             filled
           />
           <span>Toggle fullscreen</span>
+        </Tooltip>
+      {:else if !settingsOpen && paramsEmbedded && $enableFullscreenButton}
+        <Tooltip>
+          <Button
+            slot="activator"
+            icon="open_in_full"
+            on:click={() => openLiveTL(paramsVideoId)}
+            color="dark"
+            filled
+          />
+          <span>Expand LiveTL</span>
         </Tooltip>
       {/if}
       <!-- Settings button -->
