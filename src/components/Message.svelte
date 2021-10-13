@@ -64,7 +64,7 @@
   $: timestamp = showTimestamp ? `(${message.timestamp})` : '';
   $: nameColorClass = generateNameColorClass(moderator, owner);
   $: deletedClass = deleted ? 'text-deleted-light dark:text-deleted-dark italic' : '';
-  $: classes = 'flex flex-row m-1 rounded bg-gray-800 items-center ' +
+  $: classes = 'message flex flex-row m-1 rounded bg-gray-800 items-center ' +
     `${screenshot ? 'animate-none p-1' : 'py-2'}`;
 </script>
 
@@ -83,7 +83,7 @@
     </div>
     <div class="flex-1 mx-2">
       <!-- Message content-->
-      <span class="mr-1 text-white align-middle">
+      <span class="message-content mr-1 text-white align-middle">
         {#each messageArray as msg}
           {#if msg.type === 'text'}
             <span class={deletedClass}>{msg.text}</span>
@@ -101,7 +101,7 @@
         {/each}
       </span>
       <!-- Author & timestamp -->
-      <span class="text-gray-700 dark:text-gray-400" style="font-size: 0.75em;">
+      <span class="message-info text-gray-700 dark:text-gray-400" style="font-size: 0.75em;">
         <span class="{nameColorClass} inline-block align-middle">{message.author}</span>
         {#if mchad}
           <span class="bg-gray-700 px-1 rounded inline-flex gap-1 items-center dark:text-gray-300 align-middle">

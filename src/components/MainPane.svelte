@@ -298,7 +298,7 @@
 {#if !($isResizing || settingsOpen)}
   {#if !isAtRecent}
     <div
-      class="absolute left-1/2 transform -translate-x-1/2 p-2 z-20"
+      class="recent-button absolute left-1/2 transform -translate-x-1/2 p-2 z-20"
       class:bottom-0={$textDirection === TextDirection.BOTTOM}
       class:top-0={$textDirection === TextDirection.TOP}
       transition:fade|local={{ duration: 150 }}

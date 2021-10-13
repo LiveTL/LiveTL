@@ -1,8 +1,5 @@
 name: E2E Tests
-on:
-  push:
-    branches-ignore:
-      - smelte
+on: push
 jobs:
   e2e-test:
     runs-on: ubuntu-latest

@@ -11,3 +11,5 @@ __pycache__/
 .eslintcache
 
 .DS_Store
+venv/
+failure-test*.png

@@ -81,7 +81,7 @@ def test_injection(web):
 @run_on(all_)
 def test_embed_open(web):
     open_embed(web)
-    *_, greeting = web.find_elements_by_css_selector("h2")
+    *_, greeting = web.find_elements_by_css_selector("h5")
     assert greeting.text.strip() == "Welcome to LiveTL!"
 
 
@@ -89,7 +89,7 @@ def test_embed_open(web):
 def test_embed_resize(web):
     open_embed(web)
 
-    _, embed_window = web.find_elements_by_css_selector(".message-display-wrapper")
+    embed_window = web.find_element_by_css_selector(".message-display-wrapper")
     handle, = web.find_elements_by_css_selector(".ui-resizable-handle")
 
     # Move the embed handlebar down by 20px
@@ -100,7 +100,7 @@ def test_embed_resize(web):
 
     # Check if the embed resize is persistant
     open_embed(web)
-    _, embed_window = web.find_elements_by_css_selector(".message-display-wrapper")
+    embed_window = web.find_element_by_css_selector(".message-display-wrapper")
     assert abs(embed_window.size["height"] - new_height) <= 2, "Embed resize is not persistent"
 
 
@@ -114,9 +114,11 @@ def test_embed_mchad_vod_tls(web):
 
     @retry
     def _():
-        tl, info = web.find_elements_by_css_selector(".message-display > .message > span")[:2]
+        tl = web.find_element_by_css_selector(".message-display > .message .message-content")
+        info = web.find_element_by_css_selector(".message-display > .message .message-info")
 
-    tl, info = web.find_elements_by_css_selector(".message-display > .message > span")[:2]
+    tl = web.find_element_by_css_selector(".message-display > .message .message-content")
+    info = web.find_element_by_css_selector(".message-display > .message .message-info")
     assert "Mio, this time we're veteran" in tl.text, "Incorrect tl"
     assert "MonMon TL" in info.text, "Incorrect author of tl"
     assert "Mchad TL" in info.text, "MCHAD badge not found"
@@ -139,9 +141,11 @@ def test_embed_ytc_vod_tls(web):
 
     @retry
     def _():
-        tl, info = web.find_elements_by_css_selector(".message-display > .message > span")[:2]
+        tl = web.find_element_by_css_selector(".message-display > .message .message-content")
+        info = web.find_element_by_css_selector(".message-display > .message .message-info")
 
-    tl, info = web.find_elements_by_css_selector(".message-display > .message > span")[:2]
+    tl = web.find_element_by_css_selector(".message-display > .message .message-content")
+    info = web.find_element_by_css_selector(".message-display > .message .message-info")
     assert "You sound so cool just now" in tl.text, "Incorrect tl"
     assert "KFC" in info.text, "Incorrect author"
     assert "Mchad TL" not in info.text, "MCHAD badge incorrectly displayed"

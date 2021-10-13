@@ -58,7 +58,7 @@
   };
 
   $: if (!$isSelecting) selectedItems = [];
-  $: classes = `w-full flex max-h-full ${
+  $: classes = `message-display w-full flex max-h-full ${
     direction === TextDirection.TOP
       ? 'self-start flex-col-reverse'
       : 'self-end flex-col'
