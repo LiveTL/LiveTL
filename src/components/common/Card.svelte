@@ -9,11 +9,12 @@
   export let icon = '';
   export let addHeaderClasses = '';
   export let headerOnClick: (e: MouseEvent) => void = noop;
+  export let nested = false;
 
-  $: contentClasses = `px-3 flex flex-col ${noGap ? '' : 'gap-2'}`;
+  $: contentClasses = `px-3 py-2 flex flex-col ${noGap ? '' : 'gap-2'}`;
 </script>
 
-<div class="rounded bg-dark-600 ovevrflow-hidden my-3">
+<div class="rounded ovevrflow-hidden my-2 {nested ? 'bg-dark-500' : 'bg-dark-600'}">
   <div
     class="rounded-t p-2 flex flex-row items-center bg-dark-400 {addHeaderClasses}"
     on:click={headerOnClick}

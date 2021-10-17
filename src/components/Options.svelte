@@ -1,14 +1,9 @@
-<script>
+<script lang="ts">
   import Settings from './Settings.svelte';
+  import dark from 'smelte/src/dark';
 
-  // Hot reload window.mchad
-  // TODO delete before pr
-  // import * as mchad from '../js/mchad.js';
-  // import { onMount } from 'svelte';
-
-  // onMount(() => {
-  //   window.mchad = mchad;
-  // });
+  // So options_ui css isn't shit
+  dark().set(true);
 </script>
 
 <div class="bg-dark-700">

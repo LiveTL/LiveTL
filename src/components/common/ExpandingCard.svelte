@@ -6,6 +6,7 @@
   export let expanded = false;
   export let slideDuration = 300;
   export let icon = '';
+  export let nested = false;
 </script>
 
 <Card
@@ -14,6 +15,7 @@
   addHeaderClasses="hover:bg-dark-500 cursor-pointer"
   {icon}
   headerEndIcon={expanded ? 'arrow_drop_up' : 'arrow_drop_down'}
+  {nested}
 >
   {#if expanded}
     <div transition:slide|local={{ duration: slideDuration }} class="p-2">

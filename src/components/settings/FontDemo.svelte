@@ -4,9 +4,6 @@
   $: fontSize = Math.round(fontSize);
 </script>
 
-<div
-  class="mt-2 mb-3"
-  style="font-size: {fontSize}px;"
->
+<div style="font-size: {fontSize}px;">
   Sample text
 </div>
