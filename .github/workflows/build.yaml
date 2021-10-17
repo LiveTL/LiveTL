@@ -2,7 +2,7 @@ name: Latest Release Build
 on:
   release:
     types:
-      - released
+      - published
 jobs:
   build:
     runs-on: ubuntu-latest
