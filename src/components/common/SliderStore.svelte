@@ -19,32 +19,56 @@
   export let max = 100;
   /** Step value. */
   export let step: number | null = null;
+  /** Whether to show the slider value next to its label. Default: true */
+  export let showValue = true;
+  /** Suffix to add to the shown slider value. Can accept callback with value as parameter. */
+  export let showValueSuffix: string | ((v: number) => string) = '';
+  /** Multiplier of the shown slider value. Does not affect stored value. Default: 1 */
+  export let showValueMultiplier: number = 1;
 
   $: value = $store;
   $: store.set(value);
+  $: showedSuffix = typeof showValueSuffix === 'string'
+    ? showValueSuffix
+    : showValueSuffix(value);
+  $: showedValue = showValueMultiplier !== 1
+    ? Math.round(value * showValueMultiplier)
+    : value;
 </script>
 
-<div class="flex flex-row py-1 items-center">
-  {#if name !== ''}
-    <div>
-      {name}:
-    </div>
-  {/if}
-  <div class="flex-1 px-2">
-    <Slider bind:value {color} {disabled} {min} {max} {step} />
+<div class="flex flex-col py-1">
+  <div class="flex flex-row gap-2 items-center">
+    {#if name !== ''}
+      <div>{name}:</div>
+    {/if}
+    {#if showValue && showedSuffix !== ''}
+      <div class="bg-gray-800 rounded px-1 py-px" style="font-size: 0.9em;">
+        <code class="bg-gray-700 rounded px-1">{showedValue}</code>
+        {showedSuffix}
+      </div>
+    {:else if showValue}
+      <code class="bg-gray-700 rounded px-1 py-px" style="font-size: 0.9em;">
+        {showedValue}
+      </code>
+    {/if}
   </div>
-  {#if showReset}
-    <div class="flex-none">
-      <Button
-        icon="refresh"
-        on:click={() => store.reset()}
-        filled
-        noRound
-        noPadding
-        class="py-px px-3"
-      />
+  <div class="flex flex-row items-center">
+    <div class="flex-1 px-2">
+      <Slider bind:value {color} {disabled} {min} {max} {step} />
     </div>
-  {/if}
+    {#if showReset}
+      <div class="flex-none">
+        <Button
+          icon="refresh"
+          on:click={() => store.reset()}
+          filled
+          noRound
+          noPadding
+          class="py-px px-3"
+        />
+      </div>
+    {/if}
+  </div>
 </div>
 
 <style>

@@ -27,8 +27,23 @@
 <Card title="Speech" icon="record_voice_over">
   <Checkbox name="Enable read-aloud mode" store={doSpeechSynth} />
   {#if $doSpeechSynth}
-    <Slider name="Speech volume" store={speechVolume} min={0} max={1} step={0.01} />
-    <Slider name="Speech speed" store={speechSpeed} min={0.5} max={2} step={0.01} />
+    <Slider
+      name="Speech volume"
+      store={speechVolume}
+      min={0}
+      max={1}
+      step={0.01}
+      showValueMultiplier={100}
+      showValueSuffix="%"
+    />
+    <Slider
+      name="Speech speed"
+      store={speechSpeed}
+      min={0.5}
+      max={2}
+      step={0.1}
+      showValueSuffix="x"
+    />
     <Dropdown
       name="Speech synthesis voice"
       {store}

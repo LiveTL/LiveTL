@@ -43,6 +43,7 @@
       min={2}
       max={101}
       step={1}
+      showValue={false}
     />
     <Slider
       name="Spam detection timeframe"
@@ -50,6 +51,7 @@
       min={1}
       max={100}
       step={1}
+      showValue={false}
     />
     <div bind:clientWidth={width}>
       <MultiDropdown

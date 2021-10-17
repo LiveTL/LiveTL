@@ -38,7 +38,14 @@
 <div bind:this={div}>
   <ImportExport />
   <Card title="Font" icon="format_size">
-    <Slider name="Chat zoom" store={chatZoom} min={0.5} max={2} step={0.1} />
+    <Slider
+      name="Chat zoom"
+      store={chatZoom}
+      min={0.5}
+      max={2}
+      step={0.1}
+      showValueSuffix="x"
+    />
     <Slider name="Font size" store={livetlFontSize} min={9} max={54} />
     <FontDemo fontSize={$livetlFontSize} />
   </Card>
@@ -101,10 +108,11 @@
         />
         {#if $enableCaptionTimeout}
           <Slider
-            name="Disappear after (seconds)"
+            name="Disappear after"
             store={captionDuration}
             min={1}
             max={61}
+            showValueSuffix={(value) => (value > 1) ? 'seconds' : 'second'}
           />
         {/if}
       {/if}
