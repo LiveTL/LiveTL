@@ -30,13 +30,13 @@
 </script>
 
 <ExpandingCard title="Developers and Contributors" icon="group">
-  <ul class="list-disc underline text-base p-2 list-inside">
+  <ul class="list-disc text-base p-2 list-inside">
     {#each developers as dev}
       <li>
         <a
           href="https://github.com/{dev[ghKeys.login]}"
           target="_blank"
-          class="text-blue-400"
+          class="text-blue-400 underline"
         >
           {dev[ghKeys.login]}
         </a>
