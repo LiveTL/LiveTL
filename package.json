@@ -1,6 +1,6 @@
 {
   "name": "LiveTL",
-  "version": "6.8.0",
+  "version": "6.9.420",
   "description": "Get live translations for YouTube streams, crowdsourced from multilingual viewers!",
   "scripts": {
     "build": "node utils/build.js",
