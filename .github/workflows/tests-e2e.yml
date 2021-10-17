@@ -24,7 +24,7 @@ jobs:
         wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
         sudo dpkg -i ./google-chrome-stable_current_amd64.deb
     - name: Install Dependencies
-      run: python3 -m pip install autoparaselenium>=0.1.8
+      run: python3 -m pip install selenium==3.141.0 autoparaselenium>=0.1.8
     - uses: c-hive/gha-yarn-cache@v1
     - name: Install modules
       run: |
