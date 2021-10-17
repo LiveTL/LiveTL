@@ -2,7 +2,7 @@ import '../../img/128x128.png';
 import '../../img/48x48.png';
 
 chrome.runtime.onInstalled.addListener((details) => {
-  if (details.reason !== 'update') { chrome.tabs.create({ url: chrome.runtime.getURL('welcome.html') }); }
+  if (details.reason === 'install') { chrome.tabs.create({ url: chrome.runtime.getURL('welcome.html') }); }
 });
 
 const stripHeaders = (headers) => {

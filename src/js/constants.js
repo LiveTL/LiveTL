@@ -1,7 +1,5 @@
 export const isAndroid = false;
 // DO NOT EDIT THE ABOVE LINE, it will be updated by webpack.
-export const isHolodex = false;
-// DO NOT EDIT THE ABOVE LINE, it will be updated by webpack.
 export const storageVersion = 'v0-alpha';
 
 /** @enum {String} */
@@ -49,8 +47,7 @@ export const textDirectionMap = new Map([
 export const DisplayMode = {
   POPOUT: 'POPOUT',
   EMBEDDED: 'EMBEDDED',
-  FULLPAGE: 'FULL PAGE',
-  HOLODEX: 'HOLODEX'
+  FULLPAGE: 'FULL PAGE'
 };
 
 /** @enum {String} */

@@ -2,14 +2,12 @@
   import {
     BROWSER,
     Browser,
-    TextDirection,
-    DisplayMode
+    TextDirection
   } from '../js/constants.js';
   import {
     updatePopupActive,
     textDirection,
-    welcomeDismissed,
-    displayMode
+    welcomeDismissed
   } from '../js/store.js';
   import Minimizer from './Minimizer.svelte';
   import '../css/splash.css';
@@ -51,9 +49,7 @@
   {/if}
   {#if !$welcomeDismissed}
     <h5 style="font-size: 1.5em;">
-      Welcome to LiveTL{#if $displayMode === DisplayMode.HOLODEX}
-        <span style="font-size: 0.75em;">&nbsp;<i>Lite</i></span>
-      {/if}!
+      Welcome to LiveTL
     </h5>
   {/if}
   <h6 style="font-size: 1em;">
@@ -74,15 +70,13 @@
         See what's new in v{version}
       </a>
     </div>
-    {#if $displayMode !== DisplayMode.HOLODEX}
-      <div class="flex flex-wrap gap-1 py-1">
-        {#each badges as { name, src, href }}
-          <a {href}>
-            <img alt={name} {src} style="height: 1.1em;" />
-          </a>
-        {/each}
-      </div>
-    {/if}
+    <div class="flex flex-wrap gap-1 py-1">
+      {#each badges as { name, src, href }}
+        <a {href}>
+          <img alt={name} {src} style="height: 1.1em;" />
+        </a>
+      {/each}
+    </div>
   {/if}
   {#if $textDirection === TextDirection.TOP}
     <Minimizer />

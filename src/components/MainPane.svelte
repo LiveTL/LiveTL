@@ -7,7 +7,6 @@
     TextDirection,
     paramsVideoTitle,
     isAndroid,
-    DisplayMode,
     SelectOperation,
     paramsEmbedded,
     paramsVideoId
@@ -22,7 +21,6 @@
     spotlightedTranslator,
     isResizing,
     isSelecting,
-    displayMode,
     screenshotRenderWidth
   } from '../js/store.js';
   import MessageDisplay from './MessageDisplay.svelte';
@@ -256,7 +254,7 @@
           <span>Export translations log (txt)</span>
         </Tooltip>
       {/if}
-      {#if !settingsOpen && $enableFullscreenButton && $displayMode !== DisplayMode.HOLODEX && !paramsEmbedded}
+      {#if !settingsOpen && $enableFullscreenButton && !paramsEmbedded}
         <!-- Fullscreen button -->
         <Tooltip>
           <Button
