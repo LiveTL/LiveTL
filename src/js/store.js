@@ -94,7 +94,8 @@ export const
   speechVoiceNameSetting = SS('speechVoiceNameSetting', ''),
   speechSpeed = SS('speechSpeed', 1),
   keyboardShortcuts = SS('keyboardShortcuts', defaultShortcuts),
-  autoLaunchMode = SS('autoLaunchMode', AutoLaunchMode.NONE);
+  autoLaunchMode = SS('autoLaunchMode', AutoLaunchMode.NONE),
+  enableSpecialSpamProtection = SS('enableSpecialSpamProtection', false);
 
 // Non-persistant stores
 
