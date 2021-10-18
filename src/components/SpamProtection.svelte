@@ -1,6 +1,6 @@
 <script>
   import { Subheader } from 'svelte-materialify/src';
-  import { enableSpamProtection } from '../js/store.js';
+  import { enableSpamProtection, enableSpecialSpamProtection } from '../js/store.js';
   import { spammersDetected, spamMsgAmount, spamMsgInterval } from '../js/store.js';
   import Slider from './options/Slider.svelte';
   import Toggle from './options/Toggle.svelte';
@@ -13,6 +13,7 @@
 
 <div style="margin-top: 1.5rem;">
   <Toggle name="Spam protection" store={enableSpamProtection} />
+  <Toggle name="Authorized user spam protection" store={enableSpecialSpamProtection} />
   {#if $enableSpamProtection}
     <Subheader style="height: 2rem;">
       Hide spammers that send <code>{amount}</code> or more messages within

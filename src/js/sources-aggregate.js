@@ -110,7 +110,7 @@ const dispTransform =
 
     const attrNotIn = (set, attr) => item => !set.has(item[attr]);
     const notWhitelisted = ([id]) => !$whitelisted(id);
-    const possibleSpam = $enSpecialSpam ? $items.filter(isPleb) : $items;
+    const possibleSpam = $enSpecialSpam ? $items : $items.filter(isPleb);
     const spammers = $enSpam
       ? getSpamAuthors(possibleSpam, $spamAmt, $spamInt).filter(notWhitelisted)
       : [];
