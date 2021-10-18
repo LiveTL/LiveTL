@@ -88,7 +88,7 @@ export const
   ytcDeleteBehaviour = SS('ytcDeleteBehaviour', YtcDeleteBehaviour.HIDE),
   autoVertical = SS('autoVertical', true),
   enableSpamProtection = SS('enableSpamProtection', true),
-  spamMsgAmount = SS('spamMsgAmount', 5),
+  spamMsgAmount = SS('spamMsgAmount', 7),
   spamMsgInterval = SS('spamMsgInterval', 10),
   spammersDetected = LS('spammersDetected', [sampleSpam].slice(1)),
   speechVoiceNameSetting = SS('speechVoiceNameSetting', ''),
