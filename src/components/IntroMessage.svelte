@@ -49,7 +49,7 @@
   {/if}
   {#if !$welcomeDismissed}
     <h5 style="font-size: 1.5em;">
-      Welcome to LiveTL
+      Welcome to LiveTL!
     </h5>
   {/if}
   <h6 style="font-size: 1em;">
