@@ -25,7 +25,7 @@
 </script>
 
 <div
-  class="fixed top-0 left-0 p-1 bg-dark-400"
+  class="fixed top-0 left-0 p-1 bg-dark-400 text-base"
   bind:this={renderElement}
   style="width: {renderWidth}px; z-index: -1;"
 >

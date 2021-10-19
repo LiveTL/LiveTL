@@ -8,8 +8,6 @@
   import Icon from './common/Icon.svelte';
   import Menu from './common/Menu.svelte';
 
-  // TODO: test mchad & deletion
-
   export let message: Ltl.Message;
   export let hidden = false;
   export let showTimestamp = false;
@@ -104,9 +102,8 @@
       <span class="message-info text-gray-700 dark:text-gray-400" style="font-size: 0.75em;">
         <span class="{nameColorClass} inline-block align-middle">{message.author}</span>
         {#if mchad}
-          <span class="bg-gray-700 px-1 rounded inline-flex gap-1 items-center dark:text-gray-300 align-middle">
-            <Icon block={false} class="inline" small>check_circle</Icon>
-            <span>Mchad TL</span>
+          <span class="bg-gray-700 px-1 rounded inline-block text-gray-300 align-middle">
+            <Icon block={false} class="inline align-middle" small>check_circle</Icon> Mchad TL
           </span>
         {/if}
         <span class="inline-block align-middle">{timestamp}</span>
