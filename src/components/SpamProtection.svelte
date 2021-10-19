@@ -13,7 +13,10 @@
 
 <div style="margin-top: 1.5rem;">
   <Toggle name="Spam protection" store={enableSpamProtection} />
-  <Toggle name="Authorized user spam protection" store={enableSpecialSpamProtection} />
+  <Toggle
+    name="Authorized user spam protection"
+    store={enableSpecialSpamProtection}
+  />
   {#if $enableSpamProtection}
     <Subheader style="height: 2rem;">
       Hide spammers that send <code>{amount}</code> or more messages within
