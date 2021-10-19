@@ -14,7 +14,7 @@
 <div style="margin-top: 1.5rem;">
   <Toggle name="Spam protection" store={enableSpamProtection} />
   <Toggle
-    name="Authorized user spam protection"
+    name="Trusted user spam protection"
     store={enableSpecialSpamProtection}
   />
   {#if $enableSpamProtection}
