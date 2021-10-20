@@ -14,9 +14,10 @@
   <ExpansionPanel>
     <span slot="header">Spam protection update</span>
     <div>
-      We've updated our spam detector so it is disabled for MChad translations.
-      Users on MChad undergo a verification processs -- therefore, they will not
-      be limited by message frequency.
+      We've updated our spam detector so it can be selectively disabled for
+      trusted users. Channel owners, verified users, MChad translators, etc.
+      will not be banned based on message frequency by default. If you prefer,
+      you can disable this change in the settings menu.
     </div>
   </ExpansionPanel>
 </ExpansionPanels>
