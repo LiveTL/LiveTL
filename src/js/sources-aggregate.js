@@ -4,7 +4,7 @@ import { combineStores, sources } from './sources.js';
 import { getSpamAuthors, removeDuplicateMessages } from './sources-util.js';
 import { ytcDeleteBehaviour, sessionHidden, spotlightedTranslator } from './store.js';
 import { channelFilters, mchadUsers, spamMsgAmount, spamMsgInterval } from './store.js';
-import { enableSpamProtection, enableSpecialSpamProtection } from './store.js';
+import { disableSpecialSpamProtection, enableSpamProtection } from './store.js';
 import { spammersDetected } from './store.js';
 import { defaultCaption, GIGACHAD, YtcDeleteBehaviour } from './constants.js';
 import { checkAndSpeak } from './speech.js';
@@ -102,15 +102,15 @@ const spamStores = [spamMsgAmount, spamMsgInterval]
 
 const dispDepends = [
   ...[capturedMessages, allBanned, hidden, spotlightedTranslator],
-  ...[...spamStores, whitelistedSpam, enableSpamProtection, enableSpecialSpamProtection]
+  ...[...spamStores, whitelistedSpam, enableSpamProtection, disableSpecialSpamProtection]
 ];
 
 const dispTransform =
-  ([$items, $banned, $hidden, $spot, $spamAmt, $spamInt, $whitelisted, $enSpam, $enSpecialSpam]) => {
+  ([$items, $banned, $hidden, $spot, $spamAmt, $spamInt, $whitelisted, $enSpam, $disSpecialSpam]) => {
 
     const attrNotIn = (set, attr) => item => !set.has(item[attr]);
     const notWhitelisted = ([id]) => !$whitelisted(id);
-    const possibleSpam = $enSpecialSpam ? $items : $items.filter(isPleb);
+    const possibleSpam = $disSpecialSpam ? $items.filter(isPleb) : $items;
     const spammers = $enSpam
       ? getSpamAuthors(possibleSpam, $spamAmt, $spamInt).filter(notWhitelisted)
       : [];

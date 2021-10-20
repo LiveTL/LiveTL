@@ -95,7 +95,7 @@ export const
   speechSpeed = SS('speechSpeed', 1),
   keyboardShortcuts = SS('keyboardShortcuts', defaultShortcuts),
   autoLaunchMode = SS('autoLaunchMode', AutoLaunchMode.NONE),
-  enableSpecialSpamProtection = SS('enableSpecialSpamProtection', false);
+  disableSpecialSpamProtection = SS('disableSpecialSpamProtection', true);
 
 // Non-persistant stores
 
