@@ -88,25 +88,27 @@ export const
   ytcDeleteBehaviour = SS('ytcDeleteBehaviour', YtcDeleteBehaviour.HIDE),
   autoVertical = SS('autoVertical', true),
   enableSpamProtection = SS('enableSpamProtection', true),
-  spamMsgAmount = SS('spamMsgAmount', 5),
+  spamMsgAmount = SS('spamMsgAmount', 7),
   spamMsgInterval = SS('spamMsgInterval', 10),
   spammersDetected = LS('spammersDetected', [sampleSpam].slice(1)),
   speechVoiceNameSetting = SS('speechVoiceNameSetting', ''),
   speechSpeed = SS('speechSpeed', 1),
   keyboardShortcuts = SS('keyboardShortcuts', defaultShortcuts),
-  autoLaunchMode = SS('autoLaunchMode', AutoLaunchMode.NONE);
+  autoLaunchMode = SS('autoLaunchMode', AutoLaunchMode.NONE),
+  disableSpecialSpamProtection = SS('disableSpecialSpamProtection', true);
 
 // Non-persistant stores
 
 /** @typedef {{width: Number, height: Number}} WindowDimension */
-/** @type {Readable<WindowDimension>} */
 const getWindowDims = () => ({ width: window.innerWidth, height: window.innerHeight });
+/** @type {Readable<WindowDimension>} */
 export const windowSize = readable(getWindowDims(), set => {
   const cb = compose(set, getWindowDims);
   window.addEventListener('resize', cb);
   return () => window.removeEventListener('resize', cb);
 });
 const videoSideDepends = [videoSideSetting, autoVertical, windowSize];
+// @ts-ignore
 export const videoSide = derived(videoSideDepends, ([$videoSide, $autoVert, $windims]) => {
   const { width, height } = $windims;
   return $autoVert && height > width ? VideoSide.TOP : $videoSide;
