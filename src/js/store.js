@@ -94,18 +94,20 @@ export const speechVoiceNameSetting = SS('speechVoiceNameSetting', '');
 export const speechSpeed = SS('speechSpeed', 1);
 export const autoLaunchMode = SS('autoLaunchMode', AutoLaunchMode.NONE);
 export const keyboardShortcuts = SS('keyboardShortcuts', defaultShortcuts);
+export const disableSpecialSpamProtection = SS('disableSpecialSpamProtection', true);
 
 // Non-persistant stores
 
 /** @typedef {{width: Number, height: Number}} WindowDimension */
-/** @type {Readable<WindowDimension>} */
 const getWindowDims = () => ({ width: window.innerWidth, height: window.innerHeight });
+/** @type {Readable<WindowDimension>} */
 export const windowSize = readable(getWindowDims(), set => {
   const cb = compose(set, getWindowDims);
   window.addEventListener('resize', cb);
   return () => window.removeEventListener('resize', cb);
 });
 const videoSideDepends = [videoSideSetting, autoVertical, windowSize];
+// @ts-ignore
 export const videoSide = derived(videoSideDepends, ([$videoSide, $autoVert, $windims]) => {
   const { width, height } = $windims;
   return $autoVert && height > width ? VideoSide.TOP : $videoSide;

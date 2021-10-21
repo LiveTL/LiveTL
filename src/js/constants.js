@@ -103,6 +103,9 @@ export const AuthorType = {
   api: 1 << 5
 };
 
+export const GIGACHAD =
+  AuthorType.moderator | AuthorType.owner | AuthorType.mchad | AuthorType.api;
+
 export const languages = [
   { code: 'en', name: 'English', lang: 'English', tag: 'en-US' },
   { code: 'jp', name: 'Japanese', lang: '日本語', tag: 'jp-JP' },

@@ -4,7 +4,8 @@
     spammersDetected,
     spamMsgAmount,
     spamMsgInterval,
-    ytcDeleteBehaviour
+    ytcDeleteBehaviour,
+    disableSpecialSpamProtection
   } from '../../js/store.js';
   import { ytcDeleteItems } from '../../js/constants.js';
   import MultiDropdown from '../options/MultiDropdown.svelte';
@@ -32,6 +33,10 @@
   />
   <Checkbox name="Enable extra spam protection" store={enableSpamProtection} />
   {#if $enableSpamProtection}
+    <Checkbox
+      name="Bypass spam detection filter for trusted users"
+      store={disableSpecialSpamProtection}
+    />
     <small class="p-2 rounded bg-gray-800">
       Hide spammers that send <code class={codeClass}>{amount}</code>
       or more messages within <code class={codeClass}>{interval}</code>
