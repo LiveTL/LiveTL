@@ -39,7 +39,7 @@
       <h5>New Update!</h5>
       <h6>Here's what's new in LiveTL version {version}:</h6>
     </div>
-    <div>
+    <div class="text-base">
       <Changelog bind:version />
       <h6 class="text-center">
         If you like this update, please consider sharing this information with

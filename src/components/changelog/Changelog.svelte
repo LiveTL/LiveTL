@@ -1,5 +1,5 @@
 <script>
-  export const version = '7.0.0';
+  export const version = '7.0.2';
   import ExpandingCard from '../common/ExpandingCard.svelte';
 </script>
 
