@@ -190,23 +190,25 @@ async function loaded() {
     });
   };
 
-  switch (autoLaunchMode.get()) {
-  case AutoLaunchMode.NONE: {
-    break;
-  }
-  case AutoLaunchMode.FULLPAGE: {
-    openLiveTL();
-    break;
-  }
-  case AutoLaunchMode.POPOUT: {
-    tlPopout();
-    break;
-  }
-  case AutoLaunchMode.EMBEDDED: {
-    embedTLs();
-    break;
-  }
-  }
+  autoLaunchMode.loaded.then(mode => {
+    switch (mode) {
+    case AutoLaunchMode.NONE: {
+      break;
+    }
+    case AutoLaunchMode.FULLPAGE: {
+      openLiveTL();
+      break;
+    }
+    case AutoLaunchMode.POPOUT: {
+      tlPopout();
+      break;
+    }
+    case AutoLaunchMode.EMBEDDED: {
+      embedTLs();
+      break;
+    }
+    }
+  });
 
   /** Start buttons injections */
   makeButton('Open LiveTL', openLiveTL, undefined, mdiYoutubeTv);
