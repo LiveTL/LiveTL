@@ -42,6 +42,7 @@ export class SyncStore {
     if (Date.now() - this._lastSet < 100) return;
     return await this._storage.get(this.name).then(value => {
       this._store.set(value ?? this.get());
+      return value;
     });
   }
 
