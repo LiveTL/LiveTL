@@ -50,6 +50,8 @@ module.exports = (env, options) => {
   const hasEnvVersion = (envVersion != null && typeof envVersion === 'string');
   if (hasEnvVersion) manifest.version = envVersion;
 
+  const polyfill = isAndroid ? ['polyfill'] : [];
+
   const config = {
     entry: {
       popout: path.join(__dirname, 'src', 'js', 'pages', 'popout.js'),
@@ -65,7 +67,8 @@ module.exports = (env, options) => {
       chat: path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-injector.ts'),
       'hyperchat/hyperchat': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'hyperchat.ts'),
       'yt-workaround': path.join(__dirname, 'src', 'ts', 'yt-workaround.ts'),
-      'workaround-injector': path.join(__dirname, 'src', 'ts', 'content_scripts', 'workaround-injector.ts')
+      'workaround-injector': path.join(__dirname, 'src', 'ts', 'content_scripts', 'workaround-injector.ts'),
+      polyfill: path.join(__dirname, 'src', 'js', 'polyfills', 'chrome.js')
     },
     output: {
       path: path.join(__dirname, 'build'),
@@ -190,16 +193,6 @@ module.exports = (env, options) => {
       //   'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV)
       // }),
       // ...(isAndroid
-      //   ? [new BannerPlugin({
-      //       banner: fileSystem.readFileSync(
-      //         path.join(__dirname, 'src', 'js', 'polyfills', 'chrome.js')
-      //       ).toString().replace(
-      //         'const MANIFEST_OBJECT = undefined;',
-      //         `const MANIFEST_OBJECT = ${manifest};`
-      //       ),
-      //       raw: true
-      //     })]
-      //   : []),
       new CopyWebpackPlugin({
         patterns: [
           {
@@ -248,43 +241,43 @@ module.exports = (env, options) => {
       new HtmlWebpackPlugin({
         template: path.join(__dirname, 'src', 'empty.html'),
         filename: 'watch.html',
-        chunks: ['watch'],
+        chunks: [...polyfill, 'watch'],
         chunksSortMode: 'manual'
       }),
       new HtmlWebpackPlugin({
         template: path.join(__dirname, 'src', 'empty.html'),
         filename: 'popout.html',
-        chunks: ['popout'],
+        chunks: [...polyfill, 'popout'],
         chunksSortMode: 'manual'
       }),
       new HtmlWebpackPlugin({
         template: path.join(__dirname, 'src', 'empty.html'),
         filename: 'options.html',
-        chunks: ['options'],
+        chunks: [...polyfill, 'options'],
         chunksSortMode: 'manual'
       }),
       new HtmlWebpackPlugin({
         template: path.join(__dirname, 'src', 'empty.html'),
         filename: 'welcome.html',
-        chunks: ['welcome'],
+        chunks: [...polyfill, 'welcome'],
         chunksSortMode: 'manual'
       }),
       new HtmlWebpackPlugin({
         template: path.join(__dirname, 'src', 'empty.html'),
         filename: 'lite.html',
-        chunks: ['lite'],
+        chunks: [...polyfill, 'lite'],
         chunksSortMode: 'manual'
       }),
       new HtmlWebpackPlugin({
         template: path.join(__dirname, 'src', 'empty.html'),
         filename: 'background.html',
-        chunks: ['background', 'chat-background'],
+        chunks: [...polyfill, 'background', 'chat-background'],
         chunksSortMode: 'manual'
       }),
       new HtmlWebpackPlugin({
         template: path.join(__dirname, 'src', 'empty.html'),
         filename: 'hyperchat/index.html',
-        chunks: ['hyperchat/hyperchat'],
+        chunks: [...polyfill, 'hyperchat/hyperchat'],
         chunksSortMode: 'manual'
       }),
       new MiniCssExtractPlugin({ filename: '[name].css' })
@@ -294,15 +287,6 @@ module.exports = (env, options) => {
 
   if (isAndroid) {
     console.log('isAndroid');
-    config.plugins.push(new BannerPlugin({
-      banner: fileSystem.readFileSync(
-        path.join(__dirname, 'src', 'js', 'polyfills', 'chrome.js')
-      ).toString().replace(
-        'const MANIFEST_OBJECT = undefined;',
-        `const MANIFEST_OBJECT = ${manifest};`
-      ),
-      raw: true
-    }));
   }
 
   if (prod) {

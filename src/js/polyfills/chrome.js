@@ -1,3 +1,5 @@
+import MANIFEST_OBJECT from '../../manifest.json';
+
 (() => {
   // chrome api polyfill, injected into both
   // the background script as well as
@@ -8,7 +10,6 @@
     window.chrome.runtime &&
     window.chrome.runtime.id == LIVETL_ANDROID
   ) return;
-  const MANIFEST_OBJECT = undefined;
 
   // native js interface injected in all windows and subframes
   // window.nativeJavascriptInterface = {
