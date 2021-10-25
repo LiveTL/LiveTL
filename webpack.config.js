@@ -5,7 +5,6 @@ const env = require('./utils/env');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { version, description } = require('./package.json');
-const BannerPlugin = webpack.BannerPlugin;
 const { preprocess } = require('./svelte.config');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
