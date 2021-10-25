@@ -28,8 +28,8 @@ export const SelectOperation = {
 };
 
 export const chatSplitMap = new Map([
-  [ChatSplit.HORIZONTAL, 'Vertical'],
-  [ChatSplit.VERTICAL, 'Horizontal']
+  [ChatSplit.HORIZONTAL, 'Horizontal'],
+  [ChatSplit.VERTICAL, 'Vertical']
 ]);
 
 /** @enum {String} */

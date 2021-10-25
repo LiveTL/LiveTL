@@ -114,7 +114,7 @@
   $: isTopSide = $videoSide === VideoSide.TOP;
   $: isLeftSide = $videoSide === VideoSide.LEFT;
   $: isFullPage = $displayMode === DisplayMode.FULLPAGE;
-  $: isChatVertical = $chatSplit === ChatSplit.VERTICAL;
+  $: isChatVertical = $chatSplit === ChatSplit.VERTICAL && isFullPage;
 
   $: chatElemStyle =
     (isChatVertical
