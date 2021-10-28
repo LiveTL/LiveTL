@@ -1,4 +1,4 @@
-import { MCHAD, AuthorType } from './constants.js';
+import { MCHAD, AuthorType, languages } from './constants.js';
 // eslint-disable-next-line no-unused-vars
 import { Message, MCHADTL, MCHADStreamItem, MCHADLiveRoom, MCHADArchiveRoom, Seconds, UnixTimestamp } from './types.js';
 // eslint-disable-next-line no-unused-vars
@@ -6,6 +6,7 @@ import { derived, get, readable, Readable } from 'svelte/store';
 import { enableMchadTLs, mchadUsers } from './store.js';
 import { combineArr, formatTimestampMillis, sleep, sortBy } from './utils.js';
 import { archiveStreamFromScript, sseToStream } from './api.js';
+import { isLangMatch } from './filter.js';
 
 /** @typedef {(unix: UnixTimestamp) => String} UnixToTimestamp */
 /** @typedef {(unix: UnixTimestamp) => number} UnixToNumber */
@@ -39,6 +40,19 @@ export async function getRooms(videoId) {
 
   return { live, vod };
 }
+
+/** @type {(tag: String) => String[]} */
+const possibleLanguages = tag => languages
+  .map(lang => isLangMatch(tag, lang) ? [lang] : []).flat();
+
+/** @type {(tag: String) => String | null} */
+export const getRoomTagLanguageCode = tag => {
+  const possible = tag
+    .split(/\s+/g)
+    .map(possibleLanguages)
+    .flat();
+  return possible[possible.length - 1]?.code ?? null;
+};
 
 /** @type {(script: MCHADTL[]) => Number} */
 const getFirstTime = script =>
