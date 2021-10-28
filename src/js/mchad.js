@@ -42,8 +42,7 @@ export async function getRooms(videoId) {
 }
 
 /** @type {(tag: String) => String[]} */
-const possibleLanguages = tag => languages
-  .map(lang => isLangMatch(tag, lang) ? [lang] : []).flat();
+const possibleLanguages = tag => languages.filter(lang => isLangMatch(tag, lang));
 
 /** @type {(tag: String) => String | null} */
 export const getRoomTagLanguageCode = tag => {
