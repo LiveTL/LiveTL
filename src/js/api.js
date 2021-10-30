@@ -63,7 +63,8 @@ const authorName = (() => {
   const lookup = new Map();
   const addTranslator = translator => lookup.set(translator.userID, translator.displayName);
   const addTranslators = translators => translators.forEach(addTranslator);
-  fetch(url('/translators/registered')).then(toJson).then(addTranslators);
+  // check for window.fetch to make jest stfu
+  if (window.fetch) fetch(url('/translators/registered')).then(toJson).then(addTranslators);
   return lookup.get.bind(lookup);
 })();
 
