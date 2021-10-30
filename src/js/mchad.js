@@ -81,7 +81,7 @@ export async function getArchiveFromRoom(room) {
 
   const firstTime = getFirstTime(script);
   
-  const toMessage = mchadToMessage(room.Room, archiveUnixToTimestamp(firstTime), archiveUnixToNumber(firstTime));
+  const toMessage = mchadToMessage(room.Room, archiveUnixToTimestamp(firstTime), archiveUnixToNumber(firstTime), getRoomTagLanguageCode(room.Tags));
   return script.map(toMessage);
 }
 
@@ -144,12 +144,13 @@ const archiveTimeToInt = archiveTime => archiveTime
 
 let mchadTLCounter = 0;
 
-/** @type {(author: String, unixToString: UnixToTimestamp, unixToNumber: UnixToNumber) => (data: MCHADTL) => Message} */
-const mchadToMessage = (author, unixToTimestamp, unixToNumber) => data => ({
+/** @type {(author: String, unixToString: UnixToTimestamp, unixToNumber: UnixToNumber, langCode: String | null) => (data: MCHADTL) => Message} */
+const mchadToMessage = (author, unixToTimestamp, unixToNumber, langCode) => data => ({
   text: data.Stext,
   messageArray: [{ type: 'text', text: data.Stext }],
   author,
   authorId: author,
+  langCode,
   messageId: ++mchadTLCounter,
   timestamp: unixToTimestamp(data.Stime),
   types: AuthorType.mchad,
@@ -160,7 +161,8 @@ const mchadToMessage = (author, unixToTimestamp, unixToNumber) => data => ({
 export const getRoomTranslations = room => derived(streamRoom(room.Nick), (data, set) => {
   if (!enableMchadTLs.get()) return;
   const flag = data?.flag;
-  const toMessage = mchadToMessage(room.Nick, liveUnixToTimestamp, (unix) => unix);
+  const langCode = getRoomTagLanguageCode(room.Tags);
+  const toMessage = mchadToMessage(room.Nick, liveUnixToTimestamp, (u) => u, langCode);
   if (flag === 'insert' || flag === 'update') {
     set(toMessage(data.content));
   }

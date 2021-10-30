@@ -1,4 +1,4 @@
-import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour, DisplayMode, paramsEmbedded, AutoLaunchMode } from './constants.js';
+import { Browser, BROWSER, TextDirection, VideoSide, ChatSplit, YtcDeleteBehaviour, DisplayMode, languageNameCode, paramsEmbedded, AutoLaunchMode } from './constants.js';
 import { getAllVoiceNames, getVoiceMap } from './utils.js';
 import { LookupStore, SyncStore } from './storage.js';
 // eslint-disable-next-line no-unused-vars
@@ -135,6 +135,7 @@ export const speechSpeaker = derived(
   [speechVoiceName, voiceNames],
   ([$speechVoiceName, _$voiceNames]) => getVoiceMap().get($speechVoiceName),
 );
+export const langCode = derived(language, $lang => languageNameCode[$lang].code);
 
 export const updatePopupActive = writable(false);
 export const videoTitle = writable('LiveTL');

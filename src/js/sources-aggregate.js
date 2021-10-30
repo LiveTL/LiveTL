@@ -4,7 +4,7 @@ import { combineStores, sources } from './sources.js';
 import { getSpamAuthors, removeDuplicateMessages } from './sources-util.js';
 import { ytcDeleteBehaviour, sessionHidden, spotlightedTranslator } from './store.js';
 import { channelFilters, mchadUsers, spamMsgAmount, spamMsgInterval } from './store.js';
-import { disableSpecialSpamProtection, enableSpamProtection } from './store.js';
+import { disableSpecialSpamProtection, enableSpamProtection, langCode } from './store.js';
 import { spammersDetected } from './store.js';
 import { defaultCaption, GIGACHAD, YtcDeleteBehaviour } from './constants.js';
 import { checkAndSpeak } from './speech.js';
@@ -97,11 +97,16 @@ export const capturedMessages = readable([], set => {
   };
 });
 
+export const sameLangMessages = derived(
+  [capturedMessages, langCode],
+  ([$msgs, $langCode]) => $msgs.filter(msg => msg.langCode == null || msg.langCode == $langCode)
+);
+
 const spamStores = [spamMsgAmount, spamMsgInterval]
   .map(store => derived(store, Math.round));
 
 const dispDepends = [
-  ...[capturedMessages, allBanned, hidden, spotlightedTranslator],
+  ...[sameLangMessages, allBanned, hidden, spotlightedTranslator],
   ...[...spamStores, whitelistedSpam, enableSpamProtection, disableSpecialSpamProtection]
 ];
 
