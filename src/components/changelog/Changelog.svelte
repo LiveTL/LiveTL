@@ -1,5 +1,5 @@
 <script>
-  export const version = '7.0.3';
+  export const version = '7.0.4';
   import ExpandingCard from '../common/ExpandingCard.svelte';
 </script>
 
@@ -14,17 +14,23 @@
   such as pinned messages, Super Stickers, Membership Items and Membership
   Milestone Chats into HyperChat!
 </ExpandingCard>
-<ExpandingCard title="New features and bug fixes" icon="new_releases">
+<ExpandingCard title="New feature in Embed Mode" icon="code">
+  A new button has been added to Embed Mode that will open the stream in LiveTL
+  Mode.
+  <img
+    class="pt-2"
+    src="https://cdn.discordapp.com/attachments/786713928264319026/902138793501552660/unknown.png"
+    alt="Expand LiveTL"
+  />
+</ExpandingCard>
+<ExpandingCard title="Mchad integration update" icon="cloud">
+  Mchad will no longer show translations for languages other than what is set
+  in your language filter, as long as the Mchad translator properly set the
+  correct language tag to their rooms.
+</ExpandingCard>
+<ExpandingCard title="Bug fixes" icon="new_releases">
   <ul class="list-disc text-base p-2 list-inside">
-    <li>
-      A new button has been added to Embed Mode that will open the stream in
-      LiveTL Mode.
-      <img
-        class="py-1"
-        src="https://cdn.discordapp.com/attachments/786713928264319026/902138793501552660/unknown.png"
-        alt="Expand LiveTL"
-      />
-    </li>
     <li>Embed Mode will no longer open with vertical chat split.</li>
+    <li>Fix auto launch mode not working in Firefox.</li>
   </ul>
 </ExpandingCard>
