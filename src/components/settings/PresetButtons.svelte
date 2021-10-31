@@ -55,22 +55,13 @@
   }
 </script>
 
-<!-- TODO: Re-Write With A For Loop To Make It Potentially Cleaner -->
-<div>
-  <div class="flex gap-2 py-1">
-    <Button add="flex-1" on:click={() => {updatePreset(1)}} color="dark" light={active === 1}>
-      {active !== 1 ? 'Preset 1' : 'Save Preset 1'}
-    </Button>
-    <Button add="flex-1" on:click={() => {updatePreset(2)}} color="dark" light={active === 2}>
-      {active !== 2 ? 'Preset 2' : 'Save Preset 2'}
-    </Button>
-  </div>
-  <div class="flex gap-2 py-1">
-    <Button add="flex-1" on:click={() => {updatePreset(3)}} color="dark" light={active === 3}>
-      {active !== 3 ? 'Preset 3' : 'Save Preset 3'}
-    </Button>
-    <Button add="flex-1" on:click={() => {updatePreset(4)}} color="dark" light={active === 4}>
-      {active !== 4 ? 'Preset 4' : 'Save Preset 4'}
-    </Button>
-  </div>
-</div>
+{#each [1, 2] as i}
+    <div class="flex gap-2 py-1">
+      <Button add="flex-1" on:click={() => {updatePreset(2*i-1)}} color="dark" light={active === 2*i-1}>
+        {active !== 2*i-1 ? `Preset ${2*i-1}` : `Save Preset ${2*i-1}`}
+      </Button>
+      <Button add="flex-1" on:click={() => {updatePreset(2*i)}} color="dark" light={active === 2*i}>
+        {active !== 2*i ? `Preset ${2*i}` : `Save Preset ${2*i}`}
+      </Button>
+    </div>
+{/each}
