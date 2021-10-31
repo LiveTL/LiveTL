@@ -4,7 +4,7 @@ const path = pathlib.join(__dirname, '..', 'build');
 const manifest = require(pathlib.join(__dirname, '..', 'src', 'manifest.json'));
 const xvfb = new (require('xvfb'))({
   silent: true,
-  xvfb_args: ['-screen', '0', '1280x800x24', '-ac'],
+  xvfb_args: ['-screen', '0', '1280x800x24', '-ac']
 });
 xvfb.start((err) => { if (err) console.error(err); });
 
@@ -24,10 +24,11 @@ async function exportImage(name, page, url, func, scale = [1, 1]) {
       transform-origin: 0px 0px;
       transform: scale(calc(${scale[0]} / ${scale[1]}));
     }
-  `});
-  await page.evaluate(() => window.sleep = ms => new Promise(res => setTimeout(res, ms)));
+  `
+  });
+  await page.evaluate(() => (window.sleep = ms => new Promise(resolve => setTimeout(resolve, ms))));
   await page.evaluate(func);
-  return page.screenshot({ path: `img/${name}.png`, });
+  return page.screenshot({ path: `img/${name}.png` });
 }
 
 (async () => {
@@ -76,7 +77,7 @@ async function exportImage(name, page, url, func, scale = [1, 1]) {
       'video=c747jYku6Eo&isReplay=true'
     ].join('');
 
-    //Navigate to the page
+    // Navigate to the page
     console.log('Simulating user interactions...');
     const page = await browser.newPage();
     // page
@@ -88,20 +89,19 @@ async function exportImage(name, page, url, func, scale = [1, 1]) {
     // .on('requestfailed', request =>
     //   console.log(`${request.failure().errorText} ${request.url()}`));
 
-
     const pages = {
-      'options': [`chrome-extension://${extensionID}/options.html`, async () => {
+      options: [`chrome-extension://${extensionID}/options.html`, async () => {
         document.querySelectorAll('.s-tab')[0].click();
         await window.sleep(1000);
       }, [3, 2]],
-      'filters': [`chrome-extension://${extensionID}/options.html`, async () => {
+      filters: [`chrome-extension://${extensionID}/options.html`, async () => {
         document.querySelectorAll('.s-tab')[1].click();
         document.querySelector('.filter-options button').click();
         await window.sleep(1000);
         document.querySelectorAll('.filter-options .s-col')[5]
           .querySelectorAll('input[type=text]')[0].value = '[Deutsch]';
       }, [3, 2]],
-      'demo': [`chrome-extension://${extensionID}/${watchPageURL}`, () => {
+      demo: [`chrome-extension://${extensionID}/${watchPageURL}`, () => {
         const maxTime = 4630.879359;
         const segments = 25;
         const intervalLength = 2500;
@@ -121,7 +121,7 @@ async function exportImage(name, page, url, func, scale = [1, 1]) {
           }, intervalLength);
         });
       }],
-      'buttons': ['https://www.youtube.com/live_chat_replay?continuation=' +
+      buttons: ['https://www.youtube.com/live_chat_replay?continuation=' +
         'op2w0wRiGlhDaWtxSndvWVZVTkljM2cwU0hGaExURlBVbXBSVkdnNV' +
         'ZGbEVhSGQzRWd0cU9HdG9TVFZwY2kxUE9Cb1Q2cWpkdVFFTkNndHFP' +
         'R3RvU1RWcGNpMVBPQ0FCQAFyAggEeAE%253D',
@@ -135,7 +135,7 @@ async function exportImage(name, page, url, func, scale = [1, 1]) {
     let images = [];
     const items = args[0].split(',');
     items.forEach(item => images.push(item.trim()));
-    if (images[0] == 'all') images = Object.keys(pages);
+    if (images[0] === 'all') images = Object.keys(pages);
 
     for (let i = 0; i < images.length; i++) {
       const item = images[i].toString();

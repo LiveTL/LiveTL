@@ -268,6 +268,7 @@ function setCaret(el, pos) {
 function getCaretCharOffset(element) {
   let caretOffset = 0;
 
+  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
   if (window.getSelection) {
     const range = window.getSelection().getRangeAt(0);
     const preCaretRange = range.cloneRange();

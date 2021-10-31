@@ -9,7 +9,7 @@ import {
 function MockBackend() {
   const storage = {};
   this.get = async key => storage[key];
-  this.set = async (key, value) => storage[key] = value;
+  this.set = async (key, value) => (storage[key] = value);
   this.storage = storage;
 }
 

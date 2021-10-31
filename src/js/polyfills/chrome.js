@@ -6,9 +6,11 @@ import MANIFEST_OBJECT from '../../manifest.json';
   // all windows (including subframes)
   const LIVETL_ANDROID = 'livetl_android';
   if (
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     window.chrome &&
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     window.chrome.runtime &&
-    window.chrome.runtime.id == LIVETL_ANDROID
+    window.chrome.runtime.id === LIVETL_ANDROID
   ) return;
 
   // native js interface injected in all windows and subframes
@@ -123,26 +125,26 @@ import MANIFEST_OBJECT from '../../manifest.json';
             }
           },
           onDisconnect: {
-            // eslint-disable-next-line no-unused-vars
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             addListener: callback => { } // can't really detect disconnect so just ignore
           }
         }; // fake port that postMessages to the bgscript
         return port;
       },
       onInstalled: {
-        // eslint-disable-next-line no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         addListener: callback => { }
       }
     },
     webRequest: {
       onHeadersReceived: {
-        // eslint-disable-next-line no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         addListener: callback => { }
       }
     },
     browserAction: {
       onClicked: {
-        // eslint-disable-next-line no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         addListener: callback => { }
       }
     }
@@ -151,7 +153,7 @@ import MANIFEST_OBJECT from '../../manifest.json';
   window.addEventListener('message', event => { // on post message receive
     try {
       const { data } = event; // parse json
-      if (data.type == 'sendToForeground') {
+      if (data.type === 'sendToForeground') {
         // {
         //   'type': 'sendToForeground',
         //   'data': {},
@@ -177,7 +179,7 @@ import MANIFEST_OBJECT from '../../manifest.json';
           }
           delete polyfillStorage.awaitingCallbacks[data.randomMessageID];
           return;
-        } else if (data.data && data.data.event == 'postMessage') {
+        } else if (data.data && data.data.event === 'postMessage') {
           // a message has been sent from the background script to the content script
           // using an active port. pass the data to listners of this port
           if (data.data.portID in polyfillStorage.portOnMessageCallbacks) {
@@ -201,7 +203,7 @@ import MANIFEST_OBJECT from '../../manifest.json';
           propagate(data);
           return;
         }
-      } else if (data.type == 'sendToBackground') {
+      } else if (data.type === 'sendToBackground') {
         // {
         //   'type': 'sendToBackground',
         //   'data': {},
@@ -216,7 +218,7 @@ import MANIFEST_OBJECT from '../../manifest.json';
 
         // if message is from the content script
         // that means that this script is a background script
-        if (data.data.event == 'connectPort') {
+        if (data.data.event === 'connectPort') {
           // a client wants to establish a connection
           // run all listeners waiting for a connection
           // and pass it a fake port
@@ -238,7 +240,7 @@ import MANIFEST_OBJECT from '../../manifest.json';
               }
             },
             onDisconnect: {
-              // eslint-disable-next-line no-unused-vars
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               addListener: callback => { } // can't really detect disconnect so just ignore
             }
           }; // construct a fake port
@@ -251,7 +253,7 @@ import MANIFEST_OBJECT from '../../manifest.json';
             }
           });
           return;
-        } else if (data.data.event == 'postMessage') {
+        } else if (data.data.event === 'postMessage') {
           // received a postMessage sent through a port.
           polyfillStorage.portOnMessageCallbacks[data.data.portID]?.forEach(
             callback => {
@@ -267,7 +269,7 @@ import MANIFEST_OBJECT from '../../manifest.json';
       }
       // if it's none of the above, that means it's a standalone message
       // (which i don't think happens in the content script but i'll support it anyway)
-      if (data.type == 'sendToForeground' || data.type == 'sendToBackground') {
+      if (data.type === 'sendToForeground' || data.type === 'sendToBackground') {
         polyfillStorage.onMessageCallbacks.forEach(callback => {
           try {
             callback(data.data, data.sender, d => sendToForeground(d, data.randomMessageID));

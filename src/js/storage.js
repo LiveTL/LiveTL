@@ -27,7 +27,7 @@ export class SyncStore {
     this.defaultValue = defaultValue;
     const store = writable(defaultValue);
     this._store = store;
-    this._storage = storageBackend || storage;
+    this._storage = storageBackend ?? storage;
     this.loaded = this.loadFromStorage();
     this._lastSet = Date.now();
     this._updateAcrossSessions = updateAcrossSessions;
@@ -121,7 +121,7 @@ export class LookupStore {
   constructor(name, defaultValue, storageBackend = null, updateAcrossSessions = true) {
     this.name = name;
     this.defaultValue = defaultValue;
-    this._storage = storageBackend || storage;
+    this._storage = storageBackend ?? storage;
     this._lookup = {};
     /** @type {String[]} */
     this.keys = [];
@@ -303,32 +303,26 @@ export function Storage(version) {
       };
       break;
     case Browser.FIREFOX:
-    // @ts-ignore
       browser.storage.onChanged.addListener(updateChangedStores);
       this.rawGet = async (key) => {
-      // @ts-ignore
         return await browser.storage.local.get(key);
       };
 
       this.rawSet = async (obj) => {
-      // @ts-ignore
         return await browser.storage.local.set(obj);
       };
       break;
     default:
-    // @ts-ignore
       chrome.storage.onChanged.addListener(updateChangedStores);
       this.rawGet = (key) => {
-        return new Promise((res) => {
-        // @ts-ignore
-          chrome.storage.local.get(key, res);
+        return new Promise((resolve) => {
+          chrome.storage.local.get(key, resolve);
         });
       };
 
       this.rawSet = (obj) => {
-        return new Promise((res) => {
-        // @ts-ignore
-          chrome.storage.local.set(obj, res);
+        return new Promise((resolve) => {
+          chrome.storage.local.set(obj, resolve);
         });
       };
   }

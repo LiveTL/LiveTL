@@ -13,6 +13,8 @@ export function speak(text, volume = 0) {
 }
 
 export function checkAndSpeak(text) {
+  // Need to check window.speechSynthesis for android
+  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
   if (window.speechSynthesis && doSpeechSynth.get()) {
     speak(text);
   }
