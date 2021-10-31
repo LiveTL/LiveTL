@@ -25,7 +25,7 @@
   } from '../../js/constants.js';
   import FontDemo from './FontDemo.svelte';
   import ImportExport from './ImportExport.svelte';
-  import PresetButtons from './PresetButtons.svelte'
+  import PresetButtons from './PresetButtons.svelte';
   import Slider from '../common/SliderStore.svelte';
   import Checkbox from '../common/CheckboxStore.svelte';
   import Radio from '../common/RadioGroupStore.svelte';
