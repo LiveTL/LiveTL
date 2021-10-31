@@ -11,7 +11,6 @@
     enableCaptionTimeout,
     chatSplit,
     enableExportButtons,
-    enableFullscreenButton,
     autoVertical,
     autoLaunchMode,
     activePreset,
@@ -47,7 +46,6 @@
       enableCaptionTimeout: enableCaptionTimeout.get(),
       chatSplit: chatSplit.get(),
       enableExportButtons: enableExportButtons.get(),
-      enableFullscreenButton: enableFullscreenButton.get(),
       autoVertical: autoVertical.get(),
       autoLaunchMode: autoLaunchMode.get(),
     }
