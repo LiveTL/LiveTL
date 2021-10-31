@@ -16,13 +16,13 @@
     textDirection,
     videoTitle,
     enableExportButtons,
-    updatePopupActive,
     enableFullscreenButton,
     spotlightedTranslator,
     isResizing,
     isSelecting,
     screenshotRenderWidth
   } from '../js/store.js';
+  import UpdateComponent from './Updates.svelte';
   import MessageDisplay from './MessageDisplay.svelte';
   import { displayedMessages } from '../js/sources-aggregate.js';
   import dark from 'smelte/src/dark';
@@ -165,13 +165,6 @@
       }
     }
   }
-
-  let updateComponent;
-  $: if ($updatePopupActive && !updateComponent) {
-    import('./Updates.svelte').then((component) => {
-      updateComponent = component.default;
-    });
-  }
 </script>
 
 <svelte:window on:resize={updateWrapper} />
@@ -184,7 +177,7 @@
   bind:renderQueue
   renderWidth={$screenshotRenderWidth}
 />
-<svelte:component this={updateComponent} bind:active={$updatePopupActive} />
+<UpdateComponent />
 
 <div
   class="flex flex-row gap-2 absolute right-0 p-1 z-20 flex-wrap"

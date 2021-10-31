@@ -1,26 +1,24 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import { lastVersion } from '../js/store.js';
+  import { lastVersion, updatePopupActive } from '../js/store.js';
   import Dialog from './common/Dialog.svelte';
   import Button from 'smelte/src/components/Button';
   import Changelog from './changelog/Changelog.svelte';
 
   let version = '';
 
-  export let active = false;
-
   function setLastVersion() {
-    active = false;
+    $updatePopupActive = false;
   }
 
   let unsubscribe = () => { };
 
   onMount(async () => {
-    await lastVersion.loaded;
+    await Promise.all([lastVersion.loaded, updatePopupActive.loaded]);
 
     unsubscribe = lastVersion.subscribe($lv => {
       if ($lv !== version) {
-        active = true;
+        $updatePopupActive = true;
       }
       lastVersion.set(version);
     });
@@ -31,7 +29,7 @@
 
 <div class="fixed z-50">
   <Dialog
-    bind:active
+    bind:active={$updatePopupActive}
     class="max-w-lg m-5 rounded-md"
     bgColor="bg-white dark:bg-dark-700"
   >
