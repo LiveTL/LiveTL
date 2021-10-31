@@ -2,7 +2,7 @@
 import { omniComplete, macroSystem } from '../../js/translator-mode.js';
 import { get, writable } from 'svelte/store';
 
-const sleep = time => new Promise(res => setTimeout(res, time));
+const sleep = time => new Promise(resolve => setTimeout(resolve, time));
 
 describe('omnicompletion', () => {
   const wordBank = ['hello', 'there', 'general', 'though', 'that', 'hey'];

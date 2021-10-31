@@ -12,7 +12,7 @@ export function queue<T>(): Queue<T> {
   let top_: Data | null = null;
   let last: Data | null = top_;
 
-  function clear() {
+  function clear(): void {
     top_ = null;
     last = top_;
   }
@@ -20,7 +20,7 @@ export function queue<T>(): Queue<T> {
   function pop(): T | undefined {
     const front = top_;
     if (front) {
-      top_ = top_?.next_ || null;
+      top_ = top_?.next_ ?? null;
       if (front === last) {
         last = null;
       }
@@ -28,7 +28,7 @@ export function queue<T>(): Queue<T> {
     }
   }
 
-  function push(item: T) {
+  function push(item: T): void {
     const newItem = { data: item };
     if (last === null) {
       top_ = newItem;
