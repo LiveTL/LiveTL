@@ -36,7 +36,7 @@
 
     const presetData = presets.get()
     presetData[number-1] = {
-      captionDuration: captionDuration.getEntire(),
+      captionDuration: captionDuration.get(),
       captionFontSize: captionFontSize.get(),
       videoSideSetting: videoSideSetting.get(),
       chatZoom: chatZoom.get(),
