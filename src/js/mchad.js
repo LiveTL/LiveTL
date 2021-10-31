@@ -1,10 +1,11 @@
-import { MCHAD, AuthorType } from './constants.js';
+import { MCHAD, AuthorType, languages } from './constants.js';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as Ty from './types.js';
 import { derived, readable } from 'svelte/store';
 import { enableMchadTLs, mchadUsers } from './store.js';
 import { combineArr, formatTimestampMillis, sleep, sortBy } from './utils.js';
 import { archiveStreamFromScript, sseToStream } from './api.js';
+import { isLangMatch } from './filter.js';
 
 /** @typedef {import('svelte/store').Readable} Readable */
 /** @typedef {(unix: Ty.UnixTimestamp) => String} UnixToTimestamp */
@@ -39,6 +40,18 @@ export async function getRooms(videoId) {
   return { live, vod };
 }
 
+/** @type {(tag: String) => String[]} */
+const possibleLanguages = tag => languages.filter(lang => isLangMatch(tag, lang));
+
+/** @type {(tag: String) => String | null} */
+export const getRoomTagLanguageCode = tag => {
+  const possible = tag
+    .split(/\s+/g)
+    .map(possibleLanguages)
+    .flat();
+  return possible[possible.length - 1]?.code ?? null;
+};
+
 /** @type {(script: MCHADTL[]) => Number} */
 const getFirstTime = script =>
   script.find(s => /--.*Stream.*Start.*--/i.test(s.Stext))?.Stime ??
@@ -67,7 +80,7 @@ export async function getArchiveFromRoom(room) {
 
   const firstTime = getFirstTime(script);
 
-  const toMessage = mchadToMessage(room.Room, archiveUnixToTimestamp(firstTime), archiveUnixToNumber(firstTime));
+  const toMessage = mchadToMessage(room.Room, archiveUnixToTimestamp(firstTime), archiveUnixToNumber(firstTime), getRoomTagLanguageCode(room.Tags));
   return script.map(toMessage);
 }
 
@@ -129,12 +142,13 @@ const archiveTimeToInt = archiveTime => archiveTime
 
 let mchadTLCounter = 0;
 
-/** @type {(author: String, unixToString: UnixToTimestamp, unixToNumber: UnixToNumber) => (data: Ty.MCHADTL) => Ty.Message} */
-const mchadToMessage = (author, unixToTimestamp, unixToNumber) => data => ({
+/** @type {(author: String, unixToString: UnixToTimestamp, unixToNumber: UnixToNumber, langCode: String | null) => (data: Ty.MCHADTL) => Ty.Message} */
+const mchadToMessage = (author, unixToTimestamp, unixToNumber, langCode) => data => ({
   text: data.Stext,
   messageArray: [{ type: 'text', text: data.Stext }],
   author,
   authorId: author,
+  langCode,
   messageId: ++mchadTLCounter,
   timestamp: unixToTimestamp(data.Stime),
   types: AuthorType.mchad,
@@ -145,7 +159,8 @@ const mchadToMessage = (author, unixToTimestamp, unixToNumber) => data => ({
 export const getRoomTranslations = room => derived(streamRoom(room.Nick), (data, set) => {
   if (!enableMchadTLs.get()) return;
   const flag = data?.flag;
-  const toMessage = mchadToMessage(room.Nick, liveUnixToTimestamp, (unix) => unix);
+  const langCode = getRoomTagLanguageCode(room.Tags);
+  const toMessage = mchadToMessage(room.Nick, liveUnixToTimestamp, (u) => u, langCode);
   if (flag === 'insert' || flag === 'update') {
     set(toMessage(data.content));
   }
