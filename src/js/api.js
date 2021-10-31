@@ -1,14 +1,18 @@
-// eslint-disable-next-line no-unused-vars
-import { derived, get, readable, Readable } from 'svelte/store';
-// eslint-disable-next-line no-unused-vars
-import { APITranslation, Message, ScriptMessage } from './types.js';
+import { derived, get, readable } from 'svelte/store';
 import { AuthorType, paramsIsVOD } from './constants.js';
 import { formatTimestampMillis, sortBy, toJson } from './utils.js';
 import { enableAPITLs, timestamp } from './store.js';
 import ReconnectingEventSource from 'reconnecting-eventsource';
 
+/**
+ * @typedef {import('svelte/store').Readable} Readable
+ * @typedef {import('./types.js').APITranslation} APITranslation
+ * @typedef {import('./types.js').Message} Message
+ * @typedef {import('./types.js').ScriptMessage} ScriptMessage
+ */
+
 export const sseToStream = link => readable(null, set => {
-  if (paramsIsVOD) return () => { };
+  if (paramsIsVOD != null) return () => { };
 
   const source = new ReconnectingEventSource(link);
 
@@ -17,16 +21,16 @@ export const sseToStream = link => readable(null, set => {
     const match = event.data.match(/^(\w{1,}): (.*)/); // we can use match groups to split the string for us
     if (match !== null) {
       switch (match[1].toUpperCase()) {
-      case 'CONNECTED':
-        console.info(`API SSE: ${match[2]}`);
-        return;
-      case 'WARN':
-        console.warn(`API SSE Warning: ${match[2]}`);
-        return;
-      case 'ERROR':
-        console.error(`API SSE Error: ${match[2]}`);
-        source.close();
-        return;
+        case 'CONNECTED':
+          console.info(`API SSE: ${match[2]}`);
+          return;
+        case 'WARN':
+          console.warn(`API SSE Warning: ${match[2]}`);
+          return;
+        case 'ERROR':
+          console.error(`API SSE Error: ${match[2]}`);
+          source.close();
+          return;
       }
     }
 
@@ -92,8 +96,7 @@ export const getArchive = videoId => readable(null, async set => {
     .then(sortBy('unix'));
 
   return archiveStreamFromScript(script).subscribe(tl => {
-    if (enableAPITLs.get())
-      set(tl);
+    if (enableAPITLs.get()) { set(tl); }
   });
 });
 

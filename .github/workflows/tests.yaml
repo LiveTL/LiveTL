@@ -1,8 +1,5 @@
 name: Tests
-on:
-  push:
-    branches-ignore:
-      - smelte
+on: push
 jobs:
   test:
     runs-on: ubuntu-latest

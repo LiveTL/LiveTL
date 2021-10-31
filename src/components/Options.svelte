@@ -1,45 +1,11 @@
-<script>
-  import { MaterialApp } from 'svelte-materialify/src';
+<script lang="ts">
   import Settings from './Settings.svelte';
-  export let active = false;
+  import dark from 'smelte/src/dark';
 
-  // Hot reload window.mchad
-  // TODO delete before pr
-  import * as mchad from '../js/mchad.js';
-  import { onMount } from 'svelte';
-
-  onMount(() => {
-    window.mchad = mchad;
-  });
+  // So options_ui css isn't shit
+  dark().set(true);
 </script>
 
-<MaterialApp theme="dark">
-  <div class="wrapper">
-    <div class="app">
-      <Settings bind:active />
-    </div>
-    <slot />
-  </div>
-</MaterialApp>
-
-<style>
-  .wrapper {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .app {
-    padding: 0px !important;
-    justify-content: center;
-    height: 100%;
-  }
-  :global(body) {
-    margin: 0px 0px;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-  }
-</style>
+<div class="bg-dark-700">
+  <Settings />
+</div>

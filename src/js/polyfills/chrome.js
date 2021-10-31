@@ -1,9 +1,15 @@
+import MANIFEST_OBJECT from '../../manifest.json';
+
 (() => {
   // chrome api polyfill, injected into both
   // the background script as well as
   // all windows (including subframes)
-  if (window.chrome) return;
-  const MANIFEST_OBJECT = undefined;
+  const LIVETL_ANDROID = 'livetl_android';
+  if (
+    window.chrome &&
+    window.chrome.runtime &&
+    window.chrome.runtime.id == LIVETL_ANDROID
+  ) return;
 
   // native js interface injected in all windows and subframes
   // window.nativeJavascriptInterface = {
@@ -17,35 +23,39 @@
 
   // send a message to the background script
   function sendToBackground(data, randomMessageID) {
-    window.nativeJavascriptInterface.sendToBackground(JSON.stringify({
-      type: 'sendToBackground',
-      data,
-      randomMessageID,
-      sender: {
-        frameId: window.location.href,
-        tab: {
-          id: window.location.href
+    if (window.nativeJavascriptInterface) {
+      window.nativeJavascriptInterface.sendToBackground(JSON.stringify({
+        type: 'sendToBackground',
+        data,
+        randomMessageID,
+        sender: {
+          frameId: window.location.href,
+          tab: {
+            id: window.location.href
+          }
         }
-      }
-    }));
+      }));
+    }
   }
 
   // send a message to all content scripts
   function sendToForeground(data, randomMessageID) {
-    window.nativeJavascriptInterface.sendToForeground(JSON.stringify({
-      type: 'sendToForeground',
-      data,
-      randomMessageID,
-      sender: {
-        frameId: window.location.href,
-        tab: {
-          id: window.location.href
+    if (window.nativeJavascriptInterface) {
+      window.nativeJavascriptInterface.sendToForeground(JSON.stringify({
+        type: 'sendToForeground',
+        data,
+        randomMessageID,
+        sender: {
+          frameId: window.location.href,
+          tab: {
+            id: window.location.href
+          }
         }
-      }
-    }));
+      }));
+    }
   }
 
-  let polyfillStorage = {
+  const polyfillStorage = {
     awaitingCallbacks: {}, // store callbacks that are waiting for a response
     onConnectCallbacks: [], // store callbacks that are waiting for a connection
     onMessageCallbacks: [], // store callbacks that are waiting for a message event
@@ -76,7 +86,7 @@
   // chrome api polyfill injected in all windows and subframes
   window.chrome = {
     runtime: {
-      id: 'livetl_android',
+      id: LIVETL_ANDROID,
       getURL: path => `https://__local_android_asset_baseurl__/${path}`, // replacement for chrome-extension urls
       getManifest: () => MANIFEST_OBJECT, // can also do a request to an asset
       sendMessage,
@@ -270,4 +280,4 @@
       console.debug('Unknown error while handling postmessage:', e);
     }
   });
-}) ();
+})();

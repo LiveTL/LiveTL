@@ -4,7 +4,7 @@ import { get, writable } from 'svelte/store';
 
 const sleep = time => new Promise(res => setTimeout(res, time));
 
-describe('omnicompletion', () =>{ 
+describe('omnicompletion', () => {
   const wordBank = ['hello', 'there', 'general', 'though', 'that', 'hey'];
 
   it('adds words', () => {
@@ -80,7 +80,7 @@ describe('macro system', () => {
     en: '[en]',
     coco: 'coco',
     naki: 'ayame',
-    kan: 'kanata',
+    kan: 'kanata'
   };
 
   describe('default behaviour', () => {
@@ -155,7 +155,6 @@ describe('macro system', () => {
 
       expect(replaceText(',e ,pe: hello there, ,n: dochi dochi'))
         .toBe('[en] pekora: hello there, ayame: dochi dochi');
-
     });
 
     it('doesn\'t replace escaped macros with the synced leader', () => {

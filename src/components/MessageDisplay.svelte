@@ -1,10 +1,6 @@
-<script>
-  import {
-    afterUpdate,
-    createEventDispatcher
-  } from 'svelte';
+<script lang="ts">
+  import { afterUpdate, createEventDispatcher } from 'svelte';
   import Message from './Message.svelte';
-  import { Checkbox } from 'svelte-materialify/src';
   import MessageDisplayWrapper from './MessageDisplayWrapper.svelte';
   import '../css/splash.css';
   import {
@@ -13,24 +9,26 @@
     mchadUsers,
     showTimestamp,
     spotlightedTranslator,
-    sessionHidden
+    sessionHidden,
+    isSelecting
   } from '../js/store.js';
-  import {
-    AuthorType,
-    TextDirection
-  } from '../js/constants.js';
+  import { AuthorType, TextDirection } from '../js/constants.js';
   import IntroMessage from './IntroMessage.svelte';
-  // eslint-disable-next-line no-unused-vars
-  import { MessageItem } from '../js/types.js';
+  import Checkbox from './common/Checkbox.svelte';
 
-  $: document.body.style.fontSize = Math.round($livetlFontSize) + 'px';
-  export let direction;
-  /** @type {{ text: String, author: String, timestamp: String, authorId: string, messageId: string, hidden: boolean, messageArray: MessageItem[], deleted: boolean }[]}*/
-  export let items = [];
+  export let direction: TextDirection;
+  export let items: Ltl.Message[] = [];
+  export let selectedItems: Ltl.Message[] = [];
+  export let hideIntro = false;
 
-  let bottomMsg = null;
+  let bottomMsg: HTMLElement | undefined;
 
   export function scrollToRecent() {
+    if (!bottomMsg) {
+      console.error('bottomMsg undefined');
+      return;
+    }
+
     bottomMsg.scrollIntoView({
       behavior: 'auto',
       block: 'nearest',
@@ -40,37 +38,38 @@
 
   const dispatch = createEventDispatcher();
   afterUpdate(() => dispatch('afterUpdate'));
-  
-  export let isSelecting = false;
-  export let selectedItems = [];
 
-  const banMessage = item => () => {
+  const banMessage = (item: Ltl.Message) => () => {
     if (item.types & AuthorType.mchad) {
       mchadUsers.set(item.author, true);
     } else {
       channelFilters.set(item.authorId, {
         ...channelFilters.get(item.authorId),
         name: item.author,
-        blacklist: true,
+        blacklist: true
       });
     }
   };
 
-  const hideMessage = item => () => {
+  const hideMessage = (item: Ltl.Message) => () => {
+    // TODO: Remove the following comment once stores are TS-ed
+    // @ts-expect-error - Store not properly typed yet
     $sessionHidden = [...$sessionHidden, item.messageId];
   };
 
-  $: if (!isSelecting) selectedItems = [];
+  $: if (!$isSelecting) selectedItems = [];
+  $: classes = `message-display w-full flex max-h-full ${
+    direction === TextDirection.TOP
+      ? 'self-start flex-col-reverse'
+      : 'self-end flex-col'
+  }`;
 </script>
 
 <MessageDisplayWrapper>
-  <div
-    class="message-display"
-    class:dir-top={direction === TextDirection.TOP}
-    class:dir-bottom={direction === TextDirection.BOTTOM}
-  >
-    <IntroMessage />
-
+  <div class={classes} style="font-size: {Math.round($livetlFontSize)}px;">
+    {#if !hideIntro}
+      <IntroMessage />
+    {/if}
     {#each items as item}
       <Message
         message={item}
@@ -80,33 +79,20 @@
         messageArray={item.messageArray}
         on:hide={hideMessage(item)}
         on:ban={banMessage(item)}
-        on:spotlight={e => spotlightedTranslator.set(
-          $spotlightedTranslator ? null : e.detail.authorId
-        )}
+        on:spotlight={(e) =>
+          spotlightedTranslator.set(
+            $spotlightedTranslator ? null : e.detail.authorId
+          )}
       >
-        {#if isSelecting}
-          <Checkbox bind:group={selectedItems} value={item} />
+        {#if $isSelecting}
+          <Checkbox
+            bind:group={selectedItems}
+            value={item}
+            wrapperClass="inline-flex"
+          />
         {/if}
       </Message>
     {/each}
     <div class="bottom 🥺" bind:this={bottomMsg} />
   </div>
 </MessageDisplayWrapper>
-
-<style>
-  .dir-top {
-    align-self: flex-start;
-    flex-direction: column-reverse;
-  }
-
-  .dir-bottom {
-    align-self: flex-end;
-    flex-direction: column;
-  }
-
-  .message-display {
-    display: flex;
-    width: 100%;
-    max-height: 100%;
-  }
-</style>

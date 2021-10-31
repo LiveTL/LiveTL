@@ -1,5 +1,4 @@
-// eslint-disable-next-line no-unused-vars
-import { UnixTransformer } from './types.js';
+/** @typedef {import('./types.js').UnixTransformer} UnixTransformer */
 import { isAndroid, modifierKeys } from './constants.js';
 
 export const compose = (...args) =>
@@ -25,21 +24,20 @@ export const delayed = (fn, start) => {
 export const combineArr = arrs => arrs.reduce((l, r) => [...l, ...r], []);
 
 /** @type {UnixTransformer} */
-export const formatTimestampMillis = millis => {
+export function formatTimestampMillis(millis) {
   const time = Math.floor(millis / 1000);
   const hours = Math.floor(time / 3600);
   const mins = Math.floor(time % 3600 / 60);
   const secs = time % 60;
   return [hours, mins, secs].map(e => `${e}`.padStart(2, 0)).join(':');
-};
+}
 
 export const toJson = r => r.json();
 
 export const suppress = cb => {
   try {
     cb();
-  }
-  catch (e) {
+  } catch (e) {
     return undefined;
   }
 };
@@ -62,26 +60,17 @@ export const getAllVoices = () => window.speechSynthesis?.getVoices() || [];
 export const getAllVoiceNames = () => getAllVoices().map(voice => voice.name);
 export const getVoiceMap = () => new Map(getAllVoices().map(v => [v.name, v]));
 
-export function capitalize(s) {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
-export const transformOpt = str =>
-  capitalize(str
-    .trim()
-    .toLowerCase());
-
 const toKeyName = key => {
   if (!key) return '';
-  if (key == 'Enter') return '<Enter>';
-  if (key == ' ') return '<Space>';
+  if (key === 'Enter') return '<Enter>';
+  if (key === ' ') return '<Space>';
   return key;
 };
 
 export const keydownToShortcut = e => [
-  e?.shiftKey ? 'shift': '',
-  e?.ctrlKey ? 'ctrl': '',
-  e?.altKey ? 'alt': '',
+  e?.shiftKey ? 'shift' : '',
+  e?.ctrlKey ? 'ctrl' : '',
+  e?.altKey ? 'alt' : '',
   !modifierKeys.has(e?.key) ? toKeyName(e?.key) : ''
 ].filter(Boolean).join(' + ');
 
@@ -113,4 +102,27 @@ export const toggleFullScreen = () => {
       document.webkitCancelFullScreen();
     }
   }
+};
+
+export const constructParams = (embedVideoId = '') => {
+  const params = new URLSearchParams(window.location.search);
+  let v;
+  if (embedVideoId.length > 0) {
+    params.delete('embedded');
+    params.delete('tabid');
+    params.delete('frameid');
+    v = embedVideoId;
+  } else {
+    v = params.get('v') ?? (new URLSearchParams(window.parent.location.search).get('v'));
+  }
+  params.set('video', v);
+  if (window.location.pathname.includes('live_chat_replay')) {
+    params.set('isReplay', true);
+  }
+  return params;
+};
+
+export const openLiveTL = (embedVideoId = '') => {
+  window.top.location =
+    chrome.runtime.getURL(`watch.html?${constructParams(embedVideoId)}`);
 };

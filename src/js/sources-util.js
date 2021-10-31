@@ -1,14 +1,16 @@
-// eslint-disable-next-line no-unused-vars
-import { Message, Seconds } from './types.js';
+/**
+ * @typedef {import('./types.js').Message} Message
+ * @typedef {import('./types.js').Seconds} Seconds
+ */
 
 /**
  * Removes duplicate messages that come from mchad sync with ytc
  *
  * @param {Message[]} msgs
  * @param {Seconds} sourceLatency the amount of lag between ytc and other sources
- * @return {Message[]} 
+ * @return {Message[]}
  */
-export function removeDuplicateMessages(msgs, sourceLatency=60) {
+export function removeDuplicateMessages(msgs, sourceLatency = 60) {
   let lastMessages = [];
   const isUnique = msg => {
     lastMessages = lastMessages
@@ -54,18 +56,20 @@ const containsSpam = (msgs, amount, time) => {
 };
 
 /** @type {(msgs: Message[]) => { by: (attr: String) => Map<String, Message[]> }} */
-const index = msgs => ({ by(attr) {
-  const msgsByAttr = new Map();
-  
-  for (const msg of msgs) {
-    if (!msgsByAttr.has(msg[attr])) {
-      msgsByAttr.set(msg[attr], []);
-    }
-    msgsByAttr.get(msg[attr]).push(msg);
-  }
+const index = msgs => ({
+  by(attr) {
+    const msgsByAttr = new Map();
 
-  return msgsByAttr;
-}});
+    for (const msg of msgs) {
+      if (!msgsByAttr.has(msg[attr])) {
+        msgsByAttr.set(msg[attr], []);
+      }
+      msgsByAttr.get(msg[attr]).push(msg);
+    }
+
+    return msgsByAttr;
+  }
+});
 
 /** @type {(msg: Message) => Seconds} */
 const messageTime = msg => msg.timestampMs / 1000;

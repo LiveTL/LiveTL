@@ -1,8 +1,8 @@
 import { mdiOpenInNew, mdiYoutubeTv, mdiIframeArray } from '@mdi/js';
-import { getFrameInfoAsync, createPopup } from '../../submodules/chat/scripts/chat-utils.js';
-import { fixLeaks } from '../../submodules/chat/src/plugins/ytc-fix-memleaks.js';
+import { getFrameInfoAsync, createPopup } from '../../submodules/chat/src/ts/chat-utils.ts';
 import { paramsEmbedDomain, AutoLaunchMode } from '../constants.js';
 import { autoLaunchMode } from '../store.js';
+import { constructParams, openLiveTL } from '../utils.js';
 
 for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) {
   window.addEventListener(eventName, e => e.stopImmediatePropagation(), true);
@@ -19,7 +19,7 @@ const styleLiveTLButton = (a, color) => {
   a.style.display = 'inline-block';
   // a.style.boxShadow = 'rgb(194 194 194) 0px 0px 4px 1px inset';
 };
-  
+
 const setLiveTLButtonAttributes = (a) => {
   [
     'yt-simple-endpoint',
@@ -63,8 +63,8 @@ const getLiveTLButton = (color) => {
   return a;
 };
 
-const makeButton = (text, callback, color='rgb(0, 153, 255)', icon='') => {
-  let a = document.createElement('span');
+const makeButton = (text, callback, color = 'rgb(0, 153, 255)', icon = '') => {
+  const a = document.createElement('span');
   a.style.flexGrow = 1;
   a.style.flexBasis = 0;
   a.style.position = 'relative';
@@ -95,21 +95,7 @@ const makeButton = (text, callback, color='rgb(0, 153, 255)', icon='') => {
   `;
 };
 
-const constructParams = () => {
-  const params = new URLSearchParams(window.location.search);
-  const v = params.get('v') || (new URLSearchParams(window.parent.location.search).get('v'));
-  params.set('video', v);
-  if (window.location.pathname.includes('live_chat_replay')) {
-    params.set('isReplay', true);
-  }
-  return params;
-};
-
 async function loaded() {
-  const script = document.createElement('script');
-  script.innerHTML = `(${fixLeaks.toString()})();`;
-  document.body.appendChild(script);
-
   const elem = document.querySelector('yt-live-chat-app');
   elem.style.minWidth = '0px';
   elem.style.minHeight = '0px';
@@ -146,26 +132,20 @@ async function loaded() {
     return;
   }
 
-  const openLiveTL = () => {
-    window.top.location =
-      chrome.runtime.getURL(`watch.html?${constructParams()}`);
-  };
   const tlPopout = () => {
     const popoutParams = constructParams();
     popoutParams.set('popout', true);
     popoutParams.set('tabid', frameInfo.tabId);
     popoutParams.set('frameid', frameInfo.frameId);
-    try{
+    try {
       popoutParams.set(
         'title',
         window.parent.document.querySelector('#container > .title').textContent
       );
-    }
-    catch (e) {
+    } catch (e) {
       if (e instanceof DOMException) {
         console.debug('Ignored expected CORS error', { e });
-      }
-      else {
+      } else {
         throw e;
       }
     }
@@ -192,21 +172,21 @@ async function loaded() {
 
   autoLaunchMode.loaded.then(mode => {
     switch (mode) {
-    case AutoLaunchMode.NONE: {
-      break;
-    }
-    case AutoLaunchMode.FULLPAGE: {
-      openLiveTL();
-      break;
-    }
-    case AutoLaunchMode.POPOUT: {
-      tlPopout();
-      break;
-    }
-    case AutoLaunchMode.EMBEDDED: {
-      embedTLs();
-      break;
-    }
+      case AutoLaunchMode.NONE: {
+        break;
+      }
+      case AutoLaunchMode.FULLPAGE: {
+        openLiveTL();
+        break;
+      }
+      case AutoLaunchMode.POPOUT: {
+        tlPopout();
+        break;
+      }
+      case AutoLaunchMode.EMBEDDED: {
+        embedTLs();
+        break;
+      }
     }
   });
 

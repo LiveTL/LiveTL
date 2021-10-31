@@ -1,19 +1,29 @@
-// eslint-disable-next-line no-unused-vars
-import { readable, derived, Readable } from 'svelte/store';
+import { readable, derived } from 'svelte/store';
 import { combineStores, sources } from './sources.js';
 import { getSpamAuthors, removeDuplicateMessages } from './sources-util.js';
-import { ytcDeleteBehaviour, sessionHidden, spotlightedTranslator } from './store.js';
-import { channelFilters, mchadUsers, spamMsgAmount, spamMsgInterval } from './store.js';
-import { disableSpecialSpamProtection, enableSpamProtection, langCode } from './store.js';
-import { spammersDetected } from './store.js';
-import { defaultCaption, GIGACHAD, YtcDeleteBehaviour } from './constants.js';
+import {
+  ytcDeleteBehaviour,
+  sessionHidden,
+  spotlightedTranslator,
+  channelFilters,
+  mchadUsers,
+  spamMsgAmount,
+  spamMsgInterval,
+  enableSpamProtection,
+  spammersDetected,
+  disableSpecialSpamProtection,
+  langCode
+} from './store.js';
+import { defaultCaption, YtcDeleteBehaviour, GIGACHAD } from './constants.js';
 import { checkAndSpeak } from './speech.js';
+
+/** @typedef {import('svelte/store').Readable} Readable */
 
 /**
  * @template {T}
  * @type {(store: Readable<T>, getBool: (val: T) => Boolean) => Readable<String[]>}
  */
-const lookupStoreToList = (store, getBool=Boolean) => derived(store, $val => $val
+const lookupStoreToList = (store, getBool = Boolean) => derived(store, $val => $val
   .filter(([_id, val]) => getBool(val))
   .map(([id, _val]) => id)
 );
@@ -36,8 +46,7 @@ const whitelistedSpam = derived(notSpamStore, $set => id => $set.has(id));
 
 /** @type {([authorId: String, author: String]) => Void} */
 const markSpam = ([authorId, author]) => {
-  if (!spammersDetected.has(authorId))
-    spammersDetected.set(authorId, { authorId, author, spam: true });
+  if (!spammersDetected.has(authorId)) { spammersDetected.set(authorId, { authorId, author, spam: true }); }
 };
 
 /** @type {(msg: Message) => Boolean} */
@@ -49,22 +58,23 @@ export const capturedMessages = readable([], set => {
   let items = [];
 
   const { cleanUp, store: source } = combineStores(
+    sources.thirdParty,
     sources.translations,
-    sources.mod,
+    sources.mod
   );
 
   const sourceUnsub = source.subscribe(msg => {
     if (msg) {
-      set(items = [...items, {...msg, index: items.length}]);
+      set(items = [...items, { ...msg, index: items.length }]);
     }
   });
 
   const hideOrReplaceMsg = bonkOrDeletion => {
     switch (ytcDeleteBehaviour.get()) {
-    case YtcDeleteBehaviour.HIDE:
-      return { hidden: true };
-    case YtcDeleteBehaviour.PLACEHOLDER:
-      return { messageArray: bonkOrDeletion.replacedMessage, deleted: true };
+      case YtcDeleteBehaviour.HIDE:
+        return { hidden: true };
+      case YtcDeleteBehaviour.PLACEHOLDER:
+        return { messageArray: bonkOrDeletion.replacedMessage, deleted: true };
     }
     return null;
   };
@@ -74,7 +84,7 @@ export const capturedMessages = readable([], set => {
     if (!msgModifications) return;
     const before = items.slice(0, i);
     const after = items.slice(i + 1);
-    set(items = [...before, {...items[i], ...msgModifications}, ...after]);
+    set(items = [...before, { ...items[i], ...msgModifications }, ...after]);
   };
 
   const delOrBonkSub = (source, diffAttr) => source.subscribe(events => {
@@ -99,7 +109,7 @@ export const capturedMessages = readable([], set => {
 
 export const sameLangMessages = derived(
   [capturedMessages, langCode],
-  ([$msgs, $langCode]) => $msgs.filter(msg => msg.langCode == null || msg.langCode == $langCode)
+  ([$msgs, $langCode]) => $msgs.filter(msg => msg.langCode == null || msg.langCode === $langCode)
 );
 
 const spamStores = [spamMsgAmount, spamMsgInterval]
@@ -112,7 +122,6 @@ const dispDepends = [
 
 const dispTransform =
   ([$items, $banned, $hidden, $spot, $spamAmt, $spamInt, $whitelisted, $enSpam, $disSpecialSpam]) => {
-
     const attrNotIn = (set, attr) => item => !set.has(item[attr]);
     const notWhitelisted = ([id]) => !$whitelisted(id);
     const possibleSpam = $disSpecialSpam ? $items.filter(isPleb) : $items;
@@ -136,7 +145,7 @@ export const captionText = readable(defaultCaption, set => {
   let text = defaultCaption;
   return displayedMessages.subscribe($msgs => {
     const $translation = $msgs[$msgs.length - 1]?.text;
-    if ($translation != null && $translation != text) {
+    if ($translation != null && $translation !== text) {
       set(text = $translation);
     }
   });

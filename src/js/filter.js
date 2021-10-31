@@ -1,21 +1,11 @@
 import { languageNameCode } from './constants.js';
 import { customFilters, language } from './store.js';
 import { escapeRegExp, not, composeOr } from './utils.js';
-// import {
-//   textWhitelist,
-//   textBlacklist,
-//   plaintextWhitelist,
-//   plaintextBlacklist,
-//   plainAuthorWhitelist,
-//   plainAuthorBlacklist,
-//   regexAuthorWhitelist,
-//   regexAuthorBlacklist
-// } from './store.js';
-// eslint-disable-next-line no-unused-vars
-import { Message } from './types.js';
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { SyncStore } from './storage.js';
 import { derived } from 'svelte/store';
+
+/** @typedef {import('./types.js').Message} Message */
 
 const MAX_LANG_TAG_LEN = 7;
 
@@ -26,9 +16,9 @@ const tokenMap = Object.fromEntries(langTokens);
 const transDelimiters = ['-', ':'];
 const langSplitRe = /\W+/;
 
-const chat = e => e.chatAuthor == 'chat';
-const plain = e => e.plainReg == 'plain';
-const show = e => e.showBlock == 'show';
+const chat = e => e.chatAuthor === 'chat';
+const plain = e => e.plainReg === 'plain';
+const show = e => e.showBlock === 'show';
 const rule = e => e.rule;
 
 const getFilterStore = (f1, f2, f3) => derived(customFilters, $filters => {
@@ -63,7 +53,6 @@ function userFilter(ufilters, transform = filter => filter) {
     : false;
 }
 
-
 export const textWhitelisted = userFilter(textWhitelist);
 export const textBlacklisted = userFilter(textBlacklist);
 export const plaintextWhitelisted = userFilter(plaintextWhitelist, escapeRegExp);
@@ -91,9 +80,8 @@ export const authorBlacklisted = composeOr(
   regAuthorBlacklisted, plainAuthorBlacklisted
 );
 
-
 /**
- * @param {String} message 
+ * @param {String} message
  * @returns {{lang: String, msg: String} | undefined}
  */
 export function parseTranslation(message) {
@@ -153,8 +141,8 @@ export function removeEmojis(str) {
 }
 
 /**
- * @param {String} textLang 
- * @param {{ code: String, name: String, lang: String }} currentLang 
+ * @param {String} textLang
+ * @param {{ code: String, name: String, lang: String }} currentLang
  * @returns {Boolean}
  */
 export function isLangMatch(textLang, currentLang) {
@@ -181,14 +169,14 @@ export function addFilter(chatAuthor, plainReg, showBlock, rule) {
 export function modifyFilter(id, chatAuthor, plainReg, showBlock, rule) {
   const newFilters = customFilters.get()
     .map(f => {
-      if (f.id != id) return f;
+      if (f.id !== id) return f;
       return { chatAuthor, plainReg, showBlock, rule, id: f.id };
     });
   customFilters.set(newFilters);
 }
 
 export function deleteFilter(id) {
-  const newFilters = customFilters.get().filter(f => f.id != id);
+  const newFilters = customFilters.get().filter(f => f.id !== id);
   customFilters.set(newFilters);
 }
 

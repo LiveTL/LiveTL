@@ -1,65 +1,36 @@
-<script>
-  import {
-    welcomeDismissed,
-    textDirection
-  } from '../js/store.js';
-  import { Button, Icon } from 'svelte-materialify/src';
-  import { mdiChevronDown, mdiChevronUp } from '@mdi/js';
-  import {
-    TextDirection
-  } from '../js/constants.js';
-</script>
+<script lang="ts">
+  import { welcomeDismissed, textDirection } from '../js/store.js';
+  import { TextDirection } from '../js/constants.js';
+  import Button from './common/IconButton.svelte';
 
-<div
-  class="minimizeContainer"
-  style="transform: translateX(calc(0px - var(--margin))) {$textDirection ==
-  TextDirection.BOTTOM
-    ? 'translateY(-5px)'
-    : ''} !important;"
->
-  <Button
-    fab
-    class="minimizeBar"
-    on:click={() => ($welcomeDismissed = !$welcomeDismissed)}
-  >
-    <Icon
-      path={[mdiChevronDown, mdiChevronUp][
-        $welcomeDismissed
-          ? $textDirection == TextDirection.BOTTOM
-            ? 1
-            : 0
-          : $textDirection == TextDirection.TOP
+  const getIcon = (dismissed: boolean, direction: TextDirection) => {
+    return ['expand_more', 'expand_less'][
+      dismissed
+        ? direction === TextDirection.BOTTOM
           ? 1
           : 0
-      ]}
-    />
-  </Button>
+        : direction === TextDirection.TOP
+          ? 1
+          : 0
+    ];
+  };
+  $: icon = getIcon($welcomeDismissed, $textDirection);
+</script>
+
+<div id="wrapper">
+  <Button
+    {icon}
+    noRound
+    noPadding
+    on:click={() => ($welcomeDismissed = !$welcomeDismissed)}
+    class="w-full"
+    color="gray"
+    iconClass="mx-auto text-lg"
+  />
 </div>
 
 <style>
-  :global(.minimizeBar) {
-    margin-left: 0px !important;
-    height: 10px !important;
-    width: 100% !important;
-    display: flex;
-    justify-content: center;
-    overflow: hidden !important;
-    background-color: transparent !important;
-    border-radius: 10px !important;
-    box-shadow: none !important;
+  #wrapper :global(i) {
+    line-height: 0.5em;
   }
-
-  .minimizeContainer {
-    height: 5px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    width: calc(100% + 2 * var(--margin)) !important;
-    align-items: center !important;
-  }
-
-  .minimizeContainer :global(.s-btn__content) {
-    /* background-color: rgba(255, 255, 255, 0.1) !important; */
-    box-shadow: none !important;
-  }
-
 </style>

@@ -1,26 +1,35 @@
-import { Queue } from './queue';
 import { compose } from './utils';
-// eslint-disable-next-line no-unused-vars
-import { derived, writable, Writable, Readable } from 'svelte/store';
-// eslint-disable-next-line no-unused-vars
-import { Message } from './types.js';
-import { parseTranslation, isWhitelisted as textWhitelisted, isBlacklisted as textBlacklisted, authorWhitelisted, authorBlacklisted } from './filter';
-import { isTranslation, replaceFirstTranslation } from './filter';
+import { writable, readable } from 'svelte/store';
+import {
+  parseTranslation,
+  isWhitelisted as textWhitelisted,
+  isBlacklisted as textBlacklisted,
+  authorWhitelisted,
+  authorBlacklisted,
+  isTranslation,
+  replaceFirstTranslation
+} from './filter';
 import { showModMessage, timestamp } from './store';
 import { paramsVideoId, AuthorType, paramsPopout, paramsTabId, paramsFrameId } from './constants';
 import * as MCHAD from './mchad.js';
 import * as API from './api.js';
 
+/**
+ * @typedef {import('svelte/store').Readable} Readable
+ * @typedef {import('svelte/store').Writable} Writable
+ * @typedef {import('./types.js').Message} Message
+ */
 
-/** @type {{ ytcTranslations: Writable<Message>, mod: Writable<Message>, ytc: Writable<Message>, translations: Writable<Message>, mchad: Readable<Message>, api: Readable<Message>, ytcBonks: Writable<any[]>, ytcDeletions:Writable<any[]> }} */
+/** @type {{ ytcTranslations: Writable<Message>, mod: Writable<Message>, ytc: Writable<Message>, translations: Writable<Message>, mchad: Readable<Message>, api: Readable<Message>, ytcBonks: Writable<any[]>, ytcDeletions:Writable<any[]>, thirdParty: Writable<Message> }} */
 export const sources = {
   ytcTranslations: writable(null),
   mod: writable(null),
   ytc: ytcSource(window).ytc,
   mchad: combineStores(MCHAD.getArchive(paramsVideoId), MCHAD.getLiveTranslations(paramsVideoId)).store,
   api: combineStores(API.getArchive(paramsVideoId), API.getLiveTranslations(paramsVideoId)).store,
+  thirdParty: createThirdPartyStore(),
   ytcBonks: writable(null),
-  ytcDeletions: writable(null),
+  ytcDeletions: writable(null)
 };
 
 /** @type {(msg: Message) => Boolean} */
@@ -40,9 +49,9 @@ const setStoreMessage =
   store => (msg, text) => store.set({ ...msg, text: text ?? msg.text });
 
 /**
- * @param {Writable<Message>} translations 
+ * @param {Writable<Message>} translations
  * @param {Writable<Message>} mod
- * @param {Writable<Message>} ytc 
+ * @param {Writable<Message>} ytc
  * @return {() => void} cleanup
  */
 function attachFilters(translations, mod, ytc) {
@@ -56,11 +65,9 @@ function attachFilters(translations, mod, ytc) {
     if (!text) return;
     if (isTranslation(parsed)) {
       setTranslation(replaceFirstTranslation(message), parsed.msg);
-    }
-    else if (isWhitelisted(message)) {
+    } else if (isWhitelisted(message)) {
       setTranslation(message);
-    }
-    else if (showIfMod(message)) {
+    } else if (showIfMod(message)) {
       setModMessage(message);
     }
   });
@@ -68,7 +75,7 @@ function attachFilters(translations, mod, ytc) {
 
 /**
  * @template T
- * @param  {...Writable<T>} stores 
+ * @param  {...Writable<T>} stores
  * @returns {{ store: Writable<T>, cleanUp: VoidFunction}}
  */
 export function combineStores(...stores) {
@@ -82,7 +89,20 @@ export function combineStores(...stores) {
   };
 }
 
+function createThirdPartyStore() {
+  return readable(null, set => {
+    const cb = event => {
+      if (event?.data?.type === 'third-party-set') {
+        set(event.data.message);
+      }
+    };
+    window.addEventListener('message', cb);
+    return () => window.removeEventListener(cb);
+  });
+}
+
 /**
+ * @param {Ytc.ParsedMessage} ytcMessage
  * @returns {Message}
  */
 function ytcToMsg(ytcMessage) {
@@ -104,70 +124,20 @@ function ytcToMsg(ytcMessage) {
   };
 }
 
-/**@param {Window} window */
+/** @param {Window} window */
 export function ytcSource(window) {
   /** @type {Writable<Message>} */
   const ytc = writable(null);
-  const lessMsg = (m1, m2) => m1.showtime - m2.showtime;
-  const queued = new Queue();
-  let interval = null;
-  let firstChunkReceived = false;
-
-  const progress = { previous: null };
   const newMessage = compose(ytc.set, ytcToMsg);
-  const cleanUp = () => clearInterval(interval);
 
-  const isPollingProgress = () => !!interval;
-
-  const pushQueuedToStore = condition => {
-    while (queued.top != null && condition(queued)) {
-      newMessage(queued.pop().data.message);
-    }
-  };
-
-  const pushAllQueuedToStore = () => pushQueuedToStore(() => true);
-  const pushUpToCurrentToStore = (currentTime) =>
-    pushQueuedToStore(q => q.top.data.timestamp <= currentTime);
-
-  const scrubbedOrSkipped = (time) =>
-    time == null || Math.abs(progress.previous - time) > 1;
-
-  const videoProgressUpdated = (time) => {
-    if (time < 0) return;
-    if (scrubbedOrSkipped(time)) {
-      pushAllQueuedToStore();
-    } else {
-      pushUpToCurrentToStore(time);
-    }
-    progress.previous = time;
-    timestamp.set(time);
-  };
-
-  const updateVideoProgressBeforeMessages = data => {
-    if (!isPollingProgress() && firstChunkReceived) {
-      videoProgressUpdated(data);
-    }
-  };
-
-  const runQueue = compose(videoProgressUpdated, x => x / 1000, Date.now);
-
-  const startVideoProgressUpdatePolling = () => {
-    interval = setInterval(runQueue, 250);
-    runQueue();
-  };
-
-  const extractToMsg = (message) => ({
-    timestamp: message.showtime / 1000,
-    message
-  });
-
-  const pushMessagesToQueue = (messages) => messages
-    .sort(lessMsg)
-    .map(extractToMsg)
-    .forEach(item => queued.push(item));
-
-  /** Connect to background messaging as client */
-  const port = chrome.runtime.connect();
+  /* Connect to background messaging as client */
+  /** @type {Chat.Port} */
+  let port;
+  try {
+    port = chrome.runtime.connect();
+  } catch {
+    return { ytc, cleanUp: () => {} };
+  }
   let portRegistered = false;
   const registerClient = (frameInfo) => {
     port.postMessage({
@@ -178,6 +148,7 @@ export function ytcSource(window) {
     portRegistered = true;
   };
 
+  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
   if (paramsPopout && !portRegistered) {
     registerClient(
       {
@@ -188,34 +159,30 @@ export function ytcSource(window) {
   }
 
   window.addEventListener('message', (d) => {
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (!paramsPopout && d.data.type === 'frameInfo' && !portRegistered) {
       registerClient(d.data.frameInfo);
     }
   });
 
-  const filterDeleted = (message, bonks, deletions) => {
-    return !(bonks.some((b) => b.authorId === message.author.id) ||
-      deletions.some((d) => d.messageId === message.messageId));
-  };
-
-  port.onMessage.addListener((payload) => {
-    if (payload.type === 'actionChunk') {
-      firstChunkReceived = true;
-      const messages = payload.messages.filter(
-        (m) => filterDeleted(m, payload.bonks, payload.deletions)
-      );
-      sources.ytcBonks.set(payload.bonks);
-      sources.ytcDeletions.set(payload.deletions);
-      pushMessagesToQueue(messages);
-      if (!isPollingProgress() && !payload.isReplay) {
-        startVideoProgressUpdatePolling();
-      }
-    } else if (payload.type === 'playerProgress') {
-      updateVideoProgressBeforeMessages(payload.playerProgress);
+  port.onMessage.addListener((response) => {
+    switch (response.type) {
+      case 'message':
+        newMessage(response.message);
+        break;
+      case 'bonk': // TODO: No need to use arrays anymore
+        sources.ytcBonks.set([response.bonk]);
+        break;
+      case 'delete':
+        sources.ytcDeletions.set([response.deletion]);
+        break;
+      case 'playerProgress':
+        timestamp.set(response.playerProgress);
+        break;
     }
   });
 
-  return { ytc, cleanUp };
+  return { ytc, cleanUp: () => port.disconnect() };
 }
 
 function message(author, msg, timestamp) {

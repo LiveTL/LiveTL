@@ -24,7 +24,7 @@ export class Queue {
   }
 
   /**
-   * @param {T} item 
+   * @param {T} item
    */
   push(item) {
     const newItem = { data: item };

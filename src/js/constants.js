@@ -9,6 +9,12 @@ export const VideoSide = {
   TOP: 'TOP'
 };
 
+export const videoSideMap = new Map([
+  [VideoSide.LEFT, 'Left'],
+  [VideoSide.RIGHT, 'Right'],
+  [VideoSide.TOP, 'Top']
+]);
+
 /** @enum {String} */
 export const ChatSplit = {
   HORIZONTAL: 'HORIZONTAL',
@@ -16,10 +22,26 @@ export const ChatSplit = {
 };
 
 /** @enum {String} */
+export const SelectOperation = {
+  SCREENSHOT: 'SCREENSHOT',
+  DOWNLOAD: 'DOWNLOAD'
+};
+
+export const chatSplitMap = new Map([
+  [ChatSplit.HORIZONTAL, 'Horizontal'],
+  [ChatSplit.VERTICAL, 'Vertical']
+]);
+
+/** @enum {String} */
 export const TextDirection = {
   TOP: 'TOP',
   BOTTOM: 'BOTTOM'
 };
+
+export const textDirectionMap = new Map([
+  [TextDirection.TOP, 'Top'],
+  [TextDirection.BOTTOM, 'Bottom']
+]);
 
 /** @enum {String} */
 export const DisplayMode = {
@@ -33,6 +55,21 @@ export const AutoLaunchMode = {
   NONE: 'NONE',
   ...DisplayMode
 };
+
+function capitalize(s) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+// This was causing circular dependency when exported in utils.js
+const transformOpt = str =>
+  capitalize(str
+    .trim()
+    .toLowerCase());
+
+export const autoLaunchModeItems = Object.keys(AutoLaunchMode).map(item => ({
+  text: transformOpt(AutoLaunchMode[item]),
+  value: AutoLaunchMode[item]
+}));
 
 // Js enum omegalul
 /** @enum {number} */
@@ -83,15 +120,15 @@ export const languages = [
 export const languageConversionTable = {};
 export const languageNameCode = {};
 export const languageNameValues = languages.map(lang => ({
-  name: createLangSelectionName(lang), value: lang.lang
+  text: createLangSelectionName(lang), value: lang.lang
 }));
 
 function createLangSelectionName(lang) {
   return `${lang.name} (${lang.lang})`;
 }
 
-languages.forEach(i => languageConversionTable[createLangSelectionName(i)] = i);
-languages.forEach(lang => languageNameCode[lang.lang] = lang);
+languages.forEach(i => (languageConversionTable[createLangSelectionName(i)] = i));
+languages.forEach(lang => (languageNameCode[lang.lang] = lang));
 
 export const MCHAD = 'https://repo.mchatx.org';
 
@@ -113,11 +150,26 @@ export const YtcDeleteBehaviour = {
   NOTHING: 'NOTHING'
 };
 
-export const ytcDeleteValues = new Map([
-  [YtcDeleteBehaviour.HIDE, 'Hide message'],
-  [YtcDeleteBehaviour.PLACEHOLDER, 'Show placeholder'],
-  [YtcDeleteBehaviour.NOTHING, 'Do nothing']
-]);
+export const ytcDeleteItems = [
+  { value: YtcDeleteBehaviour.HIDE, text: 'Hide message' },
+  { value: YtcDeleteBehaviour.PLACEHOLDER, text: 'Show placeholder' },
+  { value: YtcDeleteBehaviour.NOTHING, text: 'Do nothing' }
+];
+
+export const showBlockItems = [
+  { text: 'show', value: 'show' },
+  { text: 'block', value: 'block' }
+];
+
+export const plainRegexItems = [
+  { text: 'plain', value: 'plain' },
+  { text: 'regex', value: 'regex' }
+];
+
+export const chatAuthorItems = [
+  { text: 'message', value: 'chat' },
+  { text: 'author', value: 'author' }
+];
 
 export const defaultCaption = `
 Captions captured from the chat will appear here. Try moving and resizing!

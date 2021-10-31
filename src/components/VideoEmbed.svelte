@@ -1,38 +1,100 @@
-<script>
-  import { videoSide, faviconURL } from '../js/store.js';
+<script lang="ts">
+  import type { YTPlayer } from '../ts/youtube-player';
+  import { videoSide, faviconURL, videoShortcutAction } from '../js/store.js';
   import { VideoSide } from '../js/constants.js';
-  import { suppress } from '../js/utils.js';
-  import { onMount } from 'svelte';
-  import { ProgressCircular } from 'svelte-materialify';
-  let player = undefined;
-  export let videoId;
-  let loaded = false;
-  onMount(() => {
-    player.src = `https://www.youtube.com/error?video=${videoId}`;
+  import { onMount, onDestroy } from 'svelte';
+  import { loadYoutubePlayer } from '../ts/youtube-player';
+  import ProgressCircular from 'smelte/src/components/ProgressCircular';
+  import type { Unsubscriber } from 'svelte/store';
+
+  export let videoId: string;
+
+  let tryWorkaround = false;
+  let workaroundLoaded = false;
+  let listenerActive = false;
+  let videoShortcutUnsub: Unsubscriber | null = null;
+  let workaroundIframe: HTMLIFrameElement | null = null;
+
+  const setBLFavicon = () => faviconURL.set('/img/blfavicon.ico');
+
+  const onTryWorkaround = (tryWorkaround: boolean): void => {
+    if (!tryWorkaround || listenerActive) return;
     window.addEventListener('message', e => {
-      suppress(() =>{
-        if (e.data.type === 'marine-easter-egg') {
-          faviconURL.set('/img/blfavicon.ico');
-        } else if (e.data.type === 'video-embed-loaded') {
-          loaded = true;
-        }
-      });
+      if (e.data.type === 'video-embed-loaded') {
+        workaroundLoaded = true;
+      } else if (e.data.type === 'marine-easter-egg') {
+        setBLFavicon();
+      }
     });
+    listenerActive = true;
+
+    videoShortcutUnsub = videoShortcutAction.subscribe((action) => {
+      if (!workaroundIframe || action === '') return;
+      workaroundIframe.contentWindow?.postMessage({
+        type: 'shortcut-action',
+        action
+      }, '*');
+      videoShortcutAction.set('');
+    });
+  };
+
+  const onVideoReady = (player: YTPlayer, runPlayerAction: (action: string) => void): void => {
+    const state = player.getPlayerState();
+    const data = player.getVideoData();
+    if (state === -1 && data.title === '' && data.author === '') {
+      console.log('Video potentially failed to load normally, trying workaround.');
+      tryWorkaround = true;
+      return;
+    }
+
+    videoShortcutUnsub = videoShortcutAction.subscribe((action) => {
+      if (action === '') return;
+      runPlayerAction(action);
+      videoShortcutAction.set('');
+    });
+  };
+
+  const onVideoStateChange = (player: YTPlayer): void => {
+    if (player.getVideoData().author.includes('Marine Ch.')) {
+      setBLFavicon();
+    }
+  };
+
+  onMount(() => {
+    loadYoutubePlayer(
+      videoId,
+      onVideoReady,
+      onVideoStateChange
+    );
   });
+  onDestroy(() => {
+    if (videoShortcutUnsub) videoShortcutUnsub();
+  });
+  $: onTryWorkaround(tryWorkaround);
 </script>
 
-{#if !loaded}
-  <div class="progress">
-    <ProgressCircular indeterminate color="primary" />
-  </div>
-{/if}
-<div class="wrapper" class:left-video={$videoSide == VideoSide.LEFT}>
-  <iframe
-    title="video"
-    bind:this={player}
-    class="video"
-    class:hidden={!loaded}
-  />
+<div
+  class:left-video={$videoSide === VideoSide.LEFT}
+  class:top-video={$videoSide === VideoSide.TOP}
+>
+  {#if !tryWorkaround}
+    <div class="w-full h-full">
+      <div id="player" />
+    </div>
+  {:else}
+    {#if !workaroundLoaded}
+      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2">
+        <ProgressCircular />
+      </div>
+    {/if}
+    <iframe
+      title="video"
+      src="https://www.youtube.com/error?video={videoId}"
+      class="w-full h-full"
+      class:hidden={!workaroundLoaded}
+      bind:this={workaroundIframe}
+    />
+  {/if}
 </div>
 
 <!--<style src="../css/iframe.css"></style>-->
@@ -41,24 +103,8 @@
   .left-video {
     width: calc(100% - var(--bar) + 4px);
   }
-  .wrapper {
-    overflow: hidden;
-  }
-  .video {
-    border: 0px;
-    margin: 0px;
-    width: 100%;
-    height: 100%;
-  }
-  .hidden {
-    opacity: 0% !important;
-  }
-  .progress {
-    display: flex;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
+
+  .top-video {
+    height: calc(100% - var(--bar));
   }
 </style>

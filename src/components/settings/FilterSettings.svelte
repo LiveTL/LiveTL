@@ -1,82 +1,33 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
-  import {
-    showModMessage,
-    language,
-    customFilters,
-    enableMchadTLs,
-    enableAPITLs,
-    ytcDeleteBehaviour
-  } from '../../js/store.js';
-  import {
-    Row,
-    Col,
-    Button,
-    Icon,
-    Radio,
-    Subheader
-  } from 'svelte-materialify/src';
-  import { mdiPlus } from '@mdi/js';
+  import { customFilters } from '../../js/store.js';
   import { addFilter, cleanupFilters } from '../../js/filter.js';
-  import { languageNameValues, ytcDeleteValues } from '../../js/constants.js';
-  import CheckOption from '../options/Toggle.svelte';
   import CustomFilter from '../options/CustomFilter.svelte';
-  import SelectOption from '../options/Dropdown.svelte';
-  import BlockedUsers from '../BlockedUsers.svelte';
-  import SpamProtection from '../SpamProtection.svelte';
+  import Card from '../common/Card.svelte';
+  import CommonFilterCards from './CommonFilterCards.svelte';
+  import SpamProtection from './SpamProtection.svelte';
 
   function createNewFilter() {
     cleanupFilters();
     addFilter('chat', 'plain', 'show', '');
   }
 
-  onMount(cleanupFilters);
+  let div: HTMLElement;
 
-  $: deleteBehaviourGroup = $ytcDeleteBehaviour;
-  $: ytcDeleteBehaviour.set(deleteBehaviourGroup);
+  onMount(cleanupFilters);
 </script>
 
-<SelectOption
-  name="Language filter"
-  store={language}
-  items={languageNameValues}
-/>
-<CheckOption name="Show moderator messages" store={showModMessage} />
-<BlockedUsers />
-<SpamProtection />
-<Subheader>When messages are deleted by moderators:</Subheader>
-{#each [...ytcDeleteValues.keys()] as key}
-  <Radio bind:group={deleteBehaviourGroup} value={key} style='padding-bottom: 5px;' color='blue'>
-    {ytcDeleteValues.get(key)}
-  </Radio>
-{/each}
-<Row>
-  <Col>
-    <Subheader>External translation sources</Subheader>
-    <CheckOption name="LiveTL API" store={enableAPITLs} />
-    <CheckOption name="MChad (volunteer translators)" store={enableMchadTLs} />
-  </Col>
-</Row>
-<div class="filter-options">
-  <Row>
-    <Col>
-      <Subheader>Custom filters</Subheader>
-    </Col>
-    <Col style="padding-right: 2px;">
-      <Subheader style="float: right; padding-right: 0px">
-        <Button icon on:click={createNewFilter}>
-          <Icon path={mdiPlus} />
-        </Button>
-      </Subheader>
-    </Col>
-  </Row>
-  {#each $customFilters as rule, i}
-    <CustomFilter {...rule} />
-  {/each}
+<div bind:this={div}>
+  <CommonFilterCards {div} />
+  <SpamProtection boundingDiv={div} />
+  <Card
+    title="Custom filters"
+    icon="filter_alt"
+    headerEndIcon="add"
+    headerEndIconOnClick={createNewFilter}
+  >
+    {#each $customFilters as rule}
+      <CustomFilter {...rule} boundingDiv={div} />
+    {/each}
+  </Card>
 </div>
-
-<style>
-  :global(.s-subheader) {
-    padding-left: 0px !important;
-  }
-</style>

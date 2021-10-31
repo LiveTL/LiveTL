@@ -1,8 +1,10 @@
 name: E2E Tests
-on:
+on: 
   push:
-    branches-ignore:
-      - smelte
+    branches:
+      - '**'
+    tags-ignore:
+      - '*.*'
 jobs:
   e2e-test:
     runs-on: ubuntu-latest

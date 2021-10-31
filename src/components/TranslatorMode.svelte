@@ -12,7 +12,7 @@
   let focused = 0;
 
   const chatbox = container.querySelectorAll('#input')[1];
-  const hide = el => el.style.display = 'none';
+  const hide = el => (el.style.display = 'none');
   const hideRipples = () => document
     .querySelectorAll('paper-ripple')
     .forEach(hide);
@@ -34,18 +34,18 @@
 
   container.cleanUpCbs.push(() => chatbox.removeEventListener('keydown', onKeydown));
   $: reclen = $recommendations.length;
-  $: focused = reclen == 0 ? 0 : focused % reclen;
+  $: focused = reclen === 0 ? 0 : focused % reclen;
   $: focusRec.set(reclen ? $recommendations[focused] : null);
 </script>
 
 <!-- The translation recommendations -->
-{#if $recommendations.length == 0}
+{#if $recommendations.length === 0}
   <!--Invisible chars-->
   <p>‍‍‍</p>
 {/if}
 <div class="recommends">
   {#each $recommendations as recommend, i}
-    <div class:focused={i == focused}>{recommend}</div>
+    <div class:focused={i === focused}>{recommend}</div>
   {/each}
 </div>
 

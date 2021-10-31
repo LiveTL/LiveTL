@@ -1,4 +1,4 @@
-src/submodules
 build
 dist
 node_modules
+.eslintrc.js

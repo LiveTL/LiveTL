@@ -2,7 +2,7 @@ name: Latest Release Build
 on:
   release:
     types:
-      - released
+      - published
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,7 +16,7 @@ jobs:
       - name: Build extensions
         run: |
           yarn update:list
-          yarn build production --version=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g')
+          yarn build:production --env version=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g')
           yarn package
       - name: Upload Chrome build to release
         uses: svenstaro/upload-release-action@v2

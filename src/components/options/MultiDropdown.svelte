@@ -1,43 +1,21 @@
 <script>
-  import { mdiClose } from '@mdi/js';
-  import {
-    Button,
-    Divider,
-    Icon,
-    Menu,
-    TextField,
-    ListItem,
-  } from 'svelte-materialify/src';
+  import Select from 'smelte/src/components/Select';
+  import Icon from '../common/Icon.svelte';
+  import { getDropdownOffsetY, getRelativeRect } from '../../ts/component-utils';
+  // I legit can't understand LookupStore to migrate this to TS lol
 
   export let name = '';
   export let store = null; // LookupStore
   export let getDisplayName = (key, value) => `${key}` || value;
   export let getBool = (key) => store.get(key);
   export let setBool = (key, val) => store.set(key, val);
-  export let active = false;
+  export let boundingDiv = null;
+  export let width = 0;
 
-  let field = null;
-  $: if (field) {
-    const elem = field.querySelector('.s-text-field__wrapper.solo');
-    const svg = document.createElement('svg');
-    elem.appendChild(svg);
-    svg.outerHTML = `
-      <span
-        ><i
-          aria-hidden="true"
-          class="s-icon"
-          aria-disabled="false"
-          style="--s-icon-size:24px; --s-icon-rotate:0deg; margin-right: 8px;"
-          ><svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24px"
-            height="24px"
-            viewBox="0 0 24 24"><path d="M7,10L12,15L17,10H7Z" /></svg
-          >
-        </i><!--<Icon>--></span
-      >
-    `;
-  }
+  let showList = false;
+  let div = null;
+  let offsetY = '';
+  let offsetX = '';
 
   function convertLookup(lookup) {
     return [...lookup]
@@ -45,76 +23,54 @@
       .map(([key, value]) => ({ key, item: getDisplayName(key, value) }));
   }
 
+  const onShowListChange = async (showList) => {
+    if (!showList) return;
+    offsetY = await getDropdownOffsetY(div, boundingDiv);
+
+    const relativeRect = getRelativeRect(div, boundingDiv);
+    if (relativeRect.left + width > boundingDiv.clientWidth) {
+      offsetX = 'right-0';
+    } else {
+      offsetX = 'left-0';
+    }
+  };
+
   $: items = convertLookup($store);
+  $: onShowListChange(showList);
+  const classes = 'dropdown-wrapper cursor-pointer relative';
+  $: optionsClasses = 'dropdown-options divide-y divide-gray-600 absolute ' +
+    'bg-white dark:bg-dark-500 rounded shadow z-20 max-h-60 overflow-auto ' +
+    `${offsetY} ${offsetX}`;
 </script>
 
-<div class="dropdown">
-  <Menu bind:active offsetY={false} closeOnClick={false}>
-    <div class="dropdown-label" slot="activator" bind:this={field}>
-      <TextField disabled={null} solo value={name} readonly />
-    </div>
-
-    {#if items.length}
-      {#each items as item, i}
-        {#if i}
-          <Divider />
-        {/if}
-        <!--TODO make it show a menu when listitem is clicked-->
-        <ListItem>
-          <div class="listitem-content">
-            <div class="item">{item.item}</div>
-            <div class="button">
-              <Button
-                fab
-                size="x-small"
-                on:click={() => {
-                  setBool(item.key, false);
-                }}
-              >
-                <Icon path={mdiClose} size="14px" />
-              </Button>
-            </div>
+<div bind:this={div} class={$$props.class ? $$props.class : ''}>
+  <Select
+    label={name}
+    dense
+    bind:showList
+    {classes}
+  >
+    <div
+      slot="options"
+      class={optionsClasses}
+      on:click|stopPropagation
+      style="width: {width}px;"
+    >
+      {#if items.length}
+        {#each items as item}
+          <div class="flex flex-row py-4 px-2 items-center cursor-default gap-2">
+            <div class="flex-1">{item.item}</div>
+            <Icon
+              class="flex-none cursor-pointer"
+              on:click={() => setBool(item.key, false)}
+            >
+              cancel
+            </Icon>
           </div>
-        </ListItem>
-      {/each}
-    {:else}
-      <ListItem>none</ListItem>
-    {/if}
-  </Menu>
+        {/each}
+      {:else}
+        <div class="py-4 px-2 cursor-default">None</div>
+      {/if}
+    </div>
+  </Select>
 </div>
-
-<style>
-  .dropdown {
-    width: 100%;
-  }
-
-  .item {
-    padding-top: 7px;
-  }
-
-  .listitem-content {
-    display: flex;
-    flex-direction: row;
-  }
-
-  :global(.dropdown input:hover) {
-    cursor: pointer;
-  }
-
-  .button {
-    margin-left: auto;
-    order: 2;
-  }
-
-  :global(.dropdown > div) {
-    width: 100%;
-  }
-
-  :global(.s-menu:hover) {
-    cursor: pointer;
-  }
-
-  :global(.s-menu) {
-    width: 100%;
-  }
-</style>
