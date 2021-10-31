@@ -106,7 +106,8 @@ export const speechSpeed = SS('speechSpeed', 1);
 export const autoLaunchMode = SS('autoLaunchMode', AutoLaunchMode.NONE);
 export const keyboardShortcuts = SS('keyboardShortcuts', defaultShortcuts);
 export const disableSpecialSpamProtection = SS('disableSpecialSpamProtection', true);
-
+export const activePreset = SS('activePreset', 1);
+export const presets = SS('presets', [{}, {}, {}, {}]);
 // Non-persistant stores
 
 /** @typedef {{width: Number, height: Number}} WindowDimension */
