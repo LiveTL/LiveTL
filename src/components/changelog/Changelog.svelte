@@ -20,7 +20,7 @@
   Mode.
   <img
     class="pt-2"
-    src="https://cdn.discordapp.com/attachments/786713928264319026/902138793501552660/unknown.png"
+    src={ExpandLiveTL}
     alt="Expand LiveTL"
   />
 </ExpandingCard>
@@ -31,15 +31,6 @@
 </ExpandingCard>
 <ExpandingCard title="Bug fixes" icon="new_releases">
   <ul class="list-disc text-base p-2 list-inside">
-    <li>
-      A new button has been added to Embed Mode that will open the stream in
-      LiveTL Mode.
-      <img
-        class="py-1"
-        src={ExpandLiveTL}
-        alt="Expand LiveTL"
-      />
-    </li>
     <li>Embed Mode will no longer open with vertical chat split.</li>
     <li>Fix auto launch mode not working in Firefox.</li>
   </ul>
