@@ -23,14 +23,18 @@
   } from '../../js/store';
   import { importStores } from '../../js/storage';
   import Button from 'smelte/src/components/Button';
+  import PresetButton from './PresetButton.svelte'
 
   let presetCount = $presets.length;
   function getPresetArray(presetCount: number) {
-    const returnArr = [];
+    let returnArr = [];
     for (let i = 1; i < Math.floor(presetCount / 2) + 1; i++) {
-      returnArr.push(i);
+      returnArr.push([2 * i, 2 * i - 1]);
     }
-    if (presetCount % 2 !== 0) { returnArr.push(presetCount / 2 + 0.5); }
+
+    if (presetCount % 2 !== 0) { 
+      returnArr.push([presetCount]);
+    }
     return returnArr;
   }
 
@@ -111,26 +115,48 @@
     presets.set(presetData);
     presetCount += 1;
   }
+
 </script>
 
-{#each getPresetArray(presetCount) as i} 
+
+{#each getPresetArray(presetCount) as [even, odd]}
   <div class="flex gap-2 py-1">
-    <Button add="flex-1" on:click={() => { isDeleting ? deletePreset(2 * i - 1) : updatePreset(2 * i - 1); }} color="dark" light={active === 2 * i - 1 && !isDeleting}>
-      {isDeleting ? `Delete Preset ${2 * i - 1}` : active !== 2 * i - 1 ? `Preset ${2 * i - 1}` : `Save Preset ${2 * i - 1}`}
-    </Button>
-    {#if i !== presetCount / 2 + 0.5}
-      <Button add="flex-1" on:click={() => { isDeleting ? deletePreset(2 * i) : updatePreset(2 * i); }} color="dark" light={active === 2 * i && !isDeleting}>
-        {isDeleting ? `Delete Preset ${2 * i}` : active !== 2 * i ? `Preset ${2 * i}` : `Save Preset ${2 * i}`}
-      </Button>
+    {#if odd}
+      <PresetButton 
+        active = { active }
+        isDeleting = { isDeleting }
+        deletePreset = { deletePreset }
+        updatePreset = { updatePreset }
+        number = { odd }
+      />
     {/if}
+    <PresetButton 
+      active = { active }
+      isDeleting = { isDeleting }
+      deletePreset = { deletePreset }
+      updatePreset = { updatePreset }
+      number = { even }
+    />
   </div>
 {/each}
 
 <div class="flex gap-2 py-1">
-  <Button add="flex-1" color="blue" on:click={() => { addPreset(); }}>
+  <Button 
+    add="flex-1" 
+    color="blue" 
+    on:click={() => { addPreset(); }}
+  >
     Add Preset
   </Button>
-  <Button add="flex-1" on:click={() => { isDeleting = !isDeleting; }} color="error">
-    {isDeleting ? 'Stop Deleting' : 'Delete Presets'}
+  <Button 
+    add="flex-1" 
+    color="error"
+    on:click={() => { isDeleting = !isDeleting; }}
+  >
+    {
+      isDeleting ? 
+        'Stop Deleting' : 
+        'Delete Presets'
+    }
   </Button>
 </div>
