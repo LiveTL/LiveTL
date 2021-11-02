@@ -25,32 +25,32 @@
   import Button from 'smelte/src/components/Button';
   import PresetButton from './PresetButton.svelte'
 
-  let presetCount = $presets.length;
-  function getPresetArray(presetCount: number) {
+  let presetAmount = $presets.length;
+  function getPresetArray(presetAmount: number) {
     let returnArr = [];
-    for (let i = 1; i < Math.floor(presetCount / 2) + 1; i++) {
+    for (let i = 1; i < Math.floor(presetAmount / 2) + 1; i++) {
       returnArr.push([2 * i, 2 * i - 1]);
     }
 
-    if (presetCount % 2 !== 0) { 
-      returnArr.push([presetCount]);
+    if (presetAmount % 2 !== 0) { 
+      returnArr.push([presetAmount]);
     }
     return returnArr;
   }
 
   let isDeleting = false;
-  let active = $activePreset;
-  $: activePreset.set(active);
+  let activeNumber = $activePreset;
+  $: activePreset.set(activeNumber);
 
-  async function updatePreset(number: number) {
-    if (number !== active) {
-      importStores(JSON.stringify($presets[number - 1]));
-      active = number;
+  async function updatePreset(presetNumber: number) {
+    if (presetNumber !== activeNumber) {
+      importStores(JSON.stringify($presets[presetNumber - 1]));
+      activeNumber = presetNumber;
       return;
     }
 
-    const presetData = $presets;
-    presetData[number - 1] = {
+    const presetsData = $presets;
+    presetsData[presetNumber - 1] = {
       captionDuration: $captionDuration,
       captionFontSize: $captionFontSize,
       captionWidth: $captionWidth,
@@ -75,19 +75,19 @@
       macroTrigger: $macroTrigger,
       macros: $macros
     };
-    presets.set(presetData);
+    presets.set(presetsData);
   }
 
-  async function deletePreset(number: number) {
-    const presetData = $presets;
-    presetData.splice(number - 1, 1);
-    presets.set(presetData);
-    presetCount -= 1;
+  async function deletePreset(presetNumber: number) {
+    const presetsData = $presets;
+    presetsData.splice(presetNumber - 1, 1);
+    presets.set(presetsData);
+    presetAmount -= 1;
   }
 
   async function addPreset() {
-    const presetData = $presets;
-    presetData.push({
+    const presetsData = $presets;
+    presetsData.push({
       captionDuration: captionDuration.defaultValue,
       captionFontSize: captionFontSize.defaultValue,
       captionWidth: captionWidth.defaultValue,
@@ -112,30 +112,30 @@
       macroTrigger: macroTrigger.defaultValue,
       macros: macros.defaultValue
     });
-    presets.set(presetData);
-    presetCount += 1;
+    presets.set(presetsData);
+    presetAmount += 1;
   }
 
 </script>
 
 
-{#each getPresetArray(presetCount) as [even, odd]}
+{#each getPresetArray(presetAmount) as [even, odd]}
   <div class="flex gap-2 py-1">
     {#if odd}
       <PresetButton 
-        active = { active }
+        activeNumber = { activeNumber }
         isDeleting = { isDeleting }
         deletePreset = { deletePreset }
         updatePreset = { updatePreset }
-        number = { odd }
+        prefabNumber = { odd }
       />
     {/if}
     <PresetButton 
-      active = { active }
+      activeNumber = { activeNumber }
       isDeleting = { isDeleting }
       deletePreset = { deletePreset }
       updatePreset = { updatePreset }
-      number = { even }
+      prefabNumber = { even }
     />
   </div>
 {/each}
