@@ -108,6 +108,31 @@ export const keyboardShortcuts = SS('keyboardShortcuts', defaultShortcuts);
 export const disableSpecialSpamProtection = SS('disableSpecialSpamProtection', true);
 export const activePreset = SS('activePreset', 1);
 export const presets = SS('presets', [{}]);
+
+// All the variables persisted in presets
+export const presetStores = [
+  captionDuration,
+  captionFontSize,
+  captionWidth,
+  captionLeft,
+  captionTop,
+  videoSideSetting,
+  chatZoom,
+  livetlFontSize,
+  textDirection,
+  chatSplit,
+  activePreset,
+  presets,
+  videoPanelSize,
+  chatSize,
+  keyboardShortcuts,
+  doTranslatorMode,
+  doAutoPrefix,
+  autoPrefixTag,
+  macroTrigger,
+  macros
+];
+
 // Non-persistant stores
 
 /** @typedef {{width: Number, height: Number}} WindowDimension */
