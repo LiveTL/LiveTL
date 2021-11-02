@@ -119,15 +119,15 @@
 </script>
 
 
-{#each getPresetArray(presetAmount) as [even, odd]}
+{#each getPresetArray(presetAmount) as [evenNumber, oddNumber]}
   <div class="flex gap-2 py-1">
-    {#if odd}
+    {#if oddNumber}
       <PresetButton 
         activeNumber = { activeNumber }
         isDeleting = { isDeleting }
         deletePreset = { deletePreset }
         updatePreset = { updatePreset }
-        prefabNumber = { odd }
+        prefabNumber = { oddNumber }
       />
     {/if}
     <PresetButton 
@@ -135,7 +135,7 @@
       isDeleting = { isDeleting }
       deletePreset = { deletePreset }
       updatePreset = { updatePreset }
-      prefabNumber = { even }
+      prefabNumber = { evenNumber }
     />
   </div>
 {/each}
