@@ -5,25 +5,25 @@
   export let updatePreset: (number: number) => {};
 
   export let isDeleting: boolean = false;
-  export let active: number = 0;
-  export let number: number = 0;
+  export let activeNumber: number = 0;
+  export let prefabNumber: number = 0;
 </script>
 
 <Button 
   add="flex-1" 
   on:click={() => { 
     isDeleting ? 
-      deletePreset(number) : 
-      updatePreset(number); 
+      deletePreset(prefabNumber) : 
+      updatePreset(prefabNumber); 
   }} 
   color="dark" 
-  light={ active === number && !isDeleting }
+  light={ activeNumber === prefabNumber && !isDeleting }
 >
   {
     isDeleting ? 
-      `Delete Preset ${number}` : 
-      active !== number ? 
-        `Preset ${number}` : 
-        `Save Preset ${number}`
+      `Delete Preset ${prefabNumber}` : 
+      activeNumber !== prefabNumber ? 
+        `Preset ${prefabNumber}` : 
+        `Save Preset ${prefabNumber}`
   }
 </Button>
