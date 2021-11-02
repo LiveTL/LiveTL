@@ -10,7 +10,6 @@
 </script>
 
 <Button 
-  add="flex-1" 
   on:click={() => {
     isDeleting
       ? deletePreset(prefabNumber)

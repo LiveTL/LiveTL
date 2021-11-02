@@ -55,10 +55,10 @@
   {/each}
 </div>
 <div class="grid grid-cols-2 gap-2">
-  <Button add="flex-1" color="blue" on:click={() => { addPreset(); }}>
+  <Button color="blue" on:click={() => { addPreset(); }}>
     Add Preset
   </Button>
-  <Button add="flex-1" color="error" on:click={() => { isDeleting = !isDeleting; }}>
+  <Button color="error" on:click={() => { isDeleting = !isDeleting; }}>
     {
       isDeleting ? 'Stop Deleting' : 'Delete Presets'
     }
