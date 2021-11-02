@@ -121,8 +121,6 @@ export const presetStores = [
   livetlFontSize,
   textDirection,
   chatSplit,
-  activePreset,
-  presets,
   videoPanelSize,
   chatSize,
   keyboardShortcuts,
