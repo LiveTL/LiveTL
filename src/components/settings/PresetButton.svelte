@@ -11,19 +11,19 @@
 
 <Button 
   add="flex-1" 
-  on:click={() => { 
-    isDeleting ? 
-      deletePreset(prefabNumber) : 
-      updatePreset(prefabNumber); 
+  on:click={() => {
+    isDeleting
+      ? deletePreset(prefabNumber)
+      : updatePreset(prefabNumber);
   }} 
   color="dark" 
   light={ activeNumber === prefabNumber && !isDeleting }
 >
   {
-    isDeleting ? 
-      `Delete Preset ${prefabNumber}` : 
-      activeNumber !== prefabNumber ? 
-        `Preset ${prefabNumber}` : 
-        `Save Preset ${prefabNumber}`
+    isDeleting
+      ? `Delete Preset ${prefabNumber}`
+      : activeNumber !== prefabNumber
+        ? `Preset ${prefabNumber}`
+        : `Save Preset ${prefabNumber}`
   }
 </Button>
