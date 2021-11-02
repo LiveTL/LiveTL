@@ -1,25 +1,8 @@
 <script lang="ts">
-  import {
-    captionDuration,
-    captionFontSize,
-    captionWidth,
-    captionLeft,
-    captionTop,
-    videoSideSetting,
-    chatZoom,
-    livetlFontSize,
-    textDirection,
-    chatSplit,
-    activePreset,
-    presets,
-    videoPanelSize,
-    chatSize,
-    keyboardShortcuts,
-    doTranslatorMode,
-    doAutoPrefix,
-    autoPrefixTag,
-    macroTrigger,
-    macros
+  import { 
+    presetStores, 
+    presets, 
+    activePreset
   } from '../../js/store';
   import { importStores } from '../../js/storage';
   import Button from 'smelte/src/components/Button';
@@ -50,31 +33,7 @@
     }
 
     const presetsData = $presets;
-    presetsData[presetNumber - 1] = {
-      captionDuration: $captionDuration,
-      captionFontSize: $captionFontSize,
-      captionWidth: $captionWidth,
-      captionLeft: $captionLeft,
-      captionTop: $captionTop,
-
-      videoSideSetting: $videoSideSetting,
-      videoPanelSize: $videoPanelSize,
-
-      chatZoom: $chatZoom,
-      chatSize: $chatSize,
-      chatSplit: $chatSplit,
-
-      textDirection: $textDirection,
-      livetlFontSize: $livetlFontSize,
-
-      keyboardShortcuts: $keyboardShortcuts,
-
-      doTranslatorMode: $doTranslatorMode,
-      doAutoPrefix: $doAutoPrefix,
-      autoPrefixTag: $autoPrefixTag,
-      macroTrigger: $macroTrigger,
-      macros: $macros
-    };
+    presetsData[presetNumber - 1] = Object.fromEntries(presetStores.map(store => [store.name, store.get()]));
     presets.set(presetsData);
   }
 
@@ -87,31 +46,7 @@
 
   async function addPreset() {
     const presetsData = $presets;
-    presetsData.push({
-      captionDuration: captionDuration.defaultValue,
-      captionFontSize: captionFontSize.defaultValue,
-      captionWidth: captionWidth.defaultValue,
-      captionLeft: captionLeft.defaultValue,
-      captionTop: captionTop.defaultValue,
-
-      videoSideSetting: videoSideSetting.defaultValue,
-      videoPanelSize: videoPanelSize.defaultValue,
-
-      chatZoom: chatZoom.defaultValue,
-      chatSize: chatSize.defaultValue,
-      chatSplit: chatSplit.defaultValue,
-
-      textDirection: textDirection.defaultValue,
-      livetlFontSize: livetlFontSize.defaultValue,
-
-      keyboardShortcuts: keyboardShortcuts.defaultValue,
-
-      doTranslatorMode: doTranslatorMode.defaultValue,
-      doAutoPrefix: doAutoPrefix.defaultValue,
-      autoPrefixTag: autoPrefixTag.defaultValue,
-      macroTrigger: macroTrigger.defaultValue,
-      macros: macros.defaultValue
-    });
+    presetsData.push( Object.fromEntries(presetStores.map(store => [store.name, store.defaultValue])) );
     presets.set(presetsData);
     presetAmount += 1;
   }
