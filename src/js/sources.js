@@ -62,10 +62,10 @@ function attachFilters(translations, mod, ytc) {
     if (!message || isBlacklisted(message)) return;
     const text = message.text.trim();
     const parsed = parseTranslation(text);
-    if (!text) return;
-    if (isTranslation(parsed)) {
+
+    if (text && isTranslation(parsed)) {
       setTranslation(replaceFirstTranslation(message), parsed.msg);
-    } else if (isWhitelisted(message)) {
+    } else if (text && isWhitelisted(message)) {
       setTranslation(message);
     } else if (showIfMod(message)) {
       setModMessage(message);
