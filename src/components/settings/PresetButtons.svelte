@@ -14,7 +14,8 @@
   let activeNumber = $activePreset;
   $: activePreset.set(activeNumber);
 
-  async function updatePreset(presetNumber: number) {
+  async function updatePreset(event: CustomEvent<{presetNumber: number}>) {
+    const presetNumber = event.detail.presetNumber;
     if (presetNumber !== activeNumber) {
       importStores(JSON.stringify($presets[presetNumber - 1]));
       activeNumber = presetNumber;
@@ -26,7 +27,8 @@
     presets.set(presetsData);
   }
 
-  async function deletePreset(presetNumber: number) {
+  async function deletePreset(event: CustomEvent<{presetNumber: number}>) {
+    const presetNumber = event.detail.presetNumber;
     const presetsData = $presets;
     presetsData.splice(presetNumber - 1, 1);
     presets.set(presetsData);
@@ -46,10 +48,10 @@
 <div class="grid grid-cols-2 gap-2 py-1">
   {#each Array(presetAmount) as _, i}
     <PresetButton 
-      activeNumber = { activeNumber }
-      isDeleting = { isDeleting }
-      deletePreset = { deletePreset }
-      updatePreset = { updatePreset }
+      { activeNumber }
+      { isDeleting }
+      on:deletePreset = { deletePreset }
+      on:updatePreset = { updatePreset }
       prefabNumber = { i + 1 }
     />
   {/each}
@@ -60,7 +62,9 @@
   </Button>
   <Button color="error" on:click={() => { isDeleting = !isDeleting; }}>
     {
-      isDeleting ? 'Stop Deleting' : 'Delete Presets'
+      isDeleting 
+        ? 'Stop Deleting' 
+        : 'Delete Presets'
     }
   </Button>
 </div>
