@@ -2,17 +2,17 @@
   import Button from 'smelte/src/components/Button';
   import { createEventDispatcher } from 'svelte';
 
-	const dispatch = createEventDispatcher();
+const dispatch = createEventDispatcher();
 
   function updatePreset(presetNumber: number) {
-    dispatch("updatePreset",
+    dispatch('updatePreset',
       { presetNumber }
-    )
+    );
   }
   function deletePreset(presetNumber: number) {
-    dispatch("deletePreset",
+    dispatch('deletePreset',
       { presetNumber }
-    )
+    );
   }
 
   export let isDeleting: boolean = false;

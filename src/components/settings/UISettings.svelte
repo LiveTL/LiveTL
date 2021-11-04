@@ -32,15 +32,13 @@
   import Card from '../common/Card.svelte';
   import ReadAloud from './ReadAloud.svelte';
   import Dropdown from '../common/DropdownStore.svelte';
+  import ExpandingCard from '../common/ExpandingCard.svelte';
 
   let div: HTMLElement;
 </script>
 
 <div bind:this={div}>
   <ImportExport />
-  <Card title="Presets" icon="list">
-    <PresetButtons />
-  </Card>
   <Card title="Font" icon="format_size">
     <Slider
       name="Chat zoom"
@@ -56,25 +54,16 @@
   <Card title="Layout" icon="monitor">
     <div class="flex items-center gap-2">
       <h6>Text direction:</h6>
-      <Radio
-        store={textDirection}
-        map={textDirectionMap}
-      />
+      <Radio store={textDirection} map={textDirectionMap} />
     </div>
     {#if $displayMode === DisplayMode.FULLPAGE}
       <div class="flex items-center gap-2">
         <h6>Video side:</h6>
-        <Radio
-          store={videoSideSetting}
-          map={videoSideMap}
-        />
+        <Radio store={videoSideSetting} map={videoSideMap} />
       </div>
       <div class="flex items-center gap-2">
         <h6>Chat split:</h6>
-        <Radio
-          store={chatSplit}
-          map={chatSplitMap}
-        />
+        <Radio store={chatSplit} map={chatSplitMap} />
       </div>
       <Checkbox
         name="Automatically adjust layout when window is thin"
@@ -82,6 +71,9 @@
       />
     {/if}
   </Card>
+  <ExpandingCard title="Layout Presets" icon="list">
+    <PresetButtons />
+  </ExpandingCard>
   <Card title="General" icon="tune">
     <Dropdown
       name="Auto-launch mode"
@@ -116,7 +108,7 @@
             store={captionDuration}
             min={1}
             max={61}
-            showValueSuffix={(value) => (value > 1) ? 'seconds' : 'second'}
+            showValueSuffix={(value) => (value > 1 ? 'seconds' : 'second')}
           />
         {/if}
       {/if}
