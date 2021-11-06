@@ -56,6 +56,7 @@ const dispatch = createEventDispatcher();
     </Button>
   {:else}
     <input 
+      autofocus
       class={editingInputClass} 
       bind:value={name}
       on:change={() => { renamePreset(prefabNumber, name); }}
