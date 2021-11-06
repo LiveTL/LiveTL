@@ -4,13 +4,12 @@
   import Button from 'smelte/src/components/Button';
   import PresetButton from './PresetButton.svelte';
 
-  let presetAmount = $presets.length;
-
+  let presetsData = $presets;
+  let presetAmount = presetsData.length;
+  
   let isDeleting = false;
   let activeNumber = $activePreset;
   $: activePreset.set(activeNumber);
-
-  let presetsData = $presets;
 
   async function updatePreset(event: CustomEvent<{ presetNumber: number }>) {
     const presetNumber = event.detail.presetNumber;

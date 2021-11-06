@@ -30,8 +30,15 @@ const dispatch = createEventDispatcher();
   export let prefabNumber: number = 0;
   export let name: string = `Preset ${prefabNumber}`;
 
+  export let forceEditFinish: boolean = false;
+
   let isEditing: boolean = false;
   const editingInputClass: string = "button text-center text-white rounded col-span-4 bg-gray-300 dark:bg-dark-400 uppercase text-sm font-medium relative";
+
+  if (forceEditFinish) {
+    isEditing = false;
+    forceEditFinish = false;
+  }
 </script>
 
 <div class="grid grid-cols-5 gap-2">
@@ -60,6 +67,14 @@ const dispatch = createEventDispatcher();
       class={editingInputClass} 
       bind:value={name}
       on:change={() => { renamePreset(prefabNumber, name); }}
+      on:keypress={
+        keyPressEvent => { 
+          if (keyPressEvent.key === "Enter") { 
+            renamePreset(prefabNumber, name); 
+            isEditing = false; 
+          }
+        }
+      }
     />
   {/if}
   <Button 
