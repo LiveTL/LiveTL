@@ -1,7 +1,7 @@
 <script lang="ts">
+  import { currentlyEditingPreset } from '../../js/store';
   import Button from 'smelte/src/components/Button';
   import Icon from 'smelte/src/components/Icon';
-  import TextField from '../common/TextField.svelte';
   import { createEventDispatcher } from 'svelte';
 
 const dispatch = createEventDispatcher();
@@ -32,6 +32,10 @@ const dispatch = createEventDispatcher();
 
   let isEditing: boolean = false;
   const editingInputClass: string = "button text-center text-white rounded col-span-4 bg-gray-300 dark:bg-dark-400 uppercase text-sm font-medium relative";
+
+  currentlyEditingPreset.subscribe(value => {
+    if (value !== prefabNumber) isEditing = false;
+  })
 </script>
 
 <div class="grid grid-cols-5 gap-2">
@@ -73,7 +77,10 @@ const dispatch = createEventDispatcher();
   <Button 
     add="flex content-center justify-center"
     color="success"
-    on:click={() => (isEditing = !isEditing)}
+    on:click={() => {
+      isEditing = !isEditing;
+      if (isEditing) currentlyEditingPreset.set(prefabNumber);
+    }}
   >
     <Icon>{"edit"}</Icon>
   </Button>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { presetStores, presets, activePreset } from '../../js/store';
+  import { presetStores, presets, activePreset, currentlyEditingPreset } from '../../js/store';
   import { importStores } from '../../js/storage';
   import Button from 'smelte/src/components/Button';
   import PresetButton from './PresetButton.svelte';

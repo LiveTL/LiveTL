@@ -186,3 +186,4 @@ export const isSelecting = writable(false);
 export const sessionHidden = writable([]);
 export const anyRecordingShortcut = writable(false);
 export const videoShortcutAction = writable('');
+export const currentlyEditingPreset = writable(-1);
