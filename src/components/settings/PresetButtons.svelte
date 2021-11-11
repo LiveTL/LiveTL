@@ -1,12 +1,16 @@
 <script lang="ts">
-  import { presetStores, presets, activePreset, currentlyEditingPreset } from '../../js/store';
+  import {
+    presetStores,
+    presets,
+    activePreset
+  } from '../../js/store';
   import { importStores } from '../../js/storage';
   import Button from 'smelte/src/components/Button';
   import PresetButton from './PresetButton.svelte';
 
-  let presetsData = $presets;
+  const presetsData = $presets;
   let presetAmount = presetsData.length;
-  
+
   let isDeleting = false;
   let activeNumber = $activePreset;
   $: activePreset.set(activeNumber);
@@ -20,7 +24,9 @@
     }
 
     presetsData[presetNumber - 1] = Object.fromEntries(
-      presetStores.map((store) => [store.name, store.get()]).concat([["name", presetsData[presetNumber - 1]["name"]]])
+      presetStores
+        .map((store) => [store.name, store.get()])
+        .concat([['name', presetsData[presetNumber - 1].name]])
     );
     presets.set(presetsData);
   }
@@ -35,22 +41,25 @@
   async function addPreset() {
     presetsData.push(
       Object.fromEntries(
-        presetStores.map((store) => [store.name, store.defaultValue]).concat([["name", 'Preset']])
+        presetStores
+          .map((store) => [store.name, store.defaultValue])
+          .concat([['name', 'Preset']])
       )
     );
     presets.set(presetsData);
     presetAmount += 1;
   }
 
-  async function renamePreset(event: CustomEvent<{ presetNumber: number, name: string }>) {
+  async function renamePreset(
+    event: CustomEvent<{ presetNumber: number, name: string }>
+  ) {
     const updatedPresetName = event.detail.name;
     const presetNumber = event.detail.presetNumber;
 
-    presetsData[presetNumber - 1]['name'] = updatedPresetName
+    presetsData[presetNumber - 1].name = updatedPresetName;
     presets.set(presetsData);
   }
 </script>
-
 
 <div class="grid grid-cols-1 gap-2 py-1">
   {#each Array(presetAmount) as _, i}
@@ -60,7 +69,7 @@
       on:deletePreset={deletePreset}
       on:updatePreset={updatePreset}
       on:renamePreset={renamePreset}
-      name={presetsData[i]['name']}
+      name={presetsData[i].name}
       prefabNumber={i + 1}
     />
   {/each}
