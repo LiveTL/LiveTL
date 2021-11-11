@@ -8,8 +8,7 @@
   import Button from 'smelte/src/components/Button';
   import PresetButton from './PresetButton.svelte';
 
-  const presetsData = $presets;
-  let presetAmount = presetsData.length;
+  $: presetAmount = $presets.length;
 
   let isDeleting = false;
   let activeNumber = $activePreset;
@@ -23,6 +22,8 @@
       return;
     }
 
+    let presetsData = $presets;
+
     presetsData[presetNumber - 1] = Object.fromEntries(
       presetStores
         .map((store) => [store.name, store.get()])
@@ -32,13 +33,16 @@
   }
 
   async function deletePreset(event: CustomEvent<{ presetNumber: number }>) {
+    let presetsData = $presets;
+
     const presetNumber = event.detail.presetNumber;
     presetsData.splice(presetNumber - 1, 1);
     presets.set(presetsData);
-    presetAmount -= 1;
   }
 
   async function addPreset() {
+    let presetsData = $presets;
+    
     presetsData.push(
       Object.fromEntries(
         presetStores
@@ -47,7 +51,6 @@
       )
     );
     presets.set(presetsData);
-    presetAmount += 1;
   }
 
   async function renamePreset(
@@ -55,6 +58,8 @@
   ) {
     const updatedPresetName = event.detail.name;
     const presetNumber = event.detail.presetNumber;
+
+    let presetsData = $presets;
 
     presetsData[presetNumber - 1].name = updatedPresetName;
     presets.set(presetsData);
@@ -69,7 +74,7 @@
       on:deletePreset={deletePreset}
       on:updatePreset={updatePreset}
       on:renamePreset={renamePreset}
-      name={presetsData[i].name}
+      name={$presets[i].name}
       prefabNumber={i + 1}
     />
   {/each}
