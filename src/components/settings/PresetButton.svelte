@@ -19,13 +19,13 @@
     });
   }
 
-  export let isDeleting: boolean = false;
-  export let activeNumber: number = 0;
-  export let prefabNumber: number = 0;
-  export let name: string = `Preset ${prefabNumber}`;
+  export let isDeleting = false;
+  export let activeNumber = 0;
+  export let prefabNumber = 0;
+  export let name = `Preset ${prefabNumber}`;
 
-  let isEditing: boolean = false;
-  const editingInputClass: string =
+  let isEditing = false;
+  const editingInputClass =
     'button text-center text-white rounded col-span-4 bg-gray-300 dark:bg-dark-400 uppercase text-sm font-medium relative';
 
   $: if ($currentlyEditingPreset !== prefabNumber) isEditing = false;
