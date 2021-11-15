@@ -28,9 +28,7 @@
   const editingInputClass: string =
     'button text-center text-white rounded col-span-4 bg-gray-300 dark:bg-dark-400 uppercase text-sm font-medium relative';
 
-  currentlyEditingPreset.subscribe((value) => {
-    if (value !== prefabNumber) isEditing = false;
-  });
+  $: if ($currentlyEditingPreset !== prefabNumber) isEditing = false;
 </script>
 
 <div class="grid grid-cols-5 gap-2">
@@ -73,6 +71,6 @@
       if (isEditing) currentlyEditingPreset.set(prefabNumber);
     }}
   >
-    <Icon>{'edit'}</Icon>
+    <Icon>edit</Icon>
   </Button>
 </div>
