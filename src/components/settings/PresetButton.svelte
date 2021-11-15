@@ -46,7 +46,7 @@
       {isDeleting
         ? `Delete ${name}`
         : activeNumber !== prefabNumber
-        ? name
+        ? `Apply ${name}`
         : `Save ${name}`}
     </Button>
   {:else}

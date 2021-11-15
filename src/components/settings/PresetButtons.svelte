@@ -43,7 +43,7 @@
       Object.fromEntries(
         presetStores
           .map((store) => [store.name, store.defaultValue])
-          .concat([['name', 'Preset']])
+          .concat([['name', 'Untitled Preset']])
       )
     );
     presets.set(presetsData);
