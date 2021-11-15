@@ -1,9 +1,5 @@
 <script lang="ts">
-  import {
-    presetStores,
-    presets,
-    activePreset
-  } from '../../js/store';
+  import { presetStores, presets, activePreset } from '../../js/store';
   import { importStores } from '../../js/storage';
   import Button from 'smelte/src/components/Button';
   import PresetButton from './PresetButton.svelte';
@@ -22,7 +18,7 @@
       return;
     }
 
-    let presetsData = $presets;
+    const presetsData = $presets;
 
     presetsData[presetNumber - 1] = Object.fromEntries(
       presetStores
@@ -33,7 +29,7 @@
   }
 
   async function deletePreset(event: CustomEvent<{ presetNumber: number }>) {
-    let presetsData = $presets;
+    const presetsData = $presets;
 
     const presetNumber = event.detail.presetNumber;
     presetsData.splice(presetNumber - 1, 1);
@@ -41,13 +37,13 @@
   }
 
   async function addPreset() {
-    let presetsData = $presets;
-    
+    const presetsData = $presets;
+
     presetsData.push(
       Object.fromEntries(
         presetStores
           .map((store) => [store.name, store.defaultValue])
-          .concat([['name', 'Preset']])
+          .concat([['name', 'Untitled Preset']])
       )
     );
     presets.set(presetsData);
@@ -59,7 +55,7 @@
     const updatedPresetName = event.detail.name;
     const presetNumber = event.detail.presetNumber;
 
-    let presetsData = $presets;
+    const presetsData = $presets;
 
     presetsData[presetNumber - 1].name = updatedPresetName;
     presets.set(presetsData);
