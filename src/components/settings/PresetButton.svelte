@@ -26,12 +26,12 @@
 
   let isEditing = false;
   const editingInputClass =
-    'button text-center text-white rounded col-span-4 bg-gray-300 dark:bg-dark-400 uppercase text-sm font-medium relative';
+    'button text-center text-white rounded col-span-4 bg-gray-300 dark:bg-dark-400 uppercase text-sm font-medium relative py-2 break-all h-full';
 
   $: if ($currentlyEditingPreset !== prefabNumber) isEditing = false;
 </script>
 
-<div class="grid grid-cols-5 gap-2">
+<div class={`grid ${isDeleting ? '' : 'grid-cols-5'} gap-2`}>
   {#if !isEditing}
     <Button
       on:click={() => {
@@ -63,14 +63,17 @@
       }}
     />
   {/if}
-  <Button
-    add="flex content-center justify-center"
-    color="success"
-    on:click={() => {
-      isEditing = !isEditing;
-      if (isEditing) currentlyEditingPreset.set(prefabNumber);
-    }}
-  >
-    <Icon>edit</Icon>
-  </Button>
+  {#if !isDeleting}
+    <Button
+      add="h-full flex content-center justify-center rounded"
+      remove="rounded p-4"
+      color="success"
+      icon="edit"
+      on:click={() => {
+        isEditing = !isEditing;
+        if (isEditing) currentlyEditingPreset.set(prefabNumber);
+      }}
+    >
+    </Button>
+  {/if}
 </div>
