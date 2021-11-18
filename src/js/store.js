@@ -107,7 +107,7 @@ export const autoLaunchMode = SS('autoLaunchMode', AutoLaunchMode.NONE);
 export const keyboardShortcuts = SS('keyboardShortcuts', defaultShortcuts);
 export const disableSpecialSpamProtection = SS('disableSpecialSpamProtection', true);
 export const activePreset = SS('activePreset', 1);
-export const presets = SS('presets', /** @type {Array<Object & { name: string }>} */ ([{}]));
+export const presets = SS('presets', /** @type {Array<Object & { name: string }>} */ ([]));
 
 // All the variables persisted in presets
 export const presetStores = [
