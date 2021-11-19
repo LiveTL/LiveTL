@@ -106,6 +106,30 @@ export const speechSpeed = SS('speechSpeed', 1);
 export const autoLaunchMode = SS('autoLaunchMode', AutoLaunchMode.NONE);
 export const keyboardShortcuts = SS('keyboardShortcuts', defaultShortcuts);
 export const disableSpecialSpamProtection = SS('disableSpecialSpamProtection', true);
+export const activePreset = SS('activePreset', 1);
+export const presets = SS('presets', /** @type {Array<Object & { name: string }>} */ ([]));
+
+// All the variables persisted in presets
+export const presetStores = [
+  captionDuration,
+  captionFontSize,
+  captionWidth,
+  captionLeft,
+  captionTop,
+  videoSideSetting,
+  chatZoom,
+  livetlFontSize,
+  textDirection,
+  chatSplit,
+  videoPanelSize,
+  chatSize,
+  keyboardShortcuts,
+  doTranslatorMode,
+  doAutoPrefix,
+  autoPrefixTag,
+  macroTrigger,
+  macros
+];
 
 // Non-persistant stores
 
@@ -162,3 +186,4 @@ export const isSelecting = writable(false);
 export const sessionHidden = writable([]);
 export const anyRecordingShortcut = writable(false);
 export const videoShortcutAction = writable('');
+export const currentlyEditingPreset = writable(-1);
