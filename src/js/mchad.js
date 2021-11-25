@@ -3,7 +3,7 @@ import { MCHAD, AuthorType, languages } from './constants.js';
 import * as Ty from './types.js';
 import { derived, readable } from 'svelte/store';
 import { enableMchadTLs, mchadUsers } from './store.js';
-import { combineArr, formatTimestampMillis, sleep, sortBy } from './utils.js';
+import { combineArr, formatTimestampMillis, sleep, sortBy, toJson } from './utils.js';
 import { archiveStreamFromScript, sseToStream } from './api.js';
 import { isLangMatch } from './filter.js';
 
@@ -63,10 +63,6 @@ const getFirstTime = script =>
  * @returns {Ty.Message[]}
  */
 export async function getArchiveFromRoom(room) {
-  const meta = await (await fetch(`https://holodex.net/api/v2/videos/${room.videoId}`)).json();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const start = Math.floor(new Date(meta.start_actual) / 1000);
-  const toJson = r => r.json();
   const script = await fetch(`${MCHAD}/Archive`, {
     method: 'POST',
     headers: {
