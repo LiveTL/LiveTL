@@ -1,7 +1,6 @@
 <script lang="ts">
   import { currentlyEditingPreset } from '../../js/store';
   import Button from 'smelte/src/components/Button';
-  import Icon from 'smelte/src/components/Icon';
   import { createEventDispatcher } from 'svelte';
 
   const dispatch = createEventDispatcher();
@@ -48,6 +47,7 @@
         : `Save ${name}`}
     </Button>
   {:else}
+    <!-- svelte-ignore a11y-autofocus -->
     <input
       autofocus
       class={editingInputClass}

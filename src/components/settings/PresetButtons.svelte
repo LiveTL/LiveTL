@@ -75,7 +75,7 @@
     />
   {/each}
 </div>
-<div class={`grid ${isDeleting ? "" : "grid-cols-2"} gap-2 py-1`}>
+<div class={`grid ${isDeleting ? '' : 'grid-cols-2'} gap-2 py-1`}>
   {#if !isDeleting}
     <Button color="blue" on:click={addPreset}>Add Preset</Button>
   {/if}
