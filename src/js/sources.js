@@ -170,8 +170,8 @@ export function ytcSource(window) {
 
   port.onMessage.addListener((response) => {
     switch (response.type) {
-      case 'message':
-        newMessage(response.message);
+      case 'messages':
+        response.messages.forEach((m) => newMessage(m.message));
         break;
       case 'bonk': // TODO: No need to use arrays anymore
         sources.ytcBonks.set([response.bonk]);
