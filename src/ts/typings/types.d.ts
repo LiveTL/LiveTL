@@ -1,3 +1,5 @@
+import { Writable } from 'svelte/store';
+
 declare namespace Ltl {
   enum AuthorType {
     moderator = 1 << 0,
@@ -18,5 +20,12 @@ declare namespace Ltl {
     messageId: string;
     hidden?: boolean;
     deleted?: boolean;
+  }
+
+  interface FeaturePromptContent {
+    prompt: string; // the prompt message for help
+    icon: string;
+    hasDismissed: Writable<boolean>;
+    navigateToFeature: () => void; // callback for highlighting or navigating to feature
   }
 }

@@ -24,6 +24,7 @@
   } from '../js/store.js';
   import UpdateComponent from './Updates.svelte';
   import MessageDisplay from './MessageDisplay.svelte';
+  import FeaturePrompt from './FeaturePrompt.svelte';
   import { displayedMessages } from '../js/sources-aggregate.js';
   import dark from 'smelte/src/dark';
   import Button from './common/IconButton.svelte';
@@ -203,6 +204,9 @@
       />
     {/if}
     {#if !$isSelecting}
+      {#if !settingsOpen}
+        <FeaturePrompt />
+      {/if}
       {#if !settingsOpen && $spotlightedTranslator}
         <!-- Un-spotlight translator button -->
         <Tooltip>
