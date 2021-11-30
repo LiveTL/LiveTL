@@ -26,6 +26,6 @@ declare namespace Ltl {
     prompt: string; // the prompt message for help
     icon: string;
     hasDismissed: Writable<boolean>;
-    navigateToFeature: () => void; // callback for highlighting or navigating to feature
+    demoLink: string; // string path (not actual WAR path) to feature demo
   }
 }

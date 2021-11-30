@@ -179,6 +179,7 @@
   renderWidth={$screenshotRenderWidth}
 />
 <UpdateComponent />
+<FeaturePrompt />
 
 <div
   class="flex flex-row gap-2 absolute right-0 p-1 z-20 flex-wrap"
@@ -204,9 +205,6 @@
       />
     {/if}
     {#if !$isSelecting}
-      {#if !settingsOpen}
-        <FeaturePrompt />
-      {/if}
       {#if !settingsOpen && $spotlightedTranslator}
         <!-- Un-spotlight translator button -->
         <Tooltip>

@@ -51,6 +51,7 @@
   "web_accessible_resources": [
     "*.js",
     "*.html",
-    "*.png"
+    "*.png",
+    "*.gif"
   ]
 }
