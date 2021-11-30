@@ -109,6 +109,7 @@ export const disableSpecialSpamProtection = SS('disableSpecialSpamProtection', t
 export const activePreset = SS('activePreset', 1);
 export const presets = SS('presets', /** @type {Array<Object & { name: string }>} */ ([]));
 export const showHelpPrompt = SS('showHelpPrompt', true);
+export const hasShownSpotlightPrompt = SS('hasShownSpotlightPrompt', false);
 
 // All the variables persisted in presets
 export const presetStores = [
@@ -188,3 +189,4 @@ export const sessionHidden = writable([]);
 export const anyRecordingShortcut = writable(false);
 export const videoShortcutAction = writable('');
 export const currentlyEditingPreset = writable(-1);
+export const promptToShow = writable(/** @type {String[]} */ ([]));

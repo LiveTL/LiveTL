@@ -23,6 +23,7 @@ declare namespace Ltl {
   }
 
   interface FeaturePromptContent {
+    id: string;
     prompt: string; // the prompt message for help
     icon: string;
     hasDismissed: Writable<boolean>;
