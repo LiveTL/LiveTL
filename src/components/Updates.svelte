@@ -21,11 +21,6 @@
 
   onDestroy(() => unsubscribe());
 
-  $: if (!$updatePopupActive) {
-    lastVersion.set(version);
-    console.log($lastVersion, version);
-  }
-
   function closeUpdate() {
     $updatePopupActive = false;
   }

@@ -1,6 +1,6 @@
 {
   "name": "LiveTL",
-  "version": "7.1.1",
+  "version": "7.1.2",
   "description": "Get live translations for YouTube streams, crowdsourced from multilingual viewers!",
   "scripts": {
     "build": "webpack --mode development",
