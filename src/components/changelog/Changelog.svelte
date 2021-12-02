@@ -2,7 +2,7 @@
   import ExpandingCard from '../common/ExpandingCard.svelte';
 </script>
 
-<ExpandingCard title="One-Year Anniversary!" icon="windows" expanded>
+<ExpandingCard title="One-Year Anniversary!" icon="event_repeat" expanded>
   December 2nd marks the one-year anniversary of LiveTL 🎉
   <br />
   <br />
