@@ -7,6 +7,7 @@
   import '../css/splash.css';
   import Icon from './common/Icon.svelte';
   import Menu from './common/Menu.svelte';
+  import type { Ltl } from 'ts/typings/types.js';
 
   export let message: Ltl.Message;
   export let hidden = false;
@@ -81,7 +82,7 @@
     </div>
     <div class="flex-1 mx-2">
       <!-- Message content-->
-      <span class="message-content mr-1 text-white align-middle">
+      <span class="message-content mr-1 text-white align-middle" style="word-break: break-word;">
         {#each messageArray as msg}
           {#if msg.type === 'text'}
             <span class={deletedClass}>{msg.text}</span>

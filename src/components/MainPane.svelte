@@ -289,7 +289,7 @@
   {#if settingsOpen}
     <slot name="settings" />
   {:else}
-    <div>
+    <div style="max-width: 100%; position: absolute;">
       <MessageDisplay
         direction={$textDirection}
         bind:this={messageDisplay}
