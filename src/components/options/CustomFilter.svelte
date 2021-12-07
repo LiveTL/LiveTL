@@ -5,6 +5,7 @@
   import Dropdown from '../common/DropdownStore.svelte';
   import { showBlockItems, plainRegexItems, chatAuthorItems } from '../../js/constants.js';
   import TextField from '../common/TextField.svelte';
+  import { validateRegex } from '../../ts/utils';
 
   export let rule = '';
   export let showBlock = 'show';
@@ -18,6 +19,11 @@
   const sShowBlock = writable(showBlock);
   const sPlainReg = writable(plainReg);
   const sChatAuthor = writable(chatAuthor);
+  const textRules = [{
+    error: 'Invalid regex',
+    assert: (value: string) =>
+      ($sPlainReg === 'regex') ? (validateRegex(value) != null) : true
+  }];
 
   const updateFilter = (showBlock: string, plainRegex: string, chatAuthor: string, rule: string) => {
     modifyFilter(id, chatAuthor, plainRegex, showBlock, rule);
@@ -44,7 +50,7 @@
   </div>
   <div class="flex flex-row">
     <div class="flex-1">
-      <TextField dense bind:value={rule} clearable />
+      <TextField dense bind:value={rule} clearable rules={textRules} />
     </div>
   </div>
 </div>
