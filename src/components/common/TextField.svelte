@@ -29,6 +29,8 @@
   export let rules: Rule[] = [];
   /** Show clear button. */
   export let clearable = false;
+  /** Clear button function. */
+  export let clearableFn: (() => any) = () => (value = '');
 
   const checkRule = (value: string) => {
     const hasError = rules.some((rule) => {
@@ -59,7 +61,7 @@
     {add}
     {error}
     append={clearable ? 'cancel' : ''}
-    on:click-append={clearable ? () => (value = '') : noop}
+    on:click-append={clearable ? clearableFn : noop}
     iconClass={clearable ? 'cursor-pointer' : ''}
   />
 </div>

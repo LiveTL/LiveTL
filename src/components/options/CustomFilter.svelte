@@ -15,7 +15,6 @@
   export let boundingDiv: HTMLElement;
 
   let div: HTMLElement | undefined;
-  let maxRuleLength = 0;
   const sShowBlock = writable(showBlock);
   const sPlainReg = writable(plainReg);
   const sChatAuthor = writable(chatAuthor);
@@ -27,10 +26,8 @@
 
   const updateFilter = (showBlock: string, plainRegex: string, chatAuthor: string, rule: string) => {
     modifyFilter(id, chatAuthor, plainRegex, showBlock, rule);
-    if (!rule && maxRuleLength) deleteFilter(id);
   };
 
-  $: maxRuleLength = Math.max(maxRuleLength, rule.length);
   $: updateFilter($sShowBlock, $sPlainReg, $sChatAuthor, rule);
 
   // onMount(() => {
@@ -50,7 +47,7 @@
   </div>
   <div class="flex flex-row">
     <div class="flex-1">
-      <TextField dense bind:value={rule} clearable rules={textRules} />
+      <TextField dense bind:value={rule} clearable rules={textRules} clearableFn={() => deleteFilter(id)} />
     </div>
   </div>
 </div>
