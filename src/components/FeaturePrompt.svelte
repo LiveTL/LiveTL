@@ -1,40 +1,51 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { get } from 'svelte/store';
+  import { get, writable } from 'svelte/store';
+  import Button from 'smelte/src/components/Button';
   import Card from './common/Card.svelte';
   import Dialog from './common/Dialog.svelte';
   import { FeaturePrompt } from '../js/constants.js';
   import { enable as enableFeaturePrompt } from '../js/featureprompt.js';
-  import { hasShownSpotlightPrompt, promptToShow, showHelpPrompt } from '../js/store.js';
+  import { neverShowSpotlightPrompt, promptToShow, showHelpPrompt } from '../js/store.js';
   import { getWAR } from '../js/utils.js';
 
   onMount(enableFeaturePrompt);
 
+  let prompt = null;
+  let active = true;
+
   // TODO change navigateToFeature to show an image of the feature
   // eslint-disable-next-line no-undef
-  const prompts: FeaturePromptContent[] = [{
+  const prompts: Ltl.FeaturePromptContent[] = [{
     id: FeaturePrompt.SPOTLIGHT,
     prompt: 'Spotlight someone to only see their messages.',
     icon: 'record_voice_over',
-    hasDismissed: hasShownSpotlightPrompt,
+    hasDismissed: writable(false),
+    neverShow: neverShowSpotlightPrompt,
     demoLink: '/img/demos/spotlight.gif'
   }];
+
+  const neverShowPrompt = (prompt: Ltl.FeaturePromptContent) => () => {
+    prompt.neverShow.set(true);
+    prompt = getLatestPrompt($promptToShow, $showHelpPrompt);
+    active = Boolean(prompt);
+  };
 
   const getLatestPrompt = (promptToShow, actuallyGetPrompt) => actuallyGetPrompt
     ? prompts
       .filter(p => promptToShow.includes(p.id))
-      .find(p => !get(p.hasDismissed))
+      .find(p => !get(p.hasDismissed) && !get(p.neverShow))
     : null;
-
-  $: prompt = getLatestPrompt($promptToShow, $showHelpPrompt);
-  let active = Boolean(prompt);
 
   // run when dialog closes
   $: if (!active && prompt) {
     prompt.hasDismissed.set(true);
     prompt = getLatestPrompt($promptToShow, $showHelpPrompt);
-    active = true;
+    active = Boolean(prompt);
   }
+
+  $: prompt = getLatestPrompt($promptToShow, $showHelpPrompt);
+  $: active = Boolean(prompt);
 </script>
 
 {#if prompt}
@@ -43,5 +54,10 @@
     <Card title={prompt.prompt} icon={prompt.icon}>
       <img alt={prompt.prompt} src={getWAR(prompt.demoLink)} />
     </Card>
+    <div class="text-center pt-4">
+      <Button color="error" on:click={neverShowPrompt(prompt)}>
+        Never show this prompt
+      </Button>
+    </div>
   </Dialog>
 {/if}

@@ -109,7 +109,7 @@ export const disableSpecialSpamProtection = SS('disableSpecialSpamProtection', t
 export const activePreset = SS('activePreset', 1);
 export const presets = SS('presets', /** @type {Array<Object & { name: string }>} */ ([]));
 export const showHelpPrompt = SS('showHelpPrompt', true);
-export const hasShownSpotlightPrompt = SS('hasShownSpotlightPrompt', false);
+export const neverShowSpotlightPrompt = SS('neverShowSpotlightPrompt', false);
 
 // All the variables persisted in presets
 export const presetStores = [
