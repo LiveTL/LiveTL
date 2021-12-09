@@ -26,13 +26,14 @@ const secretsPath = path.join(__dirname, ('secrets.' + env.NODE_ENV + '.js'));
 
 const fileExtensions = ['jpg', 'jpeg', 'png', 'gif', 'eot', 'otf', 'svg', 'ttf', 'woff', 'woff2'];
 
-const transformManifest = (manifestString, version, isChrome = false) => {
+const transformManifest = (manifestString, version, prod, isChrome = false) => {
   const newManifest = {
     ...JSON.parse(manifestString),
     description,
     version
   };
   if (isChrome) newManifest.incognito = 'split';
+  if (!prod) newManifest.content_security_policy = 'script-src \'self\' https://www.youtube.com \'unsafe-eval\'; object-src \'self\'';
   return JSON.stringify(newManifest);
 };
 
@@ -201,14 +202,14 @@ module.exports = (env, options) => {
           {
             from: 'src/manifest.json',
             transform: (content) => {
-              return transformManifest(content, hasEnvVersion ? envVersion : version);
+              return transformManifest(content, hasEnvVersion ? envVersion : version, prod);
             }
           },
           {
             from: 'src/manifest.json',
             to: 'manifest.chrome.json',
             transform: (content) => {
-              return transformManifest(content, hasEnvVersion ? envVersion : version, true);
+              return transformManifest(content, hasEnvVersion ? envVersion : version, prod, true);
             }
           },
           {
