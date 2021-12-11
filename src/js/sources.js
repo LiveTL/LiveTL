@@ -9,7 +9,7 @@ import {
   isTranslation,
   replaceFirstTranslation
 } from './filter';
-import { showModMessage, timestamp } from './store';
+import { showModMessage, showVerifiedMessage, timestamp } from './store';
 import { paramsVideoId, AuthorType, paramsPopout, paramsTabId, paramsFrameId } from './constants';
 import * as MCHAD from './mchad.js';
 import * as API from './api.js';
@@ -18,12 +18,14 @@ import * as API from './api.js';
  * @typedef {import('svelte/store').Readable} Readable
  * @typedef {import('svelte/store').Writable} Writable
  * @typedef {import('./types.js').Message} Message
+ * @typedef {{ ytcTranslations: Writable<Message>, mod: Writable<Message>, verified: Writable<Message>, ytc: Writable<Message> }} YTCSources
  */
 
-/** @type {{ ytcTranslations: Writable<Message>, mod: Writable<Message>, ytc: Writable<Message>, translations: Writable<Message>, mchad: Readable<Message>, api: Readable<Message>, ytcBonks: Writable<any[]>, ytcDeletions:Writable<any[]>, thirdParty: Writable<Message> }} */
+/** @type {YTCSources & { translations: Writable<Message>, mchad: Readable<Message>, api: Readable<Message>, ytcBonks: Writable<any[]>, ytcDeletions:Writable<any[]>, thirdParty: Writable<Message> }} */
 export const sources = {
   ytcTranslations: writable(null),
   mod: writable(null),
+  verified: writable(null),
   ytc: ytcSource(window).ytc,
   mchad: combineStores(MCHAD.getArchive(paramsVideoId), MCHAD.getLiveTranslations(paramsVideoId)).store,
   api: combineStores(API.getArchive(paramsVideoId), API.getLiveTranslations(paramsVideoId)).store,
@@ -48,15 +50,11 @@ const showIfMod = msg => isMod(msg) && showModMessage.get();
 const setStoreMessage =
   store => (msg, text) => store.set({ ...msg, text: text ?? msg.text });
 
-/**
- * @param {Writable<Message>} translations
- * @param {Writable<Message>} mod
- * @param {Writable<Message>} ytc
- * @return {() => void} cleanup
- */
-function attachFilters(translations, mod, ytc) {
-  const setTranslation = setStoreMessage(translations);
+/** @type {(sources: YTCSources) => () => void} */
+function attachFilters({ ytcTranslations, mod, verified, ytc }) {
+  const setTranslation = setStoreMessage(ytcTranslations);
   const setModMessage = setStoreMessage(mod);
+  const setVerifiedMessage = setStoreMessage(verified)
 
   return ytc.subscribe(message => {
     if (!message || isBlacklisted(message)) return;
@@ -195,7 +193,7 @@ function message(author, msg, timestamp) {
   };
 }
 
-attachFilters(sources.ytcTranslations, sources.mod, sources.ytc);
+attachFilters(sources);
 sources.translations = combineStores(
   sources.ytcTranslations,
   sources.mchad,
