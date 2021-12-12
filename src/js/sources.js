@@ -46,6 +46,9 @@ const isMod = msg => (msg.types & AuthorType.moderator) || (msg.types & AuthorTy
 /** @type {(msg: Message) => Boolean} */
 const showIfMod = msg => isMod(msg) && showModMessage.get();
 
+/** @type {(msg: Message) => Boolean} */
+const showIfVerified = msg => (msg.types & AuthorType.verified) && showVerifiedMessage.get();
+
 /** @type {(store: Writable<Message>) => (msg: Message, text?: String) => void} */
 const setStoreMessage =
   store => (msg, text) => store.set({ ...msg, text: text ?? msg.text });
@@ -54,7 +57,7 @@ const setStoreMessage =
 function attachFilters({ ytcTranslations, mod, verified, ytc }) {
   const setTranslation = setStoreMessage(ytcTranslations);
   const setModMessage = setStoreMessage(mod);
-  const setVerifiedMessage = setStoreMessage(verified)
+  const setVerifiedMessage = setStoreMessage(verified);
 
   return ytc.subscribe(message => {
     if (!message || isBlacklisted(message)) return;
@@ -67,6 +70,8 @@ function attachFilters({ ytcTranslations, mod, verified, ytc }) {
       setTranslation(message);
     } else if (showIfMod(message)) {
       setModMessage(message);
+    } else if (showIfVerified(message)) {
+      setVerifiedMessage(message);
     }
   });
 }
