@@ -3,8 +3,8 @@
     showModMessage,
     showVerifiedMessage,
     language,
-    enableMchadTLs,
-    enableAPITLs
+    enableMchadTLs
+    // enableAPITLs
   } from '../../js/store.js';
   import { languageNameValues } from '../../js/constants.js';
   import BlockedUsers from './BlockedUsers.svelte';
@@ -28,7 +28,7 @@
 </Card>
 <BlockedUsers boundingDiv={div} />
 <Card title="External translation sources" icon="cloud" noGap>
-  <Checkbox name="LiveTL API" store={enableAPITLs} />
+  <!-- <Checkbox name="LiveTL API" store={enableAPITLs} /> -->
   <Checkbox name="MChad (volunteer translators)" store={enableMchadTLs} />
 </Card>
 <slot name="extras" />
