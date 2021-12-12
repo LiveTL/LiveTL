@@ -33,7 +33,7 @@ const transformManifest = (manifestString, version, prod, isChrome = false) => {
     version
   };
   if (isChrome) newManifest.incognito = 'split';
-  if (!prod) newManifest.content_security_policy = 'script-src \'self\' https://www.youtube.com \'unsafe-eval\'; object-src \'self\'';
+  if (!prod) newManifest.content_security_policy = 'script-src \'self\' \'unsafe-eval\'; object-src \'self\'';
   return JSON.stringify(newManifest);
 };
 
