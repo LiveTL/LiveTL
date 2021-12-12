@@ -1,6 +1,7 @@
 <script lang="ts">
   import {
     showModMessage,
+    showVerifiedMessage,
     language,
     enableMchadTLs,
     enableAPITLs
@@ -22,6 +23,7 @@
   />
   <div class="mt-6">
     <Checkbox name="Show moderator and owner messages" store={showModMessage} />
+    <Checkbox name="Show verified user messages" store={showVerifiedMessage} />
   </div>
 </Card>
 <BlockedUsers boundingDiv={div} />
