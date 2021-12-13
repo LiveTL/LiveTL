@@ -14,7 +14,8 @@
     enableFullscreenButton,
     autoVertical,
     displayMode,
-    autoLaunchMode
+    autoLaunchMode,
+    isChatInverted
   } from '../../js/store.js';
   import {
     DisplayMode,
@@ -65,6 +66,12 @@
         <h6>Chat split:</h6>
         <Radio store={chatSplit} map={chatSplitMap} />
       </div>
+    {/if}
+    <Checkbox
+      name="Invert youtube chat and LiveTL"
+      store={isChatInverted}
+    />
+    {#if $displayMode === DisplayMode.FULLPAGE}
       <Checkbox
         name="Automatically adjust layout when window is thin"
         store={autoVertical}
