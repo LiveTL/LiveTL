@@ -1,10 +1,8 @@
-export function validateRegex(regexStr: string): RegExp | null {
+export function isValidRegex(regexStr: string): boolean {
   try {
-    return new RegExp(regexStr);
+    new RegExp(regexStr);
+    return true;
   } catch (e) {
-    if (e instanceof SyntaxError) {
-      return null;
-    }
-    throw e;
+    return false;
   }
 }

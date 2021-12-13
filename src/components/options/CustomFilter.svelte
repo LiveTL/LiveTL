@@ -5,7 +5,7 @@
   import Dropdown from '../common/DropdownStore.svelte';
   import { showBlockItems, plainRegexItems, chatAuthorItems } from '../../js/constants.js';
   import TextField from '../common/TextField.svelte';
-  import { validateRegex } from '../../ts/utils';
+  import { isValidRegex } from '../../ts/utils';
 
   export let rule = '';
   export let showBlock = 'show';
@@ -21,7 +21,7 @@
   const textRules = [{
     error: 'Invalid regex',
     assert: (value: string) =>
-      ($sPlainReg === 'regex') ? (validateRegex(value) != null) : true
+      ($sPlainReg === 'regex') ? isValidRegex(value) : true
   }];
 
   const updateFilter = (showBlock: string, plainRegex: string, chatAuthor: string, rule: string) => {
