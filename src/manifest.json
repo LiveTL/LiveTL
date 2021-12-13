@@ -23,7 +23,6 @@
     "default_icon": "48x48.png"
   },
   "manifest_version": 2,
-  "content_security_policy": "script-src 'self' https://www.youtube.com 'unsafe-eval'; object-src 'self'",
   "content_scripts": [
     {
       "matches": [

@@ -1,5 +1,5 @@
 <script>
-  import { version } from '../../package.json';
+  import pkg from '../../package.json';
   import { onMount, onDestroy } from 'svelte';
   import { lastVersion, updatePopupActive } from '../js/store.js';
   import Dialog from './common/Dialog.svelte';
@@ -7,6 +7,7 @@
   import Changelog from './changelog/Changelog.svelte';
 
   let unsubscribe = () => { };
+  const version = pkg.version;
 
   onMount(async () => {
     await Promise.all([lastVersion.loaded, updatePopupActive.loaded]);
