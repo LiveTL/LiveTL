@@ -43,7 +43,7 @@
         your friends! We'd really appreciate it :)
       </h6>
     </div>
-    <div class="text-center pt-4">
+    <div class="update-dialog text-center pt-4">
       <Button on:click={closeUpdate}>Let's Go!</Button>
     </div>
   </Dialog>
