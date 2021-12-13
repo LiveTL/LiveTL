@@ -12,7 +12,7 @@ import {
 import { showModMessage, showVerifiedMessage, timestamp } from './store';
 import { paramsVideoId, AuthorType, paramsPopout, paramsTabId, paramsFrameId } from './constants';
 import * as MCHAD from './mchad.js';
-import * as API from './api.js';
+// import * as API from './api.js';
 
 /**
  * @typedef {import('svelte/store').Readable} Readable
@@ -21,14 +21,14 @@ import * as API from './api.js';
  * @typedef {{ ytcTranslations: Writable<Message>, mod: Writable<Message>, verified: Writable<Message>, ytc: Writable<Message> }} YTCSources
  */
 
-/** @type {YTCSources & { translations: Writable<Message>, mchad: Readable<Message>, api: Readable<Message>, ytcBonks: Writable<any[]>, ytcDeletions:Writable<any[]>, thirdParty: Writable<Message> }} */
+/** @type {YTCSources & { translations: Writable<Message>, mchad: Readable<Message>, api?: Readable<Message>, ytcBonks: Writable<any[]>, ytcDeletions:Writable<any[]>, thirdParty: Writable<Message> }} */
 export const sources = {
   ytcTranslations: writable(null),
   mod: writable(null),
   verified: writable(null),
   ytc: ytcSource(window).ytc,
   mchad: combineStores(MCHAD.getArchive(paramsVideoId), MCHAD.getLiveTranslations(paramsVideoId)).store,
-  api: combineStores(API.getArchive(paramsVideoId), API.getLiveTranslations(paramsVideoId)).store,
+  // api: combineStores(API.getArchive(paramsVideoId), API.getLiveTranslations(paramsVideoId)).store,
   thirdParty: createThirdPartyStore(),
   ytcBonks: writable(null),
   ytcDeletions: writable(null)
@@ -201,8 +201,8 @@ function message(author, msg, timestamp) {
 attachFilters(sources);
 sources.translations = combineStores(
   sources.ytcTranslations,
-  sources.mchad,
-  sources.api
+  sources.mchad
+  // sources.api
 ).store;
 
 export class DummyYTCEventSource {
