@@ -1,7 +1,6 @@
 export function isValidRegex(regexStr: string): boolean {
   try {
-    new RegExp(regexStr);
-    return true;
+    return Boolean(new RegExp(regexStr));
   } catch (e) {
     return false;
   }
