@@ -5,15 +5,15 @@
   type RadioItem = { value: string, label: string };
 
   /** Writable store for value updates. */
-  export let store: Writable<string>;
+  export let store: Writable<any>;
   /** Radio button group items. */
   export let items: RadioItem[] = [];
   /** Map to generate items with. Will overwrite `items` prop. */
-  export let map: Map<string, string> | null = null;
+  export let map: Map<any, string> | null = null;
   /** Vertical variant. */
   export let vertical = false;
 
-  const mapToRadioItem = (map: Map<string, string>) => {
+  const mapToRadioItem = (map: Map<any, string>) => {
     const items = [];
     for (const [key, value] of map) {
       items.push({ value: key, label: value });

@@ -40,8 +40,8 @@
   const convertPxAndPercent = () => {
     [
       [
-        $isChatInverted ? ltlElem : chatElem, 
-        isChatVertical ? 'width' : 'height', 
+        $isChatInverted ? ltlElem : chatElem,
+        isChatVertical ? 'width' : 'height',
         chatSize
       ],
       [
@@ -159,8 +159,8 @@
     >
       <div
         class="flex w-full h-full {
-          isChatVertical 
-            ? $isChatInverted ? 'flex-row-reverse' : 'flex-row' 
+          isChatVertical
+            ? $isChatInverted ? 'flex-row-reverse' : 'flex-row'
             : $isChatInverted ? 'flex-col-reverse' : 'flex-col'
         }"
         style={chatElemParentStyle}

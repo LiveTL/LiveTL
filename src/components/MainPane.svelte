@@ -10,7 +10,7 @@
     SelectOperation,
     paramsEmbedded,
     paramsVideoId,
-    ChatSplit,
+    ChatSplit
   } from '../js/constants.js';
   import {
     faviconURL,
@@ -23,7 +23,7 @@
     isSelecting,
     screenshotRenderWidth,
     chatSplit,
-    isChatInverted,
+    isChatInverted
   } from '../js/store.js';
   import UpdateComponent from './Updates.svelte';
   import MessageDisplay from './MessageDisplay.svelte';
@@ -47,7 +47,7 @@
   const updateWrapper = () => [
     wrapper.isAtBottom(),
     wrapper.isAtTop(),
-    setTimeout(checkAtRecent),
+    setTimeout(checkAtRecent)
   ];
 
   function checkAtRecent() {
@@ -122,7 +122,7 @@
         window.nativeJavascriptInterface.downloadText(saveStr, textFilename);
       } else {
         const blob = new Blob([saveStr], {
-          type: 'text/plain;charset=utf-8',
+          type: 'text/plain;charset=utf-8'
         });
         const { default: saveAs } = await import('file-saver');
         saveAs(blob, textFilename);
