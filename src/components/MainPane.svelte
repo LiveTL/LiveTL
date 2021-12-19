@@ -9,7 +9,8 @@
     isAndroid,
     SelectOperation,
     paramsEmbedded,
-    paramsVideoId
+    paramsVideoId,
+    ChatSplit,
   } from '../js/constants.js';
   import {
     faviconURL,
@@ -20,7 +21,9 @@
     spotlightedTranslator,
     isResizing,
     isSelecting,
-    screenshotRenderWidth
+    screenshotRenderWidth,
+    chatSplit,
+    isChatInverted,
   } from '../js/store.js';
   import UpdateComponent from './Updates.svelte';
   import MessageDisplay from './MessageDisplay.svelte';
@@ -44,7 +47,7 @@
   const updateWrapper = () => [
     wrapper.isAtBottom(),
     wrapper.isAtTop(),
-    setTimeout(checkAtRecent)
+    setTimeout(checkAtRecent),
   ];
 
   function checkAtRecent() {
@@ -119,7 +122,7 @@
         window.nativeJavascriptInterface.downloadText(saveStr, textFilename);
       } else {
         const blob = new Blob([saveStr], {
-          type: 'text/plain;charset=utf-8'
+          type: 'text/plain;charset=utf-8',
         });
         const { default: saveAs } = await import('file-saver');
         saveAs(blob, textFilename);
@@ -165,6 +168,10 @@
       }
     }
   }
+
+  $: floatingButtonPlacement = $isChatInverted
+    ? `margin-${$chatSplit === ChatSplit.HORIZONTAL ? 'bottom' : 'right'}: var(--bar);`
+    : '';
 </script>
 
 <svelte:window on:resize={updateWrapper} />
@@ -193,7 +200,7 @@
       bind:textFilename
     />
   {/if}
-  <div class="flex gap-2">
+  <div class="flex gap-2" style={floatingButtonPlacement}>
     {#if $isSelecting}
       <svelte:component
         this={exportActionButtonsComponent}
