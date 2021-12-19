@@ -295,7 +295,7 @@ module.exports = (env, options) => {
     config.plugins.push(new webpack.HotModuleReplacementPlugin());
     config.devServer = {
       host: 'localhost',
-      port: 3000,
+      port: 12345,
       disableHostCheck: true,
       hot: true,
       contentBase: path.join(__dirname, '../build'),

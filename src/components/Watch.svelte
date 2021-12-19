@@ -148,7 +148,7 @@
       </div>
     {/if}
     <div
-      class="flex-1 relative"
+      class="flex-1 relative z-50"
       bind:this={chatSideElem}
       style={isTopSide ? 'min-width: 100% !important;' : ''}
     >

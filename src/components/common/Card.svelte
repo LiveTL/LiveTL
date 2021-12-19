@@ -10,11 +10,12 @@
   export let addHeaderClasses = '';
   export let headerOnClick: (e: MouseEvent) => void = noop;
   export let nested = false;
+  export let margin = true;
 
   $: contentClasses = `px-3 py-2 flex flex-col ${noGap ? '' : 'gap-2'}`;
 </script>
 
-<div class="rounded ovevrflow-hidden my-2 {nested ? 'bg-dark-500' : 'bg-dark-600'}">
+<div class="rounded ovevrflow-hidden {margin ? 'my-2' : ''} {nested ? 'bg-dark-500' : 'bg-dark-600'}">
   <div
     class="rounded-t p-2 flex flex-row items-center bg-dark-400 {addHeaderClasses}"
     on:click={headerOnClick}

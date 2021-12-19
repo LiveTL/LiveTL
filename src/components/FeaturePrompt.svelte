@@ -8,6 +8,7 @@
   import { enable as enableFeaturePrompt } from '../js/featureprompt.js';
   import { neverShowSpotlightPrompt, promptToShow, showHelpPrompt } from '../js/store.js';
   import { getWAR } from '../js/utils.js';
+import Notification from './common/Notification.svelte';
 
   onMount(enableFeaturePrompt);
 
@@ -49,15 +50,15 @@
 </script>
 
 {#if prompt}
-  <Dialog bind:active class="max-w-lg m-5 rounded-md" bgColor="bg-white dark:bg-dark-700">
+  <Notification bind:active>
     <div slot="title" class="text-center">Feature recommendation</div>
-    <Card title={prompt.prompt} icon={prompt.icon}>
+    <Card title={prompt.prompt} icon={prompt.icon} margin={false} addHeaderClasses="dark:bg-alert">
       <img alt={prompt.prompt} src={getWAR(prompt.demoLink)} />
     </Card>
-    <div class="text-center pt-4">
-      <Button color="error" on:click={neverShowPrompt(prompt)}>
+    <div class="text-center">
+      <Button color="error" on:click={neverShowPrompt(prompt)} small>
         Never show this prompt
       </Button>
     </div>
-  </Dialog>
+  </Notification>
 {/if}

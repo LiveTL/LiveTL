@@ -179,7 +179,6 @@
   renderWidth={$screenshotRenderWidth}
 />
 <UpdateComponent />
-<FeaturePrompt />
 
 <div
   class="flex flex-row gap-2 absolute right-0 p-1 z-20 flex-wrap"
@@ -284,6 +283,7 @@
         />
         <span>{settingsOpen ? 'Close settings' : 'Open settings'}</span>
       </Tooltip>
+      <FeaturePrompt />
     {/if}
   </div>
 </div>
