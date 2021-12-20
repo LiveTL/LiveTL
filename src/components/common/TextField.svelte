@@ -29,6 +29,8 @@
   export let rules: Rule[] = [];
   /** Show clear button. */
   export let clearable = false;
+  /** Clear button function. */
+  export let clearableFn: (() => any) = () => (value = '');
 
   const checkRule = (value: string) => {
     const hasError = rules.some((rule) => {
@@ -40,24 +42,26 @@
   };
 
   $: classes = 'relative text-gray-600 dark:text-gray-100 ' +
-    `${dense ? 'my-1' : 'my-2'} ${$$props.class ? $$props.class : ''}`;
+    `${dense ? 'my-1' : 'my-2'}`;
   $: inputClasses = 'px-4 rounded-t text-black dark:text-gray-100 w-full ' +
     `text-base ${dense ? 'pb-1 pt-4' : 'pb-2 pt-6'}`;
 
   $: checkRule(value);
 </script>
 
-<TextField
-  bind:value
-  {label}
-  {placeholder}
-  {classes}
-  {inputClasses}
-  {outlined}
-  {textarea}
-  {add}
-  {error}
-  append={clearable ? 'cancel' : ''}
-  on:click-append={clearable ? () => (value = '') : noop}
-  iconClass={clearable ? 'cursor-pointer' : ''}
-/>
+<div class="{error ? 'mb-5' : ''} {$$props.class ?? ''}">
+  <TextField
+    bind:value
+    {label}
+    {placeholder}
+    {classes}
+    {inputClasses}
+    {outlined}
+    {textarea}
+    {add}
+    {error}
+    append={clearable ? 'cancel' : ''}
+    on:click-append={clearable ? clearableFn : noop}
+    iconClass={clearable ? 'cursor-pointer' : ''}
+  />
+</div>
