@@ -15,22 +15,17 @@
 
   let validLanguages: {[key: string]: boolean} = Object.fromEntries($languages.map((language) => [language, true]));
   $: languages.set(Object.entries(validLanguages).filter((lang) => lang[1]).map((lang) => lang[0]));
+  console.log($languages)
 </script>
 
-<Card title="Filters" icon="filter_alt" noGap>
-  <!-- <Dropdown
-    name="Language filter"
-    store={language}
-    items={languageNameValues}
-    boundingDiv={div}
-  /> -->
+<Card title="Filter Languages" icon="filter_alt" noGap>
   {#each languageNameValues as language}
     <Checkbox label={language.text} bind:checked={validLanguages[language.value]} />
   {/each}
-  <div class="mt-6">
-    <CheckboxStore name="Show moderator and owner messages" store={showModMessage} />
-    <CheckboxStore name="Show verified user messages" store={showVerifiedMessage} />
-  </div>
+</Card>
+<Card title="Filter Options" icon="settings" noGap>
+  <CheckboxStore name="Show moderator and owner messages" store={showModMessage} />
+  <CheckboxStore name="Show verified user messages" store={showVerifiedMessage} />
 </Card>
 <BlockedUsers boundingDiv={div} />
 <Card title="External translation sources" icon="cloud" noGap>
