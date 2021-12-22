@@ -15,7 +15,6 @@
 
   let validLanguages: {[key: string]: boolean} = Object.fromEntries($languages.map((language) => [language, true]));
   $: languages.set(Object.entries(validLanguages).filter((lang) => lang[1]).map((lang) => lang[0]));
-  console.log($languages)
 </script>
 
 <Card title="Filter Languages" icon="filter_alt" noGap>
