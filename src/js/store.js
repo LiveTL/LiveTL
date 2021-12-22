@@ -52,7 +52,7 @@ export const defaultShortcuts = {
 };
 
 // Settings
-export const language = SS('language', 'English');
+export const languages = SS('languages', ['English']);
 export const showModMessage = SS('showModMessage', true);
 export const chatZoom = SS('chatZoom', defaultZoom);
 export const showTimestamp = SS('showTimestamp', true);
@@ -171,7 +171,7 @@ export const speechSpeaker = derived(
   [speechVoiceName, voiceNames],
   ([$speechVoiceName, _$voiceNames]) => getVoiceMap().get($speechVoiceName)
 );
-export const langCode = derived(language, $lang => languageNameCode[$lang].code);
+export const langCode = derived(languages, $langs => $langs.map((lang) => languageNameCode[lang].code));
 
 export const updatePopupActive = writable(false);
 export const videoTitle = writable('LiveTL');

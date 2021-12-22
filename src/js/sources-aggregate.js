@@ -110,7 +110,7 @@ export const capturedMessages = readable([], set => {
 
 export const sameLangMessages = derived(
   [capturedMessages, langCode],
-  ([$msgs, $langCode]) => $msgs.filter(msg => msg.langCode == null || msg.langCode === $langCode)
+  ([$msgs, $langCode]) => $msgs.filter(msg => msg.langCode == null || $langCode.includes(msg.langCode))
 );
 
 const spamStores = [spamMsgAmount, spamMsgInterval]
