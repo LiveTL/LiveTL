@@ -1,5 +1,4 @@
-import { doSpeechSynth, languages, speechVolume, speechSpeed, speechSpeaker } from './store.js';
-import { languageNameCode } from './constants.js';
+import { doSpeechSynth, speechVolume, speechSpeed, speechSpeaker } from './store.js';
 import { get } from 'svelte/store';
 
 export function speak(text, langCode, volume = 0) {
