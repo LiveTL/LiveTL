@@ -1,7 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import CustomMacro from '../options/CustomMacro.svelte';
-  import { macros, doAutoPrefix, doTranslatorMode, autoPrefixTag, macroTrigger } from '../../js/store.js';
+  import { macros, doAutoPrefix, doTranslatorMode, autoPrefixTag, macroTrigger, languages } from '../../js/store.js';
   import { isAndroid } from '../../js/constants.js';
   import Checkbox from '../common/CheckboxStore.svelte';
   import TextField from '../common/TextField.svelte';
@@ -29,6 +29,11 @@
   }
 
   onMount(() => setTimeout(cleanUpMacros));
+
+  const autoPrefixRules = [{
+    error: 'You have no selected translation languages',
+    assert: (value) => !(/\$filterLang/gi.test(value) && $languages.length <= 0),
+  }];
 </script>
 
 <Card title="Translator mode" icon="translate">
@@ -39,6 +44,7 @@
       <TextField
         bind:value={$autoPrefixTag}
         label="Tag to prepend ($filterLang is replaced by your first filter language)"
+        rules={autoPrefixRules}
       />
     {/if}
     <Card
