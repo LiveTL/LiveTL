@@ -1,14 +1,14 @@
-import { doSpeechSynth, language, speechVolume, speechSpeed, speechSpeaker } from './store.js';
+import { doSpeechSynth, languages, speechVolume, speechSpeed, speechSpeaker } from './store.js';
 import { languageNameCode } from './constants.js';
 import { get } from 'svelte/store';
 
-export function speak(text, volume = 0) {
+export function speak(text, langCode, volume = 0) {
   // speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.volume = volume || speechVolume.get();
   utterance.voice = get(speechSpeaker);
   utterance.rate = Math.round(speechSpeed.get() * 10) / 10;
-  utterance.lang = languageNameCode[language.get()].tag;
+  utterance.lang = langCode;
   window.speechSynthesis?.speak(utterance);
 }
 
@@ -16,7 +16,7 @@ export function checkAndSpeak(text) {
   // Need to check window.speechSynthesis for android
   // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
   if (window.speechSynthesis && doSpeechSynth.get()) {
-    speak(text);
+    speak(text.text, text.langCode);
   }
 }
 

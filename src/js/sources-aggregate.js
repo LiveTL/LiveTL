@@ -145,13 +145,12 @@ export const displayedMessages = derived(dispDepends, dispTransform);
 export const captionText = readable(defaultCaption, set => {
   let text = defaultCaption;
   return displayedMessages.subscribe($msgs => {
-    const $translation = $msgs[$msgs.length - 1]?.text;
-    if ($translation != null && $translation !== text) {
-      set(text = $translation);
+    if ($msgs[$msgs.length - 1]?.text != null && $msgs[$msgs.length - 1]?.text !== text) {
+      set(text = $msgs[$msgs.length - 1]);
     }
   });
 });
 
 // hmr
 if (window.unsubDictation) window.unsubDictation();
-window.unsubDictation = captionText.subscribe($txt => $txt !== defaultCaption && checkAndSpeak($txt));
+window.unsubDictation = captionText.subscribe($txt => $txt.text !== defaultCaption.text && checkAndSpeak($txt));

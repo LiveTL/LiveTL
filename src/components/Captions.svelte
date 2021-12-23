@@ -86,7 +86,7 @@
     class="captionSegment break-words mx-5 py-1.5 px-2.5 bg-black bg-opacity-80 backdrop-filter backdrop-blur-sm"
     bind:this={elem}
   >
-    {$captionText}
+    {$captionText.text}
   </div>
 </div>
 

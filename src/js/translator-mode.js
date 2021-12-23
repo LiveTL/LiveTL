@@ -1,6 +1,6 @@
 import { compose, escapeRegExp } from './utils.js';
 import { derived, get } from 'svelte/store';
-import { doTranslatorMode, doAutoPrefix, language, macros, autoPrefixTag, macroTrigger } from './store.js';
+import { doTranslatorMode, doAutoPrefix, languages, macros, autoPrefixTag, macroTrigger } from './store.js';
 import { languageNameCode } from './constants.js';
 
 /**
@@ -286,4 +286,4 @@ function getCaretCharOffset(element) {
   return caretOffset;
 }
 
-const langTag = () => autoPrefixTag.get().replace(/\$filterLang/gi, languageNameCode[language.get()].code);
+const langTag = () => autoPrefixTag.get().replace(/\$filterLang/gi, languageNameCode[languages.get()[0]].code);
