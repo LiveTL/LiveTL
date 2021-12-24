@@ -180,7 +180,7 @@
         </div>
         <div 
           style={$isChatInverted ? chatElemStyle : {}} 
-          class={`relative ${$isChatInverted ? 'resizable' : 'flex-1'}`}
+          class="relative {$isChatInverted ? 'resizable' : 'flex-1'}"
           bind:this={ltlElem}
         >
           <MainPane>
