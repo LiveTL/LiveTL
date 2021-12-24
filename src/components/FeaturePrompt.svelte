@@ -81,6 +81,7 @@
     <div class="flex justify-between pl-3 pr-3">
       <Button
         text
+        color="error"
         on:click={neverShowPrompt(prompt)}
         small
       >
