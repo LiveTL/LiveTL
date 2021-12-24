@@ -54,7 +54,7 @@
   $: prompt = getLatestPrompt($promptToShow, $showHelpPrompt);
   $: active = Boolean(prompt);
 
-  let close: () => void;
+  let close: (omitActiveToggle: boolean) => void;
 </script>
 
 {#if prompt}
@@ -86,7 +86,7 @@
       >
         Never show again
       </Button>
-      <Button color="primary" on:click={close} small>Dismiss</Button>
+      <Button color="primary" on:click={() => close(false)} small>Dismiss</Button>
     </div>
   </Notification>
 {/if}
