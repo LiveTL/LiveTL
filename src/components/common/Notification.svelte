@@ -8,21 +8,34 @@
   export let active = false;
 
   let mouseOver = false;
-  
+
   const mouseLeft = () => setTimeout(() => (mouseOver = false), 250);
+
+  let closingAnimation = false;
+
+  export let close = () => {
+    closingAnimation = true;
+    setTimeout(() => {
+      closingAnimation = false;
+      active = false;
+      mouseOver = false;
+    }, 500);
+  };
 </script>
 
-{#if active} <!-- active -->
+{#if active}
   <div
     class="notification"
     on:mouseenter={() => (mouseOver = true)}
     on:mouseleave={mouseLeft}
   >
-    {#if mouseOver} <!-- mouseOver -->
+    {#if mouseOver}
       <div
-        class="slot border-4 border-dark-500"
+        class="slot bg-dark-600 {closingAnimation ? 'closing' : ''}"
         on:mouseleave={mouseLeft}
-        style="{$textDirection === TextDirection.BOTTOM ? 'top' : 'bottom'}: 0px;"
+        style="{$textDirection === TextDirection.BOTTOM
+          ? 'top'
+          : 'bottom'}: 0px;"
       >
         <slot />
       </div>
@@ -46,7 +59,7 @@
     right: 0px;
     z-index: 100;
   }
-  .notification/*:hover*/ .slot {
+  .notification:hover .slot:not(.closing) {
     transform: translateX(0px);
     opacity: 1;
   }
@@ -55,7 +68,6 @@
     transition: 0.25s;
     overflow: hidden;
     animation: fade-in 0.25s;
-    backdrop-filter: blur(5px);
     transform: translateX(100%);
     opacity: 0;
     border-radius: 0.5rem;
@@ -63,6 +75,8 @@
     right: 0px;
     z-index: 1000;
     width: 300px;
+    border: 0px;
+    padding-bottom: 0.5rem;
   }
   @keyframes fade-in {
     from {

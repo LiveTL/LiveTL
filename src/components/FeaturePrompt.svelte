@@ -6,9 +6,13 @@
   import Dialog from './common/Dialog.svelte';
   import { FeaturePrompt } from '../js/constants.js';
   import { enable as enableFeaturePrompt } from '../js/featureprompt.js';
-  import { neverShowSpotlightPrompt, promptToShow, showHelpPrompt } from '../js/store.js';
+  import {
+    neverShowSpotlightPrompt,
+    promptToShow,
+    showHelpPrompt,
+  } from '../js/store.js';
   import { getWAR } from '../js/utils.js';
-import Notification from './common/Notification.svelte';
+  import Notification from './common/Notification.svelte';
 
   onMount(enableFeaturePrompt);
 
@@ -17,14 +21,16 @@ import Notification from './common/Notification.svelte';
 
   // TODO change navigateToFeature to show an image of the feature
   // eslint-disable-next-line no-undef
-  const prompts: Ltl.FeaturePromptContent[] = [{
-    id: FeaturePrompt.SPOTLIGHT,
-    prompt: 'Spotlight someone to only see their messages.',
-    icon: 'record_voice_over',
-    hasDismissed: writable(false),
-    neverShow: neverShowSpotlightPrompt,
-    demoLink: '/img/demos/spotlight.gif'
-  }];
+  const prompts: Ltl.FeaturePromptContent[] = [
+    {
+      id: FeaturePrompt.SPOTLIGHT,
+      prompt: 'Spotlight someone to only see their messages.',
+      icon: 'record_voice_over',
+      hasDismissed: writable(false),
+      neverShow: neverShowSpotlightPrompt,
+      demoLink: '/img/demos/spotlight.gif',
+    },
+  ];
 
   const neverShowPrompt = (prompt: Ltl.FeaturePromptContent) => () => {
     prompt.neverShow.set(true);
@@ -32,11 +38,12 @@ import Notification from './common/Notification.svelte';
     active = Boolean(prompt);
   };
 
-  const getLatestPrompt = (promptToShow, actuallyGetPrompt) => actuallyGetPrompt
-    ? prompts
-      .filter(p => promptToShow.includes(p.id))
-      .find(p => !get(p.hasDismissed) && !get(p.neverShow))
-    : null;
+  const getLatestPrompt = (promptToShow, actuallyGetPrompt) =>
+    actuallyGetPrompt
+      ? prompts
+          .filter((p) => promptToShow.includes(p.id))
+          .find((p) => !get(p.hasDismissed) && !get(p.neverShow))
+      : null;
 
   // run when dialog closes
   $: if (!active && prompt) {
@@ -47,18 +54,31 @@ import Notification from './common/Notification.svelte';
 
   $: prompt = getLatestPrompt($promptToShow, $showHelpPrompt);
   $: active = Boolean(prompt);
+
+  let close: () => void;
 </script>
 
 {#if prompt}
-  <Notification bind:active>
+  <Notification bind:active bind:close>
     <div slot="title" class="text-center">Feature recommendation</div>
-    <Card title={prompt.prompt} icon={prompt.icon} margin={false} addHeaderClasses="dark:bg-alert">
+    <Card
+      title={prompt.prompt}
+      icon={prompt.icon}
+      margin={false}
+      bgColor="dark:bg-alert-400"
+      addHeaderClasses="text-black"
+    >
       <img alt={prompt.prompt} src={getWAR(prompt.demoLink)} />
     </Card>
-    <div class="text-center">
-      <Button color="error" on:click={neverShowPrompt(prompt)} small>
+    <div class="flex justify-between pl-3 pr-3">
+      <Button
+        color="bg-dark-600"
+        on:click={() => neverShowPrompt(prompt)}
+        small
+      >
         Never show this prompt
       </Button>
+      <Button color="error" on:click={close} small>Dismiss</Button>
     </div>
   </Notification>
 {/if}
