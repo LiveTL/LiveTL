@@ -26,7 +26,7 @@
   <div
     class="notification"
     on:mouseenter={() => {
-      if (!closingAnimation) mouseOver = true
+      if (!closingAnimation) mouseOver = true;
     }}
     on:mouseleave={mouseLeft}
   >
