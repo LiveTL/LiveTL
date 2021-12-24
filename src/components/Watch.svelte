@@ -148,7 +148,7 @@
       </div>
     {/if}
     <div
-      class="flex-1 relative z-50"
+      class="flex-1 relative overflow-x-hidden"
       bind:this={chatSideElem}
       style={isTopSide ? 'min-width: 100% !important;' : ''}
     >
@@ -157,7 +157,7 @@
         style={chatElemParentStyle}
       >
         <div
-          class="relative resizable"
+          class="relative resizable z-30"
           style={chatElemStyle}
           bind:this={chatElem}
         >

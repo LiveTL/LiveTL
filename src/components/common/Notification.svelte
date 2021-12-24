@@ -12,13 +12,13 @@
   const mouseLeft = () => setTimeout(() => (mouseOver = false), 250);
 </script>
 
-{#if true} <!-- active -->
+{#if active} <!-- active -->
   <div
     class="notification"
     on:mouseenter={() => (mouseOver = true)}
     on:mouseleave={mouseLeft}
   >
-    {#if true} <!-- mouseOver -->
+    {#if mouseOver} <!-- mouseOver -->
       <div
         class="slot border-4 border-dark-500"
         on:mouseleave={mouseLeft}
