@@ -17,6 +17,7 @@
 
   let prompt = null;
   let active = true;
+  let close: (omitActiveToggle: boolean) => Promise<void>;
 
   // TODO change navigateToFeature to show an image of the feature
   // eslint-disable-next-line no-undef
@@ -31,7 +32,8 @@
     }
   ];
 
-  const neverShowPrompt = (prompt: Ltl.FeaturePromptContent) => () => {
+  const neverShowPrompt = (prompt: Ltl.FeaturePromptContent) => async () => {
+    await close(false);
     prompt.neverShow.set(true);
     prompt = getLatestPrompt($promptToShow, $showHelpPrompt);
     active = Boolean(prompt);
@@ -53,8 +55,6 @@
 
   $: prompt = getLatestPrompt($promptToShow, $showHelpPrompt);
   $: active = Boolean(prompt);
-
-  let close: (omitActiveToggle: boolean) => void;
 </script>
 
 {#if prompt}
@@ -81,7 +81,7 @@
     <div class="flex justify-between pl-3 pr-3">
       <Button
         color="bg-dark-600"
-        on:click={() => neverShowPrompt(prompt)}
+        on:click={neverShowPrompt(prompt)}
         small
       >
         Never show again

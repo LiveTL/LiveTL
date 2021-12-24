@@ -13,12 +13,15 @@
   const mouseLeft = () => close(true);
 
   export let close = (omitActiveToggle = false) => {
-    closingAnimation = true;
-    setTimeout(() => {
-      closingAnimation = false;
-      active = omitActiveToggle;
-      mouseOver = false;
-    }, 250);
+    return new Promise<void>(resolve => {
+      closingAnimation = true;
+      setTimeout(() => {
+        closingAnimation = false;
+        active = omitActiveToggle;
+        mouseOver = false;
+        resolve();
+      }, 250);
+    });
   };
 </script>
 
