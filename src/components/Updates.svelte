@@ -1,17 +1,13 @@
 <script>
+  import pkg from '../../package.json';
   import { onMount, onDestroy } from 'svelte';
   import { lastVersion, updatePopupActive } from '../js/store.js';
   import Dialog from './common/Dialog.svelte';
   import Button from 'smelte/src/components/Button';
   import Changelog from './changelog/Changelog.svelte';
 
-  let version = '';
-
-  function setLastVersion() {
-    $updatePopupActive = false;
-  }
-
   let unsubscribe = () => { };
+  const version = pkg.version;
 
   onMount(async () => {
     await Promise.all([lastVersion.loaded, updatePopupActive.loaded]);
@@ -25,6 +21,10 @@
   });
 
   onDestroy(() => unsubscribe());
+
+  function closeUpdate() {
+    $updatePopupActive = false;
+  }
 </script>
 
 <div class="fixed z-50">
@@ -38,14 +38,14 @@
       <h6>Here's what's new in LiveTL version {version}:</h6>
     </div>
     <div class="text-base">
-      <Changelog bind:version />
+      <Changelog />
       <h6 class="text-center">
         If you like this update, please consider sharing this information with
         your friends! We'd really appreciate it :)
       </h6>
     </div>
-    <div class="text-center pt-4">
-      <Button on:click={setLastVersion}>Let's Go!</Button>
+    <div class="update-dialog text-center pt-4">
+      <Button on:click={closeUpdate}>Let's Go!</Button>
     </div>
   </Dialog>
 </div>

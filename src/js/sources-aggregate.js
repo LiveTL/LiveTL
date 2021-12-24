@@ -60,7 +60,8 @@ export const capturedMessages = readable([], set => {
   const { cleanUp, store: source } = combineStores(
     sources.thirdParty,
     sources.translations,
-    sources.mod
+    sources.mod,
+    sources.verified
   );
 
   const sourceUnsub = source.subscribe(msg => {

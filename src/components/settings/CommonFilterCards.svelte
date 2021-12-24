@@ -1,9 +1,10 @@
 <script lang="ts">
   import {
     showModMessage,
+    showVerifiedMessage,
     language,
-    enableMchadTLs,
-    enableAPITLs
+    enableMchadTLs
+    // enableAPITLs
   } from '../../js/store.js';
   import { languageNameValues } from '../../js/constants.js';
   import BlockedUsers from './BlockedUsers.svelte';
@@ -22,11 +23,12 @@
   />
   <div class="mt-6">
     <Checkbox name="Show moderator and owner messages" store={showModMessage} />
+    <Checkbox name="Show verified user messages" store={showVerifiedMessage} />
   </div>
 </Card>
 <BlockedUsers boundingDiv={div} />
 <Card title="External translation sources" icon="cloud" noGap>
-  <Checkbox name="LiveTL API" store={enableAPITLs} />
+  <!-- <Checkbox name="LiveTL API" store={enableAPITLs} /> -->
   <Checkbox name="MChad (volunteer translators)" store={enableMchadTLs} />
 </Card>
 <slot name="extras" />

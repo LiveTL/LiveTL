@@ -279,7 +279,7 @@ def play_video(web):
 
 def close_update_dialogue(web):
     with suppress(Exception):
-        web.find_elements_by_css_selector('.s-dialog button.blue')[0].click()
+        web.find_elements_by_css_selector('.update-dialog button')[0].click()
 
 
 def seek(web, seconds):

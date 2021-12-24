@@ -65,11 +65,11 @@ const url = endpoint => `https://api.livetl.app${endpoint}`;
 /** @type {(id: String) => String)} */
 const authorName = (() => {
   const lookup = new Map();
-  const addTranslator = translator => lookup.set(translator.userID, translator.displayName);
-  const addTranslators = translators => translators.forEach(addTranslator);
-  // check for window.fetch to make jest stfu
-  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-  if (window.fetch) fetch(url('/translators/registered')).then(toJson).then(addTranslators);
+  // const addTranslator = translator => lookup.set(translator.userID, translator.displayName);
+  // const addTranslators = translators => translators.forEach(addTranslator);
+  // // check for window.fetch to make jest stfu
+  // // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+  // if (window.fetch) fetch(url('/translators/registered')).then(toJson).then(addTranslators);
   return lookup.get.bind(lookup);
 })();
 
