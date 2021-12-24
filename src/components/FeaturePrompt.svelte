@@ -80,7 +80,7 @@
     </Card>
     <div class="flex justify-between pl-3 pr-3">
       <Button
-        color="bg-dark-600"
+        text
         on:click={neverShowPrompt(prompt)}
         small
       >
