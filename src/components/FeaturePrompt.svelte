@@ -8,7 +8,7 @@
   import {
     neverShowSpotlightPrompt,
     promptToShow,
-    showHelpPrompt,
+    showHelpPrompt
   } from '../js/store.js';
   import { getWAR } from '../js/utils.js';
   import Notification from './common/Notification.svelte';
@@ -27,8 +27,8 @@
       icon: 'record_voice_over',
       hasDismissed: writable(false),
       neverShow: neverShowSpotlightPrompt,
-      demoLink: '/img/demos/spotlight.mp4',
-    },
+      demoLink: '/img/demos/spotlight.mp4'
+    }
   ];
 
   const neverShowPrompt = (prompt: Ltl.FeaturePromptContent) => () => {
@@ -40,8 +40,8 @@
   const getLatestPrompt = (promptToShow, actuallyGetPrompt) =>
     actuallyGetPrompt
       ? prompts
-          .filter((p) => promptToShow.includes(p.id))
-          .find((p) => !get(p.hasDismissed) && !get(p.neverShow))
+        .filter((p) => promptToShow.includes(p.id))
+        .find((p) => !get(p.hasDismissed) && !get(p.neverShow))
       : null;
 
   // run when dialog closes
