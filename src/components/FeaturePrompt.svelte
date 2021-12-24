@@ -3,7 +3,6 @@
   import { get, writable } from 'svelte/store';
   import Button from 'smelte/src/components/Button';
   import Card from './common/Card.svelte';
-  import Dialog from './common/Dialog.svelte';
   import { FeaturePrompt } from '../js/constants.js';
   import { enable as enableFeaturePrompt } from '../js/featureprompt.js';
   import {
@@ -28,7 +27,7 @@
       icon: 'record_voice_over',
       hasDismissed: writable(false),
       neverShow: neverShowSpotlightPrompt,
-      demoLink: '/img/demos/spotlight.gif',
+      demoLink: '/img/demos/spotlight.mp4',
     },
   ];
 
@@ -68,7 +67,10 @@
       bgColor="dark:bg-alert-400"
       addHeaderClasses="text-black"
     >
-      <img alt={prompt.prompt} src={getWAR(prompt.demoLink)} />
+      <video class="video" autoplay muted loop>
+        <source src={getWAR(prompt.demoLink)} type="video/mp4">
+          <track kind="captions" />
+      </video>
     </Card>
     <div class="flex justify-between pl-3 pr-3">
       <Button
@@ -82,3 +84,10 @@
     </div>
   </Notification>
 {/if}
+
+<style>
+  .video {
+    width: 100%;
+    height: 100%;
+  }
+</style>
