@@ -8,7 +8,7 @@
   import {
     neverShowSpotlightPrompt,
     promptToShow,
-    showHelpPrompt
+    showHelpPrompt,
   } from '../js/store.js';
   import { getWAR } from '../js/utils.js';
   import Notification from './common/Notification.svelte';
@@ -27,8 +27,8 @@
       icon: 'record_voice_over',
       hasDismissed: writable(false),
       neverShow: neverShowSpotlightPrompt,
-      demoLink: '/img/demos/spotlight.mp4'
-    }
+      demoLink: '/img/demos/spotlight.mp4',
+    },
   ];
 
   const neverShowPrompt = (prompt: Ltl.FeaturePromptContent) => () => {
@@ -40,8 +40,8 @@
   const getLatestPrompt = (promptToShow, actuallyGetPrompt) =>
     actuallyGetPrompt
       ? prompts
-        .filter((p) => promptToShow.includes(p.id))
-        .find((p) => !get(p.hasDismissed) && !get(p.neverShow))
+          .filter((p) => promptToShow.includes(p.id))
+          .find((p) => !get(p.hasDismissed) && !get(p.neverShow))
       : null;
 
   // run when dialog closes
@@ -67,9 +67,15 @@
       bgColor="dark:bg-alert-400"
       addHeaderClasses="text-black"
     >
-      <video class="video" autoplay muted loop>
-        <source src={getWAR(prompt.demoLink)} type="video/mp4">
-          <track kind="captions" />
+      <video
+        class="w-full h-full"
+        on:contextmenu={(e) => e.preventDefault()}
+        autoplay
+        muted
+        loop
+      >
+        <source src={getWAR(prompt.demoLink)} type="video/mp4" />
+        <track kind="captions" />
       </video>
     </Card>
     <div class="flex justify-between pl-3 pr-3">
@@ -78,16 +84,9 @@
         on:click={() => neverShowPrompt(prompt)}
         small
       >
-        Never show this prompt
+        Never show again
       </Button>
-      <Button color="error" on:click={close} small>Dismiss</Button>
+      <Button color="primary" on:click={close} small>Dismiss</Button>
     </div>
   </Notification>
 {/if}
-
-<style>
-  .video {
-    width: 100%;
-    height: 100%;
-  }
-</style>

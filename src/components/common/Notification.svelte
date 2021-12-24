@@ -8,31 +8,31 @@
   export let active = false;
 
   let mouseOver = false;
-
-  const mouseLeft = () => setTimeout(() => (mouseOver = false), 250);
-
   let closingAnimation = false;
 
-  export let close = () => {
+  const mouseLeft = () => close(true);
+
+  export let close = (omitActiveToggle = false) => {
     closingAnimation = true;
     setTimeout(() => {
       closingAnimation = false;
-      active = false;
+      active = omitActiveToggle;
       mouseOver = false;
-    }, 500);
+    }, 250);
   };
 </script>
 
 {#if active}
   <div
     class="notification"
-    on:mouseenter={() => (mouseOver = true)}
+    on:mouseenter={() => {
+      if (!closingAnimation) mouseOver = true
+    }}
     on:mouseleave={mouseLeft}
   >
     {#if mouseOver}
       <div
         class="slot bg-dark-600 {closingAnimation ? 'closing' : ''}"
-        on:mouseleave={mouseLeft}
         style="{$textDirection === TextDirection.BOTTOM
           ? 'top'
           : 'bottom'}: 0px;"

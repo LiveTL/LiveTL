@@ -138,7 +138,7 @@
   <div id="mainUI" class="flex w-full h-full {flexDirection} top-0 absolute">
     {#if isFullPage}
       <div
-        class="resizable relative z-30"
+        class="resizable relative"
         style={videoContainerStyle}
         bind:this={vidElem}
       >
@@ -148,7 +148,7 @@
       </div>
     {/if}
     <div
-      class="flex-1 relative overflow-x-hidden"
+      class="flex-1 relative"
       bind:this={chatSideElem}
       style={isTopSide ? 'min-width: 100% !important;' : ''}
     >
