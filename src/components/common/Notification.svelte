@@ -33,7 +33,7 @@
     }}
     on:mouseleave={mouseLeft}
   >
-    {#if mouseOver}
+    <div class:animated={mouseOver}>
       <div
         class="slot bg-dark-600 {closingAnimation ? 'closing' : ''}"
         style="{$textDirection === TextDirection.BOTTOM
@@ -42,7 +42,7 @@
       >
         <slot />
       </div>
-    {/if}
+    </div>
     <div>
       <IconButton
         slot="activator"
@@ -70,7 +70,6 @@
     transform-origin: bottom right;
     transition: 0.25s;
     overflow: hidden;
-    animation: fade-in 0.25s;
     transform: translateX(100%);
     opacity: 0;
     border-radius: 0.5rem;
@@ -80,6 +79,13 @@
     width: 300px;
     border: 0px;
     padding-bottom: 0.5rem;
+  }
+  .animated {
+    animation: fade-in 0.25s;
+    transition-property: opacity, transform;
+  }
+  :not(.animated)>.slot {
+    height: 0px !important;
   }
   @keyframes fade-in {
     from {
