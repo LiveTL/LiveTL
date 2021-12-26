@@ -79,13 +79,14 @@
     width: 300px;
     border: 0px;
     padding-bottom: 0.5rem;
+    display: none;
   }
   .animated {
     animation: fade-in 0.25s;
     transition-property: opacity, transform;
   }
-  :not(.animated)>.slot {
-    height: 0px !important;
+  .animated .slot {
+    display: block;
   }
   @keyframes fade-in {
     from {
