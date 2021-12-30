@@ -17,10 +17,10 @@
     "persistent": true
   },
   "icons": {
-    "128": "128x128.png"
+    "128": "./img/128x128.png"
   },
   "browser_action": {
-    "default_icon": "48x48.png"
+    "default_icon": "./img/48x48.png"
   },
   "manifest_version": 2,
   "content_scripts": [

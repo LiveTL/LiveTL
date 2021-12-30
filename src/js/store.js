@@ -180,7 +180,7 @@ export const langCode = derived(language, $lang => languageNameCode[$lang].code)
 export const updatePopupActive = writable(false);
 export const videoTitle = writable('LiveTL');
 export const timestamp = writable(0);
-export const faviconURL = writable('/48x48.png');
+export const faviconURL = writable('/img/48x48.png');
 export const availableMchadUsers = writable([]);
 export const spotlightedTranslator = writable(null);
 export const displayMode = writable(
