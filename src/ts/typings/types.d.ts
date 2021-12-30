@@ -1,5 +1,3 @@
-import { Writable } from 'svelte/store';
-
 declare namespace Ltl {
   enum AuthorType {
     moderator = 1 << 0,
@@ -26,8 +24,8 @@ declare namespace Ltl {
     id: string;
     prompt: string; // the prompt message for help
     icon: string;
-    hasDismissed: Writable<boolean>;
-    neverShow: Writable<boolean>;
+    hasDismissed: import('svelte/store').Writable<boolean>;
+    neverShow: import('svelte/store').Writable<boolean>;
     demoLink: string; // string path (not actual WAR path) to feature demo
   }
 }

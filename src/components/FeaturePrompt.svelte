@@ -4,16 +4,36 @@
   import Button from 'smelte/src/components/Button';
   import Card from './common/Card.svelte';
   import { FeaturePrompt } from '../js/constants.js';
-  import { enable as enableFeaturePrompt } from '../js/featureprompt.js';
   import {
     neverShowSpotlightPrompt,
     promptToShow,
     showHelpPrompt
   } from '../js/store.js';
+  import { displayedMessages } from '../js/sources-aggregate.js';
+  import { index } from '../js/sources-util.js';
   import { getWAR } from '../js/utils.js';
   import Notification from './common/Notification.svelte';
 
-  onMount(enableFeaturePrompt);
+  onMount(() => {
+    const pushedPrompts = new Set();
+
+    const pushPrompt = prompt => {
+      if (pushedPrompts.has(prompt)) return;
+      pushedPrompts.add(prompt);
+      promptToShow.set([...get(promptToShow), prompt]);
+    };
+
+    const unsubSpotlight = displayedMessages.subscribe(msgs => {
+      const numAuthors = index(msgs).by('authorId').size;
+      if (numAuthors >= 3) {
+        pushPrompt(FeaturePrompt.SPOTLIGHT);
+      }
+    });
+
+    return () => {
+      unsubSpotlight();
+    };
+  });
 
   let prompt = null;
   let active = true;
