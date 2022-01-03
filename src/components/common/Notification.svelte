@@ -25,7 +25,7 @@
 
   let wrapper: HTMLElement;
   let maxHeight = '0px';
-  let maxWidth = '0px';
+  const maxWidth = '0px';
 
   const open = async () => {
     if (!closingAnimation) {
