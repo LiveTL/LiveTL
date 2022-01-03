@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, tick } from 'svelte';
+  import { tick } from 'svelte';
   import { TextDirection } from '../../js/constants';
   import { textDirection } from '../../js/store';
   import IconButton from './IconButton.svelte';
@@ -25,7 +25,6 @@
 
   let wrapper: HTMLElement;
   let maxHeight = '0px';
-  const maxWidth = '0px';
 
   const open = async () => {
     if (!closingAnimation) {
