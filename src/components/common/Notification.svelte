@@ -45,7 +45,7 @@
   >
     <div class:animated={mouseOver} class="z-50">
       <div
-        class="slot bg-dark-600 {closingAnimation ? 'closing' : ''}"
+        class="slot shadow-md bg-dark-500 {closingAnimation ? 'closing' : ''}"
         style="{$textDirection === TextDirection.BOTTOM
           ? 'top'
           : 'bottom'}: 0px;max-height: {maxHeight};"
@@ -54,7 +54,7 @@
         <slot />
       </div>
     </div>
-    <div>
+    <div style="z-30">
       <IconButton
         slot="activator"
         icon="info"
@@ -89,7 +89,6 @@
     z-index: 1000;
     width: 300px;
     border: 0px;
-    padding-bottom: 0.5rem;
     display: none;
     overflow: auto;
   }

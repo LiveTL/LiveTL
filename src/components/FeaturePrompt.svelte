@@ -86,28 +86,32 @@
       margin={false}
       bgColor="dark:bg-alert-400"
       addHeaderClasses="text-black"
+      clearBg={true}
+      padded={false}
     >
-      <video
-        class="w-full h-full"
-        on:contextmenu={(e) => e.preventDefault()}
-        autoplay
-        muted
-        loop
-      >
-        <source src={getWAR(prompt.demoLink)} type="video/mp4" />
-        <track kind="captions" />
-      </video>
+      <div class="p-2">
+        <div class="flex justify-between pb-2">
+          <Button
+            text
+            color="error"
+            on:click={neverShowPrompt(prompt)}
+            small
+          >
+            Never show again
+          </Button>
+          <Button color="primary" on:click={() => close(false)} small>Dismiss</Button>
+        </div>
+        <video
+          class="w-full h-full"
+          on:contextmenu={(e) => e.preventDefault()}
+          autoplay
+          muted
+          loop
+        >
+          <source src={getWAR(prompt.demoLink)} type="video/mp4" />
+          <track kind="captions" />
+        </video>
+      </div>
     </Card>
-    <div class="flex justify-between pl-3 pr-3">
-      <Button
-        text
-        color="error"
-        on:click={neverShowPrompt(prompt)}
-        small
-      >
-        Never show again
-      </Button>
-      <Button color="primary" on:click={() => close(false)} small>Dismiss</Button>
-    </div>
   </Notification>
 {/if}
