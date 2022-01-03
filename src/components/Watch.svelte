@@ -143,7 +143,7 @@
   <div id="mainUI" class="flex w-full h-full {flexDirection} top-0 absolute">
     {#if isFullPage}
       <div
-        class="resizable relative"
+        class="z-40 resizable relative"
         style={videoContainerStyle}
         bind:this={vidElem}
       >
@@ -166,8 +166,8 @@
         style={chatElemParentStyle}
       >
         <div
-          style={$isChatInverted ? {} : chatElemStyle} 
-          class="z-30 relative {$isChatInverted ? 'flex-1' : 'resizable'}"
+          style={$isChatInverted ? '' : chatElemStyle} 
+          class="relative {$isChatInverted ? 'flex-1' : 'resizable'}"
           bind:this={chatElem}
         >
           <Wrapper zoom={$chatZoom} style={chatWrapperStyle}>
@@ -179,7 +179,7 @@
           </Wrapper>
         </div>
         <div 
-          style={$isChatInverted ? chatElemStyle : {}} 
+          style={$isChatInverted ? chatElemStyle : ''} 
           class="relative {$isChatInverted ? 'resizable' : 'flex-1'}"
           bind:this={ltlElem}
         >

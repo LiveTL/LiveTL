@@ -17,7 +17,7 @@
   $: contentClasses = `${padded ? 'px-3 py-2' : ''} flex flex-col ${noGap ? '' : 'gap-2'}`;
 </script>
 
-<div class="rounded ovevrflow-hidden {margin ? 'my-2' : ''} {nested ? 'bg-dark-500' : 'bg-dark-600'}">
+<div class="rounded overflow-hidden {margin ? 'my-2' : ''} {nested ? 'bg-dark-500' : 'bg-dark-600'}">
   <div
     class="rounded-t p-2 flex flex-row items-center {bgColor || 'bg-dark-400'} {addHeaderClasses}"
     on:click={headerOnClick}

@@ -1,8 +1,7 @@
 <script lang="ts">
+  import { onMount, tick } from 'svelte';
   import { TextDirection } from '../../js/constants';
-
   import { textDirection } from '../../js/store';
-
   import IconButton from './IconButton.svelte';
 
   export let active = false;
@@ -23,22 +22,35 @@
       }, 250);
     });
   };
+
+  let wrapper: HTMLElement;
+  let maxHeight = '0px';
+  let maxWidth = '0px';
+
+  const open = async () => {
+    if (!closingAnimation) {
+      maxHeight = `${window.innerHeight}px`;
+      mouseOver = true;
+      await tick();
+      const clientRect = wrapper.getBoundingClientRect();
+      maxHeight = `${window.innerHeight - clientRect.top}px`;
+    }
+  };
 </script>
 
 {#if active}
   <div
     class="notification"
-    on:mouseenter={() => {
-      if (!closingAnimation) mouseOver = true;
-    }}
+    on:mouseenter={open}
     on:mouseleave={mouseLeft}
   >
-    <div class:animated={mouseOver}>
+    <div class:animated={mouseOver} class="z-50">
       <div
         class="slot bg-dark-600 {closingAnimation ? 'closing' : ''}"
         style="{$textDirection === TextDirection.BOTTOM
           ? 'top'
-          : 'bottom'}: 0px;"
+          : 'bottom'}: 0px;max-height: {maxHeight};"
+        bind:this={wrapper}
       >
         <slot />
       </div>
@@ -80,6 +92,7 @@
     border: 0px;
     padding-bottom: 0.5rem;
     display: none;
+    overflow: auto;
   }
   .animated {
     animation: fade-in 0.25s;
