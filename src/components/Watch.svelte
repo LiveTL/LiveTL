@@ -143,7 +143,7 @@
   <div id="mainUI" class="flex w-full h-full {flexDirection} top-0 absolute">
     {#if isFullPage}
       <div
-        class="z-40 resizable relative"
+        class="z-30 resizable relative"
         style={videoContainerStyle}
         bind:this={vidElem}
       >
