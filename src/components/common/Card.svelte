@@ -19,7 +19,7 @@
 </script>
 
 <div
-  class="rounded overflow-hidden {margin ? 'my-2' : ''} {clearBg
+  class="rounded {margin ? 'my-2' : ''} {clearBg
     ? ''
     : nested
     ? 'bg-dark-500'

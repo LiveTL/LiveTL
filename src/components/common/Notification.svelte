@@ -93,13 +93,13 @@
     overflow: auto;
   }
   .animated {
-    animation: fade-in 0.25s;
+    animation: notification-slide-in 0.25s;
     transition-property: opacity, transform;
   }
   .animated .slot {
     display: block;
   }
-  @keyframes fade-in {
+  @keyframes notification-slide-in {
     from {
       opacity: 0;
       transform: translateX(100%);
