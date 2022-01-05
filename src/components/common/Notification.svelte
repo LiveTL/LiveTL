@@ -54,7 +54,7 @@
         <slot />
       </div>
     </div>
-    <div style="z-30">
+    <div class="z-30">
       <IconButton
         slot="activator"
         icon="info"
