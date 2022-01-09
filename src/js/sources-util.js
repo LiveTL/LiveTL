@@ -56,7 +56,7 @@ const containsSpam = (msgs, amount, time) => {
 };
 
 /** @type {(msgs: Message[]) => { by: (attr: String) => Map<String, Message[]> }} */
-const index = msgs => ({
+export const index = msgs => ({
   by(attr) {
     const msgsByAttr = new Map();
 

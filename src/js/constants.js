@@ -150,6 +150,11 @@ export const YtcDeleteBehaviour = {
   NOTHING: 'NOTHING'
 };
 
+/** @enum {String} */
+export const FeaturePrompt = {
+  SPOTLIGHT: 'SPOTLIGHT'
+};
+
 export const ytcDeleteItems = [
   { value: YtcDeleteBehaviour.HIDE, text: 'Hide message' },
   { value: YtcDeleteBehaviour.PLACEHOLDER, text: 'Show placeholder' },

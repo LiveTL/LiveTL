@@ -213,7 +213,7 @@ module.exports = (env, options) => {
             }
           },
           {
-            from: 'src/img/blfavicon.ico',
+            from: 'src/img',
             to: 'img'
           }
         ]

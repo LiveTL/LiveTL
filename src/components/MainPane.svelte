@@ -27,6 +27,7 @@
   } from '../js/store.js';
   import UpdateComponent from './Updates.svelte';
   import MessageDisplay from './MessageDisplay.svelte';
+  import FeaturePrompt from './FeaturePrompt.svelte';
   import { displayedMessages } from '../js/sources-aggregate.js';
   import dark from 'smelte/src/dark';
   import Button from './common/IconButton.svelte';
@@ -289,6 +290,7 @@
         />
         <span>{settingsOpen ? 'Close settings' : 'Open settings'}</span>
       </Tooltip>
+      <FeaturePrompt />
     {/if}
   </div>
 </div>

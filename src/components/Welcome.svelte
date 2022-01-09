@@ -50,7 +50,7 @@
 </script>
 
 <svelte:head>
-  <link rel="shortcut icon" href="48x48.png" type="image/png" />
+  <link rel="shortcut icon" href="/img/48x48.png" type="image/png" />
 </svelte:head>
 
 <div class="text-lg p-5 bg-dark-700">
