@@ -1,23 +1,20 @@
 <script>
   import ExpandingCard from '../common/ExpandingCard.svelte';
-  import LayoutPresets from './assets/LayoutPresets.png';
 </script>
 
-<ExpandingCard title="One-Year Anniversary!" icon="event_repeat" expanded>
-  December 2nd marks the one-year anniversary of LiveTL 🎉
-  <br />
-  <br />
-  Read the entire story of how LiveTL started, where we've been, and where we are
-  now:
-  <a
-    href="https://www.reddit.com/r/Hololive/comments/r7btmn/oneyear_anniversary_appreciation_post_see_comments/"
-    target="_blank"
-    class="text-blue-400 underline">View Post</a
-  >
+<ExpandingCard title="Verified user filter" icon="verified_user">
+  You can now filter chat messages from verified users (enabled by default)!
 </ExpandingCard>
-<ExpandingCard title="Layout presets" icon="windows">
-  You can now save layout preferences as "presets" in the settings menu! With
-  just a few clicks, you can jump between your favorite UI layout
-  configurations.
-  <img class="pt-2" src={LayoutPresets} alt="LiveTL Layout Presets" />
+<ExpandingCard title="Feature hints" icon="info">
+  When some recommended features are available but not enabled (ex. translator
+  spotlighting), a nice animation will be shown to let you know! Our hope is
+  that this will reveal features built into LiveTL that you may not have known
+  about.
+</ExpandingCard>
+<ExpandingCard title="Chat layout options" icon="chat">
+  You can now flip the placement of the chat and the LiveTL panel! Head over to
+  the settings menu to fiddle with your layout.
+</ExpandingCard>
+<ExpandingCard title="Internal improvements" icon="video_settings">
+  Our internal interactions with YouTube's video player are now more secure.
 </ExpandingCard>
