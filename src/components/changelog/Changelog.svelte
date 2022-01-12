@@ -2,7 +2,7 @@
   import ExpandingCard from '../common/ExpandingCard.svelte';
 </script>
 
-<ExpandingCard title="HyperChat" icon="verified_user">
+<ExpandingCard title="HyperChat improvements" icon="verified_user">
   HyperChat now stores settings in extension storage! This update is a precursor
   to the next major update, which will include a HyperChat-specific settings
   menu. We also improved chat message timing mechanics, so messages should be a
