@@ -73,6 +73,7 @@
     "svelte-loader": "^3.1.2",
     "svelte-preprocess": "^4.6.9",
     "svelte-waypoint": "^0.1.4",
+    "svelte-webext-stores": "^0.0.11",
     "tailwindcss": "^2.2.7",
     "ts-jest": "^26.5.5",
     "ts-loader": "^9.2.5",
