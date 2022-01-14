@@ -68,7 +68,8 @@ module.exports = (env, options) => {
       'hyperchat/hyperchat': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'hyperchat.ts'),
       'yt-workaround': path.join(__dirname, 'src', 'ts', 'yt-workaround.ts'),
       'workaround-injector': path.join(__dirname, 'src', 'ts', 'content_scripts', 'workaround-injector.ts'),
-      polyfill: path.join(__dirname, 'src', 'js', 'polyfills', 'chrome.js')
+      polyfill: path.join(__dirname, 'src', 'js', 'polyfills', 'chrome.js'),
+      'twitch-injector': path.join(__dirname, 'src', 'ts', 'content_scripts', 'twitch-injector.ts')
     },
     output: {
       path: path.join(__dirname, 'build'),
