@@ -23,6 +23,10 @@ function nodeIsElement(node: Node): node is Element {
   return node.nodeType === Node.ELEMENT_NODE;
 }
 
+function elementIsAnchor(element: Element): element is HTMLAnchorElement {
+  return element.tagName === 'A';
+}
+
 function getVodMesssageBody(message: Element): Element | undefined {
   const body = message.querySelector(vodMessageSelector);
   return body?.children[1];
@@ -44,6 +48,12 @@ function parseMessageFragment(fragment: Element): Ytc.ParsedRun | undefined {
     return {
       type: 'text',
       text: fragment.textContent ?? ''
+    };
+  } else if (elementIsAnchor(fragment)) {
+    return {
+      type: 'link',
+      text: fragment.textContent ?? fragment.href,
+      url: fragment.href
     };
   }
 
