@@ -1,3 +1,5 @@
+import { AuthorType } from '../../js/constants';
+
 const liveChatSelector = '.chat-room .chat-scrollable-area__message-container';
 const vodChatSelector = '.video-chat .video-chat__message-list-wrapper ul';
 
@@ -13,6 +15,7 @@ const textFragmentClass = 'text-fragment';
 const emoteSelector = 'img.chat-line__message--emote';
 
 const isVod = window.location.pathname.includes('/videos/');
+let messageCounter = 0;
 
 function currentTime(): string {
   const date = new Date();
@@ -66,20 +69,48 @@ function parseMessageFragment(fragment: Element): Ytc.ParsedRun | undefined {
   };
 }
 
-function processMessages(message: Element): void {
-  const author = message.querySelector(displayNameSelector)?.textContent;
-  const timestamp = isVod ? message.querySelector(vodTimestampSelector)?.textContent : currentTime();
+function parseTypes(message: Element): Ltl.AuthorType {
+  const badges = message.querySelectorAll<HTMLImageElement>(badgesSelector);
+  let types = 0;
+  Array.from(badges).forEach((badge) => {
+    // Doesn't work on other languages outside of English
+    if (badge.alt.toLowerCase() === 'moderator') types |= AuthorType.moderator;
+    else if (badge.alt.toLowerCase() === 'verified') types |= AuthorType.verified;
+    else if (badge.alt.toLowerCase() === 'broadcaster') types |= AuthorType.owner;
+    else if (badge.alt.toLowerCase().includes('subscriber')) types |= AuthorType.member;
+  });
+  return types;
+}
+
+function processMessages(message: Element): Ltl.Message | undefined {
+  const author = message.querySelector(displayNameSelector)?.textContent ?? '';
+  const timestamp = isVod ? message.querySelector(vodTimestampSelector)?.textContent ?? '' : currentTime();
 
   const messageBody = isVod ? getVodMesssageBody(message) : getLiveMessageBody(message);
   if (messageBody == null) return;
   // console.debug({ messageBody });
+
   const messageArray: Ytc.ParsedRun[] = [];
+  let text = '';
   Array.from(messageBody.children).forEach((fragment) => {
     // console.debug({ fragment });
     const result = parseMessageFragment(fragment);
-    if (result != null) messageArray.push(result);
+    if (result == null) return;
+    if (result.type !== 'emoji') text += result.text;
+    messageArray.push(result);
   });
-  console.debug({ author, timestamp, messageArray });
+
+  const result = {
+    author,
+    timestamp,
+    messageArray,
+    authorId: author,
+    messageId: `${messageCounter++}`,
+    text,
+    types: parseTypes(message)
+  };
+  console.debug(result);
+  return result;
 }
 
 function chatMutationCallback(records: MutationRecord[]): void {
@@ -112,4 +143,3 @@ function load(): void {
 }
 
 load();
-export {};
