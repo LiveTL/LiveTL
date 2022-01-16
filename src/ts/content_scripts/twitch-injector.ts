@@ -1,11 +1,12 @@
 import { isVod, parseMessageElement } from '../twitch-parser';
 import { nodeIsElement } from '../utils';
-import { getFrameInfoAsync } from '../../submodules/chat/src/ts/chat-utils';
+import { getFrameInfoAsync, createPopup, isValidFrameInfo } from '../../submodules/chat/src/ts/chat-utils';
 
 const liveChatSelector = '.chat-room .chat-scrollable-area__message-container';
 const vodChatSelector = '.video-chat .video-chat__message-list-wrapper ul';
+const chatShellSelector = '.channel-root__right-column';
 
-let tries = 0;
+let tryLoad = 0;
 const clients: chrome.runtime.Port[] = [];
 
 function registerClient(port: chrome.runtime.Port): void {
@@ -27,11 +28,34 @@ function registerClient(port: chrome.runtime.Port): void {
   clients.push(port);
 }
 
+function injectLtlButton(frameInfo: Chat.FrameInfo): void {
+  if (document.getElementById('ltl-button') != null) return;
+  const chat = document.querySelector(chatShellSelector);
+  if (chat == null) {
+    console.error('Could not find chat shell');
+    return;
+  }
+
+  const button = document.createElement('button');
+  button.id = 'ltl-button';
+  button.innerText = 'Open popup';
+  chat.children[0].appendChild(button);
+
+  const params = new URLSearchParams();
+  params.set('tabid', frameInfo.tabId.toString());
+  params.set('frameid', frameInfo.frameId.toString());
+  params.set('twitchPath', window.location.pathname);
+
+  button.addEventListener('click', () => {
+    createPopup(chrome.runtime.getURL(`popout.html?${params.toString()}`));
+  });
+}
+
 async function load(): Promise<void> {
   const messageContainer = document?.querySelector(isVod ? vodChatSelector : liveChatSelector);
   // console.debug({ messageContainer });
   if (messageContainer == null) {
-    if (tries++ < 5) {
+    if (tryLoad++ < 5) {
       setTimeout(() => async () => await load(), 3000);
     } else {
       console.error('Could not find chat container');
@@ -69,10 +93,7 @@ async function load(): Promise<void> {
   observer.observe(messageContainer, { childList: true });
 
   const frameInfo = await getFrameInfoAsync();
-
-  // TODO: pass frameInfo to popup/embed. Example:
-  // params.set('tabid', frameInfo.tabId.toString());
-  // params.set('frameid', frameInfo.frameId.toString());
+  if (isValidFrameInfo(frameInfo)) injectLtlButton(frameInfo);
 }
 
 load().catch((e) => console.error(e));

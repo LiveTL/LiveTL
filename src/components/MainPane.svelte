@@ -9,7 +9,7 @@
     isAndroid,
     SelectOperation,
     paramsEmbedded,
-    paramsVideoId,
+    paramsYtVideoId,
     ChatSplit
   } from '../js/constants.js';
   import {
@@ -272,7 +272,7 @@
           <Button
             slot="activator"
             icon="open_in_full"
-            on:click={() => openLiveTL(paramsVideoId)}
+            on:click={() => openLiveTL(paramsYtVideoId)}
             color="dark"
             filled
           />

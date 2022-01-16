@@ -17,7 +17,7 @@
     isChatInverted
   } from '../js/store.js';
   import {
-    paramsVideoId,
+    paramsYtVideoId,
     VideoSide,
     ChatSplit,
     paramsContinuation,
@@ -148,7 +148,7 @@
         bind:this={vidElem}
       >
         <Wrapper>
-          <VideoEmbed videoId={paramsVideoId} />
+          <VideoEmbed videoId={paramsYtVideoId} />
         </Wrapper>
       </div>
     {/if}
@@ -172,7 +172,7 @@
         >
           <Wrapper zoom={$chatZoom} style={chatWrapperStyle}>
             <ChatEmbed
-              videoId={paramsVideoId}
+              videoId={paramsYtVideoId}
               continuation={paramsContinuation}
               isReplay={paramsIsVOD}
             />
