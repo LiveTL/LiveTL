@@ -5,3 +5,7 @@ export function isValidRegex(regexStr: string): boolean {
     return false;
   }
 }
+
+export function nodeIsElement(node: Node): node is Element {
+  return node.nodeType === Node.ELEMENT_NODE;
+}
