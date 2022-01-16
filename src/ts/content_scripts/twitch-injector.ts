@@ -26,32 +26,51 @@ function registerClient(port: chrome.runtime.Port): void {
   clients.push(port);
 }
 
-function injectLtlButton(frameInfo: Chat.FrameInfo): void {
+function createButton(text: string, callback: () => void): HTMLButtonElement {
+  const b = document.createElement('button');
+  b.innerText = text;
+  b.style.flexGrow = '1';
+  b.style.textAlign = 'center';
+  b.addEventListener('click', callback);
+  return b;
+}
+
+function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
   const chat = document.querySelector(isVod ? '.video-chat' : '.chat-room');
   if (chat == null) {
     console.error('Could not find chat');
     return;
   }
 
-  const button = document.createElement('button');
-  button.id = 'ltl-button';
-  button.innerText = 'Open popup';
+  const wrapper = document.createElement('div');
+  wrapper.id = 'ltl-wrapper';
+  wrapper.style.display = 'flex';
+  wrapper.style.flexDirection = 'row';
 
   const params = new URLSearchParams();
   params.set('tabid', frameInfo.tabId.toString());
   params.set('frameid', frameInfo.frameId.toString());
   params.set('twitchPath', window.location.pathname);
   params.set('title', document.title);
+  const url = chrome.runtime.getURL(`popout.html?${params.toString()}`);
 
-  button.addEventListener('click', () => {
-    createPopup(chrome.runtime.getURL(`popout.html?${params.toString()}`));
+  const popoutButton = createButton('TL Popout', () => createPopup(url));
+  const embedButton = createButton('Embed TLs', () => {
+    const iframe = document.createElement('iframe');
+    iframe.src = url;
+    iframe.style.width = '100%';
+    iframe.style.height = '70%';
+    wrapper.style.display = 'none';
+    chat.appendChild(iframe);
   });
-  chat.appendChild(button);
-  // console.debug('Injected button', { button });
+
+  wrapper.appendChild(popoutButton);
+  wrapper.appendChild(embedButton);
+  chat.append(wrapper);
 }
 
 function load(): void {
-  if (document.getElementById('ltl-button') != null) return;
+  if (document.getElementById('ltl-wrapper') != null) return;
 
   const messageContainer = document?.querySelector(isVod ? vodChatSelector : liveChatSelector);
   // console.debug({ messageContainer });
@@ -92,7 +111,7 @@ function load(): void {
         console.error('Invalid frame info', frameInfo);
         return;
       }
-      injectLtlButton(frameInfo);
+      injectLtlButtons(frameInfo);
     })
     .catch((e) => console.error(e));
 }
