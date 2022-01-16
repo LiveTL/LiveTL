@@ -4,7 +4,6 @@ import { getFrameInfoAsync, createPopup, isValidFrameInfo } from '../../submodul
 
 const liveChatSelector = '.chat-room .chat-scrollable-area__message-container';
 const vodChatSelector = '.video-chat .video-chat__message-list-wrapper ul';
-const chatShellSelector = '.channel-root__right-column';
 
 let tryLoad = 0;
 const clients: chrome.runtime.Port[] = [];
@@ -30,16 +29,15 @@ function registerClient(port: chrome.runtime.Port): void {
 
 function injectLtlButton(frameInfo: Chat.FrameInfo): void {
   if (document.getElementById('ltl-button') != null) return;
-  const chat = document.querySelector(chatShellSelector);
+  const chat = document.querySelector(isVod ? '.video-chat' : '.chat-room');
   if (chat == null) {
-    console.error('Could not find chat shell');
+    console.error('Could not find chat');
     return;
   }
 
   const button = document.createElement('button');
   button.id = 'ltl-button';
   button.innerText = 'Open popup';
-  chat.children[0].appendChild(button);
 
   const params = new URLSearchParams();
   params.set('tabid', frameInfo.tabId.toString());
@@ -49,14 +47,16 @@ function injectLtlButton(frameInfo: Chat.FrameInfo): void {
   button.addEventListener('click', () => {
     createPopup(chrome.runtime.getURL(`popout.html?${params.toString()}`));
   });
+  chat.appendChild(button);
+  // console.debug('Injected button', { button });
 }
 
-async function load(): Promise<void> {
+function load(): void {
   const messageContainer = document?.querySelector(isVod ? vodChatSelector : liveChatSelector);
   // console.debug({ messageContainer });
   if (messageContainer == null) {
     if (tryLoad++ < 5) {
-      setTimeout(() => async () => await load(), 3000);
+      setTimeout(load, 3000);
     } else {
       console.error('Could not find chat container');
     }
@@ -92,8 +92,15 @@ async function load(): Promise<void> {
 
   observer.observe(messageContainer, { childList: true });
 
-  const frameInfo = await getFrameInfoAsync();
-  if (isValidFrameInfo(frameInfo)) injectLtlButton(frameInfo);
+  getFrameInfoAsync()
+    .then((frameInfo) => {
+      if (!isValidFrameInfo(frameInfo)) {
+        console.error('Invalid frame info', frameInfo);
+        return;
+      }
+      injectLtlButton(frameInfo);
+    })
+    .catch((e) => console.error(e));
 }
 
-load().catch((e) => console.error(e));
+load();
