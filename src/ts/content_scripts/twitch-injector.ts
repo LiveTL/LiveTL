@@ -5,7 +5,6 @@ import { getFrameInfoAsync, createPopup, isValidFrameInfo } from '../../submodul
 const liveChatSelector = '.chat-room .chat-scrollable-area__message-container';
 const vodChatSelector = '.video-chat .video-chat__message-list-wrapper ul';
 
-let tryLoad = 0;
 const clients: chrome.runtime.Port[] = [];
 
 function registerClient(port: chrome.runtime.Port): void {
@@ -28,7 +27,6 @@ function registerClient(port: chrome.runtime.Port): void {
 }
 
 function injectLtlButton(frameInfo: Chat.FrameInfo): void {
-  if (document.getElementById('ltl-button') != null) return;
   const chat = document.querySelector(isVod ? '.video-chat' : '.chat-room');
   if (chat == null) {
     console.error('Could not find chat');
@@ -43,6 +41,7 @@ function injectLtlButton(frameInfo: Chat.FrameInfo): void {
   params.set('tabid', frameInfo.tabId.toString());
   params.set('frameid', frameInfo.frameId.toString());
   params.set('twitchPath', window.location.pathname);
+  params.set('title', document.title);
 
   button.addEventListener('click', () => {
     createPopup(chrome.runtime.getURL(`popout.html?${params.toString()}`));
@@ -52,16 +51,11 @@ function injectLtlButton(frameInfo: Chat.FrameInfo): void {
 }
 
 function load(): void {
+  if (document.getElementById('ltl-button') != null) return;
+
   const messageContainer = document?.querySelector(isVod ? vodChatSelector : liveChatSelector);
   // console.debug({ messageContainer });
-  if (messageContainer == null) {
-    if (tryLoad++ < 5) {
-      setTimeout(load, 3000);
-    } else {
-      console.error('Could not find chat container');
-    }
-    return;
-  }
+  if (messageContainer == null) return;
 
   const observer = new MutationObserver((mutationRecords) => {
     mutationRecords.forEach((record) => {
@@ -103,4 +97,15 @@ function load(): void {
     .catch((e) => console.error(e));
 }
 
-load();
+/**
+ * Recursive setTimeout to keep injecting whenever chat unloads/reloads when
+ * navigating thru the site.
+ */
+function keepLoaded(): void {
+  setTimeout(() => {
+    load();
+    keepLoaded();
+  }, 3000);
+}
+
+keepLoaded();
