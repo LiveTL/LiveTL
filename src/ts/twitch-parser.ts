@@ -11,8 +11,11 @@ const vodTimestampSelector = '.vod-message__header p';
 const textFragmentClass = 'text-fragment';
 const emoteSelector = 'img.chat-line__message--emote';
 
-export const isVod = window.location.pathname.includes('/videos/');
 let messageCounter = 0;
+
+export function isVod(): boolean {
+  return window.location.pathname.includes('/videos/');
+}
 
 function currentTime(): string {
   const date = new Date();
@@ -77,9 +80,9 @@ function parseTypes(message: Element): Ltl.AuthorType {
 
 export function parseMessageElement(message: Element): Ltl.Message | undefined {
   const author = message.querySelector(displayNameSelector)?.textContent ?? '';
-  const timestamp = isVod ? message.querySelector(vodTimestampSelector)?.textContent ?? '' : currentTime();
+  const timestamp = isVod() ? message.querySelector(vodTimestampSelector)?.textContent ?? '' : currentTime();
 
-  const messageBody = isVod ? getVodMesssageBody(message) : getLiveMessageBody(message);
+  const messageBody = isVod() ? getVodMesssageBody(message) : getLiveMessageBody(message);
   if (messageBody == null) return;
   // console.debug({ messageBody });
 

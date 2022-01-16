@@ -36,7 +36,7 @@ function createButton(text: string, callback: () => void): HTMLButtonElement {
 }
 
 function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
-  const chat = document.querySelector(isVod ? '.video-chat' : '.chat-room');
+  const chat = document.querySelector(isVod() ? '.video-chat' : '.stream-chat');
   if (chat == null) {
     console.error('Could not find chat');
     return;
@@ -72,7 +72,7 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
 function load(): void {
   if (document.getElementById('ltl-wrapper') != null) return;
 
-  const messageContainer = document?.querySelector(isVod ? vodChatSelector : liveChatSelector);
+  const messageContainer = document.querySelector(isVod() ? vodChatSelector : liveChatSelector);
   // console.debug({ messageContainer });
   if (messageContainer == null) return;
 
