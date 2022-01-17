@@ -10,7 +10,7 @@ import {
   replaceFirstTranslation
 } from './filter';
 import { showModMessage, showVerifiedMessage, timestamp } from './store';
-import { paramsYtVideoId, AuthorType, paramsPopout, paramsTabId, paramsFrameId, paramsTwitchPath } from './constants';
+import { paramsYtVideoId, AuthorType, paramsPopout, paramsTabId, paramsFrameId, paramsTwitchUrl } from './constants';
 import * as MCHAD from './mchad.js';
 import { twitchSource } from '../ts/sources';
 // import * as API from './api.js';
@@ -22,13 +22,15 @@ import { twitchSource } from '../ts/sources';
  * @typedef {{ chatTranslations: Writable<Message>, mod: Writable<Message>, verified: Writable<Message>, chat: Writable<Message> }} YTCSources
  */
 
+const mchadLink = paramsTwitchUrl ?? paramsYtVideoId;
+
 /** @type {YTCSources & { translations: Writable<Message>, mchad: Readable<Message>, api?: Readable<Message>, ytcBonks: Writable<any[]>, ytcDeletions:Writable<any[]>, thirdParty: Writable<Message> }} */
 export const sources = {
   chatTranslations: writable(null),
   mod: writable(null),
   verified: writable(null),
-  chat: (paramsTwitchPath ?? '') ? twitchSource() : ytcSource(window).ytc,
-  mchad: combineStores(MCHAD.getArchive(paramsYtVideoId), MCHAD.getLiveTranslations(paramsYtVideoId)).store,
+  chat: (paramsTwitchUrl ?? '') ? twitchSource() : ytcSource(window).ytc,
+  mchad: combineStores(MCHAD.getArchive(mchadLink), MCHAD.getLiveTranslations(mchadLink)).store,
   // api: combineStores(API.getArchive(paramsVideoId), API.getLiveTranslations(paramsVideoId)).store,
   thirdParty: createThirdPartyStore(),
   ytcBonks: writable(null),

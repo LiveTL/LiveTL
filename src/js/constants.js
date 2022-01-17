@@ -142,7 +142,7 @@ export const paramsEmbedded = params.get('embedded');
 export const paramsContinuation = params.get('continuation');
 export const paramsIsVOD = params.get('isReplay');
 export const paramsEmbedDomain = params.get('embed_domain');
-export const paramsTwitchPath = params.get('twitchPath');
+export const paramsTwitchUrl = params.get('twitchUrl');
 
 /** @enum {String} */
 export const YtcDeleteBehaviour = {

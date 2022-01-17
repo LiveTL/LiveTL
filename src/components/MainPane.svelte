@@ -11,7 +11,7 @@
     paramsEmbedded,
     paramsYtVideoId,
     ChatSplit,
-    paramsTwitchPath
+    paramsTwitchUrl
   } from '../js/constants.js';
   import {
     faviconURL,
@@ -277,7 +277,7 @@
           />
           <span>Toggle fullscreen</span>
         </Tooltip>
-      {:else if !settingsOpen && paramsEmbedded && $enableFullscreenButton && !paramsTwitchPath}
+      {:else if !settingsOpen && paramsEmbedded && $enableFullscreenButton && !paramsTwitchUrl}
         <Tooltip>
           <Button
             slot="activator"

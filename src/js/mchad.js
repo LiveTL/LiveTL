@@ -21,18 +21,18 @@ const getRoomCreator = videoId => {
 };
 
 /**
- * @param {String} videoId
+ * @param {String} videoLink
  * @returns {{ live: Ty.MCHADLiveRoom[], vod: Ty.MCHADArchiveRoom[] }}
  */
-export async function getRooms(videoId) {
-  const getRooms_ = getRoomCreator(videoId);
+export async function getRooms(videoLink) {
+  const getRooms_ = getRoomCreator(videoLink);
 
   const liveLinks = [
-    `${MCHAD}/Room?link=YT_${videoId}`
+    `${MCHAD}/Room?link=${videoLink}`
   ];
 
   const vodLinks = [
-    `${MCHAD}/Archive?link=YT_${videoId}`
+    `${MCHAD}/Archive?link=${videoLink}`
   ];
 
   const [live, vod] = await Promise.all([liveLinks, vodLinks].map(getRooms_));
@@ -86,9 +86,9 @@ const getScriptAuthor = script => script[0].author;
 /** @type {(arr: Array) => Boolean} */
 const isNotEmpty = arr => arr.length !== 0;
 
-/** @type {(videoId: String) => Readable<Ty.Message>} */
-export const getArchive = videoId => readable(null, async set => {
-  const { vod } = await getRooms(videoId);
+/** @type {(videoLink: String) => Readable<Ty.Message>} */
+export const getArchive = videoLink => readable(null, async set => {
+  const { vod } = await getRooms(videoLink);
   if (vod.length === 0) return () => { };
 
   const addUnix = tl => ({ ...tl, unix: archiveTimeToInt(tl.timestamp) });
@@ -162,18 +162,18 @@ export const getRoomTranslations = room => derived(streamRoom(room.Nick), (data,
   }
 });
 
-/** @type {(videoId: String, retryInterval: Ty.Seconds) => Ty.MCHADLiveRoom[]} */
-const getLiveRoomsWithRetry = async (videoId, retryInterval) => {
+/** @type {(videoLink: String, retryInterval: Ty.Seconds) => Ty.MCHADLiveRoom[]} */
+const getLiveRoomsWithRetry = async (videoLink, retryInterval) => {
   for (;;) {
-    const { live } = await getRooms(videoId);
+    const { live } = await getRooms(videoLink);
     if (live.length) return live;
     await sleep(retryInterval * 1000);
   }
 };
 
-/** @type {(videoId: String) => Readable<Ty.Message>} */
-export const getLiveTranslations = videoId => readable(null, async set => {
-  const rooms = await getLiveRoomsWithRetry(videoId, 30);
+/** @type {(link: String) => Readable<Ty.Message>} */
+export const getLiveTranslations = videoLink => readable(null, async set => {
+  const rooms = await getLiveRoomsWithRetry(videoLink, 30);
   const unsubscribes = rooms.map(room => getRoomTranslations(room).subscribe(msg => {
     if (msg && enableMchadTLs.get() && !mchadUsers.get(msg.author)) {
       set(msg);

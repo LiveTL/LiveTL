@@ -31,7 +31,7 @@ function getCommonParams(frameInfo: Chat.FrameInfo): URLSearchParams {
   const params = new URLSearchParams();
   params.set('tabid', frameInfo.tabId.toString());
   params.set('frameid', frameInfo.frameId.toString());
-  params.set('twitchPath', window.location.pathname);
+  params.set('twitchUrl', window.location.href);
   params.set('title', document.title);
   return params;
 }
