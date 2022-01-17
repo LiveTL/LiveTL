@@ -1,6 +1,7 @@
 import { isVod, parseMessageElement } from '../twitch-parser';
 import { nodeIsElement } from '../utils';
 import { getFrameInfoAsync, createPopup, isValidFrameInfo } from '../../submodules/chat/src/ts/chat-utils';
+import { mdiOpenInNew, mdiIframeArray } from '@mdi/js';
 
 const liveChatSelector = '.chat-room .chat-scrollable-area__message-container';
 const vodChatSelector = '.video-chat .video-chat__message-list-wrapper ul';
@@ -35,12 +36,18 @@ function getCommonParams(frameInfo: Chat.FrameInfo): URLSearchParams {
   return params;
 }
 
-function createButton(text: string, callback: () => void): HTMLButtonElement {
+function createButton(text: string, callback: () => void, icon: string): HTMLButtonElement {
   const b = document.createElement('button');
+  b.className = 'ltl-button';
   b.innerText = text;
-  b.style.flexGrow = '1';
-  b.style.textAlign = 'center';
   b.addEventListener('click', callback);
+  const svg = document.createElement('svg');
+  b.appendChild(svg);
+  svg.outerHTML = `
+    <svg viewBox="0 0 24 24" class="ltl-svg">
+      <path d="${icon}" fill="white"></path>
+    </svg>
+  `;
   return b;
 }
 
@@ -51,14 +58,38 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
     return;
   }
 
+  const css = `
+    #ltl-wrapper {
+      display: flex;
+      flex-direction: row;
+    }
+    .ltl-button {
+      flex-grow: 1;
+      text-align: center;
+      background-color: #0099ffb5;
+      color: white;
+      padding: 5px;
+      transition: background-color 50ms linear;
+    }
+    .ltl-button:hover {
+      background-color: #0099ffa0;
+    }
+    .ltl-svg {
+      height: 15px;
+      vertical-align: middle;
+      margin-left: 5px;
+    }
+  `;
+  const style = document.createElement('style');
+  style.innerText = css;
+  document.body.appendChild(style);
+
   const wrapper = document.createElement('div');
   wrapper.id = 'ltl-wrapper';
-  wrapper.style.display = 'flex';
-  wrapper.style.flexDirection = 'row';
 
   const popoutParams = getCommonParams(frameInfo);
   const popoutUrl = chrome.runtime.getURL(`popout.html?${popoutParams.toString()}`);
-  const popoutButton = createButton('TL Popout', () => createPopup(popoutUrl));
+  const popoutButton = createButton('TL Popout', () => createPopup(popoutUrl), mdiOpenInNew);
 
   const embedParams = getCommonParams(frameInfo);
   embedParams.set('embedded', 'true');
@@ -70,7 +101,7 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
     iframe.style.height = '80%';
     wrapper.style.display = 'none';
     chat.appendChild(iframe);
-  });
+  }, mdiIframeArray);
 
   wrapper.appendChild(popoutButton);
   wrapper.appendChild(embedButton);
