@@ -10,7 +10,8 @@
     SelectOperation,
     paramsEmbedded,
     paramsYtVideoId,
-    ChatSplit
+    ChatSplit,
+    paramsTwitchPath
   } from '../js/constants.js';
   import {
     faviconURL,
@@ -32,6 +33,7 @@
   import dark from 'smelte/src/dark';
   import Button from './common/IconButton.svelte';
   import { openLiveTL } from '../js/utils.js';
+  import { createPopup } from '../submodules/chat/src/ts/chat-utils';
 
   dark().set(true);
 
@@ -170,6 +172,14 @@
     }
   }
 
+  function settingsOnClick() {
+    if (paramsEmbedded) {
+      createPopup(chrome.runtime.getURL('options.html'));
+      return;
+    }
+    settingsOpen = !settingsOpen;
+  }
+
   $: floatingButtonPlacement = $isChatInverted
     ? `margin-${$chatSplit === ChatSplit.HORIZONTAL ? 'bottom' : 'right'}: var(--bar);`
     : '';
@@ -267,7 +277,7 @@
           />
           <span>Toggle fullscreen</span>
         </Tooltip>
-      {:else if !settingsOpen && paramsEmbedded && $enableFullscreenButton}
+      {:else if !settingsOpen && paramsEmbedded && $enableFullscreenButton && !paramsTwitchPath}
         <Tooltip>
           <Button
             slot="activator"
@@ -284,11 +294,11 @@
         <Button
           slot="activator"
           icon={settingsOpen ? 'close' : 'settings'}
-          on:click={() => (settingsOpen = !settingsOpen)}
+          on:click={settingsOnClick}
           color="dark"
           filled
         />
-        <span>{settingsOpen ? 'Close settings' : 'Open settings'}</span>
+        <span>{settingsOpen ? 'Close ' : 'Open '} settings</span>
       </Tooltip>
       <FeaturePrompt />
     {/if}

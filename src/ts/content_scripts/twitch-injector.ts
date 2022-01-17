@@ -26,6 +26,15 @@ function registerClient(port: chrome.runtime.Port): void {
   clients.push(port);
 }
 
+function getCommonParams(frameInfo: Chat.FrameInfo): URLSearchParams {
+  const params = new URLSearchParams();
+  params.set('tabid', frameInfo.tabId.toString());
+  params.set('frameid', frameInfo.frameId.toString());
+  params.set('twitchPath', window.location.pathname);
+  params.set('title', document.title);
+  return params;
+}
+
 function createButton(text: string, callback: () => void): HTMLButtonElement {
   const b = document.createElement('button');
   b.innerText = text;
@@ -47,19 +56,18 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
   wrapper.style.display = 'flex';
   wrapper.style.flexDirection = 'row';
 
-  const params = new URLSearchParams();
-  params.set('tabid', frameInfo.tabId.toString());
-  params.set('frameid', frameInfo.frameId.toString());
-  params.set('twitchPath', window.location.pathname);
-  params.set('title', document.title);
-  const url = chrome.runtime.getURL(`popout.html?${params.toString()}`);
+  const popoutParams = getCommonParams(frameInfo);
+  const popoutUrl = chrome.runtime.getURL(`popout.html?${popoutParams.toString()}`);
+  const popoutButton = createButton('TL Popout', () => createPopup(popoutUrl));
 
-  const popoutButton = createButton('TL Popout', () => createPopup(url));
+  const embedParams = getCommonParams(frameInfo);
+  embedParams.set('embedded', 'true');
+  const embedUrl = chrome.runtime.getURL(`popout.html?${embedParams.toString()}`);
   const embedButton = createButton('Embed TLs', () => {
     const iframe = document.createElement('iframe');
-    iframe.src = url;
+    iframe.src = embedUrl;
     iframe.style.width = '100%';
-    iframe.style.height = '70%';
+    iframe.style.height = '80%';
     wrapper.style.display = 'none';
     chat.appendChild(iframe);
   });
