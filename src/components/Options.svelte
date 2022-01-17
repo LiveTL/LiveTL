@@ -1,10 +1,17 @@
 <script lang="ts">
   import Settings from './Settings.svelte';
   import dark from 'smelte/src/dark';
+  import { paramsStandalone, isTwitch } from '../js/constants.js';
 
   // So options_ui css isn't shit
   dark().set(true);
 </script>
+
+<svelte:head>
+  {#if paramsStandalone}
+    <title>LiveTL{isTwitch ? ' (Twitch)' : ''} Settings</title>
+  {/if}
+</svelte:head>
 
 <div class="bg-dark-700" style='scrollbar-width: thin; scrollbar-color: #888 transparent;'>
   <Settings />

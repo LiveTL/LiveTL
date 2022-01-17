@@ -22,7 +22,7 @@ import { twitchSource } from '../ts/sources';
  * @typedef {{ chatTranslations: Writable<Message>, mod: Writable<Message>, verified: Writable<Message>, chat: Writable<Message> }} YTCSources
  */
 
-const mchadLink = paramsTwitchUrl ?? paramsYtVideoId;
+const mchadLink = paramsTwitchUrl ?? `YT_${paramsYtVideoId}`;
 
 /** @type {YTCSources & { translations: Writable<Message>, mchad: Readable<Message>, api?: Readable<Message>, ytcBonks: Writable<any[]>, ytcDeletions:Writable<any[]>, thirdParty: Writable<Message> }} */
 export const sources = {

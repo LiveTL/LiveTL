@@ -143,6 +143,7 @@ export const paramsContinuation = params.get('continuation');
 export const paramsIsVOD = params.get('isReplay');
 export const paramsEmbedDomain = params.get('embed_domain');
 export const paramsTwitchUrl = params.get('twitchUrl');
+export const paramsStandalone = params.get('standalone');
 
 /** @enum {String} */
 export const YtcDeleteBehaviour = {
@@ -184,3 +185,5 @@ when inactive in the settings menu.
 `;
 
 export const modifierKeys = new Set(['Alt', 'Control', 'Meta', 'Shift']);
+
+export const isTwitch = paramsStandalone === 'twitch' || !!(paramsTwitchUrl ?? '');

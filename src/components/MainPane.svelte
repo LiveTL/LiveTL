@@ -174,7 +174,8 @@
 
   function settingsOnClick() {
     if (paramsEmbedded) {
-      createPopup(chrome.runtime.getURL('options.html'));
+      const params = `?standalone=${paramsTwitchUrl ? 'twitch' : 'true'}`;
+      createPopup(chrome.runtime.getURL(`options.html${params}`));
       return;
     }
     settingsOpen = !settingsOpen;
