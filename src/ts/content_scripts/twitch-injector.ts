@@ -1,7 +1,7 @@
 import { isVod, parseMessageElement } from '../twitch-parser';
 import { nodeIsElement } from '../utils';
 import { getFrameInfoAsync, createPopup, isValidFrameInfo } from '../../submodules/chat/src/ts/chat-utils';
-import { mdiOpenInNew, mdiIframeArray, mdiClose } from '@mdi/js';
+import { mdiOpenInNew, mdiIframeArray, mdiCloseThick } from '@mdi/js';
 
 const liveChatSelector = '.chat-room .chat-scrollable-area__message-container';
 const vodChatSelector = '.video-chat .video-chat__message-list-wrapper ul';
@@ -70,6 +70,7 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
       color: white;
       padding: 5px;
       transition: background-color 50ms linear;
+      font-weight: 600;
     }
     .ltl-button:hover {
       background-color: #0099ffa0;
@@ -103,7 +104,7 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
     chat.appendChild(iframe);
   }, mdiIframeArray);
 
-  const hideButton = createButton('', () => (wrapper.style.display = 'none'), mdiClose);
+  const hideButton = createButton('', () => (wrapper.style.display = 'none'), mdiCloseThick);
   hideButton.style.flexGrow = '0';
 
   wrapper.appendChild(popoutButton);
@@ -127,7 +128,7 @@ function load(): void {
         if (!nodeIsElement(node)) return;
         const message = parseMessageElement(node);
         if (message == null) return;
-        console.debug({ message });
+        // console.debug({ message });
         clients.forEach((client) => client.postMessage({ type: 'message', message }));
       });
     });
