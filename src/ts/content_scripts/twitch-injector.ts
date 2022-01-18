@@ -36,7 +36,7 @@ function getCommonParams(frameInfo: Chat.FrameInfo): URLSearchParams {
   return params;
 }
 
-function createButton(text: string, callback: () => void, icon: string): HTMLButtonElement {
+function createButton(text: string, callback: () => void, icon: string, shift = false): HTMLButtonElement {
   const b = document.createElement('button');
   b.className = 'ltl-button';
   b.innerText = text;
@@ -44,7 +44,7 @@ function createButton(text: string, callback: () => void, icon: string): HTMLBut
   const svg = document.createElement('svg');
   b.appendChild(svg);
   svg.outerHTML = `
-    <svg viewBox="0 0 24 24" class="ltl-svg">
+    <svg viewBox="0 0 24 24" class="ltl-svg ${shift ? 'ltl-shifted-svg' : ''}">
       <path d="${icon}" fill="white"></path>
     </svg>
   `;
@@ -68,7 +68,7 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
       text-align: center;
       background-color: #0099ffb5;
       color: white;
-      padding: 5px;
+      padding: 3px;
       transition: background-color 50ms linear;
       font-weight: 600;
     }
@@ -80,6 +80,9 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
       vertical-align: middle;
       margin: 0px 5px;
     }
+    .ltl-shifted-svg {
+      transform: translateY(-1px);
+    }
   `;
   const style = document.createElement('style');
   style.innerText = css;
@@ -90,7 +93,7 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
 
   const popoutParams = getCommonParams(frameInfo);
   const popoutUrl = chrome.runtime.getURL(`popout.html?${popoutParams.toString()}`);
-  const popoutButton = createButton('TL Popout', () => createPopup(popoutUrl), mdiOpenInNew);
+  const popoutButton = createButton('TL Popout', () => createPopup(popoutUrl), mdiOpenInNew, true);
 
   const embedParams = getCommonParams(frameInfo);
   embedParams.set('embedded', 'true');
@@ -102,7 +105,7 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
     iframe.style.height = '80%';
     wrapper.style.display = 'none';
     chat.appendChild(iframe);
-  }, mdiIframeArray);
+  }, mdiIframeArray, true);
 
   const hideButton = createButton('', () => (wrapper.style.display = 'none'), mdiCloseThick);
   hideButton.style.flexGrow = '0';
