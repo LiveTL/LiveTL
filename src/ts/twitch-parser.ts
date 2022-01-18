@@ -86,12 +86,12 @@ export function parseMessageElement(message: Element): Ltl.Message | undefined {
 
   const messageBody = isVod() ? getVodMesssageBody(message) : getLiveMessageBody(message);
   if (messageBody == null) return;
-  console.debug({ messageBody });
+  // console.debug({ messageBody });
 
   const messageArray: Ytc.ParsedRun[] = [];
   let text = '';
   Array.from(messageBody.children).forEach((fragment) => {
-    console.debug({ fragment });
+    // console.debug({ fragment });
     const result = parseMessageFragment(fragment);
     if (result == null) return;
     if (result.type !== 'emoji') text += result.text;
