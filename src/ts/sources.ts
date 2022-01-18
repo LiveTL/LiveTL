@@ -1,8 +1,6 @@
 import { writable, Writable } from 'svelte/store';
 import { paramsTabId, paramsFrameId } from '../js/constants';
 
-// TODO: mchad
-
 export function twitchSource(): Writable<Ltl.Message | null> {
   if (paramsTabId == null || paramsFrameId == null) return writable(null);
 
