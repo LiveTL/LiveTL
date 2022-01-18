@@ -98,13 +98,51 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
   const embedParams = getCommonParams(frameInfo);
   embedParams.set('embedded', 'true');
   const embedUrl = chrome.runtime.getURL(`popout.html?${embedParams.toString()}`);
+  const createResizableBar = (parent: HTMLDivElement): void => {
+    const resizeBar = document.createElement('div');
+    resizeBar.style.width = '100%';
+    resizeBar.style.height = '6px';
+    resizeBar.style.backgroundColor = 'black';
+    resizeBar.style.borderTop = '2px solid dimgray';
+    resizeBar.style.borderBottom = '2px solid dimgray';
+    resizeBar.style.cursor = 'ns-resize';
+    const chatRoom = document.querySelector('.chat-room') as HTMLElement;
+    chatRoom.style.overflow = 'auto';
+    resizeBar.addEventListener('mousedown', (originalEvent) => {
+      const clientRect = chatRoom.getBoundingClientRect();
+      const refreshParent = (): void => {
+        const { bottom: resizeBarBottom } = resizeBar.getBoundingClientRect();
+        const { bottom: maxBottom } = chat.getBoundingClientRect();
+        parent.style.height = `${maxBottom - resizeBarBottom}px`;
+      };
+      chatRoom.style.maxHeight = `${clientRect.height}px`;
+      refreshParent();
+      parent.style.display = 'none';
+      const moveListener = (event: MouseEvent): void => {
+        chatRoom.style.maxHeight = `${clientRect.height + (event.clientY - originalEvent.clientY)}px`;
+        refreshParent();
+      };
+      window.addEventListener('mousemove', moveListener);
+      window.addEventListener('mouseup', () => {
+        window.removeEventListener('mousemove', moveListener);
+        parent.style.display = 'block';
+      });
+    });
+    chat.appendChild(resizeBar);
+  };
+
   const embedButton = createButton('Embed TLs', () => {
+    const parent = document.createElement('div');
     const iframe = document.createElement('iframe');
     iframe.src = embedUrl;
     iframe.style.width = '100%';
-    iframe.style.height = '80%';
+    iframe.style.height = '100%';
+    parent.style.width = '100%';
+    parent.style.height = '100%';
+    parent.appendChild(iframe);
+    createResizableBar(parent);
+    chat.appendChild(parent);
     wrapper.style.display = 'none';
-    chat.appendChild(iframe);
   }, mdiIframeArray, true);
 
   const hideButton = createButton('', () => (wrapper.style.display = 'none'), mdiCloseThick);
