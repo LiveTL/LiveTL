@@ -8,6 +8,7 @@ const liveMessageProperty = 'chat-line-message-body';
 const vodMessageSelector = '.video-chat__message';
 
 const vodTimestampSelector = '.vod-message__header p';
+const mentionFragmentClass = 'mention-fragment';
 const textFragmentClass = 'text-fragment';
 const emoteSelector = 'img.chat-line__message--emote';
 
@@ -43,7 +44,8 @@ function getLiveMessageBody(message: Element): HTMLElement | undefined {
 }
 
 function parseMessageFragment(fragment: Element): Ytc.ParsedRun | undefined {
-  if (fragment.classList.contains(textFragmentClass)) {
+  const classList = fragment.classList;
+  if (classList.contains(textFragmentClass) || classList.contains(mentionFragmentClass)) {
     return {
       type: 'text',
       text: fragment.textContent ?? ''
@@ -84,12 +86,12 @@ export function parseMessageElement(message: Element): Ltl.Message | undefined {
 
   const messageBody = isVod() ? getVodMesssageBody(message) : getLiveMessageBody(message);
   if (messageBody == null) return;
-  // console.debug({ messageBody });
+  console.debug({ messageBody });
 
   const messageArray: Ytc.ParsedRun[] = [];
   let text = '';
   Array.from(messageBody.children).forEach((fragment) => {
-    // console.debug({ fragment });
+    console.debug({ fragment });
     const result = parseMessageFragment(fragment);
     if (result == null) return;
     if (result.type !== 'emoji') text += result.text;
