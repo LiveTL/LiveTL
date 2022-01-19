@@ -101,11 +101,21 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
   const createResizableBar = (parent: HTMLDivElement): void => {
     const resizeBar = document.createElement('div');
     resizeBar.style.width = '100%';
-    resizeBar.style.height = '6px';
-    resizeBar.style.backgroundColor = 'black';
-    resizeBar.style.borderTop = '2px solid dimgray';
-    resizeBar.style.borderBottom = '2px solid dimgray';
+    resizeBar.style.height = '10px';
+    resizeBar.style.backgroundColor = '#4d4d4d';
     resizeBar.style.cursor = 'ns-resize';
+    resizeBar.style.userSelect = 'none';
+    resizeBar.style.color = 'white';
+    resizeBar.style.overflow = 'visible';
+    resizeBar.style.justifyContent = 'center';
+    resizeBar.style.alignItems = 'center';
+    resizeBar.style.width = '100%';
+    resizeBar.style.fontSize = '25px';
+    resizeBar.style.display = 'flex';
+    const dots = document.createElement('span');
+    dots.innerText = '⋯';
+    dots.style.transform = 'translate(-2px, -2px)';
+    resizeBar.appendChild(dots);
     const chatRoom = document.querySelector('.chat-room') as HTMLElement;
     chatRoom.style.overflow = 'auto';
     resizeBar.addEventListener('mousedown', (originalEvent) => {
