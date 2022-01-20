@@ -126,6 +126,7 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
     };
     setChatRoomHeight(`${get(chatSize)}%`);
     const refreshHeights = (originalEvent: MouseEvent | undefined = undefined): void => {
+      if (originalEvent && originalEvent.buttons !== 1) return;
       const clientRect = chatRoom.getBoundingClientRect();
       const refreshParent = (): void => {
         const { bottom: resizeBarBottom } = resizeBar.getBoundingClientRect();
