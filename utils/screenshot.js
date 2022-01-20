@@ -92,17 +92,21 @@ async function exportImage(name, page, url, func, scale, additionalMethod = () =
 
     const pages = {
       options: [`chrome-extension://${extensionID}/options.html`, async () => {
+        await window.sleep(1000);
         document.querySelectorAll('li')[0].click();
       }, [3, 2]],
       filters: [`chrome-extension://${extensionID}/options.html`, async () => {
+        await window.sleep(1000);
         document.querySelectorAll('li')[1].click();
         Array.from(document.querySelectorAll('i')).find(e => e.textContent === 'add').click();
         await window.sleep(1000);
         Array.from(document.querySelectorAll('input')).reverse()[0].value = '[Deutsch]';
       }, [3, 2]],
       demo: [`chrome-extension://${extensionID}/${watchPageURL}`, () => {
+        await window.sleep(1000);
         Array.from(document.querySelectorAll('button')).find(e => e.textContent.trim() === 'Let\'s Go!').click();
       }, [1, 1], async (page) => {
+        await window.sleep(1000);
         const context = (await page.frames())[0];
         context.evaluate(() => {
           const maxTime = 4630.879359;
