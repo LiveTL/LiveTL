@@ -118,8 +118,7 @@ async function exportImage(name, page, url, func, scale, additionalMethod = () =
             const interval = setInterval(async () => {
               if (i > segments) {
                 clearInterval(interval);
-                await window.sleep(1000);
-                resolve();
+                setTimeout(resolve, 1000);
                 return;
               }
               const player = document.querySelector('video');
