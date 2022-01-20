@@ -8,7 +8,7 @@ const xvfb = new (require('xvfb'))({
 });
 xvfb.start((err) => { if (err) console.error(err); });
 
-async function exportImage(name, page, url, func, scale) {
+async function exportImage(name, page, url, func, scale, additionalMethod = () => {}) {
   await page.emulateMediaFeatures([{
     name: 'prefers-color-scheme', value: 'dark'
   }]);
@@ -28,6 +28,7 @@ async function exportImage(name, page, url, func, scale) {
   });
   await page.evaluate(() => (window.sleep = ms => new Promise(resolve => setTimeout(resolve, ms))));
   await page.evaluate(func);
+  await additionalMethod(page);
   return page.screenshot({ path: `img/${name}.png` });
 }
 
