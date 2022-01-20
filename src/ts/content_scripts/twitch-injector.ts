@@ -114,7 +114,7 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
     resizeBar.style.display = 'flex';
     const dots = document.createElement('span');
     dots.innerText = '⋯';
-    dots.style.transform = 'translate(-2px, -2px)';
+    dots.style.transform = 'translate(-2px, -1.5px)';
     resizeBar.appendChild(dots);
     const chatRoom = document.querySelector('.chat-room') as HTMLElement;
     chatRoom.style.overflow = 'auto';
@@ -136,6 +136,14 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
       window.addEventListener('mouseup', () => {
         window.removeEventListener('mousemove', moveListener);
         parent.style.display = 'block';
+        // convert heights of parent and chatRoom to percentage of chat height
+        setTimeout(() => {
+          const chatHeight = chat.getBoundingClientRect().height;
+          const chatRoomHeight = chatRoom.getBoundingClientRect().height;
+          const parentHeight = parent.getBoundingClientRect().height;
+          parent.style.height = `${100 * parentHeight / chatHeight}%`;
+          chatRoom.style.maxHeight = `${100 * chatRoomHeight / chatHeight}%`;
+        }, 0);
       });
     });
     chat.appendChild(resizeBar);
