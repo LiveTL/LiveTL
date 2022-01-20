@@ -170,7 +170,7 @@
           class="relative {$isChatInverted ? 'flex-1' : 'resizable'}"
           bind:this={chatElem}
         >
-          <Wrapper zoom={$chatZoom} style={chatWrapperStyle}>
+          <Wrapper zoom={$chatZoom} style={$isChatInverted ? '' : chatWrapperStyle}>
             <ChatEmbed
               videoId={paramsYtVideoId}
               continuation={paramsContinuation}

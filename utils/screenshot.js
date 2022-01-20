@@ -8,7 +8,7 @@ const xvfb = new (require('xvfb'))({
 });
 xvfb.start((err) => { if (err) console.error(err); });
 
-async function exportImage(name, page, url, func, scale = [1, 1]) {
+async function exportImage(name, page, url, func, scale) {
   await page.emulateMediaFeatures([{
     name: 'prefers-color-scheme', value: 'dark'
   }]);
@@ -100,23 +100,28 @@ async function exportImage(name, page, url, func, scale = [1, 1]) {
         Array.from(document.querySelectorAll('input')).reverse()[0].value = '[Deutsch]';
       }, [3, 2]],
       demo: [`chrome-extension://${extensionID}/${watchPageURL}`, () => {
-        const maxTime = 4630.879359;
-        const segments = 25;
-        const intervalLength = 2500;
         Array.from(document.querySelectorAll('button')).find(e => e.textContent.trim() === 'Let\'s Go!').click();
-        let i = 0;
-        return new Promise((resolve) => {
-          const interval = setInterval(async () => {
-            if (i > segments) {
-              clearInterval(interval);
-              await window.sleep(1000);
-              resolve();
-              return;
-            }
-            window.player.seekTo((i / segments) * maxTime);
-            window.player.playVideo();
-            i++;
-          }, intervalLength);
+      }, [1, 1], async (page) => {
+        const context = (await page.frames())[0];
+        context.evaluate(() => {
+          const maxTime = 4630.879359;
+          const segments = 25;
+          const intervalLength = 2500;
+          let i = 0;
+          return new Promise((resolve) => {
+            const interval = setInterval(async () => {
+              if (i > segments) {
+                clearInterval(interval);
+                await window.sleep(1000);
+                resolve();
+                return;
+              }
+              const player = document.querySelector('video');
+              player.currentTime = (i / segments) * maxTime;
+              player.play();
+              i++;
+            }, intervalLength);
+          });
         });
       }],
       buttons: ['https://www.youtube.com/live_chat_replay?continuation=' +
