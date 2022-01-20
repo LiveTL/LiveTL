@@ -125,6 +125,11 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
       chatRoom.style.minHeight = height;
     };
     setChatRoomHeight(`${get(chatSize)}%`);
+    const header = chat.querySelector(isVod() ? '.video-chat__header' : '.stream-chat-header');
+    if (header == null) {
+      console.error('Could not find header while resizing chat');
+      return;
+    }
     const refreshHeights = (originalEvent: MouseEvent | undefined = undefined): void => {
       if (originalEvent && originalEvent.buttons !== 1) return;
       const clientRect = chatRoom.getBoundingClientRect();
@@ -146,11 +151,6 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
         setChatRoomHeight(`${percent}%`);
         chatSize.set(percent);
       };
-      const header = chat.querySelector(isVod() ? '.video-chat__header' : '.stream-chat-header');
-      if (header == null) {
-        console.error('Could not find header while resizing chat');
-        return;
-      }
       const maxChatRoomHeight = chat.clientHeight - header.clientHeight - resizeBar.clientHeight;
       if (originalEvent) {
         const moveListener = (event: MouseEvent): void => {
