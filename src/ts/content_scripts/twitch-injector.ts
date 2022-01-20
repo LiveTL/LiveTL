@@ -121,7 +121,7 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
     const chatRoom = document.querySelector('.chat-room') as HTMLElement;
     chatRoom.style.overflow = 'auto';
     chatRoom.style.maxHeight = `${get(chatSize)}%`;
-    resizeBar.addEventListener('mousedown', (originalEvent) => {
+    const refreshHeights = (originalEvent: MouseEvent | undefined = undefined): void => {
       const clientRect = chatRoom.getBoundingClientRect();
       const refreshParent = (): void => {
         const { bottom: resizeBarBottom } = resizeBar.getBoundingClientRect();
@@ -131,13 +131,7 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
       chatRoom.style.maxHeight = `${clientRect.height}px`;
       refreshParent();
       parent.style.display = 'none';
-      const moveListener = (event: MouseEvent): void => {
-        chatRoom.style.maxHeight = `${clientRect.height + (event.clientY - originalEvent.clientY)}px`;
-        refreshParent();
-      };
-      window.addEventListener('mousemove', moveListener);
-      window.addEventListener('mouseup', () => {
-        window.removeEventListener('mousemove', moveListener);
+      const updateStyles = (): void => {
         parent.style.display = 'block';
         const chatHeight = chat.getBoundingClientRect().height;
         const chatRoomHeight = chatRoom.getBoundingClientRect().height;
@@ -146,8 +140,23 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
         const percent = 100 * chatRoomHeight / chatHeight;
         chatRoom.style.maxHeight = `${percent}%`;
         chatSize.set(percent);
-      });
-    });
+      };
+      if (originalEvent) {
+        const moveListener = (event: MouseEvent): void => {
+          chatRoom.style.maxHeight = `${clientRect.height + (event.clientY - originalEvent.clientY)}px`;
+          refreshParent();
+        };
+        window.addEventListener('mousemove', moveListener);
+        window.addEventListener('mouseup', () => {
+          window.removeEventListener('mousemove', moveListener);
+          updateStyles();
+        });
+      } else {
+        updateStyles();
+      }
+    };
+    resizeBar.addEventListener('mousedown', refreshHeights);
+    window.addEventListener('resize', () => refreshHeights());
     chat.appendChild(resizeBar);
   };
 
