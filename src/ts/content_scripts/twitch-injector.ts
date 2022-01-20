@@ -67,12 +67,14 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
     }
     .ltl-button {
       flex-grow: 1;
-      text-align: center;
       background-color: #0099ffb5;
       color: white;
       padding: 3px;
       transition: background-color 50ms linear;
       font-weight: 600;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .ltl-button:hover {
       background-color: #0099ffa0;
@@ -83,7 +85,7 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
       margin: 0px 5px;
     }
     .ltl-shifted-svg {
-      transform: translateY(-1px);
+      /* transform: translateY(-1px); */
     }
   `;
   const style = document.createElement('style');
@@ -116,7 +118,7 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
     resizeBar.style.display = 'flex';
     const dots = document.createElement('span');
     dots.innerText = '⋯';
-    dots.style.transform = 'translate(-2px, -1.5px)';
+    dots.style.transform = 'translateY(-2px)';
     resizeBar.appendChild(dots);
     const chatRoom = ltlWrapper.previousElementSibling as HTMLElement;
     chatRoom.style.overflow = 'hidden auto';
