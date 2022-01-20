@@ -146,9 +146,16 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
         setChatRoomHeight(`${percent}%`);
         chatSize.set(percent);
       };
+      const header = chat.querySelector(isVod() ? '.video-chat__header' : '.stream-chat-header');
+      if (header == null) {
+        console.error('Could not find header while resizing chat');
+        return;
+      }
+      const maxChatRoomHeight = chat.clientHeight - header.clientHeight - resizeBar.clientHeight;
       if (originalEvent) {
         const moveListener = (event: MouseEvent): void => {
-          setChatRoomHeight(`${clientRect.height + (event.clientY - originalEvent.clientY)}px`);
+          const chatRoomHeight = Math.min(clientRect.height + (event.clientY - originalEvent.clientY), maxChatRoomHeight);
+          setChatRoomHeight(`${chatRoomHeight}px`);
           refreshParent();
         };
         window.addEventListener('mousemove', moveListener);
