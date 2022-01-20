@@ -2,6 +2,8 @@ import { isVod, parseMessageElement } from '../twitch-parser';
 import { nodeIsElement } from '../utils';
 import { getFrameInfoAsync, createPopup, isValidFrameInfo } from '../../submodules/chat/src/ts/chat-utils';
 import { mdiOpenInNew, mdiIframeArray, mdiCloseThick } from '@mdi/js';
+import { chatSize } from '../../js/store';
+import { get } from 'svelte/store';
 
 const liveChatSelector = '.chat-room .chat-scrollable-area__message-container';
 const vodChatSelector = '.video-chat .video-chat__message-list-wrapper ul';
@@ -118,6 +120,7 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
     resizeBar.appendChild(dots);
     const chatRoom = document.querySelector('.chat-room') as HTMLElement;
     chatRoom.style.overflow = 'auto';
+    chatRoom.style.maxHeight = `${get(chatSize)}%`;
     resizeBar.addEventListener('mousedown', (originalEvent) => {
       const clientRect = chatRoom.getBoundingClientRect();
       const refreshParent = (): void => {
@@ -136,14 +139,13 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
       window.addEventListener('mouseup', () => {
         window.removeEventListener('mousemove', moveListener);
         parent.style.display = 'block';
-        // convert heights of parent and chatRoom to percentage of chat height
-        setTimeout(() => {
-          const chatHeight = chat.getBoundingClientRect().height;
-          const chatRoomHeight = chatRoom.getBoundingClientRect().height;
-          const parentHeight = parent.getBoundingClientRect().height;
-          parent.style.height = `${100 * parentHeight / chatHeight}%`;
-          chatRoom.style.maxHeight = `${100 * chatRoomHeight / chatHeight}%`;
-        }, 0);
+        const chatHeight = chat.getBoundingClientRect().height;
+        const chatRoomHeight = chatRoom.getBoundingClientRect().height;
+        const parentHeight = parent.getBoundingClientRect().height;
+        parent.style.height = `${100 * parentHeight / chatHeight}%`;
+        const percent = 100 * chatRoomHeight / chatHeight;
+        chatRoom.style.maxHeight = `${percent}%`;
+        chatSize.set(percent);
       });
     });
     chat.appendChild(resizeBar);
