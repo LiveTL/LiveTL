@@ -98,6 +98,7 @@ async function exportImage(name, page, url, func, scale, additionalMethod = () =
       filters: [`chrome-extension://${extensionID}/options.html`, async () => {
         await window.sleep(1000);
         document.querySelectorAll('li')[1].click();
+        await window.sleep(1000);
         Array.from(document.querySelectorAll('i')).find(e => e.textContent === 'add').click();
         await window.sleep(1000);
         Array.from(document.querySelectorAll('input')).reverse()[0].value = '[Deutsch]';
