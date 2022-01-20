@@ -90,8 +90,8 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
   style.innerText = css;
   document.body.appendChild(style);
 
-  const wrapper = document.createElement('div');
-  wrapper.id = 'ltl-wrapper';
+  const ltlWrapper = document.createElement('div');
+  ltlWrapper.id = 'ltl-wrapper';
 
   const popoutParams = getCommonParams(frameInfo);
   const popoutUrl = chrome.runtime.getURL(`popout.html?${popoutParams.toString()}`);
@@ -118,7 +118,7 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
     dots.innerText = '⋯';
     dots.style.transform = 'translate(-2px, -1.5px)';
     resizeBar.appendChild(dots);
-    const chatRoom = document.querySelector('.chat-room') as HTMLElement;
+    const chatRoom = ltlWrapper.previousElementSibling as HTMLElement;
     chatRoom.style.overflow = 'auto';
     const setChatRoomHeight = (height: string): void => {
       chatRoom.style.maxHeight = height;
@@ -176,16 +176,16 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
     parent.appendChild(iframe);
     createResizableBar(parent);
     chat.appendChild(parent);
-    wrapper.style.display = 'none';
+    ltlWrapper.style.display = 'none';
   }, mdiIframeArray, true);
 
-  const hideButton = createButton('', () => (wrapper.style.display = 'none'), mdiCloseThick);
+  const hideButton = createButton('', () => (ltlWrapper.style.display = 'none'), mdiCloseThick);
   hideButton.style.flexGrow = '0';
 
-  wrapper.appendChild(popoutButton);
-  wrapper.appendChild(embedButton);
-  wrapper.appendChild(hideButton);
-  chat.append(wrapper);
+  ltlWrapper.appendChild(popoutButton);
+  ltlWrapper.appendChild(embedButton);
+  ltlWrapper.appendChild(hideButton);
+  chat.append(ltlWrapper);
 }
 
 function load(): void {
