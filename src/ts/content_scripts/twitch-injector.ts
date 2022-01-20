@@ -120,7 +120,11 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
     resizeBar.appendChild(dots);
     const chatRoom = document.querySelector('.chat-room') as HTMLElement;
     chatRoom.style.overflow = 'auto';
-    chatRoom.style.maxHeight = `${get(chatSize)}%`;
+    const setChatRoomHeight = (height: string): void => {
+      chatRoom.style.maxHeight = height;
+      chatRoom.style.minHeight = height;
+    };
+    setChatRoomHeight(`${get(chatSize)}%`);
     const refreshHeights = (originalEvent: MouseEvent | undefined = undefined): void => {
       const clientRect = chatRoom.getBoundingClientRect();
       const refreshParent = (): void => {
@@ -128,7 +132,7 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
         const { bottom: maxBottom } = chat.getBoundingClientRect();
         parent.style.height = `${maxBottom - resizeBarBottom}px`;
       };
-      chatRoom.style.maxHeight = `${clientRect.height}px`;
+      setChatRoomHeight(`${clientRect.height}px`);
       refreshParent();
       parent.style.display = 'none';
       const updateStyles = (): void => {
@@ -138,12 +142,12 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
         const parentHeight = parent.getBoundingClientRect().height;
         parent.style.height = `${100 * parentHeight / chatHeight}%`;
         const percent = 100 * chatRoomHeight / chatHeight;
-        chatRoom.style.maxHeight = `${percent}%`;
+        setChatRoomHeight(`${percent}%`);
         chatSize.set(percent);
       };
       if (originalEvent) {
         const moveListener = (event: MouseEvent): void => {
-          chatRoom.style.maxHeight = `${clientRect.height + (event.clientY - originalEvent.clientY)}px`;
+          setChatRoomHeight(`${clientRect.height + (event.clientY - originalEvent.clientY)}px`);
           refreshParent();
         };
         window.addEventListener('mousemove', moveListener);
