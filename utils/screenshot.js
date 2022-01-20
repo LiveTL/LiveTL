@@ -91,21 +91,19 @@ async function exportImage(name, page, url, func, scale = [1, 1]) {
 
     const pages = {
       options: [`chrome-extension://${extensionID}/options.html`, async () => {
-        document.querySelectorAll('.s-tab')[0].click();
-        await window.sleep(1000);
+        document.querySelectorAll('li')[0].click();
       }, [3, 2]],
       filters: [`chrome-extension://${extensionID}/options.html`, async () => {
-        document.querySelectorAll('.s-tab')[1].click();
-        document.querySelector('.filter-options button').click();
+        document.querySelectorAll('li')[1].click();
+        Array.from(document.querySelectorAll('i')).find(e => e.textContent === 'add').click();
         await window.sleep(1000);
-        document.querySelectorAll('.filter-options .s-col')[5]
-          .querySelectorAll('input[type=text]')[0].value = '[Deutsch]';
+        Array.from(document.querySelectorAll('input')).reverse()[0].value = '[Deutsch]';
       }, [3, 2]],
       demo: [`chrome-extension://${extensionID}/${watchPageURL}`, () => {
         const maxTime = 4630.879359;
         const segments = 25;
         const intervalLength = 2500;
-        document.querySelectorAll('.s-dialog .s-btn')[1].click();
+        Array.from(document.querySelectorAll('button')).find(e => e.textContent.trim() === 'Let\'s Go!').click();
         let i = 0;
         return new Promise((resolve) => {
           const interval = setInterval(async () => {
