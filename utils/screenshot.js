@@ -102,7 +102,7 @@ async function exportImage(name, page, url, func, scale, additionalMethod = () =
         await window.sleep(1000);
         Array.from(document.querySelectorAll('input')).reverse()[0].value = '[Deutsch]';
       }, [3, 2]],
-      demo: [`chrome-extension://${extensionID}/${watchPageURL}`, () => {
+      demo: [`chrome-extension://${extensionID}/${watchPageURL}`, async () => {
         await window.sleep(1000);
         Array.from(document.querySelectorAll('button')).find(e => e.textContent.trim() === 'Let\'s Go!').click();
       }, [1, 1], async (page) => {
