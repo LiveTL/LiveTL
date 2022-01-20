@@ -118,7 +118,7 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
     resizeBar.style.display = 'flex';
     const dots = document.createElement('span');
     dots.innerText = '⋯';
-    dots.style.transform = 'translateY(-2px)';
+    dots.style.transform = 'translateY(-2.5%)';
     resizeBar.appendChild(dots);
     const chatRoom = ltlWrapper.previousElementSibling as HTMLElement;
     chatRoom.style.overflow = 'hidden auto';
