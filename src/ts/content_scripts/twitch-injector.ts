@@ -235,15 +235,17 @@ function load(): void {
     .catch((e) => console.error(e));
 }
 
+let first = true;
 /**
  * Recursive setTimeout to keep injecting whenever chat unloads/reloads when
  * navigating thru the site.
  */
 function keepLoaded(): void {
   setTimeout(() => {
+    first = false;
     load();
     keepLoaded();
-  }, 3000);
+  }, first ? 0 : 3000);
 }
 
 keepLoaded();
