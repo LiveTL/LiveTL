@@ -66,9 +66,9 @@ def test_injection(web):
     # LiveTL Buttons
     @retry
     def _():
-        open_button, popout_button, embed_button = web.find_elements_by_css_selector("#ltl-wrapper > button")
+        open_button, popout_button, embed_button, hide_button = web.find_elements_by_css_selector("#ltl-wrapper > button")
 
-    open_button, popout_button, embed_button = web.find_elements_by_css_selector("#ltl-wrapper > button")
+    open_button, popout_button, embed_button, hide_button = web.find_elements_by_css_selector("#ltl-wrapper > button")
     assert open_button.text.strip() == "Open LiveTL"
     assert popout_button.text.strip() == "TL Popout"
     assert embed_button.text.strip() == "Embed TLs"
