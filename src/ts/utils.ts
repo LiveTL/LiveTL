@@ -72,6 +72,7 @@ export function injectLtlLauncher(
       display: flex;
       justify-content: center;
       align-items: center;
+      cursor: pointer;
       ${(buttonCss.fontSize != null) ? `font-size: ${buttonCss.fontSize};` : ''}
       ${(buttonCss.fontFamily != null) ? `font-family: ${buttonCss.fontFamily};` : ''}
       ${(buttonCss.borderWidth != null) ? `border-width: ${buttonCss.borderWidth};` : ''}

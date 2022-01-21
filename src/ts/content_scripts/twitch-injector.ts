@@ -158,7 +158,7 @@ function load(): void {
       }
       injectLtlButtons(frameInfo);
     })
-    .catch((e) => console.error(e));
+    .catch(console.error);
 }
 
 let first = true;

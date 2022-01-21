@@ -1,5 +1,5 @@
 import { mdiOpenInNew, mdiYoutubeTv, mdiIframeArray } from '@mdi/js';
-import { getFrameInfoAsync, createPopup } from '../../submodules/chat/src/ts/chat-utils';
+import { getFrameInfoAsync, createPopup, isValidFrameInfo } from '../../submodules/chat/src/ts/chat-utils';
 import { paramsEmbedDomain, AutoLaunchMode } from '../../js/constants.js';
 import { autoLaunchMode } from '../../js/store.js';
 import { constructParams, openLiveTL } from '../../js/utils.js';
@@ -27,6 +27,10 @@ async function loaded(): Promise<void> {
   body.style.position = 'fixed';
 
   const frameInfo = await getFrameInfoAsync();
+  if (!isValidFrameInfo(frameInfo)) {
+    console.error('Invalid frame info', frameInfo);
+    return;
+  }
   window.parent.postMessage({ type: 'frameInfo', frameInfo: frameInfo }, '*');
 
   if (paramsEmbedDomain === chrome.runtime.id) {
@@ -42,7 +46,7 @@ async function loaded(): Promise<void> {
     try {
       popoutParams.set(
         'title',
-        window.parent.document.querySelector('#container > .title').textContent
+        window.parent.document.querySelector('#container > .title')?.textContent ?? ''
       );
     } catch (e) {
       if (e instanceof DOMException) {
@@ -52,7 +56,7 @@ async function loaded(): Promise<void> {
       }
     }
     createPopup(
-      chrome.runtime.getURL(`popout.html?${popoutParams}`)
+      chrome.runtime.getURL(`popout.html?${popoutParams.toString()}`)
     );
   };
   const embedTLs = (): void => {
@@ -65,10 +69,10 @@ async function loaded(): Promise<void> {
     iframe.style.width = '100%';
     iframe.style.height = '100%';
     iframe.style.position = 'fixed';
-    iframe.src = chrome.runtime.getURL(`watch.html?${embeddedParams}`);
+    iframe.src = chrome.runtime.getURL(`watch.html?${embeddedParams.toString()}`);
     document.body.appendChild(iframe);
     window.addEventListener('message', d => {
-      iframe.contentWindow.postMessage(d.data, '*');
+      iframe.contentWindow?.postMessage(d.data, '*');
     });
   };
 
@@ -90,10 +94,14 @@ async function loaded(): Promise<void> {
         break;
       }
     }
-  });
+  }).catch(console.error);
 
   /** Start buttons injections */
   const renderer = document.querySelector<HTMLElement>('yt-live-chat-renderer');
+  if (!renderer) {
+    console.error('Could not find yt-live-chat-renderer');
+    return;
+  }
   injectLtlLauncher(renderer, [
     ltlButtonParams('Open LiveTL', openLiveTL, mdiYoutubeTv),
     ltlButtonParams('TL Popout', tlPopout, mdiOpenInNew),
@@ -110,7 +118,7 @@ window.addEventListener('message', (packet) => {
  * Does not matter unless run_at is specified in manifest.
  */
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', loaded);
+  document.addEventListener('DOMContentLoaded', () => async () => await loaded());
 } else {
-  loaded();
+  loaded().catch(console.error);
 }
