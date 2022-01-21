@@ -112,6 +112,7 @@ export const showHelpPrompt = SS('showHelpPrompt', true);
 export const neverShowSpotlightPrompt = SS('neverShowSpotlightPrompt', false);
 export const showVerifiedMessage = SS('showVerifiedMessage', false);
 export const isChatInverted = SS('isChatInverted', false);
+export const twitchEnabled = SS('twitchEnabled', true);
 
 // All the variables persisted in presets
 export const presetStores = [

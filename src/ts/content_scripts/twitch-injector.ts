@@ -1,8 +1,8 @@
 import { isVod, parseMessageElement } from '../twitch-parser';
 import { nodeIsElement, injectLtlLauncher, ltlButtonParams } from '../utils';
 import { getFrameInfoAsync, createPopup, isValidFrameInfo } from '../../submodules/chat/src/ts/chat-utils';
-import { mdiOpenInNew, mdiIframeArray } from '@mdi/js';
-import { chatSize } from '../../js/store';
+import { mdiOpenInNew, mdiIframeArray, mdiCloseThick } from '@mdi/js';
+import { chatSize, twitchEnabled } from '../../js/store';
 import { get } from 'svelte/store';
 
 const liveChatSelector = '.chat-room .chat-scrollable-area__message-container';
@@ -174,4 +174,6 @@ function keepLoaded(): void {
   }, first ? 0 : 3000);
 }
 
-keepLoaded();
+twitchEnabled.loaded.then(() => {
+  if (get(twitchEnabled)) keepLoaded();
+}).catch(console.error);
