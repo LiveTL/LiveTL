@@ -1,8 +1,8 @@
 import { mdiOpenInNew, mdiYoutubeTv, mdiIframeArray } from '@mdi/js';
-import { getFrameInfoAsync, createPopup } from '../../submodules/chat/src/ts/chat-utils.ts';
-import { paramsEmbedDomain, AutoLaunchMode } from '../constants.js';
-import { autoLaunchMode } from '../store.js';
-import { constructParams, openLiveTL } from '../utils.js';
+import { getFrameInfoAsync, createPopup } from '../../submodules/chat/src/ts/chat-utils';
+import { paramsEmbedDomain, AutoLaunchMode } from '../../js/constants.js';
+import { autoLaunchMode } from '../../js/store.js';
+import { constructParams, openLiveTL } from '../../js/utils.js';
 
 for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) {
   window.addEventListener(eventName, e => e.stopImmediatePropagation(), true);
