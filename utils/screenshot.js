@@ -113,17 +113,21 @@ async function exportImage(name, page, url, func, scale, additionalMethod = () =
           const segments = 25;
           const intervalLength = 2500;
           let i = 0;
-          return new Promise((resolve) => {
+          return new Promise((resolve, reject) => {
             const interval = setInterval(async () => {
-              if (i > segments) {
-                clearInterval(interval);
-                setTimeout(resolve, 1000);
-                return;
+              try {
+                if (i > segments) {
+                  clearInterval(interval);
+                  setTimeout(resolve, 1000);
+                  return;
+                }
+                const player = document.querySelector('video');
+                player.currentTime = (i / segments) * maxTime;
+                player.play();
+                i++;
+              } catch (e) {
+                reject(e);
               }
-              const player = document.querySelector('video');
-              player.currentTime = (i / segments) * maxTime;
-              player.play();
-              i++;
             }, intervalLength);
           });
         });
