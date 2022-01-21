@@ -1,7 +1,7 @@
 import { isVod, parseMessageElement } from '../twitch-parser';
 import { nodeIsElement, injectLtlLauncher, ltlButtonParams } from '../utils';
 import { getFrameInfoAsync, createPopup, isValidFrameInfo } from '../../submodules/chat/src/ts/chat-utils';
-import { mdiOpenInNew, mdiIframeArray, mdiCloseThick } from '@mdi/js';
+import { mdiOpenInNew, mdiIframeArray } from '@mdi/js';
 import { chatSize, twitchEnabled } from '../../js/store';
 import { get } from 'svelte/store';
 
