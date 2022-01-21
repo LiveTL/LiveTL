@@ -8,27 +8,6 @@ import { get } from 'svelte/store';
 const liveChatSelector = '.chat-room .chat-scrollable-area__message-container';
 const vodChatSelector = '.video-chat .video-chat__message-list-wrapper ul';
 
-const clients: chrome.runtime.Port[] = [];
-
-function registerClient(port: chrome.runtime.Port): void {
-  if (clients.some((client) => client.name === port.name)) {
-    console.debug('Client already registered', { port, clients });
-    return;
-  }
-
-  port.onDisconnect.addListener(() => {
-    const i = clients.findIndex((clientPort) => clientPort.name === port.name);
-    if (i < 0) {
-      console.error('Failed to unregister client', { port, clients });
-      return;
-    }
-    clients.splice(i, 1);
-    console.debug('Unregister client successful', { port, clients });
-  });
-
-  clients.push(port);
-}
-
 function getCommonParams(frameInfo: Chat.FrameInfo): URLSearchParams {
   const params = new URLSearchParams();
   params.set('tabid', frameInfo.tabId.toString());
@@ -204,6 +183,9 @@ function load(): void {
   // console.debug({ messageContainer });
   if (messageContainer == null) return;
 
+  const port: Chat.Port = chrome.runtime.connect();
+  port.postMessage({ type: 'registerInterceptor', source: 'ltlMessage' });
+
   const observer = new MutationObserver((mutationRecords) => {
     mutationRecords.forEach((record) => {
       const added = record.addedNodes;
@@ -213,21 +195,8 @@ function load(): void {
         const message = parseMessageElement(node);
         if (message == null) return;
         // console.debug({ message });
-        clients.forEach((client) => client.postMessage({ type: 'message', message }));
+        port.postMessage({ type: 'sendLtlMessage', message });
       });
-    });
-  });
-
-  chrome.runtime.onConnect.addListener((port) => {
-    port.onMessage.addListener((message) => {
-      switch (message.type) {
-        case 'registerClient':
-          registerClient(port);
-          break;
-        default:
-          console.error('Unknown message type', port, message);
-          break;
-      }
     });
   });
 
