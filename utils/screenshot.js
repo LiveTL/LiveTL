@@ -108,7 +108,7 @@ async function exportImage(name, page, url, func, scale, additionalMethod = () =
         Array.from(document.querySelectorAll('button')).find(e => e.textContent.trim() === 'Let\'s Go!').click();
       }, [1, 1], async (page) => {
         const context = (await page.frames())[0];
-        context.evaluate(() => {
+        await context.evaluate(() => {
           const maxTime = 4630.879359;
           const segments = 25;
           const intervalLength = 2500;
