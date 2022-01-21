@@ -121,7 +121,7 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
         ltlWrapper.style.display = 'none';
       }, mdiIframeArray, true);
     }
-  ]);
+  ], { padding: '3px', fontWeight: '600' });
 }
 
 function load(): void {

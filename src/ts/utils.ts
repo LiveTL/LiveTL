@@ -38,7 +38,19 @@ function createLtlButton({ text, callback, icon, shift }: LtlButtonParams): HTML
   return b;
 }
 
-export function injectLtlLauncher(target: HTMLElement, buttons: Array<LtlButtonParams | ((ltlWrapper: HTMLDivElement) => LtlButtonParams)>): void {
+export interface LtlButtonCss {
+  padding: string;
+  fontWeight: string;
+  fontSize?: string;
+  fontFamily?: string;
+  borderWidth?: string;
+}
+
+export function injectLtlLauncher(
+  target: HTMLElement,
+  buttons: Array<LtlButtonParams | ((ltlWrapper: HTMLDivElement) => LtlButtonParams)>,
+  buttonCss: LtlButtonCss
+): void {
   if (document.getElementById('ltl-wrapper') != null) {
     console.error('LTL launcher already injected');
     return;
@@ -54,12 +66,15 @@ export function injectLtlLauncher(target: HTMLElement, buttons: Array<LtlButtonP
       flex-grow: 1;
       background-color: #0099ffb5;
       color: white;
-      padding: 3px;
+      padding: ${buttonCss.padding};
       transition: background-color 50ms linear;
-      font-weight: 600;
+      font-weight: ${buttonCss.fontWeight};
       display: flex;
       justify-content: center;
       align-items: center;
+      ${(buttonCss.fontSize != null) ? `font-size: ${buttonCss.fontSize};` : ''}
+      ${(buttonCss.fontFamily != null) ? `font-family: ${buttonCss.fontFamily};` : ''}
+      ${(buttonCss.borderWidth != null) ? `border-width: ${buttonCss.borderWidth};` : ''}
     }
     .ltl-button:hover {
       background-color: #0099ffa0;
