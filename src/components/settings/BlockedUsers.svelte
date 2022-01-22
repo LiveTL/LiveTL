@@ -12,7 +12,7 @@
   <div class="flex gap-2 flex-wrap" bind:clientWidth={width}>
     <div class="flex-1">
       <MultiDropdown
-        name="YouTube chat"
+        name="Chat users"
         store={channelFilters}
         getDisplayName={(n, v) => v.name}
         getBool={n => channelFilters.get(n).blacklist}

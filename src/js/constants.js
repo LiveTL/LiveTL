@@ -133,7 +133,7 @@ languagesInfo.forEach(lang => (languageNameCode[lang.lang] = lang));
 export const MCHAD = 'https://repo.mchatx.org';
 
 const params = new URLSearchParams(window.location.search);
-export const paramsVideoId = params.get('video');
+export const paramsYtVideoId = params.get('ytVideo');
 export const paramsPopout = params.get('popout');
 export const paramsTabId = params.get('tabid');
 export const paramsFrameId = params.get('frameid');
@@ -142,12 +142,19 @@ export const paramsEmbedded = params.get('embedded');
 export const paramsContinuation = params.get('continuation');
 export const paramsIsVOD = params.get('isReplay');
 export const paramsEmbedDomain = params.get('embed_domain');
+export const paramsTwitchUrl = params.get('twitchUrl');
+export const paramsStandalone = params.get('standalone');
 
 /** @enum {String} */
 export const YtcDeleteBehaviour = {
   HIDE: 'HIDE',
   PLACEHOLDER: 'PLACEHOLDER',
   NOTHING: 'NOTHING'
+};
+
+/** @enum {String} */
+export const FeaturePrompt = {
+  SPOTLIGHT: 'SPOTLIGHT'
 };
 
 export const ytcDeleteItems = [
@@ -180,3 +187,5 @@ export const defaultCaption = {
 };
 
 export const modifierKeys = new Set(['Alt', 'Control', 'Meta', 'Shift']);
+
+export const isTwitch = paramsStandalone === 'twitch' || !!(paramsTwitchUrl ?? '');

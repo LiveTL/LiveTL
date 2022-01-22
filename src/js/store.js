@@ -108,7 +108,11 @@ export const keyboardShortcuts = SS('keyboardShortcuts', defaultShortcuts);
 export const disableSpecialSpamProtection = SS('disableSpecialSpamProtection', true);
 export const activePreset = SS('activePreset', 1);
 export const presets = SS('presets', /** @type {Array<Object & { name: string }>} */ ([]));
+export const showHelpPrompt = SS('showHelpPrompt', true);
+export const neverShowSpotlightPrompt = SS('neverShowSpotlightPrompt', false);
 export const showVerifiedMessage = SS('showVerifiedMessage', false);
+export const isChatInverted = SS('isChatInverted', false);
+export const twitchEnabled = SS('twitchEnabled', true);
 export const prefixTagReplacementLanguage = SS('prefixTagReplacementLanguage', 'English');
 
 // All the variables persisted in presets
@@ -130,7 +134,8 @@ export const presetStores = [
   doAutoPrefix,
   autoPrefixTag,
   macroTrigger,
-  macros
+  macros,
+  isChatInverted
 ];
 
 // -=- Language Migration -=-
@@ -189,7 +194,7 @@ export const langCode = derived(languages, $langs => $langs.map((lang) => langua
 export const updatePopupActive = writable(false);
 export const videoTitle = writable('LiveTL');
 export const timestamp = writable(0);
-export const faviconURL = writable('/48x48.png');
+export const faviconURL = writable('/img/48x48.png');
 export const availableMchadUsers = writable([]);
 export const spotlightedTranslator = writable(null);
 export const displayMode = writable(
@@ -201,3 +206,4 @@ export const sessionHidden = writable([]);
 export const anyRecordingShortcut = writable(false);
 export const videoShortcutAction = writable('');
 export const currentlyEditingPreset = writable(-1);
+export const promptToShow = writable(/** @type {String[]} */ ([]));

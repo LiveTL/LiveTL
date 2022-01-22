@@ -61,14 +61,15 @@ module.exports = (env, options) => {
       welcome: path.join(__dirname, 'src', 'js', 'pages', 'welcome.js'),
       lite: path.join(__dirname, 'src', 'js', 'pages', 'lite.js'),
       translatormode: path.join(__dirname, 'src', 'js', 'pages', 'translatormode.js'),
-      injector: path.join(__dirname, 'src', 'js', 'content_scripts', 'injector.js'),
+      injector: path.join(__dirname, 'src', 'ts', 'content_scripts', 'injector.ts'),
       'chat-interceptor': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-interceptor.ts'),
       'chat-background': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-background.ts'),
       chat: path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-injector.ts'),
       'hyperchat/hyperchat': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'hyperchat.ts'),
       'yt-workaround': path.join(__dirname, 'src', 'ts', 'yt-workaround.ts'),
       'workaround-injector': path.join(__dirname, 'src', 'ts', 'content_scripts', 'workaround-injector.ts'),
-      polyfill: path.join(__dirname, 'src', 'js', 'polyfills', 'chrome.js')
+      polyfill: path.join(__dirname, 'src', 'js', 'polyfills', 'chrome.js'),
+      'twitch-injector': path.join(__dirname, 'src', 'ts', 'content_scripts', 'twitch-injector.ts')
     },
     output: {
       path: path.join(__dirname, 'build'),
@@ -213,7 +214,7 @@ module.exports = (env, options) => {
             }
           },
           {
-            from: 'src/img/blfavicon.ico',
+            from: 'src/img',
             to: 'img'
           }
         ]

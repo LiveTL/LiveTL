@@ -66,7 +66,10 @@
 </script>
 
 <MessageDisplayWrapper>
-  <div class={classes} style="font-size: {Math.round($livetlFontSize)}px;">
+  <div
+    class={classes}
+    style="font-size: {Math.round($livetlFontSize)}px; word-break: break-word;"
+  >
     {#if !hideIntro}
       <IntroMessage />
     {/if}

@@ -9360,6 +9360,11 @@ svelte-waypoint@^0.1.4:
   resolved "https://registry.yarnpkg.com/svelte-waypoint/-/svelte-waypoint-0.1.4.tgz#ab467bed08c5f38716709872cf53d3f9da17831b"
   integrity sha512-UEqoXZjJeKj2sWlAIsBOFjxjMn+KP8aFCc/zjdmZi1cCOE59z6T2C+I6ZaAf8EmNQqNzfZVB/Lci4Ci9spzXAw==
 
+svelte-webext-stores@^0.0.11:
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/svelte-webext-stores/-/svelte-webext-stores-0.0.11.tgz#4f195adf23978df135585cae1ae05d4c928bc1dd"
+  integrity sha512-yH9bH8bZ7jbgO3ttllA87m5NUghQIdOXKUygGlzmgVDsbGoTK30NO509I3KN3SZALf2kI2xH9CI2HGIUIT87Sw==
+
 svelte@^3.31.2, svelte@^3.41.0:
   version "3.42.1"
   resolved "https://registry.yarnpkg.com/svelte/-/svelte-3.42.1.tgz#d4b4d9068cce911835f7c6b8ff1d290e1a0b5657"

@@ -19,4 +19,13 @@ declare namespace Ltl {
     hidden?: boolean;
     deleted?: boolean;
   }
+
+  interface FeaturePromptContent {
+    id: string;
+    prompt: string; // the prompt message for help
+    icon: string;
+    hasDismissed: import('svelte/store').Writable<boolean>;
+    neverShow: import('svelte/store').Writable<boolean>;
+    demoLink: string; // string path (not actual WAR path) to feature demo
+  }
 }

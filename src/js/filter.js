@@ -4,6 +4,7 @@ import { escapeRegExp, not, composeOr } from './utils.js';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { SyncStore } from './storage.js';
 import { derived } from 'svelte/store';
+import { isValidRegex } from '../ts/utils';
 
 /** @typedef {import('./types.js').Message} Message */
 
@@ -44,7 +45,7 @@ function userFilter(ufilters, transform = filter => filter) {
   let userRegex = null;
   ufilters.subscribe(filters => {
     userRegex = filters.length
-      ? new RegExp(filters.map(transform).filter(e => e).join('|'))
+      ? new RegExp(filters.map(transform).filter(isValidRegex).filter(e => e).join('|'))
       : null;
   });
 

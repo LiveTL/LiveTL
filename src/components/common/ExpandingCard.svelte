@@ -16,9 +16,10 @@
   {icon}
   headerEndIcon={expanded ? 'arrow_drop_up' : 'arrow_drop_down'}
   {nested}
+  padded={false}
 >
   {#if expanded}
-    <div transition:slide|local={{ duration: slideDuration }} class="p-2">
+    <div transition:slide|local={{ duration: slideDuration }} class="px-3 py-2">
       <slot />
     </div>
   {/if}

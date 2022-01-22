@@ -116,7 +116,7 @@ export const constructParams = (embedVideoId = '') => {
   } else {
     v = params.get('v') ?? (new URLSearchParams(window.parent.location.search).get('v'));
   }
-  params.set('video', v);
+  params.set('ytVideo', v);
   if (window.location.pathname.includes('live_chat_replay')) {
     params.set('isReplay', true);
   }

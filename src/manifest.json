@@ -10,17 +10,18 @@
     "webRequestBlocking",
     "https://www.youtube.com/*?*",
     "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat/*",
-    "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay/*"
+    "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay/*",
+    "https://www.twitch.tv/*"
   ],
   "background": {
     "page": "background.html",
     "persistent": true
   },
   "icons": {
-    "128": "128x128.png"
+    "128": "./img/128x128.png"
   },
   "browser_action": {
-    "default_icon": "48x48.png"
+    "default_icon": "./img/48x48.png"
   },
   "manifest_version": 2,
   "content_scripts": [
@@ -45,11 +46,22 @@
         "workaround-injector.bundle.js"
       ],
       "all_frames": true
+    },
+    {
+      "matches": [
+        "https://www.twitch.tv/*"
+      ],
+      "js": [
+        "twitch-injector.bundle.js"
+      ],
+      "all_frames": true
     }
   ],
   "web_accessible_resources": [
     "*.js",
     "*.html",
-    "*.png"
+    "*.png",
+    "*.gif",
+    "*.mp4"
   ]
 }

@@ -13,10 +13,11 @@
     showCaption,
     chatSplit,
     displayMode,
-    isResizing
+    isResizing,
+    isChatInverted
   } from '../js/store.js';
   import {
-    paramsVideoId,
+    paramsYtVideoId,
     VideoSide,
     ChatSplit,
     paramsContinuation,
@@ -38,7 +39,11 @@
   };
   const convertPxAndPercent = () => {
     [
-      [chatElem, isChatVertical ? 'width' : 'height', chatSize],
+      [
+        $isChatInverted ? ltlElem : chatElem,
+        isChatVertical ? 'width' : 'height',
+        chatSize
+      ],
       [
         isFullPage ? vidElem : null,
         isTopSide ? 'height' : 'width',
@@ -91,7 +96,7 @@
       },
       containment: 'body'
     });
-    resizable(chatElem, {
+    resizable($isChatInverted ? ltlElem : chatElem, {
       handles: isChatVertical ? 'e' : 's',
       start: resizeCallback,
       stop: resizeCallback,
@@ -99,7 +104,7 @@
       containment: 'body'
     });
   };
-  $: if ($videoSide || $chatSplit) {
+  $: if ($videoSide || $chatSplit || $isChatInverted) {
     setTimeout(changeSide, 0);
   }
 
@@ -138,12 +143,12 @@
   <div id="mainUI" class="flex w-full h-full {flexDirection} top-0 absolute">
     {#if isFullPage}
       <div
-        class="resizable relative z-30"
+        class="z-30 resizable relative"
         style={videoContainerStyle}
         bind:this={vidElem}
       >
         <Wrapper>
-          <VideoEmbed videoId={paramsVideoId} />
+          <VideoEmbed videoId={paramsYtVideoId} />
         </Wrapper>
       </div>
     {/if}
@@ -153,23 +158,31 @@
       style={isTopSide ? 'min-width: 100% !important;' : ''}
     >
       <div
-        class="flex w-full h-full {isChatVertical ? 'flex-row' : 'flex-col'}"
+        class="flex w-full h-full {
+          isChatVertical
+            ? $isChatInverted ? 'flex-row-reverse' : 'flex-row'
+            : $isChatInverted ? 'flex-col-reverse' : 'flex-col'
+        }"
         style={chatElemParentStyle}
       >
         <div
-          class="relative resizable"
-          style={chatElemStyle}
+          style={$isChatInverted ? '' : chatElemStyle} 
+          class="relative {$isChatInverted ? 'flex-1' : 'resizable'}"
           bind:this={chatElem}
         >
           <Wrapper zoom={$chatZoom} style={chatWrapperStyle}>
             <ChatEmbed
-              videoId={paramsVideoId}
+              videoId={paramsYtVideoId}
               continuation={paramsContinuation}
               isReplay={paramsIsVOD}
             />
           </Wrapper>
         </div>
-        <div class="relative flex-1" bind:this={ltlElem}>
+        <div 
+          style={$isChatInverted ? chatElemStyle : ''} 
+          class="relative {$isChatInverted ? 'resizable' : 'flex-1'}"
+          bind:this={ltlElem}
+        >
           <MainPane>
             <Options slot="settings" />
           </MainPane>
