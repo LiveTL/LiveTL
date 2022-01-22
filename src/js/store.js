@@ -109,7 +109,7 @@ export const disableSpecialSpamProtection = SS('disableSpecialSpamProtection', t
 export const activePreset = SS('activePreset', 1);
 export const presets = SS('presets', /** @type {Array<Object & { name: string }>} */ ([]));
 export const showVerifiedMessage = SS('showVerifiedMessage', false);
-export const prefixTagReplacementLanguage = SS('prefixTagReplacementLanguage', '[EN]');
+export const prefixTagReplacementLanguage = SS('prefixTagReplacementLanguage', 'English');
 
 // All the variables persisted in presets
 export const presetStores = [

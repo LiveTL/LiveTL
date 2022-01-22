@@ -1,13 +1,14 @@
 <script>
   import { onMount } from 'svelte';
   import CustomMacro from '../options/CustomMacro.svelte';
-  import { macros, doAutoPrefix, doTranslatorMode, autoPrefixTag, macroTrigger, languages } from '../../js/store.js';
-  import { isAndroid } from '../../js/constants.js';
+  import { macros, doAutoPrefix, doTranslatorMode, autoPrefixTag, macroTrigger, languages, prefixTagReplacementLanguage } from '../../js/store.js';
+  import { isAndroid, languagesInfo } from '../../js/constants.js';
   import Checkbox from '../common/CheckboxStore.svelte';
   import TextField from '../common/TextField.svelte';
   import Card from '../common/Card.svelte';
   import ExpandingCard from '../common/ExpandingCard.svelte';
   import Icon from '../common/Icon.svelte';
+  import Dropdown from '../common/DropdownStore.svelte';
 
   const leaderCharRules = [
     {
@@ -32,7 +33,7 @@
 
   const autoPrefixRules = [{
     error: 'You have no selected translation languages',
-    assert: (value) => !(/\$filterLang/gi.test(value) && $languages.length <= 0),
+    assert: (value) => !/\$filterLang/gi.test(value),
   }];
 </script>
 
@@ -43,9 +44,15 @@
     {#if $doAutoPrefix}
       <TextField
         bind:value={$autoPrefixTag}
-        label="Tag to prepend ($filterLang is replaced by your first filter language)"
+        label="Tag to prepend ($filterLang is replaced by the language selected below)"
         rules={autoPrefixRules}
       />
+      <Dropdown
+        store={prefixTagReplacementLanguage}
+        items={languagesInfo.map((language) => language.name)}
+      >
+        Auto Prefix Tag
+      </Dropdown>
     {/if}
     <Card
       title="Macros"
