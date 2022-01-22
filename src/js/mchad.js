@@ -1,4 +1,4 @@
-import { MCHAD, AuthorType, languages } from './constants.js';
+import { MCHAD, AuthorType, languagesInfo } from './constants.js';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as Ty from './types.js';
 import { derived, readable } from 'svelte/store';
@@ -41,7 +41,7 @@ export async function getRooms(videoId) {
 }
 
 /** @type {(tag: String) => String[]} */
-const possibleLanguages = tag => languages.filter(lang => isLangMatch(tag, lang));
+const possibleLanguages = tag => languagesInfo.filter(lang => isLangMatch(tag, lang));
 
 /** @type {(tag: String) => String | null} */
 export const getRoomTagLanguageCode = tag => {
