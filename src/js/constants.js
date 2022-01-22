@@ -106,7 +106,7 @@ export const AuthorType = {
 export const GIGACHAD =
   AuthorType.moderator | AuthorType.owner | AuthorType.mchad | AuthorType.api;
 
-export const languages = [
+export const languagesInfo = [
   { code: 'en', name: 'English', lang: 'English', tag: 'en-US' },
   { code: 'jp', name: 'Japanese', lang: '日本語', tag: 'jp-JP' },
   { code: 'es', name: 'Spanish', lang: 'Español', tag: 'es-MX' },
@@ -119,7 +119,7 @@ export const languages = [
 
 export const languageConversionTable = {};
 export const languageNameCode = {};
-export const languageNameValues = languages.map(lang => ({
+export const languageNameValues = languagesInfo.map(lang => ({
   text: createLangSelectionName(lang), value: lang.lang
 }));
 
@@ -127,8 +127,8 @@ function createLangSelectionName(lang) {
   return `${lang.name} (${lang.lang})`;
 }
 
-languages.forEach(i => (languageConversionTable[createLangSelectionName(i)] = i));
-languages.forEach(lang => (languageNameCode[lang.lang] = lang));
+languagesInfo.forEach(i => (languageConversionTable[createLangSelectionName(i)] = i));
+languagesInfo.forEach(lang => (languageNameCode[lang.lang] = lang));
 
 export const MCHAD = 'https://repo.mchatx.org';
 
