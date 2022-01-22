@@ -52,7 +52,7 @@ export const defaultShortcuts = {
 };
 
 // Settings
-export const languages = SS('languages', []);
+export const languages = SS('languages', /** @type {Array<string>} */ ([]));
 export const showModMessage = SS('showModMessage', true);
 export const chatZoom = SS('chatZoom', defaultZoom);
 export const showTimestamp = SS('showTimestamp', true);
