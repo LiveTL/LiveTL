@@ -286,4 +286,4 @@ function getCaretCharOffset(element) {
   return caretOffset;
 }
 
-const langTag = () => languages.length <= 0 ? autoPrefixTag.get() : autoPrefixTag.get().replace(/\$filterLang/gi, languageNameCode[prefixTagReplacementLanguage].code);
+const langTag = () => autoPrefixTag.get().replace(/\$filterLang/gi, languageNameCode[prefixTagReplacementLanguage].code);
