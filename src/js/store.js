@@ -141,11 +141,13 @@ export const presetStores = [
 // -=- Language Migration -=-
 (async () => {
   const language = SS('language', 'English');
+  const hasDoneLanguageMigration = SS('hasDoneLanguageMigration', false);
 
   await language.loaded;
   await languages.loaded;
+  await hasDoneLanguageMigration.loaded;
 
-  if (!languages.get().length <= 0) {
+  if (!hasDoneLanguageMigration.get()) {
     languages.set([language.get()]);
   }
 })();
