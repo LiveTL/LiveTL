@@ -61,7 +61,7 @@ module.exports = (env, options) => {
       welcome: path.join(__dirname, 'src', 'js', 'pages', 'welcome.js'),
       lite: path.join(__dirname, 'src', 'js', 'pages', 'lite.js'),
       translatormode: path.join(__dirname, 'src', 'js', 'pages', 'translatormode.js'),
-      injector: path.join(__dirname, 'src', 'js', 'content_scripts', 'injector.js'),
+      injector: path.join(__dirname, 'src', 'ts', 'content_scripts', 'injector.ts'),
       'chat-interceptor': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-interceptor.ts'),
       'chat-background': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-background.ts'),
       chat: path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-injector.ts'),

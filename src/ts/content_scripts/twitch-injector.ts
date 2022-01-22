@@ -1,7 +1,7 @@
 import { isVod, parseMessageElement } from '../twitch-parser';
-import { nodeIsElement } from '../utils';
+import { nodeIsElement, injectLtlLauncher, ltlButtonParams } from '../utils';
 import { getFrameInfoAsync, createPopup, isValidFrameInfo } from '../../submodules/chat/src/ts/chat-utils';
-import { mdiOpenInNew, mdiIframeArray, mdiCloseThick } from '@mdi/js';
+import { mdiOpenInNew, mdiIframeArray } from '@mdi/js';
 import { chatSize, twitchEnabled } from '../../js/store';
 import { get } from 'svelte/store';
 
@@ -17,163 +17,111 @@ function getCommonParams(frameInfo: Chat.FrameInfo): URLSearchParams {
   return params;
 }
 
-function createButton(text: string, callback: () => void, icon: string, shift = false): HTMLButtonElement {
-  const b = document.createElement('button');
-  b.className = 'ltl-button';
-  b.innerText = text;
-  b.addEventListener('click', callback);
-  const svg = document.createElement('svg');
-  b.appendChild(svg);
-  svg.outerHTML = `
-    <svg viewBox="0 0 24 24" class="ltl-svg ${shift ? 'ltl-shifted-svg' : ''}">
-      <path d="${icon}" fill="white"></path>
-    </svg>
-  `;
-  return b;
-}
-
 function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
-  const chat = document.querySelector(isVod() ? '.video-chat' : '.stream-chat');
+  const chat = document.querySelector<HTMLElement>(isVod() ? '.video-chat' : '.stream-chat');
   if (chat == null) {
     console.error('Could not find chat');
     return;
   }
 
-  const css = `
-    #ltl-wrapper {
-      display: flex;
-      flex-direction: row;
-    }
-    .ltl-button {
-      flex-grow: 1;
-      background-color: #0099ffb5;
-      color: white;
-      padding: 3px;
-      transition: background-color 50ms linear;
-      font-weight: 600;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .ltl-button:hover {
-      background-color: #0099ffa0;
-    }
-    .ltl-svg {
-      height: 15px;
-      vertical-align: middle;
-      margin: 0px 5px;
-    }
-    .ltl-shifted-svg {
-      /* transform: translateY(-1px); */
-    }
-  `;
-  const style = document.createElement('style');
-  style.innerText = css;
-  document.body.appendChild(style);
+  injectLtlLauncher(chat, [
+    () => {
+      const popoutParams = getCommonParams(frameInfo);
+      const popoutUrl = chrome.runtime.getURL(`popout.html?${popoutParams.toString()}`);
+      return ltlButtonParams('TL Popout', () => createPopup(popoutUrl), mdiOpenInNew, true);
+    },
+    (ltlWrapper: HTMLDivElement) => {
+      const embedParams = getCommonParams(frameInfo);
+      embedParams.set('embedded', 'true');
+      const embedUrl = chrome.runtime.getURL(`popout.html?${embedParams.toString()}`);
 
-  const ltlWrapper = document.createElement('div');
-  ltlWrapper.id = 'ltl-wrapper';
-
-  const popoutParams = getCommonParams(frameInfo);
-  const popoutUrl = chrome.runtime.getURL(`popout.html?${popoutParams.toString()}`);
-  const popoutButton = createButton('TL Popout', () => createPopup(popoutUrl), mdiOpenInNew, true);
-
-  const embedParams = getCommonParams(frameInfo);
-  embedParams.set('embedded', 'true');
-  const embedUrl = chrome.runtime.getURL(`popout.html?${embedParams.toString()}`);
-  const createResizableBar = (parent: HTMLDivElement): void => {
-    const resizeBar = document.createElement('div');
-    resizeBar.style.width = '100%';
-    resizeBar.style.height = '10px';
-    resizeBar.style.backgroundColor = '#4d4d4d';
-    resizeBar.style.cursor = 'ns-resize';
-    resizeBar.style.userSelect = 'none';
-    resizeBar.style.color = 'white';
-    resizeBar.style.overflow = 'visible';
-    resizeBar.style.justifyContent = 'center';
-    resizeBar.style.alignItems = 'center';
-    resizeBar.style.width = '100%';
-    resizeBar.style.fontSize = '25px';
-    resizeBar.style.display = 'flex';
-    const dots = document.createElement('span');
-    dots.innerText = '⋯';
-    dots.style.transform = 'translateY(-2.5%)';
-    resizeBar.appendChild(dots);
-    const chatRoom = ltlWrapper.previousElementSibling as HTMLElement;
-    chatRoom.style.overflow = 'hidden auto';
-    const setChatRoomHeight = (height: string): void => {
-      chatRoom.style.maxHeight = height;
-      chatRoom.style.minHeight = height;
-    };
-    setChatRoomHeight(`${get(chatSize)}%`);
-    const header = chat.querySelector(isVod() ? '.video-chat__header' : '.stream-chat-header');
-    if (header == null) {
-      console.error('Could not find header while resizing chat');
-      return;
-    }
-    const refreshHeights = (originalEvent: MouseEvent | undefined = undefined): void => {
-      if (originalEvent && originalEvent.buttons !== 1) return;
-      const clientRect = chatRoom.getBoundingClientRect();
-      const refreshParent = (): void => {
-        const { bottom: resizeBarBottom } = resizeBar.getBoundingClientRect();
-        const { bottom: maxBottom } = chat.getBoundingClientRect();
-        parent.style.height = `${maxBottom - resizeBarBottom}px`;
-      };
-      setChatRoomHeight(`${clientRect.height}px`);
-      refreshParent();
-      parent.style.display = 'none';
-      const updateStyles = (): void => {
-        parent.style.display = 'block';
-        const chatHeight = chat.getBoundingClientRect().height;
-        const chatRoomHeight = chatRoom.getBoundingClientRect().height;
-        const parentHeight = parent.getBoundingClientRect().height;
-        parent.style.height = `${100 * parentHeight / chatHeight}%`;
-        const percent = 100 * chatRoomHeight / chatHeight;
-        setChatRoomHeight(`${percent}%`);
-        chatSize.set(percent);
-      };
-      const maxChatRoomHeight = chat.clientHeight - header.clientHeight - resizeBar.clientHeight;
-      if (originalEvent) {
-        const moveListener = (event: MouseEvent): void => {
-          const chatRoomHeight = Math.min(clientRect.height + (event.clientY - originalEvent.clientY), maxChatRoomHeight);
-          setChatRoomHeight(`${chatRoomHeight}px`);
-          refreshParent();
+      const createResizableBar = (parent: HTMLDivElement): void => {
+        const resizeBar = document.createElement('div');
+        resizeBar.style.width = '100%';
+        resizeBar.style.height = '10px';
+        resizeBar.style.backgroundColor = '#4d4d4d';
+        resizeBar.style.cursor = 'ns-resize';
+        resizeBar.style.userSelect = 'none';
+        resizeBar.style.color = 'white';
+        resizeBar.style.overflow = 'visible';
+        resizeBar.style.justifyContent = 'center';
+        resizeBar.style.alignItems = 'center';
+        resizeBar.style.width = '100%';
+        resizeBar.style.fontSize = '25px';
+        resizeBar.style.display = 'flex';
+        const dots = document.createElement('span');
+        dots.innerText = '⋯';
+        dots.style.transform = 'translateY(-2.5%)';
+        resizeBar.appendChild(dots);
+        const chatRoom = ltlWrapper.previousElementSibling as HTMLElement;
+        chatRoom.style.overflow = 'hidden auto';
+        const setChatRoomHeight = (height: string): void => {
+          chatRoom.style.maxHeight = height;
+          chatRoom.style.minHeight = height;
         };
-        window.addEventListener('mousemove', moveListener);
-        window.addEventListener('mouseup', () => {
-          window.removeEventListener('mousemove', moveListener);
-          updateStyles();
-        });
-      } else {
-        updateStyles();
-      }
-    };
-    resizeBar.addEventListener('mousedown', refreshHeights);
-    window.addEventListener('resize', () => refreshHeights());
-    chat.appendChild(resizeBar);
-  };
+        setChatRoomHeight(`${get(chatSize)}%`);
+        const header = chat.querySelector(isVod() ? '.video-chat__header' : '.stream-chat-header');
+        if (header == null) {
+          console.error('Could not find header while resizing chat');
+          return;
+        }
+        const refreshHeights = (originalEvent: MouseEvent | undefined = undefined): void => {
+          if (originalEvent && originalEvent.buttons !== 1) return;
+          const clientRect = chatRoom.getBoundingClientRect();
+          const refreshParent = (): void => {
+            const { bottom: resizeBarBottom } = resizeBar.getBoundingClientRect();
+            const { bottom: maxBottom } = chat.getBoundingClientRect();
+            parent.style.height = `${maxBottom - resizeBarBottom}px`;
+          };
+          setChatRoomHeight(`${clientRect.height}px`);
+          refreshParent();
+          parent.style.display = 'none';
+          const updateStyles = (): void => {
+            parent.style.display = 'block';
+            const chatHeight = chat.getBoundingClientRect().height;
+            const chatRoomHeight = chatRoom.getBoundingClientRect().height;
+            const parentHeight = parent.getBoundingClientRect().height;
+            parent.style.height = `${100 * parentHeight / chatHeight}%`;
+            const percent = 100 * chatRoomHeight / chatHeight;
+            setChatRoomHeight(`${percent}%`);
+            chatSize.set(percent);
+          };
+          const maxChatRoomHeight = chat.clientHeight - header.clientHeight - resizeBar.clientHeight;
+          if (originalEvent) {
+            const moveListener = (event: MouseEvent): void => {
+              const chatRoomHeight = Math.min(clientRect.height + (event.clientY - originalEvent.clientY), maxChatRoomHeight);
+              setChatRoomHeight(`${chatRoomHeight}px`);
+              refreshParent();
+            };
+            window.addEventListener('mousemove', moveListener);
+            window.addEventListener('mouseup', () => {
+              window.removeEventListener('mousemove', moveListener);
+              updateStyles();
+            });
+          } else {
+            updateStyles();
+          }
+        };
+        resizeBar.addEventListener('mousedown', refreshHeights);
+        window.addEventListener('resize', () => refreshHeights());
+        chat.appendChild(resizeBar);
+      };
 
-  const embedButton = createButton('Embed TLs', () => {
-    const parent = document.createElement('div');
-    const iframe = document.createElement('iframe');
-    iframe.src = embedUrl;
-    iframe.style.width = '100%';
-    iframe.style.height = '100%';
-    parent.style.width = '100%';
-    parent.style.height = '100%';
-    parent.appendChild(iframe);
-    createResizableBar(parent);
-    chat.appendChild(parent);
-    ltlWrapper.style.display = 'none';
-  }, mdiIframeArray, true);
-
-  const hideButton = createButton('', () => (ltlWrapper.style.display = 'none'), mdiCloseThick);
-  hideButton.style.flexGrow = '0';
-
-  ltlWrapper.appendChild(popoutButton);
-  ltlWrapper.appendChild(embedButton);
-  ltlWrapper.appendChild(hideButton);
-  chat.append(ltlWrapper);
+      return ltlButtonParams('Embed TLs', () => {
+        const parent = document.createElement('div');
+        const iframe = document.createElement('iframe');
+        iframe.src = embedUrl;
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        parent.style.width = '100%';
+        parent.style.height = '100%';
+        parent.appendChild(iframe);
+        createResizableBar(parent);
+        chat.appendChild(parent);
+        ltlWrapper.style.display = 'none';
+      }, mdiIframeArray, true);
+    }
+  ], { padding: '3px', fontWeight: '600' });
 }
 
 function load(): void {
@@ -210,7 +158,7 @@ function load(): void {
       }
       injectLtlButtons(frameInfo);
     })
-    .catch((e) => console.error(e));
+    .catch(console.error);
 }
 
 let first = true;
