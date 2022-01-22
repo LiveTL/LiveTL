@@ -1,6 +1,6 @@
 import { compose, escapeRegExp } from './utils.js';
 import { derived, get } from 'svelte/store';
-import { doTranslatorMode, doAutoPrefix, languages, macros, autoPrefixTag, macroTrigger, prefixTagReplacementLanguage } from './store.js';
+import { doTranslatorMode, doAutoPrefix, macros, autoPrefixTag, macroTrigger, prefixTagReplacementLanguage } from './store.js';
 import { languageNameCode } from './constants.js';
 
 /**
