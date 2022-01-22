@@ -10,7 +10,8 @@
     "webRequestBlocking",
     "https://www.youtube.com/*?*",
     "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat/*",
-    "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay/*"
+    "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay/*",
+    "https://www.twitch.tv/*"
   ],
   "background": {
     "page": "background.html",
@@ -43,6 +44,15 @@
       ],
       "js": [
         "workaround-injector.bundle.js"
+      ],
+      "all_frames": true
+    },
+    {
+      "matches": [
+        "https://www.twitch.tv/*"
+      ],
+      "js": [
+        "twitch-injector.bundle.js"
       ],
       "all_frames": true
     }

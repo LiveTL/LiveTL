@@ -10,24 +10,27 @@ import {
   replaceFirstTranslation
 } from './filter';
 import { showModMessage, showVerifiedMessage, timestamp } from './store';
-import { paramsVideoId, AuthorType, paramsPopout, paramsTabId, paramsFrameId } from './constants';
+import { paramsYtVideoId, AuthorType, paramsPopout, paramsTabId, paramsFrameId, paramsTwitchUrl } from './constants';
 import * as MCHAD from './mchad.js';
+import { twitchSource } from '../ts/sources';
 // import * as API from './api.js';
 
 /**
  * @typedef {import('svelte/store').Readable} Readable
  * @typedef {import('svelte/store').Writable} Writable
  * @typedef {import('./types.js').Message} Message
- * @typedef {{ ytcTranslations: Writable<Message>, mod: Writable<Message>, verified: Writable<Message>, ytc: Writable<Message> }} YTCSources
+ * @typedef {{ chatTranslations: Writable<Message>, mod: Writable<Message>, verified: Writable<Message>, chat: Writable<Message> }} YTCSources
  */
+
+const mchadLink = paramsTwitchUrl ?? `YT_${paramsYtVideoId}`;
 
 /** @type {YTCSources & { translations: Writable<Message>, mchad: Readable<Message>, api?: Readable<Message>, ytcBonks: Writable<any[]>, ytcDeletions:Writable<any[]>, thirdParty: Writable<Message> }} */
 export const sources = {
-  ytcTranslations: writable(null),
+  chatTranslations: writable(null),
   mod: writable(null),
   verified: writable(null),
-  ytc: ytcSource(window).ytc,
-  mchad: combineStores(MCHAD.getArchive(paramsVideoId), MCHAD.getLiveTranslations(paramsVideoId)).store,
+  chat: (paramsTwitchUrl ?? '') ? twitchSource() : ytcSource(window).ytc,
+  mchad: combineStores(MCHAD.getArchive(mchadLink), MCHAD.getLiveTranslations(mchadLink)).store,
   // api: combineStores(API.getArchive(paramsVideoId), API.getLiveTranslations(paramsVideoId)).store,
   thirdParty: createThirdPartyStore(),
   ytcBonks: writable(null),
@@ -54,12 +57,12 @@ const setStoreMessage =
   store => (msg, text) => store.set({ ...msg, text: text ?? msg.text });
 
 /** @type {(sources: YTCSources) => () => void} */
-function attachFilters({ ytcTranslations, mod, verified, ytc }) {
-  const setTranslation = setStoreMessage(ytcTranslations);
+function attachFilters({ chatTranslations, mod, verified, chat }) {
+  const setTranslation = setStoreMessage(chatTranslations);
   const setModMessage = setStoreMessage(mod);
   const setVerifiedMessage = setStoreMessage(verified);
 
-  return ytc.subscribe(message => {
+  return chat.subscribe(message => {
     if (!message || isBlacklisted(message)) return;
     const text = message.text.trim();
     const parsed = parseTranslation(text);
@@ -200,7 +203,7 @@ function message(author, msg, timestamp) {
 
 attachFilters(sources);
 sources.translations = combineStores(
-  sources.ytcTranslations,
+  sources.chatTranslations,
   sources.mchad
   // sources.api
 ).store;

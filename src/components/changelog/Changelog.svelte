@@ -1,11 +1,10 @@
 <script>
   import ExpandingCard from '../common/ExpandingCard.svelte';
+  import twitch from './twitch.png';
 </script>
 
-<ExpandingCard title="HyperChat improvements" icon="chat">
-  HyperChat now stores settings in extension storage! This update is a precursor
-  to the next major update, which will include a HyperChat-specific settings
-  menu. We also improved chat message timing mechanics, so messages should be a
-  little less delayed. PS. We heard that Kiara (my personal oshi) got HyperChat
-  -- thank you, and we hope you like it!
+<ExpandingCard title="Twitch Support!" icon="live_tv" expanded>
+  LiveTL now works on Twitch! You can filter chat messages, view MChad TLs, and
+  more, just like on YouTube.
+  <img class="pt-2" src={twitch} alt="LiveTL on Twitch" />
 </ExpandingCard>
