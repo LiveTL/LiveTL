@@ -33,7 +33,7 @@
 
   const autoPrefixRules = [{
     error: 'You have no selected translation languages',
-    assert: (value) => !/\$filterLang/gi.test(value),
+    assert: (value) => !(/\$filterLang/gi.test(value)),
   }];
 </script>
 
