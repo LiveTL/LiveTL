@@ -163,7 +163,7 @@ export function isLangMatch(textLang, currentLang) {
  * @returns {Boolean}
  */
 export function isLangListMatch(textLang, currentLangs) {
-  return currentLangs.map((currentLang) => isLangMatch(textLang, currentLang)).includes(true);
+  return currentLangs.some((currentLang) => isLangMatch(textLang, currentLang));
 }
 
 export function addFilter(chatAuthor, plainReg, showBlock, rule) {
