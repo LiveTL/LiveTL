@@ -30,11 +30,6 @@
   }
 
   onMount(() => setTimeout(cleanUpMacros));
-
-  const autoPrefixRules = [{
-    error: 'You have no selected translation languages',
-    assert: (value) => !(/\$filterLang/gi.test(value)),
-  }];
 </script>
 
 <Card title="Translator mode" icon="translate">
@@ -45,7 +40,6 @@
       <TextField
         bind:value={$autoPrefixTag}
         label="Tag to prepend ($filterLang is replaced by the language selected below)"
-        rules={autoPrefixRules}
       />
       <Dropdown
         store={prefixTagReplacementLanguage}
