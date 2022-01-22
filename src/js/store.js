@@ -52,7 +52,7 @@ export const defaultShortcuts = {
 };
 
 // Settings
-export const languages = SS('languages', ['English']);
+export const languages = SS('languages', []);
 export const showModMessage = SS('showModMessage', true);
 export const chatZoom = SS('chatZoom', defaultZoom);
 export const showTimestamp = SS('showTimestamp', true);
@@ -132,6 +132,18 @@ export const presetStores = [
   macroTrigger,
   macros
 ];
+
+// -=- Language Migration -=-
+(async () => {
+  const language = SS('language', 'English');
+
+  await language.loaded;
+  await languages.loaded;
+
+  if (!languages.get().length <= 0) {
+    languages.set([language.get()]);
+  }
+})();
 
 // Non-persistant stores
 
