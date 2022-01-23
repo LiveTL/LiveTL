@@ -74,7 +74,7 @@ def test_injection(web):
     assert embed_button.text.strip() == "Embed TLs"
 
     # Hyperchat Buttons
-    hc_button, = web.find_elements_by_css_selector(".toggleButtonContainer")
+    hc_button, _hc_settings_button = web.find_elements_by_css_selector("#hc-buttons div")
     assert hc_button.get_attribute("data-tooltip") == "Disable HyperChat"
 
 
