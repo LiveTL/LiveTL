@@ -69,7 +69,8 @@ module.exports = (env, options) => {
       'yt-workaround': path.join(__dirname, 'src', 'ts', 'yt-workaround.ts'),
       'workaround-injector': path.join(__dirname, 'src', 'ts', 'content_scripts', 'workaround-injector.ts'),
       polyfill: path.join(__dirname, 'src', 'js', 'polyfills', 'chrome.js'),
-      'twitch-injector': path.join(__dirname, 'src', 'ts', 'content_scripts', 'twitch-injector.ts')
+      'twitch-injector': path.join(__dirname, 'src', 'ts', 'content_scripts', 'twitch-injector.ts'),
+      'hyperchat/options': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'options.ts')
     },
     output: {
       path: path.join(__dirname, 'build'),
@@ -279,6 +280,12 @@ module.exports = (env, options) => {
         template: path.join(__dirname, 'src', 'empty.html'),
         filename: 'hyperchat/index.html',
         chunks: [...polyfill, 'hyperchat/hyperchat'],
+        chunksSortMode: 'manual'
+      }),
+      new HtmlWebpackPlugin({
+        template: path.join(__dirname, 'src', 'empty.html'),
+        filename: 'hyperchat/options.html',
+        chunks: [...polyfill, 'hyperchat/options'],
         chunksSortMode: 'manual'
       }),
       new MiniCssExtractPlugin({ filename: '[name].css' })
