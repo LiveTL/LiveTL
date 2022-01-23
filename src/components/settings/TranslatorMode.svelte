@@ -38,7 +38,7 @@
     {#if $doAutoPrefix}
       <TextField
         bind:value={$autoPrefixTag}
-        label="Tag to prepend ($filterLang is replaced by your filter language)"
+        label="Tag to prepend"
       />
     {/if}
     <Card

@@ -1,5 +1,5 @@
 import { languageNameCode } from './constants.js';
-import { customFilters, language } from './store.js';
+import { customFilters, languages } from './store.js';
 import { escapeRegExp, not, composeOr } from './utils.js';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { SyncStore } from './storage.js';
@@ -158,6 +158,15 @@ export function isLangMatch(textLang, currentLang) {
   ));
 }
 
+/**
+ * @param {String} textLang
+ * @param {{ code: String, name: String, lang: String }[]} currentLang
+ * @returns {Boolean}
+ */
+export function isLangListMatch(textLang, currentLangs) {
+  return currentLangs.some((currentLang) => isLangMatch(textLang, currentLang));
+}
+
 export function addFilter(chatAuthor, plainReg, showBlock, rule) {
   const filters = customFilters.get();
   const ids = filters.map(f => f.id);
@@ -185,9 +194,9 @@ export function cleanupFilters() {
   customFilters.set(customFilters.get().filter(f => f.rule));
 }
 
-const lang = () => languageNameCode[language.get()];
+const lang = () => languages.get().map((language) => languageNameCode[language]);
 
-export const isTranslation = parsed => parsed && isLangMatch(parsed.lang, lang()) && parsed.msg;
+export const isTranslation = parsed => parsed && isLangListMatch(parsed.lang, lang()) && parsed.msg;
 
 /** @type {(msg: Message) => Message} */
 export const replaceFirstTranslation = msg => {

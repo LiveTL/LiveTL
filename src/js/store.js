@@ -52,7 +52,7 @@ export const defaultShortcuts = {
 };
 
 // Settings
-export const language = SS('language', 'English');
+export const languages = SS('languages', /** @type {Array<string>} */ ([]));
 export const showModMessage = SS('showModMessage', true);
 export const chatZoom = SS('chatZoom', defaultZoom);
 export const showTimestamp = SS('showTimestamp', true);
@@ -93,7 +93,7 @@ export const enableAPITLs = SS('enableAPITLs', true);
 export const enableExportButtons = SS('enableExportButtons', true);
 export const enableFullscreenButton = SS('enableFullscreenButton', true);
 export const mchadUsers = LS('mchadUsers', false);
-export const autoPrefixTag = SS('autoPrefixTag', '[$filterLang]');
+export const autoPrefixTag = SS('autoPrefixTag', '[en]');
 export const macroTrigger = SS('macroTrigger', '/');
 export const ytcDeleteBehaviour = SS('ytcDeleteBehaviour', YtcDeleteBehaviour.HIDE);
 export const autoVertical = SS('autoVertical', true);
@@ -137,6 +137,21 @@ export const presetStores = [
   isChatInverted
 ];
 
+// -=- Language Migration -=-
+(async () => {
+  const language = SS('language', 'English');
+  const hasDoneLanguageMigration = SS('hasDoneLanguageMigration', false);
+
+  await language.loaded;
+  await languages.loaded;
+  await hasDoneLanguageMigration.loaded;
+
+  if (!hasDoneLanguageMigration.get()) {
+    languages.set([language.get()]);
+    hasDoneLanguageMigration.set(true);
+  }
+})();
+
 // Non-persistant stores
 
 /** @typedef {{width: Number, height: Number}} WindowDimension */
@@ -176,7 +191,7 @@ export const speechSpeaker = derived(
   [speechVoiceName, voiceNames],
   ([$speechVoiceName, _$voiceNames]) => getVoiceMap().get($speechVoiceName)
 );
-export const langCode = derived(language, $lang => languageNameCode[$lang].code);
+export const langCode = derived(languages, $langs => $langs.map((lang) => languageNameCode[lang].code));
 
 export const updatePopupActive = writable(false);
 export const videoTitle = writable('LiveTL');

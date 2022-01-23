@@ -2,33 +2,33 @@
   import {
     showModMessage,
     showVerifiedMessage,
-    language,
+    languages,
     enableMchadTLs
     // enableAPITLs
   } from '../../js/store.js';
   import { languageNameValues } from '../../js/constants.js';
   import BlockedUsers from './BlockedUsers.svelte';
-  import Checkbox from '../common/CheckboxStore.svelte';
-  import Dropdown from '../common/DropdownStore.svelte';
+  import Checkbox from '../common/Checkbox.svelte';
+  import CheckboxStore from '../common/CheckboxStore.svelte';
   import Card from '../common/Card.svelte';
   export let div: HTMLElement;
+
+  const validLanguages: {[key: string]: boolean} = Object.fromEntries($languages.map((language) => [language, true]));
+  $: languages.set(Object.entries(validLanguages).filter((lang) => lang[1]).map((lang) => lang[0]));
 </script>
 
-<Card title="Filters" icon="filter_alt" noGap>
-  <Dropdown
-    name="Language filter"
-    store={language}
-    items={languageNameValues}
-    boundingDiv={div}
-  />
-  <div class="mt-6">
-    <Checkbox name="Show moderator and owner messages" store={showModMessage} />
-    <Checkbox name="Show verified user messages" store={showVerifiedMessage} />
-  </div>
+<Card title="Filter Languages" icon="filter_alt" noGap>
+  {#each languageNameValues as language}
+    <Checkbox label={language.text} bind:checked={validLanguages[language.value]} />
+  {/each}
+</Card>
+<Card title="Filter Options" icon="settings" noGap>
+  <CheckboxStore name="Show moderator and owner messages" store={showModMessage} />
+  <CheckboxStore name="Show verified user messages" store={showVerifiedMessage} />
 </Card>
 <BlockedUsers boundingDiv={div} />
 <Card title="External translation sources" icon="cloud" noGap>
   <!-- <Checkbox name="LiveTL API" store={enableAPITLs} /> -->
-  <Checkbox name="MChad (volunteer translators)" store={enableMchadTLs} />
+  <CheckboxStore name="MChad (volunteer translators)" store={enableMchadTLs} />
 </Card>
 <slot name="extras" />

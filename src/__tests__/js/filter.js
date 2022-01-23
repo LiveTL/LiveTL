@@ -1,10 +1,10 @@
 /* eslint-disable no-undef */
 import { parseTranslation, isLangMatch, textWhitelisted, textBlacklisted, plaintextWhitelisted } from '../../js/filter.js';
-import { languages } from '../../js/constants.js';
+import { languagesInfo } from '../../js/constants.js';
 import { customFilters } from '../../js/store.js';
 
 const langs = {};
-languages.forEach(lang => {
+languagesInfo.forEach(lang => {
   langs[lang.code] = lang;
 });
 
