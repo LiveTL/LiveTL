@@ -93,7 +93,7 @@ export const enableAPITLs = SS('enableAPITLs', true);
 export const enableExportButtons = SS('enableExportButtons', true);
 export const enableFullscreenButton = SS('enableFullscreenButton', true);
 export const mchadUsers = LS('mchadUsers', false);
-export const autoPrefixTag = SS('autoPrefixTag', '[$filterLang]');
+export const autoPrefixTag = SS('autoPrefixTag', '[en]');
 export const macroTrigger = SS('macroTrigger', '/');
 export const ytcDeleteBehaviour = SS('ytcDeleteBehaviour', YtcDeleteBehaviour.HIDE);
 export const autoVertical = SS('autoVertical', true);
@@ -113,7 +113,6 @@ export const neverShowSpotlightPrompt = SS('neverShowSpotlightPrompt', false);
 export const showVerifiedMessage = SS('showVerifiedMessage', false);
 export const isChatInverted = SS('isChatInverted', false);
 export const twitchEnabled = SS('twitchEnabled', true);
-export const prefixTagReplacementLanguage = SS('prefixTagReplacementLanguage', 'English');
 
 // All the variables persisted in presets
 export const presetStores = [
