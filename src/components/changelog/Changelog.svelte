@@ -3,8 +3,18 @@
   import twitch from './twitch.png';
 </script>
 
-<ExpandingCard title="Twitch Support!" icon="live_tv" expanded>
+<ExpandingCard title="Twitch Support!" icon="live_tv">
   LiveTL now works on Twitch! You can filter chat messages, view MChad TLs, and
   more, just like on YouTube.
   <img class="pt-2" src={twitch} alt="LiveTL on Twitch" />
 </ExpandingCard>
+<ExpandingCard title="HyperChat Settings Panel" icon="chat">
+  HyperChat's standalone settings menu is finally here! You can now easily change the
+  color theme (looking at you, Kiwawa) and toggle options like profile pictures,
+  timestamps, usernames, badges, and more!
+</ExpandingCard>
+<!-- <ExpandingCard title="Multi-Language Translation Filters" icon="translate">
+  LiveTL now supports multiple languages! You can now filter messages in multiple
+  languages at once. As a side benefit, you can now disable translation filtering
+  entirely as well!
+</ExpandingCard> -->
