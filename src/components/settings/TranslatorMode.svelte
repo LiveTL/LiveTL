@@ -39,11 +39,12 @@
     {#if $doAutoPrefix}
       <TextField
         bind:value={$autoPrefixTag}
-        label="Tag to prepend ($filterLang is replaced by the language selected below)"
+        label="Tag to prepend ($filterLang is replaced)"
       />
       <Dropdown
         store={prefixTagReplacementLanguage}
         items={languagesInfo.map((language) => language.lang)}
+        name="$filterLang is replaced by the language selected below"
       >
         Auto Prefix Tag
       </Dropdown>
