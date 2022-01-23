@@ -9,12 +9,12 @@
   <img class="pt-2" src={twitch} alt="LiveTL on Twitch" />
 </ExpandingCard>
 <ExpandingCard title="HyperChat Settings Panel" icon="chat">
-  HyperChat's standalone settings menu is finally here! You can now easily change the
-  color theme (looking at you, Kiwawa) and toggle options like profile pictures,
-  timestamps, usernames, badges, and more!
+  HyperChat's standalone settings menu is finally here! You can now easily toggle
+  options like profile pictures, timestamps, usernames, badges, and color themes
+  (inspired by Kiwawa having trouble with turning on dark mode).
 </ExpandingCard>
-<!-- <ExpandingCard title="Multi-Language Translation Filters" icon="translate">
+<ExpandingCard title="Multi-Language Translation Filters" icon="translate">
   LiveTL now supports multiple languages! You can now filter messages in multiple
   languages at once. As a side benefit, you can now disable translation filtering
   entirely as well!
-</ExpandingCard> -->
+</ExpandingCard>
