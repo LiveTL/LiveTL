@@ -1,7 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import CustomMacro from '../options/CustomMacro.svelte';
-  import { macros, doAutoPrefix, doTranslatorMode, autoPrefixTag, macroTrigger, languages, prefixTagReplacementLanguage } from '../../js/store.js';
+  import { macros, doAutoPrefix, doTranslatorMode, autoPrefixTag, macroTrigger, prefixTagReplacementLanguage } from '../../js/store.js';
   import { isAndroid, languagesInfo } from '../../js/constants.js';
   import Checkbox from '../common/CheckboxStore.svelte';
   import TextField from '../common/TextField.svelte';
