@@ -43,7 +43,7 @@
       />
       <Dropdown
         store={prefixTagReplacementLanguage}
-        items={languagesInfo.map((language) => language.name)}
+        items={languagesInfo.map((language) => language.lang)}
       >
         Auto Prefix Tag
       </Dropdown>
