@@ -149,6 +149,7 @@ export const presetStores = [
 
   if (!hasDoneLanguageMigration.get()) {
     languages.set([language.get()]);
+    hasDoneLanguageMigration.set(true);
   }
 })();
 
