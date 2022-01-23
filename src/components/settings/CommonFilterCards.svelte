@@ -13,7 +13,7 @@
   import Card from '../common/Card.svelte';
   export let div: HTMLElement;
 
-  let validLanguages: {[key: string]: boolean} = Object.fromEntries($languages.map((language) => [language, true]));
+  const validLanguages: {[key: string]: boolean} = Object.fromEntries($languages.map((language) => [language, true]));
   $: languages.set(Object.entries(validLanguages).filter((lang) => lang[1]).map((lang) => lang[0]));
 </script>
 
