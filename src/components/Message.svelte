@@ -94,7 +94,7 @@
               {msg.text}
             </a>
             {:else if msg.type === 'emoji' && msg.src}
-              <img class="h-5 w-5 mx-px inline" src={msg.src} alt={msg.alt} />
+              <img class="mx-px inline" style="max-height: 1.25em" src={msg.src} alt={msg.alt} />
           {/if}
         {/each}
       </span>

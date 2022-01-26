@@ -44,6 +44,15 @@ function getLiveMessageBody(message: Element): HTMLElement | undefined {
 }
 
 function parseMessageFragment(fragment: Element): Ytc.ParsedRun | undefined {
+  const emote = fragment.querySelector<HTMLImageElement>(emoteSelector);
+  if (emote != null) {
+    return {
+      type: 'emoji',
+      src: emote.src,
+      alt: emote.alt
+    };
+  }
+
   const classList = fragment.classList;
   if (classList.contains(textFragmentClass) || classList.contains(mentionFragmentClass)) {
     return {
@@ -57,14 +66,6 @@ function parseMessageFragment(fragment: Element): Ytc.ParsedRun | undefined {
       url: fragment.href
     };
   }
-
-  const emote = fragment.querySelector<HTMLImageElement>(emoteSelector);
-  if (emote == null) return;
-  return {
-    type: 'emoji',
-    src: emote.src,
-    alt: emote.alt
-  };
 }
 
 function parseTypes(message: Element): Ltl.AuthorType {
