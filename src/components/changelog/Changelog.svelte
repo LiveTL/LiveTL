@@ -19,5 +19,5 @@
   entirely as well!
 </ExpandingCard>
 <ExpandingCard title="Internal Fixes" icon="bug_report">
-  v8.0.3 had a few minor issues, those should be resolved in v8.0.4!
+  v8.0.3 had a few minor issues. They should be resolved in v8.0.4!
 </ExpandingCard>
