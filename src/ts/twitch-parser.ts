@@ -12,6 +12,10 @@ const mentionFragmentClass = 'mention-fragment';
 const textFragmentClass = 'text-fragment';
 const emoteSelector = 'img.chat-line__message--emote';
 
+const ffzBadgesSelector = '.ffz-badge';
+const ffzMessageSelector = '.message';
+const ffzMentionClass = 'chat-line__message-mention';
+
 let messageCounter = 0;
 
 export function isVod(): boolean {
@@ -34,7 +38,11 @@ function getVodMesssageBody(message: Element): Element | undefined {
 
 function getLiveMessageBody(message: Element): HTMLElement | undefined {
   const chatLine = message.querySelector(liveChatLineSelector);
-  if (chatLine == null) return;
+  if (chatLine == null) {
+    const ffzMessage = message.querySelector<HTMLElement>(ffzMessageSelector);
+    if (ffzMessage != null) return ffzMessage;
+    return;
+  }
   for (let i = 0; i < chatLine.children.length; i++) {
     const child = chatLine.children[i] as HTMLElement;
     if (child.dataset.testSelector === liveMessageProperty) {
@@ -54,7 +62,11 @@ function parseMessageFragment(fragment: Element): Ytc.ParsedRun | undefined {
   }
 
   const classList = fragment.classList;
-  if (classList.contains(textFragmentClass) || classList.contains(mentionFragmentClass)) {
+  if (
+    classList.contains(textFragmentClass) ||
+    classList.contains(mentionFragmentClass) ||
+    classList.contains(ffzMentionClass)
+  ) {
     return {
       type: 'text',
       text: fragment.textContent ?? ''
@@ -68,15 +80,24 @@ function parseMessageFragment(fragment: Element): Ytc.ParsedRun | undefined {
   }
 }
 
+function getType(type: string): Ltl.AuthorType {
+  if (type === 'moderator') return AuthorType.moderator;
+  if (type === 'verified') return AuthorType.verified;
+  if (type === 'broadcaster') return AuthorType.owner;
+  if (type === 'subscriber') return AuthorType.member;
+  return 0;
+}
+
 function parseTypes(message: Element): Ltl.AuthorType {
   const badges = message.querySelectorAll<HTMLImageElement>(badgesSelector);
+  const ffzBadges = message.querySelectorAll<HTMLElement>(ffzBadgesSelector);
   let types = 0;
   Array.from(badges).forEach((badge) => {
     // Doesn't work on other languages outside of English
-    if (badge.alt.toLowerCase() === 'moderator') types |= AuthorType.moderator;
-    else if (badge.alt.toLowerCase() === 'verified') types |= AuthorType.verified;
-    else if (badge.alt.toLowerCase() === 'broadcaster') types |= AuthorType.owner;
-    else if (badge.alt.toLowerCase().includes('subscriber')) types |= AuthorType.member;
+    types |= getType(badge.alt.toLowerCase());
+  });
+  Array.from(ffzBadges).forEach((badge) => {
+    types |= getType(badge.dataset.badge?.toLowerCase() ?? '');
   });
   return types;
 }
