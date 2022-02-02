@@ -114,7 +114,8 @@ export const languagesInfo = [
   { code: 'kr', name: 'Korean', lang: '한국어', tag: 'ko-KR' },
   { code: 'ch', name: 'Chinese', lang: '中文', tag: 'zh-CN' },
   { code: 'ru', name: 'Russian', lang: 'русский', tag: 'ru-RO' },
-  { code: 'fr', name: 'French', lang: 'Français', tag: 'fr-FR' }
+  { code: 'fr', name: 'French', lang: 'Français', tag: 'fr-FR' },
+  { code: 'de', name: 'German', lang: 'Deutsch', tag: 'de-DE' }
 ];
 
 export const languageConversionTable = {};
