@@ -136,6 +136,7 @@ function load(): void {
 
   const observer = new MutationObserver((mutationRecords) => {
     mutationRecords.forEach((record) => {
+      // console.debug({ record });
       const added = record.addedNodes;
       if (added.length < 1) return;
       added.forEach((node) => {
