@@ -12,7 +12,7 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module',
     project: './tsconfig.json',
-    extraFileExtensions: ['.svelte']
+    extraFileExtensions: ['.svelte'],
   },
   plugins: [
     'svelte3',
@@ -98,5 +98,8 @@ module.exports = {
     Chat: 'readonly',
     Ltl: 'readonly',
     YT: 'readonly'
-  }
+  },
+  ignorePatterns: [
+    "**/vite.config.ts"
+  ]
 };
