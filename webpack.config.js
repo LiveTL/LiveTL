@@ -62,9 +62,9 @@ module.exports = (env, options) => {
       lite: path.join(__dirname, 'src', 'js', 'pages', 'lite.js'),
       translatormode: path.join(__dirname, 'src', 'js', 'pages', 'translatormode.js'),
       injector: path.join(__dirname, 'src', 'ts', 'content_scripts', 'injector.ts'),
-      'chat-interceptor': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-interceptor.ts'),
-      'chat-background': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-background.ts'),
-      chat: path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'ts', 'chat-injector.ts'),
+      'chat-interceptor': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'scripts', 'chat-interceptor.ts'),
+      'chat-background': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'scripts', 'chat-background.ts'),
+      chat: path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'scripts', 'chat-injector.ts'),
       'hyperchat/hyperchat': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'hyperchat.ts'),
       'yt-workaround': path.join(__dirname, 'src', 'ts', 'yt-workaround.ts'),
       'workaround-injector': path.join(__dirname, 'src', 'ts', 'content_scripts', 'workaround-injector.ts'),
@@ -198,7 +198,7 @@ module.exports = (env, options) => {
       new CopyWebpackPlugin({
         patterns: [
           {
-            from: 'src/submodules/chat/assets',
+            from: 'src/submodules/chat/src/assets',
             to: 'hyperchat'
           },
           {
