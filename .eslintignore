@@ -2,3 +2,4 @@ build
 dist
 node_modules
 .eslintrc.js
+**/vite.config.ts

@@ -98,8 +98,5 @@ module.exports = {
     Chat: 'readonly',
     Ltl: 'readonly',
     YT: 'readonly'
-  },
-  ignorePatterns: [
-    "**/vite.config.ts"
-  ]
+  }
 };
