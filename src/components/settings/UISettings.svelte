@@ -67,21 +67,21 @@
           <h6>Video side:</h6>
           <Radio store={videoSideSetting} map={videoSideMap} />
         </div>
-        <div class="flex items-center gap-2">
-          <h6>Chat split:</h6>
-          <Radio store={chatSplit} map={chatSplitMap} />
-        </div>
-        <div class="flex items-center gap-2">
-          <h6>Chat side:</h6>
-          <Radio
-            store={isChatInverted}
-            map={new Map([
-              [false, $chatSplit === ChatSplit.HORIZONTAL ? 'Top' : 'Left'],
-              [true, $chatSplit === ChatSplit.HORIZONTAL ? 'Bottom' : 'Right']
-            ])}
-          />
-        </div>
       {/if}
+      <div class="flex items-center gap-2">
+        <h6>Chat split:</h6>
+        <Radio store={chatSplit} map={chatSplitMap} />
+      </div>
+      <div class="flex items-center gap-2">
+        <h6>Chat side:</h6>
+        <Radio
+          store={isChatInverted}
+          map={new Map([
+            [false, $chatSplit === ChatSplit.HORIZONTAL ? 'Top' : 'Left'],
+            [true, $chatSplit === ChatSplit.HORIZONTAL ? 'Bottom' : 'Right']
+          ])}
+        />
+      </div>
       {#if $displayMode === DisplayMode.FULLPAGE}
         <Checkbox
           name="Automatically adjust layout when window is thin"
