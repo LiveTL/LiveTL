@@ -8,6 +8,6 @@
   <i>Special thanks to tenchou for the idea!</i>
 </ExpandingCard>
 
-<ExpandingCard title="Internal Improvements" icon="code">
+<ExpandingCard title="Internal improvements" icon="code">
   This update adds performance improvements.
 </ExpandingCard>
