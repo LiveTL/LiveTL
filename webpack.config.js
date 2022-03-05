@@ -184,6 +184,12 @@ module.exports = (env, options) => {
               }
             }
           ]
+        },
+        {
+          test: /\.m?js/,
+          resolve: {
+            fullySpecified: false
+          }
         }
       ]
     },
