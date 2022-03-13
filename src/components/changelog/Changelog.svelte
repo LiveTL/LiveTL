@@ -2,7 +2,7 @@
   import ExpandingCard from '../common/ExpandingCard.svelte';
 </script>
 
-<ExpandingCard title="New HyperChat features!" icon="chat">
+<ExpandingCard title="New HyperChat features!" icon="chat" expanded>
   <ul class="list-disc list-inside">
     <strong>On today's KFP menu:</strong>
     <li class="ml-3.5">
@@ -23,6 +23,6 @@
     <li class="ml-3.5">
       Fixing colored emoji rendering issues
     </li>
-  </ul>  
+  </ul>
 </ExpandingCard>
 
