@@ -5277,6 +5277,11 @@ is-core-module@^2.4.0:
   dependencies:
     has "^1.0.3"
 
+is-dark-color@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/is-dark-color/-/is-dark-color-1.2.0.tgz#60dea9b56cfd6e3a286fcf59e3ab78fd60a2c77d"
+  integrity sha512-07rMiXL60NRntHOMLp5A/2hVw+JGyQco7YS8mkg4y3FP0mTl68fm7/xVLuVR/8minoEQJKVqQ+xSgBlclaN5qA==
+
 is-data-descriptor@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/is-data-descriptor/-/is-data-descriptor-0.1.4.tgz#0b5ee648388e2c860282e793f1856fec3f301b56"
