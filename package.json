@@ -1,6 +1,6 @@
 {
   "name": "LiveTL",
-  "version": "8.2.0",
+  "version": "8.2.1",
   "description": "Get live translations for YouTube and Twitch streams, crowdsourced from multilingual viewers!",
   "scripts": {
     "build": "webpack --mode development",
@@ -91,7 +91,7 @@
     "file-saver": "^2.0.5",
     "hosted-git-info": "^4.0.2",
     "html2canvas": "^1.0.0-rc.7",
-    "iframe-translator": "^0.2.3",
+    "iframe-translator": "^0.3.2",
     "is-dark-color": "^1.2.0",
     "jquery": "^3.6.0",
     "jquery-ui-bundle": "^1.12.1-migrate",
