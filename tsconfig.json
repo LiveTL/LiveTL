@@ -7,7 +7,7 @@
     "checkJs": false,
     "strict": true,
     "lib": ["DOM"],
-    "target": "ES6",
+    "target": "esnext",
     "resolveJsonModule": true,
     "typeRoots": ["./node_modules/@types", "./src/ts/typings", "./src/submodules/chat/src/ts/typings"]
   },

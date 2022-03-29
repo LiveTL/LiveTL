@@ -1,6 +1,6 @@
 {
   "name": "LiveTL",
-  "version": "8.2.1",
+  "version": "8.2.2",
   "description": "Get live translations for YouTube and Twitch streams, crowdsourced from multilingual viewers!",
   "scripts": {
     "build": "webpack --mode development",
