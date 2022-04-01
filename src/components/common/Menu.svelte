@@ -1,3 +1,13 @@
+<script lang="ts" context="module">
+  import { writable } from 'svelte/store';
+
+  let count = 0;
+
+  const genId = (): string => `ltl-menu-${count++}`;
+
+  const activeMenuId = writable(genId());
+</script>
+
 <script lang="ts">
   import { tick } from 'svelte';
   import { fade } from 'svelte/transition';
@@ -15,6 +25,8 @@
   export let items: MenuItem[];
   export let visible = true;
 
+  const id = genId();
+
   let open = false;
   let activator: HTMLElement | undefined;
   let listDiv: HTMLElement | undefined;
@@ -31,7 +43,10 @@
   };
 
   const onOpenChange = async (open: boolean) => {
+    if (!open && id === $activeMenuId) activeMenuId.set('');
     if (!open) return;
+
+    activeMenuId.set(id);
 
     await tick(); // Wait for listDiv to exist
     if (!activator || !listDiv) {
@@ -55,6 +70,7 @@
   };
 
   $: onOpenChange(open);
+  $: open = $activeMenuId === id;
   $: classes = (open || visible ? 'visible' : 'invisible') + ' ' +
     ($$props.class ? $$props.class : '');
   $: menuClasses = 'absolute bg-white rounded shadow z-20 dark:bg-dark-500 ' +
