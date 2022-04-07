@@ -334,7 +334,7 @@
           ? 'arrow_upward'
           : 'arrow_downward'}
         on:click={() => {
-          messageDisplay.scrollToRecent();
+          messageDisplay.scrollToRecent(true);
           updateWrapper();
         }}
         filled

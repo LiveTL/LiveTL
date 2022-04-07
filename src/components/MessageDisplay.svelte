@@ -11,7 +11,7 @@
     spotlightedTranslator,
     sessionHidden,
     isSelecting,
-    isVisible,
+    isVisible
   } from '../js/store.js';
   import { AuthorType, TextDirection } from '../js/constants.js';
   import IntroMessage from './IntroMessage.svelte';
@@ -24,13 +24,13 @@
 
   let bottomMsg: HTMLElement | undefined;
 
-  export function scrollToRecent() {
+  export function scrollToRecent(overrideVisibility = false) {
     if (!bottomMsg) {
       console.error('bottomMsg undefined');
       return;
     }
 
-    if (!$isVisible) {
+    if (!$isVisible && !overrideVisibility) {
       console.debug('bottom message is not visible, abort scrolling');
       return;
     }
