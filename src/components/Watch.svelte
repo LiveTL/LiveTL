@@ -29,6 +29,7 @@
   import MainPane from './MainPane.svelte';
   import Options from './Options.svelte';
   import Captions from './Captions.svelte';
+  import VisibilityDetector from './VisibilityDetector.svelte';
 
   document.title = 'LiveTL';
   let chatElem, vidElem, ltlElem;
@@ -137,6 +138,7 @@
 <svelte:window on:keydown={onKeyEvent} />
 
 <div class="watch-wrapper relative w-screen bg-dark-500">
+  <VisibilityDetector />
   {#if isFullPage && $showCaption}
     <Captions />
   {/if}

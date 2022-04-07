@@ -10,7 +10,8 @@
     showTimestamp,
     spotlightedTranslator,
     sessionHidden,
-    isSelecting
+    isSelecting,
+    isVisible,
   } from '../js/store.js';
   import { AuthorType, TextDirection } from '../js/constants.js';
   import IntroMessage from './IntroMessage.svelte';
@@ -26,6 +27,11 @@
   export function scrollToRecent() {
     if (!bottomMsg) {
       console.error('bottomMsg undefined');
+      return;
+    }
+
+    if (!$isVisible) {
+      console.debug('bottom message is not visible, abort scrolling');
       return;
     }
 

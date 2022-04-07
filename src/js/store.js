@@ -209,3 +209,4 @@ export const anyRecordingShortcut = writable(false);
 export const videoShortcutAction = writable('');
 export const currentlyEditingPreset = writable(-1);
 export const promptToShow = writable(/** @type {String[]} */ ([]));
+export const isVisible = writable(false);
