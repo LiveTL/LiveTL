@@ -10,7 +10,8 @@
     showTimestamp,
     spotlightedTranslator,
     sessionHidden,
-    isSelecting
+    isSelecting,
+    scrollTo
   } from '../js/store.js';
   import { AuthorType, TextDirection } from '../js/constants.js';
   import IntroMessage from './IntroMessage.svelte';
@@ -22,17 +23,17 @@
   export let hideIntro = false;
 
   let bottomMsg: HTMLElement | undefined;
+  let messagesEl: HTMLElement | undefined;
 
-  export function scrollToRecent() {
-    if (!bottomMsg) {
-      console.error('bottomMsg undefined');
+  export function scrollToRecent(smooth = false) {
+    if (!messagesEl) {
+      console.error('messagesEl undefined');
       return;
     }
 
-    bottomMsg.scrollIntoView({
-      behavior: 'auto',
-      block: 'nearest',
-      inline: 'nearest'
+    scrollTo.set({
+      top: direction === TextDirection.BOTTOM ? messagesEl.clientHeight : 0,
+      behavior: smooth ? 'smooth' : 'auto'
     });
   }
 
@@ -67,6 +68,7 @@
 
 <MessageDisplayWrapper>
   <div
+    bind:this={messagesEl}
     class={classes}
     style="font-size: {Math.round($livetlFontSize)}px; word-break: break-word;"
   >

@@ -1,6 +1,6 @@
 <script>
   import { delayed } from '../js/utils.js';
-  import { isResizing } from '../js/store.js';
+  import { isResizing, scrollTo } from '../js/store.js';
 
   export let zoom = NaN;
 
@@ -22,6 +22,10 @@
   $: style = 'scrollbar-width: thin; scrollbar-color: #888 transparent; ' +
     `width: ${inverse}%; height: ${inverse}%; transform: scale(${factor}); ` +
     ($$props.style ? $$props.style : '');
+
+  $: if (div && $scrollTo) {
+    div.scrollTo($scrollTo);
+  }
 </script>
 
 <div
