@@ -25,15 +25,14 @@
   let bottomMsg: HTMLElement | undefined;
   let messagesEl: HTMLElement | undefined;
 
-  export function scrollToRecent(smooth = false) {
+  export function scrollToRecent() {
     if (!messagesEl) {
       console.error('messagesEl undefined');
       return;
     }
 
     scrollTo.set({
-      top: direction === TextDirection.BOTTOM ? messagesEl.clientHeight : 0,
-      behavior: smooth ? 'smooth' : 'auto'
+      top: direction === TextDirection.BOTTOM ? messagesEl.clientHeight : 0
     });
   }
 
