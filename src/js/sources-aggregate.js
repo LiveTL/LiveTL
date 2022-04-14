@@ -157,6 +157,6 @@ export const captionText = readable(defaultCaption, set => {
 // hmr
 if (window.unsubDictation) window.unsubDictation();
 window.unsubDictation = captionText.subscribe($txt => {
-  console.debug(`[LiveTL] Caption text:`, $txt);
-  $txt.text !== defaultCaption.text && checkAndSpeak($txt)
+  console.debug('[LiveTL] Caption text:', $txt);
+  $txt.text !== defaultCaption.text && checkAndSpeak($txt);
 });
