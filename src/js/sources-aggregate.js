@@ -145,7 +145,10 @@ export const displayedMessages = derived(dispDepends, dispTransform);
 export const captionText = readable(defaultCaption, set => {
   let text = defaultCaption;
   return displayedMessages.subscribe($msgs => {
-    if ($msgs[$msgs.length - 1]?.text != null && $msgs[$msgs.length - 1]?.text !== text) {
+    if ($msgs[$msgs.length - 1]?.text != null &&
+      $msgs[$msgs.length - 1]?.text !== text &&
+      $msgs[$msgs.length - 1]?.messageId !== text?.messageId
+    ) {
       set(text = $msgs[$msgs.length - 1]);
     }
   });
@@ -153,4 +156,7 @@ export const captionText = readable(defaultCaption, set => {
 
 // hmr
 if (window.unsubDictation) window.unsubDictation();
-window.unsubDictation = captionText.subscribe($txt => $txt.text !== defaultCaption.text && checkAndSpeak($txt));
+window.unsubDictation = captionText.subscribe($txt => {
+  console.debug(`[LiveTL] Caption text:`, $txt);
+  $txt.text !== defaultCaption.text && checkAndSpeak($txt)
+});
