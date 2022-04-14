@@ -2,6 +2,7 @@ import { doSpeechSynth, speechVolume, speechSpeed, speechSpeaker } from './store
 import { get } from 'svelte/store';
 
 export function speak(text, langCode, volume = 0) {
+  console.debug(`[LiveTL] Speaking: ${text}`);
   // speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.volume = volume || speechVolume.get();
