@@ -88,9 +88,10 @@ const messageDup = (msg, otherMsg) =>
     msg.types !== otherMsg.types;
 
 /** @type {(msg: Message, otherMsg: Message) => Boolean} */
-const messageEquals = (msg, otherMsg) => msg.text === otherMsg.text &&
+const messageEquals = (msg, otherMsg) => msg.messageId === otherMsg.messageId || (
+  msg.text === otherMsg.text &&
   msg.timestampMs === otherMsg.timestampMs &&
-  msg.authorId === otherMsg.authorId;
+  msg.authorId === otherMsg.authorId);
 
 /** @type {(text: String) => String} */
 const removeWhitespace = text => text.trim().replace(/(\W)\W+/g, '$1');
