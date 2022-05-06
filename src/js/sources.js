@@ -145,29 +145,36 @@ export function ytcSource(window) {
     return { ytc, cleanUp: () => {} };
   }
   let portRegistered = false;
-  const registerClient = (frameInfo) => {
+  let tryRegister = 0;
+  /** @type {Chat.FrameInfo | null} */
+  let frameInfo = null;
+  const registerClient = () => {
+    if (frameInfo == null) {
+      console.error('frameInfo is null');
+      return;
+    }
     port.postMessage({
       type: 'registerClient',
-      frameInfo: frameInfo,
+      frameInfo,
       getInitialData: false
     });
-    portRegistered = true;
+    tryRegister++;
   };
 
   // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
   if (paramsPopout && !portRegistered) {
-    registerClient(
-      {
-        tabId: parseInt(paramsTabId),
-        frameId: parseInt(paramsFrameId)
-      }
-    );
+    frameInfo = {
+      tabId: parseInt(paramsTabId),
+      frameId: parseInt(paramsFrameId)
+    };
+    registerClient();
   }
 
   window.addEventListener('message', (d) => {
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (!paramsPopout && d.data.type === 'frameInfo' && !portRegistered) {
-      registerClient(d.data.frameInfo);
+      frameInfo = d.data.frameInfo;
+      registerClient();
     }
   });
 
@@ -184,6 +191,17 @@ export function ytcSource(window) {
         break;
       case 'playerProgress':
         timestamp.set(response.playerProgress);
+        break;
+      case 'registerClientResponse':
+        if (response.success) {
+          portRegistered = true;
+          break;
+        }
+        if (tryRegister < 3) {
+          setTimeout(registerClient, 500);
+        } else {
+          console.error(`Failed to connect to YTC source after 3 attempts: ${response.failReason}`);
+        }
         break;
     }
   });
