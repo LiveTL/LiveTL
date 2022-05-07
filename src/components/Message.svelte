@@ -103,7 +103,7 @@
         <span class="{nameColorClass} inline-block align-middle">{message.author}</span>
         {#if mchad}
           <span class="bg-gray-700 px-1 rounded inline-block text-gray-300 align-middle">
-            <Icon block={false} class="inline align-middle" small>check_circle</Icon> Mchad TL
+            <Icon block={false} class="inline align-middle" small>check_circle</Icon> TLdex
           </span>
         {/if}
         <span class="inline-block align-middle">{timestamp}</span>
