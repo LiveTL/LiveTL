@@ -1,5 +1,5 @@
 import { compose } from './utils';
-import { writable, readable } from 'svelte/store';
+import { writable, readable, derived } from 'svelte/store';
 import {
   parseTranslation,
   isWhitelisted as textWhitelisted,
@@ -25,6 +25,19 @@ import * as TLDEX from './tldex.js';
 
 const mchadLink = paramsTwitchUrl ?? `YT_${paramsYtVideoId}`;
 
+const tldex = derived(
+  combineStores(TLDEX.getArchive(paramsYtVideoId), TLDEX.getLiveTranslations(paramsYtVideoId)).store,
+  ($message) => {
+    if (!$message) return;
+    const parsed = parseTranslation($message.text);
+    if (isTranslation(parsed)) {
+      $message = replaceFirstTranslation($message);
+      $message.text = parsed.msg;
+    }
+    return $message;
+  }
+);
+
 /** @type {YTCSources & { translations: Writable<Message>, mchad: Readable<Message>, api?: Readable<Message>, ytcBonks: Writable<any[]>, ytcDeletions:Writable<any[]>, thirdParty: Writable<Message> }} */
 export const sources = {
   chatTranslations: writable(null),
@@ -36,7 +49,7 @@ export const sources = {
   thirdParty: createThirdPartyStore(),
   ytcBonks: writable(null),
   ytcDeletions: writable(null),
-  tldex: combineStores(TLDEX.getArchive(paramsYtVideoId), TLDEX.getLiveTranslations(paramsYtVideoId)).store
+  tldex
 };
 
 /** @type {(msg: Message) => Boolean} */
