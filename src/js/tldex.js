@@ -2,7 +2,7 @@ import { MCHAD, Holodex, AuthorType, languageNameCode } from './constants.js';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as Ty from './types.js';
 import { derived, readable } from 'svelte/store';
-import { enableMchadTLs, mchadUsers, languages } from './store.js';
+import { enableTldexTLs, mchadUsers, languages } from './store.js';
 import { formatTimestampMillis, sleep, sortBy, toJson } from './utils.js';
 import { archiveStreamFromScript, sseToStream } from './api.js';
 
@@ -25,12 +25,12 @@ const getVideoDataWithRetry = async (videoLink, retryInterval) => {
 
 /** @type {(videoLink: String) => Readable<Ty.Message>} */
 export const getArchive = videoLink => readable(null, async set => {
-  const startTime = await getVideoDataWithRetry(videoLink.slice(3), 3);
+  const startTime = await getVideoDataWithRetry(videoLink, 3);
   if (!startTime) return () => { };
 
   await languages.loaded;
   const scripts = await Promise.all(languages.get().map((language) => languageNameCode[language]).map(e => e.code).map(async (langcode) => {
-    return fetch(`${Holodex}/videos/${videoLink.slice(3)}/chats?lang=${langcode}&verified=0&moderator=0&vtuber=0&tl=1&limit=100000`).then(toJson)
+    return fetch(`${Holodex}/videos/${videoLink}/chats?lang=${langcode}&verified=0&moderator=0&vtuber=0&tl=1&limit=100000`).then(toJson)
       .then(e => e.filter(c => !c.is_owner)
         .map(c => {
           return ({
@@ -41,7 +41,7 @@ export const getArchive = videoLink => readable(null, async set => {
             langCode: langcode,
             messageId: ++mchadTLCounter,
             timestamp: formatTimestampMillis(c.timestamp - startTime),
-            types: AuthorType.mchad,
+            types: AuthorType.tldex,
             timestampMs: c.timestamp - startTime,
             unix: Math.floor((c.timestamp - startTime) / 1000)
           });
@@ -62,7 +62,7 @@ export const getArchive = videoLink => readable(null, async set => {
   const unsubscribes = scripts
     .map(archiveStreamFromScript)
     .map(stream => stream.subscribe(tl => {
-      if (tl && enableMchadTLs.get() && !mchadUsers.get(tl.author)) { set(tl); }
+      if (tl && enableTldexTLs.get() && !mchadUsers.get(tl.author)) { set(tl); }
     }));
 
   return () => unsubscribes.forEach(u => u());
@@ -82,7 +82,7 @@ let mchadTLCounter = 0;
 
 /** @type {(room: Ty.MCHADLiveRoom) => Readable<Ty.Message>} */
 export const getRoomTranslations = (videoLink, langCode) => derived(streamRoom(videoLink, langCode), (data, set) => {
-  if (!enableMchadTLs.get()) return;
+  if (!enableTldexTLs.get()) return;
   const flag = data?.flag;
 
   if (flag === 'insert' || flag === 'update') {
@@ -94,7 +94,7 @@ export const getRoomTranslations = (videoLink, langCode) => derived(streamRoom(v
       langCode,
       messageId: ++mchadTLCounter,
       timestamp: liveUnixToTimestamp(data.content.time),
-      types: AuthorType.mchad,
+      types: AuthorType.tldex,
       timestampMs: data.content.time
     });
   }
@@ -104,7 +104,7 @@ export const getRoomTranslations = (videoLink, langCode) => derived(streamRoom(v
 export const getLiveTranslations = videoLink => readable(null, async set => {
   await languages.loaded;
   const unsubscribes = languages.get().map((language) => languageNameCode[language]).map(e => e.code).map(langcode => getRoomTranslations(videoLink, langcode).subscribe(msg => {
-    if (msg && enableMchadTLs.get() && !mchadUsers.get(msg.author)) {
+    if (msg && enableTldexTLs.get() && !mchadUsers.get(msg.author)) {
       set(msg);
     }
   }));

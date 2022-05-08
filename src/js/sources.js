@@ -14,6 +14,7 @@ import { paramsYtVideoId, AuthorType, paramsPopout, paramsTabId, paramsFrameId, 
 import * as MCHAD from './mchad.js';
 import { twitchSource } from '../ts/sources';
 // import * as API from './api.js';
+import * as TLDEX from './tldex.js';
 
 /**
  * @typedef {import('svelte/store').Readable} Readable
@@ -34,7 +35,8 @@ export const sources = {
   // api: combineStores(API.getArchive(paramsVideoId), API.getLiveTranslations(paramsVideoId)).store,
   thirdParty: createThirdPartyStore(),
   ytcBonks: writable(null),
-  ytcDeletions: writable(null)
+  ytcDeletions: writable(null),
+  tldex: combineStores(TLDEX.getArchive(paramsYtVideoId), TLDEX.getLiveTranslations(paramsYtVideoId)).store
 };
 
 /** @type {(msg: Message) => Boolean} */
@@ -222,6 +224,7 @@ function message(author, msg, timestamp) {
 attachFilters(sources);
 sources.translations = combineStores(
   sources.chatTranslations,
+  sources.tldex,
   sources.mchad
   // sources.api
 ).store;

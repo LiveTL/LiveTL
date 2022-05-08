@@ -3,7 +3,8 @@
     showModMessage,
     showVerifiedMessage,
     languages,
-    enableMchadTLs
+    enableMchadTLs,
+    enableTldexTLs
     // enableAPITLs
   } from '../../js/store.js';
   import { languageNameValues } from '../../js/constants.js';
@@ -30,5 +31,6 @@
 <Card title="External translation sources" icon="cloud" noGap>
   <!-- <Checkbox name="LiveTL API" store={enableAPITLs} /> -->
   <CheckboxStore name="MChad (volunteer translators)" store={enableMchadTLs} />
+  <CheckboxStore name="TLdex" store={enableTldexTLs} />
 </Card>
 <slot name="extras" />
