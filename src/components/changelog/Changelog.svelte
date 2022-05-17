@@ -1,5 +1,5 @@
 <script>
-  import ExpandingCard from '../common/ExpandingCard.svelte';
+  import ExpandingCard from '../../submodules/chat/src/components/common/ExpandingCard.svelte';
   import HCChangelogs from '../../submodules/chat/src/components/changelog/Changelog.svelte';
 </script>
 

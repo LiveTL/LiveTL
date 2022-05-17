@@ -3,11 +3,11 @@
   import CustomMacro from '../options/CustomMacro.svelte';
   import { macros, doAutoPrefix, doTranslatorMode, autoPrefixTag, macroTrigger } from '../../js/store.js';
   import { isAndroid } from '../../js/constants.js';
-  import Checkbox from '../common/CheckboxStore.svelte';
-  import TextField from '../common/TextField.svelte';
-  import Card from '../common/Card.svelte';
-  import ExpandingCard from '../common/ExpandingCard.svelte';
-  import Icon from '../common/Icon.svelte';
+  import Checkbox from '../../submodules/chat/src/components/common/CheckboxStore.svelte';
+  import TextField from '../../submodules/chat/src/components/common/TextField.svelte';
+  import Card from '../../submodules/chat/src/components/common/Card.svelte';
+  import ExpandingCard from '../../submodules/chat/src/components/common/ExpandingCard.svelte';
+  import Icon from '../../submodules/chat/src/components/common/Icon.svelte';
 
   const leaderCharRules = [
     {

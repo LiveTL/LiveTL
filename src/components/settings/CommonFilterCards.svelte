@@ -8,9 +8,9 @@
   } from '../../js/store.js';
   import { languageNameValues } from '../../js/constants.js';
   import BlockedUsers from './BlockedUsers.svelte';
-  import Checkbox from '../common/Checkbox.svelte';
-  import CheckboxStore from '../common/CheckboxStore.svelte';
-  import Card from '../common/Card.svelte';
+  import Checkbox from '../../submodules/chat/src/components/common/Checkbox.svelte';
+  import CheckboxStore from '../../submodules/chat/src/components/common/CheckboxStore.svelte';
+  import Card from '../../submodules/chat/src/components/common/Card.svelte';
   export let div: HTMLElement;
 
   const validLanguages: {[key: string]: boolean} = Object.fromEntries($languages.map((language) => [language, true]));

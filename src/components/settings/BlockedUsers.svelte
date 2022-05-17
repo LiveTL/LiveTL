@@ -1,7 +1,7 @@
 <script>
   import { channelFilters, enableMchadTLs, mchadUsers } from '../../js/store.js';
   import MultiDropdown from '../options/MultiDropdown.svelte';
-  import Card from '../common/Card.svelte';
+  import Card from '../../submodules/chat/src/components/common/Card.svelte';
 
   export let boundingDiv;
 

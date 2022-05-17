@@ -1,5 +1,5 @@
 <script>
-  import Card from '../common/Card.svelte';
+  import Card from '../../submodules/chat/src/components/common/Card.svelte';
 
   import { keyboardShortcuts } from '../../js/store.js';
   import TranslatorMode from './TranslatorMode.svelte';

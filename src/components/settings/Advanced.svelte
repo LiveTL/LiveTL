@@ -1,9 +1,9 @@
 <script lang="ts">
   import { twitchEnabled } from '../../js/store.js';
   import About from './About.svelte';
-  import Card from '../common/Card.svelte';
-  import Checkbox from '../common/CheckboxStore.svelte';
-  import NonstoreCheckbox from '../common/Checkbox.svelte';
+  import Card from '../../submodules/chat/src/components/common/Card.svelte';
+  import Checkbox from '../../submodules/chat/src/components/common/CheckboxStore.svelte';
+  import NonstoreCheckbox from '../../submodules/chat/src/components/common/Checkbox.svelte';
 </script>
 
 <Card title="Additional sites" icon="web">

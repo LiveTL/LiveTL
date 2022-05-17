@@ -1,7 +1,7 @@
 <script>
   import opencollective from '../../plugins/opencollective.json';
   import gh from '../../plugins/gh.json';
-  import ExpandingCard from '../common/ExpandingCard.svelte';
+  import ExpandingCard from '../../submodules/chat/src/components/common/ExpandingCard.svelte';
 
   const genKeys = obj =>
     Object.fromEntries(Object.entries(obj.keys).map(([x, y]) => [y, x]));

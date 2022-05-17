@@ -1,6 +1,6 @@
 <script>
   import Select from 'smelte/src/components/Select';
-  import Icon from '../common/Icon.svelte';
+  import Icon from '../../submodules/chat/src/components/common/Icon.svelte';
   import { getDropdownOffsetY, getRelativeRect } from '../../ts/component-utils';
   // I legit can't understand LookupStore to migrate this to TS lol
 

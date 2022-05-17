@@ -9,10 +9,10 @@
   } from '../../js/store.js';
   import { ytcDeleteItems } from '../../js/constants.js';
   import MultiDropdown from '../options/MultiDropdown.svelte';
-  import Card from '../common/Card.svelte';
-  import Slider from '../common/SliderStore.svelte';
-  import Checkbox from '../common/CheckboxStore.svelte';
-  import Dropdown from '../common/DropdownStore.svelte';
+  import Card from '../../submodules/chat/src/components/common/Card.svelte';
+  import Slider from '../../submodules/chat/src/components/common/SliderStore.svelte';
+  import Checkbox from '../../submodules/chat/src/components/common/CheckboxStore.svelte';
+  import Dropdown from '../../submodules/chat/src/components/common/DropdownStore.svelte';
 
   export let boundingDiv;
 

@@ -2,9 +2,9 @@
   import { importStores, exportStores } from '../../js/storage.js';
   import { compose } from '../../js/utils.js';
   import Button from 'smelte/src/components/Button';
-  import Dialog from '../common/Dialog.svelte';
-  import TextField from '../common/TextField.svelte';
-  import IconButton from '../common/IconButton.svelte';
+  import Dialog from '../../submodules/chat/src/components/common/Dialog.svelte';
+  import TextField from '../../submodules/chat/src/components/common/TextField.svelte';
+  import IconButton from '../../submodules/chat/src/components/common/IconButton.svelte';
 
   let isImporting = false;
   let value = '';

@@ -2,9 +2,9 @@
   import { writable } from 'svelte/store';
   // import { onMount } from 'svelte';
   import { modifyFilter, deleteFilter } from '../../js/filter.js';
-  import Dropdown from '../common/DropdownStore.svelte';
+  import Dropdown from '../../submodules/chat/src/components/common/DropdownStore.svelte';
   import { showBlockItems, plainRegexItems, chatAuthorItems } from '../../js/constants.js';
-  import TextField from '../common/TextField.svelte';
+  import TextField from '../../submodules/chat/src/components/common/TextField.svelte';
   import { isValidRegex } from '../../ts/utils';
 
   export let rule = '';

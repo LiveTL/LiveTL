@@ -1,8 +1,8 @@
 <script>
   import { macros } from '../../js/store.js';
-  import Checkbox from '../common/Checkbox.svelte';
-  import TextField from '../common/TextField.svelte';
-  import Button from '../common/IconButton.svelte';
+  import Checkbox from '../../submodules/chat/src/components/common/Checkbox.svelte';
+  import TextField from '../../submodules/chat/src/components/common/TextField.svelte';
+  import Button from '../../submodules/chat/src/components/common/IconButton.svelte';
 
   export let name;
   export let expansion;

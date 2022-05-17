@@ -3,7 +3,7 @@
   import { customFilters } from '../../js/store.js';
   import { addFilter, cleanupFilters } from '../../js/filter.js';
   import CustomFilter from '../options/CustomFilter.svelte';
-  import Card from '../common/Card.svelte';
+  import Card from '../../submodules/chat/src/components/common/Card.svelte';
   import CommonFilterCards from './CommonFilterCards.svelte';
   import SpamProtection from './SpamProtection.svelte';
 
