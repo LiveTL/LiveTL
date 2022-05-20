@@ -3,6 +3,6 @@
   import HCChangelogs from '../../submodules/chat/src/components/changelog/Changelog.svelte';
 </script>
 
-<ExpandingCard title="HyperChat fixes and improvements" icon="chat">
+<ExpandingCard title="HyperChat fixes and improvements" icon="chat" expanded>
   <HCChangelogs />
 </ExpandingCard>
