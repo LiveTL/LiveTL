@@ -8760,6 +8760,11 @@ setprototypeof@1.1.1:
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.1.1.tgz#7e95acb24aa92f5885e0abef5ba131330d4ae683"
   integrity sha512-JvdAWfbXeIGaZ9cILp38HntZSFSo3mWg6xGcJJsd+d4aRMOqauag1C63dJfDw7OaMYwEbHMOxEZ1lqVRYP2OAw==
 
+sha-1@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/sha-1/-/sha-1-1.0.0.tgz#01cca4f6ba3e5cacd44dbde092c90d070660e4e2"
+  integrity sha512-qjFA/+LdT0Gvu/JcmYTGZMvVy6WXJOWv1KQuY7HvSr2oBrMxA8PnZu2mc1/ZS2EvLMokj7lIeQsNPjkRzXrImw==
+
 shallow-clone@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/shallow-clone/-/shallow-clone-0.1.2.tgz#5909e874ba77106d73ac414cfec1ffca87d97060"
