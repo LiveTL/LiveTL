@@ -95,10 +95,10 @@
   }
 
   let selectedItems = [];
-  $: selectedItemCount = getSelectedItems().length;
+  $: selectedItemCount = getSelectedItems(selectedItems).length;
 
-  function getSelectedItems() {
-    return selectedItems.filter((d) => !d.hidden);
+  function getSelectedItems(arr = selectedItems) {
+    return arr.filter((d) => !d.hidden);
   }
 
   function selectAllItems() {

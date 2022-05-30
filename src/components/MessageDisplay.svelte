@@ -89,11 +89,13 @@
           )}
       >
         {#if $isSelecting}
-          <Checkbox
-            bind:group={selectedItems}
-            value={item}
-            wrapperClass="inline-flex"
-          />
+          <div class="h-0 flex">
+            <Checkbox
+              bind:group={selectedItems}
+              value={item}
+              wrapperClass="inline-flex"
+            />
+          </div>
         {/if}
       </Message>
     {/each}
