@@ -22,8 +22,6 @@ import * as TLDEX from './tldex.js';
  * @typedef {{ chatTranslations: Writable<Message>, mod: Writable<Message>, verified: Writable<Message>, chat: Writable<Message> }} YTCSources
  */
 
-const mchadLink = paramsTwitchUrl ?? `YT_${paramsYtVideoId}`;
-
 const tldex = derived(
   combineStores(TLDEX.getArchive(paramsYtVideoId), TLDEX.getLiveTranslations(paramsYtVideoId)).store,
   ($message) => {
