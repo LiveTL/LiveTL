@@ -11,7 +11,6 @@ import {
 } from './filter';
 import { showModMessage, showVerifiedMessage, timestamp } from './store';
 import { paramsYtVideoId, AuthorType, paramsPopout, paramsTabId, paramsFrameId, paramsTwitchUrl } from './constants';
-import * as MCHAD from './mchad.js';
 import { twitchSource } from '../ts/sources';
 // import * as API from './api.js';
 import * as TLDEX from './tldex.js';
@@ -44,7 +43,6 @@ export const sources = {
   mod: writable(null),
   verified: writable(null),
   chat: (paramsTwitchUrl ?? '') ? twitchSource() : ytcSource(window).ytc,
-  mchad: combineStores(MCHAD.getArchive(mchadLink), MCHAD.getLiveTranslations(mchadLink)).store,
   // api: combineStores(API.getArchive(paramsVideoId), API.getLiveTranslations(paramsVideoId)).store,
   thirdParty: createThirdPartyStore(),
   ytcBonks: writable(null),
@@ -237,8 +235,7 @@ function message(author, msg, timestamp) {
 attachFilters(sources);
 sources.translations = combineStores(
   sources.chatTranslations,
-  sources.tldex,
-  sources.mchad
+  sources.tldex
   // sources.api
 ).store;
 
