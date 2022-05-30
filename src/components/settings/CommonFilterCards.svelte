@@ -29,7 +29,6 @@
 <BlockedUsers boundingDiv={div} />
 <Card title="External translation sources" icon="cloud" noGap>
   <!-- <Checkbox name="LiveTL API" store={enableAPITLs} /> -->
-  <Checkbox label="MChad (volunteer translators)" checked={false} disabled />
-  <CheckboxStore name="TLDex" store={enableTldexTLs} />
+  <CheckboxStore name="TLdex (volunteer translators)" store={enableTldexTLs} />
 </Card>
 <slot name="extras" />

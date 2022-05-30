@@ -1,5 +1,5 @@
 <script>
-  import { channelFilters, enableMchadTLs, mchadUsers, enableTldexTLs } from '../../js/store.js';
+  import { channelFilters, mchadUsers, enableTldexTLs } from '../../js/store.js';
   import MultiDropdown from '../options/MultiDropdown.svelte';
   import Card from '../common/Card.svelte';
 
@@ -22,10 +22,10 @@
         {width}
       />
     </div>
-    {#if $enableMchadTLs || $enableTldexTLs}
+    {#if $enableTldexTLs}
       <div class="flex-1">
         <MultiDropdown
-          name="MChad / TLdex"
+          name="TLdex"
           store={mchadUsers}
           {boundingDiv}
           {width}
