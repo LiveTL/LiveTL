@@ -9,6 +9,7 @@
   export let getDisplayName = (key, value) => `${key}` || value;
   export let getBool = (key) => store.get(key);
   export let setBool = (key, val) => store.set(key, val);
+  /** @type {HTMLDivElement} */
   export let boundingDiv = null;
   export let width = 0;
 
@@ -16,6 +17,7 @@
   let div = null;
   let offsetY = '';
   let offsetX = '';
+  let offsetStyle = '';
 
   function convertLookup(lookup) {
     return [...lookup]
@@ -28,10 +30,15 @@
     offsetY = await getDropdownOffsetY(div, boundingDiv);
 
     const relativeRect = getRelativeRect(div, boundingDiv);
-    if (relativeRect.left + width > boundingDiv.clientWidth) {
-      offsetX = 'right-0';
-    } else {
+    if (relativeRect.left + width < boundingDiv.clientWidth) {
       offsetX = 'left-0';
+      offsetStyle = '';
+    } else if (relativeRect.right - width < 0) {
+      offsetX = '';
+      offsetStyle = `left: -${relativeRect.left - 12}px`;
+    } else if (relativeRect.left + width > boundingDiv.clientWidth) {
+      offsetX = 'right-0';
+      offsetStyle = '';
     }
   };
 
@@ -54,7 +61,7 @@
       slot="options"
       class={optionsClasses}
       on:click|stopPropagation
-      style="width: {width}px;"
+      style="width: {width}px; {offsetStyle}"
     >
       {#if items.length}
         {#each items as item}

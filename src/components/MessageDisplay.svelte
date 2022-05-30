@@ -40,7 +40,7 @@
   afterUpdate(() => dispatch('afterUpdate'));
 
   const banMessage = (item: Ltl.Message) => () => {
-    if (item.types & AuthorType.mchad) {
+    if (item.types & AuthorType.tldex) {
       mchadUsers.set(item.author, true);
     } else {
       channelFilters.set(item.authorId, {

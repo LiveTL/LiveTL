@@ -1,5 +1,5 @@
 import { compose } from './utils';
-import { writable, readable } from 'svelte/store';
+import { writable, readable, derived } from 'svelte/store';
 import {
   parseTranslation,
   isWhitelisted as textWhitelisted,
@@ -11,9 +11,9 @@ import {
 } from './filter';
 import { showModMessage, showVerifiedMessage, timestamp } from './store';
 import { paramsYtVideoId, AuthorType, paramsPopout, paramsTabId, paramsFrameId, paramsTwitchUrl } from './constants';
-import * as MCHAD from './mchad.js';
 import { twitchSource } from '../ts/sources';
 // import * as API from './api.js';
+import * as TLDEX from './tldex.js';
 
 /**
  * @typedef {import('svelte/store').Readable} Readable
@@ -22,7 +22,18 @@ import { twitchSource } from '../ts/sources';
  * @typedef {{ chatTranslations: Writable<Message>, mod: Writable<Message>, verified: Writable<Message>, chat: Writable<Message> }} YTCSources
  */
 
-const mchadLink = paramsTwitchUrl ?? `YT_${paramsYtVideoId}`;
+const tldex = derived(
+  combineStores(TLDEX.getArchive(paramsYtVideoId), TLDEX.getLiveTranslations(paramsYtVideoId)).store,
+  ($message) => {
+    if (!$message) return;
+    const parsed = parseTranslation($message.text);
+    if (isTranslation(parsed)) {
+      $message = replaceFirstTranslation($message);
+      $message.text = parsed.msg;
+    }
+    return $message;
+  }
+);
 
 /** @type {YTCSources & { translations: Writable<Message>, mchad: Readable<Message>, api?: Readable<Message>, ytcBonks: Writable<any[]>, ytcDeletions:Writable<any[]>, thirdParty: Writable<Message> }} */
 export const sources = {
@@ -30,11 +41,11 @@ export const sources = {
   mod: writable(null),
   verified: writable(null),
   chat: (paramsTwitchUrl ?? '') ? twitchSource() : ytcSource(window).ytc,
-  mchad: combineStores(MCHAD.getArchive(mchadLink), MCHAD.getLiveTranslations(mchadLink)).store,
   // api: combineStores(API.getArchive(paramsVideoId), API.getLiveTranslations(paramsVideoId)).store,
   thirdParty: createThirdPartyStore(),
   ytcBonks: writable(null),
-  ytcDeletions: writable(null)
+  ytcDeletions: writable(null),
+  tldex
 };
 
 /** @type {(msg: Message) => Boolean} */
@@ -222,7 +233,7 @@ function message(author, msg, timestamp) {
 attachFilters(sources);
 sources.translations = combineStores(
   sources.chatTranslations,
-  sources.mchad
+  sources.tldex
   // sources.api
 ).store;
 

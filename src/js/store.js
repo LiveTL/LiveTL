@@ -113,6 +113,8 @@ export const neverShowSpotlightPrompt = SS('neverShowSpotlightPrompt', false);
 export const showVerifiedMessage = SS('showVerifiedMessage', false);
 export const isChatInverted = SS('isChatInverted', false);
 export const twitchEnabled = SS('twitchEnabled', true);
+// tldex is mchad's successor and users want same preference
+export const enableTldexTLs = enableMchadTLs;
 
 // All the variables persisted in presets
 export const presetStores = [

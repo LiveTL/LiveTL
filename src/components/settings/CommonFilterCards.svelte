@@ -3,7 +3,7 @@
     showModMessage,
     showVerifiedMessage,
     languages,
-    enableMchadTLs
+    enableTldexTLs
     // enableAPITLs
   } from '../../js/store.js';
   import { languageNameValues } from '../../js/constants.js';
@@ -29,6 +29,6 @@
 <BlockedUsers boundingDiv={div} />
 <Card title="External translation sources" icon="cloud" noGap>
   <!-- <Checkbox name="LiveTL API" store={enableAPITLs} /> -->
-  <CheckboxStore name="MChad (volunteer translators)" store={enableMchadTLs} />
+  <CheckboxStore name="TLdex (volunteer translators)" store={enableTldexTLs} />
 </Card>
 <slot name="extras" />

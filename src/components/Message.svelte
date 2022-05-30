@@ -57,7 +57,7 @@
 
   $: moderator = message.types & AuthorType.moderator;
   $: owner = message.types & AuthorType.owner;
-  $: mchad = message.types & AuthorType.mchad;
+  $: tldex = message.types & AuthorType.tldex;
 
   $: timestamp = showTimestamp ? `(${message.timestamp})` : '';
   $: nameColorClass = generateNameColorClass(moderator, owner);
@@ -101,9 +101,9 @@
       <!-- Author & timestamp -->
       <span class="message-info text-gray-700 dark:text-gray-400" style="font-size: 0.75em;">
         <span class="{nameColorClass} inline-block align-middle">{message.author}</span>
-        {#if mchad}
+        {#if tldex}
           <span class="bg-gray-700 px-1 rounded inline-block text-gray-300 align-middle">
-            <Icon block={false} class="inline align-middle" small>check_circle</Icon> Mchad TL
+            <Icon block={false} class="inline align-middle" small>check_circle</Icon> TLdex
           </span>
         {/if}
         <span class="inline-block align-middle">{timestamp}</span>

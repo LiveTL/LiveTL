@@ -105,7 +105,7 @@ def test_embed_resize(web):
 
 
 @run_on(all_)
-def test_embed_mchad_vod_tls(web):
+def test_embed_tldex_vod_tls(web):
     open_mio_embed(web)
 
     # Skipping from 0 to a later timestamp should show first translation in between
@@ -121,7 +121,7 @@ def test_embed_mchad_vod_tls(web):
     info = web.find_element_by_css_selector(".message-display > .message .message-info")
     assert "Mio, this time we're veteran" in tl.text, "Incorrect tl"
     assert "MonMon TL" in info.text, "Incorrect author of tl"
-    assert "Mchad TL" in info.text, "MCHAD badge not found"
+    assert "TLdex" in info.text, "TLdex badge not found"
     assert "(00:00:43)" in info.text, "Incorrect tl timestamp"
 
 
@@ -148,7 +148,7 @@ def test_embed_ytc_vod_tls(web):
     info = web.find_element_by_css_selector(".message-display > .message .message-info")
     assert "You sound so cool just now" in tl.text, "Incorrect tl"
     assert "KFC" in info.text, "Incorrect author"
-    assert "Mchad TL" not in info.text, "MCHAD badge incorrectly displayed"
+    assert "TLdex" not in info.text, "TLdex badge incorrectly displayed"
     assert "(23:51)" in info.text, "Incorrect tl timestamp"
 
 

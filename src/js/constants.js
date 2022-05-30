@@ -100,7 +100,8 @@ export const AuthorType = {
   owner: 1 << 2,
   member: 1 << 3,
   mchad: 1 << 4,
-  api: 1 << 5
+  api: 1 << 5,
+  tldex: 1 << 6
 };
 
 export const GIGACHAD =
@@ -132,6 +133,7 @@ languagesInfo.forEach(i => (languageConversionTable[createLangSelectionName(i)] 
 languagesInfo.forEach(lang => (languageNameCode[lang.lang] = lang));
 
 export const MCHAD = 'https://repo.mchatx.org';
+export const Holodex = 'https://holodex.net/api/v2';
 
 const params = new URLSearchParams(window.location.search);
 export const paramsYtVideoId = params.get('ytVideo');
