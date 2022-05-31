@@ -69,7 +69,7 @@ export const getArchive = videoLink => readable(null, async set => {
 });
 
 /** @type {(room: String) => Readable<Ty.MCHADStreamItem>} */
-const streamRoom = (videoLink, langcode) => sseToStream(`${MCHAD}/holoproxy?id=${videoLink}&lang=${langcode}`);
+const streamRoom = (videoLink, langcode) => sseToStream(`${MCHAD}/holoproxy?id=YT_${videoLink}&lang=${langcode}`);
 
 /** @type {(time: String) => String} */
 const removeSeconds = time => time.replace(/:\d\d /, ' ');
