@@ -226,3 +226,4 @@ export const videoShortcutAction = writable('');
 export const currentlyEditingPreset = writable(-1);
 export const promptToShow = writable(/** @type {String[]} */ ([]));
 export const scrollTo = writable(/** @type {ScrollToOptions} */ ({ top: 0 }));
+export const potentialSpammer = writable(/** @type {typeof sampleSpam | null} */ (null));

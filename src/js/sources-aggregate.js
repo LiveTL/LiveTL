@@ -11,6 +11,7 @@ import {
   spamMsgInterval,
   enableSpamProtection,
   spammersDetected,
+  potentialSpammer,
   disableSpecialSpamProtection,
   langCode
 } from './store.js';
@@ -36,7 +37,7 @@ const toSet = (...stores) => derived(stores, ($stores) => new Set($stores.flat()
 
 const channelBlacklisted = lookupStoreToList(channelFilters, f => f.blacklist);
 const mchadBlacklisted = lookupStoreToList(mchadUsers);
-const notSpammer = lookupStoreToList(spammersDetected, f => !f.spam);
+const notSpammer = lookupStoreToList(spammersDetected, f => f && !f.spam);
 
 export const allBanned = toSet(channelBlacklisted, mchadBlacklisted);
 export const notSpamStore = toSet(notSpammer);
@@ -44,9 +45,11 @@ export const notSpamStore = toSet(notSpammer);
 /** @type {Readable<(authorId: String) => Boolean>} */
 const whitelistedSpam = derived(notSpamStore, $set => id => $set.has(id));
 
-/** @type {([authorId: String, author: String]) => Void} */
-const markSpam = ([authorId, author]) => {
-  if (!spammersDetected.has(authorId)) { spammersDetected.set(authorId, { authorId, author, spam: true }); }
+/** @type {([authorId: String, author: String]) => void} */
+const markSpam = async ([authorId, author]) => {
+  if (spammersDetected.has(authorId)) return;
+
+  potentialSpammer.set({ authorId, author, spam: true });
 };
 
 /** @type {(msg: Message) => Boolean} */
@@ -118,19 +121,22 @@ const spamStores = [spamMsgAmount, spamMsgInterval]
 
 const dispDepends = [
   ...[sameLangMessages, allBanned, hidden, spotlightedTranslator],
-  ...[...spamStores, whitelistedSpam, enableSpamProtection, disableSpecialSpamProtection]
+  ...[...spamStores, whitelistedSpam, enableSpamProtection, disableSpecialSpamProtection],
+  ...[spammersDetected],
 ];
 
 const dispTransform =
-  ([$items, $banned, $hidden, $spot, $spamAmt, $spamInt, $whitelisted, $enSpam, $disSpecialSpam]) => {
+  ([$items, $banned, $hidden, $spot, $spamAmt, $spamInt, $whitelisted, $enSpam, $disSpecialSpam, $spamDetected]) => {
     const attrNotIn = (set, attr) => item => !set.has(item[attr]);
     const notWhitelisted = ([id]) => !$whitelisted(id);
     const possibleSpam = $disSpecialSpam ? $items.filter(isPleb) : $items;
     const spammers = $enSpam
       ? getSpamAuthors(possibleSpam, $spamAmt, $spamInt).filter(notWhitelisted)
       : [];
-    const spammerIds = new Set(spammers.map(([id]) => id));
     spammers.forEach(markSpam);
+    const spammerIds = new Set($spamDetected
+      .filter(([id_, data]) => data?.spam)
+      .map(([id]) => id));
 
     $items = $items
       ?.filter(attrNotIn($banned, 'authorId'))
