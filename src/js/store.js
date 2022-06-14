@@ -154,6 +154,20 @@ export const presetStores = [
   }
 })();
 
+// -=- Spammers Migration -=-
+// Taishi got marked as spam, we will unmark all spammers and make spam detection
+// only ban the user upon user confirmation.
+(async () => {
+  const hasDoneSpammerMigration = SS('hasDoneSpammerMigration', false);
+
+  await hasDoneSpammerMigration.loaded;
+
+  if (!hasDoneSpammerMigration.get()) {
+    spammersDetected.clear();
+    hasDoneSpammerMigration.set(true);
+  }
+})();
+
 // Non-persistant stores
 
 /** @typedef {{width: Number, height: Number}} WindowDimension */
