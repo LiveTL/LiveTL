@@ -15,6 +15,8 @@
     ' max-h-full overflow-y-auto ' +
     (expandWidth ? 'w-full mx-2 ' : ' ') +
     ($$props.class ?? '');
+
+  $: console.log('ACTIVE', active);
 </script>
 
 <Dialog bind:value={active} classes={classes}>
