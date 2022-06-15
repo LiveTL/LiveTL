@@ -11,8 +11,7 @@
   const refreshSpammerInQuestion = () => {
     if (!spammerQueue.empty()) {
       spammerInQuestion = spammerQueue.pop().data;
-    }
-    else {
+    } else {
       spammerInQuestion = null;
     }
   };
@@ -38,13 +37,15 @@
     if (spammerInQuestion === null) refreshSpammerInQuestion();
   }
 
-  $: dialogActive = spammerInQuestion !== null;
-  // dialog closed without a definitive answer from user
-  $: if (!dialogActive && spammerInQuestion !== null) {
-    console.log('trying to close');
-    refreshSpammerInQuestion();
+  let dialogActive = false;
+  const dismiss = () => {
+    if (!dialogActive && spammerInQuestion !== null) {
+      refreshSpammerInQuestion();
+    }
   };
-  $: console.log('RUNNING THIS'), dialogActive = spammerInQuestion !== null;
+  $: dialogActive, dismiss();
+  const refresh = () => (dialogActive = spammerInQuestion !== null);
+  $: spammerInQuestion, refresh();
 </script>
 
 <Dialog
