@@ -13,7 +13,7 @@
   };
 
   const markAsSpammer = () => {
-    spammersDetected.set(spammerInQuestion.authorId, { 
+    spammersDetected.set(spammerInQuestion.authorId, {
       ...spammerInQuestion, spam: true
     });
     refreshSpammerInQuestion();

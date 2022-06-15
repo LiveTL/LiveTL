@@ -122,7 +122,7 @@ const spamStores = [spamMsgAmount, spamMsgInterval]
 const dispDepends = [
   ...[sameLangMessages, allBanned, hidden, spotlightedTranslator],
   ...[...spamStores, whitelistedSpam, enableSpamProtection, disableSpecialSpamProtection],
-  ...[spammersDetected],
+  ...[spammersDetected]
 ];
 
 const dispTransform =
@@ -135,7 +135,7 @@ const dispTransform =
       : [];
     spammers.forEach(markSpam);
     const spammerIds = new Set($spamDetected
-      .filter(([id_, data]) => data?.spam)
+      .filter(([_id, data]) => data?.spam)
       .map(([id]) => id));
 
     $items = $items
