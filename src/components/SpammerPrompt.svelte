@@ -28,12 +28,11 @@
 
   $: if ($potentialSpammer !== null && !spammersProcessed.has($potentialSpammer.authorId)) {
     spammerQueue.push($potentialSpammer);
-    spammersProcessed.set($potentialSpammer.authorId);
+    spammersProcessed.add($potentialSpammer.authorId);
     potentialSpammer.set(null);
     if (spammerInQuestion === null) refreshSpammerInQuestion();
   }
 
   $: window.markAsSpammer = markAsSpammer;
   $: window.markAsInnocent = markAsInnocent;
-  $: console.log('ANSWER WHETHER', spammerInQuestion, 'IS SPAMMER !!!!IMPORTANT');
 </script>
