@@ -41,6 +41,7 @@ const sampleFilter = {
   id: ''
 };
 
+const sampleAuthor = { author: '', authorId: '' };
 const sampleSpam = { author: '', authorId: '', spam: false };
 
 export const defaultShortcuts = {
@@ -115,6 +116,7 @@ export const isChatInverted = SS('isChatInverted', false);
 export const twitchEnabled = SS('twitchEnabled', true);
 // tldex is mchad's successor and users want same preference
 export const enableTldexTLs = enableMchadTLs;
+export const spammersWhitelisted = LS('spammersWhiteListed', [sampleAuthor].slice(1));
 
 // All the variables persisted in presets
 export const presetStores = [

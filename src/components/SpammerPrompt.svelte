@@ -1,5 +1,14 @@
 <script>
-  import { potentialSpammer, spamMsgAmount, spamMsgInterval, spammersDetected } from '../js/store.js';
+  import {
+    potentialSpammer,
+    spamMsgAmount,
+    spamMsgInterval,
+    spammersDetected,
+    channelFilters,
+    mchadUsers,
+    spammersWhitelisted
+  } from '../js/store.js';
+  import { AuthorType } from '../js/constants.js';
   import { Queue } from '../js/queue.js';
   import Dialog from './common/Dialog.svelte';
   import Button from 'smelte/src/components/Button';
@@ -16,16 +25,27 @@
     }
   };
 
+  const setBool = (bool, spammer) => {
+    if (spammer.types & (AuthorType.mchad | AuthorType.tldex)) {
+      mchadUsers.set(spammer.author, bool);
+    }
+    else {
+      channelFilters.set(spammer.authorId, {
+        name: spammer.author,
+        blacklist: true,
+        whitelist: false,
+      });
+    }
+  };
+
   const markAsSpammer = () => {
-    spammersDetected.set(spammerInQuestion.authorId, {
-      ...spammerInQuestion, spam: true
-    });
+    setBool(true, spammerInQuestion);
     refreshSpammerInQuestion();
   };
 
   const markAsInnocent = () => {
-    spammersDetected.set(spammerInQuestion.authorId, {
-      ...spammerInQuestion, spam: false
+    spammersWhitelisted.set(spammerInQuestion.authorId, {
+      ...spammerInQuestion
     });
     refreshSpammerInQuestion();
   };

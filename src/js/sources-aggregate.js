@@ -10,10 +10,10 @@ import {
   spamMsgAmount,
   spamMsgInterval,
   enableSpamProtection,
-  spammersDetected,
   potentialSpammer,
   disableSpecialSpamProtection,
-  langCode
+  langCode,
+  spammersWhitelisted,
 } from './store.js';
 import { defaultCaption, YtcDeleteBehaviour, GIGACHAD } from './constants.js';
 import { checkAndSpeak } from './speech.js';
@@ -37,7 +37,7 @@ const toSet = (...stores) => derived(stores, ($stores) => new Set($stores.flat()
 
 const channelBlacklisted = lookupStoreToList(channelFilters, f => f.blacklist);
 const mchadBlacklisted = lookupStoreToList(mchadUsers);
-const notSpammer = lookupStoreToList(spammersDetected, f => f && !f.spam);
+const notSpammer = lookupStoreToList(spammersWhitelisted);
 
 export const allBanned = toSet(channelBlacklisted, mchadBlacklisted);
 export const notSpamStore = toSet(notSpammer);
@@ -47,9 +47,7 @@ const whitelistedSpam = derived(notSpamStore, $set => id => $set.has(id));
 
 /** @type {([authorId: String, author: String]) => void} */
 const markSpam = async ([authorId, author]) => {
-  if (spammersDetected.has(authorId)) return;
-
-  potentialSpammer.set({ authorId, author, spam: true });
+  potentialSpammer.set({ authorId, author });
 };
 
 /** @type {(msg: Message) => Boolean} */
@@ -122,26 +120,23 @@ const spamStores = [spamMsgAmount, spamMsgInterval]
 const dispDepends = [
   ...[sameLangMessages, allBanned, hidden, spotlightedTranslator],
   ...[...spamStores, whitelistedSpam, enableSpamProtection, disableSpecialSpamProtection],
-  ...[spammersDetected]
 ];
 
 const dispTransform =
-  ([$items, $banned, $hidden, $spot, $spamAmt, $spamInt, $whitelisted, $enSpam, $disSpecialSpam, $spamDetected]) => {
+  ([$items, $banned, $hidden, $spot, $spamAmt, $spamInt, $whitelisted, $enSpam, $disSpecialSpam]) => {
     const attrNotIn = (set, attr) => item => !set.has(item[attr]);
     const notWhitelisted = ([id]) => !$whitelisted(id);
     const possibleSpam = $disSpecialSpam ? $items.filter(isPleb) : $items;
     const spammers = $enSpam
-      ? getSpamAuthors(possibleSpam, $spamAmt, $spamInt).filter(notWhitelisted)
+      ? getSpamAuthors(possibleSpam, $spamAmt, $spamInt)
+        .filter(notWhitelisted)
+        .filter(attrNotIn($banned, 'authorId'))
       : [];
     spammers.forEach(markSpam);
-    const spammerIds = new Set($spamDetected
-      .filter(([_id, data]) => data?.spam)
-      .map(([id]) => id));
 
     $items = $items
       ?.filter(attrNotIn($banned, 'authorId'))
       ?.filter(attrNotIn($hidden, 'messageId'))
-      ?.filter(attrNotIn(spammerIds, 'authorId'))
       ?.filter(msg => !$spot || msg.authorId === $spot) ?? [];
     return removeDuplicateMessages($items);
   };
