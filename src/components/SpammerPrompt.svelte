@@ -3,7 +3,6 @@
     potentialSpammer,
     spamMsgAmount,
     spamMsgInterval,
-    spammersDetected,
     channelFilters,
     mchadUsers,
     spammersWhitelisted
@@ -28,12 +27,11 @@
   const setBool = (bool, spammer) => {
     if (spammer.types & (AuthorType.mchad | AuthorType.tldex)) {
       mchadUsers.set(spammer.author, bool);
-    }
-    else {
+    } else {
       channelFilters.set(spammer.authorId, {
         name: spammer.author,
         blacklist: true,
-        whitelist: false,
+        whitelist: false
       });
     }
   };

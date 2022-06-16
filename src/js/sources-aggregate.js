@@ -13,7 +13,7 @@ import {
   potentialSpammer,
   disableSpecialSpamProtection,
   langCode,
-  spammersWhitelisted,
+  spammersWhitelisted
 } from './store.js';
 import { defaultCaption, YtcDeleteBehaviour, GIGACHAD } from './constants.js';
 import { checkAndSpeak } from './speech.js';
@@ -119,7 +119,7 @@ const spamStores = [spamMsgAmount, spamMsgInterval]
 
 const dispDepends = [
   ...[sameLangMessages, allBanned, hidden, spotlightedTranslator],
-  ...[...spamStores, whitelistedSpam, enableSpamProtection, disableSpecialSpamProtection],
+  ...[...spamStores, whitelistedSpam, enableSpamProtection, disableSpecialSpamProtection]
 ];
 
 const dispTransform =
