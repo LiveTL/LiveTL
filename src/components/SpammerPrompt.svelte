@@ -74,7 +74,9 @@
     User
     <a
       class="text-primary-400 hover:underline"
-      href="https://www.youtube.com/channel/{spammerInQuestion.authorId}">
+      href="https://www.youtube.com/channel/{spammerInQuestion.authorId}"
+      target="_blank"
+    >
       {spammerInQuestion.author}
     </a>
     has sent at least {$spamMsgAmount} messages in the span
@@ -84,6 +86,7 @@
   <p>You can adjust spam detection options in the settings panel.</p>
 
   <div slot="actions">
+    <Button color="dark" on:click={() => (dialogActive = false)}>Do Nothing</Button>
     <Button color="success" on:click={markAsInnocent}>Whitelist</Button>
     <Button color="error" on:click={markAsSpammer}>Block</Button>
   </div>

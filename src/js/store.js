@@ -102,6 +102,8 @@ export const enableSpamProtection = SS('enableSpamProtection', true);
 export const spamMsgAmount = SS('spamMsgAmount', 5);
 export const spamMsgInterval = SS('spamMsgInterval', 10);
 export const spammersDetected = LS('spammersDetected', [sampleSpam].slice(1));
+//           ^^^^^^^^^^^^^^^^   NO LONGER USED
+// see -=- Spammers Migration -=- for more info
 export const speechVoiceNameSetting = SS('speechVoiceNameSetting', '');
 export const speechSpeed = SS('speechSpeed', 1);
 export const autoLaunchMode = SS('autoLaunchMode', AutoLaunchMode.NONE);

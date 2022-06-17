@@ -8,7 +8,7 @@
   let width = 0;
 </script>
 
-<Card title="Blocked Users" icon="block">
+<Card title="Block/Whitelist Users" icon="block" addHeaderClasses="block-and-whitelist">
   <div class="flex gap-2 flex-wrap" bind:clientWidth={width}>
     <div class="flex-1">
       <MultiDropdown
