@@ -23,6 +23,16 @@ const getVideoDataWithRetry = async (videoLink, retryInterval) => {
   }
 };
 
+const getTypes = (c) => {
+  if (!c.channel_id) return AuthorType.tldex;
+
+  let types = 0;
+  if (c.is_owner) types |= AuthorType.owner;
+  if (c.is_moderator) types |= AuthorType.moderator;
+  if (c.is_verified) types |= AuthorType.verified;
+  return types;
+};
+
 /** @type {(videoLink: String) => Readable<Ty.Message>} */
 export const getArchive = videoLink => readable(null, async set => {
   const startTime = await getVideoDataWithRetry(videoLink, 3);
@@ -31,17 +41,17 @@ export const getArchive = videoLink => readable(null, async set => {
   await languages.loaded;
   const scripts = await Promise.all(languages.get().map((language) => languageNameCode[language]).map(e => e.code).map(async (langcode) => {
     return fetch(`${Holodex}/videos/${videoLink}/chats?lang=${langcode}&verified=0&moderator=0&vtuber=0&tl=1&limit=100000`).then(toJson)
-      .then(e => e.filter(c => !c.is_owner && !c.channel_id)
+      .then(e => e.filter(c => !c.is_owner)
         .map(c => {
           return ({
             author: c.name,
-            authorId: c.name,
+            authorId: c.channel_id ?? c.name,
             text: c.message,
             messageArray: [{ type: 'text', text: c.message }],
             langCode: langcode,
             messageId: ++mchadTLCounter,
             timestamp: formatTimestampMillis(c.timestamp - startTime),
-            types: AuthorType.tldex,
+            types: getTypes(c),
             timestampMs: c.timestamp - startTime,
             unix: Math.floor((c.timestamp - startTime) / 1000)
           });
