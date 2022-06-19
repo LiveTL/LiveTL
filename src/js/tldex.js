@@ -81,12 +81,9 @@ export const getArchive = videoLink => readable(null, async set => {
 /** @type {(room: String) => Readable<Ty.MCHADStreamItem>} */
 const streamRoom = (videoLink, langcode) => sseToStream(`${MCHAD}/holoproxy?id=YT_${videoLink}&lang=${langcode}`);
 
-/** @type {(time: String) => String} */
-const removeSeconds = time => time.replace(/:\d\d /, ' ');
-
 /** @type {UnixToTimestamp} */
 const liveUnixToTimestamp = unix =>
-  removeSeconds(new Date(unix).toLocaleString('en-us').split(', ')[1]);
+  new Date(unix).toLocaleTimeString('en-us', { hour: '2-digit', minute: '2-digit' });
 
 let mchadTLCounter = 0;
 

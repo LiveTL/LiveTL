@@ -29,7 +29,8 @@ export function formatTimestampMillis(millis) {
   const hours = Math.floor(time / 3600);
   const mins = Math.floor(time % 3600 / 60);
   const secs = time % 60;
-  return [hours, mins, secs].map(e => `${e}`.padStart(2, 0)).join(':');
+  if (hours > 0) return [hours, mins, secs].map(e => `${e}`.padStart(2, 0)).join(':');
+  return [mins, secs].map(e => `${e}`.padStart(2, 0)).join(':');
 }
 
 export const toJson = r => r.json();
