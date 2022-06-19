@@ -31,7 +31,7 @@ export const getArchive = videoLink => readable(null, async set => {
   await languages.loaded;
   const scripts = await Promise.all(languages.get().map((language) => languageNameCode[language]).map(e => e.code).map(async (langcode) => {
     return fetch(`${Holodex}/videos/${videoLink}/chats?lang=${langcode}&verified=0&moderator=0&vtuber=0&tl=1&limit=100000`).then(toJson)
-      .then(e => e.filter(c => !c.is_owner)
+      .then(e => e.filter(c => !c.is_owner && !c.channel_id)
         .map(c => {
           return ({
             author: c.name,
@@ -85,7 +85,7 @@ export const getRoomTranslations = (videoLink, langCode) => derived(streamRoom(v
   if (!enableTldexTLs.get()) return;
   const flag = data?.flag;
 
-  if (flag === 'insert' || flag === 'update') {
+  if ((flag === 'insert' || flag === 'update') && !data?.content?.channel_id) {
     set({
       text: data.content.msg,
       messageArray: [{ type: 'text', text: data.content.msg }],
