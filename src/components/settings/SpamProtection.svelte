@@ -63,7 +63,7 @@
           behavior: 'smooth',
           block: 'start'
         });
-      }}>Block/Whitelist Users</a>
+      }}>Blocked/Whitelisted Users</a>
       section.
     </small>
   {/if}
