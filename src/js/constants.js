@@ -105,7 +105,7 @@ export const AuthorType = {
 };
 
 export const GIGACHAD =
-  AuthorType.moderator | AuthorType.owner | AuthorType.mchad | AuthorType.api;
+  AuthorType.moderator | AuthorType.owner | AuthorType.mchad | AuthorType.api | AuthorType.tldex;
 
 export const languagesInfo = [
   { code: 'en', name: 'English', lang: 'English', tag: 'en-US' },

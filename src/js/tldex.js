@@ -23,6 +23,16 @@ const getVideoDataWithRetry = async (videoLink, retryInterval) => {
   }
 };
 
+const getTypes = (c) => {
+  if (!c.channel_id) return AuthorType.tldex;
+
+  let types = 0;
+  if (c.is_owner) types |= AuthorType.owner;
+  if (c.is_moderator) types |= AuthorType.moderator;
+  if (c.is_verified) types |= AuthorType.verified;
+  return types;
+};
+
 /** @type {(videoLink: String) => Readable<Ty.Message>} */
 export const getArchive = videoLink => readable(null, async set => {
   const startTime = await getVideoDataWithRetry(videoLink, 3);
@@ -35,13 +45,13 @@ export const getArchive = videoLink => readable(null, async set => {
         .map(c => {
           return ({
             author: c.name,
-            authorId: c.name,
+            authorId: c.channel_id ?? c.name,
             text: c.message,
             messageArray: [{ type: 'text', text: c.message }],
             langCode: langcode,
             messageId: ++mchadTLCounter,
             timestamp: formatTimestampMillis(c.timestamp - startTime),
-            types: AuthorType.tldex,
+            types: getTypes(c),
             timestampMs: c.timestamp - startTime,
             unix: Math.floor((c.timestamp - startTime) / 1000)
           });
@@ -71,12 +81,9 @@ export const getArchive = videoLink => readable(null, async set => {
 /** @type {(room: String) => Readable<Ty.MCHADStreamItem>} */
 const streamRoom = (videoLink, langcode) => sseToStream(`${MCHAD}/holoproxy?id=YT_${videoLink}&lang=${langcode}`);
 
-/** @type {(time: String) => String} */
-const removeSeconds = time => time.replace(/:\d\d /, ' ');
-
 /** @type {UnixToTimestamp} */
 const liveUnixToTimestamp = unix =>
-  removeSeconds(new Date(unix).toLocaleString('en-us').split(', ')[1]);
+  new Date(unix).toLocaleTimeString('en-us', { hour: '2-digit', minute: '2-digit' });
 
 let mchadTLCounter = 0;
 
@@ -85,7 +92,7 @@ export const getRoomTranslations = (videoLink, langCode) => derived(streamRoom(v
   if (!enableTldexTLs.get()) return;
   const flag = data?.flag;
 
-  if (flag === 'insert' || flag === 'update') {
+  if ((flag === 'insert' || flag === 'update') && !data?.content?.channel_id) {
     set({
       text: data.content.msg,
       messageArray: [{ type: 'text', text: data.content.msg }],
