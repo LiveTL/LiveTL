@@ -37,6 +37,7 @@ configure(
 chilled_cow = "https://www.youtube.com/watch?v=5qap5aO4i9A"
 peko_kiara = "https://www.youtube.com/watch?v=c747jYku6Eo"
 mio_phas = "https://www.youtube.com/watch?v=h7F4XJh41uo"
+mio_2 = "https://www.youtube.com/watch?v=4I2iZahIDNg"
 phas = "Phasmophobia"
 
 
@@ -119,10 +120,10 @@ def test_embed_tldex_vod_tls(web):
 
     tl = web.find_element_by_css_selector(".message-display > .message .message-content")
     info = web.find_element_by_css_selector(".message-display > .message .message-info")
-    assert "Mio, this time we're veteran" in tl.text, "Incorrect tl"
-    assert "MonMon TL" in info.text, "Incorrect author of tl"
+    assert "Mio: Ah...." in tl.text, "Incorrect tl"
+    assert "Taishi" in info.text, "Incorrect author of tl"
     assert "TLdex" in info.text, "TLdex badge not found"
-    assert "(00:00:43)" in info.text, "Incorrect tl timestamp"
+    assert "(02:05)" in info.text, "Incorrect tl timestamp"
 
 
 @run_on(all_)
@@ -185,7 +186,7 @@ def test_embed_tl_scroll(web):
 
 
 def open_mio_embed(web):
-    open_embed(web, mio_phas)
+    open_embed(web, mio_2)
     switch_to_youtube_parent_frame(web)
     play_video(web)
     wait_for_ads(web, phas)
