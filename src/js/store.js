@@ -41,6 +41,7 @@ const sampleFilter = {
   id: ''
 };
 
+const sampleAuthor = { author: '', authorId: '' };
 const sampleSpam = { author: '', authorId: '', spam: false };
 
 export const defaultShortcuts = {
@@ -101,6 +102,8 @@ export const enableSpamProtection = SS('enableSpamProtection', true);
 export const spamMsgAmount = SS('spamMsgAmount', 5);
 export const spamMsgInterval = SS('spamMsgInterval', 10);
 export const spammersDetected = LS('spammersDetected', [sampleSpam].slice(1));
+//           ^^^^^^^^^^^^^^^^   NO LONGER USED
+// see -=- Spammers Migration -=- for more info
 export const speechVoiceNameSetting = SS('speechVoiceNameSetting', '');
 export const speechSpeed = SS('speechSpeed', 1);
 export const autoLaunchMode = SS('autoLaunchMode', AutoLaunchMode.NONE);
@@ -115,6 +118,7 @@ export const isChatInverted = SS('isChatInverted', false);
 export const twitchEnabled = SS('twitchEnabled', true);
 // tldex is mchad's successor and users want same preference
 export const enableTldexTLs = enableMchadTLs;
+export const spammersWhitelisted = LS('spammersWhiteListed', [sampleAuthor].slice(1));
 
 // All the variables persisted in presets
 export const presetStores = [
@@ -151,6 +155,20 @@ export const presetStores = [
   if (!hasDoneLanguageMigration.get()) {
     languages.set([language.get()]);
     hasDoneLanguageMigration.set(true);
+  }
+})();
+
+// -=- Spammers Migration -=-
+// Taishi got marked as spam, we will unmark all spammers and make spam detection
+// only ban the user upon user confirmation.
+(async () => {
+  const hasDoneSpammerMigration = SS('hasDoneSpammerMigration', false);
+
+  await hasDoneSpammerMigration.loaded;
+
+  if (!hasDoneSpammerMigration.get()) {
+    spammersDetected.clear();
+    hasDoneSpammerMigration.set(true);
   }
 })();
 
@@ -212,3 +230,4 @@ export const videoShortcutAction = writable('');
 export const currentlyEditingPreset = writable(-1);
 export const promptToShow = writable(/** @type {String[]} */ ([]));
 export const scrollTo = writable(/** @type {ScrollToOptions} */ ({ top: 0 }));
+export const potentialSpammer = writable(/** @type {typeof sampleSpam | null} */ (null));

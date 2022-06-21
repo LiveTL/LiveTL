@@ -208,6 +208,10 @@ export class LookupStore {
     this.notify();
   }
 
+  async clear() {
+    return await this.setEntire({});
+  }
+
   /**
    * @param {(v: T) => T} callback
    */

@@ -1,14 +1,12 @@
 <script>
   import {
     enableSpamProtection,
-    spammersDetected,
     spamMsgAmount,
     spamMsgInterval,
     ytcDeleteBehaviour,
     disableSpecialSpamProtection
   } from '../../js/store.js';
   import { ytcDeleteItems } from '../../js/constants.js';
-  import MultiDropdown from '../options/MultiDropdown.svelte';
   import Card from '../common/Card.svelte';
   import Slider from '../common/SliderStore.svelte';
   import Checkbox from '../common/CheckboxStore.svelte';
@@ -16,7 +14,6 @@
 
   export let boundingDiv;
 
-  let width = 0;
   const codeClass = 'px-1 bg-gray-700';
 
   $: amount = `${Math.round($spamMsgAmount)}`;
@@ -38,7 +35,7 @@
       store={disableSpecialSpamProtection}
     />
     <small class="p-2 rounded bg-gray-800">
-      Hide spammers that send <code class={codeClass}>{amount}</code>
+      Block spammers that send <code class={codeClass}>{amount}</code>
       or more messages within <code class={codeClass}>{interval}</code>
       second{intervalPlural}
     </small>
@@ -58,17 +55,16 @@
       step={1}
       showValue={false}
     />
-    <div bind:clientWidth={width}>
-      <MultiDropdown
-        name="Detected spammers"
-        store={spammersDetected}
-        getDisplayName={(_id, v) => v.author}
-        getBool={id => spammersDetected.get(id).spam}
-        setBool={(id, spam) =>
-          spammersDetected.set(id, { ...spammersDetected.get(id), spam })}
-        {boundingDiv}
-        {width}
-      />
-    </div>
+    <small class="p-2 rounded bg-gray-800">
+      User blacklists and whitelists can be adjusted in the
+      <a href="/" class="text-blue-400 underline" on:click={(e) => {
+        e.preventDefault();
+        document.querySelector('.block-and-whitelist').scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }}>Blocked/Whitelisted Users</a>
+      section.
+    </small>
   {/if}
 </Card>

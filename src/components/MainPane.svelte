@@ -29,6 +29,7 @@
   import UpdateComponent from './Updates.svelte';
   import MessageDisplay from './MessageDisplay.svelte';
   import FeaturePrompt from './FeaturePrompt.svelte';
+  import SpammerPrompt from './SpammerPrompt.svelte';
   import { displayedMessages } from '../js/sources-aggregate.js';
   import dark from 'smelte/src/dark';
   import Button from './common/IconButton.svelte';
@@ -197,6 +198,7 @@
   renderWidth={$screenshotRenderWidth}
 />
 <UpdateComponent />
+<SpammerPrompt />
 
 <div
   class="flex flex-row gap-2 absolute right-0 p-1 z-20 flex-wrap"

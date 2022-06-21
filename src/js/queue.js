@@ -12,6 +12,13 @@ export class Queue {
   }
 
   /**
+   * @returns {Boolean}
+   */
+  empty() {
+    return this.top === null || this.top === undefined;
+  }
+
+  /**
    * @returns {T}
    */
   pop() {
