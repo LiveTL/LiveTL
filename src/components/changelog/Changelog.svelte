@@ -15,7 +15,7 @@
   </a>
   as spammers because they sent more than 5 messages within 10 seconds.
   To prevent accidental blocks, there is now a confirmation dialog when a spammer is detected.
-  We are also internally overhauling the user block/whitelist mechanism -- those Improvements
+  We are also internally overhauling the user block/whitelist mechanism -- those improvements
   will be included in a future update!
 </ExpandingCard>
 <ExpandingCard title="New HyperChat Features!" icon="chat">
