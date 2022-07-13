@@ -77,7 +77,7 @@ import MANIFEST_OBJECT from '../../manifest.json';
     return Math.random().toString(36).substr(2, 9);
   }
 
-  function sendMessage(data, callback = null) { // send message to background polyfill
+  function sendMessage(data, /** @type {(() => any) | null} */ callback = null) { // send message to background polyfill
     const randomMessageID = getRandom(); // generate some sort of id to identify the message
     if (callback) {
       polyfillStorage.awaitingCallbacks[randomMessageID] = callback; // store callback
