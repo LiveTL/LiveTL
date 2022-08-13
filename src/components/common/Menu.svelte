@@ -56,23 +56,27 @@
       return;
     }
 
+    const containerEl = document.querySelector(containerQuery) ?? document.body;
     const containerRect = containerEl.getBoundingClientRect();
     const activatorRect = activator.getBoundingClientRect();
     const offsetY = activator.clientHeight + 5;
-    if (activatorRect.top - listDiv.clientHeight > containerRect.top) {
+    if (activatorRect.top - listDiv.clientHeight > Math.max(containerRect.top, 0)) {
+      // put on the top of activator
       offsetYStyle = `bottom: ${offsetY}px;`;
     } else {
+      // put on the bottom of activator
       offsetYStyle = `top: ${offsetY}px;`;
     }
 
-    if (activatorRect.right + listDiv.clientWidth > containerRect.right) {
+    if (activatorRect.right + listDiv.clientWidth > Math.min(containerRect.right, window.innerWidth)) {
+      // put on the left of activator
       offsetX = 'right-0';
     } else {
+      // put on the right of activator
       offsetX = 'left-0';
     }
   };
 
-  $: containerEl = document.querySelector(containerQuery) ?? document.body;
   $: onOpenChange(open);
   $: open = $activeMenuId === id;
   $: classes = (open || visible ? 'visible' : 'invisible') + ' ' +
