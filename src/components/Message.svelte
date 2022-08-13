@@ -111,7 +111,7 @@
     </div>
     <!-- Menu -->
     {#if !screenshot && !$isSelecting}
-      <Menu items={menuItems} visible={focused} class="mr-2">
+      <Menu items={menuItems} visible={focused} class="mr-2" containerQuery=".message-display-wrapper">
         <Icon slot="activator" style="font-size: 1.25em;">more_vert</Icon>
       </Menu>
     {/if}
