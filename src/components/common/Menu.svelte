@@ -25,13 +25,15 @@
   export let items: MenuItem[];
   export let visible = true;
 
+  // query of the element of which the menu should not overflow
+  // needed for <Menu /> of <Message /> when Message Display is in middle of screen
+  export let containerQuery = 'body';
+
   const id = genId();
 
   let open = false;
   let activator: HTMLElement | undefined;
   let listDiv: HTMLElement | undefined;
-  let windowInnerHeight = 0;
-  let windowInnerWidth = 0;
   let offsetX = '';
   let offsetYStyle = '';
 
@@ -54,21 +56,23 @@
       return;
     }
 
+    const containerRect = containerEl.getBoundingClientRect();
     const activatorRect = activator.getBoundingClientRect();
     const offsetY = activator.clientHeight + 5;
-    if (activatorRect.bottom + listDiv.clientHeight > windowInnerHeight) {
+    if (activatorRect.top - listDiv.clientHeight > containerRect.top) {
       offsetYStyle = `bottom: ${offsetY}px;`;
     } else {
       offsetYStyle = `top: ${offsetY}px;`;
     }
 
-    if (activatorRect.right + listDiv.clientWidth > windowInnerWidth) {
+    if (activatorRect.right + listDiv.clientWidth > containerRect.right) {
       offsetX = 'right-0';
     } else {
       offsetX = 'left-0';
     }
   };
 
+  $: containerEl = document.querySelector(containerQuery) ?? document.body;
   $: onOpenChange(open);
   $: open = $activeMenuId === id;
   $: classes = (open || visible ? 'visible' : 'invisible') + ' ' +
@@ -80,10 +84,6 @@
   'cursor-pointer text-gray-700 dark:text-gray-100 flex items-center z-10';
 </script>
 
-<svelte:window
-  bind:innerHeight={windowInnerHeight}
-  bind:innerWidth={windowInnerWidth}
-/>
 
 <div class={classes}>
   <Menu bind:open>
