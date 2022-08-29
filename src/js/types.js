@@ -19,3 +19,4 @@
 
 /** @typedef {Message & {unix: String}} ScriptMessage */
 /** @typedef {{id: Number, videoId: String, translatorId: String, languageCode: String, translatedText: String, start: Number, end: Number | null}} APITranslation */
+/** @typedef {{ langCode: string, startTime: number }} ScriptMeta */

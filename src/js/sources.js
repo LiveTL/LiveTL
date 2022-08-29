@@ -23,7 +23,7 @@ import * as TLDEX from './tldex.js';
  */
 
 const tldex = derived(
-  combineStores(TLDEX.getArchive(paramsYtVideoId), TLDEX.getLiveTranslations(paramsYtVideoId)).store,
+  combineStores(TLDEX.getArchive(paramsTwitchUrl ?? paramsYtVideoId), TLDEX.getLiveTranslations(paramsYtVideoId)).store,
   ($message) => {
     if (!$message) return;
     const parsed = parseTranslation($message.text);
