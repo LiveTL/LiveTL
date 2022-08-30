@@ -52,4 +52,3 @@ export const getVideoId = videoLink => {
   const parts = videoLink.split('/');
   return parts[parts.length - 1];
 };
-

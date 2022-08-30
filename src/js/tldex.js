@@ -56,13 +56,12 @@ const getScript = async (url, meta) => await fetch(url)
   .then(sortBy('unix'))
   .catch(() => []);
 
-
 /** @type {(videoLink: String) => Readable<Ty.Message>} */
 export const getArchive = videoLink => readable(null, async set => {
   const startTime = isTwitch
     ? await Twitch.getStartTime(Twitch.getVideoId(videoLink))
     : await getVideoDataWithRetry(videoLink, 3);
-  if (!startTime) return () => { };
+  if (startTime === null || startTime === undefined) return () => { };
 
   await languages.loaded;
   const langCodes = languages
