@@ -1,6 +1,7 @@
 import { MCHAD, Holodex, AuthorType, languageNameCode, isTwitch } from './constants.js';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as Ty from './types.js';
+import * as Twitch from './twitch.js';
 import { derived, readable } from 'svelte/store';
 import { enableTldexTLs, mchadUsers, languages } from './store.js';
 import { formatTimestampMillis, sleep, sortBy, toJson } from './utils.js';
@@ -55,12 +56,13 @@ const getScript = async (url, meta) => await fetch(url)
   .then(sortBy('unix'))
   .catch(() => []);
 
+
 /** @type {(videoLink: String) => Readable<Ty.Message>} */
 export const getArchive = videoLink => readable(null, async set => {
-  let startTime = isTwitch
-    ? 0
+  const startTime = isTwitch
+    ? await Twitch.getStartTime(Twitch.getVideoId(videoLink))
     : await getVideoDataWithRetry(videoLink, 3);
-  // if (!startTime) return () => { };
+  if (!startTime) return () => { };
 
   await languages.loaded;
   const langCodes = languages
@@ -68,7 +70,6 @@ export const getArchive = videoLink => readable(null, async set => {
     .map((language) => languageNameCode[language])
     .map(l => l.code);
 
-  console.log('AM HERE');
   const scripts = await Promise.all(langCodes.map(async langCode => {
     const meta = { langCode, startTime };
     const twitchScript = await getScript(
