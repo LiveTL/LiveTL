@@ -1,5 +1,6 @@
 import { writable, Writable } from 'svelte/store';
 import { paramsTabId, paramsFrameId } from '../js/constants';
+import { timestamp } from '../js/store';
 
 export function twitchSource(): Writable<Ltl.Message | null> {
   if (paramsTabId == null || paramsFrameId == null) return writable(null);
@@ -17,6 +18,9 @@ export function twitchSource(): Writable<Ltl.Message | null> {
     switch (response.type) {
       case 'ltlMessage':
         messageStore.set(response.message);
+        break;
+      case 'playerProgress':
+        timestamp.set(response.playerProgress);
         break;
     }
   });
