@@ -1,6 +1,7 @@
-import { MCHAD, Holodex, AuthorType, languageNameCode } from './constants.js';
+import { MCHAD, Holodex, AuthorType, languageNameCode, isTwitch } from './constants.js';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as Ty from './types.js';
+import * as Twitch from './twitch.js';
 import { derived, readable } from 'svelte/store';
 import { enableTldexTLs, mchadUsers, languages } from './store.js';
 import { formatTimestampMillis, sleep, sortBy, toJson } from './utils.js';
@@ -33,33 +34,55 @@ const getTypes = (c) => {
   return types;
 };
 
+/** @type {(url: string, meta: Ty.ScriptMeta) => Promise<Ty.Message[]>} */
+const getScript = async (url, meta) => await fetch(url)
+  .then(toJson)
+  .then(e => e.filter(c => !c.is_owner)
+    .map(c => {
+      return ({
+        author: c.name,
+        authorId: c.channel_id ?? c.name,
+        text: c.message,
+        messageArray: [{ type: 'text', text: c.message }],
+        langCode: meta.langCode,
+        messageId: ++mchadTLCounter,
+        timestamp: formatTimestampMillis(c.timestamp - meta.startTime),
+        types: getTypes(c),
+        timestampMs: c.timestamp - meta.startTime,
+        unix: Math.floor((c.timestamp - meta.startTime) / 1000)
+      });
+    }))
+  .then(s => s.filter(e => e.unix >= 0))
+  .then(sortBy('unix'))
+  .catch(() => []);
+
 /** @type {(videoLink: String) => Readable<Ty.Message>} */
 export const getArchive = videoLink => readable(null, async set => {
-  const startTime = await getVideoDataWithRetry(videoLink, 3);
-  if (!startTime) return () => { };
+  const startTime = isTwitch
+    ? await Twitch.getStartTime(Twitch.getVideoId(videoLink))
+    : await getVideoDataWithRetry(videoLink, 3);
+  if (startTime === null || startTime === undefined) return () => { };
 
   await languages.loaded;
-  const scripts = await Promise.all(languages.get().map((language) => languageNameCode[language]).map(e => e.code).map(async (langcode) => {
-    return fetch(`${Holodex}/videos/${videoLink}/chats?lang=${langcode}&verified=0&moderator=0&vtuber=0&tl=1&limit=100000`).then(toJson)
-      .then(e => e.filter(c => !c.is_owner)
-        .map(c => {
-          return ({
-            author: c.name,
-            authorId: c.channel_id ?? c.name,
-            text: c.message,
-            messageArray: [{ type: 'text', text: c.message }],
-            langCode: langcode,
-            messageId: ++mchadTLCounter,
-            timestamp: formatTimestampMillis(c.timestamp - startTime),
-            types: getTypes(c),
-            timestampMs: c.timestamp - startTime,
-            unix: Math.floor((c.timestamp - startTime) / 1000)
-          });
-        }))
-      .then(s => s.filter(e => e.unix >= 0))
-      .then(sortBy('unix'))
-      .catch(() => []);
-  })).then(scripts => scripts.filter(isNotEmpty));
+  const langCodes = languages
+    .get()
+    .map((language) => languageNameCode[language])
+    .map(l => l.code);
+
+  const scripts = await Promise.all(langCodes.map(async langCode => {
+    const meta = { langCode, startTime };
+    const twitchScript = await getScript(
+      `${Holodex}/videos/custom/chats?tl=1&lang=${langCode}&custom_video_id=${videoLink}`,
+      meta
+    );
+    if (twitchScript.length !== 0) return twitchScript;
+    return await getScript(
+      `${Holodex}/videos/${videoLink}/chats?lang=${langCode}&verified=0&moderator=0&vtuber=0&tl=1&limit=100000`,
+      meta
+    );
+  })).then(scripts => scripts.filter(isNotEmpty)).catch(() => []);
+
+  console.log('got scripts', scripts);
 
   if (scripts.length === 0) return () => { };
 

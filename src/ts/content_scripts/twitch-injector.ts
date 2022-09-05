@@ -151,6 +151,13 @@ function load(): void {
 
   observer.observe(messageContainer, { childList: true });
 
+  const video = document.querySelector('video');
+  setInterval(() => {
+    if (!video) return;
+    // send the unix time in seconds to the extension
+    port.postMessage({ type: 'updatePlayerProgress', playerProgress: video.currentTime, isFromYt: false });
+  }, 500);
+
   getFrameInfoAsync()
     .then((frameInfo) => {
       if (!isValidFrameInfo(frameInfo)) {

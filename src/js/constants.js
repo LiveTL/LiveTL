@@ -192,3 +192,5 @@ export const defaultCaption = {
 export const modifierKeys = new Set(['Alt', 'Control', 'Meta', 'Shift']);
 
 export const isTwitch = paramsStandalone === 'twitch' || !!(paramsTwitchUrl ?? '');
+export const twitchClientId = 'kimne78kx3ncx6brgo4mv6wki5h1ko';
+export const twitchGQL = 'https://gql.twitch.tv/gql';
