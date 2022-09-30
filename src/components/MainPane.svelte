@@ -11,7 +11,8 @@
     paramsEmbedded,
     paramsYtVideoId,
     ChatSplit,
-    paramsTwitchUrl
+    paramsTwitchUrl,
+    Theme
   } from '../js/constants.js';
   import {
     faviconURL,
@@ -24,24 +25,25 @@
     isSelecting,
     screenshotRenderWidth,
     chatSplit,
-    isChatInverted
+    isChatInverted,
+    theme
   } from '../js/store.js';
   import UpdateComponent from './Updates.svelte';
   import MessageDisplay from './MessageDisplay.svelte';
   import FeaturePrompt from './FeaturePrompt.svelte';
   import SpammerPrompt from './SpammerPrompt.svelte';
   import { displayedMessages } from '../js/sources-aggregate.js';
-  import dark from 'smelte/src/dark';
+  import smeltedark from 'smelte/src/dark';
   import Button from './common/IconButton.svelte';
   import { openLiveTL } from '../js/utils.js';
   import { createPopup } from '../submodules/chat/src/ts/chat-utils';
 
-  dark().set(true);
-
   export let settingsOpen = false;
+
   videoTitle.set(paramsVideoTitle || $videoTitle);
   $: textFilename = `${$videoTitle || 'LiveTL_Stream_Log'}.txt`;
   $: document.title = $videoTitle || 'LiveTL Popout';
+  $: smeltedark().set($theme === Theme.DARK);
 
   let wrapper;
   let messageDisplay;

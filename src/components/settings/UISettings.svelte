@@ -15,7 +15,8 @@
     autoVertical,
     displayMode,
     autoLaunchMode,
-    isChatInverted
+    isChatInverted,
+    theme,
   } from '../../js/store.js';
   import {
     DisplayMode,
@@ -24,7 +25,8 @@
     chatSplitMap,
     autoLaunchModeItems,
     ChatSplit,
-    isTwitch
+    isTwitch,
+    themeMap
   } from '../../js/constants.js';
   import FontDemo from './FontDemo.svelte';
   import ImportExport from './ImportExport.svelte';
@@ -108,6 +110,10 @@
       store={enableExportButtons}
     />
     <Checkbox name="Show fullscreen button" store={enableFullscreenButton} />
+    <div class="flex items-center gap-2">
+      <h6>Theme:</h6>
+      <Radio store={theme} map={themeMap} />
+    </div>
   </Card>
   {#if $displayMode === DisplayMode.FULLPAGE}
     <Card title="Captions" icon="subtitles">

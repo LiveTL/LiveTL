@@ -1,10 +1,11 @@
 <script lang="ts">
   import Settings from './Settings.svelte';
   import dark from 'smelte/src/dark';
-  import { paramsStandalone, isTwitch } from '../js/constants.js';
+  import { paramsStandalone, isTwitch, Theme } from '../js/constants.js';
+  import { theme } from '../js/store.js';
 
   // So options_ui css isn't shit
-  dark().set(true);
+  $: dark().set(theme === Theme.DARK);
 </script>
 
 <svelte:head>

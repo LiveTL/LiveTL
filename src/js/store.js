@@ -8,7 +8,8 @@ import {
   DisplayMode,
   languageNameCode,
   paramsEmbedded,
-  AutoLaunchMode
+  AutoLaunchMode,
+  Theme
 } from './constants.js';
 import { getAllVoiceNames, getVoiceMap, compose } from './utils.js';
 import { LookupStore, SyncStore } from './storage.js';
@@ -119,6 +120,7 @@ export const twitchEnabled = SS('twitchEnabled', true);
 // tldex is mchad's successor and users want same preference
 export const enableTldexTLs = enableMchadTLs;
 export const spammersWhitelisted = LS('spammersWhiteListed', [sampleAuthor].slice(1));
+export const theme = SS('theme', Theme.DARK);
 
 // All the variables persisted in presets
 export const presetStores = [

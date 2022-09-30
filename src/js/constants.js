@@ -27,6 +27,12 @@ export const SelectOperation = {
   DOWNLOAD: 'DOWNLOAD'
 };
 
+/** @enum {String} */
+export const Theme = {
+  DARK: 'DARK',
+  LIGHT: 'LIGHT'
+};
+
 export const chatSplitMap = new Map([
   [ChatSplit.HORIZONTAL, 'Horizontal'],
   [ChatSplit.VERTICAL, 'Vertical']
@@ -41,6 +47,11 @@ export const TextDirection = {
 export const textDirectionMap = new Map([
   [TextDirection.TOP, 'Top'],
   [TextDirection.BOTTOM, 'Bottom']
+]);
+
+export const themeMap = new Map([
+  [Theme.DARK, 'dark'],
+  [Theme.LIGHT, 'light']
 ]);
 
 /** @enum {String} */
