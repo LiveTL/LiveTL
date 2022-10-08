@@ -1,12 +1,19 @@
 <script>
   import ExpandingCard from '../common/ExpandingCard.svelte';
   // import HCChangelogs from '../../submodules/chat/src/components/changelog/Changelog.svelte';
+  const trailer = chrome.runtime.getURL(
+    'hyperchat/trailer.png'
+  );
 </script>
 
 <!-- <ExpandingCard title="HyperChat Improvements" icon="chat">
   <HCChangelogs />
 </ExpandingCard> -->
 
-<ExpandingCard title="TLdex Support for Twitch VODs" icon="chat">
-  Translations available on TLdex are now accessible on Twitch stream replays (VODs)!
+<ExpandingCard title="New HyperChat Trailer!" icon="chat" expanded>
+  <div style="width: 100%; display: flex; justify-content: center; margin: 8px 0px;">
+    <a href="https://www.youtube.com/watch?v=FU3YWQy_Rfs" target="_blank">
+      <img src={trailer} style="width: 100%; aspect-ratio: calc(16 / 9);" alt="HyperChat Trailer" class="rounded-sm" />
+    </a>
+  </div>
 </ExpandingCard>
