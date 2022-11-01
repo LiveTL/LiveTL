@@ -24,6 +24,8 @@ submit a Pull Request!
 
 ## Development
 
+> Note: The repo expects a Linux or Unix-like environment. If you are on Windows, use WSL.
+
 ### Setup
 
 > ℹ LiveTL uses submodules. Make sure to clone the repo with the `--recursive` flag!
