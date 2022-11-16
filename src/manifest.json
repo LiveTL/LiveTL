@@ -1,7 +1,7 @@
 {
   "name": "LiveTL - Translation Filter for Streams",
   "options_ui": {
-    "page": "options.html",
+    "page": "html/options.html",
     "open_in_tab": true
   },
   "permissions": [
@@ -14,7 +14,7 @@
     "https://www.twitch.tv/*"
   ],
   "background": {
-    "page": "background.html",
+    "page": "html/background.html",
     "persistent": true
   },
   "icons": {
@@ -31,10 +31,10 @@
         "https://www.youtube.com/live_chat_replay*"
       ],
       "js": [
-        "chat-interceptor.bundle.js",
-        "chat.bundle.js",
-        "injector.bundle.js",
-        "translatormode.bundle.js"
+        "submodules/chat/src/scripts/chat-interceptor.ts",
+        "submodules/chat/src/scripts/chat-injector.ts",
+        "ts/content_scripts/injector.ts",
+        "js/pages/translatormode.js"
       ],
       "all_frames": true
     },
@@ -43,7 +43,7 @@
         "https://www.youtube.com/error*?*"
       ],
       "js": [
-        "workaround-injector.bundle.js"
+        "ts/content_scripts/workaround-injector.ts"
       ],
       "all_frames": true
     },
@@ -52,7 +52,7 @@
         "https://www.twitch.tv/*"
       ],
       "js": [
-        "twitch-injector.bundle.js"
+        "ts/content_scripts/twitch-injector.ts"
       ],
       "all_frames": true
     }
