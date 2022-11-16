@@ -16,3 +16,4 @@ failure-test*.png
 
 # auto-generated html from vite
 src/html/*.html
+src/html/**/*.html

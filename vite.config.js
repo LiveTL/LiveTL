@@ -2,9 +2,38 @@ import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import browserExtension from 'vite-plugin-web-extension';
 import path from 'path';
+import fs from 'fs';
 import copy from 'rollup-plugin-copy';
 import replace from 'rollup-plugin-replace';
 import manifest from './src/manifest.json';
+
+
+// include all entry points from src/js/pages/*.js
+const pagesEntryPoints = [
+  'watch', 'popout', 'options', 'welcome', 'lite'
+].map(page => ({
+  name: `html/${page}.html`, scripts: [`/js/pages/${page}.js`]
+}));
+
+const entryPoints = [
+  ...pagesEntryPoints,
+  {
+    name: 'html/background.html',
+    scripts: ['/js/pages/background.js', '/submodules/chat/src/scripts/chat-background.ts']
+  },
+  { name: 'html/hyperchat/index.html', scripts: ['/submodules/chat/src/hyperchat.ts'] },
+  { name: 'html/hyperchat/options.html', scripts: ['/submodules/chat/src/options.ts'] },
+];
+
+const entryPointTemplate = fs.readFileSync(path.join(__dirname, 'src/empty.html'))
+  .toString();
+
+for (const entry of entryPoints) {
+  const htmlEntry = entry.scripts.reduce((template, script) => template.replace(
+    '</head>', `  <script defer type="module" src="${script}"></script>\n</head>`
+  ), entryPointTemplate);
+  fs.writeFileSync(`src/${entry.name}`, htmlEntry);
+};
 
 export default defineConfig({
   root: 'src',
@@ -61,6 +90,9 @@ export default defineConfig({
         content_security_policy: 'script-src \'self\' \'unsafe-eval\'; object-src \'self\''
       }),
       assets: 'img',
+      additionalInputs: [
+        ...entryPoints.map(entry => entry.name)
+      ],
       watchFilePaths: [
         path.resolve(__dirname, 'src/manifest.json')
       ],
