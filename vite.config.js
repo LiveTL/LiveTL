@@ -82,6 +82,17 @@ export default defineConfig({
       }]
     }),
 
+    // copy over html/ folder into project root
+    // TODO: find a better way of doing this,
+    // I really don't want a lot of auto-gen html in src/
+    // but copying all the files over may be slow
+    copy({
+      hook: 'writeBundle',
+      targets: [{
+        src: 'build/html/*', dest: 'build'
+      }]
+    }),
+
     browserExtension({
       manifest: () => ({
         ...manifest,
