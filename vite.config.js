@@ -3,6 +3,7 @@ import { svelte } from '@sveltejs/vite-plugin-svelte';
 import browserExtension from 'vite-plugin-web-extension';
 import path from 'path';
 import fs from 'fs';
+import alias from '@rollup/plugin-alias';
 import copy from 'rollup-plugin-copy';
 import replace from 'rollup-plugin-replace';
 import manifest from './src/manifest.json';
@@ -42,13 +43,13 @@ export default defineConfig({
     emptyOutDir: true,
     minify: process.env.MINIFY !== 'false'
   },
+  resolve: {
+    alias: {
+      'jquery.ui': 'jquery-ui-bundle'
+    }
+  },
   plugins: [
-    // jquery-ui-touch-punch needs to be more specific ig?
-    // @KentoNishi is this why?
-    replace({
-      include: path.resolve(__dirname, 'node_modules/jquery-ui-touch-punch'),
-      '(jQuery)': '(window.jQuery)',
-    }),
+    alias(),
 
     // TODO: add the isAndroid replacements 
     svelte({

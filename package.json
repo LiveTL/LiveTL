@@ -24,6 +24,7 @@
     "@babel/plugin-transform-modules-commonjs": "^7.15.4",
     "@babel/preset-env": "^7.15.6",
     "@fullhuman/postcss-purgecss": "^4.0.3",
+    "@rollup/plugin-alias": "^4.0.2",
     "@sveltejs/vite-plugin-svelte": "^1.2.0",
     "@testing-library/dom": "^8.5.0",
     "@testing-library/jest-dom": "^5.11.9",
