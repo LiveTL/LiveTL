@@ -5,8 +5,8 @@ on:
       - '**'
     tags-ignore:
       - '*.*'
-    paths-ignore:
-      - '.github/**'
+    # paths-ignore:
+    #   - '.github/**'
 jobs:
   e2e-test:
     runs-on: ubuntu-latest
