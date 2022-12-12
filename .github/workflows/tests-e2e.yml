@@ -5,8 +5,8 @@ on:
       - '**'
     tags-ignore:
       - '*.*'
-    # paths-ignore:
-    #   - '.github/**'
+    paths-ignore:
+      - '.github/**'
 jobs:
   e2e-test:
     runs-on: ubuntu-latest
@@ -25,30 +25,16 @@ jobs:
         sudo apt update -y
         sudo apt install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
         sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
-    # - name: Set up Firefox
-    #   run: sudo apt install -y firefox
-    # - name: Set up Chrome
-    #   run: |
-    #     wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-    #     sudo dpkg -i ./google-chrome-stable_current_amd64.deb
     - name: Install Dependencies
       run: |
         python3 -m pip install selenium==3.141.0 py==1.11.0 autoparaselenium>=0.1.16
         python3 -m pip freeze
-
-    - name: Install Geckodriver
+    - name: Install web drivers
       run: |
         mkdir -p ~/.web-drivers
         ls $CHROMEWEBDRIVER
         cp $CHROMEWEBDRIVER/* ~/.web-drivers/chromedriver
         cp $GECKOWEBDRIVER/* ~/.web-drivers/geckodriver
-        # wget "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-linux64.tar.gz"
-        # mkdir -p ~/.web-drivers
-        # tar -xvf geckodriver-v0.32.0-linux64.tar.gz
-        # chmod +x geckodriver
-        # cp geckodriver ~/.web-drivers/geckodriver
-        # md5sum geckodriver
-        # firefox --version
     - uses: c-hive/gha-yarn-cache@v1
     - name: Install modules
       run: |
