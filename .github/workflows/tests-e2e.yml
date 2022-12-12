@@ -39,8 +39,9 @@ jobs:
     - name: Install Geckodriver
       run: |
         mkdir -p ~/.web-drivers
-        cp $CHROMEWEBDRIVER ~/.web-drivers/chromedriver
-        cp $GECKOWEBDRIVER ~/.web-drivers/geckodriver
+        ls $CHROMEWEBDRIVER
+        cp $CHROMEWEBDRIVER/* ~/.web-drivers/chromedriver
+        cp $GECKOWEBDRIVER/* ~/.web-drivers/geckodriver
         # wget "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-linux64.tar.gz"
         # mkdir -p ~/.web-drivers
         # tar -xvf geckodriver-v0.32.0-linux64.tar.gz
