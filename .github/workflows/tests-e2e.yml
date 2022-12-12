@@ -22,6 +22,7 @@ jobs:
         python-version: 3.8
     - name: Set up Virtual Display for Chrome
       run: |
+        sudo apt update -y
         sudo apt install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
         sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
     - name: Set up Firefox
@@ -37,9 +38,9 @@ jobs:
 
     - name: Install Geckodriver
       run: |
-        wget "https://github.com/mozilla/geckodriver/releases/download/v0.28.0/geckodriver-v0.28.0-linux64.tar.gz"
+        wget "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-linux64.tar.gz"
         mkdir -p ~/.web-drivers
-        tar -xvf geckodriver-v0.28.0-linux64.tar.gz
+        tar -xvf geckodriver-v0.32.0-linux64.tar.gz
         chmod +x geckodriver
         cp geckodriver ~/.web-drivers/geckodriver
         md5sum geckodriver
