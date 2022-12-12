@@ -34,6 +34,16 @@ jobs:
       run: |
         python3 -m pip install selenium==3.141.0 py==1.11.0 autoparaselenium>=0.1.16
         python3 -m pip freeze
+
+    - name: Install Geckodriver
+      run: |
+        wget "https://github.com/mozilla/geckodriver/releases/download/v0.28.0/geckodriver-v0.28.0-linux64.tar.gz"
+        mkdir -p ~/.web-drivers
+        tar -xvf geckodriver-v0.28.0-linux64.tar.gz
+        chmod +x geckodriver
+        cp geckodriver ~/.web-drivers/geckodriver
+        md5sum geckodriver
+        firefox --version
     - uses: c-hive/gha-yarn-cache@v1
     - name: Install modules
       run: |
