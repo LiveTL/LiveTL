@@ -1565,7 +1565,7 @@ var keycode = $.ui.keyCode = {
 
 // Internal use only
 var escapeSelector = $.ui.escapeSelector = ( function() {
-	var selectorEscape = /([!"#$%&'()*+,./:;<=>?@[\]^`{|}~])/g;
+	var selectorEscape = /([!"#$%&'()*+,./:;<=>?@[\]^`{|}~\\])/g;
 	return function( selector ) {
 		return selector.replace( selectorEscape, "\\$1" );
 	};
@@ -15018,7 +15018,7 @@ $.widget( "ui.tabs", {
 	},
 
 	_sanitizeSelector: function( hash ) {
-		return hash ? hash.replace( /[!"$%&'()*+,.\/:;<=>?@\[\]\^`{|}~]/g, "\\$&" ) : "";
+		return hash ? hash.replace( /[!"$%&'()*+,.\/:;<=>?@\[\]\^`{|}~]\\/g, "\\$&" ) : "";
 	},
 
 	refresh: function() {
