@@ -55,6 +55,12 @@ export default defineConfig({
   plugins: [
     alias(),
 
+    replace({
+      values: {
+        'isLiveTL \= false': 'isLiveTL = true'
+      }
+    }),
+
     // TODO: add the isAndroid replacements 
     svelte({
       configFile: path.resolve(__dirname, 'svelte.config.js'),
@@ -82,7 +88,7 @@ export default defineConfig({
     copy({
       hook: 'writeBundle',
       targets: [{
-        src: path.resolve(__dirname, 'src/submodules/chat/src/assets'),
+        src: path.resolve(__dirname, 'src/submodules/chat/src/assets/*'),
         dest: 'build/hyperchat'
       }]
     }),
