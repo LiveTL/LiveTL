@@ -4,10 +4,11 @@
   "description": "Get live translations for YouTube and Twitch streams, crowdsourced from multilingual viewers!",
   "scripts": {
     "build": "webpack --mode development",
-    "build:production": "webpack --mode production",
+    "build:production": "vite build",
     "build:android": "webpack --mode production --env android",
     "package": "node utils/package.js",
     "start": "webpack serve",
+    "start:vite": "MINIFY=false vite build --watch",
     "ss": "node utils/screenshot.js",
     "update:list": "node utils/genlist.js",
     "type:check": "tsc -p tsconfig.json",
