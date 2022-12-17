@@ -49,6 +49,11 @@ function getLiveMessageBody(message: Element): HTMLElement | undefined {
       return child;
     }
   }
+
+  // twitch removed the live message property but ffz hasn't
+  // therefore above for loop won't work in vanilla twitch
+  // default return here is compensated for checking that there are fragments
+  return chatLine.children[chatLine.children.length - 1] as HTMLElement;
 }
 
 function parseMessageFragment(fragment: Element): Ytc.ParsedRun | undefined {
@@ -119,6 +124,10 @@ export function parseMessageElement(message: Element): Ltl.Message | undefined {
     if (result.type !== 'emoji') text += result.text;
     messageArray.push(result);
   });
+
+  // messageArray may have no elements because messageBody isn't guaranteed
+  // to be valid anymore
+  if (messageArray.length === 0) return;
 
   const result = {
     author,
