@@ -8,7 +8,6 @@ import copy from 'rollup-plugin-copy';
 import replace from 'rollup-plugin-replace';
 import manifest from './src/manifest.json';
 
-
 // include all entry points from src/js/pages/*.js
 const pagesEntryPoints = [
   'watch', 'popout', 'options', 'welcome', 'lite'
@@ -23,7 +22,7 @@ const entryPoints = [
     scripts: ['/js/pages/background.js', '/submodules/chat/src/scripts/chat-background.ts']
   },
   { name: 'html/hyperchat/index.html', scripts: ['/submodules/chat/src/hyperchat.ts'] },
-  { name: 'html/hyperchat/options.html', scripts: ['/submodules/chat/src/options.ts'] },
+  { name: 'html/hyperchat/options.html', scripts: ['/submodules/chat/src/options.ts'] }
 ];
 
 const jsEntry = [
@@ -38,7 +37,7 @@ for (const entry of entryPoints) {
     '</head>', `  <script defer type="module" src="${script}"></script>\n</head>`
   ), entryPointTemplate);
   fs.writeFileSync(`src/${entry.name}`, htmlEntry);
-};
+}
 
 export default defineConfig({
   root: 'src',
@@ -57,11 +56,11 @@ export default defineConfig({
 
     replace({
       values: {
-        'isLiveTL \= false': 'isLiveTL = true'
+        'isLiveTL = false': 'isLiveTL = true'
       }
     }),
 
-    // TODO: add the isAndroid replacements 
+    // TODO: add the isAndroid replacements
     svelte({
       configFile: path.resolve(__dirname, 'svelte.config.js'),
       emitCss: false
@@ -123,7 +122,7 @@ export default defineConfig({
         // lofi hip hop (the one that spawned after the og one ended)
         startUrl: 'https://www.youtube.com/watch?v=jfKfPfyJRdk'
       },
-      disableAutoLaunch: true,
+      disableAutoLaunch: true
     })
   ]
 });
