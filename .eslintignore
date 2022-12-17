@@ -3,3 +3,4 @@ dist
 node_modules
 .eslintrc.js
 **/vite.config.ts
+jquery-ui-bundle.js
