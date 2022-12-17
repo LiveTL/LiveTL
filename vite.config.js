@@ -26,6 +26,10 @@ const entryPoints = [
   { name: 'html/hyperchat/options.html', scripts: ['/submodules/chat/src/options.ts'] },
 ];
 
+const jsEntry = [
+  'ts/yt-workaround.ts'
+];
+
 const entryPointTemplate = fs.readFileSync(path.join(__dirname, 'src/empty.html'))
   .toString();
 
@@ -103,7 +107,8 @@ export default defineConfig({
       }),
       assets: 'img',
       additionalInputs: [
-        ...entryPoints.map(entry => entry.name)
+        ...entryPoints.map(entry => entry.name),
+        ...jsEntry
       ],
       watchFilePaths: [
         path.resolve(__dirname, 'src/manifest.json')
