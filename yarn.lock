@@ -1230,6 +1230,11 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
+"@livetl/svelte-webext-stores@^0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@livetl/svelte-webext-stores/-/svelte-webext-stores-0.0.14.tgz#fc44603946bbf9b2d27ab8c7c15c2287920fbeaa"
+  integrity sha512-hd7uTNYHxbT8rkmuI8JSnKVpljXwmBdQ8bIaN/dgRyj08VifXLk95B8CDJSObU02sj8BeqYpAwHp9oL0uwbp+Q==
+
 "@mdi/js@^5.9.55":
   version "5.9.55"
   resolved "https://registry.yarnpkg.com/@mdi/js/-/js-5.9.55.tgz#8f5bc4d924c23f30dab20545ddc768e778bbc882"
@@ -9388,11 +9393,6 @@ svelte-waypoint@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/svelte-waypoint/-/svelte-waypoint-0.1.4.tgz#ab467bed08c5f38716709872cf53d3f9da17831b"
   integrity sha512-UEqoXZjJeKj2sWlAIsBOFjxjMn+KP8aFCc/zjdmZi1cCOE59z6T2C+I6ZaAf8EmNQqNzfZVB/Lci4Ci9spzXAw==
-
-svelte-webext-stores@^0.0.12:
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/svelte-webext-stores/-/svelte-webext-stores-0.0.12.tgz#b3ab0b1cfd6bcd2c2aaf066b69dd09a01bda695c"
-  integrity sha512-kEn5thYuvWqeK9FoXNcyKtM8eoRCbEdFZ6N9xPl6FBKPk1OTlIMvFbTmrfHeC5osA7BX/VGbwv4TbicZHdJ3mA==
 
 svelte@^3.31.2, svelte@^3.49.0:
   version "3.49.0"
