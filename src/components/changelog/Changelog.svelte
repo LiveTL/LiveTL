@@ -6,7 +6,7 @@
   // );
 </script>
 
-<ExpandingCard title="Internal Improvements" icon="chat">
+<ExpandingCard title="HyperChat Improvements" icon="chat">
   <HCChangelogs />
 </ExpandingCard>
 
