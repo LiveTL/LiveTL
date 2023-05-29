@@ -35,6 +35,10 @@ const smelteConfig = {
         translated: {
           light: '#0050da',
           dark: '#b9d9ff'
+        },
+        ytbg: {
+          light: '#ffffff',
+          dark: '#0f0f0f'
         }
       }
     }
