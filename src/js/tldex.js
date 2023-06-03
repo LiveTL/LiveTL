@@ -19,15 +19,14 @@ const isNotEmpty = arr => arr.length !== 0;
  *
  * @type {(url: string, default_?: any, retry?: Ty.Seconds) => unknown}
  */
-const dexfetch = async (url, default_=undefined, retry=40) => {
+const dexfetch = async (url, default_ = undefined, retry = 40) => {
   try {
     for (;;) {
-      const res = await fetch(url, { headers: { 'X-APIKEY': holodexKey }}).then(toJson);
+      const res = await fetch(url, { headers: { 'X-APIKEY': holodexKey } }).then(toJson);
       if (res?.error !== 'Illegal Access.') return res;
       await sleep(retry * 1000);
     }
-  }
-  catch (_e) {
+  } catch (_e) {
     return default_;
   }
 };
