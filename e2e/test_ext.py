@@ -62,12 +62,13 @@ def run_on(*args):
     return wrapper
 
 
-@run_on(all_)
+@run_on(all_[0])
 def test_injection(web):
     web.get(chilled_cow)
-    time.sleep(5)
 
-    web.switch_to.frame(web.find_elements_by_css_selector("#chatframe")[0])
+    @retry
+    def _():
+        web.switch_to.frame(web.find_elements_by_css_selector("#chatframe")[0])
 
     # LiveTL Buttons
     @retry
@@ -221,9 +222,10 @@ def browser_str(driver):
 
 def open_embed(web, site=chilled_cow):
     web.get(site)
-    time.sleep(5)
 
-    web.switch_to.frame(web.find_elements_by_css_selector("#chatframe")[0])
+    @retry
+    def _():
+        web.switch_to.frame(web.find_elements_by_css_selector("#chatframe")[0])
 
     @retry
     def _():
