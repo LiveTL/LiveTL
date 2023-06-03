@@ -139,10 +139,10 @@ def test_embed_ytc_vod_tls(web):
     wait_for_ads(web, "PEKORA")
 
     # Go to 3/10 completion of video where there is translation of
-    # tl: You sound so cool just now
-    # author: KFC
-    # timestamp: 23:51
-    seek(web, 23 * 60 + 49)
+    # tl: to me, just being beside peko makes me happy
+    # author: Yami Chan
+    # timestamp: 24:09
+    seek(web, 24 * 60 + 7)
     switch_to_embed_frame(web)
 
     @retry
@@ -152,10 +152,10 @@ def test_embed_ytc_vod_tls(web):
 
     tl = web.find_element_by_css_selector(".message-display > .message .message-content")
     info = web.find_element_by_css_selector(".message-display > .message .message-info")
-    assert "You sound so cool just now" in tl.text, "Incorrect tl"
-    assert "KFC" in info.text, "Incorrect author"
+    assert "just being beside peko makes me happy" in tl.text, "Incorrect tl"
+    assert "Yami Chan" in info.text, "Incorrect author"
     assert "TLdex" not in info.text, "TLdex badge incorrectly displayed"
-    assert "(23:51)" in info.text, "Incorrect tl timestamp"
+    assert "(24:09)" in info.text, "Incorrect tl timestamp"
 
 
 @run_on(all_)
