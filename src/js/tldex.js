@@ -1,4 +1,4 @@
-import { MCHAD, Holodex, AuthorType, languageNameCode, isTwitch } from './constants.js';
+import { MCHAD, Holodex, AuthorType, languageNameCode, holodexKey, isTwitch } from './constants.js';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as Ty from './types.js';
 import * as Twitch from './twitch.js';
@@ -14,14 +14,30 @@ import { archiveStreamFromScript, sseToStream } from './api.js';
 /** @type {(arr: Array) => Boolean} */
 const isNotEmpty = arr => arr.length !== 0;
 
-/** @type {(videoLink: String, retryInterval: Ty.Seconds) => Promise<Ty.MCHADLiveRoom[] | undefined>} */
-const getVideoDataWithRetry = async (videoLink, retryInterval) => {
-  for (;;) {
-    const dt = await fetch(`${Holodex}/videos/${videoLink}`).then(toJson);
-    if (dt.status !== 'past') return undefined;
-    if (dt.start_actual || dt.available_at) return (dt.start_actual ? Date.parse(dt.available_at) : Date.parse(dt.start_actual));
-    await sleep(retryInterval * 1000);
+/**
+ * Send GET requests to holodex with retry and credentials.
+ *
+ * @type {(url: string, default_?: any, retry?: Ty.Seconds) => unknown}
+ */
+const dexfetch = async (url, default_=undefined, retry=40) => {
+  try {
+    for (;;) {
+      const res = await fetch(url, { headers: { 'X-APIKEY': holodexKey }}).then(toJson);
+      if (res?.error !== 'Illegal Access.') return res;
+      await sleep(retry * 1000);
+    }
   }
+  catch (_e) {
+    return default_;
+  }
+};
+
+/** @type {(videoLink: String) => Promise<Ty.MCHADLiveRoom[] | undefined>} */
+const getVideoDataWithRetry = async (videoLink) => {
+  const dt = await dexfetch(`${Holodex}/videos/${videoLink}`);
+  if (dt === undefined) return undefined;
+  if (dt?.status !== 'past') return undefined;
+  if (dt?.start_actual || dt?.available_at) return (dt.start_actual ? Date.parse(dt.available_at) : Date.parse(dt.start_actual));
 };
 
 const getTypes = (c) => {
@@ -35,8 +51,7 @@ const getTypes = (c) => {
 };
 
 /** @type {(url: string, meta: Ty.ScriptMeta) => Promise<Ty.Message[]>} */
-const getScript = async (url, meta) => await fetch(url)
-  .then(toJson)
+const getScript = async (url, meta) => await dexfetch(url)
   .then(e => e.filter(c => !c.is_owner)
     .map(c => {
       return ({
@@ -60,7 +75,7 @@ const getScript = async (url, meta) => await fetch(url)
 export const getArchive = videoLink => readable(null, async set => {
   const startTime = isTwitch
     ? await Twitch.getStartTime(Twitch.getVideoId(videoLink))
-    : await getVideoDataWithRetry(videoLink, 3);
+    : await getVideoDataWithRetry(videoLink);
   if (startTime === null || startTime === undefined) return () => { };
 
   await languages.loaded;
