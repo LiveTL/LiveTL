@@ -27,14 +27,8 @@ jobs:
         sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
     - name: Install Dependencies
       run: |
-        python3 -m pip install selenium==3.141.0 py==1.11.0 autoparaselenium>=0.1.16
+        python3 -m pip install py==1.11.0 'autoparaselenium>=0.2.0'
         python3 -m pip freeze
-    - name: Install web drivers
-      run: |
-        mkdir -p ~/.web-drivers
-        ls $CHROMEWEBDRIVER
-        cp $CHROMEWEBDRIVER/* ~/.web-drivers/chromedriver
-        cp $GECKOWEBDRIVER/* ~/.web-drivers/geckodriver
     - uses: c-hive/gha-yarn-cache@v1
     - name: Install modules
       run: |
