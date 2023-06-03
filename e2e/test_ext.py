@@ -13,6 +13,7 @@ from pathlib import Path
 from autoparaselenium import configure, run_on as a_run_on, all_, Extension
 import requests
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
 from selenium import webdriver
 
 from reporting import report_file
@@ -46,6 +47,10 @@ def run_on(*args):
         @a_run_on(*args)
         @wraps(func)
         def inner(web):
+            query_selector = partial(web.find_element, By.CSS_SELECTOR)
+            query_selector_all = partial(web.find_elements, By.CSS_SELECTOR)
+            setattr(web, "find_element_by_css_selector", query_selector)
+            setattr(web, "find_elements_by_css_selector", query_selector_all)
             try:
                 return func(web)
             except Exception as e:
