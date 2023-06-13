@@ -28,7 +28,9 @@
     {
       "matches": [
         "https://www.youtube.com/live_chat*",
-        "https://www.youtube.com/live_chat_replay*"
+        "https://www.youtube.com/live_chat_replay*",
+        "https://studio.youtube.com/live_chat*",
+        "https://studio.youtube.com/live_chat_replay*"
       ],
       "js": [
         "chat-interceptor.bundle.js",
