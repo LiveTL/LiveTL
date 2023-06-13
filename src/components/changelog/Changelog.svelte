@@ -1,13 +1,16 @@
 <script>
   import ExpandingCard from '../common/ExpandingCard.svelte';
-  import HCChangelogs from '../../submodules/chat/src/components/changelog/Changelog.svelte';
+  // import HCChangelogs from '../../submodules/chat/src/components/changelog/Changelog.svelte';
   // const trailer = chrome.runtime.getURL(
   //   'hyperchat/trailer.png'
   // );
 </script>
 
-<ExpandingCard title="HyperChat Improvements" icon="chat">
-  <HCChangelogs />
+<ExpandingCard title="YuTube Studio Bug Fixes" icon="chat">
+  Some bugs with LiveTL and HyperChat in YouTube Studio have been fixed.
+</ExpandingCard>
+<ExpandingCard title="TLdex Fixes" icon="chat">
+  TLdex connectivity issues have been fixed.
 </ExpandingCard>
 
 <!-- <ExpandingCard title="Twitch and TLdex Fixes" icon="chat" expanded> -->
