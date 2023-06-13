@@ -6,7 +6,7 @@
   // );
 </script>
 
-<ExpandingCard title="YuTube Studio Bug Fixes" icon="chat">
+<ExpandingCard title="YouTube Studio Bug Fixes" icon="chat">
   Some bugs with LiveTL and HyperChat in YouTube Studio have been fixed.
 </ExpandingCard>
 <ExpandingCard title="TLdex Fixes" icon="chat">
