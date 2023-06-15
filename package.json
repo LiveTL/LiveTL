@@ -88,7 +88,7 @@
   "dependencies": {
     "@livetl/svelte-webext-stores": "^0.0.14",
     "@mdi/js": "^5.9.55",
-    "dns-packet": "^5.2.4",
+    "dns-packet": "^5.4.0",
     "file-saver": "^2.0.5",
     "hosted-git-info": "^4.0.2",
     "html2canvas": "^1.0.0-rc.7",
