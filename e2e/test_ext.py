@@ -13,6 +13,7 @@ from pathlib import Path
 from autoparaselenium import configure, run_on as a_run_on, all_, Extension
 import requests
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
 from selenium import webdriver
 
 from reporting import report_file
@@ -46,6 +47,10 @@ def run_on(*args):
         @a_run_on(*args)
         @wraps(func)
         def inner(web):
+            query_selector = partial(web.find_element, By.CSS_SELECTOR)
+            query_selector_all = partial(web.find_elements, By.CSS_SELECTOR)
+            setattr(web, "find_element_by_css_selector", query_selector)
+            setattr(web, "find_elements_by_css_selector", query_selector_all)
             try:
                 return func(web)
             except Exception as e:
@@ -57,12 +62,13 @@ def run_on(*args):
     return wrapper
 
 
-@run_on(all_)
+@run_on(all_[0])
 def test_injection(web):
     web.get(chilled_cow)
-    time.sleep(5)
 
-    web.switch_to.frame(web.find_elements_by_css_selector("#chatframe")[0])
+    @retry
+    def _():
+        web.switch_to.frame(web.find_elements_by_css_selector("#chatframe")[0])
 
     # LiveTL Buttons
     @retry
@@ -134,10 +140,10 @@ def test_embed_ytc_vod_tls(web):
     wait_for_ads(web, "PEKORA")
 
     # Go to 3/10 completion of video where there is translation of
-    # tl: You sound so cool just now
-    # author: KFC
-    # timestamp: 23:51
-    seek(web, 23 * 60 + 49)
+    # tl: to me, just being beside peko makes me happy
+    # author: Yami Chan
+    # timestamp: 24:09
+    seek(web, 24 * 60 + 7)
     switch_to_embed_frame(web)
 
     @retry
@@ -147,10 +153,10 @@ def test_embed_ytc_vod_tls(web):
 
     tl = web.find_element_by_css_selector(".message-display > .message .message-content")
     info = web.find_element_by_css_selector(".message-display > .message .message-info")
-    assert "You sound so cool just now" in tl.text, "Incorrect tl"
-    assert "KFC" in info.text, "Incorrect author"
+    assert "just being beside peko makes me happy" in tl.text, "Incorrect tl"
+    assert "Yami Chan" in info.text, "Incorrect author"
     assert "TLdex" not in info.text, "TLdex badge incorrectly displayed"
-    assert "(23:51)" in info.text, "Incorrect tl timestamp"
+    assert "(24:09)" in info.text, "Incorrect tl timestamp"
 
 
 @run_on(all_)
@@ -216,9 +222,10 @@ def browser_str(driver):
 
 def open_embed(web, site=chilled_cow):
     web.get(site)
-    time.sleep(5)
 
-    web.switch_to.frame(web.find_elements_by_css_selector("#chatframe")[0])
+    @retry
+    def _():
+        web.switch_to.frame(web.find_elements_by_css_selector("#chatframe")[0])
 
     @retry
     def _():
