@@ -85,7 +85,12 @@ const isDuplicateOf = msg => otherMsg =>
 /** @type {(msg: Message, otherMsg: Message) => Boolean} */
 const messageDup = (msg, otherMsg) =>
   removeWhitespace(msg.text) === removeWhitespace(otherMsg.text) &&
-    msg.types !== otherMsg.types;
+    // after some developments, tldex type means "is verified tldex"
+    // instead of "comes from tldex"
+    // to check if it came from tldex, check typeof messageId
+    // if it came from ytc, it's a string, if it came from tldex, it's a number
+    (msg.types !== otherMsg.types ||
+      typeof msg.messageId !== typeof otherMsg.messageId);
 
 /** @type {(msg: Message, otherMsg: Message) => Boolean} */
 const messageEquals = (msg, otherMsg) => msg.messageId === otherMsg.messageId || (

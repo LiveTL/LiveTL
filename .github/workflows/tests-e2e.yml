@@ -5,8 +5,6 @@ on:
       - '**'
     tags-ignore:
       - '*.*'
-    paths-ignore:
-      - '.github/**'
 jobs:
   e2e-test:
     runs-on: ubuntu-latest
@@ -27,14 +25,8 @@ jobs:
         sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
     - name: Install Dependencies
       run: |
-        python3 -m pip install selenium==3.141.0 py==1.11.0 autoparaselenium>=0.1.16
+        python3 -m pip install 'py==1.11.0' 'autoparaselenium>=0.3.1' 'selenium==4.9.1'
         python3 -m pip freeze
-    - name: Install web drivers
-      run: |
-        mkdir -p ~/.web-drivers
-        ls $CHROMEWEBDRIVER
-        cp $CHROMEWEBDRIVER/* ~/.web-drivers/chromedriver
-        cp $GECKOWEBDRIVER/* ~/.web-drivers/geckodriver
     - uses: c-hive/gha-yarn-cache@v1
     - name: Install modules
       run: |
