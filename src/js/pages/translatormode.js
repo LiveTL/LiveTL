@@ -4,7 +4,7 @@ let app;
 
 (() => {
   const newbody = document.createElement('body');
-  const container = document.querySelector('#input')?.parentElement;
+  const container = document.querySelector('yt-live-chat-text-input-field-renderer#input')?.parentElement;
 
   if (!container) {
     console.log('#input not found, not injecting translator mode.');
