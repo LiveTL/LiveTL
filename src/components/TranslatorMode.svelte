@@ -11,7 +11,8 @@
 
   let focused = 0;
 
-  const chatbox = container.querySelectorAll('#input')[1];
+  const dummyChatbox = document.createElement('input');
+  const chatbox = container.querySelectorAll('#input')[1] ?? dummyChatbox;
   const hide = el => (el.style.display = 'none');
   const hideRipples = () => document
     .querySelectorAll('paper-ripple')
@@ -26,6 +27,10 @@
   };
 
   onMount(() => {
+    if (chatbox === dummyChatbox) {
+      console.error('ERROR: chatbox failed to select for translator mode', window.location.href);
+      return;
+    }
     translatorMode(
       container.querySelectorAll('#input'), content, recommendations, focusRec
     );
