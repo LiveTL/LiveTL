@@ -1,7 +1,7 @@
 import { mdiOpenInNew, mdiYoutubeTv, mdiIframeArray } from '@mdi/js';
 import { getFrameInfoAsync, createPopup, isValidFrameInfo } from '../../submodules/chat/src/ts/chat-utils';
 import { paramsEmbedDomain, AutoLaunchMode } from '../../js/constants.js';
-import { autoLaunchMode } from '../../js/store.js';
+import { autoLaunchMode, holodexEnabled } from '../../js/store.js';
 import { constructParams, openLiveTL } from '../../js/utils.js';
 import { injectLtlLauncher, ltlButtonParams } from '../utils';
 
@@ -10,6 +10,27 @@ for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) 
 }
 
 async function loaded(): Promise<void> {
+  try {
+    let hostname = '';
+    if (document.referrer) {
+      const url = new URL(document.referrer);
+      hostname = url.hostname;
+    }
+
+    await holodexEnabled.loaded;
+    if (hostname === 'holodex.net' && !holodexEnabled.get()) { return; }
+  } catch (e) {
+    if (e instanceof Error) {
+      holodexEnabled.subscribe($holodexEnabled => {
+        console.log( document.referrer );
+        console.log({ $holodexEnabled });
+      });
+      console.debug('Could not get hostname', { e });
+    } else {
+      throw e;
+    }
+  }
+
   const elem = document.querySelector<HTMLElement>('yt-live-chat-app');
   if (!elem) {
     console.error('Could not find yt-live-chat-app');

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { twitchEnabled } from '../../js/store.js';
+  import { holodexEnabled, twitchEnabled } from '../../js/store.js';
   import About from './About.svelte';
   import Card from '../common/Card.svelte';
   import Checkbox from '../common/CheckboxStore.svelte';
@@ -10,6 +10,7 @@
   Enable LiveTL on:
   <NonstoreCheckbox label="YouTube" checked disabled />
   <Checkbox name="Twitch" store={twitchEnabled} />
+  <Checkbox name="Holodex" store={holodexEnabled} />
 </Card>
 <Card title="About" icon="info">
   <About />
