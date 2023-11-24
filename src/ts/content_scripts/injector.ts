@@ -18,17 +18,9 @@ async function loaded(): Promise<void> {
     }
 
     await holodexEnabled.loaded;
-    if (hostname === 'holodex.net' && !holodexEnabled.get()) { return; }
+    if (hostname === 'holodex.net' && !holodexEnabled.get()) return;
   } catch (e) {
-    if (e instanceof Error) {
-      holodexEnabled.subscribe($holodexEnabled => {
-        console.log( document.referrer );
-        console.log({ $holodexEnabled });
-      });
-      console.debug('Could not get hostname', { e });
-    } else {
-      throw e;
-    }
+    if (e instanceof Error) console.debug('Could not get hostname', { e });
   }
 
   const elem = document.querySelector<HTMLElement>('yt-live-chat-app');
