@@ -116,6 +116,7 @@ export const neverShowSpotlightPrompt = SS('neverShowSpotlightPrompt', false);
 export const showVerifiedMessage = SS('showVerifiedMessage', false);
 export const isChatInverted = SS('isChatInverted', false);
 export const twitchEnabled = SS('twitchEnabled', true);
+export const holodexEnabled = SS('holodexEnabled', true);
 // tldex is mchad's successor and users want same preference
 export const enableTldexTLs = enableMchadTLs;
 export const spammersWhitelisted = LS('spammersWhiteListed', [sampleAuthor].slice(1));

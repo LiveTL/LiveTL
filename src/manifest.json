@@ -2,7 +2,7 @@
   "name": "LiveTL - Translation Filter for Streams",
   "options_ui": {
     "page": "html/options.html",
-    "open_in_tab": true
+    "open_in_tab": false
   },
   "permissions": [
     "storage",

@@ -39,10 +39,7 @@
     </ExpandingCard>
     <ImportExport />
     <Checkbox name="Show timestamps" store={showTimestamp} />
-    <Checkbox
-      name="Show screenshot and download buttons"
-      store={enableExportButtons}
-    />
+    <Checkbox name="Show screenshot and download buttons" store={enableExportButtons} />
   </Card>
   <CommonFilterCards {div} />
   <Card title="Font" icon="format_size">
