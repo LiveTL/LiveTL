@@ -1,8 +1,6 @@
 <script>
-  import * as j from 'jquery';
-  import 'jquery-ui-bundle';
+  import { j } from '../plugins/jquery.js';
   import 'jquery-ui-bundle/jquery-ui.css';
-  import '../plugins/jquery.ui.touch-punch';
   import VideoEmbed from './VideoEmbed.svelte';
   import Wrapper from './Wrapper.svelte';
   import {

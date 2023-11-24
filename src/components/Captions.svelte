@@ -1,7 +1,6 @@
 <script>
   import '../css/splash.css';
-  import * as j from 'jquery';
-  import 'jquery-ui-bundle';
+  import { j } from '../plugins/jquery.js';
   import 'jquery-ui-bundle/jquery-ui.css';
   import {
     captionLeft,

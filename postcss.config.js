@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+// Should be same as https://github.com/LiveTL/HyperChat/blob/mv3/postcss.config.js
+
 const extractor = require('smelte/src/utils/css-extractor.js');
 const tailwindConfig = require('./tailwind.config.js');
 
@@ -10,6 +11,7 @@ const safelistSelectors = [
   // Components with custom color prop might need its color to be whitelisted too
   'bg-blue-500',
   'hover:bg-blue-400',
+  // is not in HyperChat's postcss conf but was in LiveTL's
   'text-alert-500'
 ];
 
@@ -22,32 +24,25 @@ const safelistPatterns = [
   /^[mphw]\w?-\d\.5$/
 ];
 
-module.exports = (purge = false) => {
-  const postcss = [];
-  return [
-    require('postcss-import')(),
-    require('postcss-url')(),
-    require('postcss-input-range')(),
-    require('autoprefixer')(),
-    require('tailwindcss')(tailwindConfig),
-    ...postcss,
-    purge &&
-      require('cssnano')({
-        preset: 'default'
-      }),
-    purge &&
-      require('@fullhuman/postcss-purgecss')({
-        content: ['./**/*.svelte'],
-        extractors: [
-          {
-            extractor,
-            extensions: ['svelte']
-          }
-        ],
-        safelist: {
-          standard: safelistSelectors,
-          deep: safelistPatterns
+module.exports = {
+  plugins: {
+    'postcss-import': {},
+    'postcss-url': {},
+    'postcss-input-range': {},
+    tailwindcss: tailwindConfig,
+    autoprefixer: {},
+    '@fullhuman/postcss-purgecss': {
+      content: ['./**/*.svelte'],
+      extractors: [
+        {
+          extractor,
+          extensions: ['svelte']
         }
-      })
-  ].filter(Boolean);
+      ],
+      safelist: {
+        standard: safelistSelectors,
+        deep: safelistPatterns
+      }
+    }
+  }
 };
