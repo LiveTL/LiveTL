@@ -1,4 +1,5 @@
 {
+  "version": "4.20",
   "name": "LiveTL - Translation Filter for Streams",
   "options_ui": {
     "page": "html/options.html",
@@ -13,17 +14,16 @@
     "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay/*",
     "https://www.twitch.tv/*"
   ],
-  "background": {
-    "page": "html/background.html",
-    "persistent": true
-  },
   "icons": {
     "128": "./img/128x128.png"
   },
-  "browser_action": {
-    "default_icon": "./img/48x48.png"
+  "action": {
+    "default_icon": {
+      "48": "./img/48x48.png",
+      "128": "./img/128x128.png"
+    }
   },
-  "manifest_version": 2,
+  "manifest_version": 3,
   "content_scripts": [
     {
       "matches": [
@@ -59,11 +59,25 @@
       "all_frames": true
     }
   ],
+  "{{firefox}}.background": {
+    "scripts": ["js/pages/background.js", "submodules/chat/src/scripts/chat-background.ts"]
+  },
   "web_accessible_resources": [
-    "*.js",
-    "*.html",
-    "*.png",
-    "*.gif",
-    "*.mp4"
-  ]
+    {
+      "resources": [
+        "*.js",
+        "*.html",
+        "*.png",
+        "*.gif",
+        "*.mp4"
+      ],
+      "matches": [ "<all_urls>" ]
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{c20c6ec1-eea0-4b7b-8640-43448a342440}",
+      "strict_min_version": "42.0"
+    }
+  }
 }

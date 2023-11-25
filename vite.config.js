@@ -108,7 +108,9 @@ export default defineConfig({
         ...manifest,
         version: process.env.VERSION ?? manifest.version ?? '69.420',
         // following should only be in dev builds
-        content_security_policy: 'script-src \'self\' \'unsafe-eval\'; object-src \'self\''
+        content_security_policy: {
+          extension_pages: 'script-src \'self\' \'unsafe-eval\'; object-src \'self\'',
+        }
       }),
       assets: 'img',
       additionalInputs: [
