@@ -122,7 +122,29 @@ export default defineConfig({
         // lofi hip hop (the one that spawned after the og one ended)
         startUrl: 'https://www.youtube.com/watch?v=jfKfPfyJRdk'
       },
-      disableAutoLaunch: true
+      disableAutoLaunch: true,
+      browser: process.env.BROWSER === undefined ? 'chrome' : process.env.BROWSER,
+    }),
+
+    copy({
+      hook: 'writeBundle',
+      targets: [{
+        src: 'build/manifest.json',
+        dest: 'build/',
+        transform: (content) => {
+          const newManifest = JSON.parse(content.toString());
+          if ('incognito' in newManifest) {
+            delete newManifest.incognito;
+          }
+          if ('service_worker' in newManifest.background) {
+            newManifest.background = {
+              scripts: [newManifest.background.service_worker]
+            };
+          }
+          return JSON.stringify(newManifest, null, 2);
+        },
+        rename: 'manifest.firefox.json'
+      }]
     })
   ]
 });
