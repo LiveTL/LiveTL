@@ -26,7 +26,9 @@ const entryPoints = [
 ];
 
 const jsEntry = [
-  'ts/yt-workaround.ts'
+  'ts/yt-workaround.ts',
+  'submodules/chat/src/scripts/chat-metagetter.ts',
+  'submodules/chat/src/scripts/chat-mounter.ts'
 ];
 
 const entryPointTemplate = fs.readFileSync(path.join(__dirname, 'src/empty.html'))
@@ -103,14 +105,26 @@ export default defineConfig({
       }]
     }),
 
+    // copy over hyperchat stylesheets
+    // these should ideally be copied over automatically from this plugin
+    // however, they do not get copied
+    copy({
+      hook: 'writeBundle',
+      targets: [{
+        src: path.resolve(__dirname, 'src/submodules/chat/src/stylesheets/*'),
+        dest: 'build/submodules/chat/src/stylesheets'
+      }]
+    }),
+
     browserExtension({
       manifest: () => ({
         ...manifest,
         version: process.env.VERSION ?? manifest.version ?? '69.420',
         // following should only be in dev builds
-        content_security_policy: {
-          extension_pages: 'script-src \'self\' \'unsafe-eval\'; object-src \'self\'',
-        }
+        // it is being commented out as unsafe-eval is not allowed in mv3
+        // content_security_policy: {
+        //   extension_pages: 'script-src \'self\' \'unsafe-eval\'; object-src \'self\'',
+        // }
       }),
       assets: 'img',
       additionalInputs: [

@@ -8,7 +8,9 @@
   "permissions": [
     "storage",
     "webRequest",
-    "webRequestBlocking",
+    "webRequestBlocking"
+  ],
+  "host_permissions": [
     "https://www.youtube.com/*?*",
     "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat/*",
     "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay/*",
@@ -25,6 +27,16 @@
   },
   "manifest_version": 3,
   "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/embed/hyperchat_embed?*"
+      ],
+      "js": [
+        "submodules/chat/src/scripts/chat-mounter.ts"
+      ],
+      "css": ["submodules/chat/src/stylesheets/scrollbar.css", "submodules/chat/src/stylesheets/page404.css"],
+      "all_frames": true
+    },
     {
       "matches": [
         "https://www.youtube.com/live_chat*",
