@@ -147,77 +147,72 @@ export function ytcSource(window) {
   const ytc = writable(null);
   const newMessage = compose(ytc.set, ytcToMsg);
 
-  /* Connect to background messaging as client */
-  /** @type {Chat.Port} */
-  let port;
-  try {
-    port = chrome.runtime.connect();
-  } catch {
-    return { ytc, cleanUp: () => {} };
-  }
   let portRegistered = false;
   let tryRegister = 0;
-  /** @type {Chat.FrameInfo | null} */
-  let frameInfo = null;
+
   const registerClient = () => {
-    if (frameInfo == null) {
-      console.error('frameInfo is null');
+    tryRegister++;
+
+    if (paramsTabId === null && paramsFrameId === null) {
+      console.error('missing tabid or frameid', { paramsTabId, paramsFrameId });
       return;
     }
+    /** @type {Chat.FrameInfo} */
+    const frameInfo = {
+      tabId: parseInt(paramsTabId),
+      frameId: parseInt(paramsFrameId)
+    };
+
+    /** @type {Chat.Port} */
+    let port;
+    try {
+      port = chrome.runtime.connect({
+        name: JSON.stringify(frameInfo)
+      });
+    } catch (e) {
+      console.error('Failed to connect to bg port', e);
+    }
+    console.log('POGGGGG connected OWO UWU');
+
     port.postMessage({
       type: 'registerClient',
       frameInfo,
       getInitialData: false
     });
-    tryRegister++;
+
+    port.onMessage.addListener((response) => {
+      console.log('GOT NEW MESSAGE', response);
+      switch (response.type) {
+        case 'messages':
+          response.messages.forEach((m) => newMessage(m.message));
+          break;
+        case 'bonk': // TODO: No need to use arrays anymore
+          sources.ytcBonks.set([response.bonk]);
+          break;
+        case 'delete':
+          sources.ytcDeletions.set([response.deletion]);
+          break;
+        case 'playerProgress':
+          timestamp.set(response.playerProgress);
+          break;
+        case 'registerClientResponse':
+          if (response.success) {
+            portRegistered = true;
+            break;
+          }
+          if (tryRegister < 3) {
+            setTimeout(registerClient, 500);
+          } else {
+            console.error(`Failed to connect to YTC source after 3 attempts: ${response.failReason}`);
+          }
+          break;
+      }
+    });
   };
 
-  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-  if (paramsPopout && !portRegistered) {
-    frameInfo = {
-      tabId: parseInt(paramsTabId),
-      frameId: parseInt(paramsFrameId)
-    };
-    registerClient();
-  }
+  registerClient();
 
-  window.addEventListener('message', (d) => {
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    if (!paramsPopout && d.data.type === 'frameInfo' && !portRegistered) {
-      frameInfo = d.data.frameInfo;
-      registerClient();
-    }
-  });
-
-  port.onMessage.addListener((response) => {
-    switch (response.type) {
-      case 'messages':
-        response.messages.forEach((m) => newMessage(m.message));
-        break;
-      case 'bonk': // TODO: No need to use arrays anymore
-        sources.ytcBonks.set([response.bonk]);
-        break;
-      case 'delete':
-        sources.ytcDeletions.set([response.deletion]);
-        break;
-      case 'playerProgress':
-        timestamp.set(response.playerProgress);
-        break;
-      case 'registerClientResponse':
-        if (response.success) {
-          portRegistered = true;
-          break;
-        }
-        if (tryRegister < 3) {
-          setTimeout(registerClient, 500);
-        } else {
-          console.error(`Failed to connect to YTC source after 3 attempts: ${response.failReason}`);
-        }
-        break;
-    }
-  });
-
-  return { ytc, cleanUp: () => port.disconnect() };
+  return { ytc, cleanUp: () => port && port.disconnect() };
 }
 
 function message(author, msg, timestamp) {

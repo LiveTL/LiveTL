@@ -71,8 +71,11 @@
       "all_frames": true
     }
   ],
+  "{{chrome}}.background": {
+    "service_worker": "js/pages/background.js"
+  },
   "{{firefox}}.background": {
-    "scripts": ["js/pages/background.js", "submodules/chat/src/scripts/chat-background.ts"]
+    "scripts": ["js/pages/background.js"]
   },
   "web_accessible_resources": [
     {
