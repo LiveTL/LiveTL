@@ -103,10 +103,7 @@
       />
     {/if}
     <Checkbox name="Show timestamps" store={showTimestamp} />
-    <Checkbox
-      name="Show screenshot and download buttons"
-      store={enableExportButtons}
-    />
+    <Checkbox name="Show screenshot and download buttons" store={enableExportButtons} />
     <Checkbox name="Show fullscreen button" store={enableFullscreenButton} />
   </Card>
   {#if $displayMode === DisplayMode.FULLPAGE}
