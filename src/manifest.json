@@ -89,7 +89,7 @@
       "matches": [ "<all_urls>" ]
     }
   ],
-  "browser_specific_settings": {
+  "{{firefox}}.browser_specific_settings": {
     "gecko": {
       "id": "{c20c6ec1-eea0-4b7b-8640-43448a342440}",
       "strict_min_version": "42.0"
