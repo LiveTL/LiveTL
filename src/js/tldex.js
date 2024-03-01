@@ -115,8 +115,10 @@ export const getArchive = videoLink => readable(null, async set => {
   return () => unsubscribes.forEach(u => u());
 });
 
-/** @type {(room: String) => Readable<Ty.MCHADStreamItem>} */
-const streamRoom = (videoLink, langcode) => sseToStream(`${MCHAD}/holoproxy?id=YT_${videoLink}&lang=${langcode}`);
+// MCHAD is just down, disable mchad for now
+/** @type {(videoLink: string, langcode: string) => Readable<Ty.MCHADStreamItem>} */
+const streamRoom = (videoLink, langcode) => readable();
+// const streamRoom = (videoLink, langcode) => sseToStream(`${MCHAD}/holoproxy?id=YT_${videoLink}&lang=${langcode}`);
 
 /** @type {UnixToTimestamp} */
 const liveUnixToTimestamp = unix =>
