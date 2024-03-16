@@ -38,6 +38,7 @@
         "injector.bundle.js",
         "translatormode.bundle.js"
       ],
+      "css": ["hyperchat/titlebar.css"],
       "all_frames": true
     },
     {
