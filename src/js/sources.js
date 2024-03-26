@@ -14,6 +14,7 @@ import { paramsYtVideoId, AuthorType, paramsPopout, paramsTabId, paramsFrameId, 
 import { twitchSource } from '../ts/sources';
 // import * as API from './api.js';
 import * as TLDEX from './tldex.js';
+import { useReconnect } from '../submodules/chat/src/ts/chat-utils.ts';
 
 /**
  * @typedef {import('svelte/store').Readable} Readable
@@ -150,18 +151,12 @@ export function ytcSource(window) {
   let portRegistered = false;
   let tryRegister = 0;
 
-  const registerClient = () => {
+  setTimeout(() => {
+  const registerClient = () => useReconnect(async () => {
     tryRegister++;
 
-    if (paramsTabId === null && paramsFrameId === null) {
-      console.error('missing tabid or frameid', { paramsTabId, paramsFrameId });
-      return;
-    }
     /** @type {Chat.FrameInfo} */
-    const frameInfo = {
-      tabId: parseInt(paramsTabId),
-      frameId: parseInt(paramsFrameId)
-    };
+    const frameInfo = await chrome.runtime.sendMessage({ type: 'getFrameInfo' });
 
     /** @type {Chat.Port} */
     let port;
@@ -172,16 +167,16 @@ export function ytcSource(window) {
     } catch (e) {
       console.error('Failed to connect to bg port', e);
     }
-    console.log('POGGGGG connected OWO UWU');
 
+    setTimeout(() => {
     port.postMessage({
       type: 'registerClient',
       frameInfo,
-      getInitialData: false
+      getInitialData: true
     });
+    }, 1000);
 
     port.onMessage.addListener((response) => {
-      console.log('GOT NEW MESSAGE', response);
       switch (response.type) {
         case 'messages':
           response.messages.forEach((m) => newMessage(m.message));
@@ -208,11 +203,14 @@ export function ytcSource(window) {
           break;
       }
     });
-  };
+
+    return port;
+  });
 
   registerClient();
+  }, 2000);
 
-  return { ytc, cleanUp: () => port && port.disconnect() };
+  return { ytc, cleanUp: () => port && port.destroy() };
 }
 
 function message(author, msg, timestamp) {
