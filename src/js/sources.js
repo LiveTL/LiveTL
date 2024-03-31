@@ -151,12 +151,33 @@ export function ytcSource(window) {
   let portRegistered = false;
   let tryRegister = 0;
 
-  setTimeout(() => {
-  const registerClient = () => useReconnect(async () => {
-    tryRegister++;
+  /**
+   * Youtube live_chat frame sends a frameInfo message with the yt frame id.
+   * It is important to use this because when opening LiveTL, the frameid and
+   * tabid of the yt frame change so we need updated ids.
+   *
+   * Also, in "Open in LiveTL" mode, no tabid/frameid params are given.
+   *
+   * We need frameid as well as tabid because we may have multiple livetls in
+   * one page (eg. holodex).
+   *
+   * @type {() => Promise<Chat.FrameInfo>}
+   */
+  const postMessageFrameInfo = () => new Promise((res) => {
+    const listener = (d) => {
+      if (d.data.type === 'frameInfo') {
+        removeEventListener('message', listener);
+        res(d.data.frameInfo);
+      }
+    }
+    addEventListener('message', listener);
+  });
 
+  const port = useReconnect(async () => {
     /** @type {Chat.FrameInfo} */
-    const frameInfo = await chrome.runtime.sendMessage({ type: 'getFrameInfo' });
+    const frameInfo = paramsPopout
+      ? { tabId: parseInt(paramsTabId), frameId: parseInt(paramsFrameId) }
+      : await postMessageFrameInfo();
 
     /** @type {Chat.Port} */
     let port;
@@ -168,13 +189,12 @@ export function ytcSource(window) {
       console.error('Failed to connect to bg port', e);
     }
 
-    setTimeout(() => {
-    port.postMessage({
-      type: 'registerClient',
-      frameInfo,
-      getInitialData: true
-    });
-    }, 1000);
+    const registerClient = () => {
+      port.postMessage({
+        type: 'registerClient',
+        getInitialData: true
+      });
+    };
 
     port.onMessage.addListener((response) => {
       switch (response.type) {
@@ -196,6 +216,7 @@ export function ytcSource(window) {
             break;
           }
           if (tryRegister < 3) {
+            tryRegister++;
             setTimeout(registerClient, 500);
           } else {
             console.error(`Failed to connect to YTC source after 3 attempts: ${response.failReason}`);
@@ -204,11 +225,10 @@ export function ytcSource(window) {
       }
     });
 
+    registerClient();
+
     return port;
   });
-
-  registerClient();
-  }, 2000);
 
   return { ytc, cleanUp: () => port && port.destroy() };
 }
