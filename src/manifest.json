@@ -8,7 +8,7 @@
   "permissions": [
     "storage",
     "webRequest",
-    "webRequestBlocking"
+    "declarativeNetRequest"
   ],
   "host_permissions": [
     "https://www.youtube.com/*?*",
@@ -76,6 +76,13 @@
   },
   "{{firefox}}.background": {
     "scripts": ["js/pages/background.js"]
+  },
+  "{{chrome}}.declarative_net_request": {
+    "rule_resources": [{
+      "id": "allow-iframe",
+      "enabled": true,
+      "path": "allow-iframe.json"
+    }]
   },
   "web_accessible_resources": [
     {

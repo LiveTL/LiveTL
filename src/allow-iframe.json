@@ -1,0 +1,19 @@
+[{
+  "id": 1,
+  "action": {
+    "type": "modifyHeaders",
+    "responseHeaders": [
+      {
+        "header": "X-Frame-Options",
+        "operation": "remove"
+      },
+      {
+        "header": "Frame-Options",
+        "operation": "remove"
+      }
+    ]
+  },
+  "condition": {
+    "requestDomains": [ "youtube.com" ]
+  }
+}]

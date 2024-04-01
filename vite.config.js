@@ -100,6 +100,16 @@ export default defineConfig({
       }]
     }),
 
+    // allow-iframe.json contains static DeclarativeNetHTTP rules
+    // for allowing iframing of ytc, need to manually copy over
+    copy({
+      hook: 'writeBundle',
+      targets: [{
+        src: path.resolve(__dirname, 'src/allow-iframe.json'),
+        dest: 'build/',
+      }]
+    }),
+
     // include hyperchat's assets
     copy({
       hook: 'writeBundle',
@@ -147,7 +157,8 @@ export default defineConfig({
         ...jsEntry
       ],
       watchFilePaths: [
-        path.resolve(__dirname, 'src/manifest.json')
+        path.resolve(__dirname, 'src/manifest.json'),
+        path.resolve(__dirname, 'src/allow-iframe.json')
       ],
       webExtConfig: {
         // lofi hip hop (the one that spawned after the og one ended)
