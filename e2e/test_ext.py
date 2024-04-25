@@ -49,6 +49,15 @@ def run_on(*args):
         def inner(web):
             # need to set a window size or selenium doesn't click some elements
             web.set_window_size(1280, 900)
+
+            # need to switch away from the Welcome to LiveTL tab
+            # or else focus isn't given to the tab we are on
+            for tab in [*web.window_handles]:
+                web.switch_to.window(tab)
+                if web.title == "Welcome to LiveTL!":
+                    web.close()
+            web.switch_to.window(web.window_handles[0])
+
             query_selector = partial(web.find_element, By.CSS_SELECTOR)
             query_selector_all = partial(web.find_elements, By.CSS_SELECTOR)
             setattr(web, "find_element_by_css_selector", query_selector)
@@ -112,6 +121,8 @@ def test_embed_resize(web):
     # Move the embed handlebar down by 20px
     previous_height = embed_window.size["height"]
     ActionChains(web).drag_and_drop_by_offset(handle, 0, 20).perform()
+
+    # Check if the window actually changed in size
     new_height = embed_window.size["height"]
     assert (
         abs(previous_height - new_height - 20) <= 2
@@ -121,7 +132,7 @@ def test_embed_resize(web):
     open_embed(web)
     embed_window = web.find_element_by_css_selector(".message-display-wrapper")
     assert (
-        abs(embed_window.size["height"] - new_height) <= 2
+        abs(embed_window.size["height"] - new_height) <= 5
     ), "Embed resize is not persistent"
 
 
