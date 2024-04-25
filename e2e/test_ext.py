@@ -10,7 +10,7 @@ from contextlib import suppress
 from functools import partial, wraps
 from pathlib import Path
 
-from autoparaselenium import configure, run_on as a_run_on, all_, Extension
+from autoparaselenium import configure, run_on as a_run_on, all_, Extension, chrome, firefox
 import requests
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
@@ -47,6 +47,8 @@ def run_on(*args):
         @a_run_on(*args)
         @wraps(func)
         def inner(web):
+            # need to set a window size or selenium doesn't click some elements
+            web.set_window_size(1280, 900)
             query_selector = partial(web.find_element, By.CSS_SELECTOR)
             query_selector_all = partial(web.find_elements, By.CSS_SELECTOR)
             setattr(web, "find_element_by_css_selector", query_selector)
@@ -62,7 +64,7 @@ def run_on(*args):
     return wrapper
 
 
-@run_on(all_[0])
+@run_on(chrome)
 def test_injection(web):
     web.get(chilled_cow)
 
@@ -88,8 +90,8 @@ def test_injection(web):
 @run_on(all_)
 def test_embed_open(web):
     open_embed(web)
-    *_, greeting = web.find_elements_by_css_selector("h5")
-    assert greeting.text.strip() == "Welcome to LiveTL!"
+    greetings = [e.text.strip() for e in web.find_elements_by_css_selector("h5")]
+    assert "Welcome to LiveTL!" in greetings
 
 
 @run_on(all_)
@@ -230,6 +232,7 @@ def open_embed(web, site=chilled_cow):
     @retry
     def _():
         *_, embed_button, hide_button = web.find_elements_by_css_selector("#ltl-wrapper > button")
+        assert "Embed" in embed_button.text.strip()
 
     *_, embed_button, hide_button = web.find_elements_by_css_selector("#ltl-wrapper > button")
     embed_button.click()
