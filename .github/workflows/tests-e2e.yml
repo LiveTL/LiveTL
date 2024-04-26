@@ -40,4 +40,4 @@ jobs:
         retry_on: any
         timeout_minutes: 10
         command: |
-          DISCORD_REPORT_HOOK=${{ secrets.DISCORD_WEBHOOK }} pytest --tests-per-worker 1 e2e
+          DISCORD_REPORT_HOOK=${{ secrets.DISCORD_WEBHOOK }} pytest e2e
