@@ -50,6 +50,7 @@
         "ts/content_scripts/injector.ts",
         "js/pages/translatormode.js"
       ],
+      "css": ["submodules/chat/src/stylesheets/titlebar.css"],
       "all_frames": true
     },
     {
