@@ -16,6 +16,8 @@ jobs:
       - name: Build Firefox Manifest v2 Version
         run: |
           cd firefox-mv2
+          apt install jq
+          jq '.version = env.VERSION' package.json > package.json.tmp && mv package.json.tmp package.json
           yarn
           yarn update:list
           yarn build:production
