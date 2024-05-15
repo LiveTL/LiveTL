@@ -17,7 +17,7 @@ jobs:
         run: |
           cd firefox-mv2
           apt install jq
-          jq '.version = env.VERSION' package.json > package.json.tmp && mv package.json.tmp package.json
+          VERSION=$(echo -n "${{ github.ref }}" | sed 's/[refs\/tagv]//g' | sed 's/-.*//') jq '.version = env.VERSION' package.json > package.json.tmp && mv package.json.tmp package.json
           yarn
           yarn update:list
           yarn build:production
@@ -27,7 +27,7 @@ jobs:
           cd chrome-mv3
           yarn
           yarn update:list
-          VERSION=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g') yarn build:chrome
+          VERSION=$(echo -n "${{ github.ref }}" | sed 's/[refs\/tagv]//g' | sed 's/-.*//') yarn build:chrome
           yarn package
       - name: Upload Chrome build to release
         uses: svenstaro/upload-release-action@v2
