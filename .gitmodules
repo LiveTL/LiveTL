@@ -1,0 +1,6 @@
+[submodule "chrome-mv3"]
+	path = chrome-mv3
+	url = git@github.com:LiveTL/LiveTL.git
+[submodule "firefox-mv2"]
+	path = firefox-mv2
+	url = git@github.com:LiveTL/LiveTL.git
