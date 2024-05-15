@@ -18,14 +18,14 @@ jobs:
           cd firefox-mv2
           yarn
           yarn update:list
-          yarn build:production --env version=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g')
+          yarn build:production
           yarn package
       - name: Build Chrome Manifest v3 Version
         run: |
           cd chrome-mv3
           yarn
           yarn update:list
-          yarn build:chrome --env version=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g')
+          VERSION=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g') yarn build:chrome
           yarn package
       - name: Upload Chrome build to release
         uses: svenstaro/upload-release-action@v2
