@@ -1,4 +1,9 @@
 <script lang="ts">
+  // NOTE: this file is not to be named Options.svelte as in windows,
+  // options.js and Options.js cannot coexist in the same directory.
+  //
+  // @pikachoo - https://discord.com/channels/780938154437640232/794062715278196768/1240876505173725264
+
   import Settings from './Settings.svelte';
   import dark from 'smelte/src/dark';
   import { paramsStandalone, isTwitch } from '../js/constants.js';
