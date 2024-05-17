@@ -1,4 +1,4 @@
-import App from '../../components/Options.svelte';
+import App from '../../components/OptionsDisplay.svelte';
 import { displayMode } from '../store.js';
 import { DisplayMode } from '../constants.js';
 import 'smelte/src/tailwind.css';
