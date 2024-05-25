@@ -3,11 +3,13 @@
   import HCChangelogs from '../../submodules/chat/src/components/changelog/Changelog.svelte';
 </script>
 
-<ExpandingCard title="HyperChat Fixes" icon="chat">
+<ExpandingCard title="Manifest v3 Update" icon="extension">
+  After two years of struggles, the LiveTL Manifest v3 upgrade
+  is now live for Chromium-based browsers! This update ensures
+  that the extension will prevail through Google's scheduled purge
+  of older extensions based on Manifest v2.
+</ExpandingCard>
+
+<ExpandingCard title="HyperChat v3 Update" icon="chat">
   <HCChangelogs />
 </ExpandingCard>
-<!-- <ExpandingCard title="Translator Mode Fixes" icon="chat">
-  Translator mode has been upgraded to be compatible with recent changes
-  to YouTube chat. The new version should be more resilient to additional
-  changes on YouTube's end going forward.
-</ExpandingCard> -->
