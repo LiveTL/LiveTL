@@ -224,6 +224,10 @@ module.exports = (env, options) => {
           {
             from: 'src/img',
             to: 'img'
+          },
+          {
+            from: 'src/submodules/chat/src/stylesheets',
+            to: 'hyperchat'
           }
         ]
       }),

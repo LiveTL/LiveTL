@@ -1,6 +1,6 @@
 {
   "name": "LiveTL",
-  "version": "8.3.13",
+  "version": "9.0.0",
   "description": "Get live translations for YouTube and Twitch streams, crowdsourced from multilingual viewers!",
   "scripts": {
     "build": "yarn build:chrome",
