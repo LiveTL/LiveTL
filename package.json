@@ -114,6 +114,7 @@
     "ssri": "^8.0.1",
     "svelte-materialify": "0.3.6",
     "tailwindcss-elevation": "^1.0.1",
-    "youtube-iframe": "^1.0.3"
+    "youtube-iframe": "^1.0.3",
+    "yt-iframe-noremote": "^1.0.0"
   }
 }

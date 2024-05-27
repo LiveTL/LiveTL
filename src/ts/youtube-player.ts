@@ -1,4 +1,6 @@
-import YouTubeIframeLoader from 'youtube-iframe';
+// import YouTubeIframeLoader from 'youtube-iframe';
+// @ts-expect-error
+import { YouTubeIframeLoader } from 'yt-iframe-noremote';
 import { clamp } from '../js/utils.js';
 
 const noop = (): any => {};

@@ -12473,6 +12473,11 @@ youtube-iframe@^1.0.3:
   resolved "https://registry.yarnpkg.com/youtube-iframe/-/youtube-iframe-1.0.3.tgz#0fcdf4847e60f8dca7ee91d9ecd913655067b35b"
   integrity sha1-D830hH5g+Nyn7pHZ7NkTZVBns1s=
 
+yt-iframe-noremote@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/yt-iframe-noremote/-/yt-iframe-noremote-1.0.0.tgz#e7210a9b57a9a80217017f3c73864e2f82715ff9"
+  integrity sha512-BMUqzXNeXMxMYg+isVSCO9NOu1HXPWfVk58vlfNdUbqO0TGMYin45m8SjSjZRjeOr8/6L9o3gPz6pG0E+iMmYA==
+
 zip-dir@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/zip-dir/-/zip-dir-2.0.0.tgz#c5df6e15c8f9efeb4e320377028c9f5c8277c932"
