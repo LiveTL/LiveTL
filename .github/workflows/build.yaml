@@ -15,11 +15,15 @@ jobs:
           node-version: 16
       - uses: c-hive/gha-yarn-cache@v1
       - name: Install modules
-        run: yarn
+        run: |
+          sudo apt install jq
+          yarn
+          VERSION=$(echo -n "${{ github.ref }}" | sed 's/[refs\/tagv]//g' | sed 's/-.*//')
+          jq --arg version $VERSION '.version = $version' src/manifest.json > src/manifest.json.tmp
       - name: Build extensions
         run: |
           yarn update:list
-          yarn build:production --env version=$(echo -n ${{ github.ref }} | sed 's/[refs\/tagv]//g')
+          yarn build:production --env version=$(echo -n "${{ github.ref }}" | sed 's/[refs\/tagv]//g' | sed 's/-.*//')
           yarn package
       - name: Upload Chrome build to release
         uses: svenstaro/upload-release-action@v2
