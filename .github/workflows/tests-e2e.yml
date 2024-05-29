@@ -1,10 +1,10 @@
 name: E2E Tests
 on: 
-  push:
-    branches:
-      - '**'
-    tags-ignore:
-      - '*.*'
+#   push:
+#     branches:
+#       - '**'
+#     tags-ignore:
+#       - '*.*'
 jobs:
   e2e-test:
     runs-on: ubuntu-latest
