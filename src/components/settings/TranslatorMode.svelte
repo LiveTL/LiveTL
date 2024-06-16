@@ -2,7 +2,6 @@
   import { onMount } from 'svelte';
   import CustomMacro from '../options/CustomMacro.svelte';
   import { macros, doAutoPrefix, doTranslatorMode, autoPrefixTag, macroTrigger } from '../../js/store.js';
-  import { isAndroid } from '../../js/constants.js';
   import Checkbox from '../common/CheckboxStore.svelte';
   import TextField from '../common/TextField.svelte';
   import Card from '../common/Card.svelte';
@@ -32,7 +31,7 @@
 </script>
 
 <Card title="Translator mode" icon="translate">
-  <Checkbox name="Enable translator mode" store={doTranslatorMode} disabled={isAndroid} />
+  <Checkbox name="Enable translator mode" store={doTranslatorMode} />
   {#if $doTranslatorMode}
     <Checkbox name="Auto-prefix chat messages" store={doAutoPrefix} />
     {#if $doAutoPrefix}
@@ -80,11 +79,3 @@
     </ExpandingCard>
   {/if}
 </Card>
-
-{#if isAndroid}
-  <p>
-    <Icon>info</Icon>
-    Some features are only supported on the desktop LiveTL extension. Get LiveTL
-    on Chrome, Firefox, etc. to use these features!
-  </p>
-{/if}

@@ -290,22 +290,6 @@ export function Storage(version) {
   this.version = version;
 
   switch (BROWSER) {
-    case Browser.ANDROID:
-      this.rawGet = async key => {
-        const data = {};
-        try {
-          data[key] = JSON.parse(localStorage[key]);
-        } catch (e) {
-          data[key] = localStorage[key];
-        }
-        return data;
-      };
-
-      this.rawSet = async obj => {
-        const key = Object.keys(obj)[0];
-        localStorage[key] = JSON.stringify(obj[key]);
-      };
-      break;
     case Browser.FIREFOX:
       browser.storage.onChanged.addListener(updateChangedStores);
       this.rawGet = async (key) => {

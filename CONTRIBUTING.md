@@ -88,8 +88,7 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 │   ├── img - images available in the extension\
 │   ├── js - all our modules\
 │   │   ├── content_scripts - has the injector script that injects the LiveTL buttons\
-│   │   ├── pages - the exports of the svelte components that represent each LiveTL page\
-│   │   └── polyfills - polyfills we use\
+│   │   └── pages - the exports of the svelte components that represent each LiveTL page\
 │   ├── plugins - plugins for injection to our script\
 │   ├── submodules - submodules\
 │   │   └── chat - the chat optimizer of [Hyperchat](https://www.github.com/LiveTL/HyperChat)\

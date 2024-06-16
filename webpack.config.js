@@ -42,15 +42,12 @@ if (fileSystem.existsSync(secretsPath)) {
 }
 
 module.exports = (env, options) => {
-  const isAndroid = env.android;
-  const mode = isAndroid ? 'production' : (options.mode || 'development');
+  const mode = options.mode || 'development';
   const prod = mode !== 'development';
 
   const envVersion = env.version;
   const hasEnvVersion = (envVersion != null && typeof envVersion === 'string');
   if (hasEnvVersion) manifest.version = envVersion;
-
-  const polyfill = isAndroid ? ['polyfill'] : [];
 
   const config = {
     entry: {
@@ -68,7 +65,6 @@ module.exports = (env, options) => {
       'hyperchat/hyperchat': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'hyperchat.ts'),
       'yt-workaround': path.join(__dirname, 'src', 'ts', 'yt-workaround.ts'),
       'workaround-injector': path.join(__dirname, 'src', 'ts', 'content_scripts', 'workaround-injector.ts'),
-      polyfill: path.join(__dirname, 'src', 'js', 'polyfills', 'chrome.js'),
       'twitch-injector': path.join(__dirname, 'src', 'ts', 'content_scripts', 'twitch-injector.ts'),
       'hyperchat/options': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'options.ts')
     },
@@ -93,24 +89,9 @@ module.exports = (env, options) => {
               {
                 search: 'export const isLiveTL = false;',
                 replace: 'export const isLiveTL = true;'
-              },
-              {
-                search: 'export const isAndroid = false;',
-                replace: `export const isAndroid = ${isAndroid};`
               }
             ]
           }
-        },
-        {
-          test: /src\/js\/constants\.js$/,
-          use: [{
-            loader: 'string-replace-loader',
-            options: {
-              search: 'const isAndroid = false;',
-              replace: `const isAndroid = ${isAndroid};`
-            }
-          }],
-          enforce: 'post'
         },
         {
           include: [
@@ -201,7 +182,6 @@ module.exports = (env, options) => {
       // new webpack.DefinePlugin({
       //   'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV)
       // }),
-      // ...(isAndroid
       new CopyWebpackPlugin({
         patterns: [
           {
@@ -254,59 +234,55 @@ module.exports = (env, options) => {
       new HtmlWebpackPlugin({
         template: path.join(__dirname, 'src', 'empty.html'),
         filename: 'watch.html',
-        chunks: [...polyfill, 'watch'],
+        chunks: ['watch'],
         chunksSortMode: 'manual'
       }),
       new HtmlWebpackPlugin({
         template: path.join(__dirname, 'src', 'empty.html'),
         filename: 'popout.html',
-        chunks: [...polyfill, 'popout'],
+        chunks: ['popout'],
         chunksSortMode: 'manual'
       }),
       new HtmlWebpackPlugin({
         template: path.join(__dirname, 'src', 'empty.html'),
         filename: 'options.html',
-        chunks: [...polyfill, 'options'],
+        chunks: ['options'],
         chunksSortMode: 'manual'
       }),
       new HtmlWebpackPlugin({
         template: path.join(__dirname, 'src', 'empty.html'),
         filename: 'welcome.html',
-        chunks: [...polyfill, 'welcome'],
+        chunks: ['welcome'],
         chunksSortMode: 'manual'
       }),
       new HtmlWebpackPlugin({
         template: path.join(__dirname, 'src', 'empty.html'),
         filename: 'lite.html',
-        chunks: [...polyfill, 'lite'],
+        chunks: ['lite'],
         chunksSortMode: 'manual'
       }),
       new HtmlWebpackPlugin({
         template: path.join(__dirname, 'src', 'empty.html'),
         filename: 'background.html',
-        chunks: [...polyfill, 'background', 'chat-background'],
+        chunks: ['background', 'chat-background'],
         chunksSortMode: 'manual'
       }),
       new HtmlWebpackPlugin({
         template: path.join(__dirname, 'src', 'empty.html'),
         filename: 'hyperchat/index.html',
-        chunks: [...polyfill, 'hyperchat/hyperchat'],
+        chunks: ['hyperchat/hyperchat'],
         chunksSortMode: 'manual'
       }),
       new HtmlWebpackPlugin({
         template: path.join(__dirname, 'src', 'empty.html'),
         filename: 'hyperchat/options.html',
-        chunks: [...polyfill, 'hyperchat/options'],
+        chunks: ['hyperchat/options'],
         chunksSortMode: 'manual'
       }),
       new MiniCssExtractPlugin({ filename: '[name].css' })
     ],
     mode: mode || 'development'
   };
-
-  if (isAndroid) {
-    console.log('isAndroid');
-  }
 
   if (prod) {
     config.devtool = false;

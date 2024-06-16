@@ -7,7 +7,6 @@
     "build:chrome": "cross-env BROWSER=chrome vite build",
     "build:firefox": "cross-env BROWSER=firefox vite build",
     "build:production": "yarn build:chrome",
-    "build:android": "webpack --mode production --env android",
     "package": "node utils/package.js",
     "start": "webpack serve",
     "start:vite": "cross-env MINIFY=false vite build --watch",
@@ -116,5 +115,6 @@
     "tailwindcss-elevation": "^1.0.1",
     "youtube-iframe": "^1.0.3",
     "yt-iframe-noremote": "^1.0.0"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

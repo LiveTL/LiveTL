@@ -169,7 +169,7 @@ export function ytcSource(window) {
         removeEventListener('message', listener);
         res(d.data.frameInfo);
       }
-    }
+    };
     addEventListener('message', listener);
   });
 
