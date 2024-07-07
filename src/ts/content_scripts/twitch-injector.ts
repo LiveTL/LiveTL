@@ -124,6 +124,8 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
   ], { padding: '3px', fontWeight: '600' });
 }
 
+const ports: Set<Chat.Port> = new Set();
+
 function load(): void {
   if (document.getElementById('ltl-wrapper') != null) return;
 
@@ -131,8 +133,10 @@ function load(): void {
   // console.debug({ messageContainer });
   if (messageContainer == null) return;
 
-  const port: Chat.Port = chrome.runtime.connect();
-  port.postMessage({ type: 'registerInterceptor', source: 'ltlMessage' });
+  chrome.runtime.onConnect.addListener((port: Chat.Port) => {
+    ports.add(port);
+    port.onDisconnect.addListener(() => ports.delete(port));
+  });
 
   const observer = new MutationObserver((mutationRecords) => {
     mutationRecords.forEach((record) => {
@@ -144,7 +148,9 @@ function load(): void {
         const message = parseMessageElement(node);
         if (message == null) return;
         // console.debug({ message });
-        port.postMessage({ type: 'sendLtlMessage', message });
+        for (const port of ports) {
+          port.postMessage({ type: 'sendLtlMessage', message });
+        }
       });
     });
   });
@@ -155,7 +161,9 @@ function load(): void {
   setInterval(() => {
     if (!video) return;
     // send the unix time in seconds to the extension
-    port.postMessage({ type: 'updatePlayerProgress', playerProgress: video.currentTime, isFromYt: false });
+    for (const port of ports) {
+      port.postMessage({ type: 'updatePlayerProgress', playerProgress: video.currentTime, isFromYt: false });
+    }
   }, 500);
 
   getFrameInfoAsync()

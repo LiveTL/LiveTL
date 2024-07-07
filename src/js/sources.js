@@ -14,6 +14,7 @@ import { paramsYtVideoId, AuthorType, paramsPopout, paramsTabId, paramsFrameId, 
 import { twitchSource } from '../ts/sources';
 // import * as API from './api.js';
 import * as TLDEX from './tldex.js';
+import { useReconnect } from '../submodules/chat/src/ts/chat-utils.ts';
 
 /**
  * @typedef {import('svelte/store').Readable} Readable
@@ -147,77 +148,89 @@ export function ytcSource(window) {
   const ytc = writable(null);
   const newMessage = compose(ytc.set, ytcToMsg);
 
-  /* Connect to background messaging as client */
-  /** @type {Chat.Port} */
-  let port;
-  try {
-    port = chrome.runtime.connect();
-  } catch {
-    return { ytc, cleanUp: () => {} };
-  }
   let portRegistered = false;
   let tryRegister = 0;
-  /** @type {Chat.FrameInfo | null} */
-  let frameInfo = null;
-  const registerClient = () => {
-    if (frameInfo == null) {
-      console.error('frameInfo is null');
-      return;
-    }
-    port.postMessage({
-      type: 'registerClient',
-      frameInfo,
-      getInitialData: false
-    });
-    tryRegister++;
-  };
 
-  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-  if (paramsPopout && !portRegistered) {
-    frameInfo = {
-      tabId: parseInt(paramsTabId),
-      frameId: parseInt(paramsFrameId)
+  /**
+   * Youtube live_chat frame sends a frameInfo message with the yt frame id.
+   * It is important to use this because when opening LiveTL, the frameid and
+   * tabid of the yt frame change so we need updated ids.
+   *
+   * Also, in "Open in LiveTL" mode, no tabid/frameid params are given.
+   *
+   * We need frameid as well as tabid because we may have multiple livetls in
+   * one page (eg. holodex).
+   *
+   * @type {() => Promise<Chat.FrameInfo>}
+   */
+  const postMessageFrameInfo = () => new Promise((res) => {
+    const listener = (d) => {
+      if (d.data.type === 'frameInfo') {
+        removeEventListener('message', listener);
+        res(d.data.frameInfo);
+      }
+    }
+    addEventListener('message', listener);
+  });
+
+  const port = useReconnect(async () => {
+    /** @type {Chat.FrameInfo} */
+    const frameInfo = paramsPopout
+      ? { tabId: parseInt(paramsTabId), frameId: parseInt(paramsFrameId) }
+      : await postMessageFrameInfo();
+
+    /** @type {Chat.Port} */
+    let port;
+    try {
+      port = chrome.runtime.connect({
+        name: JSON.stringify(frameInfo)
+      });
+    } catch (e) {
+      console.error('Failed to connect to bg port', e);
+    }
+
+    const registerClient = () => {
+      port.postMessage({
+        type: 'registerClient',
+        getInitialData: true
+      });
     };
-    registerClient();
-  }
 
-  window.addEventListener('message', (d) => {
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    if (!paramsPopout && d.data.type === 'frameInfo' && !portRegistered) {
-      frameInfo = d.data.frameInfo;
-      registerClient();
-    }
-  });
-
-  port.onMessage.addListener((response) => {
-    switch (response.type) {
-      case 'messages':
-        response.messages.forEach((m) => newMessage(m.message));
-        break;
-      case 'bonk': // TODO: No need to use arrays anymore
-        sources.ytcBonks.set([response.bonk]);
-        break;
-      case 'delete':
-        sources.ytcDeletions.set([response.deletion]);
-        break;
-      case 'playerProgress':
-        timestamp.set(response.playerProgress);
-        break;
-      case 'registerClientResponse':
-        if (response.success) {
-          portRegistered = true;
+    port.onMessage.addListener((response) => {
+      switch (response.type) {
+        case 'messages':
+          response.messages.forEach((m) => newMessage(m.message));
           break;
-        }
-        if (tryRegister < 3) {
-          setTimeout(registerClient, 500);
-        } else {
-          console.error(`Failed to connect to YTC source after 3 attempts: ${response.failReason}`);
-        }
-        break;
-    }
+        case 'bonk': // TODO: No need to use arrays anymore
+          sources.ytcBonks.set([response.bonk]);
+          break;
+        case 'delete':
+          sources.ytcDeletions.set([response.deletion]);
+          break;
+        case 'playerProgress':
+          timestamp.set(response.playerProgress);
+          break;
+        case 'registerClientResponse':
+          if (response.success) {
+            portRegistered = true;
+            break;
+          }
+          if (tryRegister < 3) {
+            tryRegister++;
+            setTimeout(registerClient, 500);
+          } else {
+            console.error(`Failed to connect to YTC source after 3 attempts: ${response.failReason}`);
+          }
+          break;
+      }
+    });
+
+    registerClient();
+
+    return port;
   });
 
-  return { ytc, cleanUp: () => port.disconnect() };
+  return { ytc, cleanUp: () => port && port.destroy() };
 }
 
 function message(author, msg, timestamp) {

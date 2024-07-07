@@ -1,30 +1,41 @@
 {
+  "version": "4.20",
   "name": "LiveTL - Translation Filter for Streams",
   "options_ui": {
-    "page": "options.html",
+    "page": "html/options.html",
     "open_in_tab": false
   },
   "permissions": [
     "storage",
-    "webRequest",
-    "webRequestBlocking",
+    "declarativeNetRequest"
+  ],
+  "host_permissions": [
     "https://www.youtube.com/*?*",
     "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat/*",
     "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat_replay/*",
     "https://www.twitch.tv/*"
   ],
-  "background": {
-    "page": "background.html",
-    "persistent": true
-  },
   "icons": {
     "128": "./img/128x128.png"
   },
-  "browser_action": {
-    "default_icon": "./img/48x48.png"
+  "action": {
+    "default_icon": {
+      "48": "./img/48x48.png",
+      "128": "./img/128x128.png"
+    }
   },
-  "manifest_version": 2,
+  "manifest_version": 3,
   "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/embed/hyperchat_embed?*"
+      ],
+      "js": [
+        "submodules/chat/src/scripts/chat-mounter.ts"
+      ],
+      "css": ["submodules/chat/src/stylesheets/scrollbar.css", "submodules/chat/src/stylesheets/page404.css"],
+      "all_frames": true
+    },
     {
       "matches": [
         "https://www.youtube.com/live_chat*",
@@ -33,12 +44,12 @@
         "https://studio.youtube.com/live_chat_replay*"
       ],
       "js": [
-        "chat-interceptor.bundle.js",
-        "chat.bundle.js",
-        "injector.bundle.js",
-        "translatormode.bundle.js"
+        "submodules/chat/src/scripts/chat-interceptor.ts",
+        "submodules/chat/src/scripts/chat-injector.ts",
+        "ts/content_scripts/injector.ts",
+        "js/pages/translatormode.js"
       ],
-      "css": ["hyperchat/titlebar.css"],
+      "css": ["submodules/chat/src/stylesheets/titlebar.css"],
       "all_frames": true
     },
     {
@@ -46,7 +57,7 @@
         "https://www.youtube.com/error*?*"
       ],
       "js": [
-        "workaround-injector.bundle.js"
+        "ts/content_scripts/workaround-injector.ts"
       ],
       "all_frames": true
     },
@@ -55,16 +66,40 @@
         "https://www.twitch.tv/*"
       ],
       "js": [
-        "twitch-injector.bundle.js"
+        "ts/content_scripts/twitch-injector.ts"
       ],
       "all_frames": true
     }
   ],
+  "{{chrome}}.background": {
+    "service_worker": "js/pages/background.js"
+  },
+  "{{firefox}}.background": {
+    "scripts": ["js/pages/background.js"]
+  },
+  "{{chrome}}.declarative_net_request": {
+    "rule_resources": [{
+      "id": "allow-iframe",
+      "enabled": true,
+      "path": "allow-iframe.json"
+    }]
+  },
   "web_accessible_resources": [
-    "*.js",
-    "*.html",
-    "*.png",
-    "*.gif",
-    "*.mp4"
-  ]
+    {
+      "resources": [
+        "*.js",
+        "*.html",
+        "*.png",
+        "*.gif",
+        "*.mp4"
+      ],
+      "matches": [ "<all_urls>" ]
+    }
+  ],
+  "{{firefox}}.browser_specific_settings": {
+    "gecko": {
+      "id": "{c20c6ec1-eea0-4b7b-8640-43448a342440}",
+      "strict_min_version": "42.0"
+    }
+  }
 }
