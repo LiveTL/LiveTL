@@ -16,7 +16,9 @@
       await tick();
       const { default: html2canvas } = await import('html2canvas');
       const canvas = await html2canvas(renderElement, {
-        backgroundColor: '#424242'
+        backgroundColor: '#424242',
+        allowTaint: true,
+        useCORS: true
       });
       const base64image = canvas.toDataURL('image/png');
       image = base64image;
