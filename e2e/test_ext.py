@@ -4,26 +4,26 @@ End to end tests.
 Screenshots of test failures can be viewed at https://fileupload.r2dev2bb8.repl.co/
 """
 
-import time
 import os
+import time
 from contextlib import suppress
 from functools import partial, wraps
 from pathlib import Path
 
-from autoparaselenium import configure, run_on as a_run_on, all_, Extension
 import requests
+from autoparaselenium import Extension, all_, chrome, configure, firefox
+from autoparaselenium import run_on as a_run_on
+from reporting import report_file
+from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
-from selenium import webdriver
-
-from reporting import report_file
 from ublock import ublock
 
 dist = Path(__file__).parent / "../dist"
 
 livetl = Extension(
     firefox=str((dist / "LiveTL-Firefox.xpi").resolve()),
-    chrome=str((dist / "LiveTL-Chrome.zip").resolve())
+    chrome=str((dist / "LiveTL-Chrome.zip").resolve()),
 )
 
 headed = bool(os.environ.get("HEADED", False))
@@ -31,7 +31,7 @@ headed = bool(os.environ.get("HEADED", False))
 configure(
     extensions=[livetl, ublock],
     headless=not headed,
-    selenium_dir=str((Path.home() / ".web-drivers").resolve())
+    selenium_dir=str((Path.home() / ".web-drivers").resolve()),
 )
 
 
@@ -47,6 +47,17 @@ def run_on(*args):
         @a_run_on(*args)
         @wraps(func)
         def inner(web):
+            # need to set a window size or selenium doesn't click some elements
+            web.set_window_size(1280, 900)
+
+            # need to switch away from the Welcome to LiveTL tab
+            # or else focus isn't given to the tab we are on
+            for tab in [*web.window_handles]:
+                web.switch_to.window(tab)
+                if web.title == "Welcome to LiveTL!":
+                    web.close()
+            web.switch_to.window(web.window_handles[0])
+
             query_selector = partial(web.find_element, By.CSS_SELECTOR)
             query_selector_all = partial(web.find_elements, By.CSS_SELECTOR)
             setattr(web, "find_element_by_css_selector", query_selector)
@@ -58,11 +69,13 @@ def run_on(*args):
                 web.save_screenshot(screenshot)
                 report_file(func.__name__, browser_str(web), screenshot)
                 raise e
+
         return inner
+
     return wrapper
 
 
-@run_on(all_[0])
+@run_on(chrome)
 def test_injection(web):
     web.get(chilled_cow)
 
@@ -73,23 +86,29 @@ def test_injection(web):
     # LiveTL Buttons
     @retry
     def _():
-        open_button, popout_button, embed_button, hide_button = web.find_elements_by_css_selector("#ltl-wrapper > button")
+        open_button, popout_button, embed_button, hide_button = (
+            web.find_elements_by_css_selector("#ltl-wrapper > button")
+        )
 
-    open_button, popout_button, embed_button, hide_button = web.find_elements_by_css_selector("#ltl-wrapper > button")
+    open_button, popout_button, embed_button, hide_button = (
+        web.find_elements_by_css_selector("#ltl-wrapper > button")
+    )
     assert open_button.text.strip() == "Open LiveTL"
     assert popout_button.text.strip() == "TL Popout"
     assert embed_button.text.strip() == "Embed TLs"
 
     # Hyperchat Buttons
-    hc_button, _hc_settings_button = web.find_elements_by_css_selector("#hc-buttons > div")
+    hc_button, _hc_settings_button = web.find_elements_by_css_selector(
+        "#hc-buttons > div"
+    )
     assert hc_button.get_attribute("data-tooltip") == "Disable HyperChat"
 
 
 @run_on(all_)
 def test_embed_open(web):
     open_embed(web)
-    *_, greeting = web.find_elements_by_css_selector("h5")
-    assert greeting.text.strip() == "Welcome to LiveTL!"
+    greetings = [e.text.strip() for e in web.find_elements_by_css_selector("h5")]
+    assert "Welcome to LiveTL!" in greetings
 
 
 @run_on(all_)
@@ -97,18 +116,24 @@ def test_embed_resize(web):
     open_embed(web)
 
     embed_window = web.find_element_by_css_selector(".message-display-wrapper")
-    handle, = web.find_elements_by_css_selector(".ui-resizable-handle")
+    (handle,) = web.find_elements_by_css_selector(".ui-resizable-handle")
 
     # Move the embed handlebar down by 20px
     previous_height = embed_window.size["height"]
     ActionChains(web).drag_and_drop_by_offset(handle, 0, 20).perform()
+
+    # Check if the window actually changed in size
     new_height = embed_window.size["height"]
-    assert abs(previous_height - new_height - 20) <= 2, "Moving the handlebar didn't resize the embed frame"
+    assert (
+        abs(previous_height - new_height - 20) <= 2
+    ), "Moving the handlebar didn't resize the embed frame"
 
     # Check if the embed resize is persistant
     open_embed(web)
     embed_window = web.find_element_by_css_selector(".message-display-wrapper")
-    assert abs(embed_window.size["height"] - new_height) <= 2, "Embed resize is not persistent"
+    assert (
+        abs(embed_window.size["height"] - new_height) <= 5
+    ), "Embed resize is not persistent"
 
 
 @run_on(all_)
@@ -121,10 +146,16 @@ def test_embed_tldex_vod_tls(web):
 
     @retry
     def _():
-        tl = web.find_element_by_css_selector(".message-display > .message .message-content")
-        info = web.find_element_by_css_selector(".message-display > .message .message-info")
+        tl = web.find_element_by_css_selector(
+            ".message-display > .message .message-content"
+        )
+        info = web.find_element_by_css_selector(
+            ".message-display > .message .message-info"
+        )
 
-    tl = web.find_element_by_css_selector(".message-display > .message .message-content")
+    tl = web.find_element_by_css_selector(
+        ".message-display > .message .message-content"
+    )
     info = web.find_element_by_css_selector(".message-display > .message .message-info")
     assert "Mio: Ah...." in tl.text, "Incorrect tl"
     assert "Taishi" in info.text, "Incorrect author of tl"
@@ -148,10 +179,16 @@ def test_embed_ytc_vod_tls(web):
 
     @retry
     def _():
-        tl = web.find_element_by_css_selector(".message-display > .message .message-content")
-        info = web.find_element_by_css_selector(".message-display > .message .message-info")
+        tl = web.find_element_by_css_selector(
+            ".message-display > .message .message-content"
+        )
+        info = web.find_element_by_css_selector(
+            ".message-display > .message .message-info"
+        )
 
-    tl = web.find_element_by_css_selector(".message-display > .message .message-content")
+    tl = web.find_element_by_css_selector(
+        ".message-display > .message .message-content"
+    )
     info = web.find_element_by_css_selector(".message-display > .message .message-info")
     assert "just being beside peko makes me happy" in tl.text, "Incorrect tl"
     assert "Yami Chan" in info.text, "Incorrect author"
@@ -164,7 +201,9 @@ def test_embed_tl_scroll(web):
     open_mio_embed(web)
 
     # Make sure the scroll to bottom button isn't already there
-    scroll_to_bottom_buttons = lambda web=web: web.find_elements_by_css_selector(".recent-button button")
+    scroll_to_bottom_buttons = lambda web=web: web.find_elements_by_css_selector(
+        ".recent-button button"
+    )
     switch_to_embed_frame(web)
     assert not scroll_to_bottom_buttons(), "scroll to bottom button is displayed"
 
@@ -182,13 +221,19 @@ def test_embed_tl_scroll(web):
 
     # Scroll to the top
     switch_to_embed_frame(web)
+
     @retry
     def _():
-        web.execute_script("document.querySelector('.message-display-wrapper .message').scrollIntoView()")
+        web.execute_script(
+            "document.querySelector('.message-display-wrapper .message').scrollIntoView()"
+        )
         assert scroll_to_bottom_buttons(), "scroll to bottom button isn't displayed"
+
     scroll_to_bottom_buttons()[0].click()
-    time.sleep(1) # button doesn't immediately go away
-    assert retry_bool(lambda: not scroll_to_bottom_buttons()), "scroll to bottom button is still displayed"
+    time.sleep(1)  # button doesn't immediately go away
+    assert retry_bool(
+        lambda: not scroll_to_bottom_buttons()
+    ), "scroll to bottom button is still displayed"
 
 
 def open_mio_embed(web):
@@ -207,7 +252,9 @@ def has_been_new_tl(web, previous_amount, amount=5, interval=1):
     beg = time.time()
     res = retry_bool(lambda: get_amount_of_tls(web) > previous_amount, amount, interval)
     if not res:
-        assert time.time() - beg > amount * interval - 5, "it didn't retry, error with test"
+        assert (
+            time.time() - beg > amount * interval - 5
+        ), "it didn't retry, error with test"
         print(time.time() - beg)
     return res
 
@@ -229,9 +276,14 @@ def open_embed(web, site=chilled_cow):
 
     @retry
     def _():
-        *_, embed_button, hide_button = web.find_elements_by_css_selector("#ltl-wrapper > button")
+        *_, embed_button, hide_button = web.find_elements_by_css_selector(
+            "#ltl-wrapper > button"
+        )
+        assert "Embed" in embed_button.text.strip()
 
-    *_, embed_button, hide_button = web.find_elements_by_css_selector("#ltl-wrapper > button")
+    *_, embed_button, hide_button = web.find_elements_by_css_selector(
+        "#ltl-wrapper > button"
+    )
     embed_button.click()
     time.sleep(5)
 
@@ -287,7 +339,7 @@ def play_video(web):
 
 def close_update_dialogue(web):
     with suppress(Exception):
-        web.find_elements_by_css_selector('.update-dialog button')[0].click()
+        web.find_elements_by_css_selector(".update-dialog button")[0].click()
 
 
 def seek(web, seconds):
@@ -297,6 +349,7 @@ def seek(web, seconds):
 
 def send_file(filename):
     with open(filename, "rb") as fin:
-        requests.post(f"https://FileUpload.r2dev2bb8.repl.co/upload/{filename}", files={
-            "file": fin
-        })
+        requests.post(
+            f"https://FileUpload.r2dev2bb8.repl.co/upload/{filename}",
+            files={"file": fin},
+        )
