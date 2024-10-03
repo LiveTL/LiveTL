@@ -24,9 +24,13 @@ submit a Pull Request!
 
 ## Development
 
-> Note: The repo expects a Linux or Unix-like environment. If you are on Windows, use WSL.
+### ⚠️ WARNING ⚠️
+
+Due to unreliable Manifest v3 feature support in Firefox, we maintain both MV2 and MV3 versions of LiveTL in parallel. The MV2 variant sits in the `develop` branch, while the MV3 variant sits on the `mv3-fr` branch. When contributing, please ensure that you check out to the `develop` branch to implement the features in MV2 first. Once the feature is stable, please open a separate PR to the `mv3-fr` branch to port the feature to MV3.
 
 ### Setup
+
+> Note: The repo expects a Linux or Unix-like environment. If you are on Windows, use WSL.
 
 > ℹ LiveTL uses submodules. Make sure to clone the repo with the `--recursive` flag!
 >
