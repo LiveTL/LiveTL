@@ -1,5 +1,3 @@
-export const isAndroid = false;
-// DO NOT EDIT THE ABOVE LINE, it will be updated by webpack.
 export const storageVersion = 'v0-alpha';
 
 /** @enum {String} */
@@ -76,16 +74,12 @@ export const autoLaunchModeItems = Object.keys(AutoLaunchMode).map(item => ({
 export const Browser = {
   FIREFOX: 0,
   CHROME: 1,
-  SAFARI: 2,
-  ANDROID: 3
+  SAFARI: 2
 };
 
 export const BROWSER = (() => {
   if (/Firefox/.exec(navigator.userAgent)) {
     return Browser.FIREFOX;
-  }
-  if (isAndroid || window.chrome == null) {
-    return Browser.ANDROID;
   }
   if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
     return Browser.SAFARI;

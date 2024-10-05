@@ -32,7 +32,6 @@ const SS = (n, d, s = true) => new SyncStore(n, d, null, s);
  * @returns {LookupStore<T>}
  */
 const LS = (n, d, s = true) => new LookupStore(n, d, null, s);
-const defaultZoom = BROWSER === Browser.ANDROID ? 0.5 : 1;
 const sampleFilter = {
   chatAuthor: 'chat',
   plainReg: 'plain',
@@ -55,7 +54,7 @@ export const defaultShortcuts = {
 // Settings
 export const languages = SS('languages', /** @type {Array<string>} */ ([]));
 export const showModMessage = SS('showModMessage', true);
-export const chatZoom = SS('chatZoom', defaultZoom);
+export const chatZoom = SS('chatZoom', 1);
 export const showTimestamp = SS('showTimestamp', true);
 export const textDirection = SS('textDirection', TextDirection.BOTTOM);
 export const videoSideSetting = SS('videoSide', VideoSide.LEFT, false);

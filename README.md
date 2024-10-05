@@ -46,7 +46,6 @@ yarn # use yarn, not npm
 yarn start # devServer
 yarn build:production # production
 yarn package # package extension zips
-yarn build:android # android
 yarn test # jest
 yarn test:watch # autotest
 yarn format # lint

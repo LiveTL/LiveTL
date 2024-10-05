@@ -77,7 +77,6 @@ export default defineConfig({
       }
     }),
 
-    // TODO: add the isAndroid replacements
     svelte({
       configFile: path.resolve(__dirname, 'svelte.config.js'),
       emitCss: false
@@ -106,7 +105,7 @@ export default defineConfig({
       hook: 'writeBundle',
       targets: [{
         src: path.resolve(__dirname, 'src/allow-iframe.json'),
-        dest: 'build/',
+        dest: 'build/'
       }]
     }),
 
@@ -144,7 +143,7 @@ export default defineConfig({
     browserExtension({
       manifest: () => ({
         ...manifest,
-        version: process.env.VERSION ?? manifest.version ?? '69.420',
+        version: process.env.VERSION ?? manifest.version ?? '69.420'
         // following should only be in dev builds
         // it is being commented out as unsafe-eval is not allowed in mv3
         // content_security_policy: {
@@ -165,7 +164,7 @@ export default defineConfig({
         startUrl: 'https://www.youtube.com/watch?v=jfKfPfyJRdk'
       },
       disableAutoLaunch: true,
-      browser: process.env.BROWSER === undefined ? 'chrome' : process.env.BROWSER,
+      browser: process.env.BROWSER === undefined ? 'chrome' : process.env.BROWSER
     }),
 
     copy({
