@@ -1577,6 +1577,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-16.9.3.tgz#92230abb80a66beb10236e78a51cd9e6396f4489"
   integrity sha512-5UmMznRvrwKqisJ458JbNoq3AyXHxlAKMkGtNe143W1SkZ1BVgvCHYBzn7wD66J+smE+BolqA1mes5BeXlWY6w==
 
+"@types/node@20.0.0":
+  version "20.0.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.0.0.tgz#081d9afd28421be956c1a47ced1c9a0034b467e2"
+  integrity sha512-cD2uPTDnQQCVpmRefonO98/PPijuOnnEy5oytWJFPY1N9aJCz2wJ5kSGWO+zJoed2cY2JxQh6yBuUq4vIn61hw==
+
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.1.tgz#d3357479a0fdfdd5907fe67e17e0a85c906e1301"
@@ -5131,10 +5136,12 @@ ieee754@^1.1.13:
   resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.2.1.tgz#8eb7a10a63fff25d15a57b001586d177d1b0d352"
   integrity sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==
 
-iframe-translator@^0.3.5:
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/iframe-translator/-/iframe-translator-0.3.5.tgz#028f13cbd7d2fde48525d28e87685af870a820b1"
-  integrity sha512-px4ORXflMsT89suOgB3PC6c9wFx2J2f/1cNr7+TEIstz0NKIi98PZAIP1EeSZsJXdtdOIALCMNwaH9ym3lRGqw==
+iframe-translator@^0.3.7:
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/iframe-translator/-/iframe-translator-0.3.7.tgz#d4c2b0d91129eb5b3702a037a18f478b09a42d3b"
+  integrity sha512-ivgG7duy8G76NZGI4kluh7aXjsEWIR+HHQ+XYhje6GR/OHBFMAsYZ78KqJLVZ9/URKSpyc35uhSLhnAuQrAwTw==
+  dependencies:
+    "@types/node" "20.0.0"
 
 ignore@^4.0.3, ignore@^4.0.6:
   version "4.0.6"
