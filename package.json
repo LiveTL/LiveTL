@@ -103,7 +103,7 @@
     "file-saver": "^2.0.5",
     "hosted-git-info": "^4.0.2",
     "html2canvas": "^1.0.0-rc.7",
-    "iframe-translator": "^0.3.5",
+    "iframe-translator": "^0.3.7",
     "is-dark-color": "^1.2.0",
     "jquery": "^3.6.0",
     "jquery-ui-bundle": "^1.12.1-migrate",
