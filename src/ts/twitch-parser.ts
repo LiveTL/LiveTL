@@ -109,8 +109,8 @@ function parseTypes(message: Element): Ltl.AuthorType {
 
 function getChildren(node: Element, depth: number): Element[] {
   const result: Element[] = [];
-  const traverse = (node: Element, depth: number) => {
-    if (depth == 0) return;
+  const traverse = (node: Element, depth: number): undefined => {
+    if (depth === 0) return;
     for (const child of node.children) {
       result.push(child);
       traverse(child, depth - 1);
