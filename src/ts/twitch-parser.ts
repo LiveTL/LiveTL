@@ -107,6 +107,19 @@ function parseTypes(message: Element): Ltl.AuthorType {
   return types;
 }
 
+function getChildren(node: Element, depth: number): Element[] {
+  const result: Element[] = [];
+  const traverse = (node: Element, depth: number) => {
+    if (depth == 0) return;
+    for (const child of node.children) {
+      result.push(child);
+      traverse(child, depth - 1);
+    }
+  };
+  traverse(node, depth);
+  return result;
+}
+
 export function parseMessageElement(message: Element): Ltl.Message | undefined {
   const author = message.querySelector(displayNameSelector)?.textContent ?? '';
   const timestamp = isVod() ? message.querySelector(vodTimestampSelector)?.textContent ?? '' : currentTime();
@@ -117,7 +130,7 @@ export function parseMessageElement(message: Element): Ltl.Message | undefined {
 
   const messageArray: Ytc.ParsedRun[] = [];
   let text = '';
-  Array.from(messageBody.children).forEach((fragment) => {
+  getChildren(messageBody, 3).forEach((fragment) => {
     // console.debug({ fragment });
     const result = parseMessageFragment(fragment);
     if (result == null) return;
