@@ -6,7 +6,6 @@
   import {
     TextDirection,
     paramsVideoTitle,
-    isAndroid,
     SelectOperation,
     paramsEmbedded,
     paramsYtVideoId,
@@ -121,16 +120,11 @@
     );
     if (toSave.length) {
       const saveStr = toSave.join('\n');
-      if (isAndroid) {
-        // @ts-ignore
-        window.nativeJavascriptInterface.downloadText(saveStr, textFilename);
-      } else {
-        const blob = new Blob([saveStr], {
-          type: 'text/plain;charset=utf-8'
-        });
-        const { default: saveAs } = await import('file-saver');
-        saveAs(blob, textFilename);
-      }
+      const blob = new Blob([saveStr], {
+        type: 'text/plain;charset=utf-8'
+      });
+      const { default: saveAs } = await import('file-saver');
+      saveAs(blob, textFilename);
     }
     toggleSelecting();
   }
@@ -144,11 +138,6 @@
   }
 
   function toggleFullScreen() {
-    if (isAndroid) {
-      // @ts-ignore
-      window.nativeJavascriptInterface.toggleFullscreen();
-      return;
-    }
     if (
       (document.fullScreenElement && document.fullScreenElement !== null) ||
       (!document.mozFullScreen && !document.webkitIsFullScreen)
