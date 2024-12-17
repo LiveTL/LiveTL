@@ -5,7 +5,6 @@
   "scripts": {
     "build": "webpack --mode development",
     "build:production": "webpack --mode production",
-    "build:android": "webpack --mode production --env android",
     "package": "node utils/package.js",
     "start": "webpack serve",
     "ss": "node utils/screenshot.js",
