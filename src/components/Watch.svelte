@@ -27,7 +27,7 @@
   import { onKeyEvent } from '../js/shortcuts.js';
   import ChatEmbed from './ChatEmbed.svelte';
   import MainPane from './MainPane.svelte';
-  import Options from './Options.svelte';
+  import Options from './OptionsDisplay.svelte';
   import Captions from './Captions.svelte';
 
   document.title = 'LiveTL';
