@@ -7,7 +7,7 @@ module.exports = {
   transformIgnorePatterns: ['/node_modules/(?!smelte)'],
   testPathIgnorePatterns: ['/node_modules/'],
   setupFilesAfterEnv: [
-    // '<rootDir>/jest.setup.js',
+    '<rootDir>/jest.setup.js',
     '@testing-library/jest-dom/extend-expect'
   ],
   transform: {
