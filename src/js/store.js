@@ -1,6 +1,4 @@
 import {
-  Browser,
-  BROWSER,
   TextDirection,
   VideoSide,
   ChatSplit,

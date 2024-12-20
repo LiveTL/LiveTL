@@ -15,8 +15,8 @@
     "e2e:build": "yarn build:production && yarn package && cp dist/LiveTL-Firefox.zip dist/LiveTL-Firefox.xpi",
     "e2e:test": "pytest --tests-per-worker auto e2e",
     "e2e": "yarn e2e:build && yarn e2e:test",
-    "format": "eslint --cache --fix .",
-    "format:check": "eslint ."
+    "format": "eslint --config .eslintrc.js --cache --fix .",
+    "format:check": "eslint --config .eslintrc.js ."
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
