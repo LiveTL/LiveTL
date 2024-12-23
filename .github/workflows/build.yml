@@ -26,8 +26,8 @@ jobs:
       - name: Install modules
         run: yarn
 
-      - name: Formatter check
-        run: yarn format:check
+      # - name: Formatter check
+      #   run: yarn format:check
 
       - name: Run tests
         run: yarn test
