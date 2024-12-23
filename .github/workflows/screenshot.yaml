@@ -1,4 +1,5 @@
 name: Update Screenshots
+
 on:
   workflow_dispatch:
     inputs:
@@ -6,28 +7,38 @@ on:
         description: 'Pages to screenshot. "all" or a list separated by commas.'
         required: true
         default: 'all'
-  
+
 jobs:
   update_screenshots:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           submodules: 'recursive'
-      - uses: c-hive/gha-yarn-cache@v1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+
       - name: Install modules
         run: |
           yarn
           yarn add puppeteer
           sudo apt install xvfb libnss3 libatk-adaptor libcups2 libxkbcommon0 libgtk-3-0 libgbm1 fonts-indic fonts-noto fonts-noto-cjk
+
       - name: Build extensions
         run: |
           yarn build production
           yarn package
+
       - name: Screenshot pages
         run: |
           mkdir ss
           yarn ss ${{ github.event.inputs.pages }}
+
       - name: Commit screenshots
         uses: EndBug/add-and-commit@v7
         with:

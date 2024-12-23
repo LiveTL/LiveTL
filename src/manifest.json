@@ -22,7 +22,8 @@
     "default_icon": {
       "48": "./img/48x48.png",
       "128": "./img/128x128.png"
-    }
+    },
+    "default_popup": "html/options.html"
   },
   "manifest_version": 3,
   "content_scripts": [

@@ -1,5 +1,5 @@
 /** @typedef {import('./types.js').UnixTransformer} UnixTransformer */
-import { isAndroid, modifierKeys } from './constants.js';
+import { modifierKeys } from './constants.js';
 
 export const compose = (...args) =>
   ipt => args.reduceRight((val, func) => func(val), ipt);
@@ -77,11 +77,6 @@ export const keydownToShortcut = e => [
 ].filter(Boolean).join(' + ');
 
 export const toggleFullScreen = () => {
-  if (isAndroid) {
-    // @ts-ignore
-    window.nativeJavascriptInterface.toggleFullscreen();
-    return;
-  }
   if (
     (document.fullScreenElement && document.fullScreenElement !== null) ||
     (!document.mozFullScreen && !document.webkitIsFullScreen)

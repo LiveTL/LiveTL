@@ -1,30 +1,42 @@
 name: Latest Release Build
+
 on:
   release:
     types:
       - published
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           submodules: 'recursive'
-      - uses: actions/setup-node@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
-      - uses: c-hive/gha-yarn-cache@v1
+          node-version: '22'
+          cache: 'yarn'
+
       - name: Install modules
         run: |
           sudo apt install jq
           yarn
           VERSION=$(echo -n "${{ github.ref }}" | sed 's/[refs\/tagv]//g' | sed 's/-.*//')
           jq --arg version $VERSION '.version = $version' src/manifest.json > src/manifest.json.tmp
+
       - name: Build extensions
         run: |
           yarn update:list
           yarn build:production --env version=$(echo -n "${{ github.ref }}" | sed 's/[refs\/tagv]//g' | sed 's/-.*//')
           yarn package
+
       - name: Upload Chrome build to release
         uses: svenstaro/upload-release-action@v2
         with:
@@ -33,6 +45,7 @@ jobs:
           asset_name: LiveTL-Chrome.zip
           tag: ${{ github.ref }}
           overwrite: true
+
       - name: Upload Firefox build to release
         uses: svenstaro/upload-release-action@v2
         with:
