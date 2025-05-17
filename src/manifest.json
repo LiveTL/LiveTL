@@ -16,12 +16,12 @@
     "https://www.twitch.tv/*"
   ],
   "icons": {
-    "128": "./img/128x128.png"
+    "128": "img/128x128.png"
   },
   "action": {
     "default_icon": {
-      "48": "./img/48x48.png",
-      "128": "./img/128x128.png"
+      "48": "img/48x48.png",
+      "128": "img/128x128.png"
     },
     "default_popup": "html/options.html"
   },
