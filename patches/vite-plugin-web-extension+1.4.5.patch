@@ -1,0 +1,13 @@
+diff --git a/node_modules/vite-plugin-web-extension/dist/index.js b/node_modules/vite-plugin-web-extension/dist/index.js
+index 15f08a2..2fdad69 100644
+--- a/node_modules/vite-plugin-web-extension/dist/index.js
++++ b/node_modules/vite-plugin-web-extension/dist/index.js
+@@ -114,7 +114,7 @@ function resolveBrowserTagsInObject(browser, object) {
+ // src/validation.ts
+ import Ajv from "ajv";
+ import https from "https";
+-var SCHEMA_URL = "https://json.schemastore.org/chrome-manifest";
++var SCHEMA_URL = "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/chrome-manifest.json";
+ async function validateManifest(log, manifest) {
+   const ajv = new Ajv();
+   ajv.addFormat("permission", /.*/);
