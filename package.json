@@ -21,7 +21,8 @@
     "e2e:test": "pytest --tests-per-worker auto e2e",
     "e2e": "yarn e2e:build && yarn e2e:test",
     "format": "eslint --config .eslintrc.js --cache --fix .",
-    "format:check": "eslint --config .eslintrc.js ."
+    "format:check": "eslint --config .eslintrc.js .",
+    "postinstall": "patch-package"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
