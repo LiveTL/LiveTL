@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "referer",
+          "operation": "set",
+          "value": "https://youtu.be"
+        }
+      ]
+    },
+    "condition": {
+      "urlFilter": "||youtube.com/embed/",
+      "resourceTypes": ["main_frame", "sub_frame"]
+    }
+  }
+]

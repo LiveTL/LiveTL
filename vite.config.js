@@ -117,6 +117,16 @@ export default defineConfig({
       }]
     }),
 
+    // add-yt-embed-referer.json contains static DeclarativeNetHTTP rules
+    // for allowing embed yt vids, need to manually copy over
+    copy({
+      hook: 'writeBundle',
+      targets: [{
+        src: path.resolve(__dirname, 'src/add-yt-embed-referer.json'),
+        dest: 'build/'
+      }]
+    }),
+
     // include hyperchat's assets
     copy({
       hook: 'writeBundle',
