@@ -79,11 +79,18 @@
     "scripts": ["js/pages/background.js"]
   },
   "{{chrome}}.declarative_net_request": {
-    "rule_resources": [{
-      "id": "allow-iframe",
-      "enabled": true,
-      "path": "allow-iframe.json"
-    }]
+    "rule_resources": [
+      {
+        "id": "allow-iframe",
+        "enabled": true,
+        "path": "allow-iframe.json"
+      },
+      {
+        "id": "add-yt-embed-referer",
+        "enabled": true,
+        "path": "add-yt-embed-referer.json"
+      }
+    ]
   },
   "web_accessible_resources": [
     {
