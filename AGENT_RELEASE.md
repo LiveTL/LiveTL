@@ -78,6 +78,15 @@ Implication: tag value on `release` is the single source of truth for published 
 7. Create/push tag (for example `v9.0.10`) on `release`.
 8. Publish GitHub release for that tag.
 
+## Release Commit Style
+
+- `release` commits should usually be pure checkpoint bumps and nothing else.
+- Prefer short, boring subjects:
+  - `bump both`
+- Do not stuff version notes, changelog prose, or implementation explanation into the `release` commit subject.
+- Put user-facing release notes in the GitHub Release body, not in the packaging-branch commit.
+- If a `release` commit touches files other than the two packaging submodules, stop and re-check whether the work belongs on `develop`/`mv3-fr` instead.
+
 ## Updating the `release` Branch Pointers
 
 Prefer a separate worktree so you do not dirty the main implementation checkout:
