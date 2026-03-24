@@ -17,9 +17,24 @@ This file documents how LiveTL releases are assembled across MV2 + MV3 lines.
     - `chrome-mv3` -> LiveTL commit on `mv3-fr`
   - runs the publish workflow that uploads both browser artifacts
 
+## Sync Order (Mandatory)
+
+Use this exact ladder for maintenance work:
+
+1. Sync HyperChat `mv2`.
+2. Merge/adapt HyperChat into `mv3`.
+3. Merge/adapt HyperChat into `mv3-ltl`.
+4. Bump LiveTL `develop` to the new HyperChat `mv2` commit.
+5. Merge `develop` into `mv3-fr`, then ensure `src/submodules/chat` points at HyperChat `mv3-ltl`.
+6. Bump LiveTL `release` so:
+   - `firefox-mv2` == LiveTL `develop`
+   - `chrome-mv3` == LiveTL `mv3-fr`
+
+Do not bump `release` first and do not point LiveTL `mv3-fr` directly at HyperChat `mv3` when `mv3-ltl` exists.
+
 ## Current CI/Publishing Model
 
-As of recent tags (for example `v9.0.9`), published tags are on `release` and artifacts are produced by `release/.github/workflows/release.yaml`.
+Published tags belong on `release`, and artifacts are produced by `release/.github/workflows/release.yaml`.
 
 Release workflow behavior:
 
@@ -34,6 +49,12 @@ Release workflow behavior:
    - pass tag version through `VERSION=... yarn build:chrome`
    - run `yarn package`
 4. Upload `LiveTL-Firefox.zip` and `LiveTL-Chrome.zip` to the GitHub release.
+
+Important:
+
+- pushing the `release` branch alone does not publish artifacts
+- pushing a tag alone does not publish artifacts
+- the workflow runs when the GitHub Release is published for that tag
 
 ## Version Semantics
 
@@ -59,24 +80,28 @@ Implication: tag value on `release` is the single source of truth for published 
 
 ## Updating the `release` Branch Pointers
 
-From a clean repo:
+Prefer a separate worktree so you do not dirty the main implementation checkout:
 
 ```bash
-git checkout release
-git pull --recurse-submodules
+git fetch origin
+git worktree add -B release /tmp/livetl-release origin/release
+cd /tmp/livetl-release
+git submodule update --init --recursive
 
 cd firefox-mv2
 git fetch origin
 git checkout <develop_commit_sha>
+git submodule update --init --recursive
 cd ..
 
 cd chrome-mv3
 git fetch origin
 git checkout <mv3_fr_commit_sha>
+git submodule update --init --recursive
 cd ..
 
 git add firefox-mv2 chrome-mv3
-git commit -m "vX.Y.Z"
+git commit -m "bump both"
 git push origin release
 ```
 
@@ -89,6 +114,16 @@ git push origin vX.Y.Z
 
 Publish the GitHub release for `vX.Y.Z` to trigger upload automation.
 
+Useful verification after the bump:
+
+```bash
+git ls-tree HEAD chrome-mv3 firefox-mv2
+git -C firefox-mv2 rev-parse --short HEAD
+git -C chrome-mv3 rev-parse --short HEAD
+```
+
+If the nested `src/submodules/chat` submodule shows as modified after switching the packaging submodules, normalize it with `git submodule update --init --recursive` inside that packaging submodule before committing.
+
 ## Local Pre-Release Verification
 
 Before updating `release`:
@@ -99,8 +134,10 @@ Before updating `release`:
   - `sudo yarn package`
 - On `mv3-fr` commit:
   - `sudo yarn`
-  - `sudo yarn build:chrome`
+  - `sudo env PATH="$PWD/node_modules/.bin:$PATH" yarn build:chrome`
   - `sudo yarn package`
+
+For MV3 runtime sanity in this shell, functional browser validation is more reliable with Chromium hidden mode (`headless=false` plus `--ozone-platform=headless`) than with plain `--headless=new`.
 
 Quick zip sanity check:
 
@@ -117,5 +154,9 @@ unzip -p dist/LiveTL-Firefox.zip manifest.json | jq '.manifest_version, .version
   - forgetting `git submodule update --init --recursive` after branch switch.
 - Incorrect release branch:
   - tagging `develop` or `mv3-fr` directly bypasses the dual-submodule publish pipeline.
+- Stale local `release` branch:
+  - operating on an old local `release` checkout instead of `origin/release`.
+- Nested submodule drift:
+  - bumping `firefox-mv2` or `chrome-mv3` without normalizing their own `src/submodules/chat` checkout.
 - Version mismatch:
   - expecting `mv3-fr/src/manifest.json` alone to control release version in CI.
