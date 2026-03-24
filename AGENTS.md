@@ -14,6 +14,33 @@
 - Always implement on `develop` first, then carry the change to `mv3-fr`.
 - Never do feature/fix implementation directly on `release`.
 
+## House Style
+
+- Commit subjects should be short, direct, and easy to scan in `git log --oneline`.
+- Prefer active voice and plain wording:
+  - `bump hc mv2`
+  - `agent upkeep`
+  - `bump both`
+- Avoid padded scopes, issue-number prefixes, and long explanatory subjects.
+- A mildly funny subject is acceptable if it is still clear immediately.
+- Prefer proper merges when carrying `develop` into `mv3-fr`.
+- If `mv3-fr` needs extra adaptation after the merge, keep it as a small follow-up commit rather than hand-copying a separate implementation.
+
+## Code Patterns
+
+- Treat `develop` as the source branch for shared behavior.
+- Keep `mv3-fr` focused on MV3-specific adaptation:
+  - manifest differences
+  - background/runtime differences
+  - build tooling differences
+- Do not duplicate HyperChat internals in LiveTL when the right fix belongs upstream in the submodule.
+- If a bug spans HyperChat and LiveTL, land the shared chat-side fix in HyperChat first, then bump the submodule in LiveTL.
+- Prefer editing existing modules and utilities over creating tiny one-off files.
+- Keep repo boundaries clean:
+  - LiveTL owns LiveTL UI, player wiring, translation aggregation, packaging
+  - HyperChat owns chat parsing, chat rendering, chat actions, and chat-side runtime behavior
+- When fixing cross-branch issues, prefer one shared implementation on `develop` plus a narrow MV3 adaptation, not two divergent fixes.
+
 ## HyperChat Submodule Mapping
 
 - `develop` should pin `src/submodules/chat` to a HyperChat commit from the MV2 line.
