@@ -5,6 +5,9 @@
   "scripts": {
     "build": "webpack --mode development",
     "build:production": "webpack --mode production",
+    "codex:status": "bash scripts/codex-dev.sh status",
+    "codex:test": "bash scripts/codex-dev.sh go-test",
+    "codex:watch": "bash scripts/codex-dev.sh watch",
     "package": "node utils/package.js",
     "start": "webpack serve",
     "ss": "node utils/screenshot.js",
@@ -52,6 +55,7 @@
     "jest": "26.6.3",
     "jest-chrome": "^0.8.0",
     "mini-css-extract-plugin": "^2.2.0",
+    "playwright-core": "^1.58.2",
     "postcss": "^8.3.5",
     "postcss-extend": "^1.0.5",
     "postcss-import": "^14.0.2",

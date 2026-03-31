@@ -9,6 +9,8 @@ package-lock.json
 *.log
 __pycache__/
 .eslintcache
+.codex-profile/
+.codex-runtime/
 
 .DS_Store
 venv/

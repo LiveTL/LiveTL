@@ -106,7 +106,7 @@
 
 ## Chromium Validation (MV3, Tested)
 
-Validated on 2026-03-23 with `/snap/bin/chromium`.
+Validated on 2026-03-31 with `/snap/bin/chromium`.
 
 ### Smoke Load (`--headless=new`)
 
@@ -120,19 +120,36 @@ Validated on 2026-03-23 with `/snap/bin/chromium`.
    - LiveTL `service_worker` target at `chrome-extension://.../js/pages/background.js`
    - often also a `welcome.html` extension page
 5. Limitation:
-   - in this environment, `--headless=new` is good for extension-load smoke checks but is not reliable proof that LiveTL chat injection actually works.
+   - this is only an extension-load smoke check
+   - it is not reliable proof that YouTube chat content scripts mounted
 
 ### Functional MV3 Browser Validation
 
-- For real runtime checks in this environment, prefer Chromium automation with:
-  - `headless=false`
-  - `--ozone-platform=headless`
-  - extension args: `--disable-extensions-except=<build>` and `--load-extension=<build>`
-- This hidden-browser mode is the reliable path for checking:
+- Use the repo harness:
+  - `bash scripts/codex-dev.sh go-test`
+- This is the functional MV3 path on `mv3-fr`.
+- On `develop`, keep using Firefox for runtime validation; the wrapper will not pretend Chromium MV2 is reliable here.
+- This path uses:
+  - `xvfb-run`
+  - non-headless Chromium launched by Playwright with a fresh profile
+  - the unpacked MV3 build from `build/`
+  - seeded extension storage so HyperChat is enabled during the run
+- It is the current reliable path for checking:
   - LiveTL button injection in the YouTube chat frame
-  - HyperChat mount/cleanup behavior
-  - `Embed TLs` opening correctly
-- Treat a passing `--headless=new` run as necessary but not sufficient.
+  - HyperChat iframe mount inside the chat frame
+  - embed-frame cleanup behavior, including stripping `www-player.css`
+- Prerequisite on fresh machines:
+  - `sudo apt-get install -y xvfb xauth`
+- The smoke script exits nonzero if any of these fail:
+  - `#hc-buttons` missing
+  - `iframe#hyperchat` missing
+  - `.hyperchat-root` missing inside the embed frame
+  - any `www-player.css` / `link[name="www-player"]` survives in the embed frame
+- Useful entrypoints:
+  - `bash scripts/codex-dev.sh watch`
+  - `bash scripts/codex-dev.sh go-test`
+  - `bash scripts/codex-dev.sh status`
+  - `KEEP_OPEN=1 bash scripts/codex-dev.sh go-test`
 
 ## Testbed URL Guidance
 
