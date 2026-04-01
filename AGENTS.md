@@ -13,6 +13,15 @@
 - `release` is a packaging branch that points to two LiveTL submodules (`firefox-mv2` and `chrome-mv3`).
 - Always implement on `develop` first, then carry the change to `mv3-fr`.
 - Never do feature/fix implementation directly on `release`.
+- If the task also changes HyperChat, do not start in LiveTL.
+- Cross-repo rule:
+  1. HyperChat `mv2`
+  2. HyperChat `mv3`
+  3. HyperChat `mv3-ltl`
+  4. LiveTL `develop`
+  5. LiveTL `mv3-fr`
+  6. LiveTL `release`
+- LiveTL is downstream whenever `src/submodules/chat` needs new behavior or documentation.
 
 ## House Style
 
@@ -62,6 +71,7 @@
   5. LiveTL `mv3-fr` merging `develop` and pinning `src/submodules/chat` to HyperChat `mv3-ltl`
   6. LiveTL `release` bumping `firefox-mv2` to `develop` and `chrome-mv3` to `mv3-fr`
 - Do not skip layers in that ladder.
+- Do not start by editing LiveTL docs, code, or release checkpoints if the HyperChat side of the same task is still undone.
 - In practice, the expected commit relationships are:
   - `develop:src/submodules/chat` == HyperChat `origin/mv2`
   - `mv3-fr:src/submodules/chat` == HyperChat `origin/mv3-ltl`
