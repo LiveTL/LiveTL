@@ -4,6 +4,12 @@ on:
   release:
     types:
       - published
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to build and upload
+        required: true
+        type: string
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -11,6 +17,8 @@ concurrency:
 
 jobs:
   build:
+    env:
+      RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -28,7 +36,7 @@ jobs:
         run: |
           cd firefox-mv2
           sudo apt install jq
-          VERSION=$(echo -n "${{ github.ref }}" | sed 's/[refs\/tagv]//g' | sed 's/-.*//')
+          VERSION=$(echo -n "$RELEASE_TAG" | sed 's/^v//g' | sed 's/-.*//')
           jq --arg version "$VERSION" '.version = $version' package.json > package.json.tmp && mv package.json.tmp package.json
           yarn
           yarn update:list
@@ -40,7 +48,7 @@ jobs:
           cd chrome-mv3
           yarn
           yarn update:list
-          VERSION=$(echo -n "${{ github.ref }}" | sed 's/[refs\/tagv]//g' | sed 's/-.*//') yarn build:chrome
+          VERSION=$(echo -n "$RELEASE_TAG" | sed 's/^v//g' | sed 's/-.*//') yarn build:chrome
           yarn package
 
       - name: Upload Chrome build to release
@@ -49,7 +57,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: chrome-mv3/dist/LiveTL-Chrome.zip
           asset_name: LiveTL-Chrome.zip
-          tag: ${{ github.ref }}
+          tag: ${{ env.RELEASE_TAG }}
           overwrite: true
       - name: Upload Firefox build to release
         uses: svenstaro/upload-release-action@v2
@@ -57,5 +65,5 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: firefox-mv2/dist/LiveTL-Firefox.zip
           asset_name: LiveTL-Firefox.zip
-          tag: ${{ github.ref }}
+          tag: ${{ env.RELEASE_TAG }}
           overwrite: true
