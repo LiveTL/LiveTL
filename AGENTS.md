@@ -16,7 +16,7 @@
 - If the task also changes HyperChat, do not start in LiveTL.
 - Cross-repo rule:
   1. HyperChat `mv2`
-  2. HyperChat `mv3`
+  2. HyperChat `main`
   3. HyperChat `mv3-ltl`
   4. LiveTL `develop`
   5. LiveTL `mv3-fr`
@@ -65,8 +65,8 @@
 
 - When syncing HyperChat into LiveTL, follow this order:
   1. HyperChat `mv2`
-  2. HyperChat `mv3` (merge/adapt from `mv2`)
-  3. HyperChat `mv3-ltl` (merge/adapt from `mv3`)
+  2. HyperChat `main` (merge/adapt from `mv2`)
+  3. HyperChat `mv3-ltl` (merge/adapt from `main`)
   4. LiveTL `develop` bumping `src/submodules/chat` to HyperChat `mv2`
   5. LiveTL `mv3-fr` merging `develop` and pinning `src/submodules/chat` to HyperChat `mv3-ltl`
   6. LiveTL `release` bumping `firefox-mv2` to `develop` and `chrome-mv3` to `mv3-fr`
@@ -148,6 +148,7 @@ Validated on 2026-03-31 with `/snap/bin/chromium`.
   - LiveTL button injection in the YouTube chat frame
   - HyperChat iframe mount inside the chat frame
   - embed-frame cleanup behavior, including stripping `www-player.css`
+  - embed-frame cleanup behavior, including removing stray player shell nodes like `#player-controls`
 - Prerequisite on fresh machines:
   - `sudo apt-get install -y xvfb xauth`
 - The smoke script exits nonzero if any of these fail:
@@ -155,6 +156,7 @@ Validated on 2026-03-31 with `/snap/bin/chromium`.
   - `iframe#hyperchat` missing
   - `.hyperchat-root` missing inside the embed frame
   - any `www-player.css` / `link[name="www-player"]` survives in the embed frame
+  - any embed player shell artifact survives in the embed frame (`#player`, `#player-controls`, `.player-unavailable`, `yt-live-chat-app`, `ytd-app`, `ytm-app`)
 - Useful entrypoints:
   - `bash scripts/codex-dev.sh watch`
   - `bash scripts/codex-dev.sh go-test`
