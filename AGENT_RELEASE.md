@@ -22,7 +22,7 @@ This file documents how LiveTL releases are assembled across MV2 + MV3 lines.
 Use this exact ladder for maintenance work:
 
 1. Sync HyperChat `mv2`.
-2. Merge/adapt HyperChat into `mv3`.
+2. Merge/adapt HyperChat into `main`.
 3. Merge/adapt HyperChat into `mv3-ltl`.
 4. Bump LiveTL `develop` to the new HyperChat `mv2` commit.
 5. Merge `develop` into `mv3-fr`, then ensure `src/submodules/chat` points at HyperChat `mv3-ltl`.
@@ -30,7 +30,7 @@ Use this exact ladder for maintenance work:
    - `firefox-mv2` == LiveTL `develop`
    - `chrome-mv3` == LiveTL `mv3-fr`
 
-Do not bump `release` first and do not point LiveTL `mv3-fr` directly at HyperChat `mv3` when `mv3-ltl` exists.
+Do not bump `release` first and do not point LiveTL `mv3-fr` directly at HyperChat `main` when `mv3-ltl` exists.
 Do not begin in LiveTL at all if the corresponding HyperChat work has not been landed yet.
 
 ## Current CI/Publishing Model
@@ -70,7 +70,7 @@ Implication: tag value on `release` is the single source of truth for published 
 
 ## Feature Delivery Flow (Mandatory)
 
-1. If HyperChat changes are involved, finish the HyperChat ladder first (`mv2` -> `mv3` -> `mv3-ltl`).
+1. If HyperChat changes are involved, finish the HyperChat ladder first (`mv2` -> `main` -> `mv3-ltl`).
 2. Implement and validate on `develop`.
 3. Commit and push `develop`.
 4. Merge `develop` into `mv3-fr`.

@@ -177,6 +177,8 @@ const main = async () => {
       }).catch(() => {});
       await hyperchatFrame.waitForTimeout(5_000);
       embedSummary = await hyperchatFrame.evaluate(() => {
+        const playerArtifacts = ['#player', '#player-controls', '.player-unavailable', 'yt-live-chat-app', 'ytd-app', 'ytm-app']
+          .filter((selector) => document.querySelector(selector) != null);
         const playerLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
           .filter((link) => {
             const href = link.getAttribute('href') ?? '';
@@ -190,6 +192,7 @@ const main = async () => {
         return {
           url: location.href,
           hasRoot: document.querySelector('.hyperchat-root') !== null,
+          playerArtifacts,
           playerLinks,
           bodyFontSize: getComputedStyle(document.body).fontSize,
           iconFontSize: icon == null ? null : getComputedStyle(icon).fontSize,
@@ -215,7 +218,8 @@ const main = async () => {
       !chatSummary.hasHyperchat ||
       embedSummary == null ||
       !embedSummary.hasRoot ||
-      embedSummary.playerLinks.length !== 0
+      embedSummary.playerLinks.length !== 0 ||
+      embedSummary.playerArtifacts.length !== 0
     );
 
     if (failed) {
