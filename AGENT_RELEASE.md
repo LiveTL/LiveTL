@@ -31,6 +31,7 @@ Use this exact ladder for maintenance work:
    - `chrome-mv3` == LiveTL `mv3-fr`
 
 Do not bump `release` first and do not point LiveTL `mv3-fr` directly at HyperChat `mv3` when `mv3-ltl` exists.
+Do not begin in LiveTL at all if the corresponding HyperChat work has not been landed yet.
 
 ## Current CI/Publishing Model
 
@@ -69,14 +70,15 @@ Implication: tag value on `release` is the single source of truth for published 
 
 ## Feature Delivery Flow (Mandatory)
 
-1. Implement and validate on `develop`.
-2. Commit and push `develop`.
-3. Merge `develop` into `mv3-fr`.
-4. Adapt for MV3 differences, validate, commit, and push `mv3-fr`.
-5. Update `release` branch submodule pointers to those exact commits.
-6. Commit and push `release`.
-7. Create/push tag (for example `v9.0.10`) on `release`.
-8. Publish GitHub release for that tag.
+1. If HyperChat changes are involved, finish the HyperChat ladder first (`mv2` -> `mv3` -> `mv3-ltl`).
+2. Implement and validate on `develop`.
+3. Commit and push `develop`.
+4. Merge `develop` into `mv3-fr`.
+5. Adapt for MV3 differences, validate, commit, and push `mv3-fr`.
+6. Update `release` branch submodule pointers to those exact commits.
+7. Commit and push `release`.
+8. Create/push tag (for example `v9.0.10`) on `release`.
+9. Publish GitHub release for that tag.
 
 ## Release Commit Style
 
@@ -158,6 +160,7 @@ unzip -p dist/LiveTL-Firefox.zip manifest.json | jq '.manifest_version, .version
 ## Common Failure Modes
 
 - Wrong branch order:
+  - starting in LiveTL before the matching HyperChat change exists causes avoidable rework and stale submodule pointers.
   - fixing only `mv3-fr` first causes divergence from MV2 source branch.
 - Stale submodule state:
   - forgetting `git submodule update --init --recursive` after branch switch.
