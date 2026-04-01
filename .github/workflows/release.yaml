@@ -1,27 +1,40 @@
 name: Latest Release Build
+
 on:
   release:
     types:
       - published
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           submodules: 'recursive'
-      - uses: actions/setup-node@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: '22'
+          cache: 'yarn'
+
       - name: Build Firefox Manifest v2 Version
         run: |
           cd firefox-mv2
           sudo apt install jq
-          VERSION=$(echo -n "${{ github.ref }}" | sed 's/[refs\/tagv]//g' | sed 's/-.*//') jq '.version = env.VERSION' package.json > package.json.tmp && mv package.json.tmp package.json
+          VERSION=$(echo -n "${{ github.ref }}" | sed 's/[refs\/tagv]//g' | sed 's/-.*//')
+          jq --arg version "$VERSION" '.version = $version' package.json > package.json.tmp && mv package.json.tmp package.json
           yarn
           yarn update:list
           yarn build:production
           yarn package
+
       - name: Build Chrome Manifest v3 Version
         run: |
           cd chrome-mv3
@@ -29,6 +42,7 @@ jobs:
           yarn update:list
           VERSION=$(echo -n "${{ github.ref }}" | sed 's/[refs\/tagv]//g' | sed 's/-.*//') yarn build:chrome
           yarn package
+
       - name: Upload Chrome build to release
         uses: svenstaro/upload-release-action@v2
         with:
