@@ -28,7 +28,8 @@ const entryPoints = [
 const jsEntry = [
   'ts/yt-workaround.ts',
   'submodules/chat/src/scripts/chat-metagetter.ts',
-  'submodules/chat/src/scripts/chat-mounter.ts'
+  'submodules/chat/src/scripts/chat-mounter.ts',
+  'submodules/chat/src/scripts/chat-translation-host.ts'
 ];
 
 const entryPointTemplate = fs.readFileSync(path.join(__dirname, 'src/empty.html'))
