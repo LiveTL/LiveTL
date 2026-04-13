@@ -61,6 +61,7 @@ module.exports = (env, options) => {
       injector: path.join(__dirname, 'src', 'ts', 'content_scripts', 'injector.ts'),
       'chat-interceptor': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'scripts', 'chat-interceptor.ts'),
       'chat-background': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'scripts', 'chat-background.ts'),
+      'chat-translation-host': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'scripts', 'chat-translation-host.ts'),
       chat: path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'scripts', 'chat-injector.ts'),
       'hyperchat/hyperchat': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'hyperchat.ts'),
       'yt-workaround': path.join(__dirname, 'src', 'ts', 'yt-workaround.ts'),
