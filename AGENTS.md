@@ -44,6 +44,7 @@
   - build tooling differences
 - Do not duplicate HyperChat internals in LiveTL when the right fix belongs upstream in the submodule.
 - If a bug spans HyperChat and LiveTL, land the shared chat-side fix in HyperChat first, then bump the submodule in LiveTL.
+- Packaged HC translation on Firefox is one of those split-boundary cases: HC owns the request/response bridge, while LiveTL owns the MV2 bundling entry that injects the page-side translator host. Do not call `iframe-translator`'s default `getClient()` from the MV2 webpack page-host bundle; its `import.meta.env.DEV` check can compile to `(void 0).DEV` and fail at runtime.
 - Prefer editing existing modules and utilities over creating tiny one-off files.
 - Keep repo boundaries clean:
   - LiveTL owns LiveTL UI, player wiring, translation aggregation, packaging
