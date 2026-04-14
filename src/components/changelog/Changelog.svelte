@@ -4,5 +4,5 @@
 </script>
 
 <ExpandingCard title="Bug fixes" icon="chat">
-  Fixed embeds in "Open in LiveTL" view.
+  Fix Open in LiveTL video playback
 </ExpandingCard>
