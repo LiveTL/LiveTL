@@ -5,7 +5,14 @@ const params = new URLSearchParams(window.location.search);
 const videoId = params.get('video');
 
 if (videoId != null) {
-  document.body.innerHTML = '<div id="player" />';
+  // YouTube's `/error?...` pages now enforce Trusted Types in Chromium.
+  // Avoid `innerHTML` so the workaround still boots.
+  while (document.body.firstChild) {
+    document.body.removeChild(document.body.firstChild);
+  }
+  const playerHost = document.createElement('div');
+  playerHost.id = 'player';
+  document.body.appendChild(playerHost);
   document.body.style.overflow = 'hidden';
   loadYoutubePlayer(
     videoId,
