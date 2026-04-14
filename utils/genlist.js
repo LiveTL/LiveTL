@@ -13,7 +13,19 @@ const req = request.defaults({
 });
 
 const downloadJson = (url, fp, keys) => req(url, { json: true }, (err, _res, body) => {
-  if (err) return console.error(err);
+  if (err) {
+    console.error(err);
+    return;
+  }
+  if (!Array.isArray(body)) {
+    console.error('downloadJson: expected array response', {
+      url,
+      status: _res && _res.statusCode,
+      bodyType: typeof body,
+      body
+    });
+    return;
+  }
   fs.writeFileSync(fp, JSON.stringify({
     keys,
     users: body.map(keepAttrs(...keys)).map(jsonToArr(...keys))
