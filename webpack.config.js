@@ -105,6 +105,19 @@ module.exports = (env, options) => {
             replace: '(window.jQuery)'
           }
         },
+        {
+          // `iframe-translator` is built for Vite (`import.meta.env.DEV`). When this code runs from our
+          // MV2 webpack page-host bundle (Firefox), `import.meta.env` is undefined unless we rewrite it.
+          include: [
+            path.resolve(__dirname, 'node_modules/iframe-translator/index.js')
+          ],
+          test: /\.js$/,
+          loader: 'string-replace-loader',
+          options: {
+            search: 'import.meta.env.DEV',
+            replace: 'false'
+          }
+        },
         // {
         //   test: /.*/,
         //   loader: 'cache-loader',
