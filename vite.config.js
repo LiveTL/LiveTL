@@ -160,15 +160,23 @@ export default defineConfig({
     }),
 
     browserExtension({
-      manifest: () => ({
-        ...manifest,
-        version
-        // following should only be in dev builds
-        // it is being commented out as unsafe-eval is not allowed in mv3
-        // content_security_policy: {
-        //   extension_pages: 'script-src \'self\' \'unsafe-eval\'; object-src \'self\'',
-        // }
-      }),
+      manifest: () => {
+        const nextManifest = JSON.parse(JSON.stringify(manifest));
+        nextManifest.version = version;
+
+        if (browser === 'chrome') {
+          // The watch-mode video workaround runs on `youtube.com/error?...` and must execute in the
+          // page world so it can access the YT iframe API. DOM-injecting a `chrome-extension://`
+          // script is blocked by YouTube's CSP in Chromium, so run the content script as `MAIN`.
+          for (const entry of nextManifest.content_scripts ?? []) {
+            if (entry.matches?.includes('https://www.youtube.com/error*?*')) {
+              entry.world = 'MAIN';
+            }
+          }
+        }
+
+        return nextManifest;
+      },
       assets: 'img',
       additionalInputs: [
         ...entryPoints.map(entry => entry.name),
