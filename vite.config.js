@@ -188,7 +188,7 @@ export default defineConfig({
       ],
       webExtConfig: {
         // lofi hip hop (the one that spawned after the og one ended)
-        startUrl: 'https://www.youtube.com/watch?v=jfKfPfyJRdk'
+        startUrl: 'https://www.youtube.com/watch?v=X4VbdwhkE10'
       },
       disableAutoLaunch: true,
       browser
