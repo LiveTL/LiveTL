@@ -125,7 +125,7 @@ Validated on 2026-03-31 with `/snap/bin/chromium`.
 1. Build MV3 bundle:
    - `sudo env PATH="$PWD/node_modules/.bin:$PATH" yarn build:chrome`
 2. Launch Chromium:
-   - `chromium --headless=new --no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --remote-debugging-port=9222 --user-data-dir=/tmp/livetl-mv3-profile --disable-extensions-except=$PWD/build --load-extension=$PWD/build https://www.youtube.com/watch?v=jfKfPfyJRdk`
+   - `chromium --headless=new --no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --remote-debugging-port=9222 --user-data-dir=/tmp/livetl-mv3-profile --disable-extensions-except=$PWD/build --load-extension=$PWD/build https://www.youtube.com/watch?v=X4VbdwhkE10`
 3. Verify extension load via DevTools target list:
    - `curl -s http://127.0.0.1:9222/json/list | jq '[.[] | {type, url, title}]'`
 4. Expected signal:
@@ -168,7 +168,7 @@ Validated on 2026-03-31 with `/snap/bin/chromium`.
 ## Testbed URL Guidance
 
 - `mv3-fr` Vite config sets:
-  - `https://www.youtube.com/watch?v=jfKfPfyJRdk`
+  - `https://www.youtube.com/watch?v=X4VbdwhkE10`
 - Use that as default browser testbed unless reproducing an issue that needs a specific stream/chat URL.
 - For archive/VOD checks, do not assume failures are regressions without a baseline; that path has historically been less stable in hidden-browser automation.
 

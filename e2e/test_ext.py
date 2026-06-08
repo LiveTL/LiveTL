@@ -35,7 +35,7 @@ configure(
 )
 
 
-chilled_cow = "https://www.youtube.com/watch?v=jfKfPfyJRdk"
+chilled_cow = "https://www.youtube.com/watch?v=X4VbdwhkE10"
 peko_kiara = "https://www.youtube.com/watch?v=c747jYku6Eo"
 mio_phas = "https://www.youtube.com/watch?v=h7F4XJh41uo"
 mio_2 = "https://www.youtube.com/watch?v=4I2iZahIDNg"

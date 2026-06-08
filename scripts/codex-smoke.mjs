@@ -3,7 +3,7 @@ import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { chromium } from 'playwright-core';
 
-const defaultUrl = 'https://www.youtube.com/watch?v=jfKfPfyJRdk';
+const defaultUrl = 'https://www.youtube.com/watch?v=X4VbdwhkE10';
 const extensionPath = process.env.EXT_PATH || `${process.cwd()}/build`;
 const userDataDirOverride = process.env.USER_DATA_DIR;
 const testUrl = process.env.TEST_URL || defaultUrl;
