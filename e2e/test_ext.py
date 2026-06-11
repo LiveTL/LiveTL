@@ -6,11 +6,19 @@ Screenshots of test failures can be viewed at https://fileupload.r2dev2bb8.repl.
 
 import time
 import os
+
+import pytest
+
+if os.environ.get("RUN_LEGACY_SELENIUM_E2E") != "1":
+    pytest.skip(
+        "legacy Selenium e2e is opt-in; run scripts/codex-dev.sh go-test for current MV3 validation",
+        allow_module_level=True
+    )
+
 from contextlib import suppress
 from functools import partial, wraps
 from pathlib import Path
 
-import pytest
 from autoparaselenium import configure, run_on as a_run_on, all_, Extension
 import requests
 from selenium.webdriver.common.action_chains import ActionChains
@@ -19,12 +27,6 @@ from selenium import webdriver
 
 from reporting import report_file
 from ublock import ublock
-
-if os.environ.get("RUN_LEGACY_SELENIUM_E2E") != "1":
-    pytest.skip(
-        "legacy Selenium e2e is opt-in; run scripts/codex-dev.sh go-test for current MV3 validation",
-        allow_module_level=True
-    )
 
 dist = Path(__file__).parent / "../dist"
 
