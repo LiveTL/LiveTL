@@ -3,7 +3,8 @@ import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { chromium } from 'playwright-core';
 
-const defaultUrl = 'https://www.youtube.com/watch?v=X4VbdwhkE10';
+const testVideoId = 'X4VbdwhkE10';
+const defaultUrl = `https://www.youtube.com/watch?v=${testVideoId}`;
 const extensionPath = process.env.EXT_PATH || `${process.cwd()}/build`;
 const userDataDirOverride = process.env.USER_DATA_DIR;
 const testUrl = process.env.TEST_URL || defaultUrl;
@@ -206,6 +207,8 @@ const main = async () => {
       page: pageInfo,
       chat: {
         ...chatSummary,
+        hasContinuation: chatSummary.url.includes('continuation='),
+        isLiveChat: chatSummary.url.includes('/live_chat'),
         settled: settledChatState
       },
       embed: embedSummary
@@ -214,6 +217,9 @@ const main = async () => {
     console.log(JSON.stringify(summary, null, 2));
 
     const failed = (
+      !pageInfo.href.includes(testVideoId) ||
+      !chatSummary.url.includes('continuation=') ||
+      !chatSummary.url.includes('/live_chat') ||
       !chatSummary.hasHcButtons ||
       !chatSummary.hasHyperchat ||
       embedSummary == null ||
