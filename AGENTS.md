@@ -170,7 +170,7 @@ Validated on 2026-03-31 with `/snap/bin/chromium`.
 - `mv3-fr` Vite config sets:
   - `https://www.youtube.com/watch?v=X4VbdwhkE10`
 - Use that as default browser testbed unless reproducing an issue that needs a specific stream/chat URL.
-- For archive/VOD checks, do not assume failures are regressions without a baseline; that path has historically been less stable in hidden-browser automation.
+- For archive/VOD checks, do not assume failures are regressions without a baseline; that path is less stable in hidden-browser automation.
 
 ## Release Process and Versioning
 
