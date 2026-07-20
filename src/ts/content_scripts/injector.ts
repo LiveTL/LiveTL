@@ -9,6 +9,15 @@ for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) 
   window.addEventListener(eventName, e => e.stopImmediatePropagation(), true);
 }
 
+const EMBED_STORAGE_KEY = 'livetl-chat-embedded';
+
+// `v` identifies a live chat, `continuation` identifies a replay chat. Scoping
+// the persisted embed flag to this keeps it from leaking onto the next
+// stream's chat frame within the same tab.
+const chatId = new URLSearchParams(location.search).get('v') ??
+  new URLSearchParams(location.search).get('continuation');
+const embedStorageKey = chatId != null ? `${EMBED_STORAGE_KEY}:${chatId}` : null;
+
 async function loaded(): Promise<void> {
   try {
     let hostname = '';
@@ -73,6 +82,7 @@ async function loaded(): Promise<void> {
     );
   };
   const embedTLs = (): void => {
+    if (embedStorageKey != null) sessionStorage.setItem(embedStorageKey, 'true');
     const embeddedParams = constructParams();
     embeddedParams.set('embedded', 'true');
     embeddedParams.set('tabid', frameInfo.tabId.toString());
@@ -88,6 +98,15 @@ async function loaded(): Promise<void> {
       iframe.contentWindow?.postMessage(d.data, '*');
     });
   };
+
+  // Toggling fullscreen tears down and recreates this entire frame, which
+  // discards our embed along with the script instance that created it.
+  // sessionStorage survives that recreation (same origin, same tab), so use
+  // it to restore the embed as soon as the fresh instance loads.
+  if (embedStorageKey != null && sessionStorage.getItem(embedStorageKey) === 'true') {
+    embedTLs();
+    return;
+  }
 
   autoLaunchMode.loaded.then(mode => {
     switch (mode) {
