@@ -16,6 +16,7 @@
   } from '../ts/storage';
   import { chatUserActionsItems, ChatUserActions, Theme } from '../ts/chat-constants';
   import { useBanHammer } from '../ts/chat-actions';
+  import type { Chat } from '../ts/typings/chat';
   import { formatAuthorName } from '../ts/component-utils';
   import { mdiGift, mdiReply } from '@mdi/js';
 

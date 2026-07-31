@@ -50,11 +50,7 @@ declare namespace Ytc {
       targetActionId: string;
     };
     addLiveChatTickerItemAction?: AddTickerAction;
-    updateLiveChatPollAction?: {
-      pollToUpdate: {
-        pollRenderer: PollRenderer;
-      };
-    };
+    updateLiveChatPollAction?: UpdatePollAction;
   }
 
   /** Expected YTC action object */
@@ -176,6 +172,12 @@ declare namespace Ytc {
 
   interface ThumbnailsWithLabel extends Thumbnails {
     accessibility?: AccessibilityObj;
+  }
+
+  interface UpdatePollAction {
+    pollToUpdate: {
+      pollRenderer: PollRenderer;
+    };
   }
 
   /** Message run object */
@@ -306,6 +308,19 @@ declare namespace Ytc {
         image: Thumbnails;
       };
     };
+  }
+
+  interface EngagementMessageRenderer {
+    message: RunsObj[];
+    id: string;
+    timestampUsec?: IntString;
+    icon?: {
+      /** Unlocalized string */
+      iconType: string;
+    };
+    actionButton?: {
+      buttonRenderer: ButtonRenderer;
+    }
   }
 
   interface ChatSummaryRenderer {

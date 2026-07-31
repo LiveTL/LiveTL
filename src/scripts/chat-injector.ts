@@ -34,7 +34,7 @@ const ensureLiveTLTranslatorHost = (): void => {
 
   const script = document.createElement('script');
   script.id = 'hc-ltl-translator-host';
-  script.src = chrome.runtime.getURL('chat-translation-host.bundle.js');
+  script.src = getScriptURL('chat-translation-host.js');
   script.onload = () => script.remove();
   script.onerror = () => script.remove();
   (document.head ?? document.documentElement).appendChild(script);

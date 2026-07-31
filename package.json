@@ -9,6 +9,8 @@
     "build:firefox": "cross-env BROWSER=firefox vite build",
     "dev:chrome": "cross-env MINIFY=false BROWSER=chrome vite build --watch",
     "dev:firefox": "cross-env MINIFY=false BROWSER=firefox vite build --watch",
+    "start": "npm run dev:chrome",
+    "start:none": "npm run dev:chrome",
     "start:chrome": "cross-env AUTOLAUNCH=true npm run dev:chrome",
     "start:firefox": "cross-env AUTOLAUNCH=true npm run dev:firefox",
     "lint": "npm run lint:check -- --fix",

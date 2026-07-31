@@ -4,17 +4,16 @@
 
 - Make code changes on `mv2` first.
 - `main` is the real MV3 branch.
-- `mv3` is retired. Do not use it as the normal MV3 source branch for new work or cross-repo sync.
+- `mv3` and `mv3-ltl` are retired. Do not use them as MV3 source branches for new work or cross-repo sync; `main` is the MV3 line LiveTL consumes.
 - Do not implement feature/fix work directly on `main`.
 - If a task starts on another branch, switch to `mv2` before editing unless the user explicitly asks otherwise.
 - If a task touches both HyperChat and LiveTL, HyperChat still goes first.
 - Cross-repo order is mandatory:
   1. HyperChat `mv2`
   2. HyperChat `main`
-  3. HyperChat `mv3-ltl`
-  4. LiveTL `develop`
-  5. LiveTL `mv3-fr`
-  6. LiveTL `release`
+  3. LiveTL `develop`
+  4. LiveTL `mv3-fr`
+  5. LiveTL `release`
 - Never start cross-repo work in LiveTL when the HyperChat submodule also needs to change.
 - If the task also requires syncing YtcFilter (YTCF), do it after HyperChat `main` is updated:
   - merge HyperChat `main` into YTCF `master`
@@ -29,16 +28,14 @@
   - `order matters`
 - Avoid padded scopes, issue-number prefixes, and changelog-style essays in commit subjects.
 - A slightly dry or funny commit is fine if it is still clear at a glance.
-- Prefer proper merges when carrying `mv2` work into `main` and `mv3-ltl`.
-- Carry `main` into `mv3-ltl`. Do not treat `mv3` as the normal hop between them.
+- Prefer proper merges when carrying `mv2` work into `main`.
 - If MV3 needs follow-up adaptation, keep that as a small, explicit commit after the merge instead of rewriting history or hand-copying changes.
 
 ## Code Patterns
 
 - Prefer editing existing modules and utilities over creating one-off files for tiny helpers.
 - If a helper obviously belongs in an existing shared utility file, put it there.
-- Put shared behavior on `mv2` first; `main` and `mv3-ltl` should usually be merge-plus-adaptation branches, not separate feature branches.
-- Keep `mv3-ltl` branching from the current `main` line once `main` has the intended HC changes.
+- Put shared behavior on `mv2` first; `main` should usually be a merge-plus-adaptation branch, not a separate feature branch.
 - Keep MV3 adaptation narrow:
   - preserve branch-specific build/runtime wiring
   - change only what is required for manifest/background/injection differences

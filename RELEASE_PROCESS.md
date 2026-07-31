@@ -8,10 +8,9 @@ This repo ships from two active lines that serve different purposes.
 2. Commit and push on `mv2`.
 3. Merge `mv2` into `main`.
 4. Validate and push `main`.
-5. If LiveTL needs the MV3-tailored HC line, merge `main` into `mv3-ltl`.
-6. Create releases from each branch that actually ships.
+5. Create releases from each branch that actually ships.
 
-`mv3` is historical. Do not route normal maintenance through `mv3` unless the user explicitly asks for branch archaeology.
+`main` is the MV3 line LiveTL consumes. `mv3` and `mv3-ltl` are historical. Do not route normal maintenance through them unless the user explicitly asks for branch archaeology.
 
 If the same task also affects LiveTL, do not begin in LiveTL. Finish this HyperChat ladder first, then bump the LiveTL submodule chain in this order:
 
@@ -74,4 +73,4 @@ Practical rule for `main`: bump `package.json`, commit it, then create/publish t
 
 ## Notes For LiveTL Sync
 
-LiveTL consumes HyperChat via submodules. Keep HyperChat changes branch-aligned across `mv2`, `main`, and `mv3-ltl` so LiveTL can take them with straightforward submodule bumps in its release flow.
+LiveTL consumes HyperChat via submodules. Keep HyperChat changes branch-aligned across `mv2` and `main` so LiveTL can take them with straightforward submodule bumps in its release flow. LiveTL's MV2 Firefox variant tracks `mv2`; its MV3 line tracks `main`.

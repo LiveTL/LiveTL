@@ -61,3 +61,7 @@ VERSION=X.Y.Z npm run build:firefox # just Firefox
 ```
 
 The built ZIP files can be found in the `build` directory.
+
+## Release
+
+Release steps for `mv2` and `main` are documented in [RELEASE_PROCESS.md](./RELEASE_PROCESS.md).
