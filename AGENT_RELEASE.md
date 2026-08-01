@@ -2,7 +2,7 @@
 
 ## Source and products
 
-Every release comes from one tagged commit on `mv3-fr`:
+Every release comes from one tagged commit on `main`:
 
 - `dist/LiveTL-Chrome.zip`: Chrome MV3 from `build/chrome`
 - `dist/LiveTL-Firefox.zip`: Firefox MV2 from `build/mv2`
@@ -12,12 +12,12 @@ Firefox MV3 is built and verified from `build/firefox`, but is not published.
 release assembly.
 
 If HyperChat changes are required, merge them to HyperChat `main` first and bump
-the one `src/submodules/chat` pointer on `mv3-fr`. Do not pin different HyperChat
-or LiveTL commits per browser.
+the one `src/submodules/chat` pointer on LiveTL `main`. Do not pin different
+HyperChat or LiveTL commits per browser.
 
 ## Pre-release verification
 
-From the exact `mv3-fr` commit to tag:
+From the exact `main` commit to tag:
 
 ```bash
 git submodule update --init --recursive
@@ -35,11 +35,11 @@ Expect Chrome manifest version `3`, Firefox manifest version `2`, and the same
 
 ## Publish
 
-Create the release tag on the verified `mv3-fr` commit, push it, then publish
+Create the release tag on the verified `main` commit, push it, then publish
 the matching GitHub Release:
 
 ```bash
-git switch mv3-fr
+git switch main
 git pull --ff-only --recurse-submodules
 git tag vX.Y.Z
 git push origin vX.Y.Z
@@ -52,18 +52,20 @@ manually with the existing release tag as its `tag` input.
 
 ## Rollback
 
-Before the unification merge, preserve the current branch tips as:
+The planned rollback tags were not created before the unification merge. The
+immutable pre-unification branch tips are:
 
-- `pre-livetl-unification-develop`
-- `pre-livetl-unification-mv3-fr`
-- `pre-livetl-unification-release`
+- `develop`: `5aba0f06`
+- former `mv3-fr`: `5bfbe103`
+- `release`: `5c23f81b`
 
 If the old publishing layout must be restored, recreate `release` from its
-rollback tag in a separate worktree and push it only after verification:
+pre-unification commit in a separate worktree and push it only after
+verification:
 
 ```bash
-git worktree add -b restore-release /tmp/livetl-restore-release pre-livetl-unification-release
+git worktree add -b restore-release /tmp/livetl-restore-release 5c23f81b
 git -C /tmp/livetl-restore-release submodule update --init --recursive
 ```
 
-Do not delete `develop` during this migration, and do not rename `mv3-fr`.
+`develop` and `release` remain preserved legacy branches.

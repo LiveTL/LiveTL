@@ -24,7 +24,7 @@ submit a Pull Request!
 
 ## Development
 
-LiveTL maintains one implementation on `mv3-fr`. That branch produces Chrome
+LiveTL maintains one implementation on `main`. That branch produces Chrome
 MV3, Firefox MV3, and Firefox MV2 builds; manifest versions are build targets,
 not separate source branches.
 
