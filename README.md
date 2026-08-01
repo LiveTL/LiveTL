@@ -37,21 +37,21 @@ not separate source branches.
 > ℹ When pulling, you should also use `git pull --recurse`.
 
 ```bash
-yarn # use yarn, not npm
+npm ci
 ```
 
 ### Commands
 
 ```bash
-yarn start # watch Chrome MV3
-yarn dev:firefox # watch Firefox MV3
-yarn dev:mv2 # watch Firefox MV2
-VERSION=0.0.0 yarn build # build and verify every target
-yarn package # package Chrome MV3 and Firefox MV2 zips
-yarn test # jest
-yarn test:watch # autotest
-yarn format # lint
-yarn e2e # run e2e tests
+npm run start # watch Chrome MV3
+npm run dev:firefox # watch Firefox MV3
+npm run dev:mv2 # watch Firefox MV2
+VERSION=0.0.0 npm run build # build and verify every target
+npm run package # package Chrome MV3 and Firefox MV2 zips
+npm run test # jest
+npm run test:watch # autotest
+npm run format # lint
+npm run e2e # run e2e tests
 ```
 
 Load `build/chrome` in Chrome developer mode. Firefox validation targets are in

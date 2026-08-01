@@ -69,11 +69,11 @@
 
 ## Branch Switch Hygiene
 
-- Use Yarn, not npm, in this repo.
+- Use npm in this repo.
 - Reinstall dependencies after a branch or lockfile change:
 
   ```bash
-  yarn --frozen-lockfile
+  npm ci
   ```
 
 - Use a separate worktree for legacy-branch checks or parallel work. Do not
@@ -85,20 +85,20 @@
 
 | Target | Build | Watch | Output | Release status |
 | --- | --- | --- | --- | --- |
-| Chrome MV3 | `yarn build:chrome` | `yarn dev:chrome` | `build/chrome` | Published |
-| Firefox MV3 | `yarn build:firefox` | `yarn dev:firefox` | `build/firefox` | Validation-only |
-| Firefox MV2 | `yarn build:mv2` | `yarn dev:mv2` | `build/mv2` | Published |
+| Chrome MV3 | `npm run build:chrome` | `npm run dev:chrome` | `build/chrome` | Published |
+| Firefox MV3 | `npm run build:firefox` | `npm run dev:firefox` | `build/firefox` | Validation-only |
+| Firefox MV2 | `npm run build:mv2` | `npm run dev:mv2` | `build/mv2` | Published |
 
-`VERSION=0.0.0 yarn build` typechecks, builds, and verifies all three targets.
-`yarn package` creates the published Chrome MV3 and Firefox MV2 ZIPs in `dist`.
+`VERSION=0.0.0 npm run build` typechecks, builds, and verifies all three targets.
+`npm run package` creates the published Chrome MV3 and Firefox MV2 ZIPs in `dist`.
 
 Before handing off a change, run:
 
 ```bash
-yarn format:check
-yarn test
-VERSION=0.0.0 yarn build
-yarn package
+npm run format:check
+npm run test
+VERSION=0.0.0 npm run build
+npm run package
 ```
 
 Runtime notes:
@@ -121,7 +121,7 @@ bash scripts/codex-dev.sh go-test
 1. Build the Chrome MV3 bundle:
 
    ```bash
-   VERSION=0.0.0 yarn build:chrome
+   VERSION=0.0.0 npm run build:chrome
    ```
 
 2. Launch Chromium with only LiveTL enabled:
