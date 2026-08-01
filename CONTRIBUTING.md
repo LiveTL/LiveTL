@@ -16,7 +16,7 @@ to essentially "wing it" should you wish to contribute.
 
 ## Pull Request Guidelines
 
-1. Target pull requests to the `mv3-fr` branch.
+1. Target pull requests to the `main` branch.
 2. Explain what you did and how.
 3. If its a new feature, explain what it is.
 4. Add a screen shot if applicable.
@@ -25,7 +25,7 @@ to essentially "wing it" should you wish to contribute.
 ## Set up a local development environment
 
 **Refer
-to '[Starting up a local development environment](https://github.com/LiveTL/LiveTL/blob/mv3-fr/CONTRIBUTING.md#starting-up-a-local-development-environment)'
+to '[Starting up a local development environment](https://github.com/LiveTL/LiveTL/blob/main/CONTRIBUTING.md#starting-up-a-local-development-environment)'
 if you have already set up a local development environment**
 
 **If you have difficulty setting up this environment, do _not_ open an issue. Message one of the admins or ask for help
@@ -43,14 +43,14 @@ on this [Discord server](https://discord.gg/uJrV3tmthg).**
 
 1. Clone this repo with submodules (`git clone --recursive https://github.com/LiveTL/LiveTL.git`)
 2. Change directory `cd` to the newly created `LiveTL` repo.
-3. Switch to the maintained branch (`git switch mv3-fr`)
+3. Switch to the maintained branch (`git switch main`)
 
    Congratulations, you should now be running a local environment for LiveTL!
 
 ## Starting up a local development environment
 
 **Refer
-to '[Set up a local development environment](https://github.com/LiveTL/LiveTL/blob/mv3-fr/CONTRIBUTING.md#set-up-a-local-development-environment)'
+to '[Set up a local development environment](https://github.com/LiveTL/LiveTL/blob/main/CONTRIBUTING.md#set-up-a-local-development-environment)'
 if you have not yet set up a local development environment with the instructions provided above.**
 
 **If you have difficulty starting up your environments, do _not_ open an issue. Message one of the admins or ask for

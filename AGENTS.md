@@ -11,7 +11,7 @@
 
 ## Branch Discipline (Mandatory)
 
-- `mv3-fr` is the default and only maintained implementation branch. Start all
+- `main` is the default and only maintained implementation branch. Start all
   new LiveTL work there and target it with pull requests.
 - `develop` is retained for history and existing pull requests, but receives no
   new implementation work.
@@ -19,7 +19,7 @@
 - MV2 and MV3 are build targets from the same source, not separate source
   branches. Do not restore the old `develop -> mv3-fr -> release` sync ladder.
 - If a change belongs in HyperChat, land it on HyperChat `main` first, then
-  update the single `src/submodules/chat` gitlink on LiveTL `mv3-fr`.
+  update the single `src/submodules/chat` gitlink on LiveTL `main`.
 - All LiveTL targets must use the same HyperChat commit.
 
 ## House Style
@@ -56,7 +56,8 @@
 
 ## HyperChat Submodule Mapping
 
-- `mv3-fr` pins one validated HyperChat `main` commit for every build target.
+- LiveTL `main` pins one validated HyperChat `main` commit for every build
+  target.
 - After cloning or changing commits, run:
 
   ```bash
@@ -187,7 +188,7 @@ KEEP_OPEN=1 bash scripts/codex-dev.sh go-test
 ## Release Process and Versioning
 
 - Full release choreography lives in `AGENT_RELEASE.md`.
-- Release tags are created on `mv3-fr`.
+- Release tags are created on `main`.
 - The tag version is supplied to every target through `VERSION`; local builds
   fall back to `src/manifest.json`.
 - Release automation uploads only `LiveTL-Chrome.zip` and
