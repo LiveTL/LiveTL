@@ -14,12 +14,11 @@ name: "CodeQL"
 on:
   push:
     branches:
-      - develop
-      - master
+      - mv3-fr
   pull_request:
     # The branches below must be a subset of the branches above
     branches:
-      - develop
+      - mv3-fr
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

@@ -143,12 +143,11 @@ function ytcToMsg(ytcMessage) {
 }
 
 /** @param {Window} window */
-export function ytcSource(window) {
+export function ytcSource(_window) {
   /** @type {Writable<Message>} */
   const ytc = writable(null);
   const newMessage = compose(ytc.set, ytcToMsg);
 
-  let portRegistered = false;
   let tryRegister = 0;
 
   /**
@@ -163,19 +162,19 @@ export function ytcSource(window) {
    *
    * @type {() => Promise<Chat.FrameInfo>}
    */
-  const postMessageFrameInfo = () => new Promise((res) => {
+  const postMessageFrameInfo = () => new Promise((resolve) => {
     const listener = (d) => {
       if (d.data.type === 'frameInfo') {
         removeEventListener('message', listener);
-        res(d.data.frameInfo);
+        resolve(d.data.frameInfo);
       }
-    }
+    };
     addEventListener('message', listener);
   });
 
   const port = useReconnect(async () => {
     /** @type {Chat.FrameInfo} */
-    const frameInfo = paramsPopout
+    const frameInfo = paramsPopout !== null && paramsPopout !== ''
       ? { tabId: parseInt(paramsTabId), frameId: parseInt(paramsFrameId) }
       : await postMessageFrameInfo();
 
@@ -212,7 +211,6 @@ export function ytcSource(window) {
           break;
         case 'registerClientResponse':
           if (response.success) {
-            portRegistered = true;
             break;
           }
           if (tryRegister < 3) {

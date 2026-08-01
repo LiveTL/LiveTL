@@ -61,7 +61,7 @@
   </p>
 
   <img
-    src="https://raw.githubusercontent.com/LiveTL/LiveTL/develop/img/buttons.png"
+    src="https://raw.githubusercontent.com/LiveTL/LiveTL/mv3-fr/img/buttons.png"
     alt="img"
     class="w-full md:w-3/4 lg:w-3/5 my-2"
   />

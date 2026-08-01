@@ -2,39 +2,54 @@ name: Latest Release Build
 
 on:
   release:
-    types:
-      - published
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag to rebuild
+        required: true
+        type: string
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Resolve release tag
+        env:
+          EVENT_TAG: ${{ github.event.release.tag_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          RELEASE_TAG="${INPUT_TAG:-$EVENT_TAG}"
+          VERSION="${RELEASE_TAG#v}"
+          echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
+          echo "VERSION=${VERSION%%-*}" >> "$GITHUB_ENV"
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          submodules: 'recursive'
+          ref: ${{ env.RELEASE_TAG }}
+          submodules: recursive
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'yarn'
+          cache: yarn
 
       - name: Install modules
-        run: |
-          sudo apt install jq
-          yarn
-          VERSION=$(echo -n "${{ github.ref }}" | sed 's/[refs\/tagv]//g' | sed 's/-.*//')
-          jq --arg version $VERSION '.version = $version' src/manifest.json > src/manifest.json.tmp
+        run: yarn --frozen-lockfile
 
       - name: Build extensions
         run: |
           yarn update:list
-          yarn build:production --env version=$(echo -n "${{ github.ref }}" | sed 's/[refs\/tagv]//g' | sed 's/-.*//')
+          VERSION="$VERSION" yarn build
           yarn package
 
       - name: Upload Chrome build to release
@@ -43,7 +58,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: dist/LiveTL-Chrome.zip
           asset_name: LiveTL-Chrome.zip
-          tag: ${{ github.ref }}
+          tag: ${{ env.RELEASE_TAG }}
           overwrite: true
 
       - name: Upload Firefox build to release
@@ -52,5 +67,5 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: dist/LiveTL-Firefox.zip
           asset_name: LiveTL-Firefox.zip
-          tag: ${{ github.ref }}
+          tag: ${{ env.RELEASE_TAG }}
           overwrite: true

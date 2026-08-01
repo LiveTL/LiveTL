@@ -1,11 +1,11 @@
-import { MCHAD, Holodex, AuthorType, languageNameCode, holodexKey, isTwitch } from './constants.js';
+import { Holodex, AuthorType, languageNameCode, holodexKey, isTwitch } from './constants.js';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as Ty from './types.js';
 import * as Twitch from './twitch.js';
 import { derived, readable } from 'svelte/store';
 import { enableTldexTLs, mchadUsers, languages } from './store.js';
 import { formatTimestampMillis, sleep, sortBy, toJson } from './utils.js';
-import { archiveStreamFromScript, sseToStream } from './api.js';
+import { archiveStreamFromScript } from './api.js';
 
 /** @typedef {import('svelte/store').Readable} Readable */
 /** @typedef {(unix: Ty.UnixTimestamp) => String} UnixToTimestamp */
@@ -117,7 +117,7 @@ export const getArchive = videoLink => readable(null, async set => {
 
 // MCHAD is just down, disable mchad for now
 /** @type {(videoLink: string, langcode: string) => Readable<Ty.MCHADStreamItem>} */
-const streamRoom = (videoLink, langcode) => readable();
+const streamRoom = (_videoLink, _langcode) => readable();
 // const streamRoom = (videoLink, langcode) => sseToStream(`${MCHAD}/holoproxy?id=YT_${videoLink}&lang=${langcode}`);
 
 /** @type {UnixToTimestamp} */

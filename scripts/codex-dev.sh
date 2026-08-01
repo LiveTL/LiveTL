@@ -7,36 +7,11 @@ STATE_DIR="$REPO_ROOT/.codex-runtime"
 WATCH_PID_FILE="$STATE_DIR/watch.pid"
 WATCH_LOG_FILE="$STATE_DIR/watch.log"
 TEST_URL="${TEST_URL:-https://www.youtube.com/watch?v=X4VbdwhkE10}"
-MODE=""
-WATCH_CMD=""
-BUILD_CMD=""
+MODE="chrome-mv3"
+WATCH_CMD="yarn dev:chrome"
+BUILD_CMD="yarn build:chrome"
 
 mkdir -p "$STATE_DIR"
-
-detect_mode() {
-  if (
-    cd "$REPO_ROOT" &&
-    node -e 'const s=require("./package.json").scripts||{}; process.exit(s["dev:chrome"] && s["build:chrome"] ? 0 : 1);'
-  ); then
-    MODE="mv3"
-    WATCH_CMD="yarn dev:chrome"
-    BUILD_CMD="yarn build:chrome"
-    return 0
-  fi
-
-  if (
-    cd "$REPO_ROOT" &&
-    node -e 'const s=require("./package.json").scripts||{}; process.exit(s["start"] && s["build:production"] ? 0 : 1);'
-  ); then
-    MODE="mv2"
-    WATCH_CMD="yarn start"
-    BUILD_CMD="yarn build:production"
-    return 0
-  fi
-
-  echo "Unable to detect supported watch/build scripts in package.json." >&2
-  exit 1
-}
 
 is_pid_running() {
   local pid_file="$1"
@@ -66,7 +41,6 @@ ensure_playwright() {
 }
 
 ensure_build() {
-  detect_mode
   echo "build: running $BUILD_CMD"
   (
     cd "$REPO_ROOT"
@@ -75,7 +49,6 @@ ensure_build() {
 }
 
 start_watch() {
-  detect_mode
   if is_pid_running "$WATCH_PID_FILE"; then
     echo "watch: already running (pid $(cat "$WATCH_PID_FILE"))"
     return 0
@@ -106,11 +79,6 @@ go_test() {
   ensure_xvfb
   ensure_playwright
   ensure_build
-  if [[ "$MODE" != "mv3" ]]; then
-    echo "go-test: Chromium smoke validation is only supported on mv3-fr. Use Firefox runtime validation on develop." >&2
-    start_watch
-    return 1
-  fi
   local status=0
   (
     cd "$REPO_ROOT"
@@ -121,7 +89,6 @@ go_test() {
 }
 
 status() {
-  detect_mode
   if is_pid_running "$WATCH_PID_FILE"; then
     echo "watch: running (pid $(cat "$WATCH_PID_FILE"))"
   else
