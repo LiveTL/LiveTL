@@ -59,8 +59,19 @@ module.exports = (env, options) => {
       lite: path.join(__dirname, 'src', 'js', 'pages', 'lite.js'),
       translatormode: path.join(__dirname, 'src', 'js', 'pages', 'translatormode.js'),
       injector: path.join(__dirname, 'src', 'ts', 'content_scripts', 'injector.ts'),
-      'chat-interceptor': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'scripts', 'chat-interceptor.ts'),
+      'chat-interceptor': {
+        import: path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'scripts', 'chat-interceptor.ts'),
+        filename: 'submodules/chat/src/scripts/chat-interceptor.js'
+      },
       'chat-background': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'scripts', 'chat-background.ts'),
+      'chat-metagetter': {
+        import: path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'scripts', 'chat-metagetter.ts'),
+        filename: 'submodules/chat/src/scripts/chat-metagetter.js'
+      },
+      'chat-translation-host': {
+        import: path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'scripts', 'chat-translation-host.ts'),
+        filename: 'submodules/chat/src/scripts/chat-translation-host.js'
+      },
       chat: path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'scripts', 'chat-injector.ts'),
       'hyperchat/hyperchat': path.join(__dirname, 'src', 'submodules', 'chat', 'src', 'hyperchat.ts'),
       'yt-workaround': path.join(__dirname, 'src', 'ts', 'yt-workaround.ts'),
@@ -191,10 +202,11 @@ module.exports = (env, options) => {
     plugins: [
       // clean the build folder
       new CleanWebpackPlugin(),
-      // // expose and write the allowed env vars on the compiled bundle
-      // new webpack.DefinePlugin({
-      //   'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV)
-      // }),
+      new webpack.DefinePlugin({
+        __BROWSER__: JSON.stringify('firefox'),
+        __VERSION__: JSON.stringify(hasEnvVersion ? envVersion : version),
+        __MV__: 2
+      }),
       new CopyWebpackPlugin({
         patterns: [
           {

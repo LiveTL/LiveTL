@@ -4,6 +4,7 @@ import { getFrameInfoAsync, createPopup, isValidFrameInfo } from '../../submodul
 import { mdiOpenInNew, mdiIframeArray } from '@mdi/js';
 import { chatSize, twitchEnabled } from '../../js/store';
 import { get } from 'svelte/store';
+import type { Chat } from '../../submodules/chat/src/ts/typings/chat';
 
 const liveChatSelector = '.chat-room .chat-scrollable-area__message-container';
 const vodChatSelector = '.video-chat .video-chat__message-list-wrapper ul';
