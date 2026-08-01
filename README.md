@@ -21,8 +21,8 @@ See https://livetl.app/hyperchat/install
 
 Everything ships from `main`. There is one source tree and three build targets:
 
-> Transition status: migrating both LiveTL lines to this source and deleting the
-> remote `mv2` rollback branch are still pending runtime validation.
+Use `main`; do not check out the historical `mv2` branch. `mv2` below names a
+build target.
 
 | Target    | Manifest          | Consumer                                                                               |
 | --------- | ----------------- | -------------------------------------------------------------------------------------- |

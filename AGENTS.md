@@ -3,7 +3,7 @@
 ## Branch Discipline
 
 - `main` is the only maintained source branch. Make code changes there.
-- `mv3` and `mv3-ltl` are retired. The remote `mv2` branch is a temporary rollback reference until LiveTL migration and runtime validation finish; do not use it for new work or delete it early.
+- `mv3`, `mv3-ltl`, and `mv2` are retired. Do not use them for new work.
 - There is no branch ladder any more. MV2 and MV3 are **build targets on `main`**, not branches — see "Manifest Version Targets" below.
 - If a task touches both HyperChat and LiveTL, HyperChat still goes first.
 - Cross-repo order is mandatory:
@@ -29,7 +29,7 @@
 ## Manifest Version Targets
 
 - `main` builds three targets: `chrome` (MV3), `firefox` (MV3), and `mv2` (MV2, Firefox-only).
-- The `mv2` target is **not** legacy cruft. Firefox's MV3 support is unreliable for LiveTL's needs, so LiveTL's Firefox variant will consume it after the downstream migration. Do not "simplify" it away.
+- The `mv2` target is **not** legacy cruft. Firefox's MV3 support is unreliable for LiveTL's needs, so LiveTL's Firefox variant consumes it. Do not "simplify" it away.
 - Keep the MV2/MV3 distinction in exactly two places:
   - `src/manifest.json` — `{{mv2}}.` / `{{mv3}}.` key prefixes, resolved by `scripts/resolve-manifest.ts`. The MV tag must come **first** in nested keys (`{{mv3}}.{{firefox}}.background`); the reverse order leaks a literal tag into the built manifest.
   - `__MV__` in source — a build-time constant, so unused branches are dropped per target.
