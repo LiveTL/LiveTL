@@ -45,6 +45,7 @@ on this [Discord server](https://discord.gg/uJrV3tmthg).**
 2. Change directory `cd` to the newly created `LiveTL` repo.
 3. Switch to the maintained branch (`git switch main`)
 4. Install dependencies (`npm ci`)
+5. Install the managed test browsers (`npx playwright install chromium firefox`)
 
    Congratulations, you should now be running a local environment for LiveTL!
 
@@ -63,6 +64,11 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 - `VERSION=0.0.0 npm run build` builds and verifies every target
 - `npm run package` creates the Chrome MV3 and Firefox MV2 release ZIPs
 - `npm run test:watch` will run the tests in watch mode
+- `npm run test:e2e` tests existing builds with deterministic browser fixtures
+- `npm run test:e2e:live` runs the manual real-YouTube tests without rebuilding
+- `npm run test:e2e:ui` opens Playwright UI mode for existing builds
+- `npm run e2e` builds all targets and runs the deterministic browser tests
+- `npm run e2e:live` runs the manual real-YouTube Chrome MV3 tests
 - In Firefox, use `about:debugging` to load `build/firefox` or `build/mv2`.
 - In Chromium-based browsers, load `build/chrome` as an unpacked extension.
 
@@ -72,14 +78,13 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 - folders are hyphen-cased
 - test files are cased according to the file that the test runs
 - follow the [semistandard style](https://github.com/standard/semistandard) for javascript
-- use [black](https://github.com/psf/black) and [isort](https://github.com/pycqa/isort/) for python
 
 ## Directory structure
 
 .\
 ├── build - isolated chrome, firefox, and mv2 build targets\
 ├── dist - two zips, one for firefox and one for chrome\
-├── e2e - python selenium tests\
+├── e2e - Playwright browser tests and fixtures\
 ├── img - images used in LiveTL README and docs\
 ├── src\
 │   ├── changelogs - changelog components\

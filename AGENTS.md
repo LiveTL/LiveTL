@@ -98,6 +98,7 @@ Before handing off a change, run:
 npm run format:check
 npm run test
 VERSION=0.0.0 npm run build
+npm run test:e2e
 npm run package
 ```
 
@@ -108,82 +109,33 @@ Runtime notes:
 - Firefox MV3 can be build- and runtime-validated, but cannot replace the MV2
   release while LiveTL depends on blocking response-header rewriting.
 
-## Chromium Validation (MV3, Tested)
+## Playwright Browser Tests
 
-The Chromium functional smoke test defaults to `build/chrome`:
-
-```bash
-bash scripts/codex-dev.sh go-test
-```
-
-### Smoke Load (`--headless=new`)
-
-1. Build the Chrome MV3 bundle:
-
-   ```bash
-   VERSION=0.0.0 npm run build:chrome
-   ```
-
-2. Launch Chromium with only LiveTL enabled:
-
-   ```bash
-   chromium --headless=new --no-sandbox --disable-setuid-sandbox \
-     --disable-dev-shm-usage --remote-debugging-port=9222 \
-     --user-data-dir=/tmp/livetl-mv3-profile \
-     --disable-extensions-except="$PWD/build/chrome" \
-     --load-extension="$PWD/build/chrome" \
-     https://www.youtube.com/watch?v=X4VbdwhkE10
-   ```
-
-3. Inspect the DevTools target list:
-
-   ```bash
-   curl -s http://127.0.0.1:9222/json/list | jq '[.[] | {type, url, title}]'
-   ```
-
-4. Expect a LiveTL `service_worker` target at
-   `chrome-extension://.../js/pages/background.js`, and often a `welcome.html`
-   extension page.
-
-This proves that Chromium loaded the extension, not that YouTube chat content
-scripts mounted.
-
-### Functional MV3 Browser Validation
-
-The repo harness uses `xvfb-run`, Playwright, a fresh non-headless Chromium
-profile, the unpacked `build/chrome` extension, and seeded extension storage so
-HyperChat is enabled. It checks:
-
-- LiveTL button injection in the YouTube chat frame
-- HyperChat iframe mount inside the chat frame
-- `.hyperchat-root` inside the embed frame
-- removal of `www-player.css` and `link[name="www-player"]`
-- removal of stray player shell nodes such as `#player-controls`
-
-Install the browser wrapper dependencies once on a fresh Linux machine:
+Install the managed browsers after `npm ci`:
 
 ```bash
-sudo apt-get install -y xvfb xauth
+npx playwright install chromium firefox
 ```
 
-The smoke script exits nonzero if any required mount or cleanup check fails.
-Useful entrypoints are:
+- `npm run test:e2e` tests existing builds with local, intercepted fixtures.
+- `npm run test:e2e:live` runs the manual `@live` suite against an existing
+  Chrome MV3 build.
+- `npm run test:e2e:ui` opens Playwright UI mode for existing builds.
+- `npm run e2e` builds all targets and runs the deterministic suite.
+- `npm run e2e:live` builds Chrome MV3 and runs the manual `@live` suite against
+  YouTube.
 
-```bash
-bash scripts/codex-dev.sh watch
-bash scripts/codex-dev.sh go-test
-bash scripts/codex-dev.sh status
-KEEP_OPEN=1 bash scripts/codex-dev.sh go-test
-```
+The `chromium-mv3` project loads `build/chrome` in a fresh persistent Chromium
+context and covers LiveTL/HyperChat injection, embed mounting and cleanup,
+opening LiveTL, and resize persistence. The `firefox-mv2-bridge` project tests
+the packaged MV2 translation-host bundle in Firefox. Playwright does not load
+the Firefox extension itself.
 
-## Testbed URL Guidance
-
-- Vite and the browser smoke harness default to
-  `https://www.youtube.com/watch?v=X4VbdwhkE10`.
-- Use that testbed unless reproducing an issue that needs a specific stream or
-  chat URL.
-- For archive/VOD checks, do not assume failures are regressions without a
-  baseline; that path is less stable in hidden-browser automation.
+Deterministic tests must fulfill or block every external request. Real YouTube,
+VOD translation, and scrolling checks belong in the manual `@live` suite and
+must not gate pull requests, `main`, or releases. Use
+`https://www.youtube.com/watch?v=X4VbdwhkE10` for the current live smoke unless
+an issue requires another URL.
 
 ## Release Process and Versioning
 

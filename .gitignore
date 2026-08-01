@@ -1,20 +1,16 @@
 node_modules/*
 build
 dist
+playwright-report
+test-results
 secrets.*.js
 .vscode
 .idea/
 *.swp
 *.log
-__pycache__/
 .eslintcache
-.codex-profile/
-.codex-runtime/
 
 .DS_Store
-venv/
-failure-test*.png
-
 # auto-generated html from vite
 src/html/*.html
 src/html/**/*.html
