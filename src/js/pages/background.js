@@ -13,6 +13,9 @@ const stripHeaders = (headers) => {
   });
 };
 
+// Firefox MV3 cannot perform this blocking response-header rewrite. LiveTL
+// needs it to strip YouTube's CSP and X-Frame-Options from embedded chat, so
+// Firefox MV2 remains the release target while Firefox MV3 is validation-only.
 if (__MV__ === 2) {
   chrome.webRequest.onHeadersReceived.addListener(
     details => ({ responseHeaders: stripHeaders(details.responseHeaders) }),
