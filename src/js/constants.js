@@ -126,7 +126,6 @@ function createLangSelectionName(lang) {
 languagesInfo.forEach(i => (languageConversionTable[createLangSelectionName(i)] = i));
 languagesInfo.forEach(lang => (languageNameCode[lang.lang] = lang));
 
-export const MCHAD = 'https://repo.mchatx.org';
 export const Holodex = 'https://holodex.net/api/v2';
 
 const params = new URLSearchParams(window.location.search);

@@ -24,7 +24,7 @@ import { useReconnect } from '../submodules/chat/src/ts/chat-utils.ts';
  */
 
 const tldex = derived(
-  combineStores(TLDEX.getArchive(paramsTwitchUrl ?? paramsYtVideoId), TLDEX.getLiveTranslations(paramsYtVideoId)).store,
+  TLDEX.getArchive(paramsTwitchUrl ?? paramsYtVideoId),
   ($message) => {
     if (!$message) return;
     const parsed = parseTranslation($message.text);
