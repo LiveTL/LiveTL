@@ -19,7 +19,14 @@ jobs:
         with:
           node-version: '24'
 
-      - run: |
-          npm ci
-          npm run lint:check
-          npm run build
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint check
+        run: npm run lint:check
+
+      - name: Format check
+        run: npm run format:check
+
+      - name: Build
+        run: npm run build

@@ -1,7 +1,7 @@
 name: Feature request
 description: Suggest an idea for HyperChat
-title: "[Feature]: "
-labels: ["enhancement"]
+title: '[Feature]: '
+labels: ['enhancement']
 body:
   - type: checkboxes
     attributes:
@@ -10,7 +10,7 @@ body:
       options:
         - label: This is an issue for Hyperchat, not LiveTL. I will go to [the LiveTL repo](https://github.com/LiveTL/LiveTL) to report an issue for LiveTL.
           required: true
-        - label: I have checked for a duplicate or similar issue. I made sure to check closed issues as well. 
+        - label: I have checked for a duplicate or similar issue. I made sure to check closed issues as well.
           required: true
         - label: I am not reporting a bug. If I am, I will use the bug report issue template.
           required: true

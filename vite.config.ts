@@ -1,9 +1,11 @@
-import { svelte } from '@sveltejs/vite-plugin-svelte';
 import path from 'path';
+
+import { svelte } from '@sveltejs/vite-plugin-svelte';
 import copy from 'rollup-plugin-copy';
 import { defineConfig } from 'vite';
 import webExtension, { readJsonFile } from 'vite-plugin-web-extension';
 import zipPack from 'vite-plugin-zip-pack';
+
 import { resolveMv } from './scripts/resolve-manifest';
 
 const pkg = readJsonFile('package.json');
@@ -22,49 +24,45 @@ export default defineConfig({
   build: {
     outDir: path.resolve(__dirname, buildDir),
     emptyOutDir: true,
-    minify: process.env.MINIFY !== 'false' ? 'terser' : false
+    minify: process.env.MINIFY !== 'false' ? 'terser' : false,
   },
   define: {
     __BROWSER__: JSON.stringify(browser),
     __VERSION__: JSON.stringify(version),
-    __MV__: JSON.stringify(mv)
+    __MV__: JSON.stringify(mv),
   },
   plugins: [
     webExtension({
       manifest: () => ({
         ...resolveMv(manifest, mv),
-        version
+        version,
       }),
       assets: 'assets',
-      watchFilePaths: [
-        path.resolve(__dirname, 'src/manifest.json')
-      ],
-      additionalInputs: [
-        'hyperchat.html',
-        'scripts/chat-interceptor.ts',
-        'scripts/chat-metagetter.ts'
-      ],
+      watchFilePaths: [path.resolve(__dirname, 'src/manifest.json')],
+      additionalInputs: ['hyperchat.html', 'scripts/chat-interceptor.ts', 'scripts/chat-metagetter.ts'],
       disableAutoLaunch: process.env.AUTOLAUNCH !== 'true',
       browser,
       webExtConfig: {
-        startUrl: 'https://www.youtube.com/watch?v=X4VbdwhkE10'
-      }
+        startUrl: 'https://www.youtube.com/watch?v=X4VbdwhkE10',
+      },
     }),
     svelte({
       configFile: path.resolve(__dirname, 'svelte.config.js'),
-      emitCss: false
+      emitCss: false,
     }),
     copy({
       hook: 'writeBundle',
-      targets: [{
-        src: 'src/stylesheets/*',
-        dest: `${buildDir}/stylesheets`
-      }]
+      targets: [
+        {
+          src: 'src/stylesheets/*',
+          dest: `${buildDir}/stylesheets`,
+        },
+      ],
     }),
     zipPack({
       inDir: buildDir,
       outDir: 'build',
-      outFileName: `HyperChat-${target}.zip`
-    })
-  ]
+      outFileName: `HyperChat-${target}.zip`,
+    }),
+  ],
 });

@@ -7,13 +7,11 @@
 [![Commit Activity](https://img.shields.io/github/commit-activity/w/LiveTL/HyperChat)](https://github.com/LiveTL/HyperChat/commits/)
 [![Discord](https://img.shields.io/discord/780938154437640232.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/uJrV3tmthg)
 
-
 ## Install
 
 HyperChat is available in the Chrome and Firefox stores.
 
 See https://livetl.app/hyperchat/install
-
 
 ## Building from Source
 

@@ -16,6 +16,8 @@
     "start:none": "npm run dev:chrome",
     "start:chrome": "cross-env AUTOLAUNCH=true npm run dev:chrome",
     "start:firefox": "cross-env AUTOLAUNCH=true npm run dev:firefox",
+    "format:check": "npm run format -- --check",
+    "format": "oxfmt",
     "lint": "npm run lint:check -- --fix",
     "lint:check": "eslint . --max-warnings=0",
     "postinstall": "patch-package"
@@ -40,6 +42,7 @@
     "eslint-config-standard-with-typescript": "^43.0.1",
     "eslint-plugin-svelte3": "^3.2.0",
     "npm-run-all": "^4.1.5",
+    "oxfmt": "^0.61.0",
     "patch-package": "^8.0.0",
     "postcss": "^8.5.18",
     "postcss-extend": "^1.0.5",

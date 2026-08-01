@@ -1,7 +1,7 @@
 name: Bug Report
 description: File a bug report
-title: "[Bug]: "
-labels: ["bug"]
+title: '[Bug]: '
+labels: ['bug']
 body:
   - type: checkboxes
     attributes:
@@ -12,7 +12,7 @@ body:
           required: true
         - label: This issue is not a matter of opinion. If it is, I will use the feature suggestion issue template.
           required: true
-        - label: I have checked for a duplicate or similar issue. I made sure to check closed issues as well. 
+        - label: I have checked for a duplicate or similar issue. I made sure to check closed issues as well.
           required: true
         - label: I am still able to reproduce the issue after I reinstall the extension.
           required: true
@@ -25,7 +25,7 @@ body:
   - type: textarea
     attributes:
       label: Describe the bug
-      description: A clear and concise description of what the bug is. 
+      description: A clear and concise description of what the bug is.
       placeholder: What's wrong?
     validations:
       required: true
@@ -35,12 +35,12 @@ body:
       description: Step-by-step instructions to reproduce the unexpected behavior
       placeholder: |
         1. Go to '...'  
-        
+
         2. Click on '...'  
-        
+
         3. Scroll down to '...'  
-        
-        4. The error looks like '...'  
+
+        4. The error looks like '...'
     validations:
       required: true
   - type: textarea

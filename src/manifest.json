@@ -9,9 +9,7 @@
     "48": "assets/logo-48.png",
     "128": "assets/logo-128.png"
   },
-  "permissions": [
-    "storage"
-  ],
+  "permissions": ["storage"],
   "{{mv3}}.host_permissions": [
     "https://www.youtube.com/live_chat*",
     "https://www.youtube.com/live_chat_replay*",
@@ -26,25 +24,14 @@
         "https://studio.youtube.com/live_chat*",
         "https://studio.youtube.com/live_chat_replay*"
       ],
-      "js": [
-        "scripts/chat-injector.ts"
-      ],
-      "css": [
-        "stylesheets/titlebar.css"
-      ],
+      "js": ["scripts/chat-injector.ts"],
+      "css": ["stylesheets/titlebar.css"],
       "all_frames": true
     },
     {
-      "matches": [
-        "https://www.youtube.com/embed/hyperchat_embed?*"
-      ],
-      "js": [
-        "scripts/chat-mounter.ts"
-      ],
-      "css": [
-        "stylesheets/scrollbar.css",
-        "stylesheets/page404.css"
-      ],
+      "matches": ["https://www.youtube.com/embed/hyperchat_embed?*"],
+      "js": ["scripts/chat-mounter.ts"],
+      "css": ["stylesheets/scrollbar.css", "stylesheets/page404.css"],
       "all_frames": true
     }
   ],
