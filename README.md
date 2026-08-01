@@ -17,9 +17,26 @@ See https://livetl.app/hyperchat/install
 
 ## Building from Source
 
-### ⚠️ WARNING ⚠️
+### Build targets
 
-For legacy reasons, we have a `mv2` branch used by [the LiveTL extension](https://github.com/LiveTL/LiveTL)'s Manifest V2 Firefox variant, while the `main` branch houses the main Manifest V3 version that's published to stores.
+Everything ships from `main`. There is one source tree and three build targets:
+
+> Transition status: migrating both LiveTL lines to this source and deleting the
+> remote `mv2` rollback branch are still pending runtime validation.
+
+| Target    | Manifest          | Consumer                                                                               |
+| --------- | ----------------- | -------------------------------------------------------------------------------------- |
+| `chrome`  | MV3               | Chrome Web Store                                                                       |
+| `firefox` | MV3               | Firefox Add-ons                                                                        |
+| `mv2`     | MV2, Firefox-only | [The LiveTL extension](https://github.com/LiveTL/LiveTL)'s Manifest V2 Firefox variant |
+
+> ⚠️ The `mv2` target is **not** legacy cruft. Firefox's MV3 support is unreliable
+> for LiveTL's needs, so LiveTL's Firefox variant consumes the MV2 build.
+
+MV2/MV3 differences live in two places only: `{{mv2}}.` / `{{mv3}}.` prefixed keys
+in `src/manifest.json` (resolved by `scripts/resolve-manifest.ts`), and `__MV__`
+checks in source, which are build-time constants so each bundle carries only its
+own target's code.
 
 ### Development
 
@@ -41,8 +58,9 @@ npm install # install dependencies
 Serve the extension for local development:
 
 ```bash
-npm run dev:chrome    # devserver for Chrome extension
-npm run dev:firefox   # devserver for Firefox extension
+npm run dev:chrome    # devserver for Chrome extension (MV3)
+npm run dev:firefox   # devserver for Firefox extension (MV3)
+npm run dev:mv2       # devserver for the Firefox MV2 variant
 
 npm run start:chrome  # devserver + open extension in Chrome
 npm run start:firefox # devserver + open extension in Firefox
@@ -55,13 +73,16 @@ Our build script is [an automated GitHub action](.github/workflows/release.yml),
 To simulate the build:
 
 ```bash
-VERSION=X.Y.Z npm run build         # Chrome & Firefox
-VERSION=X.Y.Z npm run build:chrome  # just Chrome
-VERSION=X.Y.Z npm run build:firefox # just Firefox
+VERSION=X.Y.Z npm run build         # all three targets
+VERSION=X.Y.Z npm run build:chrome  # just Chrome (MV3)
+VERSION=X.Y.Z npm run build:firefox # just Firefox (MV3)
+VERSION=X.Y.Z npm run build:mv2     # just Firefox MV2
 ```
 
-The built ZIP files can be found in the `build` directory.
+The built ZIP files can be found in the `build` directory. Only the two MV3 zips
+are published as release assets; the MV2 build is verified in CI and consumed by
+LiveTL through a git submodule.
 
 ## Release
 
-Release steps for `mv2` and `main` are documented in [RELEASE_PROCESS.md](./RELEASE_PROCESS.md).
+Release steps are documented in [RELEASE_PROCESS.md](./RELEASE_PROCESS.md).

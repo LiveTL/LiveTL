@@ -6,7 +6,10 @@ const oneDay = 1000 * 60 * 60 * 24;
 const storageget = (key: string): any => chrome.storage.local.get(key).then(r => r[key]);
 const defaultTo0 = (value: any): number => Number.isNaN(value) ? 0 : value;
 
-chrome.action.onClicked.addListener(() => {
+// MV2 has no `chrome.action`; `chrome.browserAction` is its equivalent.
+const browserAction = __MV__ === 2 ? chrome.browserAction : chrome.action;
+
+browserAction.onClicked.addListener(() => {
   if (isLiveTL) {
     chrome.tabs.create({ url: 'https://livetl.app' }, () => {});
   } else {

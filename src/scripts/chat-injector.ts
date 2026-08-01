@@ -164,8 +164,13 @@ const chatLoaded = async (): Promise<void> => {
   params.set('tabid', frameInfo.tabId.toString());
   params.set('frameid', frameInfo.frameId.toString());
   if (frameIsReplay()) params.set('isReplay', 'true');
-  // inject into an empty 404 page
-  const source = `https://www.youtube.com/embed/hyperchat_embed?${params.toString()}`;
+  // MV2 can iframe the extension page directly. MV3 cannot, so it points at an
+  // empty YouTube 404 page and lets chat-mounter mount into it instead.
+  const source = __MV__ === 2
+    ? chrome.runtime.getURL(
+      (isLiveTL ? 'hyperchat/index.html' : 'hyperchat.html') + `?${params.toString()}`
+    )
+    : `https://www.youtube.com/embed/hyperchat_embed?${params.toString()}`;
 
   const ytcItemList = document.querySelector('#chat>#item-list');
   if (!ytcItemList) {

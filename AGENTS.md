@@ -1,19 +1,16 @@
-# HyperChat Codex Workflow (MV3 Main)
+# HyperChat Codex Workflow
 
 ## Branch Discipline
 
-- Make code changes on `mv2` first.
-- `main` is the real MV3 branch.
-- `mv3` and `mv3-ltl` are retired. Do not use them as MV3 source branches for new work or cross-repo sync; `main` is the MV3 line LiveTL consumes.
-- Do not implement feature/fix work directly on `main`.
-- If a task starts on another branch, switch to `mv2` before editing unless the user explicitly asks otherwise.
+- `main` is the only maintained source branch. Make code changes there.
+- `mv3` and `mv3-ltl` are retired. The remote `mv2` branch is a temporary rollback reference until LiveTL migration and runtime validation finish; do not use it for new work or delete it early.
+- There is no branch ladder any more. MV2 and MV3 are **build targets on `main`**, not branches — see "Manifest Version Targets" below.
 - If a task touches both HyperChat and LiveTL, HyperChat still goes first.
 - Cross-repo order is mandatory:
-  1. HyperChat `mv2`
-  2. HyperChat `main`
-  3. LiveTL `develop`
-  4. LiveTL `mv3-fr`
-  5. LiveTL `release`
+  1. HyperChat `main`
+  2. LiveTL `develop`
+  3. LiveTL `mv3-fr`
+  4. LiveTL `release`
 - Never start cross-repo work in LiveTL when the HyperChat submodule also needs to change.
 - If the task also requires syncing YtcFilter (YTCF), do it after HyperChat `main` is updated:
   - merge HyperChat `main` into YTCF `master`
@@ -28,17 +25,63 @@
   - `order matters`
 - Avoid padded scopes, issue-number prefixes, and changelog-style essays in commit subjects.
 - A slightly dry or funny commit is fine if it is still clear at a glance.
-- Prefer proper merges when carrying `mv2` work into `main`.
-- If MV3 needs follow-up adaptation, keep that as a small, explicit commit after the merge instead of rewriting history or hand-copying changes.
+
+## Manifest Version Targets
+
+- `main` builds three targets: `chrome` (MV3), `firefox` (MV3), and `mv2` (MV2, Firefox-only).
+- The `mv2` target is **not** legacy cruft. Firefox's MV3 support is unreliable for LiveTL's needs, so LiveTL's Firefox variant will consume it after the downstream migration. Do not "simplify" it away.
+- Keep the MV2/MV3 distinction in exactly two places:
+  - `src/manifest.json` — `{{mv2}}.` / `{{mv3}}.` key prefixes, resolved by `scripts/resolve-manifest.ts`. The MV tag must come **first** in nested keys (`{{mv3}}.{{firefox}}.background`); the reverse order leaks a literal tag into the built manifest.
+  - `__MV__` in source — a build-time constant, so unused branches are dropped per target.
+- Do not add per-MV source files (`chat-background.mv2.ts` and friends). `main`'s architecture — thin background plus the broker in `src/ts/messaging.ts` — runs under MV2 as-is. Port MV3 patterns down to MV2, never MV2's persistent-background design up.
+- Prefer shared, untagged config. Only tag a key when MV2 and MV3 genuinely differ.
+- Only the two MV3 zips are released. `mv2` is built in CI for breakage coverage and consumed by LiveTL via submodule.
+
+## Build-Time Constants (submodule consumers)
+
+`src/` depends on three bare globals, declared in `src/ts/typings/vite-env.d.ts`
+and supplied by `vite.config.ts` for our own builds:
+
+| Constant | Emitted literal | Meaning |
+| --- | --- | --- |
+| `__BROWSER__` | string — `"chrome"` / `"firefox"` | target browser |
+| `__VERSION__` | string — `"3.3.0"` | version written into the manifest |
+| `__MV__` | **number** — `2` / `3` | target manifest version |
+
+`__MV__` is compared with strict equality (`__MV__ === 2`), so it must emit a
+**number literal**. Defining it as the string `"2"` makes every check silently
+false and the MV2 build takes MV3 code paths — no error, just wrong behavior.
+
+Both bundlers do textual substitution, so the value is source text, not a JS
+value. `JSON.stringify()` is the safe spelling in both:
+
+```js
+// vite
+define: { __BROWSER__: JSON.stringify(browser), __MV__: JSON.stringify(2) }
+
+// webpack — values are code fragments, so a bare string is an identifier:
+//   __BROWSER__: 'firefox'  ->  emits `firefox`  ->  ReferenceError
+new webpack.DefinePlugin({ __BROWSER__: JSON.stringify('firefox'), __MV__: 2 })
+```
+
+**Anything that compiles this source with its own bundler must define all three**,
+or the bundle ships a reference to an undefined global and throws at runtime.
+LiveTL is the one such consumer: it builds `chat-background.ts`,
+`chat-injector.ts`, `chat-interceptor.ts`, `hyperchat.ts` and `options.ts` as its
+own entry points, so it needs these in **both** its webpack (MV2) and vite (MV3)
+configs. `__MV__` must match that consumer's own manifest version, not ours.
+
+Used by `WelcomeMessage.svelte`, `Hyperchat.svelte`, `HyperchatButton.svelte`,
+`chat-background.ts`, `chat-injector.ts`. When adding a new constant, update this
+table — a missing define fails at runtime, not at build time.
 
 ## Code Patterns
 
 - Prefer editing existing modules and utilities over creating one-off files for tiny helpers.
 - If a helper obviously belongs in an existing shared utility file, put it there.
-- Put shared behavior on `mv2` first; `main` should usually be a merge-plus-adaptation branch, not a separate feature branch.
-- Keep MV3 adaptation narrow:
-  - preserve branch-specific build/runtime wiring
+- Keep MV2 adaptation narrow:
   - change only what is required for manifest/background/injection differences
+  - reach for `__MV__` only when an API genuinely differs between manifest versions
 - Prefer render-edge formatting over mutating raw identity data:
   - keep parsed message/channel ids untouched
   - transform display text at component or view-model boundaries
@@ -61,8 +104,8 @@
   - name: `chrome-devtools`
   - command: `npx -y chrome-devtools-mcp@latest --browserUrl=http://127.0.0.1:9222`
 - Use `scripts/codex-dev.sh watch` once per session to keep Chrome extension builds live in the background.
-- On `main`, this resolves to MV3 scripts (`dev:chrome`/`build:chrome`) and `build/chrome` output automatically.
-- On `mv2`, watcher mode prefers `npm run start:none` so build watch stays alive without separate browser autolaunch.
+- The watcher resolves to MV3 Chrome scripts (`dev:chrome`/`build:chrome`) and `build/chrome` output automatically.
+- The harness is Chromium-only. The MV2 target is Firefox-only, so `go-test` does not cover it — validate MV2 by loading `build/mv2` in Firefox by hand.
 - Start headless browser testing only when explicitly requested (for example: "go test", "test this", "run browser test").
 - For test runs, use `scripts/codex-dev.sh go-test`. This guarantees:
   - MCP configuration is present
