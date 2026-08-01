@@ -10,8 +10,6 @@ concurrency:
 jobs:
   e2e-test:
     runs-on: ubuntu-latest
-    env:
-      DISPLAY: ":0"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -24,33 +22,22 @@ jobs:
           node-version: '24'
           cache: 'npm'
 
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-
-      - name: Set up Virtual Display for Chrome
-        run: |
-          sudo apt update -y
-          sudo apt install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
-          sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
-
-      - name: Install Dependencies
-        run: |
-          python3 -m pip install 'py==1.11.0' 'autoparaselenium>=0.3.1' 'selenium==4.9.1'
-          python3 -m pip freeze
-
       - name: Install modules
         run: npm ci
 
-      - name: Build extension
-        run: npm run e2e:build
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
 
-      - name: Run tests
-        uses: nick-invision/retry@v2
+      - name: Run live browser tests
+        run: npm run e2e:live
+
+      - name: Upload browser test artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
         with:
-          max_attempts: 3
-          retry_on: any
-          timeout_minutes: 10
-          command: |
-            DISCORD_REPORT_HOOK=${{ secrets.DISCORD_WEBHOOK }} pytest --tests-per-worker 1 e2e
+          name: playwright-live-results
+          path: |
+            playwright-report
+            test-results
+          if-no-files-found: ignore
+          retention-days: 3
