@@ -34,7 +34,6 @@
         "https://studio.youtube.com/live_chat_replay*"
       ],
       "js": [
-        "chat-interceptor.bundle.js",
         "chat.bundle.js",
         "injector.bundle.js",
         "translatormode.bundle.js"

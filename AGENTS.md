@@ -15,19 +15,17 @@
 - Never do feature/fix implementation directly on `release`.
 - If the task also changes HyperChat, do not start in LiveTL.
 - Cross-repo rule:
-  1. HyperChat `mv2`
-  2. HyperChat `main`
-  3. HyperChat `mv3-ltl`
-  4. LiveTL `develop`
-  5. LiveTL `mv3-fr`
-  6. LiveTL `release`
+  1. HyperChat `main`
+  2. LiveTL `develop`
+  3. LiveTL `mv3-fr`
+  4. LiveTL `release`
 - LiveTL is downstream whenever `src/submodules/chat` needs new behavior or documentation.
 
 ## House Style
 
 - Commit subjects should be short, direct, and easy to scan in `git log --oneline`.
 - Prefer active voice and plain wording:
-  - `bump hc mv2`
+  - `bump hc`
   - `agent upkeep`
   - `bump both`
 - Avoid padded scopes, issue-number prefixes, and long explanatory subjects.
@@ -54,8 +52,7 @@
 
 ## HyperChat Submodule Mapping
 
-- `develop` should pin `src/submodules/chat` to a HyperChat commit from the MV2 line.
-- `mv3-fr` should pin `src/submodules/chat` to a HyperChat commit from `mv3-ltl`.
+- `develop` and `mv3-fr` should pin `src/submodules/chat` to the same validated HyperChat `main` commit.
 - `release` should pin:
   - `firefox-mv2` to a LiveTL commit on `develop`
   - `chrome-mv3` to a LiveTL commit on `mv3-fr`
@@ -66,17 +63,14 @@
 ## Sync Ladder (Mandatory)
 
 - When syncing HyperChat into LiveTL, follow this order:
-  1. HyperChat `mv2`
-  2. HyperChat `main` (merge/adapt from `mv2`)
-  3. HyperChat `mv3-ltl` (merge/adapt from `main`)
-  4. LiveTL `develop` bumping `src/submodules/chat` to HyperChat `mv2`
-  5. LiveTL `mv3-fr` merging `develop` and pinning `src/submodules/chat` to HyperChat `mv3-ltl`
-  6. LiveTL `release` bumping `firefox-mv2` to `develop` and `chrome-mv3` to `mv3-fr`
+  1. HyperChat `main`
+  2. LiveTL `develop` bumping `src/submodules/chat` to that HyperChat commit
+  3. LiveTL `mv3-fr` merging `develop` and keeping the same HyperChat commit
+  4. LiveTL `release` bumping `firefox-mv2` to `develop` and `chrome-mv3` to `mv3-fr`
 - Do not skip layers in that ladder.
 - Do not start by editing LiveTL docs, code, or release checkpoints if the HyperChat side of the same task is still undone.
 - In practice, the expected commit relationships are:
-  - `develop:src/submodules/chat` == HyperChat `origin/mv2`
-  - `mv3-fr:src/submodules/chat` == HyperChat `origin/mv3-ltl`
+  - `develop:src/submodules/chat` == `mv3-fr:src/submodules/chat` == HyperChat `origin/main`
   - `release:firefox-mv2` == LiveTL `origin/develop`
   - `release:chrome-mv3` == LiveTL `origin/mv3-fr`
 - Useful verification commands:
