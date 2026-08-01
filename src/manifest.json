@@ -45,7 +45,6 @@
         "https://studio.youtube.com/live_chat_replay*"
       ],
       "js": [
-        "submodules/chat/src/scripts/chat-interceptor.ts",
         "submodules/chat/src/scripts/chat-injector.ts",
         "ts/content_scripts/injector.ts",
         "js/pages/translatormode.js"

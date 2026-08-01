@@ -27,6 +27,7 @@ const entryPoints = [
 
 const jsEntry = [
   'ts/yt-workaround.ts',
+  'submodules/chat/src/scripts/chat-interceptor.ts',
   'submodules/chat/src/scripts/chat-metagetter.ts',
   'submodules/chat/src/scripts/chat-mounter.ts',
   'submodules/chat/src/scripts/chat-translation-host.ts'
@@ -59,7 +60,8 @@ export default defineConfig({
   root: 'src',
   define: {
     __BROWSER__: JSON.stringify(browser),
-    __VERSION__: JSON.stringify(version)
+    __VERSION__: JSON.stringify(version),
+    __MV__: 3
   },
   build: {
     outDir: path.resolve(__dirname, 'build'),

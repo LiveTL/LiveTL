@@ -1,7 +1,8 @@
 import { writable, Writable } from 'svelte/store';
 import { paramsTabId, paramsFrameId } from '../js/constants';
 import { timestamp } from '../js/store';
-import { useReconnect } from '../submodules/chat/src/ts/chat-utils.ts';
+import { useReconnect } from '../submodules/chat/src/ts/chat-utils';
+import type { Chat } from '../submodules/chat/src/ts/typings/chat';
 
 export function twitchSource(): Writable<Ltl.Message | null> {
   if (paramsTabId == null || paramsFrameId == null) return writable(null);
@@ -13,7 +14,7 @@ export function twitchSource(): Writable<Ltl.Message | null> {
     frameId: parseInt(paramsFrameId)
   };
 
-  useReconnect(() => {
+  useReconnect(async () => {
     const port = chrome.runtime.connect({
       name: JSON.stringify(frameInfo)
     });
