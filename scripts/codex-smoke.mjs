@@ -5,7 +5,7 @@ import { chromium } from 'playwright-core';
 
 const testVideoId = 'X4VbdwhkE10';
 const defaultUrl = `https://www.youtube.com/watch?v=${testVideoId}`;
-const extensionPath = process.env.EXT_PATH || `${process.cwd()}/build`;
+const extensionPath = process.env.EXT_PATH || `${process.cwd()}/build/chrome`;
 const userDataDirOverride = process.env.USER_DATA_DIR;
 const testUrl = process.env.TEST_URL || defaultUrl;
 const keepOpen = process.env.KEEP_OPEN === '1';

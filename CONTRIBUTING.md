@@ -16,7 +16,7 @@ to essentially "wing it" should you wish to contribute.
 
 ## Pull Request Guidelines
 
-1. Only pull requests to the development branch will be honored.
+1. Target pull requests to the `mv3-fr` branch.
 2. Explain what you did and how.
 3. If its a new feature, explain what it is.
 4. Add a screen shot if applicable.
@@ -25,7 +25,7 @@ to essentially "wing it" should you wish to contribute.
 ## Set up a local development environment
 
 **Refer
-to '[Starting up a local development environment](https://github.com/LiveTL/LiveTL/blob/develop/CONTRIBUTING.md#starting-up-a-local-development-environment)'
+to '[Starting up a local development environment](https://github.com/LiveTL/LiveTL/blob/mv3-fr/CONTRIBUTING.md#starting-up-a-local-development-environment)'
 if you have already set up a local development environment**
 
 **If you have difficulty setting up this environment, do _not_ open an issue. Message one of the admins or ask for help
@@ -35,32 +35,35 @@ on this [Discord server](https://discord.gg/uJrV3tmthg).**
 
 - Git ([Windows](https://git-scm.com/download/win) | [MacOS](https://git-scm.com/download/mac)
   | [Linux](https://git-scm.com/download/linux))
-- Node.js 10+ ([Windows, MacOS, and Linux](https://nodejs.org/en/download))
+- Node.js 22+ ([Windows, MacOS, and Linux](https://nodejs.org/en/download))
 - Chrome ([Windows, MacOS, and Linux](https://www.google.com/chrome/))
 - Firefox ([Windows, MacOS, and Linux](https://www.mozilla.org/en-US/firefox/new/))
 
 ### Setting up the environment
 
-1. Clone this repo (`git clone https://github.com/LiveTL/LiveTL.git`)
+1. Clone this repo with submodules (`git clone --recursive https://github.com/LiveTL/LiveTL.git`)
 2. Change directory `cd` to the newly created `LiveTL` repo.
-3. Switch to the `develop` branch (`git checkout develop`)
+3. Switch to the maintained branch (`git switch mv3-fr`)
 
    Congratulations, you should now be running a local environment for LiveTL!
 
 ## Starting up a local development environment
 
 **Refer
-to '[Set up a local development environment](https://github.com/LiveTL/LiveTL/blob/develop/CONTRIBUTING.md#set-up-a-local-development-environment)'
+to '[Set up a local development environment](https://github.com/LiveTL/LiveTL/blob/mv3-fr/CONTRIBUTING.md#set-up-a-local-development-environment)'
 if you have not yet set up a local development environment with the instructions provided above.**
 
 **If you have difficulty starting up your environments, do _not_ open an issue. Message one of the admins or ask for
 help on the [discord server](https://discord.gg/uJrV3tmthg).**
 
-- `yarn start` will start the development server in hmr mode
+- `yarn start` watches the Chrome MV3 build
+- `yarn dev:firefox` watches the Firefox MV3 build
+- `yarn dev:mv2` watches the Firefox MV2 build
+- `VERSION=0.0.0 yarn build` builds and verifies every target
+- `yarn package` creates the Chrome MV3 and Firefox MV2 release ZIPs
 - `yarn test:watch` will run the tests in watch mode
-- `make clean` will clear the build
-- In firefox, use about:debuggging to load the extension.
-- In chromium-based browsers, load an unpacked extension in the extension menu.
+- In Firefox, use `about:debugging` to load `build/firefox` or `build/mv2`.
+- In Chromium-based browsers, load `build/chrome` as an unpacked extension.
 
 ## Naming Scheme Conventions
 
@@ -73,7 +76,7 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 ## Directory structure
 
 .\
-├── build - build files that get hot reloaded\
+├── build - isolated chrome, firefox, and mv2 build targets\
 ├── dist - two zips, one for firefox and one for chrome\
 ├── e2e - python selenium tests\
 ├── img - images used in LiveTL README and docs\

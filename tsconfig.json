@@ -2,6 +2,7 @@
   "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
     "outDir": "./build/",
+    "noEmit": true,
     "baseUrl": "./src",
     "allowJs": true,
     "checkJs": false,

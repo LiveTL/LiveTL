@@ -2,7 +2,9 @@ name: Build
 
 on:
   push:
+    branches: [mv3-fr]
   pull_request:
+    branches: [mv3-fr]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -24,13 +26,16 @@ jobs:
           cache: 'yarn'
 
       - name: Install modules
-        run: yarn
+        run: yarn --frozen-lockfile
 
-      # - name: Formatter check
-      #   run: yarn format:check
+      - name: Formatter check
+        run: yarn format:check
 
       - name: Run tests
         run: yarn test
 
-      - name: Build
-        run: yarn build
+      - name: Build and verify all targets
+        run: VERSION=0.0.0 yarn build
+
+      - name: Package release targets
+        run: yarn package

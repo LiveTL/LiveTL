@@ -1,19 +1,18 @@
-const { spawn } = require('child_process');
+const { mkdirSync, rmSync } = require('fs');
+const { spawnSync } = require('child_process');
+const path = require('path');
 
-const cmds = [
-  'mkdir -p dist',
-  'cd build',
-  'zip -9r ../dist/LiveTL-Firefox.zip .',
-  'cp ../dist/LiveTL-Firefox.zip ../dist/LiveTL-Chrome.zip',
-  'zip -d ../dist/LiveTL-Chrome.zip manifest.json',
-  'printf "@ manifest.chrome.json\\n@=manifest.json\\n" | zipnote -w ../dist/LiveTL-Chrome.zip',
-  'zip -d ../dist/LiveTL-Firefox.zip manifest.chrome.json'
-];
+mkdirSync('dist', { recursive: true });
 
-spawn(
-  'sh',
-  [
-    '-c',
-    cmds.join(' && ')
-  ]
-);
+for (const [target, filename] of [
+  ['chrome', 'LiveTL-Chrome.zip'],
+  ['mv2', 'LiveTL-Firefox.zip']
+]) {
+  const output = path.resolve('dist', filename);
+  rmSync(output, { force: true });
+  const result = spawnSync('zip', ['-9r', output, '.'], {
+    cwd: path.resolve('build', target),
+    stdio: 'inherit'
+  });
+  if (result.status !== 0) process.exit(result.status ?? 1);
+}

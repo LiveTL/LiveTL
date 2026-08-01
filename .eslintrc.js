@@ -99,6 +99,9 @@ module.exports = {
     Ytc: 'readonly',
     Chat: 'readonly',
     Ltl: 'readonly',
-    YT: 'readonly'
+    YT: 'readonly',
+    __BROWSER__: 'readonly',
+    __MV__: 'readonly',
+    __VERSION__: 'readonly'
   }
 };

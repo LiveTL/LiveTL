@@ -28,12 +28,11 @@ export const loadYoutubePlayer = (
   onReady: (player: YTPlayer, runPlayerAction: (action: string) => void) => void = noop,
   onStateChange: (player: YTPlayer, state: YT.PlayerState) => void = noop
 ): void => {
-  YouTubeIframeLoader.load(YT => {
-    const player: YTPlayer = new YT.Player('player', {
+  YouTubeIframeLoader.load((Youtube: typeof YT) => {
+    const player = new Youtube.Player('player', {
       height: '100%',
       width: '100%',
       videoId,
-      autoplay: 1,
       playerVars: {
         autoplay: 1,
         fs: 0
@@ -71,6 +70,6 @@ export const loadYoutubePlayer = (
         },
         onStateChange: (event: YT.OnStateChangeEvent) => onStateChange(player, event.data)
       }
-    });
+    }) as YTPlayer;
   });
 };

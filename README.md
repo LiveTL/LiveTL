@@ -24,9 +24,9 @@ submit a Pull Request!
 
 ## Development
 
-### ⚠️ WARNING ⚠️
-
-Due to unreliable Manifest v3 feature support in Firefox, we maintain both MV2 and MV3 versions of LiveTL in parallel. The MV2 variant sits in the `develop` branch, while the MV3 variant sits on the `mv3-fr` branch. When contributing, please ensure that you check out to the `develop` branch to implement the features in MV2 first. Once the feature is stable, please open a separate PR to the `mv3-fr` branch to port the feature to MV3.
+LiveTL maintains one implementation on `mv3-fr`. That branch produces Chrome
+MV3, Firefox MV3, and Firefox MV2 builds; manifest versions are build targets,
+not separate source branches.
 
 ### Setup
 
@@ -43,20 +43,19 @@ yarn # use yarn, not npm
 ### Commands
 
 ```bash
-yarn start # devServer
-yarn build:production # production
-yarn package # package extension zips
+yarn start # watch Chrome MV3
+yarn dev:firefox # watch Firefox MV3
+yarn dev:mv2 # watch Firefox MV2
+VERSION=0.0.0 yarn build # build and verify every target
+yarn package # package Chrome MV3 and Firefox MV2 zips
 yarn test # jest
 yarn test:watch # autotest
 yarn format # lint
 yarn e2e # run e2e tests
 ```
 
-Load the `build` directory in Chrome developer mode.
-
-### Hot Reload
-
-Enable `chrome://flags/#allow-insecure-localhost` to use hot module and UI component reloading.
+Load `build/chrome` in Chrome developer mode. Firefox validation targets are in
+`build/firefox` (MV3) and `build/mv2` (MV2).
 
 ## Developers
 

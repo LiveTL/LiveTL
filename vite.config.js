@@ -7,6 +7,7 @@ import alias from '@rollup/plugin-alias';
 import copy from 'rollup-plugin-copy';
 import replace from 'rollup-plugin-replace';
 import manifest from './src/manifest.json';
+import { resolveMv } from './src/submodules/chat/scripts/resolve-manifest';
 
 // include all entry points from src/js/pages/*.js
 const pagesEntryPoints = [
@@ -19,7 +20,7 @@ const entryPoints = [
   ...pagesEntryPoints,
   {
     name: 'html/background.html',
-    scripts: ['/js/pages/background.js', '/submodules/chat/src/scripts/chat-background.ts']
+    scripts: ['/js/pages/background.js']
   },
   { name: 'html/hyperchat/index.html', scripts: ['/submodules/chat/src/hyperchat.ts'] },
   { name: 'html/hyperchat/options.html', scripts: ['/submodules/chat/src/options.ts'] }
@@ -45,6 +46,7 @@ for (const entry of entryPoints) {
 
 // chrome does not like _ in filename
 // see: https://github.com/rollup/rollup/issues/4772#issuecomment-1366727437
+// eslint-disable-next-line no-control-regex
 const INVALID_CHAR_REGEX = /[\u0000-\u001F"#$&*+,:;<=>?[\]^`{|}\u007F_]/g;
 const DRIVE_LETTER_REGEX = /^[a-z]:/i;
 function sanitizeFileName(name) {
@@ -54,17 +56,24 @@ function sanitizeFileName(name) {
 }
 
 const browser = process.env.BROWSER === undefined ? 'chrome' : process.env.BROWSER;
+const mv = process.env.MV === '2' ? 2 : 3;
 const version = process.env.VERSION ?? manifest.version ?? '69.420';
+const target = mv === 2 ? 'mv2' : browser;
+const buildDir = `build/${target}`;
+
+if (mv === 2 && browser !== 'firefox') {
+  throw new Error('MV2 is Firefox-only; set BROWSER=firefox.');
+}
 
 export default defineConfig({
   root: 'src',
   define: {
     __BROWSER__: JSON.stringify(browser),
     __VERSION__: JSON.stringify(version),
-    __MV__: 3
+    __MV__: JSON.stringify(mv)
   },
   build: {
-    outDir: path.resolve(__dirname, 'build'),
+    outDir: path.resolve(__dirname, buildDir),
     emptyOutDir: true,
     minify: process.env.MINIFY !== 'false',
     rollupOptions: {
@@ -93,30 +102,13 @@ export default defineConfig({
       emitCss: false
     }),
 
-    // firefox doesn't have incognito: 'split' in its manifest
-    // manifest.json is swapped for manifest.chrome.json in the
-    // production zip by utils/package.js
-    copy({
-      hook: 'writeBundle',
-      targets: [{
-        src: 'build/manifest.json',
-        dest: 'build/',
-        transform: (content) => {
-          const newManifest = JSON.parse(content.toString());
-          newManifest.incognito = 'split';
-          return JSON.stringify(newManifest, null, 2);
-        },
-        rename: 'manifest.chrome.json'
-      }]
-    }),
-
     // allow-iframe.json contains static DeclarativeNetHTTP rules
     // for allowing iframing of ytc, need to manually copy over
     copy({
       hook: 'writeBundle',
       targets: [{
         src: path.resolve(__dirname, 'src/allow-iframe.json'),
-        dest: 'build/'
+        dest: `${buildDir}/`
       }]
     }),
 
@@ -126,7 +118,7 @@ export default defineConfig({
       hook: 'writeBundle',
       targets: [{
         src: path.resolve(__dirname, 'src/add-yt-embed-referer.json'),
-        dest: 'build/'
+        dest: `${buildDir}/`
       }]
     }),
 
@@ -135,7 +127,7 @@ export default defineConfig({
       hook: 'writeBundle',
       targets: [{
         src: path.resolve(__dirname, 'src/submodules/chat/src/assets/*'),
-        dest: 'build/hyperchat'
+        dest: `${buildDir}/hyperchat`
       }]
     }),
 
@@ -146,7 +138,7 @@ export default defineConfig({
     copy({
       hook: 'writeBundle',
       targets: [{
-        src: 'build/html/*', dest: 'build'
+        src: `${buildDir}/html/*`, dest: buildDir
       }]
     }),
 
@@ -157,16 +149,16 @@ export default defineConfig({
       hook: 'writeBundle',
       targets: [{
         src: path.resolve(__dirname, 'src/submodules/chat/src/stylesheets/*'),
-        dest: 'build/submodules/chat/src/stylesheets'
+        dest: `${buildDir}/submodules/chat/src/stylesheets`
       }]
     }),
 
     browserExtension({
       manifest: () => {
-        const nextManifest = JSON.parse(JSON.stringify(manifest));
+        const nextManifest = resolveMv(JSON.parse(JSON.stringify(manifest)), mv);
         nextManifest.version = version;
 
-        if (browser === 'chrome') {
+        if (mv === 3 && browser === 'chrome') {
           // The watch-mode video workaround runs on `youtube.com/error?...` and must execute in the
           // page world so it can access the YT iframe API. DOM-injecting a `chrome-extension://`
           // script is blocked by YouTube's CSP in Chromium, so run the content script as `MAIN`.
@@ -194,27 +186,6 @@ export default defineConfig({
       },
       disableAutoLaunch: true,
       browser
-    }),
-
-    copy({
-      hook: 'writeBundle',
-      targets: [{
-        src: 'build/manifest.json',
-        dest: 'build/',
-        transform: (content) => {
-          const newManifest = JSON.parse(content.toString());
-          if ('incognito' in newManifest) {
-            delete newManifest.incognito;
-          }
-          if ('service_worker' in newManifest.background) {
-            newManifest.background = {
-              scripts: [newManifest.background.service_worker]
-            };
-          }
-          return JSON.stringify(newManifest, null, 2);
-        },
-        rename: 'manifest.firefox.json'
-      }]
     })
   ]
 });
