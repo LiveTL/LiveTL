@@ -35,7 +35,7 @@ on this [Discord server](https://discord.gg/uJrV3tmthg).**
 
 - Git ([Windows](https://git-scm.com/download/win) | [MacOS](https://git-scm.com/download/mac)
   | [Linux](https://git-scm.com/download/linux))
-- Node.js 22+ ([Windows, MacOS, and Linux](https://nodejs.org/en/download))
+- Node.js 24 ([Windows, MacOS, and Linux](https://nodejs.org/en/download))
 - Chrome ([Windows, MacOS, and Linux](https://www.google.com/chrome/))
 - Firefox ([Windows, MacOS, and Linux](https://www.mozilla.org/en-US/firefox/new/))
 
@@ -44,6 +44,7 @@ on this [Discord server](https://discord.gg/uJrV3tmthg).**
 1. Clone this repo with submodules (`git clone --recursive https://github.com/LiveTL/LiveTL.git`)
 2. Change directory `cd` to the newly created `LiveTL` repo.
 3. Switch to the maintained branch (`git switch main`)
+4. Install dependencies (`npm ci`)
 
    Congratulations, you should now be running a local environment for LiveTL!
 
@@ -56,12 +57,12 @@ if you have not yet set up a local development environment with the instructions
 **If you have difficulty starting up your environments, do _not_ open an issue. Message one of the admins or ask for
 help on the [discord server](https://discord.gg/uJrV3tmthg).**
 
-- `yarn start` watches the Chrome MV3 build
-- `yarn dev:firefox` watches the Firefox MV3 build
-- `yarn dev:mv2` watches the Firefox MV2 build
-- `VERSION=0.0.0 yarn build` builds and verifies every target
-- `yarn package` creates the Chrome MV3 and Firefox MV2 release ZIPs
-- `yarn test:watch` will run the tests in watch mode
+- `npm run start` watches the Chrome MV3 build
+- `npm run dev:firefox` watches the Firefox MV3 build
+- `npm run dev:mv2` watches the Firefox MV2 build
+- `VERSION=0.0.0 npm run build` builds and verifies every target
+- `npm run package` creates the Chrome MV3 and Firefox MV2 release ZIPs
+- `npm run test:watch` will run the tests in watch mode
 - In Firefox, use `about:debugging` to load `build/firefox` or `build/mv2`.
 - In Chromium-based browsers, load `build/chrome` as an unpacked extension.
 
@@ -97,7 +98,7 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 │   │   └── chat - the chat optimizer of [Hyperchat](https://www.github.com/LiveTL/HyperChat)\
 │   └── __tests__ - tests that match the directory structure of `src`\
 ├── theme - theming for svelte-materialify\
-└── utils - utility scripts for yarn commands
+└── utils - utility scripts for build commands
 
 ## Other
 

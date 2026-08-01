@@ -40,17 +40,17 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: yarn
+          node-version: '24'
+          cache: npm
 
       - name: Install modules
-        run: yarn --frozen-lockfile
+        run: npm ci
 
       - name: Build extensions
         run: |
-          yarn update:list
-          VERSION="$VERSION" yarn build
-          yarn package
+          npm run update:list
+          VERSION="$VERSION" npm run build
+          npm run package
 
       - name: Upload Chrome build to release
         uses: svenstaro/upload-release-action@v2

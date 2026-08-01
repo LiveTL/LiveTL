@@ -21,11 +21,11 @@ From the exact `main` commit to tag:
 
 ```bash
 git submodule update --init --recursive
-yarn --frozen-lockfile
-yarn format:check
-yarn test
-VERSION=X.Y.Z yarn build
-yarn package
+npm ci
+npm run format:check
+npm run test
+VERSION=X.Y.Z npm run build
+npm run package
 unzip -p dist/LiveTL-Chrome.zip manifest.json | jq '.manifest_version, .version'
 unzip -p dist/LiveTL-Firefox.zip manifest.json | jq '.manifest_version, .version'
 ```

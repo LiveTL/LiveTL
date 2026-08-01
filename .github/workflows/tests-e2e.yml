@@ -21,8 +21,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'yarn'
+          node-version: '24'
+          cache: 'npm'
 
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
@@ -41,11 +41,10 @@ jobs:
           python3 -m pip freeze
 
       - name: Install modules
-        run: |
-          yarn
+        run: npm ci
 
       - name: Build extension
-        run: yarn e2e:build
+        run: npm run e2e:build
 
       - name: Run tests
         uses: nick-invision/retry@v2

@@ -22,20 +22,20 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'yarn'
+          node-version: '24'
+          cache: 'npm'
 
       - name: Install modules
-        run: yarn --frozen-lockfile
+        run: npm ci
 
       - name: Formatter check
-        run: yarn format:check
+        run: npm run format:check
 
       - name: Run tests
-        run: yarn test
+        run: npm run test
 
       - name: Build and verify all targets
-        run: VERSION=0.0.0 yarn build
+        run: VERSION=0.0.0 npm run build
 
       - name: Package release targets
-        run: yarn package
+        run: npm run package

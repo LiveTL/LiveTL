@@ -8,8 +8,8 @@ WATCH_PID_FILE="$STATE_DIR/watch.pid"
 WATCH_LOG_FILE="$STATE_DIR/watch.log"
 TEST_URL="${TEST_URL:-https://www.youtube.com/watch?v=X4VbdwhkE10}"
 MODE="chrome-mv3"
-WATCH_CMD="yarn dev:chrome"
-BUILD_CMD="yarn build:chrome"
+WATCH_CMD="npm run dev:chrome"
+BUILD_CMD="npm run build:chrome"
 
 mkdir -p "$STATE_DIR"
 
@@ -35,7 +35,7 @@ ensure_playwright() {
     cd "$REPO_ROOT"
     node -e 'require.resolve("playwright-core")'
   ) >/dev/null 2>&1 || {
-    echo "playwright-core is missing. Run: yarn" >&2
+    echo "playwright-core is missing. Run: npm ci" >&2
     exit 1
   }
 }
