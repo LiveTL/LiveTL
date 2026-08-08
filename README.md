@@ -42,41 +42,34 @@ own target's code.
 
 > Note: The repo expects a Linux or Unix-like environment. If you are on Windows, use WSL.
 
-Clone the repository:
+Install from the monorepo root:
 
 ```bash
-git clone https://github.com/LiveTL/HyperChat
-```
-
-Open the repository and npm install:
-
-```bash
-cd HyperChat
-npm install # install dependencies
+npm ci
 ```
 
 Serve the extension for local development:
 
 ```bash
-npm run dev:chrome    # devserver for Chrome extension (MV3)
-npm run dev:firefox   # devserver for Firefox extension (MV3)
-npm run dev:mv2       # devserver for the Firefox MV2 variant
+npm run dev:chrome -w @livetl/hyperchat    # watch Chrome MV3
+npm run dev:firefox -w @livetl/hyperchat   # watch Firefox MV3
+npm run dev:mv2 -w @livetl/hyperchat       # watch Firefox MV2
 
-npm run start:chrome  # devserver + open extension in Chrome
-npm run start:firefox # devserver + open extension in Firefox
+npm run start:chrome -w @livetl/hyperchat  # watch + open Chrome
+npm run start:firefox -w @livetl/hyperchat # watch + open Firefox
 ```
 
 ### Building for Production
 
-Our build script is [an automated GitHub action](.github/workflows/release.yml), where `${{ github.ref }}` should evaluate to a tag in the format `vX.Y.Z` (where `X.Y.Z` is the version number).
+The root release workflow builds HyperChat from tags in the format `vX.Y.Z`.
 
 To simulate the build:
 
 ```bash
-VERSION=X.Y.Z npm run build         # all three targets
-VERSION=X.Y.Z npm run build:chrome  # just Chrome (MV3)
-VERSION=X.Y.Z npm run build:firefox # just Firefox (MV3)
-VERSION=X.Y.Z npm run build:mv2     # just Firefox MV2
+VERSION=X.Y.Z npm run build -w @livetl/hyperchat         # all three targets
+VERSION=X.Y.Z npm run build:chrome -w @livetl/hyperchat  # Chrome MV3
+VERSION=X.Y.Z npm run build:firefox -w @livetl/hyperchat # Firefox MV3
+VERSION=X.Y.Z npm run build:mv2 -w @livetl/hyperchat     # Firefox MV2
 ```
 
 The built ZIP files can be found in the `build` directory. Only the two MV3 zips
@@ -85,4 +78,4 @@ LiveTL through a git submodule.
 
 ## Release
 
-Release steps are documented in [RELEASE_PROCESS.md](./RELEASE_PROCESS.md).
+Release steps are documented in the root [release playbook](../../AGENT_RELEASE.md).
