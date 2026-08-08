@@ -1,20 +1,14 @@
 # HyperChat Codex Workflow
 
+Paths and commands in this file are relative to `apps/HyperChat` unless noted otherwise.
+
 ## Branch Discipline
 
 - `main` is the only maintained source branch. Make code changes there.
 - `mv3`, `mv3-ltl`, and `mv2` are retired. Do not use them for new work.
 - There is no branch ladder any more. MV2 and MV3 are **build targets on `main`**, not branches — see "Manifest Version Targets" below.
-- If a task touches both HyperChat and LiveTL, HyperChat still goes first.
-- Cross-repo order is mandatory:
-  1. HyperChat `main`
-  2. LiveTL `develop`
-  3. LiveTL `mv3-fr`
-  4. LiveTL `release`
-- Never start cross-repo work in LiveTL when the HyperChat submodule also needs to change.
-- If the task also requires syncing YtcFilter (YTCF), do it after HyperChat `main` is updated:
-  - merge HyperChat `main` into YTCF `master`
-  - keep YTCF release notes and its in-product changelog in the strict one-line, lowercase, user-facing style documented in YTCF's `AGENTS.md`
+- HyperChat lives in `apps/HyperChat`; keep repository-wide policy, CI, and release automation at the monorepo root.
+- LiveTL still consumes HyperChat through `apps/LiveTL/src/submodules/chat`. Land shared chat-side fixes in HyperChat `main`, then update that submodule pin on LiveTL `main`.
 
 ## House Style
 
@@ -154,13 +148,13 @@ table — a missing define fails at runtime, not at build time.
 ## Cross-Browser Headless Validation Notes
 
 - Always rebuild for the target browser before runtime validation:
-  - `yarn build:chrome`
-  - `yarn build:firefox`
+  - `npm run build:chrome -w @livetl/hyperchat`
+  - `npm run build:firefox -w @livetl/hyperchat`
 - Chromium extension validation is most reliable in CI/headless shells with:
   - Playwright Chromium persistent context
   - `headless=false` plus `--ozone-platform=headless`
   - extension args: `--disable-extensions-except=<build>` and `--load-extension=<build>`
-- Firefox validation in this environment must set `HOME=/root` before launching browser automation as root, or Firefox exits early with a root/session ownership error.
+- Firefox validation needs a writable browser profile owned by the current user.
 - For Firefox runtime checks, prefer `https://www.youtube.com/live_chat?is_popout=1&v=X4VbdwhkE10&continuation=0ofMyAOAARpeQ2lrcUp3b1lWVU5UU2pSbmExWkROazV5ZGtsSk9IVnRlblJtTUU5M0VndFlORlppWkhkb2EwVXhNQm9UNnFqZHVRRU5DZ3RZTkZaaVpIZG9hMFV4TUNBQk1BQSUzRDABggEICAQYAiAAKACIAQGgAfr808_a-JQDqAEAsgEA` for deterministic chat-frame loading in headless mode.
 - Packaged LiveTL Firefox translation is a special case: keep the request bridge in HC, but host the actual translator iframe on the YouTube page side.
 - For LiveTL MV2 (webpack), `iframe-translator`'s `getClient()` is safe to use as long as the bundler rewrites `import.meta.env.DEV` to `false` for `node_modules/iframe-translator/index.js` (otherwise `import.meta.env` can be undefined at runtime).
