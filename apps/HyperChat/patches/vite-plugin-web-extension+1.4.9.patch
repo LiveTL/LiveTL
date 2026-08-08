@@ -1,0 +1,26 @@
+diff --git a/node_modules/vite-plugin-web-extension/dist/index.cjs b/node_modules/vite-plugin-web-extension/dist/index.cjs
+index e02db3b..287502e 100644
+--- a/node_modules/vite-plugin-web-extension/dist/index.cjs
++++ b/node_modules/vite-plugin-web-extension/dist/index.cjs
+@@ -125,7 +125,7 @@ function resolveBrowserTagsInObject(browser, object) {
+ // src/validation.ts
+ var import_ajv = __toModule(require("ajv"));
+ var import_https = __toModule(require("https"));
+-var SCHEMA_URL = "https://json.schemastore.org/chrome-manifest";
++var SCHEMA_URL = "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/chrome-manifest.json";
+ async function validateManifest(log, manifest) {
+   const ajv = new import_ajv.default();
+   ajv.addFormat("permission", /.*/);
+diff --git a/node_modules/vite-plugin-web-extension/dist/index.js b/node_modules/vite-plugin-web-extension/dist/index.js
+index 21e6808..d4f9341 100644
+--- a/node_modules/vite-plugin-web-extension/dist/index.js
++++ b/node_modules/vite-plugin-web-extension/dist/index.js
+@@ -115,7 +115,7 @@ function resolveBrowserTagsInObject(browser, object) {
+ // src/validation.ts
+ import Ajv from "ajv";
+ import https from "https";
+-var SCHEMA_URL = "https://json.schemastore.org/chrome-manifest";
++var SCHEMA_URL = "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/chrome-manifest.json";
+ async function validateManifest(log, manifest) {
+   const ajv = new Ajv();
+   ajv.addFormat("permission", /.*/);
