@@ -1,5 +1,5 @@
 name: Bug Report
-description: File a bug report
+description: File a bug report for LiveTL or HyperChat
 title: "[Bug]: "
 labels: ["bug"]
 body:
@@ -8,8 +8,6 @@ body:
       label: Checklist
       description: These are some simple guidelines for creating a bug report, make sure your bug report follows all of these guidelines before submitting
       options:
-        - label: This is an issue for LiveTL, not Hyperchat. I will go to [the Hyperchat repo](https://github.com/LiveTL/HyperChat) to report an issue with Hyperchat.
-          required: true
         - label: This is an issue for the LiveTL web extension, not LiveTL iOS or LiveTL Android. I will go to the [iOS](https://github.com/LiveTL/ios) or [Android](https://github.com/LiveTL/android) repo to report issues for those platforms.
           required: true
         - label: This issue is not a matter of opinion. If it is, I will use the feature suggestion issue template.
@@ -22,8 +20,17 @@ body:
           required: true
         - label: I am not suggesting a feature. If I am, I will use the feature suggestion issue template.
           required: true
-        - label: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/LiveTL/LiveTL/blob/develop/CODE_OF_CONDUCT.md)
+        - label: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/LiveTL/LiveTL/blob/main/CODE_OF_CONDUCT.md)
           required: true
+  - type: dropdown
+    attributes:
+      label: Which extension is affected?
+      options:
+        - LiveTL
+        - HyperChat
+        - Both
+    validations:
+      required: true
   - type: textarea
     attributes:
       label: Describe the bug

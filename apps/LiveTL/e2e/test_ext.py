@@ -28,11 +28,11 @@ from selenium import webdriver
 from reporting import report_file
 from ublock import ublock
 
-dist = Path(__file__).parent / "../dist"
+build = Path(__file__).parent / "../build"
 
 livetl = Extension(
-    firefox=str((dist / "LiveTL-Firefox.xpi").resolve()),
-    chrome=str((dist / "LiveTL-Chrome.zip").resolve())
+    firefox=str((build / "LiveTL-Firefox.xpi").resolve()),
+    chrome=str((build / "LiveTL-Chrome.zip").resolve())
 )
 
 headed = bool(os.environ.get("HEADED", False))

@@ -80,9 +80,10 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 
 .\
 ├── apps\
+│   ├── HyperChat - standalone HyperChat extension\
+│   │   └── src - chat parsing, rendering, actions, and shared chat behavior\
 │   └── LiveTL\
-│       ├── build - isolated chrome, firefox, and mv2 build targets\
-│       ├── dist - two zips, one for firefox and one for chrome\
+│       ├── build - browser targets and release ZIPs\
 │       ├── e2e - python selenium tests\
 │       ├── img - images used in LiveTL README and docs\
 │       └── src\
@@ -100,9 +101,7 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 │   ├── plugins - plugins for injection to our script\
 │   ├── submodules - submodules\
 │   │   └── chat - the chat optimizer of [Hyperchat](https://www.github.com/LiveTL/HyperChat)\
-│   └── __tests__ - tests that match the directory structure of `src`\
-├── theme - theming for svelte-materialify\
-└── utils - utility scripts for build commands
+│   └── __tests__ - tests that match the directory structure of `src`
 
 ## Other
 

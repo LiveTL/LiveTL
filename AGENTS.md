@@ -2,12 +2,16 @@
 
 ## Scope
 
-- This npm workspace builds the LiveTL browser extension from `apps/LiveTL`
-  and vendors HyperChat as a submodule at `apps/LiveTL/src/submodules/chat`.
+- This npm workspace builds LiveTL from `apps/LiveTL` and standalone HyperChat
+  from `apps/HyperChat`.
+- LiveTL temporarily continues to consume HyperChat through the submodule at
+  `apps/LiveTL/src/submodules/chat`; the standalone workspace does not replace
+  that runtime boundary yet.
 - Keep HyperChat implementation details in HyperChat docs. Do not duplicate
   full HyperChat internals here.
-- For chat internals and architecture, start with
-  `apps/LiveTL/src/submodules/chat/README.md` and then inspect upstream HyperChat directly.
+- For chat internals and architecture, start with `apps/HyperChat/README.md` and
+  `apps/HyperChat/AGENTS.md`, then compare the pinned submodule when working on
+  LiveTL's embedded copy.
 
 ## Branch Discipline (Mandatory)
 
@@ -92,7 +96,7 @@
 
 `VERSION=0.0.0 npm run build` typechecks, builds, and verifies all three targets.
 `npm run package` creates the published Chrome MV3 and Firefox MV2 ZIPs in
-`apps/LiveTL/dist`.
+`apps/LiveTL/build`.
 
 Before handing off a change, run:
 
@@ -193,5 +197,5 @@ KEEP_OPEN=1 bash apps/LiveTL/scripts/codex-dev.sh go-test
 - Release tags are created on `main`.
 - The tag version is supplied to every target through `VERSION`; local builds
   fall back to `src/manifest.json`.
-- Release automation uploads only `LiveTL-Chrome.zip` and
-  `LiveTL-Firefox.zip`.
+- Release automation uploads `LiveTL-Chrome.zip`, `LiveTL-Firefox.zip`,
+  `HyperChat-Chrome.zip`, and `HyperChat-Firefox.zip`.

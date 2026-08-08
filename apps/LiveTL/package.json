@@ -22,7 +22,7 @@
     "verify:build": "node scripts/verify-build.mjs",
     "test": "jest src",
     "test:watch": "npm run test -- --watch",
-    "e2e:build": "npm run build:production && npm run package && cp dist/LiveTL-Firefox.zip dist/LiveTL-Firefox.xpi",
+    "e2e:build": "npm run build:production && npm run package && cp build/LiveTL-Firefox.zip build/LiveTL-Firefox.xpi",
     "e2e:test": "pytest --tests-per-worker auto e2e",
     "e2e": "npm run e2e:build && npm run e2e:test",
     "format": "eslint --config .eslintrc.js --cache --fix .",
