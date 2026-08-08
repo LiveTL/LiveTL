@@ -35,7 +35,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ env.RELEASE_TAG }}
-          submodules: recursive
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -48,9 +47,9 @@ jobs:
 
       - name: Build extensions
         run: |
-          npm run update:list
+          npm run update:list -w @livetl/livetl
           VERSION="$VERSION" npm run build
-          npm run package
+          npm run package -w @livetl/livetl
 
       - name: Upload Chrome build to release
         uses: svenstaro/upload-release-action@v2
@@ -67,5 +66,23 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: apps/LiveTL/dist/LiveTL-Firefox.zip
           asset_name: LiveTL-Firefox.zip
+          tag: ${{ env.RELEASE_TAG }}
+          overwrite: true
+
+      - name: Upload HyperChat Chrome build to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: apps/HyperChat/build/HyperChat-chrome.zip
+          asset_name: HyperChat-chrome.zip
+          tag: ${{ env.RELEASE_TAG }}
+          overwrite: true
+
+      - name: Upload HyperChat Firefox build to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: apps/HyperChat/build/HyperChat-firefox.zip
+          asset_name: HyperChat-firefox.zip
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true

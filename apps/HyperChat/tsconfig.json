@@ -1,13 +1,14 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
     "outDir": "./build/",
-    "baseUrl": "./src",
+    "ignoreDeprecations": "6.0",
+    "types": ["chrome", "node"],
     "strict": true,
     "lib": ["DOM"],
     "target": "ES2017"
   },
-  "include": ["src/**/*", "*.js", "utils/**/*", "scripts/**/*", "vite.config.ts"],
+  "include": ["src/**/*", "*.js", "utils/**/*", "scripts/**/*", "vite.config.mts"],
   "exclude": ["node_modules", "build"]
 }

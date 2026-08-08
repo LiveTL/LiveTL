@@ -1,6 +1,7 @@
-import tailwind from 'smelte/src/tailwind.css?inline';
+import { mount as mountComponent } from 'svelte';
 
 import Hyperchat from '../components/Hyperchat.svelte';
+import tailwind from '../stylesheets/tailwind.css?inline';
 import { isLiveTL } from '../ts/chat-constants';
 import { stripYoutubePlayerShell, stripYoutubePlayerStyles } from '../ts/chat-utils';
 
@@ -39,7 +40,7 @@ const mount = (): void => {
 
   ensureHeadAssets();
   console.log(
-    new Hyperchat({
+    mountComponent(Hyperchat, {
       target: document.body,
     }),
   );

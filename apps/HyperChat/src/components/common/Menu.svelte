@@ -8,8 +8,6 @@
 <script lang="ts">
   import { tick } from 'svelte';
   import { fade } from 'svelte/transition';
-  import Menu from 'smelte/src/components/Menu';
-  import List from 'smelte/src/components/List';
   import Icon from './Icon.svelte';
   interface MenuItem {
     icon: string;
@@ -59,7 +57,7 @@
   $: classes = $$props.class ? $$props.class : '';
   $: menuClasses = 'absolute bg-white rounded shadow z-20 dark:bg-dark-500 ' +
     `w-max ${offsetX}`;
-  const listItemClasses = 'focus:bg-gray-50 dark-focus:bg-gray-700 ' +
+  const listItemClasses = 'focus:bg-gray-50 dark:focus:bg-gray-700 ' +
   'hover:bg-gray-transDark relative overflow-hidden duration-100 ' +
   'cursor-pointer text-gray-700 dark:text-gray-100 flex items-center z-10';
 </script>
@@ -67,47 +65,20 @@
 <svelte:window
   bind:innerHeight={windowInnerHeight}
   bind:innerWidth={windowInnerWidth}
+  on:click={() => (open = false)}
 />
 
-<div class={classes}>
-  <Menu bind:open classes="h-full flex items-center justify-center cursor-pointer relative">
-    <div
-      on:click={() => (open = !open)}
-      slot="activator"
-      class={open || visible ? 'opacity-100' : 'opacity-0'}
-      bind:this={activator}
-    >
-      <slot name="activator" />
+<div class="relative {classes}" on:click|stopPropagation>
+  <button type="button" class="h-full flex items-center justify-center cursor-pointer {open || visible ? 'opacity-100' : 'opacity-0'}" on:click={() => (open = !open)} bind:this={activator}>
+    <slot name="activator" />
+  </button>
+  {#if open}
+    <div class={menuClasses} transition:fade={{ duration: 150 }} bind:this={listDiv} style="max-width: 20em; font-size: 1em; {offsetYStyle}">
+      <ul>
+        {#each items as item}
+          <li><button type="button" class="w-full {listItemClasses}" on:click={() => onItemClick(item)} style="padding: 0.5em 1em"><Icon class="pr-2">{item.icon}</Icon><span>{item.text}</span></button></li>
+        {/each}
+      </ul>
     </div>
-    <svelte:fragment slot="menu">
-      {#if open}
-        <div
-          class={menuClasses}
-          transition:fade={{ duration: 150 }}
-          bind:this={listDiv}
-          style="max-width: 20em; font-size: 1em; {offsetYStyle}"
-        >
-          <List
-            select
-            dense
-          >
-            <svelte:fragment slot="items">
-              {#each items as item}
-                <li
-                  class={listItemClasses}
-                  on:click={() => { onItemClick(item); }}
-                  style="padding: 0.5em 1em"
-                >
-                  <Icon class="pr-2">
-                    {item.icon}
-                  </Icon>
-                  <span>{item.text}</span>
-                </li>
-              {/each}
-            </svelte:fragment>
-          </List>
-        </div>
-      {/if}
-    </svelte:fragment>
-  </Menu>
+  {/if}
 </div>

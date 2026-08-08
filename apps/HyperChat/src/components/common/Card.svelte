@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { noop } from 'svelte/internal';
+  const noop = (): void => {};
   import Icon from './Icon.svelte';
 
   export let title = '';

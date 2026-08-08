@@ -3,13 +3,12 @@ import path from 'path';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import copy from 'rollup-plugin-copy';
 import { defineConfig } from 'vite';
-import webExtension, { readJsonFile } from 'vite-plugin-web-extension';
+import webExtension from 'vite-plugin-web-extension';
 import zipPack from 'vite-plugin-zip-pack';
 
+import pkg from './package.json' with { type: 'json' };
 import { resolveMv } from './scripts/resolve-manifest';
-
-const pkg = readJsonFile('package.json');
-const manifest = readJsonFile('src/manifest.json');
+import manifest from './src/manifest.json' with { type: 'json' };
 
 const browser = process.env.BROWSER ?? 'chrome';
 const mv = process.env.MV === '2' ? 2 : 3;
@@ -37,12 +36,13 @@ export default defineConfig({
         ...resolveMv(manifest, mv),
         version,
       }),
-      assets: 'assets',
+      skipManifestValidation: true,
       watchFilePaths: [path.resolve(__dirname, 'src/manifest.json')],
       additionalInputs: ['hyperchat.html', 'scripts/chat-interceptor.ts', 'scripts/chat-metagetter.ts'],
       disableAutoLaunch: process.env.AUTOLAUNCH !== 'true',
       browser,
       webExtConfig: {
+        target: browser === 'firefox' ? 'firefox-desktop' : 'chromium',
         startUrl: 'https://www.youtube.com/watch?v=X4VbdwhkE10',
       },
     }),

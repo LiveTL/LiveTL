@@ -16,8 +16,9 @@ describe('omnicompletion', () => {
   it('adds sentences', () => {
     const { addSentence, getWords } = omniComplete();
     addSentence('hello there, general kenobi!');
-    const { toContain } = expect(getWords());
-    ['hello', 'there', 'general', 'kenobi'].forEach(toContain);
+    for (const word of ['hello', 'there', 'general', 'kenobi']) {
+      expect(getWords()).toContain(word);
+    }
   });
 
   it('loads initial words', () => {
@@ -68,8 +69,9 @@ describe('omnicompletion', () => {
     expect(getWords()).toContain('hello');
     addWord('there');
     await sleep(0);
-    const { toContain } = expect(get(store));
-    ['hello', 'there'].forEach(toContain);
+    for (const word of ['hello', 'there']) {
+      expect(get(store)).toContain(word);
+    }
   });
 });
 

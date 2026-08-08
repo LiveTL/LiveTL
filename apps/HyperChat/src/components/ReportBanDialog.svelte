@@ -8,7 +8,7 @@
   import Dialog from './common/Dialog.svelte';
   import type { Writable } from 'svelte/store';
   import RadioGroupStore from './common/RadioGroupStore.svelte';
-  import Button from 'smelte/src/components/Button';
+  import Button from './common/Button.svelte';
   $: optionStore = $reportDialog?.optionStore as Writable<ChatReportUserOptions>;
 </script>
 

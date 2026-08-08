@@ -1,4 +1,5 @@
-import { writable, Writable } from 'svelte/store';
+import { writable } from 'svelte/store';
+import type { Writable } from 'svelte/store';
 import { paramsTabId, paramsFrameId } from '../js/constants';
 import { timestamp } from '../js/store';
 import { useReconnect } from '@hyperchat/ts/chat-utils';

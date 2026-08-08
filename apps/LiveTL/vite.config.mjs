@@ -3,10 +3,9 @@ import { svelte } from '@sveltejs/vite-plugin-svelte';
 import browserExtension from 'vite-plugin-web-extension';
 import path from 'path';
 import fs from 'fs';
-import alias from '@rollup/plugin-alias';
 import copy from 'rollup-plugin-copy';
-import replace from 'rollup-plugin-replace';
-import manifest from './src/manifest.json';
+import replace from '@rollup/plugin-replace';
+import manifest from './src/manifest.json' with { type: 'json' };
 import { resolveMv } from '../HyperChat/scripts/resolve-manifest';
 
 // include all entry points from src/js/pages/*.js
@@ -89,9 +88,8 @@ export default defineConfig({
     }
   },
   plugins: [
-    alias(),
-
     replace({
+      preventAssignment: true,
       values: {
         'isLiveTL = false': 'isLiveTL = true'
       }
@@ -101,6 +99,15 @@ export default defineConfig({
     svelte({
       configFile: path.resolve(__dirname, 'svelte.config.js'),
       emitCss: false
+    }),
+
+    // vite-plugin-web-extension 4 no longer copies the legacy assets option.
+    copy({
+      hook: 'writeBundle',
+      targets: [{
+        src: path.resolve(__dirname, 'src/img'),
+        dest: buildDir
+      }]
     }),
 
     // allow-iframe.json contains static DeclarativeNetHTTP rules
@@ -172,7 +179,7 @@ export default defineConfig({
 
         return nextManifest;
       },
-      assets: 'img',
+      skipManifestValidation: true,
       additionalInputs: [
         ...entryPoints.map(entry => entry.name),
         ...jsEntry
@@ -182,6 +189,7 @@ export default defineConfig({
         path.resolve(__dirname, 'src/allow-iframe.json')
       ],
       webExtConfig: {
+        target: browser === 'firefox' ? 'firefox-desktop' : 'chromium',
         // lofi hip hop (the one that spawned after the og one ended)
         startUrl: 'https://www.youtube.com/watch?v=X4VbdwhkE10'
       },

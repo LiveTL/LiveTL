@@ -1,11 +1,12 @@
 import App from '../../components/Lite.svelte';
+import { mount } from 'svelte';
 // import { displayMode } from '../store.js';
 // import { DisplayMode } from '../constants.js';
-import 'smelte/src/tailwind.css';
+import '../../stylesheets/tailwind.css';
 
 // displayMode.set(DisplayMode.HOLODEX);
 
-const app = new App({
+const app = mount(App, {
   target: document.body,
   props: {
   }

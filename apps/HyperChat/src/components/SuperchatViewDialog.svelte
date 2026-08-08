@@ -1,6 +1,6 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
-  import Icon from 'smelte/src/components/Icon';
+  import Icon from './common/Icon.svelte';
   import {
     focusedSuperchat,
     port,

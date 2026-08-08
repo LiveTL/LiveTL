@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom/vitest';
 
 // import { render, fireEvent } from '@testing-library/svelte';
 

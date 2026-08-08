@@ -1,4 +1,6 @@
-import 'smelte/src/tailwind.css';
+import './stylesheets/tailwind.css';
+
+import { mount } from 'svelte';
 
 import Hyperchat from './components/Hyperchat.svelte';
 import { stripYoutubePlayerShell, stripYoutubePlayerStyles } from './ts/chat-utils';
@@ -6,7 +8,7 @@ import { stripYoutubePlayerShell, stripYoutubePlayerStyles } from './ts/chat-uti
 stripYoutubePlayerShell();
 stripYoutubePlayerStyles();
 
-const hyperchat = new Hyperchat({
+const hyperchat = mount(Hyperchat, {
   target: document.body,
 });
 

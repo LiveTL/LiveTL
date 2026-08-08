@@ -11,13 +11,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  hyperchat:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: 'recursive'
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -28,14 +26,32 @@ jobs:
       - name: Install modules
         run: npm ci
 
-      - name: Formatter check
-        run: npm run format:check
+      - name: Validate HyperChat
+        run: npm run check -w @livetl/hyperchat
 
-      - name: Run tests
-        run: npm run test
+      - name: Build and verify HyperChat targets
+        run: VERSION=0.0.0 npm run build -w @livetl/hyperchat
 
-      - name: Build and verify all targets
-        run: VERSION=0.0.0 npm run build
+  livetl:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install modules
+        run: npm ci
+
+      - name: Validate LiveTL
+        run: npm run check -w @livetl/livetl
+
+      - name: Build and verify LiveTL targets
+        run: VERSION=0.0.0 npm run build -w @livetl/livetl
 
       - name: Package release targets
-        run: npm run package
+        run: npm run package -w @livetl/livetl

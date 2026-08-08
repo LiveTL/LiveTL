@@ -3,7 +3,10 @@
   "compilerOptions": {
     "outDir": "./build/",
     "noEmit": true,
-    "baseUrl": "./src",
+    "rootDir": "..",
+    "moduleResolution": "Bundler",
+    "ignoreDeprecations": "6.0",
+    "types": ["chrome", "node", "youtube"],
     "allowJs": true,
     "checkJs": false,
     "strict": true,
@@ -11,7 +14,7 @@
     "target": "esnext",
     "resolveJsonModule": true,
     "paths": {
-      "@hyperchat/*": ["../../HyperChat/src/*"]
+      "@hyperchat/*": ["../HyperChat/src/*"]
     },
     "typeRoots": ["../../node_modules/@types", "./src/ts/typings", "../HyperChat/src/ts/typings"]
   },

@@ -11,7 +11,7 @@
   2. LiveTL `develop`
   3. LiveTL `mv3-fr`
   4. LiveTL `release`
-- Never start cross-repo work in LiveTL when the HyperChat submodule also needs to change.
+- Validate HyperChat changes against both workspace applications in one pull request.
 - If the task also requires syncing YtcFilter (YTCF), do it after HyperChat `main` is updated:
   - merge HyperChat `main` into YTCF `master`
   - keep YTCF release notes and its in-product changelog in the strict one-line, lowercase, user-facing style documented in YTCF's `AGENTS.md`
@@ -35,12 +35,12 @@
   - `__MV__` in source — a build-time constant, so unused branches are dropped per target.
 - Do not add per-MV source files (`chat-background.mv2.ts` and friends). `main`'s architecture — thin background plus the broker in `src/ts/messaging.ts` — runs under MV2 as-is. Port MV3 patterns down to MV2, never MV2's persistent-background design up.
 - Prefer shared, untagged config. Only tag a key when MV2 and MV3 genuinely differ.
-- Only the two MV3 zips are released. `mv2` is built in CI for breakage coverage and consumed by LiveTL via submodule.
+- Only the two MV3 zips are released. `mv2` is built in CI for breakage coverage and embedded into LiveTL from workspace source.
 
-## Build-Time Constants (submodule consumers)
+## Build-Time Constants (workspace consumers)
 
 `src/` depends on three bare globals, declared in `src/ts/typings/vite-env.d.ts`
-and supplied by `vite.config.ts` for our own builds:
+and supplied by `vite.config.mts` for our own builds:
 
 | Constant      | Emitted literal                   | Meaning                           |
 | ------------- | --------------------------------- | --------------------------------- |
@@ -120,7 +120,7 @@ table — a missing define fails at runtime, not at build time.
   - `src/scripts/**`
   - `src/components/**`
   - `src/manifest.json`
-  - `vite.config.ts`
+  - `vite.config.mts`
   - settings/storage/messaging code under `src/ts/**`
 - The reload is intentionally hard (full browser restart) to avoid stale MV3 service-worker state, extension cache artifacts, and mixed-profile debugging drift.
 
@@ -148,7 +148,7 @@ table — a missing define fails at runtime, not at build time.
 
 ## Testbed URL
 
-- Headless validation should open the same `startUrl` used by `vite.config.ts`.
+- Headless validation should open the same `startUrl` used by `vite.config.mts`.
 - `scripts/codex-dev.sh go-test` does this automatically (defaulting by detected mode), and `TEST_URL` can override when needed.
 
 ## Cross-Browser Headless Validation Notes

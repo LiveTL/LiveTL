@@ -520,7 +520,7 @@ const sortAction = (
   miscArray: Ytc.ParsedMisc[],
 ): void => {
   if ('message' in action || 'tickerDuration' in action) {
-    messageArray.push(action);
+    messageArray.push(action as Ytc.ParsedTimedItem);
   } else if ('replacedMessage' in action && 'authorId' in action) {
     bonkArray.push(action);
   } else if ('replacedMessage' in action && 'messageId' in action) {

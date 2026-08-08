@@ -32,9 +32,8 @@ not separate source branches.
 
 > Note: The repo expects a Linux or Unix-like environment. If you are on Windows, use WSL.
 
-> ℹ LiveTL uses submodules. Make sure to clone the repo with the `--recursive` flag!
->
-> ℹ When pulling, you should also use `git pull --recurse`.
+The repository is an npm workspace containing LiveTL and HyperChat. A single
+root install and lockfile cover both applications.
 
 ```bash
 npm ci
@@ -46,9 +45,12 @@ npm ci
 npm run start # watch Chrome MV3
 npm run dev:firefox # watch Firefox MV3
 npm run dev:mv2 # watch Firefox MV2
-VERSION=0.0.0 npm run build # build and verify every target
-npm run package # package Chrome MV3 and Firefox MV2 zips
-npm run test # jest
+VERSION=0.0.0 npm run build # build and verify both products
+npm run build -w @livetl/livetl # build only LiveTL
+npm run build -w @livetl/hyperchat # build only HyperChat
+npm run package -w @livetl/livetl # package LiveTL release zips
+npm run check # validate both products
+npm run test -w @livetl/livetl # Vitest
 npm run test:watch # autotest
 npm run format # lint
 npm run e2e # run e2e tests

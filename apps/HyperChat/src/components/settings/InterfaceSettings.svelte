@@ -20,15 +20,13 @@
   import Radio from '../common/RadioGroupStore.svelte';
   import Checkbox from '../common/CheckboxStore.svelte';
   import Icon from '../common/Icon.svelte';
-  import dark from 'smelte/src/dark';
   import MessageTranslationSettings from './MessageTranslationSettings.svelte';
 
   const willChangeOnNextChunkMessage = (
     'Settings listed below will take effect when the next chat message chunk arrives.'
   );
 
-  const darkStore = dark();
-  $: darkStore.set($isDark);
+  $: document.documentElement.classList.toggle('mode-dark', $isDark);
 
   $: console.debug({
     theme: $theme,

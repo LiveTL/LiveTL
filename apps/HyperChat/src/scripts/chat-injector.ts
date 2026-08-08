@@ -1,3 +1,5 @@
+import { mount, unmount } from 'svelte';
+
 import HcButton from '../components/HyperchatButton.svelte';
 import HcSettings from '../components/SettingsButton.svelte';
 import { isLiveTL } from '../ts/chat-constants';
@@ -13,7 +15,7 @@ import {
 import { hcEnabled, autoLiveChat } from '../ts/storage';
 
 const isFirefox = navigator.userAgent.includes('Firefox');
-let hcSettings: HcSettings | null = null;
+let hcSettings: ReturnType<typeof mount> | null = null;
 
 const hcWarning =
   'An existing HyperChat button has been detected. This ' +
@@ -113,7 +115,7 @@ const chatLoaded = async (): Promise<void> => {
     console.error('Failed to find #primary-content');
     return;
   }
-  new HcButton({
+  mount(HcButton, {
     target: ytcPrimaryContent,
   });
 
@@ -122,7 +124,7 @@ const chatLoaded = async (): Promise<void> => {
     const destroyButton = (): void => {
       if (hcSettings !== null) {
         try {
-          hcSettings.$destroy();
+          void unmount(hcSettings);
         } catch (_) {}
       }
     };
@@ -133,7 +135,7 @@ const chatLoaded = async (): Promise<void> => {
       if (document.getElementById('hc-settings')) return;
 
       destroyButton();
-      hcSettings = new HcSettings({
+      hcSettings = mount(HcSettings, {
         target: ytcItemMenu,
       });
 

@@ -41,7 +41,7 @@ on this [Discord server](https://discord.gg/uJrV3tmthg).**
 
 ### Setting up the environment
 
-1. Clone this repo with submodules (`git clone --recursive https://github.com/LiveTL/LiveTL.git`)
+1. Clone this repo (`git clone https://github.com/LiveTL/LiveTL.git`)
 2. Change directory `cd` to the newly created `LiveTL` repo.
 3. Switch to the maintained branch (`git switch main`)
 4. Install dependencies (`npm ci`)
@@ -57,14 +57,14 @@ if you have not yet set up a local development environment with the instructions
 **If you have difficulty starting up your environments, do _not_ open an issue. Message one of the admins or ask for
 help on the [discord server](https://discord.gg/uJrV3tmthg).**
 
-- `npm run start` watches the Chrome MV3 build
-- `npm run dev:firefox` watches the Firefox MV3 build
-- `npm run dev:mv2` watches the Firefox MV2 build
-- `VERSION=0.0.0 npm run build` builds and verifies every target
-- `npm run package` creates the Chrome MV3 and Firefox MV2 release ZIPs
-- `npm run test:watch` will run the tests in watch mode
-- In Firefox, use `about:debugging` to load `build/firefox` or `build/mv2`.
-- In Chromium-based browsers, load `build/chrome` as an unpacked extension.
+- `npm run start -w @livetl/livetl` watches the LiveTL Chrome MV3 build.
+- `npm run dev:firefox -w @livetl/livetl` watches its Firefox MV3 build.
+- `npm run dev:mv2 -w @livetl/livetl` watches its Firefox MV2 build.
+- `VERSION=0.0.0 npm run build` builds and verifies both applications.
+- `npm run check` validates both applications.
+- `npm run package -w @livetl/livetl` creates the LiveTL release ZIPs.
+- In Firefox, load `apps/LiveTL/build/firefox` or `apps/LiveTL/build/mv2`.
+- In Chromium, load `apps/LiveTL/build/chrome` as an unpacked extension.
 
 ## Naming Scheme Conventions
 
@@ -76,11 +76,23 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 
 ## Directory structure
 
+```text
 .\
+├── apps\
+│   ├── HyperChat - independently buildable chat extension\
+│   └── LiveTL - LiveTL extension and integration wrappers\
+├── package.json - npm workspace commands\
+├── package-lock.json - shared dependency lock\
+└── eslint.config.js - shared lint configuration\
+```
+
+Inside `apps/LiveTL`:
+
+```text
 ├── build - isolated chrome, firefox, and mv2 build targets\
-├── dist - two zips, one for firefox and one for chrome\
-├── e2e - python selenium tests\
-├── img - images used in LiveTL README and docs\
+├── dist - two published ZIPs\
+├── e2e - Python browser tests\
+├── img - README and documentation images\
 ├── src\
 │   ├── changelogs - changelog components\
 │   │   ├── common\
@@ -94,11 +106,11 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 │   │   ├── content_scripts - has the injector script that injects the LiveTL buttons\
 │   │   └── pages - the exports of the svelte components that represent each LiveTL page\
 │   ├── plugins - plugins for injection to our script\
-│   ├── submodules - submodules\
-│   │   └── chat - the chat optimizer of [Hyperchat](https://www.github.com/LiveTL/HyperChat)\
+│   ├── submodules/chat - thin entry and CSS wrappers for stable emitted paths\
 │   └── __tests__ - tests that match the directory structure of `src`\
 ├── theme - theming for svelte-materialify\
 └── utils - utility scripts for build commands
+```
 
 ## Other
 

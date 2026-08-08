@@ -1,8 +1,10 @@
-import 'smelte/src/tailwind.css';
+import './stylesheets/tailwind.css';
+
+import { mount } from 'svelte';
 
 import Settings from './components/Settings.svelte';
 
-const options = new Settings({
+const options = mount(Settings, {
   target: document.body,
 });
 

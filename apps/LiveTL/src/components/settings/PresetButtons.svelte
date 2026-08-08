@@ -1,7 +1,7 @@
 <script lang="ts">
   import { presetStores, presets, activePreset } from '../../js/store';
   import { importStores } from '../../js/storage';
-  import Button from 'smelte/src/components/Button';
+  import Button from '../common/Button.svelte';
   import PresetButton from './PresetButton.svelte';
 
   $: presetAmount = $presets.length;

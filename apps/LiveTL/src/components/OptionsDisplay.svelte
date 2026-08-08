@@ -5,11 +5,10 @@
   // @pikachoo - https://discord.com/channels/780938154437640232/794062715278196768/1240876505173725264
 
   import Settings from './Settings.svelte';
-  import dark from 'smelte/src/dark';
   import { paramsStandalone, isTwitch } from '../js/constants.js';
 
   // So options_ui css isn't shit
-  dark().set(true);
+  document.documentElement.classList.add('mode-dark');
 </script>
 
 <svelte:head>

@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { Writable } from 'svelte/store';
-  import { RadioButtonGroup, RadioButton } from 'smelte/src/components/RadioButton';
 
   type RadioItem = { value: string | boolean, label: string };
 
@@ -24,23 +23,13 @@
   $: if (map) {
     items = mapToRadioItem(map);
   }
-  $: selected = $store as string;
-  $: store.set(selected);
-
-  const classes = `flex ${vertical ? 'flex-col' : 'gap-3 flex-wrap'}`;
-  const buttonClasses = 'inline-flex block items-center cursor-pointer z-0';
 </script>
 
-<RadioButtonGroup
-  {classes}
-  bind:selected
-  {buttonClasses}
-  {items}
-  let:item
->
-  <RadioButton
-    bind:selected
-    classes={buttonClasses}
-    {...item}
-  />
-</RadioButtonGroup>
+<div class="flex {vertical ? 'flex-col' : 'gap-3 flex-wrap'}">
+  {#each items as item}
+    <label class="inline-flex items-center cursor-pointer gap-2">
+      <input type="radio" checked={$store === item.value} on:change={() => store.set(item.value)} />
+      <span>{item.label}</span>
+    </label>
+  {/each}
+</div>

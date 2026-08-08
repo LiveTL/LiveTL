@@ -72,10 +72,11 @@ describe('Synchronized lookup store', () => {
       [['first key', { value: 'first not default' }]],
       [['first key', { value: 'first not default' }], ['second key', { value: 'second not default' }]]
     ];
+    await ss.loaded;
     ss.subscribe(notifs.push.bind(notifs));
     await ss.set('first key', { value: 'first not default' });
     await ss.set('second key', { value: 'second not default' });
-    setTimeout(() => expect(notifs).toEqual(expectedNotifs));
+    expect(notifs).toEqual(expectedNotifs);
   });
 
   it('can unsubscribe subscribers', async () => {

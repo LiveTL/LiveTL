@@ -30,12 +30,11 @@
   import FeaturePrompt from './FeaturePrompt.svelte';
   import SpammerPrompt from './SpammerPrompt.svelte';
   import { displayedMessages } from '../js/sources-aggregate.js';
-  import dark from 'smelte/src/dark';
   import Button from './common/IconButton.svelte';
   import { openLiveTL } from '../js/utils.js';
   import { createPopup } from '@hyperchat/ts/chat-utils';
 
-  dark().set(true);
+  document.documentElement.classList.add('mode-dark');
 
   export let settingsOpen = false;
   videoTitle.set(paramsVideoTitle || $videoTitle);

@@ -37,9 +37,8 @@ describe('Dropdown', () => {
 
   it('updates the store', async () => {
     const store = writable(items[0].value);
-    const { getByText, getByDisplayValue } = render(Dropdown, { items, store });
-    await fireEvent.click(getByDisplayValue(items[0].text));
-    await fireEvent.click(getByText(items[1].text));
+    const { getByRole } = render(Dropdown, { items, store });
+    await fireEvent.change(getByRole('combobox'), { target: { value: items[1].value } });
     expect(get(store)).toEqual(items[1].value);
   });
 

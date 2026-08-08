@@ -12,21 +12,15 @@ through them; `mv2` below names the build target on `main`.
 2. Push `main`.
 3. Create and publish the release tag.
 
-If the same task also affects LiveTL, do not begin in LiveTL. Finish HyperChat
-first, then bump the LiveTL submodule chain in this order:
-
-1. LiveTL `develop`
-2. LiveTL `mv3-fr`
-3. LiveTL `release`
-
-HyperChat is the upstream source for shared chat behavior. LiveTL is downstream
-packaging/integration work after that.
+HyperChat and LiveTL live in one npm workspace. Changes to shared HyperChat
+source must be validated against both products in the same pull request.
 
 ## Local Validation
 
 ```bash
 npm ci
-VERSION=0.0.0 npm run build   # chrome + firefox (MV3) + mv2, in parallel
+npm run check
+VERSION=0.0.0 npm run build
 ```
 
 Individual targets are `build:chrome`, `build:firefox`, and `build:mv2`. See
@@ -53,8 +47,7 @@ Published assets:
 - `HyperChat-Firefox.zip` — MV3, Firefox Add-ons
 
 The MV2 target is **not** published as a release asset. It is built on every push
-by `.github/workflows/build.yml` (via `npm run build`) so breakage is caught, and
-LiveTL consumes it through a git submodule rather than a download.
+so breakage is caught, including when the source is embedded by LiveTL.
 
 ## Verifying A Build
 
@@ -72,8 +65,8 @@ for b in ['HyperChat-chrome.zip','HyperChat-firefox.zip']:
 "
 ```
 
-## Notes For LiveTL Sync
+## LiveTL Integration
 
-LiveTL consumes HyperChat via git submodules, not release assets. Its MV2 Firefox
-variant and MV3 line both track HyperChat `main`; never repoint either to the
-historical `mv2` branch.
+LiveTL imports `apps/HyperChat/src` through the `@hyperchat` alias. Thin files
+under `apps/LiveTL/src/submodules/chat` preserve existing manifest and archive
+entry paths. Run both workspace jobs for every HyperChat source change.

@@ -79,7 +79,7 @@ VERSION=X.Y.Z npm run build:mv2     # just Firefox MV2
 
 The built ZIP files can be found in the `build` directory. Only the two MV3 zips
 are published as release assets; the MV2 build is verified in CI and consumed by
-LiveTL through a git submodule.
+LiveTL through workspace source imports and stable local entry wrappers.
 
 ## Release
 

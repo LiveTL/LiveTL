@@ -1,6 +1,5 @@
 <script>
-  import dark from 'smelte/src/dark';
-  dark().set(true);
+  document.documentElement.classList.add('mode-dark');
 
   const links = [{
     text: 'LiveTL Website',

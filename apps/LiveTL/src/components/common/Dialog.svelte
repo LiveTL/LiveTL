@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Dialog from 'smelte/src/components/Dialog';
   import Button from './IconButton.svelte';
 
   /** Dialog title. */
@@ -17,15 +16,15 @@
     ($$props.class ?? '');
 </script>
 
-<Dialog bind:value={active} classes={classes}>
-  <div slot="title" class="flex flex-row items-center">
-    <div class="flex-1">
-      <slot name="title">
-        <h6>{title}</h6>
-      </slot>
+{#if active}
+  <div class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50" role="presentation" on:click|self={() => (active = false)}>
+    <div class={classes} role="dialog" aria-modal="true">
+      <div class="flex flex-row items-center">
+        <div class="flex-1"><slot name="title"><h6>{title}</h6></slot></div>
+        <Button color="error" icon="close" on:click={() => (active = false)} />
+      </div>
+      <slot />
+      <slot name="actions" />
     </div>
-    <Button color="error" icon="close" on:click={() => (active = false)} />
   </div>
-  <slot />
-  <slot name="actions" slot="actions" />
-</Dialog>
+{/if}

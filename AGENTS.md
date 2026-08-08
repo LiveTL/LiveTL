@@ -2,12 +2,11 @@
 
 ## Scope
 
-- This repo builds the LiveTL browser extension and vendors HyperChat as a
-  submodule at `src/submodules/chat`.
+- This npm workspace builds the LiveTL and HyperChat browser extensions from
+  `apps/LiveTL` and `apps/HyperChat` with one root lockfile.
 - Keep HyperChat implementation details in HyperChat docs. Do not duplicate
   full HyperChat internals here.
-- For chat internals and architecture, start with
-  `src/submodules/chat/README.md` and then inspect upstream HyperChat directly.
+- For chat internals and architecture, inspect `apps/HyperChat` directly.
 
 ## Branch Discipline (Mandatory)
 
@@ -18,9 +17,8 @@
 - `release` is a legacy rollback branch, not a development or packaging branch.
 - MV2 and MV3 are build targets from the same source, not separate source
   branches. Do not restore the old `develop -> mv3-fr -> release` sync ladder.
-- If a change belongs in HyperChat, land it on HyperChat `main` first, then
-  update the single `src/submodules/chat` gitlink on LiveTL `main`.
-- All LiveTL targets must use the same HyperChat commit.
+- HyperChat changes and their LiveTL integration land atomically on `main`.
+- Every pull request validates both products because LiveTL imports HyperChat source.
 
 ## House Style
 
@@ -35,10 +33,10 @@
 
 ## Code Patterns
 
-- Do not duplicate HyperChat internals in LiveTL when the right fix belongs
-  upstream in the submodule.
-- If a bug spans HyperChat and LiveTL, land the shared chat-side fix in
-  HyperChat first, then bump the submodule in LiveTL.
+- Do not duplicate HyperChat internals in LiveTL. Import shared source through
+  the `@hyperchat` alias.
+- Keep only entry and CSS wrappers under `apps/LiveTL/src/submodules/chat` so
+  existing manifest and emitted archive paths remain stable.
 - Packaged HyperChat translation on Firefox is a split-boundary case: HyperChat
   owns the request/response bridge, while LiveTL owns the bundling entry that
   injects the page-side translator host.
@@ -54,18 +52,11 @@
   YouTube CSP and `X-Frame-Options`. Firefox MV2 therefore remains the published
   Firefox target; Firefox MV3 is validation-only until that requirement changes.
 
-## HyperChat Submodule Mapping
+## Workspace Mapping
 
-- LiveTL `main` pins one validated HyperChat `main` commit for every build
-  target.
-- After cloning or changing commits, run:
-
-  ```bash
-  git submodule update --init --recursive
-  ```
-
-- If the submodule appears dirty after a branch switch, treat it as a sync issue
-  first, not as a code change.
+- `apps/HyperChat` remains independently buildable and releasable.
+- LiveTL consumes sibling HyperChat source directly; there is no submodule.
+- Run installs from the repository root with `npm ci`.
 
 ## Branch Switch Hygiene
 
@@ -78,27 +69,26 @@
 
 - Use a separate worktree for legacy-branch checks or parallel work. Do not
   disturb an existing dirty checkout.
-- If switching leaves untracked build artifacts behind, remove only generated
-  files and normalize submodules before continuing.
+- If switching leaves untracked build artifacts behind, remove only generated files.
 
 ## Build and Test Matrix
 
 | Target | Build | Watch | Output | Release status |
 | --- | --- | --- | --- | --- |
-| Chrome MV3 | `npm run build:chrome` | `npm run dev:chrome` | `build/chrome` | Published |
-| Firefox MV3 | `npm run build:firefox` | `npm run dev:firefox` | `build/firefox` | Validation-only |
-| Firefox MV2 | `npm run build:mv2` | `npm run dev:mv2` | `build/mv2` | Published |
+| Chrome MV3 | `npm run build:chrome -w @livetl/livetl` | `npm run dev:chrome -w @livetl/livetl` | `apps/LiveTL/build/chrome` | Published |
+| Firefox MV3 | `npm run build:firefox -w @livetl/livetl` | `npm run dev:firefox -w @livetl/livetl` | `apps/LiveTL/build/firefox` | Validation-only |
+| Firefox MV2 | `npm run build:mv2 -w @livetl/livetl` | `npm run dev:mv2 -w @livetl/livetl` | `apps/LiveTL/build/mv2` | Published |
 
-`VERSION=0.0.0 npm run build` typechecks, builds, and verifies all three targets.
-`npm run package` creates the published Chrome MV3 and Firefox MV2 ZIPs in `dist`.
+`VERSION=0.0.0 npm run build` builds and verifies all six targets.
+`npm run package -w @livetl/livetl` creates the two LiveTL ZIPs; HyperChat's
+two public ZIPs are created by its builds.
 
 Before handing off a change, run:
 
 ```bash
-npm run format:check
-npm run test
+npm run check
 VERSION=0.0.0 npm run build
-npm run package
+npm run package -w @livetl/livetl
 ```
 
 Runtime notes:
