@@ -56,7 +56,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/LiveTL-Chrome.zip
+          file: apps/LiveTL/dist/LiveTL-Chrome.zip
           asset_name: LiveTL-Chrome.zip
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true
@@ -65,7 +65,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/LiveTL-Firefox.zip
+          file: apps/LiveTL/dist/LiveTL-Firefox.zip
           asset_name: LiveTL-Firefox.zip
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true

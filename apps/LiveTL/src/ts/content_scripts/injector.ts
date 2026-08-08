@@ -1,4 +1,4 @@
-import { mdiOpenInNew, mdiYoutubeTv, mdiIframeArray } from '@mdi/js';
+import { mdiApplicationArrayOutline, mdiOpenInNew, mdiYoutubeTv } from '@mdi/js';
 import { getFrameInfoAsync, createPopup, isValidFrameInfo } from '../../submodules/chat/src/ts/chat-utils';
 import { paramsEmbedDomain, AutoLaunchMode } from '../../js/constants.js';
 import { autoLaunchMode, holodexEnabled } from '../../js/store.js';
@@ -118,7 +118,7 @@ async function loaded(): Promise<void> {
   injectLtlLauncher(renderer, [
     ltlButtonParams('Open LiveTL', openLiveTL, mdiYoutubeTv),
     ltlButtonParams('TL Popout', tlPopout, mdiOpenInNew),
-    ltlButtonParams('Embed TLs', embedTLs, mdiIframeArray)
+    ltlButtonParams('Embed TLs', embedTLs, mdiApplicationArrayOutline)
   ], { padding: '5px', fontWeight: '700', fontSize: '11px', fontFamily: 'Roboto, Arial, sans-serif', borderWidth: '0' });
 }
 

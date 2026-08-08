@@ -43,10 +43,10 @@ export const loadYoutubePlayer = (
           const runPlayerAction = (action: string): void => {
             switch (action) {
               case 'volumeUp':
-                player.setVolume(clamp(player.getVolume() + 10, 0, 100));
+                player.setVolume(clamp(Number(player.getVolume()) + 10, 0, 100));
                 break;
               case 'volumeDown':
-                player.setVolume(clamp(player.getVolume() - 10, 0, 100));
+                player.setVolume(clamp(Number(player.getVolume()) - 10, 0, 100));
                 break;
               case 'fullScreen':
                 console.debug('Got request for fullscreen, fullscreen must be done in main frame');

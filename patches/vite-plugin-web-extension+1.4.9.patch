@@ -1,8 +1,8 @@
 diff --git a/node_modules/vite-plugin-web-extension/dist/index.cjs b/node_modules/vite-plugin-web-extension/dist/index.cjs
-index a8df8d0..bb0d131 100644
+index e02db3b..287502e 100644
 --- a/node_modules/vite-plugin-web-extension/dist/index.cjs
 +++ b/node_modules/vite-plugin-web-extension/dist/index.cjs
-@@ -124,7 +124,7 @@ function resolveBrowserTagsInObject(browser, object) {
+@@ -125,7 +125,7 @@ function resolveBrowserTagsInObject(browser, object) {
  // src/validation.ts
  var import_ajv = __toModule(require("ajv"));
  var import_https = __toModule(require("https"));
@@ -12,10 +12,10 @@ index a8df8d0..bb0d131 100644
    const ajv = new import_ajv.default();
    ajv.addFormat("permission", /.*/);
 diff --git a/node_modules/vite-plugin-web-extension/dist/index.js b/node_modules/vite-plugin-web-extension/dist/index.js
-index 15f08a2..2fdad69 100644
+index 21e6808..d4f9341 100644
 --- a/node_modules/vite-plugin-web-extension/dist/index.js
 +++ b/node_modules/vite-plugin-web-extension/dist/index.js
-@@ -114,7 +114,7 @@ function resolveBrowserTagsInObject(browser, object) {
+@@ -115,7 +115,7 @@ function resolveBrowserTagsInObject(browser, object) {
  // src/validation.ts
  import Ajv from "ajv";
  import https from "https";

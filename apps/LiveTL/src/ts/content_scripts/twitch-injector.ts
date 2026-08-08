@@ -1,7 +1,7 @@
 import { isVod, parseMessageElement } from '../twitch-parser';
 import { nodeIsElement, injectLtlLauncher, ltlButtonParams } from '../utils';
 import { getFrameInfoAsync, createPopup, isValidFrameInfo } from '../../submodules/chat/src/ts/chat-utils';
-import { mdiOpenInNew, mdiIframeArray } from '@mdi/js';
+import { mdiApplicationArrayOutline, mdiOpenInNew } from '@mdi/js';
 import { chatSize, twitchEnabled } from '../../js/store';
 import { get } from 'svelte/store';
 import type { Chat } from '../../submodules/chat/src/ts/typings/chat';
@@ -120,7 +120,7 @@ function injectLtlButtons(frameInfo: Chat.FrameInfo): void {
         createResizableBar(parent);
         chat.appendChild(parent);
         ltlWrapper.style.display = 'none';
-      }, mdiIframeArray, true);
+      }, mdiApplicationArrayOutline, true);
     }
   ], { padding: '3px', fontWeight: '600' });
 }
