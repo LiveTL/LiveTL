@@ -7,7 +7,7 @@ import alias from '@rollup/plugin-alias';
 import copy from 'rollup-plugin-copy';
 import replace from 'rollup-plugin-replace';
 import manifest from './src/manifest.json';
-import { resolveMv } from './src/submodules/chat/scripts/resolve-manifest';
+import { resolveMv } from '../HyperChat/scripts/resolve-manifest';
 
 // include all entry points from src/js/pages/*.js
 const pagesEntryPoints = [
@@ -84,6 +84,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      '@hyperchat': path.resolve(__dirname, '../HyperChat/src'),
       'jquery.ui': 'jquery-ui-bundle'
     }
   },
@@ -126,7 +127,7 @@ export default defineConfig({
     copy({
       hook: 'writeBundle',
       targets: [{
-        src: path.resolve(__dirname, 'src/submodules/chat/src/assets/*'),
+        src: path.resolve(__dirname, '../HyperChat/src/assets/*'),
         dest: `${buildDir}/hyperchat`
       }]
     }),

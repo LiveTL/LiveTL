@@ -8,12 +8,12 @@
     "iframe-translator": "0.3.8"
   },
   "scripts": {
-    "build": "npm run build -w @livetl/livetl",
+    "build": "npm run build -w @livetl/hyperchat && npm run build -w @livetl/livetl",
     "build:chrome": "npm run build:chrome -w @livetl/livetl",
     "build:firefox": "npm run build:firefox -w @livetl/livetl",
     "build:mv2": "npm run build:mv2 -w @livetl/livetl",
     "build:production": "npm run build:production -w @livetl/livetl",
-    "check": "npm run check -w @livetl/livetl",
+    "check": "npm run check -w @livetl/hyperchat && npm run check -w @livetl/livetl",
     "test": "npm run test -w @livetl/livetl",
     "format": "npm run format -w @livetl/livetl",
     "format:check": "npm run format:check -w @livetl/livetl",

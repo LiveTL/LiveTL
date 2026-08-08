@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Icon from '../../submodules/chat/src/components/common/Icon.svelte';
+  import Icon from '@hyperchat/components/common/Icon.svelte';
   export let block = true;
   export let small = false;
   export let xs = false;

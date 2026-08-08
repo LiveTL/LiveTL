@@ -10,8 +10,11 @@
     "lib": ["DOM", "dom.iterable"],
     "target": "esnext",
     "resolveJsonModule": true,
-    "typeRoots": ["../../node_modules/@types", "./src/ts/typings", "./src/submodules/chat/src/ts/typings"]
+    "paths": {
+      "@hyperchat/*": ["../../HyperChat/src/*"]
+    },
+    "typeRoots": ["../../node_modules/@types", "./src/ts/typings", "../HyperChat/src/ts/typings"]
   },
-  "include": ["src/**/*", "*.js", "utils/**/*"],
+  "include": ["src/**/*", "../HyperChat/src/**/*", "*.js", "utils/**/*"],
   "exclude": ["node_modules", "build", "**/vite.config.ts"]
 }

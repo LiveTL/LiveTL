@@ -1,8 +1,8 @@
 import { writable, Writable } from 'svelte/store';
 import { paramsTabId, paramsFrameId } from '../js/constants';
 import { timestamp } from '../js/store';
-import { useReconnect } from '../submodules/chat/src/ts/chat-utils';
-import type { Chat } from '../submodules/chat/src/ts/typings/chat';
+import { useReconnect } from '@hyperchat/ts/chat-utils';
+import type { Chat } from '@hyperchat/ts/typings/chat';
 
 export function twitchSource(): Writable<Ltl.Message | null> {
   if (paramsTabId == null || paramsFrameId == null) return writable(null);

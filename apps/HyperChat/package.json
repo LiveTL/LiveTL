@@ -1,5 +1,5 @@
 {
-  "name": "HyperChat",
+  "name": "@livetl/hyperchat",
   "version": "3.2.0",
   "private": true,
   "scripts": {
@@ -20,7 +20,7 @@
     "format": "oxfmt",
     "lint": "npm run lint:check -- --fix",
     "lint:check": "eslint . --max-warnings=0",
-    "postinstall": "patch-package"
+    "check": "npm run format:check && npm run lint:check && npm run typecheck"
   },
   "dependencies": {
     "@livetl/svelte-webext-stores": "^0.0.14",
@@ -49,7 +49,6 @@
     "eslint-plugin-svelte3": "^3.2.0",
     "npm-run-all": "^4.1.5",
     "oxfmt": "^0.61.0",
-    "patch-package": "^8.0.0",
     "postcss": "8.5.25",
     "postcss-extend": "^1.0.5",
     "postcss-import": "14.1.0",

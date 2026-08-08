@@ -1,5 +1,5 @@
 import { mdiApplicationArrayOutline, mdiOpenInNew, mdiYoutubeTv } from '@mdi/js';
-import { getFrameInfoAsync, createPopup, isValidFrameInfo } from '../../submodules/chat/src/ts/chat-utils';
+import { getFrameInfoAsync, createPopup, isValidFrameInfo } from '@hyperchat/ts/chat-utils';
 import { paramsEmbedDomain, AutoLaunchMode } from '../../js/constants.js';
 import { autoLaunchMode, holodexEnabled } from '../../js/store.js';
 import { constructParams, openLiveTL } from '../../js/utils.js';

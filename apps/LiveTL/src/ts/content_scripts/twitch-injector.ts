@@ -1,10 +1,10 @@
 import { isVod, parseMessageElement } from '../twitch-parser';
 import { nodeIsElement, injectLtlLauncher, ltlButtonParams } from '../utils';
-import { getFrameInfoAsync, createPopup, isValidFrameInfo } from '../../submodules/chat/src/ts/chat-utils';
+import { getFrameInfoAsync, createPopup, isValidFrameInfo } from '@hyperchat/ts/chat-utils';
 import { mdiApplicationArrayOutline, mdiOpenInNew } from '@mdi/js';
 import { chatSize, twitchEnabled } from '../../js/store';
 import { get } from 'svelte/store';
-import type { Chat } from '../../submodules/chat/src/ts/typings/chat';
+import type { Chat } from '@hyperchat/ts/typings/chat';
 
 const liveChatSelector = '.chat-room .chat-scrollable-area__message-container';
 const vodChatSelector = '.video-chat .video-chat__message-list-wrapper ul';
