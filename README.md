@@ -1,6 +1,11 @@
-# LiveTL - Translation Filter for Streams
+# LiveTL Monorepo
 
-[![Tests](https://github.com/LiveTL/LiveTL/actions/workflows/tests.yaml/badge.svg)](https://github.com/LiveTL/LiveTL/actions/workflows/tests.yaml)
+This repository contains the LiveTL translation extension in `apps/LiveTL` and
+the standalone HyperChat extension in `apps/HyperChat`. LiveTL temporarily
+continues to consume HyperChat through the submodule at
+`apps/LiveTL/src/submodules/chat`.
+
+[![Build](https://github.com/LiveTL/LiveTL/actions/workflows/build.yml/badge.svg)](https://github.com/LiveTL/LiveTL/actions/workflows/build.yml)
 [![E2E Tests](https://github.com/LiveTL/LiveTL/actions/workflows/tests-e2e.yml/badge.svg)](https://github.com/LiveTL/LiveTL/actions/workflows/tests-e2e.yml)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg)](https://github.com/standard/semistandard)
@@ -12,7 +17,7 @@
 
 ### [Download LiveTL](https://livetl.app/)
 
-![Demo](./img/demo.png)
+![Demo](./apps/LiveTL/img/demo.png)
 
 ## Feedback and Contributing
 
@@ -24,9 +29,10 @@ submit a Pull Request!
 
 ## Development
 
-LiveTL maintains one implementation on `main`. That branch produces Chrome
+Both extensions are maintained on `main`. Each application produces Chrome
 MV3, Firefox MV3, and Firefox MV2 builds; manifest versions are build targets,
-not separate source branches.
+not separate source branches. See [the HyperChat README](apps/HyperChat/README.md)
+for app-specific details.
 
 ### Setup
 
@@ -46,8 +52,8 @@ npm ci
 npm run start # watch Chrome MV3
 npm run dev:firefox # watch Firefox MV3
 npm run dev:mv2 # watch Firefox MV2
-VERSION=0.0.0 npm run build # build and verify every target
-npm run package # package Chrome MV3 and Firefox MV2 zips
+VERSION=0.0.0 npm run build # build and verify all six targets
+npm run package # verify/package release artifacts for both apps
 npm run test # jest
 npm run test:watch # autotest
 npm run format # lint
