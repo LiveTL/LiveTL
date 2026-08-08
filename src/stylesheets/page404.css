@@ -1,0 +1,25 @@
+yt-formatted-string {
+  display: none !important;
+}
+
+yt-live-chat-app,
+ytd-app,
+ytm-app,
+#player,
+.player-unavailable {
+  display: none !important;
+}
+
+html,
+body {
+  margin: 0 !important;
+  font: unset;
+  background-color: transparent !important;
+  overflow: hidden !important;
+}
+
+html:has(> body > .hyperchat-root) > body.bttv-youtube ~ :not([id]):not([class]):empty {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}

@@ -1,0 +1,92 @@
+{
+  "{{mv3}}.manifest_version": 3,
+  "{{mv2}}.manifest_version": 2,
+  "name": "HyperChat [Improved YouTube Chat]",
+  "version": "0.0.0",
+  "homepage_url": "https://livetl.app/hyperchat",
+  "description": "Improved YouTube chat with CPU/RAM optimizations, customization options, and cutting-edge features!",
+  "icons": {
+    "48": "assets/logo-48.png",
+    "128": "assets/logo-128.png"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "{{mv3}}.host_permissions": [
+    "https://www.youtube.com/live_chat*",
+    "https://www.youtube.com/live_chat_replay*",
+    "https://studio.youtube.com/live_chat*",
+    "https://studio.youtube.com/live_chat_replay*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/live_chat*",
+        "https://www.youtube.com/live_chat_replay*",
+        "https://studio.youtube.com/live_chat*",
+        "https://studio.youtube.com/live_chat_replay*"
+      ],
+      "js": [
+        "scripts/chat-injector.ts"
+      ],
+      "css": [
+        "stylesheets/titlebar.css"
+      ],
+      "all_frames": true
+    },
+    {
+      "matches": [
+        "https://www.youtube.com/embed/hyperchat_embed?*"
+      ],
+      "js": [
+        "scripts/chat-mounter.ts"
+      ],
+      "css": [
+        "stylesheets/scrollbar.css",
+        "stylesheets/page404.css"
+      ],
+      "all_frames": true
+    }
+  ],
+  "{{mv3}}.{{firefox}}.background": {
+    "scripts": ["scripts/chat-background.ts"]
+  },
+  "{{mv3}}.{{chrome}}.background": {
+    "service_worker": "scripts/chat-background.ts"
+  },
+  "{{mv2}}.background": {
+    "scripts": ["scripts/chat-background.ts"],
+    "persistent": true
+  },
+  "{{mv3}}.action": {
+    "default_icon": {
+      "48": "assets/logo-48.png",
+      "128": "assets/logo-128.png"
+    },
+    "default_popup": "options.html"
+  },
+  "{{mv2}}.browser_action": {
+    "default_icon": {
+      "48": "assets/logo-48.png",
+      "128": "assets/logo-128.png"
+    }
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "{{mv3}}.web_accessible_resources": [
+    {
+      "resources": ["*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "{{mv2}}.web_accessible_resources": ["*"],
+  "{{chrome}}.incognito": "split",
+  "{{mv3}}.{{firefox}}.browser_specific_settings": {
+    "gecko": {
+      "id": "{14a15c41-13f4-498e-986c-7f00435c4d00}",
+      "strict_min_version": "115.0"
+    }
+  }
+}
