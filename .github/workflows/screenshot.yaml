@@ -36,11 +36,11 @@ jobs:
 
       - name: Screenshot pages
         run: |
-          mkdir ss
+          mkdir -p apps/LiveTL/ss
           npm run ss -- ${{ github.event.inputs.pages }}
 
       - name: Commit screenshots
         uses: EndBug/add-and-commit@v7
         with:
           message: 'Updated screenshots'
-          add: img
+          add: apps/LiveTL/img

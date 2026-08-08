@@ -4,15 +4,15 @@
 
 Every release comes from one tagged commit on `main`:
 
-- `dist/LiveTL-Chrome.zip`: Chrome MV3 from `build/chrome`
-- `dist/LiveTL-Firefox.zip`: Firefox MV2 from `build/mv2`
+- `apps/LiveTL/dist/LiveTL-Chrome.zip`: Chrome MV3 from `apps/LiveTL/build/chrome`
+- `apps/LiveTL/dist/LiveTL-Firefox.zip`: Firefox MV2 from `apps/LiveTL/build/mv2`
 
-Firefox MV3 is built and verified from `build/firefox`, but is not published.
+Firefox MV3 is built and verified from `apps/LiveTL/build/firefox`, but is not published.
 `develop` and `release` are retained legacy branches and are not part of normal
 release assembly.
 
 If HyperChat changes are required, merge them to HyperChat `main` first and bump
-the one `src/submodules/chat` pointer on LiveTL `main`. Do not pin different
+the one `apps/LiveTL/src/submodules/chat` pointer on LiveTL `main`. Do not pin different
 HyperChat or LiveTL commits per browser.
 
 ## Pre-release verification
@@ -26,8 +26,8 @@ npm run format:check
 npm run test
 VERSION=X.Y.Z npm run build
 npm run package
-unzip -p dist/LiveTL-Chrome.zip manifest.json | jq '.manifest_version, .version'
-unzip -p dist/LiveTL-Firefox.zip manifest.json | jq '.manifest_version, .version'
+unzip -p apps/LiveTL/dist/LiveTL-Chrome.zip manifest.json | jq '.manifest_version, .version'
+unzip -p apps/LiveTL/dist/LiveTL-Firefox.zip manifest.json | jq '.manifest_version, .version'
 ```
 
 Expect Chrome manifest version `3`, Firefox manifest version `2`, and the same

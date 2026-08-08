@@ -10,7 +10,7 @@
     "lib": ["DOM", "dom.iterable"],
     "target": "esnext",
     "resolveJsonModule": true,
-    "typeRoots": ["./node_modules/@types", "./src/ts/typings", "./src/submodules/chat/src/ts/typings"]
+    "typeRoots": ["../../node_modules/@types", "./src/ts/typings", "./src/submodules/chat/src/ts/typings"]
   },
   "include": ["src/**/*", "*.js", "utils/**/*"],
   "exclude": ["node_modules", "build", "**/vite.config.ts"]

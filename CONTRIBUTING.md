@@ -63,8 +63,10 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 - `VERSION=0.0.0 npm run build` builds and verifies every target
 - `npm run package` creates the Chrome MV3 and Firefox MV2 release ZIPs
 - `npm run test:watch` will run the tests in watch mode
-- In Firefox, use `about:debugging` to load `build/firefox` or `build/mv2`.
-- In Chromium-based browsers, load `build/chrome` as an unpacked extension.
+- In Firefox, use `about:debugging` to load `apps/LiveTL/build/firefox` or
+  `apps/LiveTL/build/mv2`.
+- In Chromium-based browsers, load `apps/LiveTL/build/chrome` as an unpacked
+  extension.
 
 ## Naming Scheme Conventions
 
@@ -77,11 +79,13 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 ## Directory structure
 
 .\
-├── build - isolated chrome, firefox, and mv2 build targets\
-├── dist - two zips, one for firefox and one for chrome\
-├── e2e - python selenium tests\
-├── img - images used in LiveTL README and docs\
-├── src\
+├── apps\
+│   └── LiveTL\
+│       ├── build - isolated chrome, firefox, and mv2 build targets\
+│       ├── dist - two zips, one for firefox and one for chrome\
+│       ├── e2e - python selenium tests\
+│       ├── img - images used in LiveTL README and docs\
+│       └── src\
 │   ├── changelogs - changelog components\
 │   │   ├── common\
 │   │   └── img\

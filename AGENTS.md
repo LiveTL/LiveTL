@@ -2,12 +2,12 @@
 
 ## Scope
 
-- This repo builds the LiveTL browser extension and vendors HyperChat as a
-  submodule at `src/submodules/chat`.
+- This npm workspace builds the LiveTL browser extension from `apps/LiveTL`
+  and vendors HyperChat as a submodule at `apps/LiveTL/src/submodules/chat`.
 - Keep HyperChat implementation details in HyperChat docs. Do not duplicate
   full HyperChat internals here.
 - For chat internals and architecture, start with
-  `src/submodules/chat/README.md` and then inspect upstream HyperChat directly.
+  `apps/LiveTL/src/submodules/chat/README.md` and then inspect upstream HyperChat directly.
 
 ## Branch Discipline (Mandatory)
 
@@ -19,7 +19,7 @@
 - MV2 and MV3 are build targets from the same source, not separate source
   branches. Do not restore the old `develop -> mv3-fr -> release` sync ladder.
 - If a change belongs in HyperChat, land it on HyperChat `main` first, then
-  update the single `src/submodules/chat` gitlink on LiveTL `main`.
+  update the single `apps/LiveTL/src/submodules/chat` gitlink on LiveTL `main`.
 - All LiveTL targets must use the same HyperChat commit.
 
 ## House Style
@@ -56,7 +56,8 @@
 
 ## HyperChat Submodule Mapping
 
-- LiveTL `main` pins one validated HyperChat `main` commit for every build
+- LiveTL `main` pins one validated HyperChat `main` commit at
+  `apps/LiveTL/src/submodules/chat` for every build
   target.
 - After cloning or changing commits, run:
 
@@ -85,12 +86,13 @@
 
 | Target | Build | Watch | Output | Release status |
 | --- | --- | --- | --- | --- |
-| Chrome MV3 | `npm run build:chrome` | `npm run dev:chrome` | `build/chrome` | Published |
-| Firefox MV3 | `npm run build:firefox` | `npm run dev:firefox` | `build/firefox` | Validation-only |
-| Firefox MV2 | `npm run build:mv2` | `npm run dev:mv2` | `build/mv2` | Published |
+| Chrome MV3 | `npm run build:chrome` | `npm run dev:chrome` | `apps/LiveTL/build/chrome` | Published |
+| Firefox MV3 | `npm run build:firefox` | `npm run dev:firefox` | `apps/LiveTL/build/firefox` | Validation-only |
+| Firefox MV2 | `npm run build:mv2` | `npm run dev:mv2` | `apps/LiveTL/build/mv2` | Published |
 
 `VERSION=0.0.0 npm run build` typechecks, builds, and verifies all three targets.
-`npm run package` creates the published Chrome MV3 and Firefox MV2 ZIPs in `dist`.
+`npm run package` creates the published Chrome MV3 and Firefox MV2 ZIPs in
+`apps/LiveTL/dist`.
 
 Before handing off a change, run:
 
@@ -110,10 +112,10 @@ Runtime notes:
 
 ## Chromium Validation (MV3, Tested)
 
-The Chromium functional smoke test defaults to `build/chrome`:
+The Chromium functional smoke test defaults to `apps/LiveTL/build/chrome`:
 
 ```bash
-bash scripts/codex-dev.sh go-test
+bash apps/LiveTL/scripts/codex-dev.sh go-test
 ```
 
 ### Smoke Load (`--headless=new`)
@@ -130,8 +132,8 @@ bash scripts/codex-dev.sh go-test
    chromium --headless=new --no-sandbox --disable-setuid-sandbox \
      --disable-dev-shm-usage --remote-debugging-port=9222 \
      --user-data-dir=/tmp/livetl-mv3-profile \
-     --disable-extensions-except="$PWD/build/chrome" \
-     --load-extension="$PWD/build/chrome" \
+     --disable-extensions-except="$PWD/apps/LiveTL/build/chrome" \
+     --load-extension="$PWD/apps/LiveTL/build/chrome" \
      https://www.youtube.com/watch?v=X4VbdwhkE10
    ```
 
@@ -151,7 +153,7 @@ scripts mounted.
 ### Functional MV3 Browser Validation
 
 The repo harness uses `xvfb-run`, Playwright, a fresh non-headless Chromium
-profile, the unpacked `build/chrome` extension, and seeded extension storage so
+profile, the unpacked `apps/LiveTL/build/chrome` extension, and seeded extension storage so
 HyperChat is enabled. It checks:
 
 - LiveTL button injection in the YouTube chat frame
@@ -170,10 +172,10 @@ The smoke script exits nonzero if any required mount or cleanup check fails.
 Useful entrypoints are:
 
 ```bash
-bash scripts/codex-dev.sh watch
-bash scripts/codex-dev.sh go-test
-bash scripts/codex-dev.sh status
-KEEP_OPEN=1 bash scripts/codex-dev.sh go-test
+bash apps/LiveTL/scripts/codex-dev.sh watch
+bash apps/LiveTL/scripts/codex-dev.sh go-test
+bash apps/LiveTL/scripts/codex-dev.sh status
+KEEP_OPEN=1 bash apps/LiveTL/scripts/codex-dev.sh go-test
 ```
 
 ## Testbed URL Guidance

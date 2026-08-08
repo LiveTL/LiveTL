@@ -54,8 +54,9 @@ npm run format # lint
 npm run e2e # run e2e tests
 ```
 
-Load `build/chrome` in Chrome developer mode. Firefox validation targets are in
-`build/firefox` (MV3) and `build/mv2` (MV2).
+Load `apps/LiveTL/build/chrome` in Chrome developer mode. Firefox validation
+targets are in `apps/LiveTL/build/firefox` (MV3) and
+`apps/LiveTL/build/mv2` (MV2).
 
 ## Developers
 
