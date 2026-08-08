@@ -1,0 +1,22 @@
+{
+  "name": "@livetl/hyperchat",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Placeholder workspace for the future HyperChat application import.",
+  "scripts": {
+    "build": "echo \"TODO: add the HyperChat build\"",
+    "build:chrome": "echo \"TODO: add the HyperChat Chrome build\"",
+    "build:firefox": "echo \"TODO: add the HyperChat Firefox build\"",
+    "build:mv2": "echo \"TODO: add the HyperChat MV2 build\"",
+    "build:production": "npm run build",
+    "check": "npm run format:check && npm run type:check && npm run test",
+    "format": "echo \"TODO: add HyperChat formatting\"",
+    "format:check": "echo \"TODO: add HyperChat formatting checks\"",
+    "package": "echo \"TODO: add HyperChat packaging\"",
+    "start": "echo \"TODO: add the HyperChat development server\"",
+    "test": "echo \"TODO: add HyperChat tests\"",
+    "test:watch": "echo \"TODO: add HyperChat tests in watch mode\"",
+    "type:check": "echo \"TODO: add HyperChat type checking\"",
+    "verify:build": "echo \"TODO: add HyperChat build verification\""
+  }
+}
