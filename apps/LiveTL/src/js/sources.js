@@ -14,7 +14,7 @@ import { paramsYtVideoId, AuthorType, paramsPopout, paramsTabId, paramsFrameId, 
 import { twitchSource } from '../ts/sources';
 // import * as API from './api.js';
 import * as TLDEX from './tldex.js';
-import { useReconnect } from '../submodules/chat/src/ts/chat-utils.ts';
+import { useReconnect } from '@hyperchat/ts/chat-utils';
 
 /**
  * @typedef {import('svelte/store').Readable} Readable
@@ -228,7 +228,7 @@ export function ytcSource(_window) {
     return port;
   });
 
-  return { ytc, cleanUp: () => port && port.destroy() };
+  return { ytc, cleanUp: () => port.destroy() };
 }
 
 function message(author, msg, timestamp) {

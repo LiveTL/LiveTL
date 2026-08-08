@@ -1,3 +1,0 @@
-[submodule "src/submodules/chat"]
-	path = apps/LiveTL/src/submodules/chat
-	url = https://github.com/LiveTL/HyperChat.git

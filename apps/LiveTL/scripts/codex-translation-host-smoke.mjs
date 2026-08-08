@@ -1,7 +1,7 @@
 import { spawnSync } from 'node:child_process';
 import { chromium } from 'playwright-core';
 
-const bundlePath = process.env.BUNDLE_PATH || `${process.cwd()}/build/chrome/submodules/chat/src/scripts/chat-translation-host.js`;
+const bundlePath = process.env.BUNDLE_PATH || `${process.cwd()}/build/chrome/hyperchat/scripts/chat-translation-host.js`;
 
 const resolveBrowserBinary = () => {
   const candidates = [

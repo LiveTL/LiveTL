@@ -134,7 +134,7 @@ export function parseMessageElement(message: Element): Ltl.Message | undefined {
     // console.debug({ fragment });
     const result = parseMessageFragment(fragment);
     if (result == null) return;
-    if (result.type !== 'emoji') text += result.text;
+    if (result.type !== 'emoji') text += String(result.text);
     messageArray.push(result);
   });
 

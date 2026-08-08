@@ -1,5 +1,5 @@
 <script>
-  import Tooltip from '../submodules/chat/src/components/common/Tooltip.svelte';
+  import Tooltip from '@hyperchat/components/common/Tooltip.svelte';
   import Button from './common/IconButton.svelte';
   import { createEventDispatcher } from 'svelte';
   const dispatch = createEventDispatcher();

@@ -1,9 +1,8 @@
 # LiveTL Monorepo
 
 This repository contains the LiveTL translation extension in `apps/LiveTL` and
-the standalone HyperChat extension in `apps/HyperChat`. LiveTL temporarily
-continues to consume HyperChat through the submodule at
-`apps/LiveTL/src/submodules/chat`.
+the standalone HyperChat extension in `apps/HyperChat`. LiveTL bundles the
+shared HyperChat source directly from the workspace.
 
 [![Build](https://github.com/LiveTL/LiveTL/actions/workflows/build.yml/badge.svg)](https://github.com/LiveTL/LiveTL/actions/workflows/build.yml)
 [![E2E Tests](https://github.com/LiveTL/LiveTL/actions/workflows/tests-e2e.yml/badge.svg)](https://github.com/LiveTL/LiveTL/actions/workflows/tests-e2e.yml)
@@ -37,10 +36,6 @@ for app-specific details.
 ### Setup
 
 > Note: The repo expects a Linux or Unix-like environment. If you are on Windows, use WSL.
-
-> ℹ LiveTL uses submodules. Make sure to clone the repo with the `--recursive` flag!
->
-> ℹ When pulling, you should also use `git pull --recurse`.
 
 ```bash
 npm ci

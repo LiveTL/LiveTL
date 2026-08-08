@@ -1,5 +1,5 @@
 import './storage-promise-compat';
-import '../../submodules/chat/src/scripts/chat-background.ts';
+import '@hyperchat/scripts/chat-background';
 
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === 'install') { chrome.tabs.create({ url: chrome.runtime.getURL('welcome.html') }); }

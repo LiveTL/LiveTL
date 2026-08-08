@@ -32,7 +32,7 @@ module.exports = {
     tailwindcss: tailwindConfig,
     autoprefixer: {},
     '@fullhuman/postcss-purgecss': {
-      content: ['./**/*.svelte'],
+      content: ['./**/*.svelte', '../HyperChat/src/**/*.svelte'],
       extractors: [
         {
           extractor,

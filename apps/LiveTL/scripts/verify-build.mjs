@@ -20,10 +20,13 @@ const assertFile = async (buildDir, target, file) => {
 for (const [target, mv] of Object.entries(targets)) {
   const buildDir = path.resolve('build', target);
   const manifest = JSON.parse(await readFile(path.join(buildDir, 'manifest.json'), 'utf8'));
+  const serializedManifest = JSON.stringify(manifest);
   versions.add(manifest.version);
 
   assert.equal(manifest.manifest_version, mv, `${target}: wrong manifest version`);
-  assert.ok(!JSON.stringify(manifest).includes('{{'), `${target}: unresolved manifest tag`);
+  assert.ok(!serializedManifest.includes('{{'), `${target}: unresolved manifest tag`);
+  assert.ok(!serializedManifest.includes('submodules/chat'), `${target}: legacy HyperChat path`);
+  assert.ok(serializedManifest.includes('hyperchat/scripts/chat-injector.js'), `${target}: missing HyperChat injector`);
 
   if (mv === 2) {
     assert.deepEqual(manifest.background, { page: 'html/background.html', persistent: true }, 'mv2: wrong background');
@@ -65,9 +68,12 @@ for (const [target, mv] of Object.entries(targets)) {
     ...iconFiles(manifest.action?.default_icon),
     ...iconFiles(manifest.browser_action?.default_icon),
     ...(manifest.declarative_net_request?.rule_resources ?? []).map(rule => rule.path),
-    'submodules/chat/src/scripts/chat-interceptor.js',
-    'submodules/chat/src/scripts/chat-metagetter.js',
-    'submodules/chat/src/scripts/chat-translation-host.js',
+    'hyperchat/scripts/chat-interceptor.js',
+    'hyperchat/scripts/chat-metagetter.js',
+    'hyperchat/scripts/chat-translation-host.js',
+    'hyperchat/index.html',
+    'hyperchat/options.html',
+    'hyperchat/logo-48.png',
     'ts/yt-workaround.js'
   ].filter(file => typeof file === 'string');
 
@@ -83,6 +89,14 @@ for (const [target, mv] of Object.entries(targets)) {
       await assertFile(buildDir, target, asset);
     }
   }
+
+  const injector = await readFile(path.join(buildDir, 'hyperchat/scripts/chat-injector.js'), 'utf8');
+  const expectedChatPage = mv === 2 ? 'hyperchat/index.html' : 'youtube.com/embed/hyperchat_embed';
+  assert.ok(injector.includes(expectedChatPage), `${target}: injector has wrong chat page`);
+  assert.ok(injector.includes('hyperchat/scripts/'), `${target}: injector has wrong script base`);
+
+  const tailwind = await readFile(path.join(buildDir, 'tailwind.css'), 'utf8');
+  assert.ok(tailwind.includes('.dark\\:bg-ytbg-dark'), `${target}: missing HyperChat dark theme styles`);
 }
 
 assert.equal(versions.size, 1, 'build versions differ');

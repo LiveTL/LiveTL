@@ -8,7 +8,7 @@ Paths and commands in this file are relative to `apps/HyperChat` unless noted ot
 - `mv3`, `mv3-ltl`, and `mv2` are retired. Do not use them for new work.
 - There is no branch ladder any more. MV2 and MV3 are **build targets on `main`**, not branches — see "Manifest Version Targets" below.
 - HyperChat lives in `apps/HyperChat`; keep repository-wide policy, CI, and release automation at the monorepo root.
-- LiveTL still consumes HyperChat through `apps/LiveTL/src/submodules/chat`. Land shared chat-side fixes in HyperChat `main`, then update that submodule pin on LiveTL `main`.
+- LiveTL bundles this workspace source directly through small entry modules under `apps/LiveTL/src/hyperchat`.
 
 ## House Style
 
@@ -29,11 +29,11 @@ Paths and commands in this file are relative to `apps/HyperChat` unless noted ot
   - `__MV__` in source — a build-time constant, so unused branches are dropped per target.
 - Do not add per-MV source files (`chat-background.mv2.ts` and friends). `main`'s architecture — thin background plus the broker in `src/ts/messaging.ts` — runs under MV2 as-is. Port MV3 patterns down to MV2, never MV2's persistent-background design up.
 - Prefer shared, untagged config. Only tag a key when MV2 and MV3 genuinely differ.
-- Only the two MV3 zips are released. `mv2` is built in CI for breakage coverage and consumed by LiveTL via submodule.
+- Only the two MV3 zips are released. `mv2` is built in CI for breakage coverage; LiveTL builds the shared source separately for its own targets.
 
-## Build-Time Constants (submodule consumers)
+## Build-Time Constants (workspace consumers)
 
-`src/` depends on three bare globals, declared in `src/ts/typings/vite-env.d.ts`
+`src/` depends on four bare globals, declared in `src/ts/typings/vite-env.d.ts`
 and supplied by `vite.config.ts` for our own builds:
 
 | Constant | Emitted literal | Meaning |
@@ -41,6 +41,7 @@ and supplied by `vite.config.ts` for our own builds:
 | `__BROWSER__` | string — `"chrome"` / `"firefox"` | target browser |
 | `__VERSION__` | string — `"3.3.0"` | version written into the manifest |
 | `__MV__` | **number** — `2` / `3` | target manifest version |
+| `__LIVETL__` | boolean | whether HyperChat is bundled into LiveTL |
 
 `__MV__` is compared with strict equality (`__MV__ === 2`), so it must emit a
 **number literal**. Defining it as the string `"2"` makes every check silently
@@ -58,12 +59,13 @@ define: { __BROWSER__: JSON.stringify(browser), __MV__: JSON.stringify(2) }
 new webpack.DefinePlugin({ __BROWSER__: JSON.stringify('firefox'), __MV__: 2 })
 ```
 
-**Anything that compiles this source with its own bundler must define all three**,
+**Anything that compiles this source with its own bundler must define all four**,
 or the bundle ships a reference to an undefined global and throws at runtime.
 LiveTL is the one such consumer: it builds `chat-background.ts`,
 `chat-injector.ts`, `chat-interceptor.ts`, `hyperchat.ts` and `options.ts` as its
 own entry points, so it needs these in **both** its webpack (MV2) and vite (MV3)
-configs. `__MV__` must match that consumer's own manifest version, not ours.
+config. `__MV__` must match that consumer's own manifest version, and
+`__LIVETL__` must be `true` there and `false` in standalone HyperChat.
 
 Used by `WelcomeMessage.svelte`, `Hyperchat.svelte`, `HyperchatButton.svelte`,
 `chat-background.ts`, `chat-injector.ts`. When adding a new constant, update this

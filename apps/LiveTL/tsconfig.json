@@ -4,14 +4,17 @@
     "outDir": "./build/",
     "noEmit": true,
     "baseUrl": "./src",
+    "paths": {
+      "@hyperchat/*": ["../../HyperChat/src/*"]
+    },
     "allowJs": true,
     "checkJs": false,
     "strict": true,
     "lib": ["DOM", "dom.iterable"],
     "target": "esnext",
     "resolveJsonModule": true,
-    "typeRoots": ["../../node_modules/@types", "./src/ts/typings", "./src/submodules/chat/src/ts/typings"]
+    "typeRoots": ["../../node_modules/@types", "./src/ts/typings"]
   },
-  "include": ["src/**/*", "*.js", "utils/**/*"],
+  "include": ["src/**/*", "../HyperChat/src/ts/typings/**/*.d.ts", "*.js", "utils/**/*"],
   "exclude": ["node_modules", "build", "**/vite.config.ts"]
 }
