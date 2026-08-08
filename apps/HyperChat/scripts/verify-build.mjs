@@ -28,6 +28,9 @@ const unresolvedKeys = (value, result = []) => {
   return result;
 };
 
+const referencedIcons = (value) =>
+  typeof value === 'string' ? [value] : Object.values(value ?? {}).flatMap(referencedIcons);
+
 for (const target of ['chrome', 'firefox', 'mv2']) {
   const buildDir = path.resolve('build', target);
   const manifest = JSON.parse(await readFile(path.join(buildDir, 'manifest.json'), 'utf8'));
@@ -72,6 +75,9 @@ for (const target of ['chrome', 'firefox', 'mv2']) {
     manifest.options_ui?.page,
     manifest.action?.default_popup,
     manifest.browser_action?.default_popup,
+    ...referencedIcons(manifest.icons),
+    ...referencedIcons(manifest.action?.default_icon),
+    ...referencedIcons(manifest.browser_action?.default_icon),
   ].filter((file) => typeof file === 'string');
 
   for (const file of files) {

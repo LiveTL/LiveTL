@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { SyncStore } from 'js/storage';
+  import Slider from 'smelte/src/components/Slider';
   import Button from './IconButton.svelte';
 
   /** SyncStore for value updates. */
@@ -53,7 +54,7 @@
   </div>
   <div class="flex flex-row items-center">
     <div class="flex-1 px-2">
-      <input class="w-full accent-current" type="range" bind:value {disabled} {min} {max} step={step ?? 1} aria-label={name} />
+      <Slider bind:value {color} {disabled} {min} {max} {step} />
     </div>
     {#if showReset}
       <div class="flex-none">

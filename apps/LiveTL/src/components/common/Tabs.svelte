@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { SvelteComponent } from 'svelte';
+  import { Tabs, Tab, TabButton } from 'smelte/src/components/Tabs';
 
   type TabsItem = {
     id: string;
@@ -12,8 +13,6 @@
   export let items: TabsItem[] = [];
   export let buttonFullWidth = false;
 
-  $: if (selected == null && items.length > 0) selected = items[0].id;
-
   const classes = 'y-0 items-center relative z-10';
   $: tabButtonClasses = 'duration-75 relative overflow-hidden ' +
       'text-center p-2 cursor-pointer flex mx-auto items-center text-sm ' +
@@ -21,14 +20,28 @@
 </script>
 
 <div class="text-base">
-  <div class="flex {classes}" role="tablist">
-    {#each items as item}
-      <button type="button" role="tab" aria-selected={selected === item.id} class="{tabButtonClasses} {selected === item.id ? 'text-primary-500 border-b-2 border-primary-500' : ''}" on:click={() => (selected = item.id)}>{item.text}</button>
-    {/each}
-  </div>
-  <div class="p-4">
-    {#each items as tab}
-      {#if selected === tab.id}<svelte:component this={tab.component} />{/if}
-    {/each}
-  </div>
+  <Tabs
+    {selected}
+    let:selected={tabSelected}
+    {items}
+    {classes}
+    indicator={false}
+  >
+    <TabButton
+      slot="item"
+      classes={tabButtonClasses}
+      bind:selected
+      let:item
+      {...item}
+    >
+      {item.text}
+    </TabButton>
+    <div slot="content" class="p-4">
+      {#each items as tab}
+        <Tab id={tab.id} selected={tabSelected}>
+          <svelte:component this={tab.component} />
+        </Tab>
+      {/each}
+    </div>
+  </Tabs>
 </div>

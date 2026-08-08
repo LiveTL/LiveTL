@@ -2,7 +2,7 @@
   import { slide, fade } from 'svelte/transition';
   import MessageRun from './MessageRuns.svelte';
   import Tooltip from './common/Tooltip.svelte';
-  import Icon from './common/Icon.svelte';
+  import Icon from 'smelte/src/components/Icon';
   import { Theme } from '../ts/chat-constants';
   import { createEventDispatcher } from 'svelte';
   import { showTimestamps } from '../ts/storage';

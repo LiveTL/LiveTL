@@ -1,38 +1,41 @@
 {
   "name": "livetl-monorepo",
   "private": true,
-  "type": "module",
   "workspaces": ["apps/*"],
   "overrides": {
-    "svelte": "5.56.8",
+    "svelte": "3.59.2",
     "@mdi/js": "6.9.96",
     "iframe-translator": "0.3.8"
   },
   "scripts": {
     "build": "npm run build -w @livetl/hyperchat && npm run build -w @livetl/livetl",
-    "build:chrome": "npm run build:chrome -w @livetl/livetl",
-    "build:firefox": "npm run build:firefox -w @livetl/livetl",
-    "build:mv2": "npm run build:mv2 -w @livetl/livetl",
-    "build:production": "npm run build:production -w @livetl/livetl",
+    "build:chrome": "npm run build:chrome -w @livetl/hyperchat && npm run build:chrome -w @livetl/livetl",
+    "build:firefox": "npm run build:firefox -w @livetl/hyperchat && npm run build:firefox -w @livetl/livetl",
+    "build:mv2": "npm run build:mv2 -w @livetl/hyperchat && npm run build:mv2 -w @livetl/livetl",
+    "build:production": "npm run build:production -w @livetl/hyperchat && npm run build:production -w @livetl/livetl",
     "check": "npm run check -w @livetl/hyperchat && npm run check -w @livetl/livetl",
-    "test": "npm run test -w @livetl/livetl",
-    "format": "npm run format -w @livetl/livetl",
-    "format:check": "npm run format:check -w @livetl/livetl",
-    "package": "npm run package -w @livetl/livetl",
-    "start": "npm run start -w @livetl/livetl",
-    "dev:chrome": "npm run dev:chrome -w @livetl/livetl",
-    "dev:firefox": "npm run dev:firefox -w @livetl/livetl",
-    "dev:mv2": "npm run dev:mv2 -w @livetl/livetl",
+    "test": "npm run test -w @livetl/hyperchat && npm run test -w @livetl/livetl",
+    "format": "npm run format -w @livetl/hyperchat && npm run format -w @livetl/livetl",
+    "format:check": "npm run format:check -w @livetl/hyperchat && npm run format:check -w @livetl/livetl",
+    "package": "npm run package -w @livetl/hyperchat && npm run package -w @livetl/livetl",
+    "start": "npm run dev:chrome",
+    "dev:chrome": "npm-run-all --parallel dev:chrome:hyperchat dev:chrome:livetl",
+    "dev:chrome:hyperchat": "npm run dev:chrome -w @livetl/hyperchat",
+    "dev:chrome:livetl": "npm run dev:chrome -w @livetl/livetl",
+    "dev:firefox": "npm-run-all --parallel dev:firefox:hyperchat dev:firefox:livetl",
+    "dev:firefox:hyperchat": "npm run dev:firefox -w @livetl/hyperchat",
+    "dev:firefox:livetl": "npm run dev:firefox -w @livetl/livetl",
+    "dev:mv2": "npm-run-all --parallel dev:mv2:hyperchat dev:mv2:livetl",
+    "dev:mv2:hyperchat": "npm run dev:mv2 -w @livetl/hyperchat",
+    "dev:mv2:livetl": "npm run dev:mv2 -w @livetl/livetl",
     "e2e": "npm run e2e -w @livetl/livetl",
     "ss": "npm run ss -w @livetl/livetl",
     "update:list": "npm run update:list -w @livetl/livetl",
-    "lint": "eslint apps --max-warnings=0"
+    "lint": "npm run lint:check -w @livetl/hyperchat && npm run lint -w @livetl/livetl",
+    "postinstall": "patch-package"
   },
   "devDependencies": {
-    "@eslint/js": "10.0.1",
-    "eslint": "10.0.1",
-    "eslint-plugin-svelte": "3.22.0",
-    "globals": "16.4.0",
-    "typescript-eslint": "8.65.0"
+    "npm-run-all": "4.1.5",
+    "patch-package": "8.0.1"
   }
 }

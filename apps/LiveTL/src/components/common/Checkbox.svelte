@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Checkbox, { Label } from 'smelte/src/components/Checkbox';
+
   // eslint-disable-next-line no-undef
   type T = $$Generic;
 
@@ -31,9 +33,21 @@
     group = group;
   }
 
+  const classes = 'inline-flex items-center cursor-pointer';
+  const labelClasses = 'decoration-clone pl-2 cursor-pointer text-gray-700 ' +
+    'dark:text-gray-300';
 </script>
 
-<label class="inline-flex items-center cursor-pointer {wrapperClass}" class:opacity-50={disabled}>
-  <input type="checkbox" bind:checked {disabled} on:change={groupUpdate} />
-  {#if label !== ''}<span class="pl-2 text-gray-700 dark:text-gray-300">{label}</span>{/if}
-</label>
+<Checkbox
+  class={wrapperClass}
+  {classes}
+  bind:checked
+  {disabled}
+  on:change={groupUpdate}
+>
+  <div slot="label">
+    {#if label !== ''}
+      <Label slot="label" {disabled} {label} classes={labelClasses} />
+    {/if}
+  </div>
+</Checkbox>

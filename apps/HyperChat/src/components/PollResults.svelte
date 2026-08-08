@@ -2,10 +2,11 @@
   import { slide, fade } from 'svelte/transition';
   import MessageRun from './MessageRuns.svelte';
   import Tooltip from './common/Tooltip.svelte';
-  import Icon from './common/Icon.svelte';
+  import Icon from 'smelte/src/components/Icon';
   import { Theme } from '../ts/chat-constants';
   import { createEventDispatcher } from 'svelte';
   import { showProfileIcons } from '../ts/storage';
+  import ProgressLinear from 'smelte/src/components/ProgressLinear';
 
   export let poll: Ytc.ParsedPoll;
 
@@ -82,7 +83,7 @@
             {choice.percentage}
           </span>
         </div>
-        <div class="h-1 bg-gray-700 rounded overflow-hidden"><div class="h-full bg-gray-300" style="width: {(choice.ratio || 0.001) * 100}%" /></div>
+        <ProgressLinear progress={(choice.ratio || 0.001) * 100} color="gray"/>
       {/each}
     {/if}
   </div>

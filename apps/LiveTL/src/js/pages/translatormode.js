@@ -1,5 +1,4 @@
 import App from '../../components/TranslatorMode.svelte';
-import { mount } from 'svelte';
 
 let app;
 
@@ -18,7 +17,7 @@ let app;
   container.appendChild(newbody);
   container.cleanUpCbs = container.cleanUpCbs || [];
 
-  app = mount(App, {
+  app = new App({
     target: newbody,
     props: {
       container

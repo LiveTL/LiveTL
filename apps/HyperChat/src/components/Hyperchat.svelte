@@ -2,7 +2,8 @@
   import '../stylesheets/scrollbar.css';
   import { onDestroy, onMount, afterUpdate, tick } from 'svelte';
   import { fade } from 'svelte/transition';
-  import { get, writable } from 'svelte/store';
+  import { get } from 'svelte/store';
+  import dark from 'smelte/src/dark';
   import WelcomeMessage from './WelcomeMessage.svelte';
   import Message from './Message.svelte';
   import PinnedMessage from './PinnedMessage.svelte';
@@ -29,7 +30,7 @@
     useReconnect
   } from '../ts/chat-utils';
   import { handleReplyThreadResponse } from '../ts/chat-actions';
-  import Button from './common/Button.svelte';
+  import Button from 'smelte/src/components/Button';
   import {
     theme,
     showOnlyMemberChat,
@@ -104,8 +105,7 @@
   let isAtBottom = true;
   let truncateInterval: number | undefined;
   const isReplay = paramsIsReplay;
-  const darkState = writable(false);
-  $: document.documentElement.classList.toggle('mode-dark', $darkState);
+  const smelteDark = dark();
 
   type MessageBlocker = (a: Chat.MessageAction) => boolean;
 
@@ -330,10 +330,10 @@
 
   const updateTheme = (theme: Theme, ytDark = false) => {
     if (theme === Theme.YOUTUBE) {
-      darkState.set(ytDark);
+      smelteDark.set(ytDark);
       return;
     }
-    darkState.set(theme === Theme.DARK);
+    smelteDark.set(theme === Theme.DARK);
     if (theme === Theme.LIGHT) document.body.classList.add('bg-ytdark-50');
     else document.body.classList.remove('bg-ytdark-50');
   };
@@ -523,7 +523,7 @@
           class="hover-highlight p-1.5 w-full block"
           class:flex = {!isWelcome(action)}
           class:mention = {$enableHighlightedMentions && isMessage(action) && isMention(action.message)}
-          class:mention-light = {!$darkState}
+          class:mention-light = {!$smelteDark}
           on:mouseover={() => { setHover(action); }}
           on:focus={() => { setHover(action); }}
           on:mouseout={() => { setHover(null); }}

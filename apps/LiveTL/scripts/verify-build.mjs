@@ -83,6 +83,17 @@ for (const [target, mv] of Object.entries(targets)) {
       await assertFile(buildDir, target, asset);
     }
   }
+
+  const chatInjector = await readFile(
+    path.join(buildDir, 'submodules/chat/src/scripts/chat-injector.js'),
+    'utf8'
+  );
+  assert.ok(chatInjector.includes('hyperchat/logo-48.png'), `${target}: HyperChat logo uses standalone path`);
+  assert.ok(
+    chatInjector.includes('submodules/chat/src/scripts/'),
+    `${target}: HyperChat scripts use standalone paths`
+  );
+  assert.ok(!chatInjector.includes('assets/logo-48.png'), `${target}: standalone HyperChat logo leaked`);
 }
 
 assert.equal(versions.size, 1, 'build versions differ');

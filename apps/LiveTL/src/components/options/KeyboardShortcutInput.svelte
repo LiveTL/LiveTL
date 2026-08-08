@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import Button from '../common/Button.svelte';
+  import Button from 'smelte/src/components/Button';
 
   import { modifierKeys } from '../../js/constants.js';
   import { anyRecordingShortcut } from '../../js/store.js';

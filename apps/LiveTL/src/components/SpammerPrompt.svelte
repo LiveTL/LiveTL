@@ -10,7 +10,7 @@
   import { AuthorType } from '../js/constants.js';
   import { Queue } from '../js/queue.js';
   import Dialog from './common/Dialog.svelte';
-  import Button from './common/Button.svelte';
+  import Button from 'smelte/src/components/Button';
 
   const spammersProcessed = new Set();
   const spammerQueue = new Queue();

@@ -22,8 +22,8 @@ describe('Radio', () => {
     const store = writable(options[0]);
     const { getAllByRole } = render(Radio, { map, store });
     await store.set(options[1]);
-    expect(getAllByRole('radio')[0]).not.toBeChecked();
-    expect(getAllByRole('radio')[1]).toBeChecked();
+    expect(getAllByRole('radio')[0]).toHaveAttribute('selected', 'false');
+    expect(getAllByRole('radio')[1]).toHaveAttribute('selected', 'true');
   });
 
   it('updates the store', async () => {

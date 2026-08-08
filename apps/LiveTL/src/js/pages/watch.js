@@ -1,8 +1,7 @@
 import App from '../../components/Watch.svelte';
-import { mount } from 'svelte';
-import '../../stylesheets/tailwind.css';
+import 'smelte/src/tailwind.css';
 
-const app = mount(App, {
+const app = new App({
   target: document.body,
   props: {
   }

@@ -1,5 +1,4 @@
-export const isLiveTL = false;
-// DO NOT EDIT THE ABOVE LINE. It is updated by webpack.
+export const isLiveTL = __LIVETL__;
 
 export const enum Theme {
   YOUTUBE = 'YOUTUBE',

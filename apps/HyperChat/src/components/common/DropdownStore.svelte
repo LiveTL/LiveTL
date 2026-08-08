@@ -1,5 +1,7 @@
 <script lang="ts">
   import type { Writable } from 'svelte/store';
+  import Select from 'smelte/src/components/Select';
+  import { getDropdownOffsetY } from '../../ts/component-utils';
   type DropdownItem = { value: string, text: string } | string;
   /** Dropdown label. */
   export let name = '';
@@ -13,13 +15,27 @@
   export let boundingDiv: HTMLElement | null = null;
   $: value = $store;
   $: store.set(value);
+  let showList = false;
+  let div: HTMLElement;
+  let offsetY = '';
+  const onShowListChange = async (showList: boolean) => {
+    if (!showList || !boundingDiv) return;
+    offsetY = await getDropdownOffsetY(div, boundingDiv);
+  };
+  $: onShowListChange(showList);
+  const classes = 'dropdown-wrapper cursor-pointer relative';
+  $: optionsClasses = 'dropdown-options absolute left-0 bg-white rounded ' +
+    'shadow w-full z-20 dark:bg-dark-500 max-h-60 overflow-auto ' + offsetY;
 </script>
 
-<label class="flex flex-col {$$props.class ?? ''}">
-  {#if name}<span class="text-xs text-gray-600 dark:text-gray-300">{name}</span>{/if}
-  <select bind:value class="rounded bg-white dark:bg-dark-500 text-gray-800 dark:text-gray-100 {dense ? 'p-1' : 'p-2'}">
-    {#each items as item}
-      <option value={typeof item === 'string' ? item : item.value}>{typeof item === 'string' ? item : item.text}</option>
-    {/each}
-  </select>
-</label>
+<div bind:this={div} class={$$props.class ? $$props.class : ''}>
+  <Select
+    bind:value
+    bind:showList
+    label={name}
+    {items}
+    {classes}
+    {dense}
+    {optionsClasses}
+  />
+</div>

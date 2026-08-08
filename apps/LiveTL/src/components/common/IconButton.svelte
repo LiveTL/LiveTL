@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Button from './Button.svelte';
+  import Button from 'smelte/src/components/Button';
 
   export let icon: string;
   export let color = 'primary';

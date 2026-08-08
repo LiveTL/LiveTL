@@ -1,5 +1,6 @@
 <script lang="ts">
-  const noop = (): void => {};
+  import TextField from 'smelte/src/components/TextField';
+  import { noop } from 'svelte/internal';
 
   type Rule = {
     /** Callback function to assert input value. */
@@ -49,14 +50,18 @@
 </script>
 
 <div class="{error ? 'mb-5' : ''} {$$props.class ?? ''}">
-  <label class={classes}>
-    {#if label}<span class="absolute left-4 top-1 text-xs">{label}</span>{/if}
-    {#if textarea}
-      <textarea bind:value {placeholder} class="{inputClasses} {outlined ? 'border' : ''} {add}" />
-    {:else}
-      <input bind:value {placeholder} class="{inputClasses} {outlined ? 'border' : ''} {add}" />
-    {/if}
-    {#if clearable && value}<button type="button" class="absolute right-2 top-2 material-icons" on:click={clearable ? clearableFn : noop}>cancel</button>{/if}
-    {#if error}<span class="absolute left-0 top-full text-error-500 text-xs">{error}</span>{/if}
-  </label>
+  <TextField
+    bind:value
+    {label}
+    {placeholder}
+    {classes}
+    {inputClasses}
+    {outlined}
+    {textarea}
+    {add}
+    {error}
+    append={clearable ? 'cancel' : ''}
+    on:click-append={clearable ? clearableFn : noop}
+    iconClass={clearable ? 'cursor-pointer' : ''}
+  />
 </div>

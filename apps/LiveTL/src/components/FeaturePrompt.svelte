@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { get, writable } from 'svelte/store';
-  import Button from './common/Button.svelte';
+  import Button from 'smelte/src/components/Button';
   import Card from './common/Card.svelte';
   import { FeaturePrompt } from '../js/constants.js';
   import {

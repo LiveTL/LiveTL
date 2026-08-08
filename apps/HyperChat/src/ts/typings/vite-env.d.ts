@@ -6,6 +6,8 @@ declare const __VERSION__: string;
  * carries its own MV's code.
  */
 declare const __MV__: 2 | 3;
+/** Whether HyperChat source is being bundled into LiveTL. */
+declare const __LIVETL__: boolean;
 
 // Vite CSS imports with ?inline suffix
 declare module '*?inline' {

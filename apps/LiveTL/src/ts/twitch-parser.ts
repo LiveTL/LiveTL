@@ -90,7 +90,7 @@ function getType(type: string): Ltl.AuthorType {
   if (type === 'verified') return AuthorType.verified;
   if (type === 'broadcaster') return AuthorType.owner;
   if (type === 'subscriber') return AuthorType.member;
-  return 0 as Ltl.AuthorType;
+  return 0;
 }
 
 function parseTypes(message: Element): Ltl.AuthorType {

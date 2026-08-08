@@ -7,6 +7,7 @@
   let image = '';
   import Message from './Message.svelte';
   import MessageDisplayWrapper from './MessageDisplayWrapper.svelte';
+  import ProgressLinear from 'smelte/src/components/ProgressLinear';
   import Dialog from './common/Dialog.svelte';
 
   $: if (renderQueue.length) {
@@ -45,7 +46,7 @@
 
 {#if rendering}
   <div class="fixed z-50 top-0 left-0 w-full">
-    <div class="h-1 w-full bg-primary-500 animate-pulse" aria-label="Rendering screenshot" />
+    <ProgressLinear />
   </div>
 {/if}
 

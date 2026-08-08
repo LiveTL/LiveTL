@@ -1,4 +1,5 @@
 <script>
+  import Select from 'smelte/src/components/Select';
   import Icon from '../common/Icon.svelte';
   import { getDropdownOffsetY, getRelativeRect } from '../../ts/component-utils';
   // I legit can't understand LookupStore to migrate this to TS lol
@@ -50,10 +51,14 @@
 </script>
 
 <div bind:this={div} class={$$props.class ? $$props.class : ''}>
-  <div class={classes}>
-    <button type="button" class="w-full p-1 text-left" on:click={() => (showList = !showList)}>{name}</button>
-    {#if showList}
+  <Select
+    label={name}
+    dense
+    bind:showList
+    {classes}
+  >
     <div
+      slot="options"
       class={optionsClasses}
       on:click|stopPropagation
       style="width: {width}px; {offsetStyle}"
@@ -74,6 +79,5 @@
         <div class="py-4 px-2 cursor-default">None</div>
       {/if}
     </div>
-    {/if}
-  </div>
+  </Select>
 </div>

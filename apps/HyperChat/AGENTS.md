@@ -39,14 +39,15 @@
 
 ## Build-Time Constants (workspace consumers)
 
-`src/` depends on three bare globals, declared in `src/ts/typings/vite-env.d.ts`
-and supplied by `vite.config.mts` for our own builds:
+`src/` depends on four bare globals, declared in `src/ts/typings/vite-env.d.ts`
+and supplied by `vite.config.ts` for our own builds:
 
 | Constant      | Emitted literal                   | Meaning                           |
 | ------------- | --------------------------------- | --------------------------------- |
 | `__BROWSER__` | string — `"chrome"` / `"firefox"` | target browser                    |
 | `__VERSION__` | string — `"3.3.0"`                | version written into the manifest |
 | `__MV__`      | **number** — `2` / `3`            | target manifest version           |
+| `__LIVETL__`  | boolean                           | source is bundled into LiveTL     |
 
 `__MV__` is compared with strict equality (`__MV__ === 2`), so it must emit a
 **number literal**. Defining it as the string `"2"` makes every check silently
@@ -64,12 +65,12 @@ define: { __BROWSER__: JSON.stringify(browser), __MV__: JSON.stringify(2) }
 new webpack.DefinePlugin({ __BROWSER__: JSON.stringify('firefox'), __MV__: 2 })
 ```
 
-**Anything that compiles this source with its own bundler must define all three**,
+**Anything that compiles this source with its own bundler must define all four**,
 or the bundle ships a reference to an undefined global and throws at runtime.
 LiveTL is the one such consumer: it builds `chat-background.ts`,
 `chat-injector.ts`, `chat-interceptor.ts`, `hyperchat.ts` and `options.ts` as its
-own entry points, so it needs these in **both** its webpack (MV2) and vite (MV3)
-configs. `__MV__` must match that consumer's own manifest version, not ours.
+own entry points, so its Vite config must define them for every target. `__MV__`
+must match that consumer's own manifest version, not ours.
 
 Used by `WelcomeMessage.svelte`, `Hyperchat.svelte`, `HyperchatButton.svelte`,
 `chat-background.ts`, `chat-injector.ts`. When adding a new constant, update this

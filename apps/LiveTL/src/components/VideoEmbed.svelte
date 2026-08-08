@@ -2,6 +2,7 @@
   import { videoSide, faviconURL, videoShortcutAction } from '../js/store.js';
   import { VideoSide } from '../js/constants.js';
   import { onMount } from 'svelte';
+  import ProgressCircular from 'smelte/src/components/ProgressCircular';
 
   export let videoId: string;
 
@@ -37,7 +38,7 @@
 >
   {#if !workaroundLoaded}
     <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2">
-      <div class="h-8 w-8 rounded-full border-4 border-primary-500 border-t-transparent animate-spin" aria-label="Loading" />
+      <ProgressCircular />
     </div>
   {/if}
   <iframe
