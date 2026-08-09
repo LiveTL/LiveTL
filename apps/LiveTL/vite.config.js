@@ -1,4 +1,3 @@
-import fs from 'fs';
 import path from 'path';
 
 import alias from '@rollup/plugin-alias';
@@ -12,20 +11,15 @@ import { resolveMv } from '../HyperChat/scripts/resolve-manifest';
 
 import manifest from './src/manifest.json';
 
-// include all entry points from src/js/pages/*.js
-const pagesEntryPoints = ['watch', 'popout', 'options', 'welcome', 'lite'].map((page) => ({
-  name: `html/${page}.html`,
-  scripts: [`/js/pages/${page}.js`],
-}));
-
-const entryPoints = [
-  ...pagesEntryPoints,
-  {
-    name: 'html/background.html',
-    scripts: ['/js/pages/background.js'],
-  },
-  { name: 'html/hyperchat/index.html', scripts: ['/hyperchat/index.ts'] },
-  { name: 'html/hyperchat/options.html', scripts: ['/hyperchat/options.ts'] },
+const htmlInputs = [
+  'watch.html',
+  'popout.html',
+  'options.html',
+  'welcome.html',
+  'lite.html',
+  'background.html',
+  'hyperchat/index.html',
+  'hyperchat/options.html',
 ];
 
 const jsEntry = [
@@ -35,17 +29,6 @@ const jsEntry = [
   'hyperchat/scripts/chat-mounter.ts',
   'hyperchat/scripts/chat-translation-host.ts',
 ];
-
-const entryPointTemplate = fs.readFileSync(path.join(__dirname, 'src/empty.html')).toString();
-
-for (const entry of entryPoints) {
-  const htmlEntry = entry.scripts.reduce(
-    (template, script) =>
-      template.replace('</head>', `  <script defer type="module" src="${script}"></script>\n</head>`),
-    entryPointTemplate,
-  );
-  fs.writeFileSync(`src/${entry.name}`, htmlEntry);
-}
 
 // chrome does not like _ in filename
 // see: https://github.com/rollup/rollup/issues/4772#issuecomment-1366727437
@@ -136,20 +119,6 @@ export default defineConfig({
       ],
     }),
 
-    // copy over html/ folder into project root
-    // TODO: find a better way of doing this,
-    // I really don't want a lot of auto-gen html in src/
-    // but copying all the files over may be slow
-    copy({
-      hook: 'writeBundle',
-      targets: [
-        {
-          src: `${buildDir}/html/*`,
-          dest: buildDir,
-        },
-      ],
-    }),
-
     // copy over hyperchat stylesheets
     // these should ideally be copied over automatically from this plugin
     // however, they do not get copied
@@ -184,7 +153,7 @@ export default defineConfig({
       // TODO: re-enable this once we've upgraded vite-plugin-web-extension
       skipManifestValidation: true,
       assets: 'img',
-      additionalInputs: [...entryPoints.map((entry) => entry.name), ...jsEntry],
+      additionalInputs: [...htmlInputs, ...jsEntry],
       watchFilePaths: [path.resolve(__dirname, 'src/manifest.json'), path.resolve(__dirname, 'src/allow-iframe.json')],
       webExtConfig: {
         // lofi hip hop (the one that spawned after the og one ended)

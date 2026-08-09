@@ -1,0 +1,51 @@
+{
+  "$schema": "./node_modules/turbo/schema.json",
+  "tasks": {
+    "//#format": {
+      "cache": false
+    },
+    "//#format:check": {},
+    "lint": {
+      "cache": false
+    },
+    "lint:check": {
+      "cache": false
+    },
+    "test": {
+      "cache": false
+    },
+    "type:check": {
+      "cache": false
+    },
+    "verify:build": {
+      "cache": false
+    },
+    "build:all": {
+      "dependsOn": ["type:check", "build:chrome", "build:firefox", "build:mv2"]
+    },
+    "build:chrome": {
+      "env": ["MINIFY", "VERSION"],
+      "outputs": ["build/chrome/**", "build/*-Chrome.zip"]
+    },
+    "build:firefox": {
+      "env": ["MINIFY", "VERSION"],
+      "outputs": ["build/firefox/**", "build/*-Firefox.xpi"]
+    },
+    "build:mv2": {
+      "env": ["MINIFY", "VERSION"],
+      "outputs": ["build/mv2/**", "build/*-mv2.xpi"]
+    },
+    "dev:chrome": {
+      "cache": false,
+      "persistent": true
+    },
+    "dev:firefox": {
+      "cache": false,
+      "persistent": true
+    },
+    "dev:mv2": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}

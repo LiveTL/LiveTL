@@ -75,6 +75,12 @@
 
 ## Build and Test Matrix
 
+Root build, check, test, lint, and type-check commands are orchestrated by
+Turborepo. Keep the implementation commands in each workspace independently
+runnable and declare new generated outputs and output-affecting environment
+variables in `turbo.json`. Local cache data lives in ignored `.turbo`
+directories; remote caching is not configured.
+
 | Target      | Build                   | Watch                 | Output                      | Release status  |
 | ----------- | ----------------------- | --------------------- | --------------------------- | --------------- |
 | Chrome MV3  | `npm run build:chrome`  | `npm run dev:chrome`  | `apps/LiveTL/build/chrome`  | Published       |

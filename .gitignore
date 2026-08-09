@@ -14,7 +14,4 @@ __pycache__/
 .DS_Store
 venv/
 failure-test*.png
-
-# auto-generated html from vite
-apps/*/src/html/*.html
-apps/*/src/html/**/*.html
+.turbo/

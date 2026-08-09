@@ -4,6 +4,7 @@
   "description": "Get live translations for YouTube and Twitch streams, crowdsourced from multilingual viewers!",
   "scripts": {
     "build": "npm run type:check && npm run build:chrome && npm run build:firefox && npm run build:mv2 && npm run verify:build",
+    "build:all": "npm run verify:build",
     "build:chrome": "cross-env BROWSER=chrome vite build",
     "build:firefox": "cross-env BROWSER=firefox vite build",
     "build:mv2": "cross-env BROWSER=firefox MV=2 vite build",

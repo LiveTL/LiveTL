@@ -27,7 +27,7 @@ for (const [target, mv] of Object.entries(targets)) {
   assert.ok(serializedManifest.includes('hyperchat/scripts/chat-injector.js'), `${target}: missing HyperChat injector`);
 
   if (mv === 2) {
-    assert.deepEqual(manifest.background, { page: 'html/background.html', persistent: true }, 'mv2: wrong background');
+    assert.deepEqual(manifest.background, { page: 'background.html', persistent: true }, 'mv2: wrong background');
     assert.ok(manifest.browser_action, 'mv2: missing browser_action');
     assert.equal(manifest.action, undefined, 'mv2: unexpected action');
     assert.equal(manifest.host_permissions, undefined, 'mv2: unexpected host permissions');

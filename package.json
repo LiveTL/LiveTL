@@ -5,33 +5,33 @@
     "apps/*"
   ],
   "scripts": {
-    "build": "npm run build -w @livetl/hyperchat && npm run build -w @livetl/livetl",
-    "build:chrome": "npm run build:chrome -w @livetl/hyperchat && npm run build:chrome -w @livetl/livetl",
-    "build:firefox": "npm run build:firefox -w @livetl/hyperchat && npm run build:firefox -w @livetl/livetl",
-    "build:mv2": "npm run build:mv2 -w @livetl/hyperchat && npm run build:mv2 -w @livetl/livetl",
-    "build:hyperchat": "npm run build -w @livetl/hyperchat",
-    "build:livetl": "npm run build -w @livetl/livetl",
+    "build": "turbo run build:all",
+    "build:chrome": "turbo run build:chrome",
+    "build:firefox": "turbo run build:firefox",
+    "build:mv2": "turbo run build:mv2",
+    "build:hyperchat": "turbo run build:all --filter=@livetl/hyperchat",
+    "build:livetl": "turbo run build:all --filter=@livetl/livetl",
     "codex:status": "npm run codex:status -w @livetl/livetl",
     "codex:test": "npm run codex:test -w @livetl/livetl",
     "codex:watch": "npm run codex:watch -w @livetl/livetl",
-    "check": "npm run format:check && npm run lint:check && npm run type:check && npm run test",
-    "test": "npm run test -w @livetl/hyperchat && npm run test -w @livetl/livetl",
+    "check": "turbo run format:check lint:check type:check test",
+    "test": "turbo run test",
     "test:watch": "npm run test:watch -w @livetl/hyperchat && npm run test:watch -w @livetl/livetl",
     "format:check": "npm run format -- --check",
     "format": "oxfmt",
-    "lint:check": "npm run lint:check -w @livetl/hyperchat && npm run lint:check -w @livetl/livetl",
-    "lint": "npm run lint -w @livetl/hyperchat && npm run lint -w @livetl/livetl",
+    "lint:check": "turbo run lint:check",
+    "lint": "turbo run lint",
     "start": "npm run start -w @livetl/livetl",
     "dev:chrome": "npm run dev:chrome -w @livetl/livetl",
     "dev:firefox": "npm run dev:firefox -w @livetl/livetl",
     "dev:mv2": "npm run dev:mv2 -w @livetl/livetl",
     "e2e": "npm run e2e -w @livetl/livetl",
-    "e2e:build": "npm run e2e:build -w @livetl/livetl",
+    "e2e:build": "turbo run build:all --filter=@livetl/livetl",
     "e2e:test": "npm run e2e:test -w @livetl/livetl",
     "ss": "npm run ss -w @livetl/livetl",
     "update:list": "npm run update:list -w @livetl/livetl",
-    "type:check": "npm run type:check -w @livetl/hyperchat && npm run type:check -w @livetl/livetl",
-    "verify:build": "npm run verify:build -w @livetl/hyperchat && npm run verify:build -w @livetl/livetl"
+    "type:check": "turbo run type:check",
+    "verify:build": "turbo run verify:build"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.21.0",
@@ -44,6 +44,8 @@
     "eslint-plugin-svelte3": "^3.4.1",
     "oxfmt": "^0.62.0",
     "svelte": "3.49.0",
+    "turbo": "2.10.9",
     "vite-plugin-zip-pack": "1.0.7"
-  }
+  },
+  "packageManager": "npm@11.17.0"
 }

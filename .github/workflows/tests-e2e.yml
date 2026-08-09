@@ -38,6 +38,9 @@ jobs:
           python3 -m pip install 'py==1.11.0' 'autoparaselenium>=0.3.1' 'selenium==4.9.1'
           python3 -m pip freeze
 
+      - name: Cache for Turbo
+        uses: rharkor/caching-for-turbo@5d14fba18e450c09393333cfd4242e8b3cb455a6 # v2.4.2
+
       - name: Install modules
         run: npm ci
 

@@ -5,6 +5,7 @@
   "scripts": {
     "type:check": "tsc --noEmit",
     "build": "npm run type:check && npm-run-all --parallel build:chrome build:firefox build:mv2 && npm run verify:build",
+    "build:all": "npm run verify:build",
     "build:chrome": "cross-env BROWSER=chrome vite build",
     "build:firefox": "cross-env BROWSER=firefox vite build",
     "build:mv2": "cross-env BROWSER=firefox MV=2 vite build",
