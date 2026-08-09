@@ -3,9 +3,8 @@
   "version": "3.2.0",
   "private": true,
   "scripts": {
-    "typecheck": "tsc --noEmit",
-    "type:check": "npm run typecheck",
-    "build": "npm run typecheck && npm-run-all --parallel build:chrome build:firefox build:mv2 && npm run verify:build",
+    "type:check": "tsc --noEmit",
+    "build": "npm run type:check && npm-run-all --parallel build:chrome build:firefox build:mv2 && npm run verify:build",
     "build:chrome": "cross-env BROWSER=chrome vite build",
     "build:firefox": "cross-env BROWSER=firefox vite build",
     "build:mv2": "cross-env BROWSER=firefox MV=2 vite build",
@@ -14,15 +13,12 @@
     "dev:mv2": "cross-env MINIFY=false BROWSER=firefox MV=2 vite build --watch",
     "verify:build": "node scripts/verify-build.mjs",
     "start": "npm run dev:chrome",
-    "start:none": "npm run dev:chrome",
     "start:chrome": "cross-env AUTOLAUNCH=true npm run dev:chrome",
     "start:firefox": "cross-env AUTOLAUNCH=true npm run dev:firefox",
     "lint": "npm run lint:check -- --fix",
     "lint:check": "eslint . --max-warnings=0",
     "test": "echo \"TODO: add HyperChat tests\"",
-    "test:watch": "echo \"TODO: add HyperChat tests in watch mode\"",
-    "check": "npm run format:check && npm run lint:check && npm run type:check && npm run test",
-    "package": "npm run verify:build"
+    "test:watch": "echo \"TODO: add HyperChat tests in watch mode\""
   },
   "dependencies": {
     "@livetl/svelte-webext-stores": "^0.0.14",
