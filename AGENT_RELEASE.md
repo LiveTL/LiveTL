@@ -5,9 +5,9 @@
 Every release comes from one tagged commit on `main`:
 
 - `apps/LiveTL/build/LiveTL-Chrome.zip`: Chrome MV3 from `apps/LiveTL/build/chrome`
-- `apps/LiveTL/build/LiveTL-Firefox.zip`: Firefox MV2 from `apps/LiveTL/build/mv2`
+- `apps/LiveTL/build/LiveTL-Firefox.xpi`: Firefox MV2 from `apps/LiveTL/build/mv2`
 - `apps/HyperChat/build/HyperChat-chrome.zip`: HyperChat Chrome MV3
-- `apps/HyperChat/build/HyperChat-firefox.zip`: HyperChat Firefox MV3
+- `apps/HyperChat/build/HyperChat-firefox.xpi`: HyperChat Firefox MV3
 
 LiveTL Firefox MV3 and HyperChat Firefox MV2 are built and verified, but are not
 published.
@@ -27,11 +27,10 @@ npm run format:check
 npm run lint:check
 npm run test
 VERSION=X.Y.Z npm run build
-npm run package
 unzip -p apps/LiveTL/build/LiveTL-Chrome.zip manifest.json | jq '.manifest_version, .version'
-unzip -p apps/LiveTL/build/LiveTL-Firefox.zip manifest.json | jq '.manifest_version, .version'
+unzip -p apps/LiveTL/build/LiveTL-Firefox.xpi manifest.json | jq '.manifest_version, .version'
 unzip -p apps/HyperChat/build/HyperChat-chrome.zip manifest.json | jq '.manifest_version, .version'
-unzip -p apps/HyperChat/build/HyperChat-firefox.zip manifest.json | jq '.manifest_version, .version'
+unzip -p apps/HyperChat/build/HyperChat-firefox.xpi manifest.json | jq '.manifest_version, .version'
 ```
 
 Expect both Chrome archives and HyperChat Firefox to use manifest version `3`,
@@ -49,7 +48,7 @@ enough to catch same-size changes.
 ```bash
 python3 -c "
 import zipfile
-for name in ['HyperChat-chrome.zip', 'HyperChat-firefox.zip']:
+for name in ['HyperChat-chrome.zip', 'HyperChat-firefox.xpi']:
     before = zipfile.ZipFile('/tmp/golden/' + name)
     after = zipfile.ZipFile('apps/HyperChat/build/' + name)
     names = sorted(set(before.namelist()) | set(after.namelist()))
@@ -76,5 +75,5 @@ git push origin vX.Y.Z
 Publishing the GitHub Release triggers `.github/workflows/release.yml`. It
 checks out that tag, strips the leading `v` and any prerelease suffix to derive
 `VERSION`, builds all six targets, and
-uploads exactly the four public ZIP names above. The workflow can be rerun
+uploads exactly the four public archive names above. The workflow can be rerun
 manually with the existing release tag as its `tag` input.

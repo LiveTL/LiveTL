@@ -60,8 +60,7 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 - `npm run start` watches the Chrome MV3 build
 - `npm run dev:firefox` watches the Firefox MV3 build
 - `npm run dev:mv2` watches the Firefox MV2 build
-- `VERSION=0.0.0 npm run build` builds and verifies every target
-- `npm run package` creates the Chrome MV3 and Firefox MV2 release ZIPs
+- `VERSION=0.0.0 npm run build` builds, verifies, and packages every target
 - `npm run test:watch` will run the tests in watch mode
 - In Firefox, use `about:debugging` to load `apps/LiveTL/build/firefox` or
   `apps/LiveTL/build/mv2`.
@@ -83,7 +82,7 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 │ ├── HyperChat - standalone HyperChat extension\
 │ │ └── src - chat parsing, rendering, actions, and shared chat behavior\
 │ └── LiveTL\
-│ ├── build - browser targets and release ZIPs\
+│ ├── build - browser targets and release archives\
 │ ├── e2e - python selenium tests\
 │ ├── img - images used in LiveTL README and docs\
 │ └── src\

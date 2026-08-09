@@ -65,7 +65,7 @@ export default defineConfig({
     zipPack({
       inDir: buildDir,
       outDir: 'build',
-      outFileName: `HyperChat-${target}.zip`,
+      outFileName: `HyperChat-${target}.${browser === 'firefox' ? 'xpi' : 'zip'}`,
     }),
   ],
 });

@@ -27,9 +27,7 @@ npm run start # watch Chrome MV3
 npm run dev:firefox # watch Firefox MV3
 npm run dev:mv2 # watch Firefox MV2
 
-VERSION=0.0.0 npm run build # build and verify all six targets
-
-npm run package # verify/package release artifacts for both apps
+VERSION=0.0.0 npm run build # build, verify, and package all six targets
 
 npm run test # jest
 npm run test:watch # autotest

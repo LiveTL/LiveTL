@@ -81,9 +81,8 @@
 | Firefox MV3 | `npm run build:firefox` | `npm run dev:firefox` | `apps/LiveTL/build/firefox` | Validation-only |
 | Firefox MV2 | `npm run build:mv2`     | `npm run dev:mv2`     | `apps/LiveTL/build/mv2`     | Published       |
 
-`VERSION=0.0.0 npm run build` typechecks, builds, and verifies all three targets.
-`npm run package` creates the published Chrome MV3 and Firefox MV2 ZIPs in
-`apps/LiveTL/build`.
+`VERSION=0.0.0 npm run build` typechecks, builds, verifies, and packages all
+targets. The four published archives are created in the application build directories.
 
 Before handing off a change, run:
 
@@ -92,7 +91,6 @@ npm run format:check
 npm run lint:check
 npm run test
 VERSION=0.0.0 npm run build
-npm run package
 ```
 
 Runtime notes:
@@ -185,5 +183,5 @@ KEEP_OPEN=1 bash apps/LiveTL/scripts/codex-dev.sh go-test
 - Release tags are created on `main`.
 - The tag version is supplied to every target through `VERSION`; local builds
   fall back to `src/manifest.json`.
-- Release automation uploads `LiveTL-Chrome.zip`, `LiveTL-Firefox.zip`,
-  `HyperChat-Chrome.zip`, and `HyperChat-Firefox.zip`.
+- Release automation uploads `LiveTL-Chrome.zip`, `LiveTL-Firefox.xpi`,
+  `HyperChat-Chrome.zip`, and `HyperChat-Firefox.xpi`.

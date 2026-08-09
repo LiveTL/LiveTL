@@ -91,8 +91,8 @@ for (const [target, mv] of Object.entries(targets)) {
   assert.ok(injector.includes(expectedChatPage), `${target}: injector has wrong chat page`);
   assert.ok(injector.includes('hyperchat/scripts/'), `${target}: injector has wrong script base`);
 
-  const tailwind = await readFile(path.join(buildDir, 'tailwind.css'), 'utf8');
-  assert.ok(tailwind.includes('.dark\\:bg-ytbg-dark'), `${target}: missing HyperChat dark theme styles`);
+  const chatMounter = await readFile(path.join(buildDir, 'hyperchat/scripts/chat-mounter.js'), 'utf8');
+  assert.ok(chatMounter.includes('.dark\\\\:bg-ytbg-dark'), `${target}: missing HyperChat dark theme styles`);
 }
 
 assert.equal(versions.size, 1, 'build versions differ');

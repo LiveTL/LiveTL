@@ -6,7 +6,7 @@ mkdirSync('build', { recursive: true });
 
 for (const [target, filename] of [
   ['chrome', 'LiveTL-Chrome.zip'],
-  ['mv2', 'LiveTL-Firefox.zip'],
+  ['mv2', 'LiveTL-Firefox.xpi'],
 ]) {
   const output = path.resolve('build', filename);
   rmSync(output, { force: true });
