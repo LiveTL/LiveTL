@@ -1,7 +1,9 @@
 import { spawnSync } from 'node:child_process';
+
 import { chromium } from 'playwright-core';
 
-const bundlePath = process.env.BUNDLE_PATH || `${process.cwd()}/build/chrome/hyperchat/scripts/chat-translation-host.js`;
+const bundlePath =
+  process.env.BUNDLE_PATH || `${process.cwd()}/build/chrome/hyperchat/scripts/chat-translation-host.js`;
 
 const resolveBrowserBinary = () => {
   const candidates = [
@@ -10,12 +12,12 @@ const resolveBrowserBinary = () => {
     'google-chrome',
     'google-chrome-stable',
     'chromium-browser',
-    'chromium'
+    'chromium',
   ].filter(Boolean);
 
   for (const candidate of candidates) {
     const result = spawnSync('bash', ['-lc', `command -v "${candidate}"`], {
-      encoding: 'utf8'
+      encoding: 'utf8',
     });
     if (result.status === 0) {
       return result.stdout.trim();
@@ -35,8 +37,8 @@ const main = async () => {
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
       '--no-first-run',
-      '--no-default-browser-check'
-    ]
+      '--no-default-browser-check',
+    ],
   });
 
   try {
@@ -70,7 +72,7 @@ const main = async () => {
       });
     </script>
   </body>
-</html>`
+</html>`,
       });
     });
 
@@ -96,17 +98,20 @@ const main = async () => {
         };
 
         window.addEventListener('message', onMessage);
-        window.postMessage({
-          type: REQUEST_TYPE,
-          messageId,
-          text: original,
-          targetLanguage: 'en'
-        }, '*');
+        window.postMessage(
+          {
+            type: REQUEST_TYPE,
+            messageId,
+            text: original,
+            targetLanguage: 'en',
+          },
+          '*',
+        );
       });
 
       return {
         original,
-        response
+        response,
       };
     });
 

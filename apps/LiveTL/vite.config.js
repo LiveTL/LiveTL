@@ -1,28 +1,30 @@
-import { defineConfig } from 'vite';
-import { svelte } from '@sveltejs/vite-plugin-svelte';
-import browserExtension from 'vite-plugin-web-extension';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
+
 import alias from '@rollup/plugin-alias';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
 import copy from 'rollup-plugin-copy';
-import manifest from './src/manifest.json';
+import { defineConfig } from 'vite';
+import browserExtension from 'vite-plugin-web-extension';
+
 import { resolveMv } from '../HyperChat/scripts/resolve-manifest';
 
+import manifest from './src/manifest.json';
+
 // include all entry points from src/js/pages/*.js
-const pagesEntryPoints = [
-  'watch', 'popout', 'options', 'welcome', 'lite'
-].map(page => ({
-  name: `html/${page}.html`, scripts: [`/js/pages/${page}.js`]
+const pagesEntryPoints = ['watch', 'popout', 'options', 'welcome', 'lite'].map((page) => ({
+  name: `html/${page}.html`,
+  scripts: [`/js/pages/${page}.js`],
 }));
 
 const entryPoints = [
   ...pagesEntryPoints,
   {
     name: 'html/background.html',
-    scripts: ['/js/pages/background.js']
+    scripts: ['/js/pages/background.js'],
   },
   { name: 'html/hyperchat/index.html', scripts: ['/hyperchat/index.ts'] },
-  { name: 'html/hyperchat/options.html', scripts: ['/hyperchat/options.ts'] }
+  { name: 'html/hyperchat/options.html', scripts: ['/hyperchat/options.ts'] },
 ];
 
 const jsEntry = [
@@ -30,16 +32,17 @@ const jsEntry = [
   'hyperchat/scripts/chat-interceptor.ts',
   'hyperchat/scripts/chat-metagetter.ts',
   'hyperchat/scripts/chat-mounter.ts',
-  'hyperchat/scripts/chat-translation-host.ts'
+  'hyperchat/scripts/chat-translation-host.ts',
 ];
 
-const entryPointTemplate = fs.readFileSync(path.join(__dirname, 'src/empty.html'))
-  .toString();
+const entryPointTemplate = fs.readFileSync(path.join(__dirname, 'src/empty.html')).toString();
 
 for (const entry of entryPoints) {
-  const htmlEntry = entry.scripts.reduce((template, script) => template.replace(
-    '</head>', `  <script defer type="module" src="${script}"></script>\n</head>`
-  ), entryPointTemplate);
+  const htmlEntry = entry.scripts.reduce(
+    (template, script) =>
+      template.replace('</head>', `  <script defer type="module" src="${script}"></script>\n</head>`),
+    entryPointTemplate,
+  );
   fs.writeFileSync(`src/${entry.name}`, htmlEntry);
 }
 
@@ -70,7 +73,7 @@ export default defineConfig({
     __BROWSER__: JSON.stringify(browser),
     __VERSION__: JSON.stringify(version),
     __MV__: JSON.stringify(mv),
-    __LIVETL__: JSON.stringify(true)
+    __LIVETL__: JSON.stringify(true),
   },
   build: {
     outDir: path.resolve(__dirname, buildDir),
@@ -78,15 +81,15 @@ export default defineConfig({
     minify: process.env.MINIFY !== 'false',
     rollupOptions: {
       output: {
-        sanitizeFileName
-      }
-    }
+        sanitizeFileName,
+      },
+    },
   },
   resolve: {
     alias: {
       '@hyperchat': path.resolve(__dirname, '../HyperChat/src'),
-      'jquery.ui': 'jquery-ui-bundle'
-    }
+      'jquery.ui': 'jquery-ui-bundle',
+    },
   },
   plugins: [
     alias(),
@@ -94,36 +97,42 @@ export default defineConfig({
     // TODO: add the isAndroid replacements
     svelte({
       configFile: path.resolve(__dirname, 'svelte.config.js'),
-      emitCss: false
+      emitCss: false,
     }),
 
     // allow-iframe.json contains static DeclarativeNetHTTP rules
     // for allowing iframing of ytc, need to manually copy over
     copy({
       hook: 'writeBundle',
-      targets: [{
-        src: path.resolve(__dirname, 'src/allow-iframe.json'),
-        dest: `${buildDir}/`
-      }]
+      targets: [
+        {
+          src: path.resolve(__dirname, 'src/allow-iframe.json'),
+          dest: `${buildDir}/`,
+        },
+      ],
     }),
 
     // add-yt-embed-referer.json contains static DeclarativeNetHTTP rules
     // for allowing embed yt vids, need to manually copy over
     copy({
       hook: 'writeBundle',
-      targets: [{
-        src: path.resolve(__dirname, 'src/add-yt-embed-referer.json'),
-        dest: `${buildDir}/`
-      }]
+      targets: [
+        {
+          src: path.resolve(__dirname, 'src/add-yt-embed-referer.json'),
+          dest: `${buildDir}/`,
+        },
+      ],
     }),
 
     // include hyperchat's assets
     copy({
       hook: 'writeBundle',
-      targets: [{
-        src: path.resolve(__dirname, '../HyperChat/src/assets/*'),
-        dest: `${buildDir}/hyperchat`
-      }]
+      targets: [
+        {
+          src: path.resolve(__dirname, '../HyperChat/src/assets/*'),
+          dest: `${buildDir}/hyperchat`,
+        },
+      ],
     }),
 
     // copy over html/ folder into project root
@@ -132,9 +141,12 @@ export default defineConfig({
     // but copying all the files over may be slow
     copy({
       hook: 'writeBundle',
-      targets: [{
-        src: `${buildDir}/html/*`, dest: buildDir
-      }]
+      targets: [
+        {
+          src: `${buildDir}/html/*`,
+          dest: buildDir,
+        },
+      ],
     }),
 
     // copy over hyperchat stylesheets
@@ -142,10 +154,12 @@ export default defineConfig({
     // however, they do not get copied
     copy({
       hook: 'writeBundle',
-      targets: [{
-        src: path.resolve(__dirname, '../HyperChat/src/stylesheets/*'),
-        dest: `${buildDir}/hyperchat/stylesheets`
-      }]
+      targets: [
+        {
+          src: path.resolve(__dirname, '../HyperChat/src/stylesheets/*'),
+          dest: `${buildDir}/hyperchat/stylesheets`,
+        },
+      ],
     }),
 
     browserExtension({
@@ -167,20 +181,14 @@ export default defineConfig({
         return nextManifest;
       },
       assets: 'img',
-      additionalInputs: [
-        ...entryPoints.map(entry => entry.name),
-        ...jsEntry
-      ],
-      watchFilePaths: [
-        path.resolve(__dirname, 'src/manifest.json'),
-        path.resolve(__dirname, 'src/allow-iframe.json')
-      ],
+      additionalInputs: [...entryPoints.map((entry) => entry.name), ...jsEntry],
+      watchFilePaths: [path.resolve(__dirname, 'src/manifest.json'), path.resolve(__dirname, 'src/allow-iframe.json')],
       webExtConfig: {
         // lofi hip hop (the one that spawned after the og one ended)
-        startUrl: 'https://www.youtube.com/watch?v=X4VbdwhkE10'
+        startUrl: 'https://www.youtube.com/watch?v=X4VbdwhkE10',
       },
       disableAutoLaunch: true,
-      browser
-    })
-  ]
+      browser,
+    }),
+  ],
 });

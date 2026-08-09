@@ -19,7 +19,7 @@ if (videoId != null) {
     (player: YTPlayer, runPlayerAction: (action: string) => void) => {
       window.parent.postMessage({ type: 'video-embed-loaded' }, '*');
 
-      window.addEventListener('message', event => {
+      window.addEventListener('message', (event) => {
         if (event.data.type === 'shortcut-action') {
           runPlayerAction(event.data.action);
         }
@@ -29,9 +29,9 @@ if (videoId != null) {
       if (player.getVideoData().author.includes('Marine Ch.')) {
         window.parent.postMessage({ type: 'marine-easter-egg' }, '*');
       }
-    }
+    },
   );
-  window.addEventListener('message', event => {
+  window.addEventListener('message', (event) => {
     window.parent.postMessage(event.data, '*');
   });
 }

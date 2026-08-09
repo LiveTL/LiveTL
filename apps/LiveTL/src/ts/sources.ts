@@ -1,8 +1,9 @@
-import { writable, Writable } from 'svelte/store';
-import { paramsTabId, paramsFrameId } from '../js/constants';
-import { timestamp } from '../js/store';
 import { useReconnect } from '@hyperchat/ts/chat-utils';
 import type { Chat } from '@hyperchat/ts/typings/chat';
+import { writable, Writable } from 'svelte/store';
+
+import { paramsTabId, paramsFrameId } from '../js/constants';
+import { timestamp } from '../js/store';
 
 export function twitchSource(): Writable<Ltl.Message | null> {
   if (paramsTabId == null || paramsFrameId == null) return writable(null);
@@ -11,12 +12,12 @@ export function twitchSource(): Writable<Ltl.Message | null> {
 
   const frameInfo = {
     tabId: parseInt(paramsTabId),
-    frameId: parseInt(paramsFrameId)
+    frameId: parseInt(paramsFrameId),
   };
 
   useReconnect(async () => {
     const port = chrome.runtime.connect({
-      name: JSON.stringify(frameInfo)
+      name: JSON.stringify(frameInfo),
     });
     // port.postMessage({ type: 'registerClient', frameInfo });
 

@@ -1,9 +1,11 @@
-import { compose, escapeRegExp } from './utils.js';
 import { derived, get } from 'svelte/store';
+
 import { doTranslatorMode, doAutoPrefix, macros, autoPrefixTag, macroTrigger } from './store.js';
+import { compose, escapeRegExp } from './utils.js';
 
 /**
  * @typedef {import('svelte/store').Readable} Readable
+ *
  * @typedef {import('svelte/store').Writable} Writable
  */
 
@@ -14,7 +16,7 @@ export function omniComplete(initialWords) {
   let wordSet = new Set(words);
 
   /** @type {(word: String) => void} */
-  const addWord = word => {
+  const addWord = (word) => {
     if (!wordSet.has(word)) {
       changes++;
       words.push(word);
@@ -24,32 +26,31 @@ export function omniComplete(initialWords) {
   };
 
   /** @type {(sentence: String) => void} */
-  const addSentence = sentence => sentence.split(/\W+/).forEach(addWord);
+  const addSentence = (sentence) => sentence.split(/\W+/).forEach(addWord);
   // Currently goes through everything,
   // replace with trie or sorted array if this is a bottleneck
-  /** @type {(wordPortion: String) => Array<String>} */
-  const complete = wordPortion => words
-    .filter(word => word.startsWith(wordPortion))
-    .sort();
-  /** @type {() => Array<String>} */
+  /** @type {(wordPortion: String) => String[]} */
+  const complete = (wordPortion) => words.filter((word) => word.startsWith(wordPortion)).sort();
+  /** @type {() => String[]} */
   const getWords = () => [...words];
 
   /** @type {() => void} */
-  const notify = () => setTimeout(() => {
-    if (changes) {
-      changes = 0;
-      callbacks.forEach(cb => cb(words));
-      return;
-    }
-    notify();
-  });
+  const notify = () =>
+    setTimeout(() => {
+      if (changes) {
+        changes = 0;
+        callbacks.forEach((cb) => cb(words));
+        return;
+      }
+      notify();
+    });
 
-  /** @type {(callback: (words: Array<String>) => void) => void} */
+  /** @type {(callback: (words: String[]) => void) => void} */
   const subscribe = callbacks.push.bind(callbacks);
 
   /** @type {(store: Writable<String>) => void} */
-  const syncWith = store => {
-    store.subscribe($words => {
+  const syncWith = (store) => {
+    store.subscribe(($words) => {
       words = $words;
       wordSet = new Set(words);
     });
@@ -62,13 +63,13 @@ export function omniComplete(initialWords) {
     complete,
     getWords,
     subscribe,
-    syncWith
+    syncWith,
   };
 }
 
 function macroStoreValueToLookup(value) {
   const obj = {};
-  value.filter(v => v.enabled).forEach(v => (obj[v.name] = v.expansion));
+  value.filter((v) => v.enabled).forEach((v) => (obj[v.name] = v.expansion));
   return obj;
 }
 
@@ -77,8 +78,8 @@ export function macroSystem(initialMacros) {
   let completion = omniComplete(Object.keys(macros));
   const defaultLeader = '/';
 
-  const getSplitTextPattern = leader => new RegExp(`[\\w${leader}]+`, 'g');
-  const getCompletionMatchPattern = leader => new RegExp(`${leader}([\\w]+)$`);
+  const getSplitTextPattern = (leader) => new RegExp(`[\\w${leader}]+`, 'g');
+  const getCompletionMatchPattern = (leader) => new RegExp(`${leader}([\\w]+)$`);
 
   let splitTextPattern = getSplitTextPattern(defaultLeader);
   let completionMatchPattern = getCompletionMatchPattern(defaultLeader);
@@ -90,7 +91,7 @@ export function macroSystem(initialMacros) {
   };
 
   /** @type {(name: String) => String | null} */
-  const getMacro = name => {
+  const getMacro = (name) => {
     if (name === '') return null;
     if (macros[name]) return macros[name];
     const possibleMacros = completion.complete(name);
@@ -98,7 +99,7 @@ export function macroSystem(initialMacros) {
   };
 
   /** @type {(text: String) => [String, IterableIterator<RegExpMatchArray>]} */
-  const splitText = text => [text, text.matchAll(splitTextPattern)];
+  const splitText = (text) => [text, text.matchAll(splitTextPattern)];
   /** @type {([input: String, split: IterableIterator<RegExpMatchArray>]) => String} */
   const replaceSplitText = ([input, split]) => {
     const replaced = [];
@@ -118,24 +119,26 @@ export function macroSystem(initialMacros) {
   const completeEnd = (text, completion) => {
     return text.replace(completionMatchPattern, completion);
   };
-    /** @type {(text: String) => Array<String>} */
-  const complete = text => {
+  /** @type {(text: String) => String[]} */
+  const complete = (text) => {
     try {
       return completion.complete(text.match(completionMatchPattern)[1]);
-    } catch (e) { return []; }
+    } catch (e) {
+      return [];
+    }
   };
 
   // one-way syncing
-  const syncWith = store => {
-    store.subscribe(value => {
+  const syncWith = (store) => {
+    store.subscribe((value) => {
       macros = macroStoreValueToLookup(value);
       completion = omniComplete(Object.keys(macros));
     });
   };
 
   /** @type {(store: Readable<String>) => void} */
-  const syncLeaderWith = store => {
-    derived(store, escapeRegExp).subscribe($leader => {
+  const syncLeaderWith = (store) => {
+    derived(store, escapeRegExp).subscribe(($leader) => {
       splitTextPattern = getSplitTextPattern($leader);
       completionMatchPattern = getCompletionMatchPattern($leader);
     });
@@ -148,35 +151,28 @@ export function macroSystem(initialMacros) {
     getMacro,
     syncLeaderWith,
     syncWith,
-    replaceText
+    replaceText,
   };
 }
 
 /**
  * Does the non-rendering part of translator mode.
  *
- * Features:
- *   - auto-prefix
- *   - macros
+ * Features: - auto-prefix - macros
  *
- * @param {HTMLElement} container the container for the input element (first #input)
- * @param {HTMLElement} chatBox the actual input element (second #input)
- * @param {Writable<String>} content a store to view the content of the chatbox, do not modify
- * @param {Writable<String[]>} recommendations a store to view the recommendations, do not modify
- * @param {Writable<String | null>} focusRec a store to set the focused recommendation
+ * @param {HTMLElement} container The container for the input element (first #input)
+ * @param {HTMLElement} chatBox The actual input element (second #input)
+ * @param {Writable<String>} content A store to view the content of the chatbox, do not modify
+ * @param {Writable<String[]>} recommendations A store to view the recommendations, do not modify
+ * @param {Writable<String | null>} focusRec A store to set the focused recommendation
  */
-export function translatorMode(
-  [container, chatBox],
-  content,
-  recommendations,
-  focusRec
-) {
+export function translatorMode([container, chatBox], content, recommendations, focusRec) {
   // initial macros will be cleared during sync
   const macrosys = macroSystem({ en: '[en]', peko: 'pekora', ero: 'erofi' });
   // use nbsp as it won't break when adding space to the end
   const nbsp = ' ';
   const oneRecommend = () => get(recommendations).length === 1;
-  const isKey = key => e => e.key === key;
+  const isKey = (key) => (e) => e.key === key;
   const isTab = isKey('Tab');
   const isEnter = isKey('Enter');
   const focusedRecommendation = () => get(focusRec);
@@ -184,11 +180,12 @@ export function translatorMode(
   macrosys.syncWith(macros);
   macrosys.syncLeaderWith(macroTrigger);
 
-  const replaceText = text => focusedRecommendation()
-    ? macrosys.completeEnd(text, macrosys.getMacro(focusedRecommendation()))
-    : macrosys.replaceText(text);
+  const replaceText = (text) =>
+    focusedRecommendation()
+      ? macrosys.completeEnd(text, macrosys.getMacro(focusedRecommendation()))
+      : macrosys.replaceText(text);
 
-  const setChatboxText = text => {
+  const setChatboxText = (text) => {
     const carPos = caretPos();
     const atEnd = caretAtEnd();
     if (text) container.setAttribute('has-text', '');
@@ -202,19 +199,17 @@ export function translatorMode(
     updateContent();
   };
 
-  const setChatCaret = pos =>
-    setCaret(chatBox, pos == null ? text().length : pos);
+  const setChatCaret = (pos) => setCaret(chatBox, pos == null ? text().length : pos);
   const caretPos = () => getCaretCharOffset(chatBox);
   const caretAtEnd = () => caretPos() === text().length;
   const text = () => chatBox.textContent;
-  const autoPrefixTag = () => doAutoPrefix.get() ? langTag() + nbsp : '';
-  const updateRecommendations =
-    compose(recommendations.set, macrosys.complete, text);
+  const autoPrefixTag = () => (doAutoPrefix.get() ? langTag() + nbsp : '');
+  const updateRecommendations = compose(recommendations.set, macrosys.complete, text);
   const updateContent = compose(content.set, text);
   const setAutoPrefix = compose(setChatboxText, autoPrefixTag);
-  const doubleTimeout = cb => setTimeout(() => setTimeout(cb));
+  const doubleTimeout = (cb) => setTimeout(() => setTimeout(cb));
 
-  const onKeyDown = e => {
+  const onKeyDown = (e) => {
     if (!get(doTranslatorMode)) return;
     if (isTab(e) && oneRecommend()) expandMacrosInChatbox();
     if (isTab(e)) doubleTimeout(setChatCaret);
@@ -233,7 +228,7 @@ export function translatorMode(
     setTimeout(setAutoPrefix);
   };
 
-  const onInput = e => {
+  const onInput = (e) => {
     if (!get(doTranslatorMode)) return;
     if (e.data === ' ') {
       expandMacrosInChatbox();
@@ -244,10 +239,10 @@ export function translatorMode(
   const cleanUps = [
     () => chatBox.removeEventListener('keydown', onKeyDown),
     () => chatBox.removeEventListener('focus', onFocus),
-    () => chatBox.removeEventListener('input', onInput)
+    () => chatBox.removeEventListener('input', onInput),
   ];
   if (chatBox.cleanUpTlMode) chatBox.cleanUpTlMode();
-  chatBox.cleanUpTlMode = () => cleanUps.forEach(c => c());
+  chatBox.cleanUpTlMode = () => cleanUps.forEach((c) => c());
   chatBox.addEventListener('keydown', onKeyDown);
   chatBox.addEventListener('focus', onFocus);
   chatBox.addEventListener('input', onInput);

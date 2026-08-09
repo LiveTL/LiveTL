@@ -5,20 +5,9 @@
     "outDir": "./build/",
     "baseUrl": "./src",
     "strict": true,
-    "lib": [
-      "DOM"
-    ],
+    "lib": ["DOM"],
     "target": "ES2017"
   },
-  "include": [
-    "src/**/*",
-    "*.js",
-    "utils/**/*",
-    "scripts/**/*",
-    "vite.config.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "build"
-  ]
+  "include": ["src/**/*", "*.js", "utils/**/*", "scripts/**/*", "vite.config.ts"],
+  "exclude": ["node_modules", "build"]
 }

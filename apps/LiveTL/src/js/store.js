@@ -1,3 +1,5 @@
+import { writable, readable, derived } from 'svelte/store';
+
 import {
   TextDirection,
   VideoSide,
@@ -6,11 +8,10 @@ import {
   DisplayMode,
   languageNameCode,
   paramsEmbedded,
-  AutoLaunchMode
+  AutoLaunchMode,
 } from './constants.js';
-import { getAllVoiceNames, getVoiceMap, compose } from './utils.js';
 import { LookupStore, SyncStore } from './storage.js';
-import { writable, readable, derived } from 'svelte/store';
+import { getAllVoiceNames, getVoiceMap, compose } from './utils.js';
 
 /** @typedef {import('svelte/store').Readable} Readable */
 
@@ -18,7 +19,8 @@ import { writable, readable, derived } from 'svelte/store';
  * @template T
  * @param {String} n
  * @param {T} d
- * @param {Boolean} s synchronize across sessions
+ * @param {Boolean} s Synchronize across sessions
+ *
  * @returns {SyncStore<T>}
  */
 const SS = (n, d, s = true) => new SyncStore(n, d, null, s);
@@ -26,7 +28,8 @@ const SS = (n, d, s = true) => new SyncStore(n, d, null, s);
  * @template T
  * @param {String} n
  * @param {T} d
- * @param {Boolean} s synchronize across sessions
+ * @param {Boolean} s Synchronize across sessions
+ *
  * @returns {LookupStore<T>}
  */
 const LS = (n, d, s = true) => new LookupStore(n, d, null, s);
@@ -35,7 +38,7 @@ const sampleFilter = {
   plainReg: 'plain',
   showBlock: 'show',
   rule: '',
-  id: ''
+  id: '',
 };
 
 const sampleAuthor = { author: '', authorId: '' };
@@ -46,11 +49,11 @@ export const defaultShortcuts = {
   volumeDown: 'ArrowDown',
   fullScreen: 'f',
   toggleMute: 'm',
-  togglePlayPause: '<Space>'
+  togglePlayPause: '<Space>',
 };
 
 // Settings
-export const languages = SS('languages', /** @type {Array<string>} */ ([]));
+export const languages = SS('languages', /** @type {string[]} */ ([]));
 export const showModMessage = SS('showModMessage', true);
 export const chatZoom = SS('chatZoom', 1);
 export const showTimestamp = SS('showTimestamp', true);
@@ -107,7 +110,7 @@ export const autoLaunchMode = SS('autoLaunchMode', AutoLaunchMode.NONE);
 export const keyboardShortcuts = SS('keyboardShortcuts', defaultShortcuts);
 export const disableSpecialSpamProtection = SS('disableSpecialSpamProtection', true);
 export const activePreset = SS('activePreset', 1);
-export const presets = SS('presets', /** @type {Array<Object & { name: string }>} */ ([]));
+export const presets = SS('presets', /** @type {Object & { name: string }[]} */ ([]));
 export const showHelpPrompt = SS('showHelpPrompt', true);
 export const neverShowSpotlightPrompt = SS('neverShowSpotlightPrompt', false);
 export const showVerifiedMessage = SS('showVerifiedMessage', false);
@@ -138,7 +141,7 @@ export const presetStores = [
   autoPrefixTag,
   macroTrigger,
   macros,
-  isChatInverted
+  isChatInverted,
 ];
 
 // -=- Language Migration -=-
@@ -172,21 +175,25 @@ export const presetStores = [
 
 // Non-persistant stores
 
-/** @typedef {{width: Number, height: Number}} WindowDimension */
+/** @typedef {{ width: Number; height: Number }} WindowDimension */
 const getWindowDims = () => ({ width: window.innerWidth, height: window.innerHeight });
 /** @type {Readable<WindowDimension>} */
-export const windowSize = readable(getWindowDims(), set => {
+export const windowSize = readable(getWindowDims(), (set) => {
   const cb = compose(set, getWindowDims);
   window.addEventListener('resize', cb);
   return () => window.removeEventListener('resize', cb);
 });
 const videoSideDepends = [videoSideSetting, autoVertical, windowSize];
 // @ts-ignore
-export const videoSide = derived(videoSideDepends, ([$videoSide, $autoVert, $windims]) => {
-  const { width, height } = $windims;
-  return $autoVert && height > width ? VideoSide.TOP : $videoSide;
-}, videoSideSetting.get());
-export const voiceNames = readable(getAllVoiceNames(), set => {
+export const videoSide = derived(
+  videoSideDepends,
+  ([$videoSide, $autoVert, $windims]) => {
+    const { width, height } = $windims;
+    return $autoVert && height > width ? VideoSide.TOP : $videoSide;
+  },
+  videoSideSetting.get(),
+);
+export const voiceNames = readable(getAllVoiceNames(), (set) => {
   const cb = () => {
     set(getAllVoiceNames());
     unsub();
@@ -198,18 +205,13 @@ export const voiceNames = readable(getAllVoiceNames(), set => {
 export const speechVoiceName = derived(
   [speechVoiceNameSetting, voiceNames],
   ([$speechVoiceNameSetting, $voiceNames]) => {
-    return (
-      $voiceNames.includes($speechVoiceNameSetting)
-        ? $speechVoiceNameSetting
-        : $voiceNames[0]
-    );
-  }
+    return $voiceNames.includes($speechVoiceNameSetting) ? $speechVoiceNameSetting : $voiceNames[0];
+  },
 );
-export const speechSpeaker = derived(
-  [speechVoiceName, voiceNames],
-  ([$speechVoiceName, _$voiceNames]) => getVoiceMap().get($speechVoiceName)
+export const speechSpeaker = derived([speechVoiceName, voiceNames], ([$speechVoiceName, _$voiceNames]) =>
+  getVoiceMap().get($speechVoiceName),
 );
-export const langCode = derived(languages, $langs => $langs.map((lang) => languageNameCode[lang].code));
+export const langCode = derived(languages, ($langs) => $langs.map((lang) => languageNameCode[lang].code));
 
 export const updatePopupActive = writable(false);
 export const videoTitle = writable('LiveTL');
@@ -217,9 +219,7 @@ export const timestamp = writable(0);
 export const faviconURL = writable('/img/48x48.png');
 export const availableMchadUsers = writable([]);
 export const spotlightedTranslator = writable(null);
-export const displayMode = writable(
-  paramsEmbedded != null ? DisplayMode.EMBEDDED : DisplayMode.FULLPAGE
-);
+export const displayMode = writable(paramsEmbedded != null ? DisplayMode.EMBEDDED : DisplayMode.FULLPAGE);
 export const isResizing = writable(false);
 export const isSelecting = writable(false);
 export const sessionHidden = writable([]);

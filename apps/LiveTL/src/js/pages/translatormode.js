@@ -13,15 +13,15 @@ let app;
 
   newbody.classList.add('ltl-tl-mode');
 
-  container.querySelectorAll('.ltl-tl-mode').forEach(e => e.remove());
+  container.querySelectorAll('.ltl-tl-mode').forEach((e) => e.remove());
   container.appendChild(newbody);
   container.cleanUpCbs = container.cleanUpCbs || [];
 
   app = new App({
     target: newbody,
     props: {
-      container
-    }
+      container,
+    },
   });
 
   window.app = app;

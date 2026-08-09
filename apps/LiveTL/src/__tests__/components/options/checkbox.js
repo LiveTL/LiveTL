@@ -1,11 +1,13 @@
 import { render, fireEvent } from '@testing-library/svelte';
 import { get, writable } from 'svelte/store';
+
 import Checkbox from '../../../components/common/CheckboxStore.svelte';
 
 describe('Toggle', () => {
   it('shows name', () => {
     const { getByText } = render(Checkbox, {
-      name: 'Toggle option', store: writable(true)
+      name: 'Toggle option',
+      store: writable(true),
     });
     expect(getByText('Toggle option')).toBeInTheDocument();
   });

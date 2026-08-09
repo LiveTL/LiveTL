@@ -1,5 +1,9 @@
-import { compose } from './utils';
+import { useReconnect } from '@hyperchat/ts/chat-utils';
 import { writable, readable, derived } from 'svelte/store';
+
+import { twitchSource } from '../ts/sources';
+
+import { paramsYtVideoId, AuthorType, paramsPopout, paramsTabId, paramsFrameId, paramsTwitchUrl } from './constants';
 import {
   parseTranslation,
   isWhitelisted as textWhitelisted,
@@ -7,20 +11,26 @@ import {
   authorWhitelisted,
   authorBlacklisted,
   isTranslation,
-  replaceFirstTranslation
+  replaceFirstTranslation,
 } from './filter';
 import { showModMessage, showVerifiedMessage, timestamp } from './store';
-import { paramsYtVideoId, AuthorType, paramsPopout, paramsTabId, paramsFrameId, paramsTwitchUrl } from './constants';
-import { twitchSource } from '../ts/sources';
 // import * as API from './api.js';
 import * as TLDEX from './tldex.js';
-import { useReconnect } from '@hyperchat/ts/chat-utils';
+import { compose } from './utils';
 
 /**
  * @typedef {import('svelte/store').Readable} Readable
+ *
  * @typedef {import('svelte/store').Writable} Writable
+ *
  * @typedef {import('./types.js').Message} Message
- * @typedef {{ chatTranslations: Writable<Message>, mod: Writable<Message>, verified: Writable<Message>, chat: Writable<Message> }} YTCSources
+ *
+ * @typedef {{
+ *   chatTranslations: Writable<Message>;
+ *   mod: Writable<Message>;
+ *   verified: Writable<Message>;
+ *   chat: Writable<Message>;
+ * }} YTCSources
  */
 
 const tldex = derived(
@@ -33,10 +43,19 @@ const tldex = derived(
       $message.text = parsed.msg;
     }
     return $message;
-  }
+  },
 );
 
-/** @type {YTCSources & { translations: Writable<Message>, mchad: Readable<Message>, api?: Readable<Message>, ytcBonks: Writable<any[]>, ytcDeletions:Writable<any[]>, thirdParty: Writable<Message> }} */
+/**
+ * @type {YTCSources & {
+ *   translations: Writable<Message>;
+ *   mchad: Readable<Message>;
+ *   api?: Readable<Message>;
+ *   ytcBonks: Writable<any[]>;
+ *   ytcDeletions: Writable<any[]>;
+ *   thirdParty: Writable<Message>;
+ * }}
+ */
 export const sources = {
   chatTranslations: writable(null),
   mod: writable(null),
@@ -46,27 +65,26 @@ export const sources = {
   thirdParty: createThirdPartyStore(),
   ytcBonks: writable(null),
   ytcDeletions: writable(null),
-  tldex
+  tldex,
 };
 
 /** @type {(msg: Message) => Boolean} */
-const isWhitelisted = msg => textWhitelisted(msg.text) || authorWhitelisted(msg.author);
+const isWhitelisted = (msg) => textWhitelisted(msg.text) || authorWhitelisted(msg.author);
 
 /** @type {(msg: Message) => Boolean} */
-const isBlacklisted = msg => textBlacklisted(msg.text) || authorBlacklisted(msg.author);
+const isBlacklisted = (msg) => textBlacklisted(msg.text) || authorBlacklisted(msg.author);
 
 /** @type {(msg: Message) => Boolean} */
-const isMod = msg => (msg.types & AuthorType.moderator) || (msg.types & AuthorType.owner);
+const isMod = (msg) => msg.types & AuthorType.moderator || msg.types & AuthorType.owner;
 
 /** @type {(msg: Message) => Boolean} */
-const showIfMod = msg => isMod(msg) && showModMessage.get();
+const showIfMod = (msg) => isMod(msg) && showModMessage.get();
 
 /** @type {(msg: Message) => Boolean} */
-const showIfVerified = msg => (msg.types & AuthorType.verified) && showVerifiedMessage.get();
+const showIfVerified = (msg) => msg.types & AuthorType.verified && showVerifiedMessage.get();
 
 /** @type {(store: Writable<Message>) => (msg: Message, text?: String) => void} */
-const setStoreMessage =
-  store => (msg, text) => store.set({ ...msg, text: text ?? msg.text });
+const setStoreMessage = (store) => (msg, text) => store.set({ ...msg, text: text ?? msg.text });
 
 /** @type {(sources: YTCSources) => () => void} */
 function attachFilters({ chatTranslations, mod, verified, chat }) {
@@ -74,7 +92,7 @@ function attachFilters({ chatTranslations, mod, verified, chat }) {
   const setModMessage = setStoreMessage(mod);
   const setVerifiedMessage = setStoreMessage(verified);
 
-  return chat.subscribe(message => {
+  return chat.subscribe((message) => {
     if (!message || isBlacklisted(message)) return;
     const text = message.text.trim();
     const parsed = parseTranslation(text);
@@ -93,23 +111,24 @@ function attachFilters({ chatTranslations, mod, verified, chat }) {
 
 /**
  * @template T
- * @param  {...Writable<T>} stores
- * @returns {{ store: Writable<T>, cleanUp: VoidFunction}}
+ * @param {...Writable<T>} stores
+ *
+ * @returns {{ store: Writable<T>; cleanUp: VoidFunction }}
  */
 export function combineStores(...stores) {
   const combined = writable(null);
-  const unsubscribes = stores.map(s => s.subscribe(v => combined.set(v)));
+  const unsubscribes = stores.map((s) => s.subscribe((v) => combined.set(v)));
   return {
     store: combined,
     cleanUp() {
-      unsubscribes.forEach(u => u());
-    }
+      unsubscribes.forEach((u) => u());
+    },
   };
 }
 
 function createThirdPartyStore() {
-  return readable(null, set => {
-    const cb = event => {
+  return readable(null, (set) => {
+    const cb = (event) => {
       if (event?.data?.type === 'third-party-set') {
         set(event.data.message);
       }
@@ -121,12 +140,13 @@ function createThirdPartyStore() {
 
 /**
  * @param {Ytc.ParsedMessage} ytcMessage
+ *
  * @returns {Message}
  */
 function ytcToMsg(ytcMessage) {
   const text = ytcMessage.message
-    .filter(item => item.type === 'text' || item.type === 'link')
-    .map(item => item.text)
+    .filter((item) => item.type === 'text' || item.type === 'link')
+    .map((item) => item.text)
     .join('');
   const author = ytcMessage.author;
   const typeFlag = author.types.reduce((flag, t) => flag | AuthorType[t], 0);
@@ -138,7 +158,7 @@ function ytcToMsg(ytcMessage) {
     types: typeFlag,
     messageArray: ytcMessage.message,
     messageId: ytcMessage.messageId,
-    timestampMs: ytcMessage.showtime
+    timestampMs: ytcMessage.showtime,
   };
 }
 
@@ -151,38 +171,38 @@ export function ytcSource(_window) {
   let tryRegister = 0;
 
   /**
-   * Youtube live_chat frame sends a frameInfo message with the yt frame id.
-   * It is important to use this because when opening LiveTL, the frameid and
-   * tabid of the yt frame change so we need updated ids.
+   * Youtube live_chat frame sends a frameInfo message with the yt frame id. It is important to use this because when
+   * opening LiveTL, the frameid and tabid of the yt frame change so we need updated ids.
    *
    * Also, in "Open in LiveTL" mode, no tabid/frameid params are given.
    *
-   * We need frameid as well as tabid because we may have multiple livetls in
-   * one page (eg. holodex).
+   * We need frameid as well as tabid because we may have multiple livetls in one page (eg. holodex).
    *
    * @type {() => Promise<Chat.FrameInfo>}
    */
-  const postMessageFrameInfo = () => new Promise((resolve) => {
-    const listener = (d) => {
-      if (d.data.type === 'frameInfo') {
-        removeEventListener('message', listener);
-        resolve(d.data.frameInfo);
-      }
-    };
-    addEventListener('message', listener);
-  });
+  const postMessageFrameInfo = () =>
+    new Promise((resolve) => {
+      const listener = (d) => {
+        if (d.data.type === 'frameInfo') {
+          removeEventListener('message', listener);
+          resolve(d.data.frameInfo);
+        }
+      };
+      addEventListener('message', listener);
+    });
 
   const port = useReconnect(async () => {
     /** @type {Chat.FrameInfo} */
-    const frameInfo = paramsPopout !== null && paramsPopout !== ''
-      ? { tabId: parseInt(paramsTabId), frameId: parseInt(paramsFrameId) }
-      : await postMessageFrameInfo();
+    const frameInfo =
+      paramsPopout !== null && paramsPopout !== ''
+        ? { tabId: parseInt(paramsTabId), frameId: parseInt(paramsFrameId) }
+        : await postMessageFrameInfo();
 
     /** @type {Chat.Port} */
     let port;
     try {
       port = chrome.runtime.connect({
-        name: JSON.stringify(frameInfo)
+        name: JSON.stringify(frameInfo),
       });
     } catch (e) {
       console.error('Failed to connect to bg port', e);
@@ -191,7 +211,7 @@ export function ytcSource(_window) {
     const registerClient = () => {
       port.postMessage({
         type: 'registerClient',
-        getInitialData: true
+        getInitialData: true,
       });
     };
 
@@ -234,17 +254,20 @@ export function ytcSource(_window) {
 function message(author, msg, timestamp) {
   const showtime = timestamp
     .split(':')
-    .map(e => parseInt(e))
+    .map((e) => parseInt(e))
     .reduce((l, r) => l * 10 + r);
   return {
-    author: { name: author }, message: [{ type: 'text', text: msg }], timestamp, showtime
+    author: { name: author },
+    message: [{ type: 'text', text: msg }],
+    timestamp,
+    showtime,
   };
 }
 
 attachFilters(sources);
 sources.translations = combineStores(
   sources.chatTranslations,
-  sources.tldex
+  sources.tldex,
   // sources.api
 ).store;
 
@@ -256,24 +279,21 @@ export class DummyYTCEventSource {
       {
         type: 'messageChunk',
         isReplay: false,
-        messages: [
-          message('Author 2', 'Hey there', '03:16 PM'),
-          message('Author 1', 'Hello there', '03:15 PM')
-        ]
+        messages: [message('Author 2', 'Hey there', '03:16 PM'), message('Author 1', 'Hello there', '03:15 PM')],
       },
       {
         type: 'messageChunk',
         isReplay: false,
         messages: [
           message('Author 4', '[en] hello there', '03:18 PM'),
-          message('Author 3', '[es] hola allí', '03:17 PM')
-        ]
+          message('Author 3', '[es] hola allí', '03:17 PM'),
+        ],
       },
       {
         type: 'messageChunk',
         isReplay: false,
-        messages: [message('Author 5', 'hello again', '03:19 PM')]
-      }
+        messages: [message('Author 5', 'hello again', '03:19 PM')],
+      },
     ];
   }
 

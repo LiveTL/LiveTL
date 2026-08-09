@@ -1,10 +1,16 @@
-/* eslint-disable no-undef */
-import { parseTranslation, isLangMatch, textWhitelisted, textBlacklisted, plaintextWhitelisted } from '../../js/filter.js';
 import { languagesInfo } from '../../js/constants.js';
+/* eslint-disable no-undef */
+import {
+  parseTranslation,
+  isLangMatch,
+  textWhitelisted,
+  textBlacklisted,
+  plaintextWhitelisted,
+} from '../../js/filter.js';
 import { customFilters } from '../../js/store.js';
 
 const langs = {};
-languagesInfo.forEach(lang => {
+languagesInfo.forEach((lang) => {
   langs[lang.code] = lang;
 });
 
@@ -15,7 +21,7 @@ describe.each([
   ['jp - リーーーーーーー', { lang: 'jp', msg: 'リーーーーーーー' }],
   ['en:Test translation', { lang: 'en', msg: 'Test translation' }],
   ['[en]: test translation', { lang: 'en', msg: 'test translation' }],
-  ['No translation', undefined]
+  ['No translation', undefined],
 ])('parseTranslation("%s")', (msg, expected) => {
   it(`returns ${expected}`, () => {
     expect(parseTranslation(msg)).toEqual(expected);
@@ -35,7 +41,7 @@ describe.each([
   ['英語／jp', langs.en, false],
   ['【Polka˽EN】', langs.en, true],
   ['[Français]', langs.fr, true],
-  ['日本語', langs.jp, true]
+  ['日本語', langs.jp, true],
 ])('isLangMatch("%s", "%s")', (textLang, currentLang, expected) => {
   it(`says the match is ${expected}`, () => {
     expect(isLangMatch(textLang, currentLang)).toEqual(expected);
@@ -47,12 +53,12 @@ function rule(plain, chat, show, r) {
     chatAuthor: chat,
     plainReg: plain,
     showBlock: show,
-    rule: r
+    rule: r,
   };
 }
 
-const tw = r => rule('regex', 'chat', 'show', r);
-const pw = r => rule('plain', 'chat', 'show', r);
+const tw = (r) => rule('regex', 'chat', 'show', r);
+const pw = (r) => rule('plain', 'chat', 'show', r);
 
 describe('user regex filters', () => {
   it('does not match every message if no filters', () => {

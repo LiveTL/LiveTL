@@ -49,7 +49,7 @@ export interface LtlButtonCss {
 export function injectLtlLauncher(
   target: HTMLElement,
   buttons: Array<LtlButtonParams | ((ltlWrapper: HTMLDivElement) => LtlButtonParams)>,
-  buttonCss: LtlButtonCss
+  buttonCss: LtlButtonCss,
 ): void {
   if (document.getElementById('ltl-wrapper') != null) {
     console.error('LTL launcher already injected');
@@ -73,9 +73,9 @@ export function injectLtlLauncher(
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      ${(buttonCss.fontSize != null) ? `font-size: ${buttonCss.fontSize};` : ''}
-      ${(buttonCss.fontFamily != null) ? `font-family: ${buttonCss.fontFamily};` : ''}
-      ${(buttonCss.borderWidth != null) ? `border-width: ${buttonCss.borderWidth};` : ''}
+      ${buttonCss.fontSize != null ? `font-size: ${buttonCss.fontSize};` : ''}
+      ${buttonCss.fontFamily != null ? `font-family: ${buttonCss.fontFamily};` : ''}
+      ${buttonCss.borderWidth != null ? `border-width: ${buttonCss.borderWidth};` : ''}
     }
     .ltl-button:hover {
       background-color: #0099ffa0;

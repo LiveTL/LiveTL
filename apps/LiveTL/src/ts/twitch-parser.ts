@@ -62,7 +62,7 @@ function parseMessageFragment(fragment: Element): Ytc.ParsedRun | undefined {
     return {
       type: 'emoji',
       src: emote.src,
-      alt: emote.alt
+      alt: emote.alt,
     };
   }
 
@@ -74,13 +74,13 @@ function parseMessageFragment(fragment: Element): Ytc.ParsedRun | undefined {
   ) {
     return {
       type: 'text',
-      text: fragment.textContent ?? ''
+      text: fragment.textContent ?? '',
     };
   } else if (elementIsAnchor(fragment)) {
     return {
       type: 'link',
       text: fragment.textContent ?? fragment.href,
-      url: fragment.href
+      url: fragment.href,
     };
   }
 }
@@ -122,7 +122,7 @@ function getChildren(node: Element, depth: number): Element[] {
 
 export function parseMessageElement(message: Element): Ltl.Message | undefined {
   const author = message.querySelector(displayNameSelector)?.textContent ?? '';
-  const timestamp = isVod() ? message.querySelector(vodTimestampSelector)?.textContent ?? '' : currentTime();
+  const timestamp = isVod() ? (message.querySelector(vodTimestampSelector)?.textContent ?? '') : currentTime();
 
   const messageBody = isVod() ? getVodMesssageBody(message) : getLiveMessageBody(message);
   if (messageBody == null) return;
@@ -149,7 +149,7 @@ export function parseMessageElement(message: Element): Ltl.Message | undefined {
     authorId: author,
     messageId: `${messageCounter++}`,
     text,
-    types: parseTypes(message)
+    types: parseTypes(message),
   };
   return result;
 }

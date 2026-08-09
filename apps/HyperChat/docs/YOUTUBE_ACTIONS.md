@@ -54,7 +54,7 @@ YouTube reorders context menu items. Never assume "block is item 3".
 Instead:
 
 - request `get_item_context_menu`
-- search the response tree for endpoint *types*
+- search the response tree for endpoint _types_
 - prefer endpoint/type checks over label checks
 
 Examples:

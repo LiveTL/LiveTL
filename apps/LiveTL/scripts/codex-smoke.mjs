@@ -1,6 +1,7 @@
-import { mkdtemp, rm } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
+import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
+
 import { chromium } from 'playwright-core';
 
 const testVideoId = 'X4VbdwhkE10';
@@ -17,12 +18,12 @@ const resolveBrowserBinary = () => {
     'google-chrome',
     'google-chrome-stable',
     'chromium-browser',
-    'chromium'
+    'chromium',
   ].filter(Boolean);
 
   for (const candidate of candidates) {
     const result = spawnSync('bash', ['-lc', `command -v "${candidate}"`], {
-      encoding: 'utf8'
+      encoding: 'utf8',
     });
     if (result.status === 0) {
       return result.stdout.trim();
@@ -49,7 +50,7 @@ const waitForExtensionTarget = async (context) => {
 
   return await context.waitForEvent('page', {
     timeout: 15_000,
-    predicate: (page) => page.url().startsWith('chrome-extension://')
+    predicate: (page) => page.url().startsWith('chrome-extension://'),
   });
 };
 
@@ -61,7 +62,7 @@ const waitForHyperchat = async (chatFrame) => {
       return {
         hasHcButtons: hcButtons !== null,
         hasHyperchat: hyperchat !== null,
-        bodyText: document.body?.innerText.slice(0, 200) ?? null
+        bodyText: document.body?.innerText.slice(0, 200) ?? null,
       };
     });
 
@@ -78,13 +79,13 @@ const waitForHyperchat = async (chatFrame) => {
     return {
       hasHcButtons: hcButtons !== null,
       hasHyperchat: hyperchat !== null,
-      bodyText: document.body?.innerText.slice(0, 200) ?? null
+      bodyText: document.body?.innerText.slice(0, 200) ?? null,
     };
   });
 };
 
 const main = async () => {
-  const userDataDir = userDataDirOverride || await mkdtemp(`${tmpdir()}/livetl-codex-profile.`);
+  const userDataDir = userDataDirOverride || (await mkdtemp(`${tmpdir()}/livetl-codex-profile.`));
   if (userDataDirOverride != null) {
     await rm(userDataDir, { recursive: true, force: true });
   }
@@ -110,8 +111,8 @@ const main = async () => {
       '--disable-notifications',
       '--disable-translate',
       '--disable-infobars',
-      '--autoplay-policy=no-user-gesture-required'
-    ]
+      '--autoplay-policy=no-user-gesture-required',
+    ],
   });
 
   try {
@@ -119,7 +120,7 @@ const main = async () => {
     const storage = await extensionTarget.evaluate(async () => {
       await chrome.storage.local.set({
         'hc.enabled': true,
-        'hc.autoLiveChat': true
+        'hc.autoLiveChat': true,
       });
       return await chrome.storage.local.get(null);
     });
@@ -127,27 +128,29 @@ const main = async () => {
     const page = await context.newPage();
     await page.goto(testUrl, {
       waitUntil: 'domcontentloaded',
-      timeout: 120_000
+      timeout: 120_000,
     });
     await page.waitForTimeout(15_000);
 
     const pageInfo = await page.evaluate(() => ({
       href: location.href,
       title: document.title,
-      ready: document.readyState
+      ready: document.readyState,
     }));
 
     const chatFrameHandle = await page.waitForSelector('iframe#chatframe', {
-      timeout: 120_000
+      timeout: 120_000,
     });
     const chatFrame = await chatFrameHandle.contentFrame();
     if (chatFrame == null) {
       throw new Error('Failed to resolve chat frame.');
     }
 
-    await chatFrame.waitForLoadState('domcontentloaded', {
-      timeout: 120_000
-    }).catch(() => {});
+    await chatFrame
+      .waitForLoadState('domcontentloaded', {
+        timeout: 120_000,
+      })
+      .catch(() => {});
     await chatFrame.waitForTimeout(10_000);
 
     const settledChatState = await waitForHyperchat(chatFrame);
@@ -164,7 +167,7 @@ const main = async () => {
         hasItemList: document.querySelector('#chat>#item-list') !== null,
         hasTicker: document.querySelector('#ticker') !== null,
         hasHyperchat: hyperchat !== null,
-        bodyText: document.body?.innerText.slice(0, 200) ?? null
+        bodyText: document.body?.innerText.slice(0, 200) ?? null,
       };
     });
 
@@ -173,13 +176,21 @@ const main = async () => {
 
     let embedSummary = null;
     if (hyperchatFrame != null) {
-      await hyperchatFrame.waitForLoadState('domcontentloaded', {
-        timeout: 120_000
-      }).catch(() => {});
+      await hyperchatFrame
+        .waitForLoadState('domcontentloaded', {
+          timeout: 120_000,
+        })
+        .catch(() => {});
       await hyperchatFrame.waitForTimeout(5_000);
       embedSummary = await hyperchatFrame.evaluate(() => {
-        const playerArtifacts = ['#player', '#player-controls', '.player-unavailable', 'yt-live-chat-app', 'ytd-app', 'ytm-app']
-          .filter((selector) => document.querySelector(selector) != null);
+        const playerArtifacts = [
+          '#player',
+          '#player-controls',
+          '.player-unavailable',
+          'yt-live-chat-app',
+          'ytd-app',
+          'ytm-app',
+        ].filter((selector) => document.querySelector(selector) != null);
         const playerLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
           .filter((link) => {
             const href = link.getAttribute('href') ?? '';
@@ -187,7 +198,7 @@ const main = async () => {
           })
           .map((link) => ({
             name: link.getAttribute('name'),
-            href: link.getAttribute('href')
+            href: link.getAttribute('href'),
           }));
         const icon = document.querySelector('.material-icons');
         return {
@@ -197,7 +208,7 @@ const main = async () => {
           playerLinks,
           bodyFontSize: getComputedStyle(document.body).fontSize,
           iconFontSize: icon == null ? null : getComputedStyle(icon).fontSize,
-          text: document.body?.innerText.slice(0, 200) ?? null
+          text: document.body?.innerText.slice(0, 200) ?? null,
         };
       });
     }
@@ -209,14 +220,14 @@ const main = async () => {
         ...chatSummary,
         hasContinuation: chatSummary.url.includes('continuation='),
         isLiveChat: chatSummary.url.includes('/live_chat'),
-        settled: settledChatState
+        settled: settledChatState,
       },
-      embed: embedSummary
+      embed: embedSummary,
     };
 
     console.log(JSON.stringify(summary, null, 2));
 
-    const failed = (
+    const failed =
       !pageInfo.href.includes(testVideoId) ||
       !chatSummary.url.includes('continuation=') ||
       !chatSummary.url.includes('/live_chat') ||
@@ -225,8 +236,7 @@ const main = async () => {
       embedSummary == null ||
       !embedSummary.hasRoot ||
       embedSummary.playerLinks.length !== 0 ||
-      embedSummary.playerArtifacts.length !== 0
-    );
+      embedSummary.playerArtifacts.length !== 0;
 
     if (failed) {
       process.exitCode = 1;

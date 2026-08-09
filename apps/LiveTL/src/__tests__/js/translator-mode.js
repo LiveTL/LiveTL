@@ -1,8 +1,9 @@
-/* eslint-disable no-undef */
-import { omniComplete, macroSystem } from '../../js/translator-mode.js';
 import { get, writable } from 'svelte/store';
 
-const sleep = time => new Promise(resolve => setTimeout(resolve, time));
+/* eslint-disable no-undef */
+import { omniComplete, macroSystem } from '../../js/translator-mode.js';
+
+const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time));
 
 describe('omnicompletion', () => {
   const wordBank = ['hello', 'there', 'general', 'though', 'that', 'hey'];
@@ -27,7 +28,7 @@ describe('omnicompletion', () => {
     expect(words).toContain('there');
   });
 
-  it('doesn\'t complete when there are no matching words', () => {
+  it("doesn't complete when there are no matching words", () => {
     const { complete } = omniComplete(wordBank);
     expect(complete('ken')).toEqual([]);
   });
@@ -42,7 +43,7 @@ describe('omnicompletion', () => {
     expect(complete('th')).toEqual(['that', 'there', 'though']);
   });
 
-  it('doesn\'t add duplicates', () => {
+  it("doesn't add duplicates", () => {
     const { addSentence, getWords } = omniComplete(wordBank);
     addSentence('hello there, general kenobi');
     expect(getWords().length).toEqual(wordBank.length);
@@ -80,7 +81,7 @@ describe('macro system', () => {
     en: '[en]',
     coco: 'coco',
     naki: 'ayame',
-    kan: 'kanata'
+    kan: 'kanata',
   };
 
   describe('default behaviour', () => {
@@ -92,17 +93,17 @@ describe('macro system', () => {
 
     it('replaces text with full macros', () => {
       const { replaceText } = macroSystem(macros);
-      expect(replaceText('/en /peko: hello there, /naki: dochi dochi'))
-        .toBe('[en] pekora: hello there, ayame: dochi dochi');
+      expect(replaceText('/en /peko: hello there, /naki: dochi dochi')).toBe(
+        '[en] pekora: hello there, ayame: dochi dochi',
+      );
     });
 
     it('replaces text with partial macros', () => {
       const { replaceText } = macroSystem(macros);
-      expect(replaceText('/e /pe: hello there, /n: dochi dochi'))
-        .toBe('[en] pekora: hello there, ayame: dochi dochi');
+      expect(replaceText('/e /pe: hello there, /n: dochi dochi')).toBe('[en] pekora: hello there, ayame: dochi dochi');
     });
 
-    it('doesn\'t replace escaped macros', () => {
+    it("doesn't replace escaped macros", () => {
       const { replaceText } = macroSystem(macros);
       const text = '//e //pe: hello there, //n: dochi dochi';
       expect(replaceText(text)).toBe(text);
@@ -121,7 +122,7 @@ describe('macro system', () => {
       sys.syncLeaderWith(leaderStore);
       return {
         ...sys,
-        leaderStore
+        leaderStore,
       };
     };
 
@@ -137,27 +138,27 @@ describe('macro system', () => {
 
     it('can replace text with full macros with the synced leader', () => {
       const { leaderStore, replaceText } = setupMacrosys();
-      expect(replaceText('/en /peko: hello there, /naki: dochi dochi'))
-        .toBe('[en] pekora: hello there, ayame: dochi dochi');
+      expect(replaceText('/en /peko: hello there, /naki: dochi dochi')).toBe(
+        '[en] pekora: hello there, ayame: dochi dochi',
+      );
 
       leaderStore.set(',');
 
-      expect(replaceText(',en ,peko: hello there, ,naki: dochi dochi'))
-        .toBe('[en] pekora: hello there, ayame: dochi dochi');
+      expect(replaceText(',en ,peko: hello there, ,naki: dochi dochi')).toBe(
+        '[en] pekora: hello there, ayame: dochi dochi',
+      );
     });
 
     it('replaces text with partial macros with the synced leader', () => {
       const { leaderStore, replaceText } = setupMacrosys();
-      expect(replaceText('/e /pe: hello there, /n: dochi dochi'))
-        .toBe('[en] pekora: hello there, ayame: dochi dochi');
+      expect(replaceText('/e /pe: hello there, /n: dochi dochi')).toBe('[en] pekora: hello there, ayame: dochi dochi');
 
       leaderStore.set(',');
 
-      expect(replaceText(',e ,pe: hello there, ,n: dochi dochi'))
-        .toBe('[en] pekora: hello there, ayame: dochi dochi');
+      expect(replaceText(',e ,pe: hello there, ,n: dochi dochi')).toBe('[en] pekora: hello there, ayame: dochi dochi');
     });
 
-    it('doesn\'t replace escaped macros with the synced leader', () => {
+    it("doesn't replace escaped macros with the synced leader", () => {
       const { leaderStore, replaceText } = setupMacrosys();
       const text = '//e //pe: hello there, //n: dochi dochi';
       expect(replaceText(text)).toBe(text);

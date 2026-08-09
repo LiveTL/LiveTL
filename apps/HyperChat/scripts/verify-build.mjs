@@ -7,18 +7,18 @@ const hostPermissions = [
   'https://www.youtube.com/live_chat*',
   'https://www.youtube.com/live_chat_replay*',
   'https://studio.youtube.com/live_chat*',
-  'https://studio.youtube.com/live_chat_replay*'
+  'https://studio.youtube.com/live_chat_replay*',
 ];
 const firefoxSettings = {
   gecko: {
     id: '{14a15c41-13f4-498e-986c-7f00435c4d00}',
-    strict_min_version: '115.0'
-  }
+    strict_min_version: '115.0',
+  },
 };
 
 const unresolvedKeys = (value, result = []) => {
   if (Array.isArray(value)) {
-    value.forEach(child => unresolvedKeys(child, result));
+    value.forEach((child) => unresolvedKeys(child, result));
   } else if (value !== null && typeof value === 'object') {
     for (const [key, child] of Object.entries(value)) {
       if (/\{\{[^}]+\}\}\./.test(key)) result.push(key);
@@ -65,14 +65,14 @@ for (const target of ['chrome', 'firefox', 'mv2']) {
   }
 
   const files = [
-    ...manifest.content_scripts.flatMap(script => [...(script.js ?? []), ...(script.css ?? [])]),
+    ...manifest.content_scripts.flatMap((script) => [...(script.js ?? []), ...(script.css ?? [])]),
     ...(manifest.background.scripts ?? []),
     manifest.background.service_worker,
     manifest.options_page,
     manifest.options_ui?.page,
     manifest.action?.default_popup,
-    manifest.browser_action?.default_popup
-  ].filter(file => typeof file === 'string');
+    manifest.browser_action?.default_popup,
+  ].filter((file) => typeof file === 'string');
 
   for (const file of files) {
     await assert.doesNotReject(access(path.join(buildDir, file)), `${target}: missing ${file}`);

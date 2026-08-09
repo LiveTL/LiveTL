@@ -1,30 +1,46 @@
+import { derived } from 'svelte/store';
+
+import { isValidRegex } from '../ts/utils';
+
 import { languageNameCode } from './constants.js';
-import { customFilters, languages } from './store.js';
-import { escapeRegExp, not, composeOr } from './utils.js';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { SyncStore } from './storage.js';
-import { derived } from 'svelte/store';
-import { isValidRegex } from '../ts/utils';
+import { customFilters, languages } from './store.js';
+import { escapeRegExp, not, composeOr } from './utils.js';
 
 /** @typedef {import('./types.js').Message} Message */
 
 const MAX_LANG_TAG_LEN = 7;
 
-const langTokens = [['[', ']'], ['{', '}'], ['(', ')'], ['|', '|'], ['<', '>'], ['【', '】'], ['「', '」'], ['『', '』'], ['〚', '〛'], ['（', '）'], ['〈', '〉'], ['⁽', '₎']];
-const startLangTokens = langTokens.flatMap(e => e[0]);
+const langTokens = [
+  ['[', ']'],
+  ['{', '}'],
+  ['(', ')'],
+  ['|', '|'],
+  ['<', '>'],
+  ['【', '】'],
+  ['「', '」'],
+  ['『', '』'],
+  ['〚', '〛'],
+  ['（', '）'],
+  ['〈', '〉'],
+  ['⁽', '₎'],
+];
+const startLangTokens = langTokens.flatMap((e) => e[0]);
 const tokenMap = Object.fromEntries(langTokens);
 
 const transDelimiters = ['-', ':'];
 const langSplitRe = /\W+/;
 
-const chat = e => e.chatAuthor === 'chat';
-const plain = e => e.plainReg === 'plain';
-const show = e => e.showBlock === 'show';
-const rule = e => e.rule;
+const chat = (e) => e.chatAuthor === 'chat';
+const plain = (e) => e.plainReg === 'plain';
+const show = (e) => e.showBlock === 'show';
+const rule = (e) => e.rule;
 
-const getFilterStore = (f1, f2, f3) => derived(customFilters, $filters => {
-  return $filters.filter(f1).filter(f2).filter(f3).filter(rule).map(rule);
-});
+const getFilterStore = (f1, f2, f3) =>
+  derived(customFilters, ($filters) => {
+    return $filters.filter(f1).filter(f2).filter(f3).filter(rule).map(rule);
+  });
 
 const plaintextWhitelist = getFilterStore(chat, plain, show);
 const plaintextBlacklist = getFilterStore(chat, plain, not(show));
@@ -38,20 +54,25 @@ const regexAuthorBlacklist = getFilterStore(not(chat), not(plain), not(show));
 /**
  * @param {SyncStore} ufilters
  * @param {(filter: String) => String} transform
- * @return {(message: String) => Boolean}
+ *
+ * @returns {(message: String) => Boolean}
  */
-function userFilter(ufilters, transform = filter => filter) {
+function userFilter(ufilters, transform = (filter) => filter) {
   /** @type {RegExp | null} */
   let userRegex = null;
-  ufilters.subscribe(filters => {
+  ufilters.subscribe((filters) => {
     userRegex = filters.length
-      ? new RegExp(filters.map(transform).filter(isValidRegex).filter(e => e).join('|'))
+      ? new RegExp(
+          filters
+            .map(transform)
+            .filter(isValidRegex)
+            .filter((e) => e)
+            .join('|'),
+        )
       : null;
   });
 
-  return message => userRegex
-    ? userRegex.test(message)
-    : false;
+  return (message) => (userRegex ? userRegex.test(message) : false);
 }
 
 export const textWhitelisted = userFilter(textWhitelist);
@@ -64,26 +85,19 @@ export const plainAuthorWhitelisted = userFilter(plainAuthorWhitelist, escapeReg
 export const plainAuthorBlacklisted = userFilter(plainAuthorBlacklist, escapeRegExp);
 
 /** @type {(message: String) => Boolean} */
-export const isWhitelisted = composeOr(
-  textWhitelisted, plaintextWhitelisted
-);
+export const isWhitelisted = composeOr(textWhitelisted, plaintextWhitelisted);
 /** @type {(message: String) => Boolean} */
-export const isBlacklisted = composeOr(
-  textBlacklisted, plaintextBlacklisted
-);
+export const isBlacklisted = composeOr(textBlacklisted, plaintextBlacklisted);
 
 /** @type {(author: String) => Boolean} */
-export const authorWhitelisted = composeOr(
-  regAuthorWhitelisted, plainAuthorWhitelisted
-);
+export const authorWhitelisted = composeOr(regAuthorWhitelisted, plainAuthorWhitelisted);
 /** @type {(author: String) => Boolean} */
-export const authorBlacklisted = composeOr(
-  regAuthorBlacklisted, plainAuthorBlacklisted
-);
+export const authorBlacklisted = composeOr(regAuthorBlacklisted, plainAuthorBlacklisted);
 
 /**
  * @param {String} message
- * @returns {{lang: String, msg: String} | undefined}
+ *
+ * @returns {{ lang: String; msg: String } | undefined}
  */
 export function parseTranslation(message) {
   const trimmed = message.trim();
@@ -108,7 +122,7 @@ export function parseTranslation(message) {
 
       return {
         lang,
-        msg
+        msg,
       };
     }
   }
@@ -123,7 +137,7 @@ export function parseTranslation(message) {
 
       return {
         lang,
-        msg
+        msg,
       };
     }
   }
@@ -133,6 +147,7 @@ export function parseTranslation(message) {
 
 /**
  * @param {String} str
+ *
  * @returns {String}
  */
 export function removeEmojis(str) {
@@ -143,24 +158,26 @@ export function removeEmojis(str) {
 
 /**
  * @param {String} textLang
- * @param {{ code: String, name: String, lang: String }} currentLang
+ * @param {{ code: String; name: String; lang: String }} currentLang
+ *
  * @returns {Boolean}
  */
 export function isLangMatch(textLang, currentLang) {
   const lower = textLang.toLowerCase();
   const textLangs = lower.split(langSplitRe);
-  return [...textLangs, lower].some(s => (
-    s.length >= 2 && (
-      currentLang.name.toLowerCase().startsWith(s) ||
-      s === currentLang.code ||
-      currentLang.lang.toLowerCase().startsWith(s)
-    )
-  ));
+  return [...textLangs, lower].some(
+    (s) =>
+      s.length >= 2 &&
+      (currentLang.name.toLowerCase().startsWith(s) ||
+        s === currentLang.code ||
+        currentLang.lang.toLowerCase().startsWith(s)),
+  );
 }
 
 /**
  * @param {String} textLang
- * @param {{ code: String, name: String, lang: String }[]} currentLang
+ * @param {{ code: String; name: String; lang: String }[]} currentLang
+ *
  * @returns {Boolean}
  */
 export function isLangListMatch(textLang, currentLangs) {
@@ -169,7 +186,7 @@ export function isLangListMatch(textLang, currentLangs) {
 
 export function addFilter(chatAuthor, plainReg, showBlock, rule) {
   const filters = customFilters.get();
-  const ids = filters.map(f => f.id);
+  const ids = filters.map((f) => f.id);
   const id = filters.length ? Math.max(...ids) + 1 : 0;
   const newFilter = { chatAuthor, plainReg, showBlock, rule, id };
   customFilters.set([...filters, newFilter]);
@@ -177,29 +194,28 @@ export function addFilter(chatAuthor, plainReg, showBlock, rule) {
 }
 
 export function modifyFilter(id, chatAuthor, plainReg, showBlock, rule) {
-  const newFilters = customFilters.get()
-    .map(f => {
-      if (f.id !== id) return f;
-      return { chatAuthor, plainReg, showBlock, rule, id: f.id };
-    });
+  const newFilters = customFilters.get().map((f) => {
+    if (f.id !== id) return f;
+    return { chatAuthor, plainReg, showBlock, rule, id: f.id };
+  });
   customFilters.set(newFilters);
 }
 
 export function deleteFilter(id) {
-  const newFilters = customFilters.get().filter(f => f.id !== id);
+  const newFilters = customFilters.get().filter((f) => f.id !== id);
   customFilters.set(newFilters);
 }
 
 export function cleanupFilters() {
-  customFilters.set(customFilters.get().filter(f => f.rule));
+  customFilters.set(customFilters.get().filter((f) => f.rule));
 }
 
 const lang = () => languages.get().map((language) => languageNameCode[language]);
 
-export const isTranslation = parsed => parsed && isLangListMatch(parsed.lang, lang()) && parsed.msg;
+export const isTranslation = (parsed) => parsed && isLangListMatch(parsed.lang, lang()) && parsed.msg;
 
 /** @type {(msg: Message) => Message} */
-export const replaceFirstTranslation = msg => {
+export const replaceFirstTranslation = (msg) => {
   const messageArray = [...msg.messageArray];
   if (messageArray[0].type === 'text') {
     messageArray[0].text = parseTranslation(messageArray[0].text).msg;

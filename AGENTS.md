@@ -75,11 +75,11 @@
 
 ## Build and Test Matrix
 
-| Target | Build | Watch | Output | Release status |
-| --- | --- | --- | --- | --- |
-| Chrome MV3 | `npm run build:chrome` | `npm run dev:chrome` | `apps/LiveTL/build/chrome` | Published |
+| Target      | Build                   | Watch                 | Output                      | Release status  |
+| ----------- | ----------------------- | --------------------- | --------------------------- | --------------- |
+| Chrome MV3  | `npm run build:chrome`  | `npm run dev:chrome`  | `apps/LiveTL/build/chrome`  | Published       |
 | Firefox MV3 | `npm run build:firefox` | `npm run dev:firefox` | `apps/LiveTL/build/firefox` | Validation-only |
-| Firefox MV2 | `npm run build:mv2` | `npm run dev:mv2` | `apps/LiveTL/build/mv2` | Published |
+| Firefox MV2 | `npm run build:mv2`     | `npm run dev:mv2`     | `apps/LiveTL/build/mv2`     | Published       |
 
 `VERSION=0.0.0 npm run build` typechecks, builds, and verifies all three targets.
 `npm run package` creates the published Chrome MV3 and Firefox MV2 ZIPs in
@@ -89,6 +89,7 @@ Before handing off a change, run:
 
 ```bash
 npm run format:check
+npm run lint:check
 npm run test
 VERSION=0.0.0 npm run build
 npm run package

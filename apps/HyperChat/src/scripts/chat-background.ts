@@ -3,8 +3,8 @@ import { isLiveTL } from '../ts/chat-constants';
 const noUpdateKeys = new Set(['hc.bytes.used', 'hc.bytes.update']);
 const oneDay = 1000 * 60 * 60 * 24;
 
-const storageget = (key: string): any => chrome.storage.local.get(key).then(r => r[key]);
-const defaultTo0 = (value: any): number => Number.isNaN(value) ? 0 : value;
+const storageget = (key: string): any => chrome.storage.local.get(key).then((r) => r[key]);
+const defaultTo0 = (value: any): number => (Number.isNaN(value) ? 0 : value);
 
 // MV2 has no `chrome.action`; `chrome.browserAction` is its equivalent.
 const browserAction = __MV__ === 2 ? chrome.browserAction : chrome.action;
@@ -21,15 +21,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === 'getFrameInfo') {
     sendResponse({ tabId: sender.tab?.id, frameId: sender.frameId });
   } else if (request.type === 'createPopup') {
-    chrome.windows.create({
-      url: request.url,
-      type: 'popup'
-    }, () => {});
+    chrome.windows.create(
+      {
+        url: request.url,
+        type: 'popup',
+      },
+      () => {},
+    );
   }
 });
 
-chrome.runtime.onConnect.addListener(hc => {
-  const { frameId, tabId } = JSON.parse(hc.name) as { frameId: number, tabId: number };
+chrome.runtime.onConnect.addListener((hc) => {
+  const { frameId, tabId } = JSON.parse(hc.name) as { frameId: number; tabId: number };
   const interceptorPort = chrome.tabs.connect(tabId, { frameId });
 
   const onInterceptorMessage = (msg: any): void => {
@@ -59,9 +62,10 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
   for (const key of Object.keys(changes)) {
     if (noUpdateKeys.has(key)) continue;
     const { oldValue, newValue } = changes[key];
-    delta += oldValue === undefined
-      ? (key + JSON.stringify(newValue)).length
-      : JSON.stringify(newValue).length - JSON.stringify(oldValue).length;
+    delta +=
+      oldValue === undefined
+        ? (key + JSON.stringify(newValue)).length
+        : JSON.stringify(newValue).length - JSON.stringify(oldValue).length;
   }
   if (delta === 0) return;
 
@@ -69,10 +73,7 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
   // see https://stackoverflow.com/a/53024910
   (async () => {
     const toWrite: Record<string, any> = {};
-    const data = await Promise.all([
-      storageget('hc.bytes.used'),
-      storageget('hc.bytes.lastupdate')
-    ]);
+    const data = await Promise.all([storageget('hc.bytes.used'), storageget('hc.bytes.lastupdate')]);
     let bytesused = defaultTo0(data[0]);
     const lastupdate = defaultTo0(data[1]);
     const now = Date.now();
@@ -84,7 +85,7 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
       bytesused = new TextEncoder().encode(
         Object.entries(await chrome.storage.local.get())
           .map(([key, value]) => key + JSON.stringify(value))
-          .join('')
+          .join(''),
       ).length;
       toWrite['hc.bytes.lastupdate'] = now;
     }

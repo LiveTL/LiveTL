@@ -35,7 +35,8 @@ npm run test # jest
 npm run test:watch # autotest
 npm run e2e # run e2e tests
 
-npm run format # lint
+npm run format # format
+npm run lint # lint
 ```
 
 Load `build/chrome` in Chrome developer mode. Firefox validation targets are in

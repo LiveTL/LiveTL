@@ -1,12 +1,13 @@
-import { mdiOpenInNew, mdiYoutubeTv, mdiIframeArray } from '@mdi/js';
 import { getFrameInfoAsync, createPopup, isValidFrameInfo } from '@hyperchat/ts/chat-utils';
+import { mdiOpenInNew, mdiYoutubeTv, mdiIframeArray } from '@mdi/js';
+
 import { paramsEmbedDomain, AutoLaunchMode } from '../../js/constants.js';
 import { autoLaunchMode, holodexEnabled } from '../../js/store.js';
 import { constructParams, openLiveTL } from '../../js/utils.js';
 import { injectLtlLauncher, ltlButtonParams } from '../utils';
 
 for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) {
-  window.addEventListener(eventName, e => e.stopImmediatePropagation(), true);
+  window.addEventListener(eventName, (e) => e.stopImmediatePropagation(), true);
 }
 
 async function loaded(): Promise<void> {
@@ -57,10 +58,7 @@ async function loaded(): Promise<void> {
     popoutParams.set('tabid', frameInfo.tabId.toString());
     popoutParams.set('frameid', frameInfo.frameId.toString());
     try {
-      popoutParams.set(
-        'title',
-        window.parent.document.querySelector('#container > .title')?.textContent ?? ''
-      );
+      popoutParams.set('title', window.parent.document.querySelector('#container > .title')?.textContent ?? '');
     } catch (e) {
       if (e instanceof DOMException) {
         console.debug('Ignored expected CORS error', { e });
@@ -68,9 +66,7 @@ async function loaded(): Promise<void> {
         throw e;
       }
     }
-    createPopup(
-      chrome.runtime.getURL(`popout.html?${popoutParams.toString()}`)
-    );
+    createPopup(chrome.runtime.getURL(`popout.html?${popoutParams.toString()}`));
   };
   const embedTLs = (): void => {
     const embeddedParams = constructParams();
@@ -84,30 +80,32 @@ async function loaded(): Promise<void> {
     iframe.style.position = 'fixed';
     iframe.src = chrome.runtime.getURL(`watch.html?${embeddedParams.toString()}`);
     document.body.appendChild(iframe);
-    window.addEventListener('message', d => {
+    window.addEventListener('message', (d) => {
       iframe.contentWindow?.postMessage(d.data, '*');
     });
   };
 
-  autoLaunchMode.loaded.then(mode => {
-    switch (mode) {
-      case AutoLaunchMode.NONE: {
-        break;
+  autoLaunchMode.loaded
+    .then((mode) => {
+      switch (mode) {
+        case AutoLaunchMode.NONE: {
+          break;
+        }
+        case AutoLaunchMode.FULLPAGE: {
+          openLiveTL();
+          break;
+        }
+        case AutoLaunchMode.POPOUT: {
+          tlPopout();
+          break;
+        }
+        case AutoLaunchMode.EMBEDDED: {
+          embedTLs();
+          break;
+        }
       }
-      case AutoLaunchMode.FULLPAGE: {
-        openLiveTL();
-        break;
-      }
-      case AutoLaunchMode.POPOUT: {
-        tlPopout();
-        break;
-      }
-      case AutoLaunchMode.EMBEDDED: {
-        embedTLs();
-        break;
-      }
-    }
-  }).catch(console.error);
+    })
+    .catch(console.error);
 
   /** Start buttons injections */
   const renderer = document.querySelector<HTMLElement>('yt-live-chat-renderer');
@@ -115,21 +113,22 @@ async function loaded(): Promise<void> {
     console.error('Could not find yt-live-chat-renderer');
     return;
   }
-  injectLtlLauncher(renderer, [
-    ltlButtonParams('Open LiveTL', openLiveTL, mdiYoutubeTv),
-    ltlButtonParams('TL Popout', tlPopout, mdiOpenInNew),
-    ltlButtonParams('Embed TLs', embedTLs, mdiIframeArray)
-  ], { padding: '5px', fontWeight: '700', fontSize: '11px', fontFamily: 'Roboto, Arial, sans-serif', borderWidth: '0' });
+  injectLtlLauncher(
+    renderer,
+    [
+      ltlButtonParams('Open LiveTL', openLiveTL, mdiYoutubeTv),
+      ltlButtonParams('TL Popout', tlPopout, mdiOpenInNew),
+      ltlButtonParams('Embed TLs', embedTLs, mdiIframeArray),
+    ],
+    { padding: '5px', fontWeight: '700', fontSize: '11px', fontFamily: 'Roboto, Arial, sans-serif', borderWidth: '0' },
+  );
 }
 
 window.addEventListener('message', (packet) => {
   if (packet.origin !== window.origin && !packet.data.type) window.postMessage(packet.data, '*');
 });
 
-/**
- * Load on DOMContentLoaded or later.
- * Does not matter unless run_at is specified in manifest.
- */
+/** Load on DOMContentLoaded or later. Does not matter unless run_at is specified in manifest. */
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => async () => await loaded());
 } else {

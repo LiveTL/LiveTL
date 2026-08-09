@@ -1,6 +1,11 @@
 import { tick } from 'svelte';
 
-interface Rect { top: number, right: number, bottom: number, left: number }
+interface Rect {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+}
 
 export const getRelativeRect = (element: HTMLElement, boundingElement: HTMLElement): Rect => {
   const rect = element.getBoundingClientRect();
@@ -9,7 +14,7 @@ export const getRelativeRect = (element: HTMLElement, boundingElement: HTMLEleme
     top: rect.top - boundingRect.top,
     right: boundingElement.clientWidth - (boundingRect.right - rect.right),
     bottom: boundingElement.clientHeight - (boundingRect.bottom - rect.bottom),
-    left: rect.left - boundingRect.left
+    left: rect.left - boundingRect.left,
   };
 };
 

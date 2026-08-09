@@ -1,18 +1,19 @@
 import { render, fireEvent } from '@testing-library/svelte';
 import { get, writable } from 'svelte/store';
+
 import Dropdown from '../../../components/common/DropdownStore.svelte';
 
 describe('Dropdown', () => {
   const items = [
     { text: 'test', value: 'testValue' },
-    { text: 'test2', value: 'test2Value' }
+    { text: 'test2', value: 'test2Value' },
   ];
 
   it('shows label', () => {
     const { getByText } = render(Dropdown, {
       name: 'Dropdown',
       items,
-      store: writable(items[0].name)
+      store: writable(items[0].name),
     });
     const label = getByText('Dropdown');
     expect(label).toBeInTheDocument();
@@ -23,7 +24,7 @@ describe('Dropdown', () => {
     const { getByText, getByDisplayValue } = render(Dropdown, { items, store });
     const button = getByDisplayValue(items[0].text);
     await fireEvent.click(button);
-    items.forEach(item => expect(getByText(item.text)).toBeInTheDocument());
+    items.forEach((item) => expect(getByText(item.text)).toBeInTheDocument());
   });
 
   it('updates with the store', async () => {

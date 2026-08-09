@@ -1,14 +1,9 @@
 /* eslint-disable no-undef */
-import {
-  LookupStore,
-  SyncStore,
-  exportStores,
-  importStores
-} from '../../js/storage.js';
+import { LookupStore, SyncStore, exportStores, importStores } from '../../js/storage.js';
 
 function MockBackend() {
   const storage = {};
-  this.get = async key => storage[key];
+  this.get = async (key) => storage[key];
   this.set = async (key, value) => (storage[key] = value);
   this.storage = storage;
 }
@@ -70,7 +65,10 @@ describe('Synchronized lookup store', () => {
     const expectedNotifs = [
       [],
       [['first key', { value: 'first not default' }]],
-      [['first key', { value: 'first not default' }], ['second key', { value: 'second not default' }]]
+      [
+        ['first key', { value: 'first not default' }],
+        ['second key', { value: 'second not default' }],
+      ],
     ];
     ss.subscribe(notifs.push.bind(notifs));
     await ss.set('first key', { value: 'first not default' });
@@ -107,7 +105,7 @@ describe('import and export system', () => {
     const ss1 = new SyncStore('firstStore', 10, storage);
     const ss2 = new SyncStore('secondStore', 20, storage);
     const ss3 = new SyncStore('thirdStore', 30, storage);
-    const getVals = () => [ss1, ss2, ss3].map(s => s.get());
+    const getVals = () => [ss1, ss2, ss3].map((s) => s.get());
     const exported = exportStores();
     const expected = [10, 20, 30];
     importStores(exported);

@@ -1,11 +1,15 @@
 import { render, fireEvent } from '@testing-library/svelte';
 import { get, writable } from 'svelte/store';
+
 import Radio from '../../../components/common/RadioGroupStore.svelte';
 
 describe('Radio', () => {
   // const name = 'Test option';
   const options = ['value1', 'value2'];
-  const map = new Map([['value1', 'label 1'], ['value2', 'label 2']]);
+  const map = new Map([
+    ['value1', 'label 1'],
+    ['value2', 'label 2'],
+  ]);
 
   // it('shows the label', () => {
   //   const { getByText } = render(Radio, { name, options, store: writable(options[0]) });

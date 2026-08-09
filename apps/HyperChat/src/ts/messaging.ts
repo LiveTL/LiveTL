@@ -1,9 +1,17 @@
+import sha1 from 'sha-1';
+
+import {
+  chatReportUserOptions,
+  ChatUserActions,
+  ChatReportUserOptions,
+  replyThreadPanelTag,
+  currentDomain,
+} from '../ts/chat-constants';
+
+import { parseChatResponse } from './chat-parser';
 import type { Unsubscriber } from './queue';
 import { ytcQueue } from './queue';
-import { chatReportUserOptions, ChatUserActions, ChatReportUserOptions, replyThreadPanelTag, currentDomain } from '../ts/chat-constants';
-import { parseChatResponse } from './chat-parser';
 import type { Chat } from './typings/chat';
-import sha1 from 'sha-1';
 
 let interceptor: Chat.Interceptor = { clients: [] };
 
@@ -52,9 +60,11 @@ const proxyFetch = async (...args: any[]): Promise<any> => {
       reject(new Error('proxy fetch timed out'));
     }, 5000);
     window.addEventListener('proxyFetchResponse', onFetchResponse);
-    window.dispatchEvent(new CustomEvent('proxyFetchRequest', {
-      detail: encoded
-    }));
+    window.dispatchEvent(
+      new CustomEvent('proxyFetchRequest', {
+        detail: encoded,
+      }),
+    );
   });
 };
 
@@ -77,30 +87,22 @@ const buildInnertubeHeaders = (ytcfg: YtCfg) => {
       ...(clientVersion != null ? { 'X-Youtube-Client-Version': String(clientVersion) } : {}),
       ...(pageId != null ? { 'X-Goog-PageId': String(pageId) } : {}),
       'X-Origin': currentDomain,
-      ...(auth != null ? { Authorization: auth } : {})
+      ...(auth != null ? { Authorization: auth } : {}),
     },
     method: 'POST' as const,
-    mode: 'same-origin' as const
+    mode: 'same-origin' as const,
   };
 };
 
 /** Register a client to the interceptor. */
-const registerClient = (
-  port: Chat.Port,
-  getInitialData = false
-): void => {
+const registerClient = (port: Chat.Port, getInitialData = false): void => {
   if (interceptor.clients.some((client) => client.name === port.name)) {
-    console.debug(
-      'Client already registered. Not registering',
-      { interceptor, port }
-    );
-    port.postMessage(
-      {
-        type: 'registerClientResponse',
-        success: false,
-        failReason: 'Client already registered'
-      }
-    );
+    console.debug('Client already registered. Not registering', { interceptor, port });
+    port.postMessage({
+      type: 'registerClientResponse',
+      success: false,
+      failReason: 'Client already registered',
+    });
     return;
   }
 
@@ -109,9 +111,7 @@ const registerClient = (
 
   // Unregister client when port disconnects
   port.onDisconnect.addListener(() => {
-    const i = interceptor.clients.findIndex(
-      (clientPort) => clientPort.name === port.name
-    );
+    const i = interceptor.clients.findIndex((clientPort) => clientPort.name === port.name);
     if (i < 0) {
       console.error('Failed to unregister client', { port, interceptor });
       return;
@@ -123,34 +123,30 @@ const registerClient = (
   // Add client to array
   interceptor.clients.push(port);
   console.debug('Register client successful', { port, interceptor });
-  port.postMessage(
-    {
-      type: 'registerClientResponse',
-      success: true
-    }
-  );
+  port.postMessage({
+    type: 'registerClientResponse',
+    success: true,
+  });
 
   if (getInitialData && isYtcInterceptor(interceptor)) {
     const selfChannel = interceptor.queue.selfChannel.get();
     const payload: Chat.InitialData = {
       type: 'initialData',
       initialData: interceptor.queue.getInitialData(),
-      selfChannel: selfChannel != null
-        ? {
-            name: selfChannel.authorName?.simpleText ?? '',
-            channelId: selfChannel.authorExternalChannelId ?? ''
-          }
-        : null
+      selfChannel:
+        selfChannel != null
+          ? {
+              name: selfChannel.authorName?.simpleText ?? '',
+              channelId: selfChannel.authorExternalChannelId ?? '',
+            }
+          : null,
     };
     port.postMessage(payload);
     console.debug('Sent initial data', { port, interceptor, payload });
   }
 };
 
-/**
- * Parses the given YTC json response, and adds it to the queue of the
- * interceptor that sent it.
- */
+/** Parses the given YTC json response, and adds it to the queue of the interceptor that sent it. */
 export const processMessageChunk = (json: string): void => {
   if (!isYtcInterceptor(interceptor, true, 'processMessageChunk', json)) return;
 
@@ -170,18 +166,18 @@ export const processSentMessage = (json: string): void => {
   const fakeChunk: Ytc.RawResponse = {
     continuationContents: {
       liveChatContinuation: {
-        continuations: [{
-          timedContinuationData: {
-            timeoutMs: 0
-          }
-        }],
-        actions: fakeJson.actions
-      }
-    }
+        continuations: [
+          {
+            timedContinuationData: {
+              timeoutMs: 0,
+            },
+          },
+        ],
+        actions: fakeJson.actions,
+      },
+    },
   };
-  interceptor.queue.addJsonToQueue(JSON.stringify(
-    fakeChunk
-  ), false, interceptor, true);
+  interceptor.queue.addJsonToQueue(JSON.stringify(fakeChunk), false, interceptor, true);
 };
 
 /** Parses and sets initial message data and metadata. */
@@ -192,18 +188,15 @@ export const setInitialData = (json: string): void => {
 
   const parsedJson = JSON.parse(json);
 
-  const actionPanel = (parsedJson?.continuationContents?.liveChatContinuation ||
-    parsedJson?.contents?.liveChatRenderer)
+  const actionPanel = (parsedJson?.continuationContents?.liveChatContinuation || parsedJson?.contents?.liveChatRenderer)
     ?.actionPanel;
 
-  const user = actionPanel?.liveChatMessageInputRenderer
-    ?.sendButton?.buttonRenderer?.serviceEndpoint
-    ?.sendLiveChatMessageEndpoint?.actions[0]
-    ?.addLiveChatTextMessageFromTemplateAction?.template
+  const user = actionPanel?.liveChatMessageInputRenderer?.sendButton?.buttonRenderer?.serviceEndpoint
+    ?.sendLiveChatMessageEndpoint?.actions[0]?.addLiveChatTextMessageFromTemplateAction?.template
     ?.liveChatTextMessageRenderer ?? {
     authorName: {
-      simpleText: parsedJson?.continuationContents?.liveChatContinuation?.viewerName
-    }
+      simpleText: parsedJson?.continuationContents?.liveChatContinuation?.viewerName,
+    },
   };
 
   interceptor.queue.selfChannel.set(user);
@@ -215,17 +208,12 @@ export const updatePlayerProgress = (playerProgress: number): void => {
   interceptor.queue.updatePlayerProgress(playerProgress, true);
 };
 
-/**
- * Sets the theme of the interceptor, and sends the new theme to any currently
- * registered clients.
- */
+/** Sets the theme of the interceptor, and sends the new theme to any currently registered clients. */
 export const setTheme = (dark: boolean): void => {
   if (!isYtcInterceptor(interceptor, true, 'setTheme', dark)) return;
 
   interceptor.dark = dark;
-  interceptor.clients.forEach(
-    (port) => port.postMessage({ type: 'themeUpdate', dark })
-  );
+  interceptor.clients.forEach((port) => port.postMessage({ type: 'themeUpdate', dark }));
   console.debug(`Set dark theme to ${dark.toString()}`);
 };
 
@@ -238,16 +226,14 @@ const getTheme = (port: Chat.Port): void => {
 
 // TODO: Figure this out when doing MV3 for LTL
 const sendLtlMessage = (message: Chat.LtlMessage): void => {
-  interceptor.clients.forEach(
-    (clientPort) => clientPort.postMessage({ type: 'ltlMessage', message })
-  );
+  interceptor.clients.forEach((clientPort) => clientPort.postMessage({ type: 'ltlMessage', message }));
 };
 
 const executeChatAction = async (
   message: Ytc.ParsedMessage,
   ytcfg: YtCfg,
   action: ChatUserActions,
-  reportOption?: ChatReportUserOptions
+  reportOption?: ChatReportUserOptions,
 ): Promise<void> => {
   let success = true;
   if (message.params == null) {
@@ -258,14 +244,15 @@ const executeChatAction = async (
       throw new Error('Missing context menu params for message');
     }
     const apiKey = ytcfg.data_.INNERTUBE_API_KEY;
-    const contextMenuUrl = `${currentDomain}/youtubei/v1/live_chat/get_item_context_menu?params=` +
+    const contextMenuUrl =
+      `${currentDomain}/youtubei/v1/live_chat/get_item_context_menu?params=` +
       `${encodeURIComponent(message.params)}&pbj=1&key=${apiKey}&prettyPrint=false`;
     const baseContext = ytcfg.data_.INNERTUBE_CONTEXT;
     const heads = buildInnertubeHeaders(ytcfg);
     const contextMenuContext = JSON.parse(JSON.stringify(baseContext));
     const res = await proxyFetch(contextMenuUrl, {
       ...heads,
-      body: JSON.stringify({ context: contextMenuContext })
+      body: JSON.stringify({ context: contextMenuContext }),
     });
     function findServiceEndpoint(root: any, prop: string): any | null {
       const queue = [root];
@@ -285,26 +272,29 @@ const executeChatAction = async (
       }
       return null;
     }
-    function parseServiceEndpoint(serviceEndpoint: any, prop: string): { params: string, context: any } {
+    function parseServiceEndpoint(serviceEndpoint: any, prop: string): { params: string; context: any } {
       if (typeof serviceEndpoint?.[prop]?.params !== 'string') {
         throw new Error(`Missing service endpoint params for ${prop}`);
       }
-      const { clickTrackingParams, [prop]: { params } } = serviceEndpoint;
+      const {
+        clickTrackingParams,
+        [prop]: { params },
+      } = serviceEndpoint;
       const clonedContext = JSON.parse(JSON.stringify(baseContext));
       if (clickTrackingParams != null) {
         clonedContext.clickTracking = {
-          clickTrackingParams
+          clickTrackingParams,
         };
       }
       return {
         params,
-        context: clonedContext
+        context: clonedContext,
       };
     }
     function findDeleteMessageEndpoint(root: any): any | null {
       const queue = [root];
       const visited = new Set<any>();
-      const candidates: Array<{ iconType?: string, label?: string, endpoint: any }> = [];
+      const candidates: Array<{ iconType?: string; label?: string; endpoint: any }> = [];
       while (queue.length > 0) {
         const current = queue.shift();
         if (current == null || typeof current !== 'object' || visited.has(current)) continue;
@@ -314,7 +304,10 @@ const executeChatAction = async (
         const endpoint = menu?.serviceEndpoint;
         const label = (
           Array.isArray(menu?.text?.runs)
-            ? menu.text.runs.map((r: any) => r?.text).filter(Boolean).join('')
+            ? menu.text.runs
+                .map((r: any) => r?.text)
+                .filter(Boolean)
+                .join('')
             : menu?.text?.simpleText
         ) as string | undefined;
         // Prefer stable identifiers (DELETE icon + moderate endpoint) over localized label text.
@@ -345,13 +338,16 @@ const executeChatAction = async (
         throw new Error('Could not find moderate endpoint in context menu');
       }
       const { params, context } = parseServiceEndpoint(serviceEndpoint, 'moderateLiveChatEndpoint');
-      const moderationResponse = await proxyFetch(`${currentDomain}/youtubei/v1/live_chat/moderate?key=${apiKey}&prettyPrint=false`, {
-        ...heads,
-        body: JSON.stringify({
-          params,
-          context
-        })
-      });
+      const moderationResponse = await proxyFetch(
+        `${currentDomain}/youtubei/v1/live_chat/moderate?key=${apiKey}&prettyPrint=false`,
+        {
+          ...heads,
+          body: JSON.stringify({
+            params,
+            context,
+          }),
+        },
+      );
       if (moderationResponse?.error != null || moderationResponse?.success === false) {
         throw new Error('Moderation request failed');
       }
@@ -361,13 +357,16 @@ const executeChatAction = async (
         throw new Error('Could not find delete endpoint in context menu');
       }
       const { params, context } = parseServiceEndpoint(serviceEndpoint, 'moderateLiveChatEndpoint');
-      const moderationResponse = await proxyFetch(`${currentDomain}/youtubei/v1/live_chat/moderate?key=${apiKey}&prettyPrint=false`, {
-        ...heads,
-        body: JSON.stringify({
-          params,
-          context
-        })
-      });
+      const moderationResponse = await proxyFetch(
+        `${currentDomain}/youtubei/v1/live_chat/moderate?key=${apiKey}&prettyPrint=false`,
+        {
+          ...heads,
+          body: JSON.stringify({
+            params,
+            context,
+          }),
+        },
+      );
       if (moderationResponse?.error != null || moderationResponse?.success === false) {
         throw new Error('Moderation request failed');
       }
@@ -381,16 +380,16 @@ const executeChatAction = async (
         ...heads,
         body: JSON.stringify({
           params,
-          context
-        })
+          context,
+        }),
       });
-      const options = modal?.actions?.[0]
-        ?.openPopupAction?.popup?.reportFormModalRenderer
-        ?.optionsSupportedRenderers?.optionsRenderer?.items;
+      const options =
+        modal?.actions?.[0]?.openPopupAction?.popup?.reportFormModalRenderer?.optionsSupportedRenderers?.optionsRenderer
+          ?.items;
       if (!Array.isArray(options) || options.length < 1) {
         throw new Error('Report options are missing');
       }
-      const reportIndex = chatReportUserOptions.findIndex(d => d.value === reportOption);
+      const reportIndex = chatReportUserOptions.findIndex((d) => d.value === reportOption);
       const index = reportIndex >= 0 && reportIndex < options.length ? reportIndex : 0;
       const submitEndpoint = options[index]?.optionSelectableItemRenderer?.submitEndpoint;
       const clickTrackingParams = submitEndpoint?.clickTrackingParams;
@@ -400,15 +399,15 @@ const executeChatAction = async (
       }
       if (clickTrackingParams != null) {
         context.clickTracking = {
-          clickTrackingParams
+          clickTrackingParams,
         };
       }
       const flagResponse = await proxyFetch(`${currentDomain}/youtubei/v1/flag/flag?key=${apiKey}&prettyPrint=false`, {
         ...heads,
         body: JSON.stringify({
           action: flagAction,
-          context
-        })
+          context,
+        }),
       });
       if (flagResponse?.error != null || flagResponse?.success === false) {
         throw new Error('Report request failed');
@@ -419,50 +418,42 @@ const executeChatAction = async (
     success = false;
   }
 
-  interceptor.clients.forEach(
-    (clientPort) => clientPort.postMessage({
+  interceptor.clients.forEach((clientPort) =>
+    clientPort.postMessage({
       type: 'chatUserActionResponse',
       action: action,
       message,
-      success
-    })
+      success,
+    }),
   );
 };
 
-const fetchReplyThread = async (
-  requestId: string,
-  params: string,
-  ytcfg: YtCfg,
-  isReplay: boolean
-): Promise<void> => {
+const fetchReplyThread = async (requestId: string, params: string, ytcfg: YtCfg, isReplay: boolean): Promise<void> => {
   let success = true;
   let replies: Ytc.ParsedMessage[] = [];
   let error: string | undefined;
   try {
     const baseContext = ytcfg.data_.INNERTUBE_CONTEXT;
     const heads = buildInnertubeHeaders(ytcfg);
-    const panelRes = await proxyFetch(
-      `${currentDomain}/youtubei/v1/get_panel?prettyPrint=false`,
-      {
-        ...heads,
-        body: JSON.stringify({
-          context: baseContext,
-          panelId: replyThreadPanelTag,
-          params
-        })
-      }
-    );
-    const items: any[] = panelRes?.content?.engagementPanelSectionListRenderer
-      ?.content?.sectionListRenderer?.contents?.[0]
-      ?.liveChatItemDisplayListRenderer?.items ?? [];
+    const panelRes = await proxyFetch(`${currentDomain}/youtubei/v1/get_panel?prettyPrint=false`, {
+      ...heads,
+      body: JSON.stringify({
+        context: baseContext,
+        panelId: replyThreadPanelTag,
+        params,
+      }),
+    });
+    const items: any[] =
+      panelRes?.content?.engagementPanelSectionListRenderer?.content?.sectionListRenderer?.contents?.[0]
+        ?.liveChatItemDisplayListRenderer?.items ?? [];
     // Reuse parseChatResponse so replies come out shaped identically to live chat messages.
     const fakeChunk = JSON.stringify({
       continuationContents: {
         liveChatContinuation: {
           continuations: [{ timedContinuationData: { timeoutMs: 0 } }],
-          actions: items.map((item: any) => ({ addChatItemAction: { item } }))
-        }
-      }
+          actions: items.map((item: any) => ({ addChatItemAction: { item } })),
+        },
+      },
     });
     const chunk = parseChatResponse(fakeChunk, isReplay);
     replies = (chunk?.messages ?? []) as Ytc.ParsedMessage[];
@@ -471,22 +462,18 @@ const fetchReplyThread = async (
     error = String(e);
   }
 
-  interceptor.clients.forEach(
-    (clientPort) => clientPort.postMessage({
+  interceptor.clients.forEach((clientPort) =>
+    clientPort.postMessage({
       type: 'replyThreadResponse',
       requestId,
       success,
       replies,
-      error
-    })
+      error,
+    }),
   );
 };
 
-export const initInterceptor = (
-  source: Chat.InterceptorSource,
-  ytcfg: YtCfg,
-  isReplay?: boolean
-): void => {
+export const initInterceptor = (source: Chat.InterceptorSource, ytcfg: YtCfg, isReplay?: boolean): void => {
   if (source === 'ytc') {
     const queue = ytcQueue(isReplay);
     let queueUnsub: Unsubscriber | undefined;
@@ -495,7 +482,7 @@ export const initInterceptor = (
       source: 'ytc',
       dark: false,
       queue,
-      queueUnsub
+      queueUnsub,
     };
     ytcInterceptor.queueUnsub = queue.latestAction.subscribe((latestAction) => {
       if (!latestAction) return;

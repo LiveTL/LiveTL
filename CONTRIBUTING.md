@@ -80,13 +80,13 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 
 .\
 ├── apps\
-│   ├── HyperChat - standalone HyperChat extension\
-│   │   └── src - chat parsing, rendering, actions, and shared chat behavior\
-│   └── LiveTL\
-│       ├── build - browser targets and release ZIPs\
-│       ├── e2e - python selenium tests\
-│       ├── img - images used in LiveTL README and docs\
-│       └── src\
+│ ├── HyperChat - standalone HyperChat extension\
+│ │ └── src - chat parsing, rendering, actions, and shared chat behavior\
+│ └── LiveTL\
+│ ├── build - browser targets and release ZIPs\
+│ ├── e2e - python selenium tests\
+│ ├── img - images used in LiveTL README and docs\
+│ └── src\
 │   ├── changelogs - changelog components\
 │   │   ├── common\
 │   │   └── img\
@@ -100,7 +100,7 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 │   │   └── pages - the exports of the svelte components that represent each LiveTL page\
 │   ├── plugins - plugins for injection to our script\
 │   ├── hyperchat - LiveTL entry points for the shared HyperChat source\
-│   └── __tests__ - tests that match the directory structure of `src`
+│   └── **tests** - tests that match the directory structure of `src`
 
 ## Other
 

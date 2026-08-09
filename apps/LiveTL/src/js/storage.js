@@ -1,14 +1,15 @@
 import { get, writable } from 'svelte/store';
+
 import { storageVersion, Browser, BROWSER } from './constants.js';
 
 export const storage = new Storage(storageVersion);
 
 /** @typedef {Map<String, SyncStore | LookupStore>} StoreLookup */
 
-/** @type {{ byName: StoreLookup, byMangled: StoreLookup }} */
+/** @type {{ byName: StoreLookup; byMangled: StoreLookup }} */
 const stores = {
   byName: new Map(),
-  byMangled: new Map()
+  byMangled: new Map(),
 };
 
 /**
@@ -40,7 +41,7 @@ export class SyncStore {
     // if it has changed recently, wait 100 millis
     // and see if there's another change
     if (Date.now() - this._lastSet < 100) return;
-    return await this._storage.get(this.name).then(value => {
+    return await this._storage.get(this.name).then((value) => {
       this._store.set(value ?? this.get());
       return value;
     });
@@ -50,16 +51,12 @@ export class SyncStore {
     if (this._updateAcrossSessions) return await this.loadFromStorage();
   }
 
-  /**
-   * @returns {T} the store value
-   */
+  /** @returns {T} The store value */
   get() {
     return get(this._store);
   }
 
-  /**
-   * @param {T} value
-   */
+  /** @param {T} value */
   set(value) {
     this._store.set(value);
     this._markSet();
@@ -74,9 +71,7 @@ export class SyncStore {
     this.set(value);
   }
 
-  /**
-   * @param {(n: T) => T} callback
-   */
+  /** @param {(n: T) => T} callback */
   update(callback) {
     this._store.update(callback);
     this._storage.set(this.name, get(this._store));
@@ -91,6 +86,7 @@ export class SyncStore {
 
   /**
    * @param {(n: T) => void} callback
+   *
    * @returns {() => void}
    */
   subscribe(callback) {
@@ -137,11 +133,12 @@ export class LookupStore {
 
   /** @private */
   async loadFromStorage() {
-    this.keys = (await this._storage.get(this._keyname) || this.keys)
-      .filter(k => k);
-    await Promise.all(this.keys.map(async k => {
-      this._lookup[k] = await this._storage.get(this.mangleKey(k));
-    }));
+    this.keys = ((await this._storage.get(this._keyname)) || this.keys).filter((k) => k);
+    await Promise.all(
+      this.keys.map(async (k) => {
+        this._lookup[k] = await this._storage.get(this.mangleKey(k));
+      }),
+    );
     this.notify();
   }
 
@@ -157,16 +154,15 @@ export class LookupStore {
     return `${this.name}:$$${key}`;
   }
 
-  /**
-   * @private
-   */
+  /** @private */
   notify() {
-    this._subscribers.forEach(subscriber => subscriber(Object.entries(this._lookup)));
+    this._subscribers.forEach((subscriber) => subscriber(Object.entries(this._lookup)));
   }
 
   /**
    * @param {String} key
-   * @return {T}
+   *
+   * @returns {T}
    */
   get(key) {
     return this._lookup[key] ?? this.defaultValue;
@@ -174,7 +170,8 @@ export class LookupStore {
 
   /**
    * @param {String} key
-   * @return {Boolean}
+   *
+   * @returns {Boolean}
    */
   has(key) {
     return this._lookup[key] != null;
@@ -187,10 +184,7 @@ export class LookupStore {
   async set(key, value) {
     const previous = this._lookup[key];
     this._lookup[key] = value;
-    await Promise.all([
-      this._saveOneKeyValue(key, value),
-      previous == null ? this._saveNewKey(key) : 0
-    ]);
+    await Promise.all([this._saveOneKeyValue(key, value), previous == null ? this._saveNewKey(key) : 0]);
     this.notify();
   }
 
@@ -201,10 +195,7 @@ export class LookupStore {
   async setEntire(value) {
     this._lookup = value;
     const keys = Object.keys(value);
-    await Promise.all([
-      ...keys.map(key => this._saveOneKeyValue(key, value[key])),
-      this._saveKeys(keys)
-    ]);
+    await Promise.all([...keys.map((key) => this._saveOneKeyValue(key, value[key])), this._saveKeys(keys)]);
     this.notify();
   }
 
@@ -212,15 +203,14 @@ export class LookupStore {
     return await this.setEntire({});
   }
 
-  /**
-   * @param {(v: T) => T} callback
-   */
+  /** @param {(v: T) => T} callback */
   async update(name, callback) {
     this.set(name, await callback(this.get(name)));
   }
 
   /**
    * @param {Subscriber<T>} callback
+   *
    * @returns {() => void}
    */
   subscribe(callback) {
@@ -244,9 +234,7 @@ export class LookupStore {
   }
 }
 
-/**
- * @returns {String}
- */
+/** @returns {String} */
 export function exportStores() {
   const exportedObj = {};
   stores.byName.forEach((store, name) => {
@@ -283,7 +271,7 @@ Storage.prototype.get = getStorage;
 Storage.prototype.set = setStorage;
 
 /**
- * @constructor
+ * @class
  * @param {String} version
  */
 export function Storage(version) {

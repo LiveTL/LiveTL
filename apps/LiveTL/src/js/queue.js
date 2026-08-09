@@ -1,6 +1,4 @@
-/**
- * @template T
- */
+/** @template T */
 export class Queue {
   constructor() {
     this.clear();
@@ -11,16 +9,12 @@ export class Queue {
     this.last = this.top;
   }
 
-  /**
-   * @returns {Boolean}
-   */
+  /** @returns {Boolean} */
   empty() {
     return this.top === null || this.top === undefined;
   }
 
-  /**
-   * @returns {T}
-   */
+  /** @returns {T} */
   pop() {
     const front = this.top;
     this.top = this.top.next;
@@ -30,9 +24,7 @@ export class Queue {
     return front;
   }
 
-  /**
-   * @param {T} item
-   */
+  /** @param {T} item */
   push(item) {
     const newItem = { data: item };
     if (this.last === null) {

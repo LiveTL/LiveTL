@@ -5,13 +5,11 @@ import path from 'node:path';
 const targets = {
   chrome: 3,
   firefox: 3,
-  mv2: 2
+  mv2: 2,
 };
 const versions = new Set();
 
-const iconFiles = value => typeof value === 'string'
-  ? [value]
-  : Object.values(value ?? {}).flatMap(iconFiles);
+const iconFiles = (value) => (typeof value === 'string' ? [value] : Object.values(value ?? {}).flatMap(iconFiles));
 
 const assertFile = async (buildDir, target, file) => {
   await assert.doesNotReject(access(path.join(buildDir, file)), `${target}: missing ${file}`);
@@ -57,7 +55,7 @@ for (const [target, mv] of Object.entries(targets)) {
   }
 
   const files = [
-    ...manifest.content_scripts.flatMap(script => [...(script.js ?? []), ...(script.css ?? [])]),
+    ...manifest.content_scripts.flatMap((script) => [...(script.js ?? []), ...(script.css ?? [])]),
     ...(manifest.background.scripts ?? []),
     manifest.background.page,
     manifest.background.service_worker,
@@ -67,15 +65,15 @@ for (const [target, mv] of Object.entries(targets)) {
     ...iconFiles(manifest.icons),
     ...iconFiles(manifest.action?.default_icon),
     ...iconFiles(manifest.browser_action?.default_icon),
-    ...(manifest.declarative_net_request?.rule_resources ?? []).map(rule => rule.path),
+    ...(manifest.declarative_net_request?.rule_resources ?? []).map((rule) => rule.path),
     'hyperchat/scripts/chat-interceptor.js',
     'hyperchat/scripts/chat-metagetter.js',
     'hyperchat/scripts/chat-translation-host.js',
     'hyperchat/index.html',
     'hyperchat/options.html',
     'hyperchat/logo-48.png',
-    'ts/yt-workaround.js'
-  ].filter(file => typeof file === 'string');
+    'ts/yt-workaround.js',
+  ].filter((file) => typeof file === 'string');
 
   for (const file of new Set(files)) {
     await assertFile(buildDir, target, file);
@@ -83,9 +81,7 @@ for (const [target, mv] of Object.entries(targets)) {
     const html = await readFile(path.join(buildDir, file), 'utf8');
     for (const [, reference] of html.matchAll(/(?:src|href)="([^"]+)"/g)) {
       if (/^(?:[a-z]+:|#)/i.test(reference)) continue;
-      const asset = reference.startsWith('/')
-        ? reference.slice(1)
-        : path.join(path.dirname(file), reference);
+      const asset = reference.startsWith('/') ? reference.slice(1) : path.join(path.dirname(file), reference);
       await assertFile(buildDir, target, asset);
     }
   }

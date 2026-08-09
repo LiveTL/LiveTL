@@ -1,5 +1,6 @@
-import { doSpeechSynth, speechVolume, speechSpeed, speechSpeaker } from './store.js';
 import { get } from 'svelte/store';
+
+import { doSpeechSynth, speechVolume, speechSpeed, speechSpeaker } from './store.js';
 
 export function speak(text, langCode, volume = 0) {
   console.debug(`[LiveTL] Speaking: ${text}`);
@@ -21,7 +22,7 @@ export function checkAndSpeak(text) {
 
 setTimeout(() => {
   let isInitial = true;
-  doSpeechSynth.subscribe($doSpeechSynth => {
+  doSpeechSynth.subscribe(($doSpeechSynth) => {
     if (isInitial || !$doSpeechSynth) {
       isInitial = false;
       window.speechSynthesis?.cancel();
@@ -29,7 +30,7 @@ setTimeout(() => {
     }
     speak('Speech synthesis enabled');
   });
-  speechSpeaker.subscribe(_$speechSpeaker => {
+  speechSpeaker.subscribe((_$speechSpeaker) => {
     window.speechSynthesis?.cancel();
   });
 }, 0);

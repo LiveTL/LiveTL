@@ -1,15 +1,13 @@
 // import YouTubeIframeLoader from 'youtube-iframe';
 // @ts-expect-error
 import { YouTubeIframeLoader } from 'yt-iframe-noremote';
+
 import { clamp } from '../js/utils.js';
 
 const noop = (): any => {};
 
 export interface YTPlayer extends YT.Player {
-  /**
-   * Not officially documented but exists.
-   * (Hopefully YT won't just remove it one day lol)
-   */
+  /** Not officially documented but exists. (Hopefully YT won't just remove it one day lol) */
   getVideoData: () => {
     video_id: string;
     author: string;
@@ -26,7 +24,7 @@ export interface YTPlayer extends YT.Player {
 export const loadYoutubePlayer = (
   videoId: string,
   onReady: (player: YTPlayer, runPlayerAction: (action: string) => void) => void = noop,
-  onStateChange: (player: YTPlayer, state: YT.PlayerState) => void = noop
+  onStateChange: (player: YTPlayer, state: YT.PlayerState) => void = noop,
 ): void => {
   YouTubeIframeLoader.load((Youtube: typeof YT) => {
     const player = new Youtube.Player('player', {
@@ -35,7 +33,7 @@ export const loadYoutubePlayer = (
       videoId,
       playerVars: {
         autoplay: 1,
-        fs: 0
+        fs: 0,
       },
       events: {
         onReady: (event: YT.PlayerEvent) => {
@@ -68,8 +66,8 @@ export const loadYoutubePlayer = (
 
           onReady(player as YTPlayer, runPlayerAction);
         },
-        onStateChange: (event: YT.OnStateChangeEvent) => onStateChange(player, event.data)
-      }
+        onStateChange: (event: YT.OnStateChangeEvent) => onStateChange(player, event.data),
+      },
     }) as YTPlayer;
   });
 };

@@ -1,6 +1,9 @@
 import { readable, derived } from 'svelte/store';
-import { combineStores, sources } from './sources.js';
+
+import { defaultCaption, YtcDeleteBehaviour, GIGACHAD } from './constants.js';
 import { getSpamAuthors, removeDuplicateMessages } from './sources-util.js';
+import { combineStores, sources } from './sources.js';
+import { checkAndSpeak } from './speech.js';
 import {
   ytcDeleteBehaviour,
   sessionHidden,
@@ -13,29 +16,25 @@ import {
   potentialSpammer,
   disableSpecialSpamProtection,
   langCode,
-  spammersWhitelisted
+  spammersWhitelisted,
 } from './store.js';
-import { defaultCaption, YtcDeleteBehaviour, GIGACHAD } from './constants.js';
-import { checkAndSpeak } from './speech.js';
 
 /** @typedef {import('svelte/store').Readable} Readable */
 
 /**
- * @template {T}
+ * @template {T} *
  * @type {(store: Readable<T>, getBool: (val: T) => Boolean) => Readable<String[]>}
  */
-const lookupStoreToList = (store, getBool = Boolean) => derived(store, $val => $val
-  .filter(([_id, val]) => getBool(val))
-  .map(([id, _val]) => id)
-);
+const lookupStoreToList = (store, getBool = Boolean) =>
+  derived(store, ($val) => $val.filter(([_id, val]) => getBool(val)).map(([id, _val]) => id));
 
 /**
- * @template {T}
+ * @template {T} *
  * @type {(stores: Readable<T[]>) => Readable<Set<T>>}
  */
 const toSet = (...stores) => derived(stores, ($stores) => new Set($stores.flat()), new Set([]));
 
-const channelBlacklisted = lookupStoreToList(channelFilters, f => f.blacklist);
+const channelBlacklisted = lookupStoreToList(channelFilters, (f) => f.blacklist);
 const mchadBlacklisted = lookupStoreToList(mchadUsers);
 const notSpammer = lookupStoreToList(spammersWhitelisted);
 
@@ -43,7 +42,7 @@ export const allBanned = toSet(channelBlacklisted, mchadBlacklisted);
 export const notSpamStore = toSet(notSpammer);
 
 /** @type {Readable<(authorId: String) => Boolean>} */
-const whitelistedSpam = derived(notSpamStore, $set => id => $set.has(id));
+const whitelistedSpam = derived(notSpamStore, ($set) => (id) => $set.has(id));
 
 /** @type {([authorId: String, author: String]) => void} */
 const markSpam = async ([authorId, author]) => {
@@ -51,27 +50,27 @@ const markSpam = async ([authorId, author]) => {
 };
 
 /** @type {(msg: Message) => Boolean} */
-const isPleb = msg => !(msg.types & GIGACHAD);
+const isPleb = (msg) => !(msg.types & GIGACHAD);
 
 const hidden = toSet(sessionHidden);
 
-export const capturedMessages = readable([], set => {
+export const capturedMessages = readable([], (set) => {
   let items = [];
 
   const { cleanUp, store: source } = combineStores(
     sources.thirdParty,
     sources.translations,
     sources.mod,
-    sources.verified
+    sources.verified,
   );
 
-  const sourceUnsub = source.subscribe(msg => {
+  const sourceUnsub = source.subscribe((msg) => {
     if (msg) {
-      set(items = [...items, { ...msg, index: items.length }]);
+      set((items = [...items, { ...msg, index: items.length }]));
     }
   });
 
-  const hideOrReplaceMsg = bonkOrDeletion => {
+  const hideOrReplaceMsg = (bonkOrDeletion) => {
     switch (ytcDeleteBehaviour.get()) {
       case YtcDeleteBehaviour.HIDE:
         return { hidden: true };
@@ -86,19 +85,23 @@ export const capturedMessages = readable([], set => {
     if (!msgModifications) return;
     const before = items.slice(0, i);
     const after = items.slice(i + 1);
-    set(items = [...before, { ...items[i], ...msgModifications }, ...after]);
+    set((items = [...before, { ...items[i], ...msgModifications }, ...after]));
   };
 
-  const delOrBonkSub = (source, diffAttr) => source.subscribe(events => {
-    if (!events || events.length < 1) return;
-    items.map((item, i) => [item, i]).reverse().forEach(([item, i]) => {
-      events.some(event => {
-        if (item[diffAttr] !== event[diffAttr]) return false;
-        hideOrReplace(i, event);
-        return true;
-      });
+  const delOrBonkSub = (source, diffAttr) =>
+    source.subscribe((events) => {
+      if (!events || events.length < 1) return;
+      items
+        .map((item, i) => [item, i])
+        .reverse()
+        .forEach(([item, i]) => {
+          events.some((event) => {
+            if (item[diffAttr] !== event[diffAttr]) return false;
+            hideOrReplace(i, event);
+            return true;
+          });
+        });
     });
-  });
   const bonkUnsub = delOrBonkSub(sources.ytcBonks, 'authorId');
   const deletionUnsub = delOrBonkSub(sources.ytcDeletions, 'messageId');
   return () => {
@@ -109,55 +112,62 @@ export const capturedMessages = readable([], set => {
   };
 });
 
-export const sameLangMessages = derived(
-  [capturedMessages, langCode],
-  ([$msgs, $langCode]) => $msgs.filter(msg => msg.langCode == null || $langCode.includes(msg.langCode))
+export const sameLangMessages = derived([capturedMessages, langCode], ([$msgs, $langCode]) =>
+  $msgs.filter((msg) => msg.langCode == null || $langCode.includes(msg.langCode)),
 );
 
-const spamStores = [spamMsgAmount, spamMsgInterval]
-  .map(store => derived(store, Math.round));
+const spamStores = [spamMsgAmount, spamMsgInterval].map((store) => derived(store, Math.round));
 
 const dispDepends = [
   ...[sameLangMessages, allBanned, hidden, spotlightedTranslator],
-  ...[...spamStores, whitelistedSpam, enableSpamProtection, disableSpecialSpamProtection]
+  ...[...spamStores, whitelistedSpam, enableSpamProtection, disableSpecialSpamProtection],
 ];
 
-const dispTransform =
-  ([$items, $banned, $hidden, $spot, $spamAmt, $spamInt, $whitelisted, $enSpam, $disSpecialSpam]) => {
-    const attrNotIn = (set, attr) => item => !set.has(item[attr]);
-    const notWhitelisted = ([id]) => !$whitelisted(id);
-    const possibleSpam = $disSpecialSpam ? $items.filter(isPleb) : $items;
-    const spammers = $enSpam
-      ? getSpamAuthors(possibleSpam, $spamAmt, $spamInt)
-        .filter(notWhitelisted)
-        .filter(attrNotIn($banned, 'authorId'))
-      : [];
-    spammers.forEach(markSpam);
+const dispTransform = ([
+  $items,
+  $banned,
+  $hidden,
+  $spot,
+  $spamAmt,
+  $spamInt,
+  $whitelisted,
+  $enSpam,
+  $disSpecialSpam,
+]) => {
+  const attrNotIn = (set, attr) => (item) => !set.has(item[attr]);
+  const notWhitelisted = ([id]) => !$whitelisted(id);
+  const possibleSpam = $disSpecialSpam ? $items.filter(isPleb) : $items;
+  const spammers = $enSpam
+    ? getSpamAuthors(possibleSpam, $spamAmt, $spamInt).filter(notWhitelisted).filter(attrNotIn($banned, 'authorId'))
+    : [];
+  spammers.forEach(markSpam);
 
-    $items = $items
+  $items =
+    $items
       ?.filter(attrNotIn($banned, 'authorId'))
       ?.filter(attrNotIn($hidden, 'messageId'))
-      ?.filter(msg => !$spot || msg.authorId === $spot) ?? [];
-    return removeDuplicateMessages($items);
-  };
+      ?.filter((msg) => !$spot || msg.authorId === $spot) ?? [];
+  return removeDuplicateMessages($items);
+};
 
 export const displayedMessages = derived(dispDepends, dispTransform);
 
-export const captionText = readable(defaultCaption, set => {
+export const captionText = readable(defaultCaption, (set) => {
   let text = defaultCaption;
-  return displayedMessages.subscribe($msgs => {
-    if ($msgs[$msgs.length - 1]?.text != null &&
+  return displayedMessages.subscribe(($msgs) => {
+    if (
+      $msgs[$msgs.length - 1]?.text != null &&
       $msgs[$msgs.length - 1]?.text !== text &&
       $msgs[$msgs.length - 1]?.messageId !== text?.messageId
     ) {
-      set(text = $msgs[$msgs.length - 1]);
+      set((text = $msgs[$msgs.length - 1]));
     }
   });
 });
 
 // hmr
 if (window.unsubDictation) window.unsubDictation();
-window.unsubDictation = captionText.subscribe($txt => {
+window.unsubDictation = captionText.subscribe(($txt) => {
   console.debug('[LiveTL] Caption text:', $txt);
   $txt.text !== defaultCaption.text && checkAndSpeak($txt);
 });

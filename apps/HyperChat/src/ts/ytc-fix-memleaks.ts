@@ -32,8 +32,9 @@ export function fixLeaks(): boolean {
     }
     // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
     const code = '' + scheduler.constructor;
-    const p1 = code.match(/this\.(\w+)\s*=\s*!!\w+\.useRaf/) ??
-               code.match(/this\.(\w+)\s*=\s*\(\w+\("scheduler_use_raf_by_default"\)/);
+    const p1 =
+      code.match(/this\.(\w+)\s*=\s*!!\w+\.useRaf/) ??
+      code.match(/this\.(\w+)\s*=\s*\(\w+\("scheduler_use_raf_by_default"\)/);
     const p2 = code.match(/\("visibilitychange",\s*this\.(\w+)\)/);
     if (!p1 || !p2) {
       console.warn('fixSchedulerLeak: unknown code');

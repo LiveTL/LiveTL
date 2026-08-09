@@ -4,7 +4,7 @@ module.exports = {
     es2021: true,
     node: true,
     webextensions: true,
-    jest: true
+    jest: true,
   },
   parser: '@typescript-eslint/parser',
   extends: 'standard-with-typescript',
@@ -14,10 +14,7 @@ module.exports = {
     project: './tsconfig.json',
     extraFileExtensions: ['.svelte'],
   },
-  plugins: [
-    'svelte3',
-    '@typescript-eslint'
-  ],
+  plugins: ['svelte3', '@typescript-eslint'],
   overrides: [
     {
       files: ['*.svelte'],
@@ -26,28 +23,25 @@ module.exports = {
         'import/first': 'off',
         'import/no-duplicates': 'off',
         'import/no-mutable-exports': 'off',
-        'no-multiple-empty-lines': [
-          'error',
-          { max: 2 }
-        ],
+        'no-multiple-empty-lines': ['error', { max: 2 }],
         '@typescript-eslint/prefer-nullish-coalescing': 'off',
         // Causes false positives with reactive and auto subscriptions
         '@typescript-eslint/strict-boolean-expressions': 'off',
         'no-unused-expressions': 'off',
         'no-sequences': 'off',
-      }
-    }
+      },
+    },
   ],
   rules: {
-    'linebreak-style': [
-      'error',
-      'unix'
-    ],
+    // Conflicts with oxfmt
+    'comma-dangle': 'off',
+    curly: 'off',
+    indent: 'off',
     semi: 'off',
-    '@typescript-eslint/semi': [
-      'error',
-      'always'
-    ],
+    'space-before-function-paren': 'off',
+
+    'linebreak-style': ['error', 'unix'],
+    '@typescript-eslint/semi': ['error', 'always'],
     'no-extra-semi': 'off',
     '@typescript-eslint/no-extra-semi': 'error',
     'no-unused-vars': 'off',
@@ -55,15 +49,14 @@ module.exports = {
       'error',
       {
         varsIgnorePattern: '^_',
-        argsIgnorePattern: '^_'
-      }
+        argsIgnorePattern: '^_',
+      },
     ],
-    'space-before-function-paren': 'off',
     '@typescript-eslint/space-before-function-paren': [
       'error',
       {
-        named: 'never'
-      }
+        named: 'never',
+      },
     ],
     '@typescript-eslint/strict-boolean-expressions': [
       'error',
@@ -74,26 +67,26 @@ module.exports = {
         allowNullableBoolean: false,
         allowNullableString: false,
         allowNullableNumber: false,
-        allowAny: true
-      }
+        allowAny: true,
+      },
     ],
     '@typescript-eslint/prefer-nullish-coalescing': [
       'error',
       {
         ignoreConditionalTests: true,
-        ignoreMixedLogicalExpressions: false
-      }
+        ignoreMixedLogicalExpressions: false,
+      },
     ],
     '@typescript-eslint/member-delimiter-style': [
       'error',
       {
         multiline: { delimiter: 'semi', requireLast: true },
-        singleline: { delimiter: 'comma', requireLast: false }
-      }
-    ]
+        singleline: { delimiter: 'comma', requireLast: false },
+      },
+    ],
   },
   settings: {
-    'svelte3/typescript': () => require('typescript')
+    'svelte3/typescript': () => require('typescript'),
   },
   globals: {
     Ytc: 'readonly',
@@ -102,6 +95,6 @@ module.exports = {
     YT: 'readonly',
     __BROWSER__: 'readonly',
     __MV__: 'readonly',
-    __VERSION__: 'readonly'
-  }
+    __VERSION__: 'readonly',
+  },
 };

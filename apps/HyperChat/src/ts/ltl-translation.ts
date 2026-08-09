@@ -1,4 +1,5 @@
 import type { AvailableLanguageCodes, IframeTranslatorClient } from 'iframe-translator';
+
 import { isLiveTL } from './chat-constants';
 
 const REQUEST_TYPE = 'hc-ltl-translate-request';
@@ -25,34 +26,33 @@ const isObject = (value: unknown): value is Record<string, unknown> => {
 };
 
 export const shouldUseLiveTLTranslatorBridge = (): boolean => {
-  return isLiveTL &&
-    navigator.userAgent.includes('Firefox') &&
-    window.parent !== window;
+  return isLiveTL && navigator.userAgent.includes('Firefox') && window.parent !== window;
 };
 
 export const isLiveTLTranslateRequest = (value: unknown): value is LiveTLTranslateRequest => {
-  return isObject(value) &&
+  return (
+    isObject(value) &&
     value.type === REQUEST_TYPE &&
     typeof value.messageId === 'string' &&
     typeof value.text === 'string' &&
-    typeof value.targetLanguage === 'string';
+    typeof value.targetLanguage === 'string'
+  );
 };
 
 const isLiveTLTranslateResponse = (value: unknown): value is LiveTLTranslateResponse => {
-  return isObject(value) &&
+  return (
+    isObject(value) &&
     value.type === RESPONSE_TYPE &&
     typeof value.messageId === 'string' &&
-    typeof value.text === 'string';
+    typeof value.text === 'string'
+  );
 };
 
-export const makeLiveTLTranslateResponse = (
-  messageId: string,
-  text: string
-): LiveTLTranslateResponse => {
+export const makeLiveTLTranslateResponse = (messageId: string, text: string): LiveTLTranslateResponse => {
   return {
     type: RESPONSE_TYPE,
     messageId,
-    text
+    text,
   };
 };
 
@@ -72,10 +72,7 @@ export const createLiveTLTranslatorClient = (): IframeTranslatorClient => {
   window.addEventListener('message', onMessage);
 
   return {
-    translate: async (
-      text: string,
-      targetLanguage: AvailableLanguageCodes = 'en'
-    ): Promise<string> => {
+    translate: async (text: string, targetLanguage: AvailableLanguageCodes = 'en'): Promise<string> => {
       const messageId = `hc-ltl-${Date.now()}-${requestCounter++}`;
 
       return await new Promise((resolve) => {
@@ -89,17 +86,20 @@ export const createLiveTLTranslatorClient = (): IframeTranslatorClient => {
           resolve(translatedText);
         });
 
-        window.parent.postMessage({
-          type: REQUEST_TYPE,
-          messageId,
-          text,
-          targetLanguage
-        }, '*');
+        window.parent.postMessage(
+          {
+            type: REQUEST_TYPE,
+            messageId,
+            text,
+            targetLanguage,
+          },
+          '*',
+        );
       });
     },
     destroy: () => {
       callbacks.clear();
       window.removeEventListener('message', onMessage);
-    }
+    },
   };
 };

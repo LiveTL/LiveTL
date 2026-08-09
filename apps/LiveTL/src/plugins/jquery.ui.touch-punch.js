@@ -15,7 +15,7 @@
  * jquery.ui.widget.js
  * jquery.ui.mouse.js
  */
-(function(factory) {
+(function (factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
     define(['jquery', 'jquery.ui'], factory);
@@ -23,7 +23,7 @@
     // Browser globals
     factory(window.jQuery);
   }
-})(function($) {
+})(function ($) {
   // Detect touch support - Windows Surface devices and other touch devices
   $.support.mspointer = window.navigator.msPointerEnabled;
   $.support.touch =
@@ -46,6 +46,7 @@
 
   /**
    * Get the x,y position of a touch event
+   *
    * @param {Object} event A touch event
    */
   function getTouchCoords(event) {
@@ -57,6 +58,7 @@
 
   /**
    * Simulate a mouse event based on a corresponding touch event
+   *
    * @param {Object} event A touch event
    * @param {String} simulatedType The corresponding mouse event
    */
@@ -90,7 +92,7 @@
       false, // shiftKey
       false, // metaKey
       0, // button
-      null // relatedTarget
+      null, // relatedTarget
     );
 
     // Dispatch the simulated event to the target element
@@ -99,9 +101,10 @@
 
   /**
    * Handle the jQuery UI widget's touchstart events
+   *
    * @param {Object} event The widget element's touchstart event
    */
-  mouseProto._touchStart = function(event) {
+  mouseProto._touchStart = function (event) {
     var self = this;
 
     // Interaction time
@@ -111,10 +114,7 @@
     self._startPos = getTouchCoords(event);
 
     // Ignore the event if another widget is already being handled
-    if (
-      touchHandled ||
-      !self._mouseCapture(event.originalEvent.changedTouches[0])
-    ) {
+    if (touchHandled || !self._mouseCapture(event.originalEvent.changedTouches[0])) {
       return;
     }
 
@@ -136,9 +136,10 @@
 
   /**
    * Handle the jQuery UI widget's touchmove events
+   *
    * @param {Object} event The document's touchmove event
    */
-  mouseProto._touchMove = function(event) {
+  mouseProto._touchMove = function (event) {
     // Ignore event if not handled
     if (!touchHandled) {
       return;
@@ -153,9 +154,10 @@
 
   /**
    * Handle the jQuery UI widget's touchend events
+   *
    * @param {Object} event The document's touchend event
    */
-  mouseProto._touchEnd = function(event) {
+  mouseProto._touchEnd = function (event) {
     // Ignore event if not handled
     if (!touchHandled) {
       return;
@@ -176,15 +178,9 @@
       simulateMouseEvent(event, 'click');
     } else {
       var endPos = getTouchCoords(event);
-      if (
-        Math.abs(endPos.x - this._startPos.x) < 10 &&
-        Math.abs(endPos.y - this._startPos.y) < 10
-      ) {
+      if (Math.abs(endPos.x - this._startPos.x) < 10 && Math.abs(endPos.y - this._startPos.y) < 10) {
         // If the touch interaction did not move, it should trigger a click
-        if (
-          !this._touchMoved ||
-          event.originalEvent.changedTouches[0].touchType === 'stylus'
-        ) {
+        if (!this._touchMoved || event.originalEvent.changedTouches[0].touchType === 'stylus') {
           // Simulate the click event
           simulateMouseEvent(event, 'click');
         }
@@ -199,12 +195,11 @@
   };
 
   /**
-   * A duck punch of the $.ui.mouse _mouseInit method to support touch events.
-   * This method extends the widget with bound touch event handlers that
-   * translate touch events to mouse events and pass them to the widget's
-   * original mouse event handling methods.
+   * A duck punch of the $.ui.mouse _mouseInit method to support touch events. This method extends the widget with bound
+   * touch event handlers that translate touch events to mouse events and pass them to the widget's original mouse event
+   * handling methods.
    */
-  mouseProto._mouseInit = function() {
+  mouseProto._mouseInit = function () {
     var self = this;
 
     // Microsoft Surface Support = remove original touch Action
@@ -223,10 +218,8 @@
     _mouseInit.call(self);
   };
 
-  /**
-   * Remove the touch event handlers
-   */
-  mouseProto._mouseDestroy = function() {
+  /** Remove the touch event handlers */
+  mouseProto._mouseDestroy = function () {
     var self = this;
 
     // Delegate the touch handlers to the widget's element

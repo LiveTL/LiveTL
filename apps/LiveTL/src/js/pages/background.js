@@ -2,14 +2,15 @@ import './storage-promise-compat';
 import '@hyperchat/scripts/chat-background';
 
 chrome.runtime.onInstalled.addListener((details) => {
-  if (details.reason === 'install') { chrome.tabs.create({ url: chrome.runtime.getURL('welcome.html') }); }
+  if (details.reason === 'install') {
+    chrome.tabs.create({ url: chrome.runtime.getURL('welcome.html') });
+  }
 });
 
 const stripHeaders = (headers) => {
-  return headers.filter(header => {
+  return headers.filter((header) => {
     const headerName = header.name.toLowerCase();
-    return !(headerName === 'content-security-policy' ||
-      headerName === 'x-frame-options');
+    return !(headerName === 'content-security-policy' || headerName === 'x-frame-options');
   });
 };
 
@@ -18,17 +19,17 @@ const stripHeaders = (headers) => {
 // Firefox MV2 remains the release target while Firefox MV3 is validation-only.
 if (__MV__ === 2) {
   chrome.webRequest.onHeadersReceived.addListener(
-    details => ({ responseHeaders: stripHeaders(details.responseHeaders) }),
+    (details) => ({ responseHeaders: stripHeaders(details.responseHeaders) }),
     { urls: ['<all_urls>'] },
-    ['blocking', 'responseHeaders']
+    ['blocking', 'responseHeaders'],
   );
 
   browser.webRequest.onBeforeSendHeaders.addListener(
-    details => {
+    (details) => {
       details.requestHeaders.push({ name: 'Referer', value: 'https://youtu.be' });
       return { requestHeaders: details.requestHeaders };
     },
     { urls: ['*://*.youtube.com/embed/*'] },
-    ['blocking', 'requestHeaders']
+    ['blocking', 'requestHeaders'],
   );
 }

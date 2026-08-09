@@ -1,10 +1,10 @@
-import App from '../../components/Welcome.svelte';
 import 'smelte/src/tailwind.css';
+
+import App from '../../components/Welcome.svelte';
 
 const app = new App({
   target: document.body,
-  props: {
-  }
+  props: {},
 });
 
 window.app = app;

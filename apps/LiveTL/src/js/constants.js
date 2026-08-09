@@ -4,54 +4,54 @@ export const storageVersion = 'v0-alpha';
 export const VideoSide = {
   LEFT: 'LEFT',
   RIGHT: 'RIGHT',
-  TOP: 'TOP'
+  TOP: 'TOP',
 };
 
 export const videoSideMap = new Map([
   [VideoSide.LEFT, 'Left'],
   [VideoSide.RIGHT, 'Right'],
-  [VideoSide.TOP, 'Top']
+  [VideoSide.TOP, 'Top'],
 ]);
 
 /** @enum {String} */
 export const ChatSplit = {
   HORIZONTAL: 'HORIZONTAL',
-  VERTICAL: 'VERTICAL'
+  VERTICAL: 'VERTICAL',
 };
 
 /** @enum {String} */
 export const SelectOperation = {
   SCREENSHOT: 'SCREENSHOT',
-  DOWNLOAD: 'DOWNLOAD'
+  DOWNLOAD: 'DOWNLOAD',
 };
 
 export const chatSplitMap = new Map([
   [ChatSplit.HORIZONTAL, 'Horizontal'],
-  [ChatSplit.VERTICAL, 'Vertical']
+  [ChatSplit.VERTICAL, 'Vertical'],
 ]);
 
 /** @enum {String} */
 export const TextDirection = {
   TOP: 'TOP',
-  BOTTOM: 'BOTTOM'
+  BOTTOM: 'BOTTOM',
 };
 
 export const textDirectionMap = new Map([
   [TextDirection.TOP, 'Top'],
-  [TextDirection.BOTTOM, 'Bottom']
+  [TextDirection.BOTTOM, 'Bottom'],
 ]);
 
 /** @enum {String} */
 export const DisplayMode = {
   POPOUT: 'POPOUT',
   EMBEDDED: 'EMBEDDED',
-  FULLPAGE: 'FULL PAGE'
+  FULLPAGE: 'FULL PAGE',
 };
 
 /** @enum {String} */
 export const AutoLaunchMode = {
   NONE: 'NONE',
-  ...DisplayMode
+  ...DisplayMode,
 };
 
 function capitalize(s) {
@@ -59,14 +59,11 @@ function capitalize(s) {
 }
 
 // This was causing circular dependency when exported in utils.js
-const transformOpt = str =>
-  capitalize(str
-    .trim()
-    .toLowerCase());
+const transformOpt = (str) => capitalize(str.trim().toLowerCase());
 
-export const autoLaunchModeItems = Object.keys(AutoLaunchMode).map(item => ({
+export const autoLaunchModeItems = Object.keys(AutoLaunchMode).map((item) => ({
   text: transformOpt(AutoLaunchMode[item]),
-  value: AutoLaunchMode[item]
+  value: AutoLaunchMode[item],
 }));
 
 // Js enum omegalul
@@ -74,7 +71,7 @@ export const autoLaunchModeItems = Object.keys(AutoLaunchMode).map(item => ({
 export const Browser = {
   FIREFOX: 0,
   CHROME: 1,
-  SAFARI: 2
+  SAFARI: 2,
 };
 
 export const BROWSER = (() => {
@@ -95,11 +92,10 @@ export const AuthorType = {
   member: 1 << 3,
   mchad: 1 << 4,
   api: 1 << 5,
-  tldex: 1 << 6
+  tldex: 1 << 6,
 };
 
-export const GIGACHAD =
-  AuthorType.moderator | AuthorType.owner | AuthorType.mchad | AuthorType.api | AuthorType.tldex;
+export const GIGACHAD = AuthorType.moderator | AuthorType.owner | AuthorType.mchad | AuthorType.api | AuthorType.tldex;
 
 export const languagesInfo = [
   { code: 'en', name: 'English', lang: 'English', tag: 'en-US' },
@@ -110,21 +106,22 @@ export const languagesInfo = [
   { code: 'ch', name: 'Chinese', lang: '中文', tag: 'zh-CN' },
   { code: 'ru', name: 'Russian', lang: 'русский', tag: 'ru-RO' },
   { code: 'fr', name: 'French', lang: 'Français', tag: 'fr-FR' },
-  { code: 'de', name: 'German', lang: 'Deutsch', tag: 'de-DE' }
+  { code: 'de', name: 'German', lang: 'Deutsch', tag: 'de-DE' },
 ];
 
 export const languageConversionTable = {};
 export const languageNameCode = {};
-export const languageNameValues = languagesInfo.map(lang => ({
-  text: createLangSelectionName(lang), value: lang.lang
+export const languageNameValues = languagesInfo.map((lang) => ({
+  text: createLangSelectionName(lang),
+  value: lang.lang,
 }));
 
 function createLangSelectionName(lang) {
   return `${lang.name} (${lang.lang})`;
 }
 
-languagesInfo.forEach(i => (languageConversionTable[createLangSelectionName(i)] = i));
-languagesInfo.forEach(lang => (languageNameCode[lang.lang] = lang));
+languagesInfo.forEach((i) => (languageConversionTable[createLangSelectionName(i)] = i));
+languagesInfo.forEach((lang) => (languageNameCode[lang.lang] = lang));
 
 export const MCHAD = 'https://repo.mchatx.org';
 export const Holodex = 'https://holodex.net/api/v2';
@@ -146,33 +143,33 @@ export const paramsStandalone = params.get('standalone');
 export const YtcDeleteBehaviour = {
   HIDE: 'HIDE',
   PLACEHOLDER: 'PLACEHOLDER',
-  NOTHING: 'NOTHING'
+  NOTHING: 'NOTHING',
 };
 
 /** @enum {String} */
 export const FeaturePrompt = {
-  SPOTLIGHT: 'SPOTLIGHT'
+  SPOTLIGHT: 'SPOTLIGHT',
 };
 
 export const ytcDeleteItems = [
   { value: YtcDeleteBehaviour.HIDE, text: 'Hide message' },
   { value: YtcDeleteBehaviour.PLACEHOLDER, text: 'Show placeholder' },
-  { value: YtcDeleteBehaviour.NOTHING, text: 'Do nothing' }
+  { value: YtcDeleteBehaviour.NOTHING, text: 'Do nothing' },
 ];
 
 export const showBlockItems = [
   { text: 'show', value: 'show' },
-  { text: 'block', value: 'block' }
+  { text: 'block', value: 'block' },
 ];
 
 export const plainRegexItems = [
   { text: 'plain', value: 'plain' },
-  { text: 'regex', value: 'regex' }
+  { text: 'regex', value: 'regex' },
 ];
 
 export const chatAuthorItems = [
   { text: 'message', value: 'chat' },
-  { text: 'author', value: 'author' }
+  { text: 'author', value: 'author' },
 ];
 
 export const defaultCaption = {
@@ -180,7 +177,7 @@ export const defaultCaption = {
   Captions captured from the chat will appear here. Try moving and resizing!
   You can also disable floating captions or make captions disappear
   when inactive in the settings menu.
-  `
+  `,
 };
 
 export const modifierKeys = new Set(['Alt', 'Control', 'Meta', 'Shift']);

@@ -1,5 +1,6 @@
-import Hyperchat from '../components/Hyperchat.svelte';
 import tailwind from 'smelte/src/tailwind.css?inline';
+
+import Hyperchat from '../components/Hyperchat.svelte';
 import { isLiveTL } from '../ts/chat-constants';
 import { stripYoutubePlayerShell, stripYoutubePlayerStyles } from '../ts/chat-utils';
 
@@ -14,11 +15,8 @@ const ensureHeadAssets = (): void => {
   if (document.getElementById(FONT_LINK_ID) === null) {
     const font = document.createElement('link');
     font.id = FONT_LINK_ID;
-    font.href = (
-      'https://fonts.googleapis.com/css' +
-      '?family=Roboto:100,300,400,500,700,900' +
-      '|Material+Icons&display=swap'
-    );
+    font.href =
+      'https://fonts.googleapis.com/css' + '?family=Roboto:100,300,400,500,700,900' + '|Material+Icons&display=swap';
     font.rel = 'stylesheet';
     document.head.appendChild(font);
   }
@@ -36,31 +34,33 @@ const mount = (): void => {
   stripEmbedArtifacts();
   stripYoutubePlayerStyles();
   document.documentElement.style.cssText = 'background-color: transparent !important;';
-  document.body.style.cssText = 'margin: 0 !important; background-color: transparent !important; overflow: hidden !important;';
+  document.body.style.cssText =
+    'margin: 0 !important; background-color: transparent !important; overflow: hidden !important;';
 
   ensureHeadAssets();
-  console.log(new Hyperchat({
-    target: document.body
-  }));
+  console.log(
+    new Hyperchat({
+      target: document.body,
+    }),
+  );
 
   new MutationObserver(() => {
     stripEmbedArtifacts();
   }).observe(document.body, {
-    childList: true
+    childList: true,
   });
 
   if (document.head != null) {
     new MutationObserver(stripYoutubePlayerStyles).observe(document.head, {
       childList: true,
-      subtree: true
+      subtree: true,
     });
   }
 };
 
 if (isLiveTL) {
   mount();
-}
-else {
+} else {
   setTimeout(() => {
     if (document.querySelector('.hyperchat-root') === null) {
       mount();

@@ -1,5 +1,6 @@
 /**
  * @typedef {import('./types.js').Message} Message
+ *
  * @typedef {import('./types.js').Seconds} Seconds
  */
 
@@ -7,14 +8,14 @@
  * Removes duplicate messages that come from mchad sync with ytc
  *
  * @param {Message[]} msgs
- * @param {Seconds} sourceLatency the amount of lag between ytc and other sources
- * @return {Message[]}
+ * @param {Seconds} sourceLatency The amount of lag between ytc and other sources
+ *
+ * @returns {Message[]}
  */
 export function removeDuplicateMessages(msgs, sourceLatency = 60) {
   let lastMessages = [];
-  const isUnique = msg => {
-    lastMessages = lastMessages
-      .filter(isRecentMessage(msg, sourceLatency));
+  const isUnique = (msg) => {
+    lastMessages = lastMessages.filter(isRecentMessage(msg, sourceLatency));
 
     if (lastMessages.some(isDuplicateOf(msg))) return false;
     lastMessages.push(msg);
@@ -27,18 +28,21 @@ export function removeDuplicateMessages(msgs, sourceLatency = 60) {
  * Find authors that send messages at a specified frequency.
  *
  * @param {Message[]} msgs
- * @param {Number} amountOfMsgs amount of msgs in the spam frequency
- * @param {Seconds} time the time between the first spam message and the latest
- * @return {String[][]} array of [authorId, authorName]
+ * @param {Number} amountOfMsgs Amount of msgs in the spam frequency
+ * @param {Seconds} time The time between the first spam message and the latest
+ *
+ * @returns {String[][]} Array of [authorId, authorName]
  */
 export function getSpamAuthors(msgs, amountOfMsgs, time) {
   const authors = [];
 
-  index(msgs).by('authorId').forEach((messages, author) => {
-    if (containsSpam(messages, amountOfMsgs, time)) {
-      authors.push([author, messages[0].author]);
-    }
-  });
+  index(msgs)
+    .by('authorId')
+    .forEach((messages, author) => {
+      if (containsSpam(messages, amountOfMsgs, time)) {
+        authors.push([author, messages[0].author]);
+      }
+    });
 
   return authors;
 }
@@ -56,7 +60,7 @@ const containsSpam = (msgs, amount, time) => {
 };
 
 /** @type {(msgs: Message[]) => { by: (attr: String) => Map<String, Message[]> }} */
-export const index = msgs => ({
+export const index = (msgs) => ({
   by(attr) {
     const msgsByAttr = new Map();
 
@@ -68,35 +72,31 @@ export const index = msgs => ({
     }
 
     return msgsByAttr;
-  }
+  },
 });
 
 /** @type {(msg: Message) => Seconds} */
-const messageTime = msg => msg.timestampMs / 1000;
+const messageTime = (msg) => msg.timestampMs / 1000;
 
 /** @type {(mostRecent: Message, latency: Number) => (msg: Message) => Boolean} */
-const isRecentMessage = (mostRecent, latency) => msg =>
-  messageTime(mostRecent) - messageTime(msg) <= latency;
+const isRecentMessage = (mostRecent, latency) => (msg) => messageTime(mostRecent) - messageTime(msg) <= latency;
 
 /** @type {(msg: Message) => (otherMsg: Message) => Boolean} */
-const isDuplicateOf = msg => otherMsg =>
-  messageEquals(msg, otherMsg) || messageDup(msg, otherMsg);
+const isDuplicateOf = (msg) => (otherMsg) => messageEquals(msg, otherMsg) || messageDup(msg, otherMsg);
 
 /** @type {(msg: Message, otherMsg: Message) => Boolean} */
 const messageDup = (msg, otherMsg) =>
   removeWhitespace(msg.text) === removeWhitespace(otherMsg.text) &&
-    // after some developments, tldex type means "is verified tldex"
-    // instead of "comes from tldex"
-    // to check if it came from tldex, check typeof messageId
-    // if it came from ytc, it's a string, if it came from tldex, it's a number
-    (msg.types !== otherMsg.types ||
-      typeof msg.messageId !== typeof otherMsg.messageId);
+  // after some developments, tldex type means "is verified tldex"
+  // instead of "comes from tldex"
+  // to check if it came from tldex, check typeof messageId
+  // if it came from ytc, it's a string, if it came from tldex, it's a number
+  (msg.types !== otherMsg.types || typeof msg.messageId !== typeof otherMsg.messageId);
 
 /** @type {(msg: Message, otherMsg: Message) => Boolean} */
-const messageEquals = (msg, otherMsg) => msg.messageId === otherMsg.messageId || (
-  msg.text === otherMsg.text &&
-  msg.timestampMs === otherMsg.timestampMs &&
-  msg.authorId === otherMsg.authorId);
+const messageEquals = (msg, otherMsg) =>
+  msg.messageId === otherMsg.messageId ||
+  (msg.text === otherMsg.text && msg.timestampMs === otherMsg.timestampMs && msg.authorId === otherMsg.authorId);
 
 /** @type {(text: String) => String} */
-const removeWhitespace = text => text.trim().replace(/(\W)\W+/g, '$1');
+const removeWhitespace = (text) => text.trim().replace(/(\W)\W+/g, '$1');

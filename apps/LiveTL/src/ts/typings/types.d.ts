@@ -5,7 +5,7 @@ declare namespace Ltl {
     owner = 1 << 2,
     member = 1 << 3,
     mchad = 1 << 4,
-    api = 1 << 5
+    api = 1 << 5,
   }
 
   interface Message {

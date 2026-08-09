@@ -18,8 +18,10 @@
     "check": "npm run type:check -w @livetl/hyperchat && npm run test -w @livetl/hyperchat && npm run format:check -w @livetl/livetl && npm run type:check -w @livetl/livetl && npm run test -w @livetl/livetl",
     "test": "npm run test -w @livetl/hyperchat && npm run test -w @livetl/livetl",
     "test:watch": "npm run test:watch -w @livetl/hyperchat && npm run test:watch -w @livetl/livetl",
-    "format": "npm run format -w @livetl/livetl",
-    "format:check": "npm run format:check -w @livetl/livetl",
+    "format:check": "npm run format -- --check",
+    "format": "oxfmt",
+    "lint:check": "npm run lint:check -w @livetl/livetl",
+    "lint": "npm run lint -w @livetl/livetl",
     "package": "npm run package -w @livetl/hyperchat && npm run package -w @livetl/livetl",
     "start": "npm run start -w @livetl/livetl",
     "dev:chrome": "npm run dev:chrome -w @livetl/livetl",
@@ -35,6 +37,7 @@
     "postinstall": "patch-package"
   },
   "devDependencies": {
+    "oxfmt": "^0.62.0",
     "patch-package": "^8.0.0",
     "svelte": "3.49.0"
   }

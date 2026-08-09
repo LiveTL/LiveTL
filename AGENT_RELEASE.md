@@ -24,6 +24,7 @@ From the exact `main` commit to tag:
 ```bash
 npm ci
 npm run format:check
+npm run lint:check
 npm run test
 VERSION=X.Y.Z npm run build
 npm run package

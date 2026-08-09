@@ -12,7 +12,7 @@ const safelistSelectors = [
   'bg-blue-500',
   'hover:bg-blue-400',
   // is not in HyperChat's postcss conf but was in LiveTL's
-  'text-alert-500'
+  'text-alert-500',
 ];
 
 const safelistPatterns = [
@@ -21,7 +21,7 @@ const safelistPatterns = [
   // date picker
   /w-.\/7/,
   // I'm guessing it doesn't correlate p-2.5 with p-2\.5
-  /^[mphw]\w?-\d\.5$/
+  /^[mphw]\w?-\d\.5$/,
 ];
 
 module.exports = {
@@ -36,13 +36,13 @@ module.exports = {
       extractors: [
         {
           extractor,
-          extensions: ['svelte']
-        }
+          extensions: ['svelte'],
+        },
       ],
       safelist: {
         standard: safelistSelectors,
-        deep: safelistPatterns
-      }
-    }
-  }
+        deep: safelistPatterns,
+      },
+    },
+  },
 };
