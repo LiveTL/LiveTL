@@ -77,23 +77,3 @@ checks out that tag, strips the leading `v` and any prerelease suffix to derive
 `VERSION`, builds all six targets, and
 uploads exactly the four public ZIP names above. The workflow can be rerun
 manually with the existing release tag as its `tag` input.
-
-## Rollback
-
-The planned rollback tags were not created before the unification merge. The
-immutable pre-unification branch tips are:
-
-- `develop`: `5aba0f06`
-- former `mv3-fr`: `5bfbe103`
-- `release`: `5c23f81b`
-
-If the old publishing layout must be restored, recreate `release` from its
-pre-unification commit in a separate worktree and push it only after
-verification:
-
-```bash
-git worktree add -b restore-release /tmp/livetl-restore-release 5c23f81b
-git -C /tmp/livetl-restore-release submodule update --init --recursive
-```
-
-`develop` and `release` remain preserved legacy branches.
