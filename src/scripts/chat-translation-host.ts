@@ -1,5 +1,6 @@
 import { getClient } from 'iframe-translator';
 import type { IframeTranslatorClient } from 'iframe-translator';
+
 import { isLiveTLTranslateRequest, makeLiveTLTranslateResponse } from '../ts/ltl-translation';
 
 declare global {
@@ -32,21 +33,15 @@ if (!window.__hcLiveTLTranslatorHostRegistered) {
 
       try {
         const translatorClient = await getTranslatorClientAsync();
-        translatedText = await translatorClient.translate(
-          event.data.text,
-          event.data.targetLanguage
-        );
+        translatedText = await translatorClient.translate(event.data.text, event.data.targetLanguage);
       } catch (error) {
         console.error('Failed to translate packaged HyperChat message', {
           error,
-          request: event.data
+          request: event.data,
         });
       }
 
-      (event.source as Window).postMessage(
-        makeLiveTLTranslateResponse(event.data.messageId, translatedText),
-        '*'
-      );
+      (event.source as Window).postMessage(makeLiveTLTranslateResponse(event.data.messageId, translatedText), '*');
     })();
   });
 }

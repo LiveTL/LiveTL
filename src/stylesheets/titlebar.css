@@ -9,7 +9,7 @@
   width: 100%;
 }
 
-#primary-content>#title {
+#primary-content > #title {
   width: 0px;
 }
 

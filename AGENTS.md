@@ -36,12 +36,12 @@ Paths and commands in this file are relative to `apps/HyperChat` unless noted ot
 `src/` depends on four bare globals, declared in `src/ts/typings/vite-env.d.ts`
 and supplied by `vite.config.ts` for our own builds:
 
-| Constant | Emitted literal | Meaning |
-| --- | --- | --- |
-| `__BROWSER__` | string — `"chrome"` / `"firefox"` | target browser |
-| `__VERSION__` | string — `"3.3.0"` | version written into the manifest |
-| `__MV__` | **number** — `2` / `3` | target manifest version |
-| `__LIVETL__` | boolean | whether HyperChat is bundled into LiveTL |
+| Constant      | Emitted literal                   | Meaning                                  |
+| ------------- | --------------------------------- | ---------------------------------------- |
+| `__BROWSER__` | string — `"chrome"` / `"firefox"` | target browser                           |
+| `__VERSION__` | string — `"3.3.0"`                | version written into the manifest        |
+| `__MV__`      | **number** — `2` / `3`            | target manifest version                  |
+| `__LIVETL__`  | boolean                           | whether HyperChat is bundled into LiveTL |
 
 `__MV__` is compared with strict equality (`__MV__ === 2`), so it must emit a
 **number literal**. Defining it as the string `"2"` makes every check silently
