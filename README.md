@@ -73,8 +73,8 @@ VERSION=X.Y.Z npm run build:mv2 -w @livetl/hyperchat     # Firefox MV2
 ```
 
 The built ZIP files can be found in the `build` directory. Only the two MV3 zips
-are published as release assets; the MV2 build is verified in CI and consumed by
-LiveTL through a git submodule.
+are published as release assets; the MV2 build is verified in CI. LiveTL bundles
+this workspace source directly with its own target-specific configuration.
 
 ## Release
 

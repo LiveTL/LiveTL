@@ -23,7 +23,7 @@ const hcWarning = 'An existing HyperChat button has been detected. This ' +
 
 const getScriptURL = (path: string): string => {
   if (isLiveTL) {
-    return chrome.runtime.getURL('submodules/chat/src/scripts/' + path);
+    return chrome.runtime.getURL('hyperchat/scripts/' + path);
   }
   return chrome.runtime.getURL('scripts/' + path);
 };
