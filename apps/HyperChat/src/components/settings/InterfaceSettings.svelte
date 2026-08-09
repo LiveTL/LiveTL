@@ -19,7 +19,7 @@
   import Card from '../common/Card.svelte';
   import Radio from '../common/RadioGroupStore.svelte';
   import Checkbox from '../common/CheckboxStore.svelte';
-  import Icon from '../common/Icon.svelte';
+  import Icon from '@livetl/ui/Icon';
   import dark from 'smelte/src/dark';
   import MessageTranslationSettings from './MessageTranslationSettings.svelte';
 

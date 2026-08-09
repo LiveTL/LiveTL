@@ -1,0 +1,9 @@
+{
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "moduleResolution": "node",
+    "types": ["svelte"]
+  },
+  "include": ["src/**/*.svelte", "src/**/*.d.ts", "vite.config.js"]
+}

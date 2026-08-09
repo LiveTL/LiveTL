@@ -114,6 +114,7 @@ module.exports = {
   },
   settings: {
     'svelte3/typescript': () => require('typescript'),
+    'svelte3/ignore-warnings': (warning) => warning.code === 'a11y-click-events-have-key-events',
   },
   globals: {
     Ytc: 'readonly',

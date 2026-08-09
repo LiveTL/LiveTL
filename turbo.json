@@ -6,32 +6,43 @@
     },
     "//#format:check": {},
     "lint": {
-      "cache": false
+      "cache": false,
+      "dependsOn": ["^build"]
     },
     "lint:check": {
-      "cache": false
+      "cache": false,
+      "dependsOn": ["^build"]
     },
     "test": {
-      "cache": false
+      "cache": false,
+      "dependsOn": ["^build"]
     },
     "type:check": {
-      "cache": false
+      "cache": false,
+      "dependsOn": ["^build"]
     },
     "verify:build": {
       "cache": false
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
     },
     "build:all": {
       "dependsOn": ["type:check", "build:chrome", "build:firefox", "build:mv2"]
     },
     "build:chrome": {
+      "dependsOn": ["^build"],
       "env": ["MINIFY", "VERSION"],
       "outputs": ["build/chrome/**", "build/*-Chrome.zip"]
     },
     "build:firefox": {
+      "dependsOn": ["^build"],
       "env": ["MINIFY", "VERSION"],
       "outputs": ["build/firefox/**", "build/*-Firefox.xpi"]
     },
     "build:mv2": {
+      "dependsOn": ["^build"],
       "env": ["MINIFY", "VERSION"],
       "outputs": ["build/mv2/**", "build/*-mv2.xpi"]
     },
