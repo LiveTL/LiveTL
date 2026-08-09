@@ -32,12 +32,12 @@ jobs:
           echo "VERSION=${VERSION%%-*}" >> "$GITHUB_ENV"
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ env.RELEASE_TAG }}
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '24'
           cache: npm
@@ -52,7 +52,7 @@ jobs:
           npm run package
 
       - name: Upload Chrome build to release
-        uses: svenstaro/upload-release-action@v2
+        uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # v2.11.5
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: apps/LiveTL/build/LiveTL-Chrome.zip
@@ -61,7 +61,7 @@ jobs:
           overwrite: true
 
       - name: Upload Firefox build to release
-        uses: svenstaro/upload-release-action@v2
+        uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # v2.11.5
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: apps/LiveTL/build/LiveTL-Firefox.zip
@@ -70,7 +70,7 @@ jobs:
           overwrite: true
 
       - name: Upload HyperChat Chrome build to release
-        uses: svenstaro/upload-release-action@v2
+        uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # v2.11.5
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: apps/HyperChat/build/HyperChat-chrome.zip
@@ -79,7 +79,7 @@ jobs:
           overwrite: true
 
       - name: Upload HyperChat Firefox build to release
-        uses: svenstaro/upload-release-action@v2
+        uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # v2.11.5
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: apps/HyperChat/build/HyperChat-firefox.zip
