@@ -1,6 +1,6 @@
 <script lang="ts">
   import MessageRun from './MessageRuns.svelte';
-  import Icon from './common/Icon.svelte';
+  import Icon from '@livetl/ui/Icon';
   import Menu from './common/Menu.svelte';
   import {
     showProfileIcons,

@@ -2,7 +2,8 @@
   "name": "@livetl/monorepo",
   "private": true,
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "packages/*"
   ],
   "scripts": {
     "build": "turbo run build:all",
@@ -43,7 +44,7 @@
     "eslint-plugin-promise": "^6.6.0",
     "eslint-plugin-svelte3": "^3.4.1",
     "oxfmt": "^0.62.0",
-    "svelte": "3.49.0",
+    "svelte": "3.59.2",
     "turbo": "2.10.9",
     "vite-plugin-zip-pack": "1.0.7"
   },

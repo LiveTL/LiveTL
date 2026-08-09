@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@livetl/svelte-webext-stores": "^0.0.14",
+    "@livetl/ui": "*",
     "@mdi/js": "^5.9.55",
     "dns-packet": "^5.4.0",
     "file-saver": "^2.0.5",
@@ -74,7 +75,7 @@
     "rollup-plugin-copy": "^3.4.0",
     "sass": "^1.32.8",
     "sha-1": "^1.0.0",
-    "svelte": "3.49.0",
+    "svelte": "3.59.2",
     "svelte-check": "^2.8.0",
     "svelte-jester": "1.8.2",
     "svelte-preprocess": "^4.6.9",
