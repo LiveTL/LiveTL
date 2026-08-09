@@ -1,6 +1,6 @@
 <script lang="ts">
   import { refreshScroll, translatorClient, translateTargetLanguage } from '../ts/storage';
-  import Icon from './common/Icon.svelte';
+  import Icon from '@livetl/ui/Icon';
   import { Theme } from '../ts/chat-constants';
 
   export let forceTLColor: Theme = Theme.YOUTUBE;

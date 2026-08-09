@@ -2,7 +2,7 @@
   import { lastClosedVersion, refreshScroll } from '../ts/storage';
   import { isLiveTL } from '../ts/chat-constants';
   import Changelog from './changelog/Changelog.svelte';
-  import Icon from './common/Icon.svelte';
+  import Icon from '@livetl/ui/Icon';
 
   const logo = chrome.runtime.getURL(
     (isLiveTL ? 'hyperchat' : 'assets') + '/logo.png'

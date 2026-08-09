@@ -10,7 +10,7 @@
   import { fade } from 'svelte/transition';
   import Menu from 'smelte/src/components/Menu';
   import List from 'smelte/src/components/List';
-  import Icon from './Icon.svelte';
+  import Icon from '@livetl/ui/Icon';
   interface MenuItem {
     icon: string;
     value: string;
