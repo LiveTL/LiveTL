@@ -43,6 +43,7 @@
     "eslint-plugin-promise": "^6.6.0",
     "eslint-plugin-svelte3": "^3.4.1",
     "oxfmt": "^0.62.0",
-    "svelte": "3.49.0"
+    "svelte": "3.49.0",
+    "vite-plugin-zip-pack": "1.0.7"
   }
 }

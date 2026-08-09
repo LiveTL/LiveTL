@@ -63,8 +63,8 @@ jobs:
         uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # v2.11.5
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: apps/LiveTL/build/LiveTL-Firefox.xpi
-          asset_name: LiveTL-Firefox.xpi
+          file: apps/LiveTL/build/LiveTL-Firefox-mv2.xpi
+          asset_name: LiveTL-Firefox-mv2.xpi
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true
 
@@ -72,7 +72,7 @@ jobs:
         uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # v2.11.5
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: apps/HyperChat/build/HyperChat-chrome.zip
+          file: apps/HyperChat/build/HyperChat-Chrome.zip
           asset_name: HyperChat-Chrome.zip
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true
@@ -81,7 +81,7 @@ jobs:
         uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # v2.11.5
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: apps/HyperChat/build/HyperChat-firefox.xpi
+          file: apps/HyperChat/build/HyperChat-Firefox.xpi
           asset_name: HyperChat-Firefox.xpi
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true

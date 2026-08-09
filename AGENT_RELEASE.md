@@ -5,9 +5,9 @@
 Every release comes from one tagged commit on `main`:
 
 - `apps/LiveTL/build/LiveTL-Chrome.zip`: Chrome MV3 from `apps/LiveTL/build/chrome`
-- `apps/LiveTL/build/LiveTL-Firefox.xpi`: Firefox MV2 from `apps/LiveTL/build/mv2`
-- `apps/HyperChat/build/HyperChat-chrome.zip`: HyperChat Chrome MV3
-- `apps/HyperChat/build/HyperChat-firefox.xpi`: HyperChat Firefox MV3
+- `apps/LiveTL/build/LiveTL-Firefox-mv2.xpi`: Firefox MV2 from `apps/LiveTL/build/mv2`
+- `apps/HyperChat/build/HyperChat-Chrome.zip`: HyperChat Chrome MV3
+- `apps/HyperChat/build/HyperChat-Firefox.xpi`: HyperChat Firefox MV3
 
 LiveTL Firefox MV3 and HyperChat Firefox MV2 are built and verified, but are not
 published.
@@ -28,9 +28,9 @@ npm run lint:check
 npm run test
 VERSION=X.Y.Z npm run build
 unzip -p apps/LiveTL/build/LiveTL-Chrome.zip manifest.json | jq '.manifest_version, .version'
-unzip -p apps/LiveTL/build/LiveTL-Firefox.xpi manifest.json | jq '.manifest_version, .version'
-unzip -p apps/HyperChat/build/HyperChat-chrome.zip manifest.json | jq '.manifest_version, .version'
-unzip -p apps/HyperChat/build/HyperChat-firefox.xpi manifest.json | jq '.manifest_version, .version'
+unzip -p apps/LiveTL/build/LiveTL-Firefox-mv2.xpi manifest.json | jq '.manifest_version, .version'
+unzip -p apps/HyperChat/build/HyperChat-Chrome.zip manifest.json | jq '.manifest_version, .version'
+unzip -p apps/HyperChat/build/HyperChat-Firefox.xpi manifest.json | jq '.manifest_version, .version'
 ```
 
 Expect both Chrome archives and HyperChat Firefox to use manifest version `3`,
@@ -48,7 +48,7 @@ enough to catch same-size changes.
 ```bash
 python3 -c "
 import zipfile
-for name in ['HyperChat-chrome.zip', 'HyperChat-firefox.xpi']:
+for name in ['HyperChat-Chrome.zip', 'HyperChat-Firefox.xpi']:
     before = zipfile.ZipFile('/tmp/golden/' + name)
     after = zipfile.ZipFile('apps/HyperChat/build/' + name)
     names = sorted(set(before.namelist()) | set(after.namelist()))

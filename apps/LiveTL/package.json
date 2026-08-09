@@ -1,9 +1,9 @@
 {
   "name": "@livetl/livetl",
-  "version": "9.0.0",
+  "version": "0.0.0",
   "description": "Get live translations for YouTube and Twitch streams, crowdsourced from multilingual viewers!",
   "scripts": {
-    "build": "npm run type:check && npm run build:chrome && npm run build:firefox && npm run build:mv2 && npm run verify:build && node utils/package.js",
+    "build": "npm run type:check && npm run build:chrome && npm run build:firefox && npm run build:mv2 && npm run verify:build",
     "build:chrome": "cross-env BROWSER=chrome vite build",
     "build:firefox": "cross-env BROWSER=firefox vite build",
     "build:mv2": "cross-env BROWSER=firefox MV=2 vite build",
@@ -20,9 +20,8 @@
     "verify:build": "node scripts/verify-build.mjs",
     "test": "jest src",
     "test:watch": "npm run test -- --watch",
-    "e2e:build": "npm run build",
     "e2e:test": "pytest --tests-per-worker auto e2e",
-    "e2e": "npm run e2e:build && npm run e2e:test",
+    "e2e": "npm run build && npm run e2e:test",
     "lint": "npm run lint:check -- --fix",
     "lint:check": "eslint . --max-warnings=0"
   },

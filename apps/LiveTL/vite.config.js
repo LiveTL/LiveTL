@@ -6,6 +6,7 @@ import { svelte } from '@sveltejs/vite-plugin-svelte';
 import copy from 'rollup-plugin-copy';
 import { defineConfig } from 'vite';
 import browserExtension from 'vite-plugin-web-extension';
+import zipPack from 'vite-plugin-zip-pack';
 
 import { resolveMv } from '../HyperChat/scripts/resolve-manifest';
 
@@ -192,5 +193,14 @@ export default defineConfig({
       disableAutoLaunch: true,
       browser,
     }),
+    ...(target === 'chrome' || target === 'mv2'
+      ? [
+          zipPack({
+            inDir: buildDir,
+            outDir: 'build',
+            outFileName: target === 'chrome' ? 'LiveTL-Chrome.zip' : 'LiveTL-Firefox-mv2.xpi',
+          }),
+        ]
+      : []),
   ],
 });

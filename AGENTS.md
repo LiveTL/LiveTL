@@ -183,5 +183,5 @@ KEEP_OPEN=1 bash apps/LiveTL/scripts/codex-dev.sh go-test
 - Release tags are created on `main`.
 - The tag version is supplied to every target through `VERSION`; local builds
   fall back to `src/manifest.json`.
-- Release automation uploads `LiveTL-Chrome.zip`, `LiveTL-Firefox.xpi`,
+- Release automation uploads `LiveTL-Chrome.zip`, `LiveTL-Firefox-mv2.xpi`,
   `HyperChat-Chrome.zip`, and `HyperChat-Firefox.xpi`.
