@@ -199,7 +199,7 @@ export function translatorMode([container, chatBox], content, recommendations, f
     updateContent();
   };
 
-  const setChatCaret = (pos) => setCaret(chatBox, pos == null ? text().length : pos);
+  const setChatCaret = (pos) => setCaret(chatBox, pos ?? text().length);
   const caretPos = () => getCaretCharOffset(chatBox);
   const caretAtEnd = () => caretPos() === text().length;
   const text = () => chatBox.textContent;

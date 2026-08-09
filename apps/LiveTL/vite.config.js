@@ -57,7 +57,7 @@ function sanitizeFileName(name) {
   return driveLetter + name.slice(driveLetter.length).replace(INVALID_CHAR_REGEX, '+');
 }
 
-const browser = process.env.BROWSER === undefined ? 'chrome' : process.env.BROWSER;
+const browser = process.env.BROWSER ?? 'chrome';
 const mv = process.env.MV === '2' ? 2 : 3;
 const version = process.env.VERSION ?? manifest.version ?? '69.420';
 const target = mv === 2 ? 'mv2' : browser;
