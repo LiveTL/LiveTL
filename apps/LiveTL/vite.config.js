@@ -180,6 +180,8 @@ export default defineConfig({
 
         return nextManifest;
       },
+      // TODO: re-enable this once we've upgraded vite-plugin-web-extension
+      skipManifestValidation: true,
       assets: 'img',
       additionalInputs: [...entryPoints.map((entry) => entry.name), ...jsEntry],
       watchFilePaths: [path.resolve(__dirname, 'src/manifest.json'), path.resolve(__dirname, 'src/allow-iframe.json')],

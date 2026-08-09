@@ -38,6 +38,8 @@ export default defineConfig({
         ...resolveMv(manifest, mv),
         version,
       }),
+      // TODO: re-enable this once we've upgraded vite-plugin-web-extension
+      skipManifestValidation: true,
       assets: 'assets',
       watchFilePaths: [path.resolve(__dirname, 'src/manifest.json')],
       additionalInputs: ['hyperchat.html', 'scripts/chat-interceptor.ts', 'scripts/chat-metagetter.ts'],

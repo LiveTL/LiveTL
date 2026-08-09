@@ -33,8 +33,7 @@
     "ss": "npm run ss -w @livetl/livetl",
     "update:list": "npm run update:list -w @livetl/livetl",
     "type:check": "npm run type:check -w @livetl/hyperchat && npm run type:check -w @livetl/livetl",
-    "verify:build": "npm run verify:build -w @livetl/hyperchat && npm run verify:build -w @livetl/livetl",
-    "postinstall": "patch-package"
+    "verify:build": "npm run verify:build -w @livetl/hyperchat && npm run verify:build -w @livetl/livetl"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.21.0",
@@ -46,7 +45,6 @@
     "eslint-plugin-promise": "^6.6.0",
     "eslint-plugin-svelte3": "^3.4.1",
     "oxfmt": "^0.62.0",
-    "patch-package": "^8.0.0",
     "svelte": "3.49.0"
   }
 }
