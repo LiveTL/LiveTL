@@ -19,11 +19,9 @@
     "start:firefox": "cross-env AUTOLAUNCH=true npm run dev:firefox",
     "lint": "npm run lint:check -- --fix",
     "lint:check": "eslint . --max-warnings=0",
-    "format": "npm run lint",
-    "format:check": "npm run lint:check",
     "test": "echo \"TODO: add HyperChat tests\"",
     "test:watch": "echo \"TODO: add HyperChat tests in watch mode\"",
-    "check": "npm run format:check && npm run type:check && npm run test",
+    "check": "npm run format:check && npm run lint:check && npm run type:check && npm run test",
     "package": "npm run verify:build"
   },
   "dependencies": {

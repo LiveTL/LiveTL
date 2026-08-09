@@ -1,21 +1,22 @@
 import HcButton from '../components/HyperchatButton.svelte';
 import HcSettings from '../components/SettingsButton.svelte';
-import { getFrameInfoAsync, isValidFrameInfo, frameIsReplay, checkInjected } from '../ts/chat-utils';
 import { isLiveTL } from '../ts/chat-constants';
-import { hcEnabled, autoLiveChat } from '../ts/storage';
+import { getFrameInfoAsync, isValidFrameInfo, frameIsReplay, checkInjected } from '../ts/chat-utils';
 import {
   initInterceptor,
   processMessageChunk,
   processSentMessage,
   setInitialData,
   updatePlayerProgress,
-  setTheme
+  setTheme,
 } from '../ts/messaging';
+import { hcEnabled, autoLiveChat } from '../ts/storage';
 
 const isFirefox = navigator.userAgent.includes('Firefox');
 let hcSettings: HcSettings | null = null;
 
-const hcWarning = 'An existing HyperChat button has been detected. This ' +
+const hcWarning =
+  'An existing HyperChat button has been detected. This ' +
   'usually means both LiveTL and standalone HyperChat are enabled. ' +
   'LiveTL already includes HyperChat, so please enable only one of them.\n\n' +
   'Having multiple instances of the same scripts running WILL cause ' +
@@ -99,7 +100,7 @@ const chatLoaded = async (): Promise<void> => {
     wasDark = isDark;
   };
   new MutationObserver(sendTheme).observe(html, {
-    attributes: true
+    attributes: true,
   });
   sendTheme();
 
@@ -113,7 +114,7 @@ const chatLoaded = async (): Promise<void> => {
     return;
   }
   new HcButton({
-    target: ytcPrimaryContent
+    target: ytcPrimaryContent,
   });
 
   // Inject HC settings
@@ -124,7 +125,7 @@ const chatLoaded = async (): Promise<void> => {
           hcSettings.$destroy();
         } catch (_) {}
       }
-    }
+    };
 
     const ytcItemMenu = document.querySelector('tp-yt-paper-listbox#items');
     if (ytcItemMenu) {
@@ -133,7 +134,7 @@ const chatLoaded = async (): Promise<void> => {
 
       destroyButton();
       hcSettings = new HcSettings({
-        target: ytcItemMenu
+        target: ytcItemMenu,
       });
 
       return;
@@ -146,7 +147,7 @@ const chatLoaded = async (): Promise<void> => {
   if (chatApp) {
     new MutationObserver(injectSettings).observe(chatApp, {
       childList: true,
-      subtree: true
+      subtree: true,
     });
   }
 
@@ -166,11 +167,10 @@ const chatLoaded = async (): Promise<void> => {
   if (frameIsReplay()) params.set('isReplay', 'true');
   // MV2 can iframe the extension page directly. MV3 cannot, so it points at an
   // empty YouTube 404 page and lets chat-mounter mount into it instead.
-  const source = __MV__ === 2
-    ? chrome.runtime.getURL(
-      (isLiveTL ? 'hyperchat/index.html' : 'hyperchat.html') + `?${params.toString()}`
-    )
-    : `https://www.youtube.com/embed/hyperchat_embed?${params.toString()}`;
+  const source =
+    __MV__ === 2
+      ? chrome.runtime.getURL((isLiveTL ? 'hyperchat/index.html' : 'hyperchat.html') + `?${params.toString()}`)
+      : `https://www.youtube.com/embed/hyperchat_embed?${params.toString()}`;
 
   const ytcItemList = document.querySelector('#chat>#item-list');
   if (!ytcItemList) {

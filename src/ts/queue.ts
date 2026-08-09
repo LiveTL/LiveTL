@@ -1,8 +1,11 @@
 import { parseChatResponse } from './chat-parser';
-import type { Chat } from './typings/chat';
 import { buildDeletedObj } from './chat-utils';
+import type { Chat } from './typings/chat';
 
-interface QueueItem<T> { data: T, next?: QueueItem<T> }
+interface QueueItem<T> {
+  data: T;
+  next?: QueueItem<T>;
+}
 export interface Queue<T> {
   clear: () => void;
   front: () => T | undefined;
@@ -109,10 +112,7 @@ export function ytcQueue(isReplay = false): YtcQueue {
   let initialData: Chat.Actions[] = [];
   const selfChannel = subscribable<Ytc.TextMessageRenderer | null | undefined>();
 
-  /**
-   * Continuously pushes queue messages to store until queue is empty or until
-   * `extraCondition` returns false.
-   */
+  /** Continuously pushes queue messages to store until queue is empty or until `extraCondition` returns false. */
   const pushQueueToStore = (extraCondition: QueueCondition): void => {
     const messages: Chat.MessageAction[] = [];
     while (messageQueue.front() && extraCondition(messageQueue)) {
@@ -125,14 +125,14 @@ export function ytcQueue(isReplay = false): YtcQueue {
   };
 
   /**
-   * Pushes messages up till previousTime as forced update.
-   * Currently only called on chunk refresh, will show welcome message.
+   * Pushes messages up till previousTime as forced update. Currently only called on chunk refresh, will show welcome
+   * message.
    */
   const forceUpdateTillPrevious = (): void => {
     const messages: Chat.MessageAction[] = [];
     while (messageQueue.front()) {
       const showtime = messageQueue.front()?.message.showtime;
-      if (showtime != null && (showtime / 1000) > previousTime) break;
+      if (showtime != null && showtime / 1000 > previousTime) break;
 
       const message = messageQueue.pop();
       if (!message) return;
@@ -141,20 +141,16 @@ export function ytcQueue(isReplay = false): YtcQueue {
     latestAction.set({ type: 'forceUpdate', messages, showWelcome: true });
   };
 
-  /**
-   * Push messages up till the currentTime to store.
-   */
+  /** Push messages up till the currentTime to store. */
   const pushTillCurrentToStore = (currentTimeMs: number): void => {
     pushQueueToStore((q) => {
       const frontShowtime = q.front()?.message.showtime;
       if (frontShowtime == null) return false;
-      return (frontShowtime / 1000) <= currentTimeMs;
+      return frontShowtime / 1000 <= currentTimeMs;
     });
   };
 
-  /**
-   * Called when the video progresses to push queued messages to store.
-   */
+  /** Called when the video progresses to push queued messages to store. */
   const onVideoProgress = (timeMs: number): void => {
     if (timeMs < 0) return;
     const diff = timeMs - previousTime;
@@ -171,8 +167,8 @@ export function ytcQueue(isReplay = false): YtcQueue {
   };
 
   /**
-   * Sets video progress to current time in seconds.
-   * Normally called by the live polling interval that runs every 250 ms.
+   * Sets video progress to current time in seconds. Normally called by the live polling interval that runs every 250
+   * ms.
    */
   const updateLiveProgress = (): void => {
     const t = Date.now() / 1000;
@@ -181,13 +177,13 @@ export function ytcQueue(isReplay = false): YtcQueue {
   };
 
   /**
-   * Checks if `message` can be found in either of `bonks` or `deletions`.
-   * If it is, its message will be replaced and marked as deleted.
+   * Checks if `message` can be found in either of `bonks` or `deletions`. If it is, its message will be replaced and
+   * marked as deleted.
    */
   const processDeleted = (
     messageAction: Chat.MessageAction,
     bonks: Ytc.ParsedBonk[],
-    deletions: Ytc.ParsedDeleted[]
+    deletions: Ytc.ParsedDeleted[],
   ): void => {
     const message = messageAction.message;
     for (const b of bonks) {
@@ -202,11 +198,7 @@ export function ytcQueue(isReplay = false): YtcQueue {
     }
   };
 
-  /**
-   * Processes actionChunk.
-   * Adds messages to the queue, handles author bonks, message deletions
-   * and pinned messages.
-   */
+  /** Processes actionChunk. Adds messages to the queue, handles author bonks, message deletions and pinned messages. */
   const addActionChunk = (chunk: Ytc.ParsedChunk, setInitial = false, forceDisplay = false): void => {
     const messages = chunk.messages;
     const bonks = chunk.bonks;
@@ -218,16 +210,16 @@ export function ytcQueue(isReplay = false): YtcQueue {
       messageQueue.clear();
     }
 
-    const messageActions =
-      messages.sort((m1, m2) => m1.showtime - m2.showtime).reduce((result: Chat.MessageAction[], m) => {
+    const messageActions = messages
+      .sort((m1, m2) => m1.showtime - m2.showtime)
+      .reduce((result: Chat.MessageAction[], m) => {
         const messageAction: Chat.MessageAction = {
-          message: m
+          message: m,
         };
         processDeleted(messageAction, bonks, deletions);
 
         const isActiveReplay = isReplay && m.showtime > 0;
-        const isOwnMessage =
-          m.author.id === selfChannel.get()?.authorExternalChannelId;
+        const isOwnMessage = m.author.id === selfChannel.get()?.authorExternalChannelId;
 
         if ((!setInitial || isActiveReplay) && (forceDisplay || !isOwnMessage || chunk.refresh)) {
           messageQueue[forceDisplay ? 'prepend' : 'push'](messageAction);
@@ -255,36 +247,25 @@ export function ytcQueue(isReplay = false): YtcQueue {
     json: string,
     isInitial: boolean,
     interceptor: Chat.Interceptor,
-    forceDisplay = false
+    forceDisplay = false,
   ): void => {
     const chunk = parseChatResponse(json, isReplay);
     if (!chunk) {
-      console.debug(
-        'Invalid json',
-        { interceptor, json, isReplay, isInitial }
-      );
+      console.debug('Invalid json', { interceptor, json, isReplay, isInitial });
       return;
     }
     addActionChunk(chunk, isInitial, forceDisplay);
-    console.debug(
-      isInitial ? 'Saved initial data' : 'Added chunk to queue',
-      { interceptor, chunk }
-    );
+    console.debug(isInitial ? 'Saved initial data' : 'Added chunk to queue', { interceptor, chunk });
   };
 
-  /**
-   * Update player progress to given time.
-   * Only effective on VODs.
-   */
+  /** Update player progress to given time. Only effective on VODs. */
   const updatePlayerProgress = (timeMs: number, isFromYt?: boolean): void => {
     if (isReplay || isFromYt == null) latestAction.set({ type: 'playerProgress', playerProgress: timeMs });
     if (livePolling != null || !isReplay) return;
     onVideoProgress(timeMs);
   };
 
-  /**
-   * Perform cleanup actions such as clearing live polling interval.
-   */
+  /** Perform cleanup actions such as clearing live polling interval. */
   const cleanUp = (): void => {
     if (livePolling == null) return;
     window.clearInterval(livePolling);
@@ -304,6 +285,6 @@ export function ytcQueue(isReplay = false): YtcQueue {
     addJsonToQueue,
     updatePlayerProgress,
     cleanUp,
-    selfChannel
+    selfChannel,
   };
 }
