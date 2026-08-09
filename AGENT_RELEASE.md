@@ -14,17 +14,14 @@ published.
 `develop` and `release` are retained legacy branches and are not part of normal
 release assembly.
 
-Until LiveTL stops using the submodule, shared HyperChat changes must land in
-upstream HyperChat first, be reflected in `apps/HyperChat`, and then update the
-one `apps/LiveTL/src/submodules/chat` pointer. Do not pin different HyperChat or
-LiveTL commits per browser.
+LiveTL and standalone HyperChat compile the same source from `apps/HyperChat`.
+Do not select different HyperChat or LiveTL source per browser.
 
 ## Pre-release verification
 
 From the exact `main` commit to tag:
 
 ```bash
-git submodule update --init --recursive
 npm ci
 npm run format:check
 npm run test
@@ -70,7 +67,7 @@ the matching GitHub Release:
 
 ```bash
 git switch main
-git pull --ff-only --recurse-submodules
+git pull --ff-only
 git tag vX.Y.Z
 git push origin vX.Y.Z
 ```

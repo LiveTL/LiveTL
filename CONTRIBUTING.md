@@ -41,7 +41,7 @@ on this [Discord server](https://discord.gg/uJrV3tmthg).**
 
 ### Setting up the environment
 
-1. Clone this repo with submodules (`git clone --recursive https://github.com/LiveTL/LiveTL.git`)
+1. Clone this repo (`git clone https://github.com/LiveTL/LiveTL.git`)
 2. Change directory `cd` to the newly created `LiveTL` repo.
 3. Switch to the maintained branch (`git switch main`)
 4. Install dependencies (`npm ci`)
@@ -99,8 +99,7 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 │   │   ├── content_scripts - has the injector script that injects the LiveTL buttons\
 │   │   └── pages - the exports of the svelte components that represent each LiveTL page\
 │   ├── plugins - plugins for injection to our script\
-│   ├── submodules - submodules\
-│   │   └── chat - the chat optimizer of [Hyperchat](https://www.github.com/LiveTL/HyperChat)\
+│   ├── hyperchat - LiveTL entry points for the shared HyperChat source\
 │   └── __tests__ - tests that match the directory structure of `src`
 
 ## Other

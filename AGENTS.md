@@ -4,14 +4,11 @@
 
 - This npm workspace builds LiveTL from `apps/LiveTL` and standalone HyperChat
   from `apps/HyperChat`.
-- LiveTL temporarily continues to consume HyperChat through the submodule at
-  `apps/LiveTL/src/submodules/chat`; the standalone workspace does not replace
-  that runtime boundary yet.
+- LiveTL bundles the shared HyperChat source directly from `apps/HyperChat`.
 - Keep HyperChat implementation details in HyperChat docs. Do not duplicate
   full HyperChat internals here.
 - For chat internals and architecture, start with `apps/HyperChat/README.md` and
-  `apps/HyperChat/AGENTS.md`, then compare the pinned submodule when working on
-  LiveTL's embedded copy.
+  `apps/HyperChat/AGENTS.md`.
 
 ## Branch Discipline (Mandatory)
 
@@ -22,9 +19,8 @@
 - `release` is a legacy rollback branch, not a development or packaging branch.
 - MV2 and MV3 are build targets from the same source, not separate source
   branches. Do not restore the old `develop -> mv3-fr -> release` sync ladder.
-- If a change belongs in HyperChat, land it on HyperChat `main` first, then
-  update the single `apps/LiveTL/src/submodules/chat` gitlink on LiveTL `main`.
-- All LiveTL targets must use the same HyperChat commit.
+- Changes under `apps/HyperChat` affect both standalone HyperChat and LiveTL;
+  verify both applications before merging them to `main`.
 
 ## House Style
 
@@ -39,10 +35,8 @@
 
 ## Code Patterns
 
-- Do not duplicate HyperChat internals in LiveTL when the right fix belongs
-  upstream in the submodule.
-- If a bug spans HyperChat and LiveTL, land the shared chat-side fix in
-  HyperChat first, then bump the submodule in LiveTL.
+- Do not duplicate HyperChat internals in LiveTL when the right fix belongs in
+  the shared `apps/HyperChat` source.
 - Packaged HyperChat translation on Firefox is a split-boundary case: HyperChat
   owns the request/response bridge, while LiveTL owns the bundling entry that
   injects the page-side translator host.
@@ -58,19 +52,12 @@
   YouTube CSP and `X-Frame-Options`. Firefox MV2 therefore remains the published
   Firefox target; Firefox MV3 is validation-only until that requirement changes.
 
-## HyperChat Submodule Mapping
+## HyperChat Workspace Mapping
 
-- LiveTL `main` pins one validated HyperChat `main` commit at
-  `apps/LiveTL/src/submodules/chat` for every build
-  target.
-- After cloning or changing commits, run:
-
-  ```bash
-  git submodule update --init --recursive
-  ```
-
-- If the submodule appears dirty after a branch switch, treat it as a sync issue
-  first, not as a code change.
+- LiveTL imports HyperChat through the `@hyperchat` alias and small build entry
+  modules under `apps/LiveTL/src/hyperchat`.
+- `__LIVETL__` is `true` for LiveTL bundles and `false` for standalone
+  HyperChat bundles. Keep all other shared behavior in `apps/HyperChat`.
 
 ## Branch Switch Hygiene
 
@@ -84,7 +71,7 @@
 - Use a separate worktree for legacy-branch checks or parallel work. Do not
   disturb an existing dirty checkout.
 - If switching leaves untracked build artifacts behind, remove only generated
-  files and normalize submodules before continuing.
+  files before continuing.
 
 ## Build and Test Matrix
 

@@ -19,19 +19,19 @@
 
   const questions = [{
     prompt: 'How does LiveTL work?',
-    response: `LiveTL is, at its core, 
+    response: `LiveTL is, at its core,
                a chat filter for YouTube streams.
                It helps foreign viewers better catch
-               translations that other viewers are 
-               providing in the live chat. LiveTL 
-               does not automatically translate streams 
-               – instead, it picks up translations 
+               translations that other viewers are
+               providing in the live chat. LiveTL
+               does not automatically translate streams
+               – instead, it picks up translations
                found in the chat.`
   }, {
     prompt: 'Can I trust LiveTL translations?',
     response: `LiveTL's translations are entirely crowdsourced,
                so there is no guarantee that they are accurate.
-               ALWAYS take caution when sharing translations 
+               ALWAYS take caution when sharing translations
                found in LiveTL.`
   }, {
     prompt: 'I installed LiveTL but I don’t see any buttons.',
@@ -39,9 +39,9 @@
               the YouTube stream for LiveTL to take effect.`
   }, {
     prompt: 'I don’t see any translations in the translations panel.',
-    response: `If there are no translators in chat, LiveTL is unable 
-               to provide translations. Any messages properly tagged 
-               with a language (ex. [en], ESP:, etc.) will appear when 
+    response: `If there are no translators in chat, LiveTL is unable
+               to provide translations. Any messages properly tagged
+               with a language (ex. [en], ESP:, etc.) will appear when
                they are available.`
   }, {
     prompt: 'A translator is using their own style of language tags.',
@@ -61,7 +61,7 @@
   </p>
 
   <img
-    src="https://raw.githubusercontent.com/LiveTL/LiveTL/main/img/buttons.png"
+    src="https://raw.githubusercontent.com/LiveTL/LiveTL/main/apps/LiveTL/img/buttons.png"
     alt="img"
     class="w-full md:w-3/4 lg:w-3/5 my-2"
   />

@@ -27,7 +27,8 @@ export default defineConfig({
   define: {
     __BROWSER__: JSON.stringify(browser),
     __VERSION__: JSON.stringify(version),
-    __MV__: JSON.stringify(mv)
+    __MV__: JSON.stringify(mv),
+    __LIVETL__: JSON.stringify(false)
   },
   plugins: [
     webExtension({

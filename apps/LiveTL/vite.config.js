@@ -5,9 +5,8 @@ import path from 'path';
 import fs from 'fs';
 import alias from '@rollup/plugin-alias';
 import copy from 'rollup-plugin-copy';
-import replace from 'rollup-plugin-replace';
 import manifest from './src/manifest.json';
-import { resolveMv } from './src/submodules/chat/scripts/resolve-manifest';
+import { resolveMv } from '../HyperChat/scripts/resolve-manifest';
 
 // include all entry points from src/js/pages/*.js
 const pagesEntryPoints = [
@@ -22,16 +21,16 @@ const entryPoints = [
     name: 'html/background.html',
     scripts: ['/js/pages/background.js']
   },
-  { name: 'html/hyperchat/index.html', scripts: ['/submodules/chat/src/hyperchat.ts'] },
-  { name: 'html/hyperchat/options.html', scripts: ['/submodules/chat/src/options.ts'] }
+  { name: 'html/hyperchat/index.html', scripts: ['/hyperchat/index.ts'] },
+  { name: 'html/hyperchat/options.html', scripts: ['/hyperchat/options.ts'] }
 ];
 
 const jsEntry = [
   'ts/yt-workaround.ts',
-  'submodules/chat/src/scripts/chat-interceptor.ts',
-  'submodules/chat/src/scripts/chat-metagetter.ts',
-  'submodules/chat/src/scripts/chat-mounter.ts',
-  'submodules/chat/src/scripts/chat-translation-host.ts'
+  'hyperchat/scripts/chat-interceptor.ts',
+  'hyperchat/scripts/chat-metagetter.ts',
+  'hyperchat/scripts/chat-mounter.ts',
+  'hyperchat/scripts/chat-translation-host.ts'
 ];
 
 const entryPointTemplate = fs.readFileSync(path.join(__dirname, 'src/empty.html'))
@@ -70,7 +69,8 @@ export default defineConfig({
   define: {
     __BROWSER__: JSON.stringify(browser),
     __VERSION__: JSON.stringify(version),
-    __MV__: JSON.stringify(mv)
+    __MV__: JSON.stringify(mv),
+    __LIVETL__: JSON.stringify(true)
   },
   build: {
     outDir: path.resolve(__dirname, buildDir),
@@ -84,17 +84,12 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      '@hyperchat': path.resolve(__dirname, '../HyperChat/src'),
       'jquery.ui': 'jquery-ui-bundle'
     }
   },
   plugins: [
     alias(),
-
-    replace({
-      values: {
-        'isLiveTL = false': 'isLiveTL = true'
-      }
-    }),
 
     // TODO: add the isAndroid replacements
     svelte({
@@ -126,7 +121,7 @@ export default defineConfig({
     copy({
       hook: 'writeBundle',
       targets: [{
-        src: path.resolve(__dirname, 'src/submodules/chat/src/assets/*'),
+        src: path.resolve(__dirname, '../HyperChat/src/assets/*'),
         dest: `${buildDir}/hyperchat`
       }]
     }),
@@ -148,8 +143,8 @@ export default defineConfig({
     copy({
       hook: 'writeBundle',
       targets: [{
-        src: path.resolve(__dirname, 'src/submodules/chat/src/stylesheets/*'),
-        dest: `${buildDir}/submodules/chat/src/stylesheets`
+        src: path.resolve(__dirname, '../HyperChat/src/stylesheets/*'),
+        dest: `${buildDir}/hyperchat/stylesheets`
       }]
     }),
 

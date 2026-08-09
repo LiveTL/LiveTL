@@ -1,7 +1,7 @@
 <script>
   import { afterUpdate, tick } from 'svelte';
   import { fade, fly } from 'svelte/transition';
-  import Tooltip from '../submodules/chat/src/components/common/Tooltip.svelte';
+  import Tooltip from '@hyperchat/components/common/Tooltip.svelte';
   import Wrapper from './Wrapper.svelte';
   import {
     TextDirection,
@@ -33,7 +33,7 @@
   import dark from 'smelte/src/dark';
   import Button from './common/IconButton.svelte';
   import { openLiveTL } from '../js/utils.js';
-  import { createPopup } from '../submodules/chat/src/ts/chat-utils';
+  import { createPopup } from '@hyperchat/ts/chat-utils';
 
   dark().set(true);
 

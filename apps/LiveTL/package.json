@@ -63,7 +63,6 @@
     "postinstall-postinstall": "^2.1.0",
     "request": "2.88.2",
     "rollup-plugin-copy": "^3.4.0",
-    "rollup-plugin-replace": "^2.2.0",
     "sass": "^1.32.8",
     "sha-1": "^1.0.0",
     "svelte": "3.49.0",
