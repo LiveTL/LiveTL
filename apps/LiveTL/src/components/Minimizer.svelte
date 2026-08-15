@@ -1,7 +1,7 @@
 <script lang="ts">
   import { welcomeDismissed, textDirection } from '../js/store.js';
   import { TextDirection } from '../js/constants.js';
-  import Button from './common/IconButton.svelte';
+  import Button from '@livetl/ui/IconButton';
 
   const getIcon = (dismissed: boolean, direction: TextDirection) => {
     return ['expand_more', 'expand_less'][

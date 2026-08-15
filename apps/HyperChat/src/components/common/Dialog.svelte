@@ -1,7 +1,7 @@
 <script lang="ts">
   import Dialog from 'smelte/src/components/Dialog';
   import { quadIn } from 'svelte/easing';
-  import Button from './IconButton.svelte';
+  import Button from '@livetl/ui/IconButton';
   /** Dialog title. */
   export let title = '';
   /** Whether dialog is shown. */

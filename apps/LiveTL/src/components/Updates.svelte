@@ -3,7 +3,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { lastVersion, updatePopupActive } from '../js/store.js';
   import Dialog from './common/Dialog.svelte';
-  import Button from 'smelte/src/components/Button';
+  import Button from '@livetl/ui/Button';
   import Changelog from './changelog/Changelog.svelte';
 
   let unsubscribe = () => { };

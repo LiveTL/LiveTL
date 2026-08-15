@@ -41,7 +41,7 @@
     "postcss-input-range": "^4.0.0",
     "postcss-url": "^10.1.3",
     "reconnecting-eventsource": "^1.1.0",
-    "smelte": "^1.1.8",
+    "smelte": "1.1.8",
     "svelte-materialify": "0.3.6",
     "tailwindcss-elevation": "^1.0.1",
     "youtube-iframe": "^1.0.3",

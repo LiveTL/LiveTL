@@ -7,17 +7,29 @@
   ],
   "type": "module",
   "exports": {
+    "./Button": {
+      "types": "./dist/Button.svelte.d.ts",
+      "import": "./dist/Button.js"
+    },
     "./Icon": {
       "types": "./dist/Icon.svelte.d.ts",
       "import": "./dist/Icon.js"
-    }
+    },
+    "./IconButton": {
+      "types": "./dist/IconButton.svelte.d.ts",
+      "import": "./dist/IconButton.js"
+    },
+    "./styles.css": "./dist/style.css"
   },
   "scripts": {
-    "build": "vite build && cp src/Icon.svelte.d.ts dist/Icon.svelte.d.ts",
+    "build": "vite build && cp src/*.svelte.d.ts dist/ && node scripts/verify-build.mjs",
     "type:check": "svelte-check --tsconfig ./tsconfig.json",
     "lint": "npm run lint:check -- --fix",
     "lint:check": "eslint . --max-warnings=0",
     "test": "echo \"TODO: add shared UI tests\""
+  },
+  "dependencies": {
+    "smelte": "1.1.8"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "1.4.0",
