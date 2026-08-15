@@ -25,7 +25,7 @@
     "@livetl/svelte-webext-stores": "^0.0.14",
     "@livetl/ui": "*",
     "@mdi/js": "^6.5.95",
-    "iframe-translator": "^0.3.8",
+    "iframe-translator": "0.3.8",
     "is-dark-color": "^1.2.0",
     "sha-1": "^1.0.0",
     "smelte": "^1.1.8",
