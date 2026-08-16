@@ -5,7 +5,7 @@ This repository contains both [the LiveTL translation extension](./apps/LiveTL) 
 
 [![Build](https://github.com/LiveTL/LiveTL/actions/workflows/build.yml/badge.svg)](https://github.com/LiveTL/LiveTL/actions/workflows/build.yml)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg)](https://github.com/standard/semistandard)
+[![code style: oxfmt](https://img.shields.io/badge/code%20style-oxfmt-brightgreen.svg)](https://www.npmjs.com/package/oxfmt)
 [![Contributors](https://img.shields.io/github/contributors/LiveTL/LiveTL)](https://github.com/LiveTL/LiveTL/contributors)
 [![Issues](https://img.shields.io/github/issues/LiveTL/LiveTL)](https://github.com/LiveTL/LiveTL/issues)
 ![Total Lines](https://img.shields.io/tokei/lines/github/LiveTL/LiveTL)
