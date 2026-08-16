@@ -8,7 +8,7 @@ This repository contains both [the LiveTL translation extension](./apps/LiveTL) 
 [![code style: oxfmt](https://img.shields.io/badge/code%20style-oxfmt-brightgreen.svg)](https://www.npmjs.com/package/oxfmt)
 [![Contributors](https://img.shields.io/github/contributors/LiveTL/LiveTL)](https://github.com/LiveTL/LiveTL/contributors)
 [![Issues](https://img.shields.io/github/issues/LiveTL/LiveTL)](https://github.com/LiveTL/LiveTL/issues)
-![Total Lines](https://img.shields.io/tokei/lines/github/LiveTL/LiveTL)
+![Code Size](https://img.shields.io/github/languages/code-size/LiveTL/LiveTL)
 [![Commit Activity](https://img.shields.io/github/commit-activity/w/LiveTL/LiveTL)](https://github.com/LiveTL/LiveTL/commits/)
 [![Discord](https://img.shields.io/discord/780938154437640232.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/uJrV3tmthg)
 
