@@ -48,7 +48,8 @@ npm run start:firefox -w @livetl/hyperchat # watch + open Firefox
 
 ### Building for Production
 
-The root release workflow builds HyperChat from tags in the format `vX.Y.Z`.
+The HyperChat release workflow builds from tags in the format
+`hyperchat-vX.Y.Z`.
 
 To simulate the build:
 
