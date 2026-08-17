@@ -41,7 +41,7 @@ declare namespace YtcF {
     enabled: boolean;
     duration: number;
     unit: TimeUnit.WEEKS;
-  };
+  }
   interface MessageDumpInfoItem {
     nickname: string;
     continuation: string[];
