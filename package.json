@@ -13,6 +13,7 @@
     "build:mv2": "turbo run build:mv2",
     "build:hyperchat": "turbo run build:all --filter=@livetl/hyperchat",
     "build:livetl": "turbo run build:all --filter=@livetl/livetl",
+    "build:ytcfilter": "turbo run build:all --filter=@livetl/ytcfilter",
     "codex:status": "npm run codex:status -w @livetl/livetl",
     "codex:test": "npm run codex:test -w @livetl/livetl",
     "codex:watch": "npm run codex:watch -w @livetl/livetl",

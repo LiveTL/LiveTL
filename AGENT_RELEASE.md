@@ -8,6 +8,8 @@ Every release comes from one tagged commit on `main`:
 - `apps/LiveTL/build/LiveTL-Firefox-mv2.xpi`: Firefox MV2 from `apps/LiveTL/build/mv2`
 - `apps/HyperChat/build/HyperChat-Chrome.zip`: HyperChat Chrome MV3
 - `apps/HyperChat/build/HyperChat-Firefox.xpi`: HyperChat Firefox MV3
+- `apps/YtcFilter/build/YtcFilter-Chrome.zip`: YtcFilter Chrome MV3
+- `apps/YtcFilter/build/YtcFilter-Firefox.xpi`: YtcFilter Firefox MV3
 
 LiveTL Firefox MV3 and HyperChat Firefox MV2 are built and verified, but are not
 published.
@@ -31,11 +33,13 @@ unzip -p apps/LiveTL/build/LiveTL-Chrome.zip manifest.json | jq '.manifest_versi
 unzip -p apps/LiveTL/build/LiveTL-Firefox-mv2.xpi manifest.json | jq '.manifest_version, .version'
 unzip -p apps/HyperChat/build/HyperChat-Chrome.zip manifest.json | jq '.manifest_version, .version'
 unzip -p apps/HyperChat/build/HyperChat-Firefox.xpi manifest.json | jq '.manifest_version, .version'
+unzip -p apps/YtcFilter/build/YtcFilter-Chrome.zip manifest.json | jq '.manifest_version, .version'
+unzip -p apps/YtcFilter/build/YtcFilter-Firefox.xpi manifest.json | jq '.manifest_version, .version'
 ```
 
-Expect both Chrome archives and HyperChat Firefox to use manifest version `3`,
-LiveTL Firefox to use manifest version `2`, and all four archives to use the
-same `X.Y.Z`.
+Expect both LiveTL Chrome and HyperChat/YtcFilter archives to use manifest
+version `3`, LiveTL Firefox to use manifest version `2`, and all published
+archives to use the same `X.Y.Z`.
 
 ## Artifact parity
 
@@ -74,6 +78,6 @@ git push origin vX.Y.Z
 
 Publishing the GitHub Release triggers `.github/workflows/release.yml`. It
 checks out that tag, strips the leading `v` and any prerelease suffix to derive
-`VERSION`, builds all six targets, and
-uploads exactly the four public archive names above. The workflow can be rerun
-manually with the existing release tag as its `tag` input.
+`VERSION`, builds all targets, and uploads exactly the public archive names
+above. The workflow can be rerun manually with the existing release tag as its
+`tag` input.
