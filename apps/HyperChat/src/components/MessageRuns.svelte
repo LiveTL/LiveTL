@@ -73,7 +73,7 @@
           </span>
         {:else if run.src}
           <img
-            class="h-5 w-5 inline mx-0.5 align-middle"
+            class="h-6 w-6 inline mx-0.5 align-middle"
             src={run.src}
             alt={run.alt}
             title={run.alt}
