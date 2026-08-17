@@ -11,7 +11,7 @@ Release packages are also available
 ## Building from Source
 
 YtcFilter lives in `apps/YtcFilter` in the LiveTL monorepo and builds from the
-root release workflow.
+YtcFilter release workflow.
 
 ### Development
 

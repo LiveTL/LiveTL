@@ -1,8 +1,8 @@
 # LiveTL Monorepo
 
 This repository contains [the LiveTL translation extension](./apps/LiveTL),
-[the standalone HyperChat extension](./apps/HyperChat), and
-[YtcFilter](./apps/YtcFilter).
+[the standalone HyperChat extension](./apps/HyperChat), and the
+[YtcFilter chat filter extension](./apps/YtcFilter).
 
 [![Build](https://github.com/LiveTL/LiveTL/actions/workflows/build.yml/badge.svg)](https://github.com/LiveTL/LiveTL/actions/workflows/build.yml)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)

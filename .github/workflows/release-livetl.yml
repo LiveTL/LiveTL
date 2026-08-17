@@ -1,0 +1,79 @@
+name: LiveTL Release Build
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing LiveTL release tag to rebuild
+        required: true
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    if: ${{ github.event_name == 'workflow_dispatch' || startsWith(github.event.release.tag_name, 'livetl-v') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve release tag
+        env:
+          EVENT_TAG: ${{ github.event.release.tag_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          RELEASE_TAG="${INPUT_TAG:-$EVENT_TAG}"
+          case "$RELEASE_TAG" in
+            livetl-v*) VERSION="${RELEASE_TAG#livetl-v}" ;;
+            *)
+              echo "LiveTL release tags must look like livetl-vX.Y.Z" >&2
+              exit 1
+              ;;
+          esac
+          echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
+          echo "VERSION=${VERSION%%-*}" >> "$GITHUB_ENV"
+
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Cache for Turbo
+        uses: rharkor/caching-for-turbo@5d14fba18e450c09393333cfd4242e8b3cb455a6 # v2.4.2
+
+      - name: Install modules
+        run: npm ci
+
+      - name: Build LiveTL
+        run: |
+          npm run update:list
+          VERSION="$VERSION" npm run build:livetl
+
+      - name: Upload LiveTL Chrome to release
+        uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # v2.11.5
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: apps/LiveTL/build/LiveTL-Chrome.zip
+          asset_name: LiveTL-Chrome.zip
+          tag: ${{ env.RELEASE_TAG }}
+          overwrite: true
+
+      - name: Upload LiveTL Firefox to release
+        uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # v2.11.5
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: apps/LiveTL/build/LiveTL-Firefox-mv2.xpi
+          asset_name: LiveTL-Firefox-mv2.xpi
+          tag: ${{ env.RELEASE_TAG }}
+          overwrite: true
