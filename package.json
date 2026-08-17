@@ -1,9 +1,10 @@
 {
-  "name": "HyperChat",
+  "name": "@livetl/hyperchat",
   "version": "3.2.0",
   "private": true,
   "scripts": {
     "typecheck": "tsc --noEmit",
+    "type:check": "npm run typecheck",
     "build": "npm run typecheck && npm-run-all --parallel build:chrome build:firefox build:mv2 && npm run verify:build",
     "build:chrome": "cross-env BROWSER=chrome vite build",
     "build:firefox": "cross-env BROWSER=firefox vite build",
@@ -18,7 +19,12 @@
     "start:firefox": "cross-env AUTOLAUNCH=true npm run dev:firefox",
     "lint": "npm run lint:check -- --fix",
     "lint:check": "eslint . --max-warnings=0",
-    "postinstall": "patch-package"
+    "format": "npm run lint",
+    "format:check": "npm run lint:check",
+    "test": "echo \"TODO: add HyperChat tests\"",
+    "test:watch": "echo \"TODO: add HyperChat tests in watch mode\"",
+    "check": "npm run format:check && npm run type:check && npm run test",
+    "package": "npm run verify:build"
   },
   "dependencies": {
     "@livetl/svelte-webext-stores": "^0.0.14",
@@ -27,7 +33,7 @@
     "is-dark-color": "^1.2.0",
     "sha-1": "^1.0.0",
     "smelte": "^1.1.8",
-    "svelte": "^3.49.0",
+    "svelte": "3.59.2",
     "tailwindcss": "^2.2.7"
   },
   "devDependencies": {
@@ -41,7 +47,7 @@
     "eslint-plugin-svelte3": "^3.2.0",
     "npm-run-all": "^4.1.5",
     "patch-package": "^8.0.0",
-    "postcss": "^8.5.10",
+    "postcss": "^8.5.18",
     "postcss-extend": "^1.0.5",
     "postcss-import": "^14.0.2",
     "postcss-input-range": "^4.0.0",
