@@ -1,5 +1,3 @@
-export const isLiveTL = __LIVETL__;
-
 export const enum Theme {
   YOUTUBE = 'YOUTUBE',
   LIGHT = 'LIGHT',

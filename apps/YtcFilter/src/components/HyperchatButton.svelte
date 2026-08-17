@@ -1,5 +1,4 @@
 <script lang='ts'>
-  import { isLiveTL } from '../ts/chat-constants';
   import { hcEnabled, lastOpenedVersion } from '../ts/storage';
   import { mdiChevronRight, mdiClose } from '@mdi/js';
 
@@ -10,7 +9,7 @@
     location.reload();
   };
 
-  const logo = chrome.runtime.getURL((isLiveTL ? 'hyperchat' : 'assets') + '/logo-48.png');
+  const logo = chrome.runtime.getURL('assets/logo-48.png');
   let updated = false;
 
   lastOpenedVersion.ready().then(() => {

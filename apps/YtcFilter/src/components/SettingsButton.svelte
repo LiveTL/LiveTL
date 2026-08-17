@@ -1,11 +1,10 @@
 <script lang="ts">
   import { createPopup } from '../ts/chat-utils';
-  import { isLiveTL } from '../ts/chat-constants';
   import outline from '../assets/outline.svg?raw';
   import { onDestroy, onMount } from 'svelte';
   
   const openSettings = () => {
-    createPopup(chrome.runtime.getURL(`${isLiveTL ? 'hyperchat/' : ''}options.html${document.documentElement.getAttribute('dark') === '' ? '?dark' : ''}`));
+    createPopup(chrome.runtime.getURL(`options.html${document.documentElement.getAttribute('dark') === '' ? '?dark' : ''}`));
   };
   
   onMount(() => {

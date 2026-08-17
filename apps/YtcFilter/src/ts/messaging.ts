@@ -238,11 +238,6 @@ const getTheme = (port: Chat.Port): void => {
   port.postMessage({ type: 'themeUpdate', dark: interceptor.dark });
 };
 
-// TODO: Figure this out when doing MV3 for LTL
-const sendLtlMessage = (message: Chat.LtlMessage): void => {
-  interceptor.clients.forEach((clientPort) => clientPort.postMessage({ type: 'ltlMessage', message }));
-};
-
 const executeChatAction = async (
   message: Ytc.ParsedMessage,
   ytcfg: YtCfg,
@@ -515,9 +510,6 @@ export const initInterceptor = (source: Chat.InterceptorSource, ytcfg: YtCfg, is
           break;
         case 'getTheme':
           getTheme(port);
-          break;
-        case 'sendLtlMessage':
-          sendLtlMessage(message.message);
           break;
         case 'executeChatAction':
           executeChatAction(message.message, ytcfg, message.action, message.reportOption).catch(console.error);

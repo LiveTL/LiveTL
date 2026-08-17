@@ -1,4 +1,3 @@
-import { isLiveTL } from '../ts/chat-constants';
 import { popoutDims } from '../ts/storage';
 
 const noUpdateKeys = new Set(['ytcf.bytes.used', 'ytcf.bytes.update']);
@@ -11,11 +10,7 @@ const defaultTo0 = (value: any): number => (Number.isNaN(value) ? 0 : value);
 const browserAction = __MV__ === 2 ? chrome.browserAction : chrome.action;
 
 browserAction.onClicked.addListener(() => {
-  if (isLiveTL) {
-    chrome.tabs.create({ url: 'https://livetl.app' }, () => {});
-  } else {
-    chrome.tabs.create({ url: '/options.html' }, () => {});
-  }
+  chrome.tabs.create({ url: '/options.html' }, () => {});
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {

@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { isLiveTL } from '../ts/chat-constants';
   import { exioButton, exioIcon } from 'exio/svelte';
   import { onDestroy, onMount } from 'svelte';
   import { embedHeight } from '../ts/storage';
   // @ts-expect-error vite inline css import
   import inline from '../stylesheets/ui.css?inline';
-  const logo = chrome.runtime.getURL((isLiveTL ? 'ytcfilter' : 'assets') + '/logo-48.png');
+  const logo = chrome.runtime.getURL('assets/logo-48.png');
   let dark = document.documentElement.hasAttribute('dark');
   let attrObserver: MutationObserver;
   let resizing = false;

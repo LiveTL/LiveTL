@@ -3,7 +3,6 @@
   import { dataTheme } from '../ts/storage';
   import '../stylesheets/ui.css';
   import '../stylesheets/line.css';
-  // import { isLiveTL } from '../ts/chat-constants';
   import YtcFilterConfirmation from './YtcFilterConfirmation.svelte';
   import YtcFilterInputDialog from './YtcFilterInputDialog.svelte';
   import YtcFilterGeneral from './settings/YtcFilterGeneral.svelte';

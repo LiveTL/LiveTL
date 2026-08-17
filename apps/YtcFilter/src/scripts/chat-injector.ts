@@ -1,5 +1,4 @@
 import YtcFilterButtons from '../components/YtcFilterButtons.svelte';
-import { isLiveTL } from '../ts/chat-constants';
 import { getFrameInfoAsync, isValidFrameInfo, frameIsReplay, createPopup } from '../ts/chat-utils';
 import {
   initInterceptor,
@@ -12,25 +11,8 @@ import {
 import { autoOpenFilterPanel, filterInBackground, initialSetupDone } from '../ts/storage';
 import { detectForceReload } from '../ts/ytcf-logic';
 
-const isFirefox = navigator.userAgent.includes('Firefox');
-
 const getScriptURL = (path: string): string => {
-  if (isLiveTL) {
-    return chrome.runtime.getURL('ytcfilter/scripts/' + path);
-  }
   return chrome.runtime.getURL('scripts/' + path);
-};
-
-const ensureLiveTLTranslatorHost = (): void => {
-  if (!isLiveTL || !isFirefox) return;
-  if (document.querySelector('#hc-ltl-translator-host')) return;
-
-  const script = document.createElement('script');
-  script.id = 'hc-ltl-translator-host';
-  script.src = getScriptURL('chat-translation-host.js');
-  script.onload = () => script.remove();
-  script.onerror = () => script.remove();
-  (document.head ?? document.documentElement).appendChild(script);
 };
 
 const chatLoaded = async (): Promise<void> => {
@@ -107,8 +89,6 @@ const chatLoaded = async (): Promise<void> => {
     target: immediateChild,
   });
 
-  ensureLiveTLTranslatorHost();
-
   const frameInfo = await getFrameInfoAsync();
   if (!isValidFrameInfo(frameInfo)) {
     console.error('Failed to get valid frame info', { frameInfo });
@@ -175,7 +155,7 @@ const chatLoaded = async (): Promise<void> => {
     void clickListener(true);
   });
   settingsButton.addEventListener('click', () => {
-    createPopup(chrome.runtime.getURL((isLiveTL ? 'ytcfilter' : '') + '/options.html'));
+    createPopup(chrome.runtime.getURL('/options.html'));
   });
 
   if (!(await initialSetupDone.get()) || (await autoOpenFilterPanel.get())) {
@@ -183,10 +163,6 @@ const chatLoaded = async (): Promise<void> => {
   }
 };
 
-if (isLiveTL) {
+setTimeout(() => {
   chatLoaded().catch(console.error);
-} else {
-  setTimeout(() => {
-    chatLoaded().catch(console.error);
-  }, 500);
-}
+}, 500);

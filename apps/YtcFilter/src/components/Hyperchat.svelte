@@ -22,8 +22,7 @@
     Theme,
     YoutubeEmojiRenderMode,
     chatUserActionsItems,
-    ChatUserActions,
-    isLiveTL
+    ChatUserActions
   } from '../ts/chat-constants';
   import '../ts/resize-tracker';
   import {
@@ -651,9 +650,7 @@
         const paramsClone = new URLSearchParams(params.toString());
         paramsClone.set('isArchiveLoadSelection', 'true');
         // createPopup
-        const url = (chrome.runtime.getURL(
-          (isLiveTL ? 'hyperchat/options.html' : 'options.html') + '?' + paramsClone.toString()
-        ));
+        const url = chrome.runtime.getURL('options.html?' + paramsClone.toString());
         if (embedded) createPopup(url);
         else {
           archiveEmbedFrame = url;
@@ -847,7 +844,7 @@
     toggleTopBar();
     (window as any).toggleTopBar = toggleTopBar;
   });
-  const openSettings = () => createPopup(chrome.runtime.getURL((isLiveTL ? 'ytcfilter' : '') + '/options.html'));
+  const openSettings = () => createPopup(chrome.runtime.getURL('/options.html'));
 
   const presetChangedManually = (e: Event) => {
     const target = e.target as HTMLSelectElement;

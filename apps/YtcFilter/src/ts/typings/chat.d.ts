@@ -76,11 +76,6 @@ declare namespace Chat {
     dark: boolean;
   }
 
-  interface LtlMessageResponse {
-    type: 'ltlMessage';
-    message: LtlMessage;
-  }
-
   interface registerClientResponse {
     type: 'registerClientResponse';
     success: boolean;
@@ -115,14 +110,13 @@ declare namespace Chat {
     | Actions
     | InitialData
     | ThemeUpdate
-    | LtlMessageResponse
     | registerClientResponse
     | executeChatActionMsg
     | chatUserActionResponse
     | Ping
     | replyThreadResponse;
 
-  type InterceptorSource = 'ytc' | 'ltlMessage';
+  type InterceptorSource = 'ytc';
 
   interface RegisterInterceptorMsg {
     type: 'registerInterceptor';
@@ -169,11 +163,6 @@ declare namespace Chat {
     // frameInfo: FrameInfo;
   }
 
-  interface sendLtlMessageMsg {
-    type: 'sendLtlMessage';
-    message: LtlMessage;
-  }
-
   interface executeChatActionMsg {
     type: 'executeChatAction';
     message: Ytc.ParsedMessage;
@@ -190,7 +179,6 @@ declare namespace Chat {
     | setThemeMsg
     | getThemeMsg
     | RegisterYtcInterceptorMsg
-    | sendLtlMessageMsg
     | executeChatActionMsg
     | chatUserActionResponse
     | Ping
@@ -220,14 +208,4 @@ declare namespace Chat {
   }
 
   type Interceptors = Interceptor | YtcInterceptor;
-
-  interface LtlMessage {
-    text: string;
-    messageArray: Ytc.ParsedRun[];
-    author: string;
-    timestamp: string;
-    types: number;
-    authorId: string;
-    messageId: string;
-  }
 }

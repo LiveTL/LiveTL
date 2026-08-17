@@ -1,12 +1,9 @@
 <script lang="ts">
   import { lastClosedVersion, refreshScroll } from '../ts/storage';
-  import { isLiveTL } from '../ts/chat-constants';
   import Changelog from './changelog/YtcFilterChangelog.svelte';
   import Icon from '@livetl/ui/Icon';
 
-  const logo = chrome.runtime.getURL(
-    (isLiveTL ? 'hyperchat' : 'assets') + '/logo.png'
-  );
+  const logo = chrome.runtime.getURL('assets/logo.png');
   const reviewLink = __BROWSER__ === 'firefox'
     ? 'https://addons.mozilla.org/en-US/firefox/addon/ytcfilter/'
     : 'https://chromewebstore.google.com/detail/ytcfilter-youtube-chat-fi/mnldnbhgfocmkehnlkeanlhfmopepnko';

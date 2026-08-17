@@ -4,9 +4,8 @@ import type { IframeTranslatorClient, AvailableLanguageCodes } from 'iframe-tran
 import { derived, readable, writable } from 'svelte/store';
 import type { Writable } from 'svelte/store';
 
-import { ChatReportUserOptions, Theme, TimeUnit, YoutubeEmojiRenderMode, isLiveTL } from './chat-constants';
+import { ChatReportUserOptions, Theme, TimeUnit, YoutubeEmojiRenderMode } from './chat-constants';
 import { formatAuthorName } from './component-utils';
-import { createLiveTLTranslatorClient, shouldUseLiveTLTranslatorBridge } from './ltl-translation';
 import type { Chat } from './typings/chat';
 
 const INITIAL_PRESET_ID = 'initial-preset-id'; // all other ids will be random
@@ -34,7 +33,7 @@ export const translatorClient = readable(null as null | IframeTranslatorClient, 
       return;
     }
     if (client) return;
-    client = shouldUseLiveTLTranslatorBridge() ? createLiveTLTranslatorClient() : await getClient();
+    client = await getClient();
     set(client);
   });
   translateTargetLanguage
@@ -191,7 +190,7 @@ export const currentFilterPreset = derived(
     return $chatFilterPresets.find((preset) => preset.id === $defaultFilterPresetId) ?? $chatFilterPresets[0];
   },
 );
-export const dataTheme = derived(isDark, ($isDark) => (isLiveTL || $isDark ? 'dark' : 'light'));
+export const dataTheme = derived(isDark, ($isDark) => ($isDark ? 'dark' : 'light'));
 type MaybePromise<T> = T | Promise<T>;
 export const confirmDialog = writable(
   null as null | {
