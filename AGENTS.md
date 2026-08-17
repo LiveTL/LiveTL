@@ -88,7 +88,7 @@ directories; remote caching is not configured.
 | Firefox MV2 | `npm run build:mv2`     | `npm run dev:mv2`     | `apps/LiveTL/build/mv2`     | Published       |
 
 `VERSION=0.0.0 npm run build` typechecks, builds, verifies, and packages all
-targets. The four published archives are created in the application build directories.
+targets. The published archives are created in the application build directories.
 
 Before handing off a change, run:
 
@@ -190,4 +190,5 @@ KEEP_OPEN=1 bash apps/LiveTL/scripts/codex-dev.sh go-test
 - The tag version is supplied to every target through `VERSION`; local builds
   fall back to `src/manifest.json`.
 - Release automation uploads `LiveTL-Chrome.zip`, `LiveTL-Firefox-mv2.xpi`,
-  `HyperChat-Chrome.zip`, and `HyperChat-Firefox.xpi`.
+  `HyperChat-Chrome.zip`, `HyperChat-Firefox.xpi`, `YtcFilter-Chrome.zip`, and
+  `YtcFilter-Firefox.xpi`.

@@ -53,7 +53,7 @@ jobs:
           npm run update:list
           VERSION="$VERSION" npm run build
 
-      - name: Upload Chrome build to release
+      - name: Upload LiveTL Chrome to release
         uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # v2.11.5
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
@@ -62,7 +62,7 @@ jobs:
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true
 
-      - name: Upload Firefox build to release
+      - name: Upload LiveTL Firefox to release
         uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # v2.11.5
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
@@ -71,7 +71,7 @@ jobs:
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true
 
-      - name: Upload HyperChat Chrome build to release
+      - name: Upload HyperChat Chrome to release
         uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # v2.11.5
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
@@ -80,11 +80,29 @@ jobs:
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true
 
-      - name: Upload HyperChat Firefox build to release
+      - name: Upload HyperChat Firefox to release
         uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # v2.11.5
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: apps/HyperChat/build/HyperChat-Firefox.xpi
           asset_name: HyperChat-Firefox.xpi
+          tag: ${{ env.RELEASE_TAG }}
+          overwrite: true
+
+      - name: Upload YtcFilter Chrome to release
+        uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # v2.11.5
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: apps/YtcFilter/build/YtcFilter-Chrome.zip
+          asset_name: YtcFilter-Chrome.zip
+          tag: ${{ env.RELEASE_TAG }}
+          overwrite: true
+
+      - name: Upload YtcFilter Firefox to release
+        uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # v2.11.5
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: apps/YtcFilter/build/YtcFilter-Firefox.xpi
+          asset_name: YtcFilter-Firefox.xpi
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true
