@@ -25,6 +25,14 @@ const isObject = (value: unknown): value is Record<string, unknown> => {
   return value != null && typeof value === 'object';
 };
 
+const getParentOrigin = (): string | null => {
+  try {
+    return document.referrer === '' ? null : new URL(document.referrer).origin;
+  } catch {
+    return null;
+  }
+};
+
 export const shouldUseLiveTLTranslatorBridge = (): boolean => {
   return isLiveTL && navigator.userAgent.includes('Firefox') && window.parent !== window;
 };
@@ -58,8 +66,10 @@ export const makeLiveTLTranslateResponse = (messageId: string, text: string): Li
 
 export const createLiveTLTranslatorClient = (): IframeTranslatorClient => {
   const callbacks = new Map<string, (text: string) => void>();
+  const parentOrigin = getParentOrigin();
 
   const onMessage = (event: MessageEvent): void => {
+    if (event.source !== window.parent || event.origin !== parentOrigin) return;
     if (!isLiveTLTranslateResponse(event.data)) return;
 
     const resolve = callbacks.get(event.data.messageId);
