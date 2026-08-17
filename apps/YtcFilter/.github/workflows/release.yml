@@ -1,0 +1,57 @@
+name: Latest Release Build
+
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to build and upload
+        required: true
+        type: string
+
+jobs:
+  build:
+    env:
+      ADDON_ID: "{20f2dcdf-6f8d-4aeb-862b-b13174475d9c}"
+      RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      - run: |
+          npm install --force
+          npm run lint:check
+
+          # Extract version number from the tag
+          VERSION=$(echo -n "$RELEASE_TAG" | sed 's/^v//g' | sed 's/-.*//')
+
+          VERSION="$VERSION" npm run build:chrome
+          VERSION="$VERSION" npm run build:firefox
+
+      - name: Upload Chrome package to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/YtcFilter-chrome.zip
+          asset_name: YtcFilter-Chrome.zip
+          tag: ${{ env.RELEASE_TAG }}
+          overwrite: true
+
+      - name: Upload Firefox package to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/YtcFilter-firefox.zip
+          asset_name: YtcFilter-Firefox.zip
+          tag: ${{ env.RELEASE_TAG }}
+          overwrite: true
