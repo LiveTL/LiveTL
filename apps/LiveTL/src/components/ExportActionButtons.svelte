@@ -1,6 +1,6 @@
 <script>
   import Tooltip from '@hyperchat/components/common/Tooltip.svelte';
-  import Button from './common/IconButton.svelte';
+  import Button from '@livetl/ui/IconButton';
   import { createEventDispatcher } from 'svelte';
   const dispatch = createEventDispatcher();
 </script>

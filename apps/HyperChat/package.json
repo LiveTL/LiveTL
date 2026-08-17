@@ -28,7 +28,7 @@
     "iframe-translator": "0.3.8",
     "is-dark-color": "^1.2.0",
     "sha-1": "^1.0.0",
-    "smelte": "^1.1.8",
+    "smelte": "1.1.8",
     "svelte": "3.59.2",
     "tailwindcss": "^2.2.7"
   },

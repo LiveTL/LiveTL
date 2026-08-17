@@ -1,4 +1,5 @@
 import 'smelte/src/tailwind.css';
+import '@livetl/ui/styles.css';
 
 import Hyperchat from './components/Hyperchat.svelte';
 import { stripYoutubePlayerShell, stripYoutubePlayerStyles } from './ts/chat-utils';
