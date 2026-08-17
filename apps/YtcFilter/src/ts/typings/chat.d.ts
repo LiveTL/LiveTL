@@ -45,7 +45,14 @@ declare namespace Chat {
     counts: Record<string, number>;
   }
 
-  type Actions = MessagesAction | BonkAction | DeleteAction | Ytc.ParsedMisc | PlayerProgressAction | ForceUpdate | LikeCountsAction;
+  type Actions =
+    | MessagesAction
+    | BonkAction
+    | DeleteAction
+    | Ytc.ParsedMisc
+    | PlayerProgressAction
+    | ForceUpdate
+    | LikeCountsAction;
 
   interface UncheckedFrameInfo {
     tabId: number | undefined;
@@ -105,9 +112,15 @@ declare namespace Chat {
   }
 
   type BackgroundResponse =
-    Actions | InitialData | ThemeUpdate | LtlMessageResponse |
-    registerClientResponse | executeChatActionMsg | chatUserActionResponse | Ping |
-    replyThreadResponse;
+    | Actions
+    | InitialData
+    | ThemeUpdate
+    | LtlMessageResponse
+    | registerClientResponse
+    | executeChatActionMsg
+    | chatUserActionResponse
+    | Ping
+    | replyThreadResponse;
 
   type InterceptorSource = 'ytc' | 'ltlMessage';
 
@@ -169,17 +182,25 @@ declare namespace Chat {
   }
 
   type BackgroundMessage =
-    RegisterInterceptorMsg | RegisterClientMsg | processJsonMsg |
-    setInitialDataMsg | updatePlayerProgressMsg | setThemeMsg | getThemeMsg |
-    RegisterYtcInterceptorMsg | sendLtlMessageMsg | executeChatActionMsg | chatUserActionResponse | Ping |
-    fetchReplyThreadMsg | replyThreadResponse;
+    | RegisterInterceptorMsg
+    | RegisterClientMsg
+    | processJsonMsg
+    | setInitialDataMsg
+    | updatePlayerProgressMsg
+    | setThemeMsg
+    | getThemeMsg
+    | RegisterYtcInterceptorMsg
+    | sendLtlMessageMsg
+    | executeChatActionMsg
+    | chatUserActionResponse
+    | Ping
+    | fetchReplyThreadMsg
+    | replyThreadResponse;
 
   type Port = Omit<chrome.runtime.Port, 'postMessage' | 'onMessage'> & {
     postMessage: (message: BackgroundMessage | BackgroundResponse) => void;
     onMessage: {
-      addListener: (
-        callback: (message: BackgroundResponse, port: Port) => void
-      ) => void;
+      addListener: (callback: (message: BackgroundResponse, port: Port) => void) => void;
     };
     destroy?: () => void;
   };

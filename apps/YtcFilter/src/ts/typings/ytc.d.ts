@@ -122,7 +122,7 @@ declare namespace Ytc {
     bannerTimeoutMs?: number;
     autoCollapseDelay?: {
       seconds: number;
-    }
+    };
   }
 
   interface AddTickerAction {
@@ -320,7 +320,7 @@ declare namespace Ytc {
     };
     actionButton?: {
       buttonRenderer: ButtonRenderer;
-    }
+    };
   }
 
   interface ChatSummaryRenderer {
@@ -337,10 +337,10 @@ declare namespace Ytc {
     authorPhoto?: Thumbnails;
     inlineActionButton?: {
       buttonRenderer: ButtonRenderer;
-    }
+    };
     contextMenuButton?: {
       buttonRenderer: ButtonRenderer;
-    }
+    };
   }
 
   interface ButtonRenderer {
@@ -370,28 +370,6 @@ declare namespace Ytc {
     };
   }
 
-  interface PollRenderer {
-    choices: PollChoice[];
-    liveChatPollId: string;
-    header: {
-      pollHeaderRenderer: {
-        pollQuestion: RunsObj;
-        thumbnail: Thumbnails;
-        metadataText: RunsObj;
-        liveChatPollType: string;
-      };
-    };
-    displayVoteResults?: boolean;
-    button?: ButtonRenderer;
-  }
-
-  interface PollChoice {
-    text: RunsObj;
-    selected: boolean;
-    voteRatio?: number;
-    votePercentage?: SimpleTextObj;
-  }
-
   interface EngagementMessageRenderer {
     message: RunsObj[];
     id: string;
@@ -402,10 +380,11 @@ declare namespace Ytc {
     };
     actionButton?: {
       buttonRenderer: ButtonRenderer;
-    }
+    };
   }
 
-  interface PlaceholderRenderer { // No idea what the purpose of this is
+  interface PlaceholderRenderer {
+    // No idea what the purpose of this is
     id: string;
     timestampUsec: IntString;
   }
@@ -432,8 +411,12 @@ declare namespace Ytc {
     votePercentage?: SimpleTextObj;
   }
 
-  type Renderers = TextMessageRenderer | PaidMessageRenderer |
-  PaidStickerRenderer | MembershipRenderer | MembershipGiftPurchaseRenderer;
+  type Renderers =
+    | TextMessageRenderer
+    | PaidMessageRenderer
+    | PaidStickerRenderer
+    | MembershipRenderer
+    | MembershipGiftPurchaseRenderer;
 
   interface AddChatItem {
     /** Normal message */
@@ -458,13 +441,10 @@ declare namespace Ytc {
     liveChatViewerEngagementMessageRenderer?: EngagementMessageRenderer;
     /** ??? */
     liveChatPlaceholderItemRenderer?: PlaceholderRenderer;
-    /** Poll start */
-    pollRenderer?: PollRenderer;
-    /** Poll end + other in-chat announcements TODO */
-    liveChatViewerEngagementMessageRenderer?: EngagementMessageRenderer;
   }
 
-  interface TickerRenderer { // Doesn't have a timestamp but ID is always a paid message id
+  interface TickerRenderer {
+    // Doesn't have a timestamp but ID is always a paid message id
     id: string;
     startBackgroundColor: number;
     endBackgroundColor: number;
@@ -493,7 +473,7 @@ declare namespace Ytc {
   interface AccessibilityObj {
     accessibilityData: {
       label: string;
-    }
+    };
   }
 
   /*
@@ -535,7 +515,7 @@ declare namespace Ytc {
     headerTextColor: string;
   }
 
-  interface ParsedSuperSticker extends PaidDetails, ParsedImage { }
+  interface ParsedSuperSticker extends PaidDetails, ParsedImage {}
 
   interface ParsedMembership {
     headerPrimaryText: ParsedRun[];
@@ -634,7 +614,7 @@ declare namespace Ytc {
       action: {
         url: string;
         text: ParsedRun[];
-      }
+      };
     };
     showtime: number;
     timestamp?: string;
@@ -681,7 +661,7 @@ declare namespace Ytc {
     miscActions: ParsedMisc[];
     isReplay: boolean;
     refresh: boolean;
-    /** entityKey → like count, sourced from frameworkUpdates.entityBatchUpdate mutations. */
+    /** EntityKey → like count, sourced from frameworkUpdates.entityBatchUpdate mutations. */
     likeCounts?: Record<string, number>;
   }
 }

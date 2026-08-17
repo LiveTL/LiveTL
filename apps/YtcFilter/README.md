@@ -1,4 +1,4 @@
-# YtcFilter | YouTube Chat Filter 
+# YtcFilter | YouTube Chat Filter
 
 ## Installation
 
@@ -9,45 +9,36 @@ Release packages are also available [on GitHub](https://github.com/LiveTL/ytcfil
 
 ## Building from Source
 
-YtcFilter is MV3-only. `master` is the shipping branch.
+YtcFilter lives in `apps/YtcFilter` in the LiveTL monorepo.
 
 ### Development
 
-> Note: The repo expects a Linux or Unix-like environment. If you are on Windows, use WSL.
+> Note: A Linux or Unix-like environment is required. If you are on Windows, use WSL.
 
-Clone the repository:
-
-```bash
-git clone git@github.com:LiveTL/ytcfilter.git
-```
-
-Open the repository and npm install:
+Install from the monorepo root:
 
 ```bash
-cd ytcfilter
-npm install --force # install dependencies
+npm ci
 ```
 
 Serve the extension for local development:
 
 ```bash
-npm run dev:chrome    # devserver for Chrome extension
-npm run dev:firefox   # devserver for Firefox extension
+npm run dev:chrome -w @livetl/ytcfilter    # watch Chrome
+npm run dev:firefox -w @livetl/ytcfilter   # watch Firefox
 
-npm run start:chrome  # devserver + open extension in Chrome
-npm run start:firefox # devserver + open extension in Firefox
+npm run start:chrome -w @livetl/ytcfilter  # watch + open Chrome
+npm run start:firefox -w @livetl/ytcfilter # watch + open Firefox
 ```
 
 ### Building for Production
 
-Our build script is [an automated GitHub action](.github/workflows/release.yml), where `${{ github.ref }}` should evaluate to a tag in the format `vX.Y.Z` (where `X.Y.Z` is the version number).
-
 To simulate the build:
 
 ```bash
-VERSION=X.Y.Z npm run build         # Chrome & Firefox
-VERSION=X.Y.Z npm run build:chrome  # just Chrome
-VERSION=X.Y.Z npm run build:firefox # just Firefox
+VERSION=X.Y.Z npm run build -w @livetl/ytcfilter         # Chrome & Firefox
+VERSION=X.Y.Z npm run build:chrome -w @livetl/ytcfilter  # Chrome
+VERSION=X.Y.Z npm run build:firefox -w @livetl/ytcfilter # Firefox
 ```
 
-The built ZIP files can be found in the `build` directory.
+The built packages can be found in `apps/YtcFilter/build`.

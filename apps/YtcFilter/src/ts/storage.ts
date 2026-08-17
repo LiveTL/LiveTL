@@ -1,8 +1,9 @@
 import { webExtStores } from '@livetl/svelte-webext-stores';
-import { derived, readable, writable } from 'svelte/store';
-import type { Writable } from 'svelte/store';
 import { getClient, AvailableLanguages } from 'iframe-translator';
 import type { IframeTranslatorClient, AvailableLanguageCodes } from 'iframe-translator';
+import { derived, readable, writable } from 'svelte/store';
+import type { Writable } from 'svelte/store';
+
 import { ChatReportUserOptions, Theme, TimeUnit, YoutubeEmojiRenderMode, isLiveTL } from './chat-constants';
 import { formatAuthorName } from './component-utils';
 import { createLiveTLTranslatorClient, shouldUseLiveTLTranslatorBridge } from './ltl-translation';
@@ -30,21 +31,22 @@ export const translatorClient = readable(null as (null | IframeTranslatorClient)
       return;
     }
     if (client) return;
-    client = shouldUseLiveTLTranslatorBridge()
-      ? createLiveTLTranslatorClient()
-      : await getClient();
+    client = shouldUseLiveTLTranslatorBridge() ? createLiveTLTranslatorClient() : await getClient();
     set(client);
   });
-  translateTargetLanguage.ready().then(() => {
-    // migrate from old language value to new language code
-    const oldString = translateTargetLanguage.getCurrent() as string;
-    if (!(oldString in AvailableLanguages)) {
-      const newKey = (
-        Object.keys(AvailableLanguages) as AvailableLanguageCodes[]
-      ).find(key => AvailableLanguages[key] === oldString);
-      translateTargetLanguage.set(newKey ?? '').catch(console.error);
-    }
-  }).catch(console.error);
+  translateTargetLanguage
+    .ready()
+    .then(() => {
+      // migrate from old language value to new language code
+      const oldString = translateTargetLanguage.getCurrent() as string;
+      if (!(oldString in AvailableLanguages)) {
+        const newKey = (Object.keys(AvailableLanguages) as AvailableLanguageCodes[]).find(
+          (key) => AvailableLanguages[key] === oldString,
+        );
+        translateTargetLanguage.set(newKey ?? '').catch(console.error);
+      }
+    })
+    .catch(console.error);
   return () => {
     unsub();
     destroyIf();
@@ -68,15 +70,19 @@ export const port = writable(null as null | Chat.Port);
 export const selfChannel = writable(null as null | SimpleUserInfo);
 export const selfChannelId = derived(selfChannel, ($selfChannel) => $selfChannel?.channelId);
 export const selfChannelName = derived(selfChannel, ($selfChannel) => formatAuthorName($selfChannel?.name ?? ''));
-export const reportDialog = writable(null as null | {
-  callback: (selection: ChatReportUserOptions) => void;
-  optionStore: Writable<null | ChatReportUserOptions>;
-});
-export const alertDialog = writable(null as null | {
-  title: string;
-  message: string;
-  color: string;
-});
+export const reportDialog = writable(
+  null as null | {
+    callback: (selection: ChatReportUserOptions) => void;
+    optionStore: Writable<null | ChatReportUserOptions>;
+  },
+);
+export const alertDialog = writable(
+  null as null | {
+    title: string;
+    message: string;
+    color: string;
+  },
+);
 export const stickySuperchats = writable([] as Ytc.ParsedTicker[]);
 export const ytDark = writable(false);
 export const activeReplyThreadId = writable<string | null>(null);

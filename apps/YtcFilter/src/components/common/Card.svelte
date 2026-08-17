@@ -1,6 +1,6 @@
 <script lang="ts">
   import { noop } from 'svelte/internal';
-  import Icon from './Icon.svelte';
+  import Icon from '@livetl/ui/Icon';
 
   export let title = '';
   export let headerEndIcon = '';

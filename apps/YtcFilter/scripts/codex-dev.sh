@@ -53,18 +53,6 @@ detect_repo_scripts() {
 
   if (
     cd "$REPO_ROOT" &&
-    node -e 'const s=require("./package.json").scripts||{}; process.exit(s["start:none"] && s["build"] ? 0 : 1);'
-  ); then
-    WATCH_NPM_SCRIPT="start:none"
-    BUILD_NPM_SCRIPT="build"
-    EXT_PATH="$REPO_ROOT/build"
-    MODE_LABEL="mv2"
-    DEFAULT_TEST_URL="https://www.youtube.com/watch?v=X4VbdwhkE10"
-    return 0
-  fi
-
-  if (
-    cd "$REPO_ROOT" &&
     node -e 'const s=require("./package.json").scripts||{}; process.exit(s["start"] && s["build"] ? 0 : 1);'
   ); then
     WATCH_NPM_SCRIPT="start"

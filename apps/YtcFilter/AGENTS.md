@@ -1,71 +1,37 @@
 # YtcFilter Codex Workflow
 
+Paths and commands in this file are relative to `apps/YtcFilter` unless noted otherwise.
+
 ## Scope
 
-- YTCF is an MV3-only extension repo.
-- `master` is the shipping branch.
-- Sync shared chat runtime updates by merging the configured `hc/main` remote-tracking branch into `master`.
-
-## Repo Model
-
-- YTCF source lives directly in this repository.
-- Keep filter, setup, archive, and settings behavior separate from shared chat runtime syncs.
-- Use a single working branch for ordinary YTCF work unless the user explicitly asks for more.
+- YTCF is a Chrome/Firefox MV3 extension app in the LiveTL monorepo.
+- YTCF product behavior is filters, presets, triggers, archives, setup, settings, and the YTCF button/panel UI.
+- Some chat runtime code is adapted from shared chat runtime history. Preserve ancestry when requested, but resolve final code as an adapted YTCF port, not a blind file copy.
 
 ## Branch Discipline
 
-- Work on `master` unless the user explicitly asks for something else.
-- Keep `master` in sync with `origin/master`.
-- If a local `mv3` branch exists, ignore it for ordinary work.
-- Use `hc/main` for shared chat runtime syncs unless the user explicitly names another ref.
+- Work on the active monorepo feature branch unless the user explicitly asks for a different branch.
+- Keep repository-wide policy, CI, and release automation at the monorepo root.
+- Commit subjects should be short, direct, and readable in `git log --oneline`.
 
-## Sync Model (Mandatory)
+## Runtime Sync Model
 
-- If a fix belongs in shared chat runtime behavior, land it in the source repo for that runtime first.
-- Then pull it into YTCF by merging:
-  - `hc/main` -> `master`
-- Prefer a proper merge over hand-copying many shared runtime commits.
-- Resolve merge conflicts in YTCF terms:
-  - keep YTCF filters, presets, triggers, archives, setup, and panel UI
-  - take shared runtime fixes in parsing, rendering, messaging, and runtime plumbing
-
-## Code Boundaries
-
-- Shared chat runtime areas in this repo:
-  - chat parsing
-  - queueing/timing
-  - chat rendering shell
-  - embed/popout mounting
-  - YouTube-side admin action plumbing
-- YTCF-owned areas in this repo:
-  - filter engine
-  - presets
-  - preset triggers / auto-activation
-  - archive persistence / import / export
-  - setup / migration
-  - YTCF settings UI
-  - YTCF button bar and panel behavior
+- If a fix belongs to shared chat runtime behavior, land it in the source app first, then port/merge it into YTCF.
+- Prefer proper merge/subtree history when the user asks for ancestry.
+- Resolve conflicts in YTCF terms:
+  - keep YTCF filters, presets, triggers, archives, setup, settings, and panel controls
+  - take shared runtime fixes in parsing, rendering, messaging, queueing, embed cleanup, and YouTube action plumbing
+- It is acceptable to adopt monorepo build/runtime structure when that is the cleaner final architecture.
 
 ## Runtime Model
 
 - `src/scripts/chat-injector.ts` installs the interception path on native YouTube chat pages and mounts the YTCF button bar.
-- `src/scripts/chat-mounter.ts` mounts the main YTCF panel into `https://www.youtube.com/embed/ytcfilter_embed?...`.
-- `src/ts/chat-parser.ts` normalizes YT actions.
+- `src/scripts/chat-mounter.ts` mounts the YTCF panel into `https://www.youtube.com/embed/ytcfilter_embed?...`.
+- `src/ts/chat-parser.ts` normalizes YouTube chat actions.
 - `src/ts/queue.ts` handles live/replay timing.
-- `src/ts/messaging.ts` bridges the injected side and the mounted UI side.
-- `src/ts/ytcf-logic.ts` is the main YTCF behavior layer.
-- The rendered chat is not the raw feed. Messages are shown only if they match the active preset.
-
-## Main UI Surfaces
-
-- Injected chat controls:
-  - `src/components/YtcFilterButtons.svelte`
-- Filtered chat panel / popout:
-  - `src/components/Hyperchat.svelte`
-- Settings app:
-  - `src/components/YtcFilterSettings.svelte`
-- First-run setup / migration:
-  - `src/components/YtcFilterSetup.svelte`
+- `src/ts/messaging.ts` bridges the injected YouTube side and the mounted UI side.
+- `src/ts/ytcf-logic.ts` owns filtering, preset activation, archive behavior, and metadata handling.
+- The rendered chat is filtered output, not the raw feed. A message is shown only if it matches the active preset.
 
 ## Important Behavior Notes
 
@@ -77,145 +43,62 @@
 - Archives are real YTCF data, not incidental debug output.
 - `Block user` and `Report user` are YouTube-side actions.
 - `Delete` in the message menu is local YTCF-side removal from the current rendered/archive view.
-
-## House Style
-
-- Commit subjects should be short, direct, and easy to scan in `git log --oneline`.
-- Prefer active voice and plain wording:
-  - `merge chat runtime`
-  - `fix archive import`
-  - `agent map`
-- Avoid padded scopes, issue-number prefixes, and long explanatory subjects.
-- Mildly funny is fine if the subject is still immediately clear.
-
-## Shared Runtime Patterns To Preserve
-
 - Keep author/channel identity data untouched and apply display-only formatting at render edges.
 - Use `src/ts/component-utils.ts` for author-name formatting.
 - Do not assume fixed YouTube menu indices for block/report behavior.
 - Keep proxy fetch request/response events correlated by request id.
-- Prefer fixing shared parser/messaging/util code before patching several UI surfaces by hand.
 
 ## Build And Tooling
 
-- Use `npm`, not `yarn`, in this repo.
-- If the local install looks stale or Node changed, do a clean reinstall:
-  - `rm -rf node_modules`
-  - `n exec 22.21.1 npm install --force`
-- Main commands:
-  - `npm run build`
-  - `npm run build:chrome`
-  - `npm run build:firefox`
-  - `npm run dev:chrome`
-  - `npm run dev:firefox`
-  - `npm run start:chrome`
-  - `npm run start:firefox`
-- Verified locally on 2026-04-01:
-  - clean reinstall under Node `16.20.2` works
-  - after that, `build:chrome` and `build:firefox` also work under Node `22.21.1`
-- CI uses Node `22`.
+- Use `npm`, not `yarn`.
+- Install from the monorepo root:
+  - `npm ci`
+- Main commands from the monorepo root:
+  - `npm run build -w @livetl/ytcfilter`
+  - `npm run build:chrome -w @livetl/ytcfilter`
+  - `npm run build:firefox -w @livetl/ytcfilter`
+  - `npm run dev:chrome -w @livetl/ytcfilter`
+  - `npm run dev:firefox -w @livetl/ytcfilter`
+- Convenience root command:
+  - `npm run build:ytcfilter`
 - Unpacked output layout:
-  - Chrome build lives at `build/`
-  - Firefox build lives at `build/firefox/`
-  - zip artifacts land in `build/`
+  - Chrome build: `apps/YtcFilter/build/chrome`
+  - Firefox build: `apps/YtcFilter/build/firefox`
+  - release artifacts: `apps/YtcFilter/build`
 
 ## Runtime Validation
 
-- A fresh profile will redirect into setup until `ytcf.initialSetupDone` is true.
+- A fresh profile redirects into setup until `ytcf.initialSetupDone` is true.
 - Preset/filter edits are not expected to hot-patch an already mounted filtered panel.
 - After changing filters in settings, reload/remount the panel before judging runtime behavior.
 - Useful extension pages:
   - `setup.html`
   - `options.html`
   - `hyperchat.html`
-- Convenience helper:
-  - `CHROME_BIN=/snap/bin/chromium bash scripts/codex-dev.sh go-test`
-- The helper auto-detects whether the unpacked MV3 build lives at `build/` or `build/chrome/`.
-- In this environment, the most reliable Chromium smoke path is still the direct manual command:
-
-```bash
-rm -rf /tmp/ytcf-manual-profile
-xvfb-run -a /snap/bin/chromium \
-  --disable-gpu \
-  --ozone-platform=headless \
-  --remote-debugging-port=9222 \
-  --user-data-dir=/tmp/ytcf-manual-profile \
-  --disable-extensions-except="$PWD/build" \
-  --load-extension="$PWD/build" \
-  --no-first-run \
-  --no-default-browser-check \
-  --disable-background-timer-throttling \
-  --disable-renderer-backgrounding \
-  --disable-dev-shm-usage \
-  --disable-features=IsolateOrigins,site-per-process,TranslateUI \
-  --disable-web-security \
-  --allow-running-insecure-content \
-  --allow-insecure-localhost \
-  --no-sandbox \
-  --disable-setuid-sandbox \
-  --noerrdialogs \
-  --disable-notifications \
-  --disable-translate \
-  --disable-infobars \
-  --autoplay-policy=no-user-gesture-required \
-  "https://www.youtube.com/watch?v=X4VbdwhkE10"
-```
-- That manual path was the one verified on 2026-04-01 for:
-  - injected YTCF button bar
-  - embedded `ytcfilter_embed` iframe
-  - setup page and options page rendering
-- Useful helper commands:
-  - `bash scripts/codex-dev.sh watch`
-  - `bash scripts/codex-dev.sh reload`
-  - `bash scripts/codex-dev.sh status`
-  - `bash scripts/codex-dev.sh stop`
+- `scripts/codex-dev.sh go-test` starts a Chromium smoke session for the YTCF build.
 - Default testbed URL comes from `vite.config.ts`:
   - `https://www.youtube.com/watch?v=X4VbdwhkE10`
-- Treat `reload` as the default after significant runtime changes to:
+- Treat `scripts/codex-dev.sh reload` as the default after significant runtime changes to:
   - `src/scripts/**`
   - `src/components/**`
   - `src/ts/**`
   - `src/manifest.json`
   - `vite.config.ts`
 
-## Bump Checklist
-
-1. `git fetch hc`
-2. `git checkout master`
-3. `git merge --no-ff hc/main`
-4. Resolve conflicts by keeping YTCF-owned behavior and taking shared runtime fixes.
-5. Clean reinstall if needed:
-   - `rm -rf node_modules`
-   - `n exec 22.21.1 npm install --force`
-6. Rebuild:
-   - `n exec 22.21.1 npm run build:chrome`
-   - `n exec 22.21.1 npm run build:firefox`
-7. Run MV3 runtime smoke:
-   - `CHROME_BIN=/snap/bin/chromium bash scripts/codex-dev.sh go-test`
-   - if the helper is flaky under snap Chromium, use the manual `xvfb-run` command from the Runtime Validation section
-8. Spot-check:
-   - setup page
-   - options page
-   - filtered panel / popout
-   - native chat button bar
-   - after filter edits, reload/remount and then retest the mounted panel
-9. Commit the merge with a short subject.
-
 ## Release Notes And Changelog Style
 
-### In-Product Changelog Style (Mandatory)
+### In-Product Changelog Style
 
 - The in-product changelog is a single plain-text line:
   - `src/components/changelog/YtcFilterChangelog.svelte`
 - It must be user-facing only.
-- It must be extremely short (aim for one clause, no extra framing).
+- It must be extremely short.
 - Start with lowercase unless a proper noun forces capitalization.
 - Do not use HTML, lists, or multiple lines.
-- Do not use `/` or other shorthand separators.
 - Example:
   - `fix visual conflicts w/ YT`
 
-### GitHub Release Notes Style (Mandatory)
+### GitHub Release Notes Style
 
 - Match the existing release format:
 
@@ -225,7 +108,7 @@ xvfb-run -a /snap/bin/chromium \
 ```
 
 - Keep it to one bullet unless the user explicitly asks for more.
-- The bullet must be user-facing only (no maintainer or implementation-detail notes).
+- The bullet must be user-facing only.
 
 ## Emoji Placeholder Handling
 

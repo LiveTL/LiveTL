@@ -5,21 +5,10 @@
     "outDir": "./build/",
     "baseUrl": "./src",
     "strict": true,
-    "lib": [
-      "DOM",
-      "es2020"
-    ],
+    "lib": ["DOM", "es2020"],
     "target": "ES2017",
-    "resolveJsonModule": true,
+    "resolveJsonModule": true
   },
-  "include": [
-    "src/**/*",
-    "*.js",
-    "utils/**/*",
-    "vite.config.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "build"
-  ]
+  "include": ["src/**/*", "*.js", "utils/**/*", "scripts/**/*", "vite.config.ts"],
+  "exclude": ["node_modules", "build"]
 }

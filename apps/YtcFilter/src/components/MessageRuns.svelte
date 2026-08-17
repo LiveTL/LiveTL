@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Theme, YoutubeEmojiRenderMode } from '../ts/chat-constants';
-
   import TranslatedMessage from './TranslatedMessage.svelte';
   import {
     emojiRenderMode, useSystemEmojis
