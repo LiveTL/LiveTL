@@ -36,6 +36,8 @@ export default defineConfig({
         }
         return newManifest;
       },
+      // TODO: re-enable this once we've upgraded vite-plugin-web-extension
+      skipManifestValidation: true,
       assets: 'assets',
       watchFilePaths: [
         path.resolve(__dirname, 'src/manifest.json')
@@ -51,15 +53,6 @@ export default defineConfig({
       webExtConfig: {
         startUrl: 'https://www.youtube.com/watch?v=X4VbdwhkE10'
       },
-      libModeViteConfig: defineConfig({ 
-        build: { 
-          rollupOptions: { 
-            output: { 
-              inlineDynamicImports: true, 
-            }, 
-          }, 
-        }, 
-      }), 
     }),
     svelte({
       configFile: path.resolve(__dirname, 'svelte.config.js'),
