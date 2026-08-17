@@ -104,9 +104,9 @@ The root LiveTL shortcuts build these targets:
 | Firefox MV3 | `npm run build:firefox` | `npm run dev:firefox` | `apps/LiveTL/build/firefox` | Validation-only |
 | Firefox MV2 | `npm run build:mv2`     | `npm run dev:mv2`     | `apps/LiveTL/build/mv2`     | Published       |
 
-Product-specific root build aliases:
+Extension-specific root build aliases:
 
-| Product   | Command                   | Published archives                              |
+| Extension | Command                   | Published archives                              |
 | --------- | ------------------------- | ----------------------------------------------- |
 | LiveTL    | `npm run build:livetl`    | `LiveTL-Chrome.zip`, `LiveTL-Firefox-mv2.xpi`   |
 | HyperChat | `npm run build:hyperchat` | `HyperChat-Chrome.zip`, `HyperChat-Firefox.xpi` |

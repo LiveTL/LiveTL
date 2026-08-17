@@ -5,7 +5,7 @@ Paths and commands in this file are relative to `apps/YtcFilter` unless noted ot
 ## Scope
 
 - YTCF is a Chrome/Firefox MV3 extension app in the LiveTL monorepo.
-- YTCF product behavior is filters, presets, triggers, archives, setup, settings, and the YTCF button/panel UI.
+- YTCF behavior is filters, presets, triggers, archives, setup, settings, and the YTCF button/panel UI.
 - Some chat runtime code is adapted from shared chat runtime history. Preserve ancestry when requested, but resolve final code as an adapted YTCF port, not a blind file copy.
 
 ## Branch Discipline
@@ -88,9 +88,9 @@ Paths and commands in this file are relative to `apps/YtcFilter` unless noted ot
 
 ## Release Notes And Changelog Style
 
-### In-Product Changelog Style
+### Extension Changelog Style
 
-- The in-product changelog is a single plain-text line:
+- The extension changelog is a single plain-text line:
   - `src/components/changelog/YtcFilterChangelog.svelte`
 - It must be user-facing only.
 - It must be extremely short.

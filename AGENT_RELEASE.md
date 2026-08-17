@@ -1,8 +1,8 @@
 # LiveTL Release Playbook
 
-## Source and products
+## Sources and release assets
 
-Every release comes from one tagged commit on `main`:
+Each extension release comes from one tagged commit on `main`:
 
 - `apps/LiveTL/build/LiveTL-Chrome.zip`: Chrome MV3 from `apps/LiveTL/build/chrome`
 - `apps/LiveTL/build/LiveTL-Firefox-mv2.xpi`: Firefox MV2 from `apps/LiveTL/build/mv2`
@@ -19,18 +19,38 @@ release assembly.
 LiveTL and standalone HyperChat compile the same source from `apps/HyperChat`.
 YtcFilter builds from `apps/YtcFilter`; when a HyperChat runtime fix applies to
 YtcFilter, carry it into that workspace before tagging. Do not select different
-source per browser for any product.
+source per browser for an extension release.
+
+Release tags and workflows:
+
+| Extension | Tags               | Workflow                                  | Build command                           |
+| --------- | ------------------ | ----------------------------------------- | --------------------------------------- |
+| LiveTL    | `livetl-vX.Y.Z`    | `.github/workflows/release-livetl.yml`    | `VERSION=X.Y.Z npm run build:livetl`    |
+| HyperChat | `hyperchat-vX.Y.Z` | `.github/workflows/release-hyperchat.yml` | `VERSION=X.Y.Z npm run build:hyperchat` |
+| YtcFilter | `ytcfilter-vX.Y.Z` | `.github/workflows/release-ytcfilter.yml` | `VERSION=X.Y.Z npm run build:ytcfilter` |
 
 ## Pre-release verification
 
-From the exact `main` commit to tag:
+From the exact `main` commit to tag, run the shared checks:
 
 ```bash
 npm ci
 npm run format:check
 npm run lint:check
 npm run test
-VERSION=X.Y.Z npm run build
+```
+
+Use the matching build command:
+
+```bash
+VERSION=X.Y.Z npm run build:livetl
+VERSION=X.Y.Z npm run build:hyperchat
+VERSION=X.Y.Z npm run build:ytcfilter
+```
+
+Check the archive version for the extension being released:
+
+```bash
 unzip -p apps/LiveTL/build/LiveTL-Chrome.zip manifest.json | jq '.manifest_version, .version'
 unzip -p apps/LiveTL/build/LiveTL-Firefox-mv2.xpi manifest.json | jq '.manifest_version, .version'
 unzip -p apps/HyperChat/build/HyperChat-Chrome.zip manifest.json | jq '.manifest_version, .version'
@@ -39,9 +59,9 @@ unzip -p apps/YtcFilter/build/YtcFilter-Chrome.zip manifest.json | jq '.manifest
 unzip -p apps/YtcFilter/build/YtcFilter-Firefox.xpi manifest.json | jq '.manifest_version, .version'
 ```
 
-Expect both LiveTL Chrome and HyperChat/YtcFilter archives to use manifest
-version `3`, LiveTL Firefox to use manifest version `2`, and all published
-archives to use the same `X.Y.Z`.
+Expect LiveTL Chrome, HyperChat, and YtcFilter archives to use manifest version
+`3`; LiveTL Firefox uses manifest version `2`. Every archive for the extension
+being released should use the requested `X.Y.Z`.
 
 ## Artifact parity
 
@@ -72,18 +92,22 @@ stale or different dependency trees invalidate the baseline.
 
 ## Publish
 
-Create the release tag on the verified `main` commit, push it, then publish
-the matching GitHub Release:
+Create the release tag on the verified `main` commit, push it, then publish the
+matching GitHub Release:
 
 ```bash
 git switch main
 git pull --ff-only
-git tag vX.Y.Z
-git push origin vX.Y.Z
+git tag livetl-vX.Y.Z
+git push origin livetl-vX.Y.Z
+git tag hyperchat-vX.Y.Z
+git push origin hyperchat-vX.Y.Z
+git tag ytcfilter-vX.Y.Z
+git push origin ytcfilter-vX.Y.Z
 ```
 
-Publishing the GitHub Release triggers `.github/workflows/release.yml`. It
-checks out that tag, strips the leading `v` and any prerelease suffix to derive
-`VERSION`, builds all targets, and uploads exactly the public archive names
-above. The workflow can be rerun manually with the existing release tag as its
-`tag` input.
+Publishing the GitHub Release triggers the matching release workflow. It checks
+out that tag, strips the extension prefix, strips any prerelease suffix to derive
+`VERSION`, builds that extension, and uploads only that extension's release
+assets. Each release workflow can be rerun manually with the existing release
+tag as its `tag` input.
