@@ -27,7 +27,7 @@
     "is-dark-color": "^1.2.0",
     "sha-1": "^1.0.0",
     "smelte": "^1.1.8",
-    "svelte": "3.59.2",
+    "svelte": "5.55.7",
     "tailwindcss": "^2.2.7"
   },
   "devDependencies": {
