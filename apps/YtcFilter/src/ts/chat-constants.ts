@@ -45,7 +45,7 @@ export enum TimeUnit {
   HOURS = 'HOURS',
   DAYS = 'DAYS',
   WEEKS = 'WEEKS',
-  MONTHS = 'MONTHS'
+  MONTHS = 'MONTHS',
 }
 
 export const chatReportUserOptions = [
@@ -98,4 +98,6 @@ export const UNNAMED_ARCHIVE = 'Unnamed Archive';
 export const UNNAMED_FILTER = 'Unnamed Filter';
 export const YTCF_MESSAGEDUMPINFOS_KEY = 'ytcf.messageDumpInfos';
 export const replyThreadPanelTag = 'PAreply_thread';
-export const currentDomain = location.host.includes('youtube') ? (location.protocol + '//' + location.host) : 'https://www.youtube.com';
+export const currentDomain = location.host.includes('youtube')
+  ? location.protocol + '//' + location.host
+  : 'https://www.youtube.com';

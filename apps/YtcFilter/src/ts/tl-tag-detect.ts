@@ -7,7 +7,7 @@ export const languagesInfo = [
   { code: 'ch', name: 'Chinese', lang: '中文', tag: 'zh-CN', selectionName: '' },
   { code: 'ru', name: 'Russian', lang: 'русский', tag: 'ru-RO', selectionName: '' },
   { code: 'fr', name: 'French', lang: 'Français', tag: 'fr-FR', selectionName: '' },
-  { code: 'de', name: 'German', lang: 'Deutsch', tag: 'de-DE', selectionName: '' }
+  { code: 'de', name: 'German', lang: 'Deutsch', tag: 'de-DE', selectionName: '' },
 ];
 
 const languageConversionTable: {
@@ -20,23 +20,37 @@ export const languageNameCode: {
 const createLangSelectionName = (lang: (typeof languagesInfo)[number]): string => {
   return `${lang.lang} (${lang.tag})`;
 };
-export const languageNameValues = languagesInfo.map(lang => ({
-  text: createLangSelectionName(lang), value: lang.lang
+export const languageNameValues = languagesInfo.map((lang) => ({
+  text: createLangSelectionName(lang),
+  value: lang.lang,
 }));
 
-languagesInfo.forEach(i => (languageConversionTable[createLangSelectionName(i)] = i));
-languagesInfo.forEach(lang => (languageNameCode[lang.code] = lang));
-languagesInfo.forEach(lang => (lang.selectionName = createLangSelectionName(lang)));
+languagesInfo.forEach((i) => (languageConversionTable[createLangSelectionName(i)] = i));
+languagesInfo.forEach((lang) => (languageNameCode[lang.code] = lang));
+languagesInfo.forEach((lang) => (lang.selectionName = createLangSelectionName(lang)));
 export const languageCodeArray = Object.keys(languageNameCode);
 
 const MAX_LANG_TAG_LEN = 7;
-const langTokens = [['[', ']'], ['{', '}'], ['(', ')'], ['|', '|'], ['<', '>'], ['【', '】'], ['「', '」'], ['『', '』'], ['〚', '〛'], ['（', '）'], ['〈', '〉'], ['⁽', '₎']];
-const startLangTokens = langTokens.flatMap(e => e[0]);
+const langTokens = [
+  ['[', ']'],
+  ['{', '}'],
+  ['(', ')'],
+  ['|', '|'],
+  ['<', '>'],
+  ['【', '】'],
+  ['「', '」'],
+  ['『', '』'],
+  ['〚', '〛'],
+  ['（', '）'],
+  ['〈', '〉'],
+  ['⁽', '₎'],
+];
+const startLangTokens = langTokens.flatMap((e) => e[0]);
 const tokenMap = Object.fromEntries(langTokens);
 const transDelimiters = ['-', ':'];
 const langSplitRe = /\W+/;
 
-export function parseTranslation(message: string): { lang: string, msg: string } | undefined {
+export function parseTranslation(message: string): { lang: string; msg: string } | undefined {
   const trimmed = message.trim();
 
   // try bracket trans blocks first - '[lang]', '[lang] -'
@@ -59,7 +73,7 @@ export function parseTranslation(message: string): { lang: string, msg: string }
 
       return {
         lang,
-        msg
+        msg,
       };
     }
   }
@@ -74,7 +88,7 @@ export function parseTranslation(message: string): { lang: string, msg: string }
 
       return {
         lang,
-        msg
+        msg,
       };
     }
   }
@@ -86,11 +100,11 @@ export function isLangMatch(textLang: string, currentLangTag: string): boolean {
   const currentLang = languageNameCode[currentLangTag];
   const lower = textLang.toLowerCase();
   const textLangs = lower.split(langSplitRe);
-  return [...textLangs, lower].some(s => (
-    s.length >= 2 && (
-      currentLang.name.toLowerCase().startsWith(s) ||
-      s === currentLang.code ||
-      currentLang.lang.toLowerCase().startsWith(s)
-    )
-  ));
+  return [...textLangs, lower].some(
+    (s) =>
+      s.length >= 2 &&
+      (currentLang.name.toLowerCase().startsWith(s) ||
+        s === currentLang.code ||
+        currentLang.lang.toLowerCase().startsWith(s)),
+  );
 }

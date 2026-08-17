@@ -1,15 +1,17 @@
-import { TimeUnit } from "./chat-constants";
+import { TimeUnit } from './chat-constants';
 
 export const stringifyRuns = (msg: Ytc.ParsedRun[], ignoreEmoji = false): string => {
-  return msg.map(m => {
-    if (m.type === 'text') {
-      return m.text;
-    } else if (m.type === 'emoji') {
-      return ignoreEmoji ? '' : `:${m.alt}:`;
-    } else {
-      return m.text;
-    }
-  }).join('');
+  return msg
+    .map((m) => {
+      if (m.type === 'text') {
+        return m.text;
+      } else if (m.type === 'emoji') {
+        return ignoreEmoji ? '' : `:${m.alt}:`;
+      } else {
+        return m.text;
+      }
+    })
+    .join('');
 };
 
 export const download = (data: string, filename: string): void => {

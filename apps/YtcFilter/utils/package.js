@@ -7,13 +7,7 @@ const cmds = [
   'cp ../dist/YtcFilter-Chrome.zip ../dist/YtcFilter-Firefox.zip',
   'zip -d ../dist/YtcFilter-Firefox.zip manifest.json',
   'printf "@ manifest.firefox.json\\n@=manifest.json\\n" | zipnote -w ../dist/YtcFilter-Firefox.zip',
-  'zip -d ../dist/YtcFilter-Chrome.zip manifest.firefox.json'
+  'zip -d ../dist/YtcFilter-Chrome.zip manifest.firefox.json',
 ];
 
-spawn(
-  'sh',
-  [
-    '-c',
-    cmds.join(' && ')
-  ]
-);
+spawn('sh', ['-c', cmds.join(' && ')]);

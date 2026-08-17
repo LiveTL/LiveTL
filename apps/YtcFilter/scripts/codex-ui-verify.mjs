@@ -1,8 +1,8 @@
 #!/usr/bin/env node
+import crypto from 'node:crypto';
 /* eslint-disable no-console */
 import http from 'node:http';
 import net from 'node:net';
-import crypto from 'node:crypto';
 
 const DEVTOOLS_HOST = process.env.DEVTOOLS_HOST ?? '127.0.0.1';
 const DEVTOOLS_PORT = Number(process.env.DEVTOOLS_PORT ?? '9222');
@@ -75,20 +75,17 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const httpGetJson = (path) => {
   return new Promise((resolve, reject) => {
-    const req = http.request(
-      { host: DEVTOOLS_HOST, port: DEVTOOLS_PORT, path, method: 'GET' },
-      (res) => {
-        const chunks = [];
-        res.on('data', (c) => chunks.push(c));
-        res.on('end', () => {
-          try {
-            resolve(JSON.parse(Buffer.concat(chunks).toString('utf8')));
-          } catch (err) {
-            reject(err);
-          }
-        });
-      }
-    );
+    const req = http.request({ host: DEVTOOLS_HOST, port: DEVTOOLS_PORT, path, method: 'GET' }, (res) => {
+      const chunks = [];
+      res.on('data', (c) => chunks.push(c));
+      res.on('end', () => {
+        try {
+          resolve(JSON.parse(Buffer.concat(chunks).toString('utf8')));
+        } catch (err) {
+          reject(err);
+        }
+      });
+    });
     req.on('error', reject);
     req.end();
   });
@@ -156,9 +153,7 @@ const wsReadFrame = async (socketBuf) => {
 
   const mask = masked ? await socketBuf.readN(4) : null;
   const payload = len ? await socketBuf.readN(len) : Buffer.alloc(0);
-  const data = mask
-    ? Buffer.from(payload.map((b, i) => b ^ mask[i % 4]))
-    : payload;
+  const data = mask ? Buffer.from(payload.map((b, i) => b ^ mask[i % 4])) : payload;
 
   return { opcode, data };
 };
@@ -180,7 +175,7 @@ const cdpEval = async (socketBuf, id, expression, { awaitPromise = false, contex
     expression,
     returnByValue: true,
     awaitPromise,
-    ...(contextId === undefined ? {} : { contextId })
+    ...(contextId === undefined ? {} : { contextId }),
   });
   return result?.result?.value;
 };
@@ -234,7 +229,7 @@ const connectToTargetWithFrameContext = async (targetPredicate, framePredicate, 
         const world = await cdpCall(socketBuf, 102, 'Page.createIsolatedWorld', {
           frameId: frameNode.frame.id,
           worldName: 'ytcf-verify',
-          grantUniveralAccess: true
+          grantUniveralAccess: true,
         });
         return { socketBuf, contextId: world.executionContextId, target };
       } catch {
@@ -283,7 +278,7 @@ const waitForEval = async (socketBuf, id, expression, label, options = {}) => {
 const main = async () => {
   const swTarget = await findTarget(
     (t) => t.type === 'service_worker' && typeof t.url === 'string' && t.url.includes('chat-background'),
-    'ytcfilter service worker'
+    'ytcfilter service worker',
   );
   const sw = await connectToTarget(swTarget);
   // Force a clean "first run" setup state for verification.
@@ -306,7 +301,7 @@ const main = async () => {
         return true;
       })()
     `,
-    { awaitPromise: true }
+    { awaitPromise: true },
   );
   const storageSnapshot = await cdpEval(
     sw,
@@ -324,7 +319,7 @@ const main = async () => {
         return { local, sync };
       })()
     `,
-    { awaitPromise: true }
+    { awaitPromise: true },
   );
   sw.socket.end();
   console.log('storage snapshot:', JSON.stringify(storageSnapshot));
@@ -333,7 +328,7 @@ const main = async () => {
     (t) => t.type === 'page' && typeof t.url === 'string' && t.url.includes('/watch') && t.url.includes('X4VbdwhkE10'),
     (frame) => frame.name === 'chatframe' && frame.url.includes('/live_chat') && frame.url.includes('continuation='),
     'youtube watch page',
-    'embedded live chat frame'
+    'embedded live chat frame',
   );
 
   // Injected bar exists.
@@ -342,17 +337,14 @@ const main = async () => {
     1,
     "!!document.querySelector('.ytcf-launch-button') && !!document.querySelector('.ytcf-iframe')",
     'injected YTCF controls on embedded live_chat frame',
-    { contextId: liveContextId }
+    { contextId: liveContextId },
   );
 
   // Use "Popout" so the embed surface becomes a top-level CDP target.
   await cdpEval(live, 3, "document.querySelector('.ytcf-popout-button')?.click(); true", { contextId: liveContextId });
 
   // First run should redirect the embed to setup.html.
-  const setupTarget = await findTarget(
-    (t) => typeof t.url === 'string' && t.url.includes('setup.html'),
-    'setup.html'
-  );
+  const setupTarget = await findTarget((t) => typeof t.url === 'string' && t.url.includes('setup.html'), 'setup.html');
   const setup = await connectToTarget(setupTarget);
 
   await waitForSelector(setup, 10, 'button');
@@ -365,13 +357,13 @@ const main = async () => {
   // Wait for done panel.
   await waitForSelector(setup, 13, 'button');
   const clickedLetsGo = await clickByText(setup, 14, "Let's Go!");
-  if (!clickedLetsGo) throw new Error("setup: missing \"Let's Go!\" button");
+  if (!clickedLetsGo) throw new Error('setup: missing "Let\'s Go!" button');
   setup.socket.end();
 
   // After setup, the embed frame should land back on youtube embed and mount UI.
   const ytEmbedTarget = await findTarget(
     (t) => typeof t.url === 'string' && t.url.includes('/embed/ytcfilter_embed'),
-    'youtube embed ytcfilter_embed'
+    'youtube embed ytcfilter_embed',
   );
   const ytEmbed = await connectToTarget(ytEmbedTarget);
   await waitForSelector(ytEmbed, 20, '.hyperchat-root');
@@ -381,10 +373,12 @@ const main = async () => {
   ytEmbed.socket.end();
 
   // Open Settings from injected bar.
-  await cdpEval(live, 30, "document.querySelector('.ytcf-settings-button')?.click(); true", { contextId: liveContextId });
+  await cdpEval(live, 30, "document.querySelector('.ytcf-settings-button')?.click(); true", {
+    contextId: liveContextId,
+  });
   const optionsTarget = await findTarget(
     (t) => typeof t.url === 'string' && t.url.includes('options.html'),
-    'options.html'
+    'options.html',
   );
   const options = await connectToTarget(optionsTarget);
   await waitForSelector(options, 40, '.navbar');
@@ -409,7 +403,7 @@ const main = async () => {
         btn.click();
         return true;
       })()
-    `
+    `,
   );
   if (!clickedSave) throw new Error('options: new filter did not expose a Save button');
 
@@ -434,20 +428,28 @@ const main = async () => {
   await waitForSelector(options, 49, '.add-filter-button');
   const afterReloadFilters = await cdpEval(options, 50, "document.querySelectorAll('.filter').length");
   if (afterReloadFilters < afterFilters) {
-    throw new Error(`options: expected filter count to persist after reload (${afterFilters} -> ${afterReloadFilters})`);
+    throw new Error(
+      `options: expected filter count to persist after reload (${afterFilters} -> ${afterReloadFilters})`,
+    );
   }
 
   options.socket.end();
   live.socket.end();
 
-  console.log(JSON.stringify({
-    ok: true,
-    embedUrl: ytEmbedTarget.url,
-    tabCount,
-    beforeFilters,
-    afterFilters,
-    afterReloadFilters
-  }, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        ok: true,
+        embedUrl: ytEmbedTarget.url,
+        tabCount,
+        beforeFilters,
+        afterFilters,
+        afterReloadFilters,
+      },
+      null,
+      2,
+    ),
+  );
 };
 
 main().catch((err) => {

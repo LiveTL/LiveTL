@@ -1,6 +1,6 @@
 import { parseMessageRuns } from '../ts/chat-parser';
-import { stringifyRuns } from '../ts/ytcf-utils';
 import { fixLeaks } from '../ts/ytc-fix-memleaks';
+import { stringifyRuns } from '../ts/ytcf-utils';
 
 if (!window.location.href.includes('/embed/ytcfilter_embed')) {
   for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) {

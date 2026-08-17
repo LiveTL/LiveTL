@@ -14,8 +14,11 @@ const INITIAL_PRESET_ID = 'initial-preset-id'; // all other ids will be random
 export const stores = webExtStores();
 
 export const hcEnabled = stores.addSyncStore('ytcf.enabled', true);
-export const translateTargetLanguage = stores.addSyncStore('ytcf.translateTargetLanguage', '' as '' | AvailableLanguageCodes);
-export const translatorClient = readable(null as (null | IframeTranslatorClient), (set) => {
+export const translateTargetLanguage = stores.addSyncStore(
+  'ytcf.translateTargetLanguage',
+  '' as '' | AvailableLanguageCodes,
+);
+export const translatorClient = readable(null as null | IframeTranslatorClient, (set) => {
   let client: IframeTranslatorClient | null = null;
   const destroyIf = (): void => {
     if (client !== null) {
@@ -89,23 +92,15 @@ export const activeReplyThreadId = writable<string | null>(null);
 export const liveReplyBuffer = writable<Ytc.ParsedMessage[]>([]);
 export const liveLikeCounts = writable(new Map<string, number>());
 export const isDark = derived([theme, ytDark], ([$theme, $ytDark]) => {
-  return $theme === Theme.DARK || (
-    $theme === Theme.YOUTUBE && (
-      window.location.search.includes('dark') ||
-      (
-        (
-          !window.location.hostname.includes('youtube') ||
-          window.location.href.includes('/embed/ytcfilter_embed')
-        ) &&
-        (
-          (
-            !(window as any).useYtTheme &&
+  return (
+    $theme === Theme.DARK ||
+    ($theme === Theme.YOUTUBE &&
+      (window.location.search.includes('dark') ||
+        ((!window.location.hostname.includes('youtube') || window.location.href.includes('/embed/ytcfilter_embed')) &&
+          ((!(window as any).useYtTheme &&
             window.matchMedia &&
-            window.matchMedia('(prefers-color-scheme: dark)').matches
-          ) || $ytDark
-        )
-      )
-    )
+            window.matchMedia('(prefers-color-scheme: dark)').matches) ||
+            $ytDark))))
   );
 });
 export const currentProgress = writable(null as null | number);
@@ -113,68 +108,74 @@ export const enableStickySuperchatBar = stores.addSyncStore('ytcf.enableStickySu
 export const enableHighlightedMentions = stores.addSyncStore('ytcf.enableHighlightedMentions', false);
 export const showSuperchatReplyIndicators = stores.addSyncStore('ytcf.showSuperchatReplyIndicators', true);
 export const lastOpenedVersion = stores.addSyncStore('ytcf.lastOpenedVersion', '');
-export const chatFilterPresets = stores.addSyncStore('ytcf.chatFilterPresets', [{
-  filters: [
+export const chatFilterPresets = stores.addSyncStore(
+  'ytcf.chatFilterPresets',
+  [
     {
-      "conditions": [
+      filters: [
         {
-          "caseSensitive": false,
-          "invert": false,
-          "needsClear": true,
-          "property": "message",
-          "type": "tltag",
-          "value": "en"
-        }
+          conditions: [
+            {
+              caseSensitive: false,
+              invert: false,
+              needsClear: true,
+              property: 'message',
+              type: 'tltag',
+              value: 'en',
+            },
+          ],
+          enabled: true,
+          id: 'IqhLrwTVEL',
+          type: 'basic',
+        },
+        {
+          conditions: [
+            {
+              caseSensitive: false,
+              invert: false,
+              property: 'moderator',
+              type: 'boolean',
+            },
+          ],
+          enabled: true,
+          id: 'berdVtyXHw',
+          type: 'basic',
+        },
+        {
+          conditions: [
+            {
+              caseSensitive: false,
+              invert: false,
+              property: 'owner',
+              type: 'boolean',
+            },
+          ],
+          enabled: true,
+          id: 'qUYNRyhzQy',
+          type: 'basic',
+        },
+        {
+          conditions: [
+            {
+              caseSensitive: false,
+              invert: false,
+              property: 'verified',
+              type: 'boolean',
+            },
+          ],
+          enabled: true,
+          id: 'gEljlegSPX',
+          type: 'basic',
+        },
       ],
-      "enabled": true,
-      "id": "IqhLrwTVEL",
-      "type": "basic"
+      nickname: 'Example Preset',
+      id: INITIAL_PRESET_ID,
+      triggers: [],
+      activation: 'manual',
     },
-    {
-      "conditions": [
-        {
-          "caseSensitive": false,
-          "invert": false,
-          "property": "moderator",
-          "type": "boolean"
-        }
-      ],
-      "enabled": true,
-      "id": "berdVtyXHw",
-      "type": "basic"
-    },
-    {
-      "conditions": [
-        {
-          "caseSensitive": false,
-          "invert": false,
-          "property": "owner",
-          "type": "boolean"
-        }
-      ],
-      "enabled": true,
-      "id": "qUYNRyhzQy",
-      "type": "basic"
-    },
-    {
-      "conditions": [
-        {
-          "caseSensitive": false,
-          "invert": false,
-          "property": "verified",
-          "type": "boolean"
-        }
-      ],
-      "enabled": true,
-      "id": "gEljlegSPX",
-      "type": "basic"
-    }
-  ],
-  nickname: 'Example Preset',
-  id: INITIAL_PRESET_ID,
-  triggers: [],
-  activation: 'manual'
-}] as YtcF.FilterPreset[], true);
+  ] as YtcF.FilterPreset[],
+  true,
+);
 export const defaultFilterPresetId = stores.addSyncStore('ytcf.defaultFilterPresetId', INITIAL_PRESET_ID, false);
 export const videoInfo = writable(undefined as undefined | null | SimpleVideoInfo);
 export const overrideFilterPresetId = writable(null as null | string);
@@ -182,52 +183,58 @@ export const currentFilterPreset = derived(
   [chatFilterPresets, defaultFilterPresetId, overrideFilterPresetId],
   ([$chatFilterPresets, $defaultFilterPresetId, $overrideFilterPresetId]) => {
     if ($overrideFilterPresetId != null) {
-      const result = $chatFilterPresets.find(preset => preset.id === $overrideFilterPresetId);
+      const result = $chatFilterPresets.find((preset) => preset.id === $overrideFilterPresetId);
       if (result) {
         return result;
       }
     }
-    return $chatFilterPresets.find(preset => preset.id === $defaultFilterPresetId) ?? $chatFilterPresets[0];
-  }
+    return $chatFilterPresets.find((preset) => preset.id === $defaultFilterPresetId) ?? $chatFilterPresets[0];
+  },
 );
-export const dataTheme = derived(isDark, ($isDark) => isLiveTL || $isDark ? 'dark' : 'light');
+export const dataTheme = derived(isDark, ($isDark) => (isLiveTL || $isDark ? 'dark' : 'light'));
 type MaybePromise<T> = T | Promise<T>;
-export const confirmDialog = writable(null as null | {
-  title: string;
-  message: string;
-  action: {
-    text: string;
-    callback: () => MaybePromise<void>;
-  };
-});
-export const errorDialog = writable(null as null | {
-  title: string;
-  message: string;
-  action: {
-    text: string;
-    callback: () => MaybePromise<void>;
-  };
-});
-export const inputDialog = writable(null as null | {
-  title: string;
-  message?: string;
-  prompts: Array<{
-    originalValue: string;
-    label: string;
-    hideLabel?: boolean;
-    large?: boolean;
-  }>;
-  action: {
-    text: string;
-    callback: (values: string[]) => MaybePromise<void>;
-    cancelled?: () => void;
-    noAction?: boolean;
-  };
-  component?: any;
-});
+export const confirmDialog = writable(
+  null as null | {
+    title: string;
+    message: string;
+    action: {
+      text: string;
+      callback: () => MaybePromise<void>;
+    };
+  },
+);
+export const errorDialog = writable(
+  null as null | {
+    title: string;
+    message: string;
+    action: {
+      text: string;
+      callback: () => MaybePromise<void>;
+    };
+  },
+);
+export const inputDialog = writable(
+  null as null | {
+    title: string;
+    message?: string;
+    prompts: Array<{
+      originalValue: string;
+      label: string;
+      hideLabel?: boolean;
+      large?: boolean;
+    }>;
+    action: {
+      text: string;
+      callback: (values: string[]) => MaybePromise<void>;
+      cancelled?: () => void;
+      noAction?: boolean;
+    };
+    component?: any;
+  },
+);
 export const popoutDims = stores.addSyncStore('ytcf.popoutDims', {
   width: 1200,
-  height: 800
+  height: 800,
 });
 export const currentEditingPreset = writable(null as any as YtcF.FilterPreset);
 export const exportMode = writable(null as null | string);
@@ -239,7 +246,7 @@ export const forceReload = stores.addSyncStore('ytcf.forceReload', false);
 export const getPresetById = async (id: string): Promise<YtcF.FilterPreset | null> => {
   await chatFilterPresets.ready();
   const presets = await chatFilterPresets.get();
-  return presets.find(preset => preset.id === id) ?? null;
+  return presets.find((preset) => preset.id === id) ?? null;
 };
 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 export const bytesUsed = stores.addSyncStore('ytcf.bytes.used', 0);
@@ -248,5 +255,5 @@ export const autoOpenFilterPanel = stores.addSyncStore('ytcf.autoOpenFilterPanel
 export const autoClear = stores.addSyncStore('ytcf.autoClear', {
   unit: TimeUnit.WEEKS,
   duration: 2,
-  enabled: true
+  enabled: true,
 } as YtcF.AutoClearDurationObject);

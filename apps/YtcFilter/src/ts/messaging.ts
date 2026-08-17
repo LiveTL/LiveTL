@@ -137,12 +137,13 @@ const registerClient = (port: Chat.Port, getInitialData = false): void => {
         const payload: Chat.InitialData = {
           type: 'initialData',
           initialData: interceptor.queue.getInitialData(),
-          selfChannel: selfChannel != null
-            ? {
-                name: selfChannel.authorName?.simpleText ?? '',
-                channelId: selfChannel.authorExternalChannelId ?? '',
-              }
-            : null,
+          selfChannel:
+            selfChannel != null
+              ? {
+                  name: selfChannel.authorName?.simpleText ?? '',
+                  channelId: selfChannel.authorExternalChannelId ?? '',
+                }
+              : null,
           videoInfo,
         };
         port.postMessage(payload);
@@ -150,7 +151,9 @@ const registerClient = (port: Chat.Port, getInitialData = false): void => {
         unsubber();
       }
     };
-    const unsubber = (interceptor as Chat.YtcInterceptor).queue.initialDataReady.subscribe(() => setTimeout(callback, 0));
+    const unsubber = (interceptor as Chat.YtcInterceptor).queue.initialDataReady.subscribe(() =>
+      setTimeout(callback, 0),
+    );
     callback();
   }
 };

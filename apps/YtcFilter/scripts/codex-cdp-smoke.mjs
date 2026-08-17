@@ -1,8 +1,8 @@
 #!/usr/bin/env node
+import crypto from 'node:crypto';
 /* eslint-disable no-console */
 import http from 'node:http';
 import net from 'node:net';
-import crypto from 'node:crypto';
 
 const DEVTOOLS_HOST = process.env.DEVTOOLS_HOST ?? '127.0.0.1';
 const DEVTOOLS_PORT = Number(process.env.DEVTOOLS_PORT ?? '9222');
@@ -16,7 +16,7 @@ class BufferedSocket {
     this.buf = Buffer.alloc(0);
     this.closed = false;
     this.error = null;
-    /** @type {Array<() => void>} */
+    /** @type {(() => void)[]} */
     this.waiters = [];
 
     socket.on('data', (chunk) => {
@@ -75,20 +75,17 @@ class BufferedSocket {
 
 const httpGetJson = (path) => {
   return new Promise((resolve, reject) => {
-    const req = http.request(
-      { host: DEVTOOLS_HOST, port: DEVTOOLS_PORT, path, method: 'GET' },
-      (res) => {
-        const chunks = [];
-        res.on('data', (c) => chunks.push(c));
-        res.on('end', () => {
-          try {
-            resolve(JSON.parse(Buffer.concat(chunks).toString('utf8')));
-          } catch (err) {
-            reject(err);
-          }
-        });
-      }
-    );
+    const req = http.request({ host: DEVTOOLS_HOST, port: DEVTOOLS_PORT, path, method: 'GET' }, (res) => {
+      const chunks = [];
+      res.on('data', (c) => chunks.push(c));
+      res.on('end', () => {
+        try {
+          resolve(JSON.parse(Buffer.concat(chunks).toString('utf8')));
+        } catch (err) {
+          reject(err);
+        }
+      });
+    });
     req.on('error', reject);
     req.end();
   });
@@ -156,9 +153,7 @@ const wsReadFrame = async (socketBuf) => {
 
   const mask = masked ? await socketBuf.readN(4) : null;
   const payload = len ? await socketBuf.readN(len) : Buffer.alloc(0);
-  const data = mask
-    ? Buffer.from(payload.map((b, i) => b ^ mask[i % 4]))
-    : payload;
+  const data = mask ? Buffer.from(payload.map((b, i) => b ^ mask[i % 4])) : payload;
 
   return { opcode, data };
 };
@@ -178,7 +173,7 @@ const cdpCall = async (socketBuf, id, method, params) => {
 const cdpEval = async (socketBuf, id, expression) => {
   const result = await cdpCall(socketBuf, id, 'Runtime.evaluate', {
     expression,
-    returnByValue: true
+    returnByValue: true,
   });
   return result?.result?.value;
 };
@@ -187,7 +182,9 @@ const main = async () => {
   const targets = await httpGetJson('/json/list');
   const target = targets.find((t) => typeof t.url === 'string' && t.url.includes(TARGET_URL_SUBSTR));
   if (!target) {
-    console.error(`No target URL containing ${JSON.stringify(TARGET_URL_SUBSTR)} found on DevTools port ${DEVTOOLS_PORT}.`);
+    console.error(
+      `No target URL containing ${JSON.stringify(TARGET_URL_SUBSTR)} found on DevTools port ${DEVTOOLS_PORT}.`,
+    );
     process.exit(2);
   }
   if (!target.webSocketDebuggerUrl) {
@@ -214,12 +211,18 @@ const main = async () => {
 
   socket.end();
 
-  console.log(JSON.stringify({
-    targetUrl: target.url,
-    hasButtons,
-    hasMount,
-    iframeSrc
-  }, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        targetUrl: target.url,
+        hasButtons,
+        hasMount,
+        iframeSrc,
+      },
+      null,
+      2,
+    ),
+  );
 
   if (!hasButtons || !hasMount) process.exit(1);
 };
@@ -228,4 +231,3 @@ main().catch((err) => {
   console.error(err?.stack ?? String(err));
   process.exit(1);
 });
-

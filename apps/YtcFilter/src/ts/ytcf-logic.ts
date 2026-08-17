@@ -1,12 +1,22 @@
-import { get } from 'svelte/store';
-import { currentFilterPreset, chatFilterPresets, defaultFilterPresetId, currentStorageVersion, initialSetupDone, forceReload, showProfileIcons, showTimestamps } from './storage';
-import { stringifyRuns, download, convertDurationObjectToMs } from './ytcf-utils';
-import { getRandomString } from './chat-utils';
 import parseRegex from 'regex-parser';
-import { isLangMatch, parseTranslation } from './tl-tag-detect';
-import { YTCF_MESSAGEDUMPINFOS_KEY, isLiveTL } from './chat-constants';
 import sanitize from 'sanitize-filename';
+import { get } from 'svelte/store';
+
+import { YTCF_MESSAGEDUMPINFOS_KEY, isLiveTL } from './chat-constants';
+import { getRandomString } from './chat-utils';
+import {
+  currentFilterPreset,
+  chatFilterPresets,
+  defaultFilterPresetId,
+  currentStorageVersion,
+  initialSetupDone,
+  forceReload,
+  showProfileIcons,
+  showTimestamps,
+} from './storage';
+import { isLangMatch, parseTranslation } from './tl-tag-detect';
 import type { Chat } from './typings/chat';
+import { stringifyRuns, download, convertDurationObjectToMs } from './ytcf-utils';
 
 const browserObject = chrome;
 
@@ -19,13 +29,11 @@ export function shouldFilterMessage(action: Chat.MessageAction): boolean {
       let numValidFilters = filter.conditions.length;
       for (const condition of filter.conditions) {
         if (condition.type === 'boolean') {
-          if ((
-            condition.property === 'superchat' && Boolean(msg.superChat) !== condition.invert
-          ) || (
-            condition.property === 'membershipItem' && Boolean(msg.membership) !== condition.invert
-          ) || (
+          if (
+            (condition.property === 'superchat' && Boolean(msg.superChat) !== condition.invert) ||
+            (condition.property === 'membershipItem' && Boolean(msg.membership) !== condition.invert) ||
             msg.author.types.includes(condition.property) !== condition.invert
-          )) {
+          ) {
             numSatisfied++;
           }
           continue;
@@ -89,21 +97,21 @@ export function shouldFilterMessage(action: Chat.MessageAction): boolean {
   return false;
 }
 
-export const testRegex = (expression: string, value: string): { result: boolean; error: Error | false; } => {
+export const testRegex = (expression: string, value: string): { result: boolean; error: Error | false } => {
   try {
     const regex = parseRegex(expression);
     return {
       result: regex.test(value),
-      error: false
+      error: false,
     };
   } catch (e) {
     console.error(e);
     return {
       result: false,
-      error: e as Error
+      error: e as Error,
     };
   }
-}
+};
 
 export const isValidRegex = (expression: string): boolean => {
   try {
@@ -112,7 +120,7 @@ export const isValidRegex = (expression: string): boolean => {
   } catch (e) {
     return false;
   }
-}
+};
 
 export function shouldActivatePreset(preset: YtcF.FilterPreset, info: SimpleVideoInfo): boolean {
   for (const trigger of preset.triggers) {
@@ -167,9 +175,7 @@ export function getAutoActivatedPreset(presets: YtcF.FilterPreset[], info: Simpl
 export const getV2Storage = async (): Promise<any> => {
   return await new Promise((resolve, reject) => {
     try {
-      browserObject.storage.local.get('@@vwe-persistence', (s) =>
-        resolve(s['@@vwe-persistence'] || null)
-      );
+      browserObject.storage.local.get('@@vwe-persistence', (s) => resolve(s['@@vwe-persistence'] || null));
     } catch (e) {
       reject(e);
     }
@@ -185,25 +191,26 @@ const parseHtmlString = (html: string): Ytc.ParsedRun[] => {
       ? {
           type: 'emoji',
           src: (child as HTMLImageElement).src,
-          alt: (child as HTMLImageElement).alt
+          alt: (child as HTMLImageElement).alt,
         }
-      : (
-          child as HTMLElement).tagName === 'a'
-          ? {
-              type: 'link',
-              url: (child as HTMLAnchorElement).href,
-              text: (child as HTMLAnchorElement).innerText
-            }
-          : {
-              type: 'text',
-              text: child.textContent ?? ''
-            };
+      : (child as HTMLElement).tagName === 'a'
+        ? {
+            type: 'link',
+            url: (child as HTMLAnchorElement).href,
+            text: (child as HTMLAnchorElement).innerText,
+          }
+        : {
+            type: 'text',
+            text: child.textContent ?? '',
+          };
   });
   elem.remove();
   return runs;
 };
 
-export const getParsedV2Data = async (importedData: object | null = null): Promise<{
+export const getParsedV2Data = async (
+  importedData: object | null = null,
+): Promise<{
   presets: YtcF.FilterPreset[];
   archives: YtcF.MessageDumpExportItem[];
   defaultPreset: string | null;
@@ -215,7 +222,7 @@ export const getParsedV2Data = async (importedData: object | null = null): Promi
     return {
       presets,
       archives,
-      defaultPreset: null
+      defaultPreset: null,
     };
   }
   const profiles = data.global.profiles;
@@ -237,22 +244,26 @@ export const getParsedV2Data = async (importedData: object | null = null): Promi
       activation: autoActivate ? 'auto' : 'manual',
       nickname: profile.name,
       triggers: autoActivate
-        ? [{
-            caseSensitive: false,
-            property: 'channelId',
-            type: 'includes',
-            value: autoActivate.channelId
-          }, {
-            caseSensitive: false,
-            property: 'channelName',
-            type: 'includes',
-            value: autoActivate.channelName
-          }, {
-            caseSensitive: false,
-            property: 'channelHandle',
-            type: 'includes',
-            value: autoActivate.channelId
-          }]
+        ? [
+            {
+              caseSensitive: false,
+              property: 'channelId',
+              type: 'includes',
+              value: autoActivate.channelId,
+            },
+            {
+              caseSensitive: false,
+              property: 'channelName',
+              type: 'includes',
+              value: autoActivate.channelName,
+            },
+            {
+              caseSensitive: false,
+              property: 'channelHandle',
+              type: 'includes',
+              value: autoActivate.channelId,
+            },
+          ]
         : [],
       filters: profile.filters.map((f: any) => {
         switch (f.type) {
@@ -260,114 +271,131 @@ export const getParsedV2Data = async (importedData: object | null = null): Promi
             return {
               type: 'basic',
               // nickname: `${UNNAMED_FILTER} ${i + 1}`,
-              conditions: [{
-                caseSensitive: true,
-                invert: false,
-                property: 'message',
-                type: 'includes',
-                value: f.value
-              }],
+              conditions: [
+                {
+                  caseSensitive: true,
+                  invert: false,
+                  property: 'message',
+                  type: 'includes',
+                  value: f.value,
+                },
+              ],
               id: getRandomString(),
-              enabled: true
+              enabled: true,
             };
           }
           case 'author': {
             return {
               type: 'basic',
               // nickname: `${UNNAMED_FILTER} ${i + 1}`,
-              conditions: [{
-                caseSensitive: false,
-                invert: false,
-                property: 'authorName',
-                type: 'includes',
-                value: f.value
-              }],
+              conditions: [
+                {
+                  caseSensitive: false,
+                  invert: false,
+                  property: 'authorName',
+                  type: 'includes',
+                  value: f.value,
+                },
+              ],
               id: getRandomString(),
-              enabled: true
+              enabled: true,
             };
           }
           case 'isMember': {
             return {
               type: 'basic',
               // nickname: `${UNNAMED_FILTER} ${i + 1}`,
-              conditions: [{
-                type: 'boolean',
-                property: 'member',
-                invert: false
-              }],
+              conditions: [
+                {
+                  type: 'boolean',
+                  property: 'member',
+                  invert: false,
+                },
+              ],
               id: getRandomString(),
-              enabled: true
+              enabled: true,
             };
           }
           case 'isModerator': {
             return {
               type: 'basic',
               // nickname: `${UNNAMED_FILTER} ${i + 1}`,
-              conditions: [{
-                type: 'boolean',
-                property: 'moderator',
-                invert: false
-              }],
+              conditions: [
+                {
+                  type: 'boolean',
+                  property: 'moderator',
+                  invert: false,
+                },
+              ],
               id: getRandomString(),
-              enabled: true
+              enabled: true,
             };
           }
           case 'isOwner': {
             return {
               type: 'basic',
               // nickname: `${UNNAMED_FILTER} ${i + 1}`,
-              conditions: [{
-                type: 'boolean',
-                property: 'owner',
-                invert: false
-              }],
+              conditions: [
+                {
+                  type: 'boolean',
+                  property: 'owner',
+                  invert: false,
+                },
+              ],
               id: getRandomString(),
-              enabled: true
+              enabled: true,
             };
           }
           case 'isVerified': {
             return {
               type: 'basic',
               // nickname: `${UNNAMED_FILTER} ${i + 1}`,
-              conditions: [{
-                type: 'boolean',
-                property: 'verified',
-                invert: false
-              }],
+              conditions: [
+                {
+                  type: 'boolean',
+                  property: 'verified',
+                  invert: false,
+                },
+              ],
               id: getRandomString(),
-              enabled: true
+              enabled: true,
             };
           }
           case 'isSuperchat': {
             return {
               type: 'basic',
               // nickname: `${UNNAMED_FILTER} ${i + 1}`,
-              conditions: [{
-                type: 'boolean',
-                property: 'superchat',
-                invert: false
-              }],
+              conditions: [
+                {
+                  type: 'boolean',
+                  property: 'superchat',
+                  invert: false,
+                },
+              ],
               id: getRandomString(),
-              enabled: true
+              enabled: true,
             };
           }
-          default: { // case 'regex'
+          default: {
+            // case 'regex'
             return {
               type: 'basic',
               // nickname: `${UNNAMED_FILTER} ${i + 1}`,
-              conditions: [{
-                type: 'regex',
-                property: 'message',
-                invert: false,
-                value: f.value,
-                caseSensitive: true
-              }],
+              conditions: [
+                {
+                  type: 'regex',
+                  property: 'message',
+                  invert: false,
+                  value: f.value,
+                  caseSensitive: true,
+                },
+              ],
               id: getRandomString(),
-              enabled: true
+              enabled: true,
             };
           }
         }
-      })
+      }),
     });
   }
   const archiveKeys = Object.keys(data.videoSettings);
@@ -383,19 +411,19 @@ export const getParsedV2Data = async (importedData: object | null = null): Promi
             name: message.author,
             profileIcon: {
               alt: message.author,
-              src: 'https://www.youtube.com/s/desktop/339bae71/img/favicon_48x48.png'
+              src: 'https://www.youtube.com/s/desktop/339bae71/img/favicon_48x48.png',
             },
-            types: ['moderator', 'owner', 'verified', 'member'].filter(item => message[item]),
+            types: ['moderator', 'owner', 'verified', 'member'].filter((item) => message[item]),
             customBadge: {
               alt: message.author,
-              src: message.badgeUrl
-            }
+              src: message.badgeUrl,
+            },
           },
           message: parsedRuns,
           messageId: message.id,
           showtime: 0,
-          timestamp: message.timestamp
-        }
+          timestamp: message.timestamp,
+        },
       });
     }
     archives.push({
@@ -404,23 +432,23 @@ export const getParsedV2Data = async (importedData: object | null = null): Promi
         channel: {
           channelId: data.videoSettings[key].channelId,
           name: data.videoSettings[key].channelName,
-          handle: data.videoSettings[key].channelId
+          handle: data.videoSettings[key].channelId,
         },
         video: {
           videoId: data.videoSettings[key].id,
-          title: data.videoSettings[key].name
-        }
+          title: data.videoSettings[key].name,
+        },
       },
       key: getRandomString(),
       lastEdited: new Date(data.videoSettings[key].lastViewed).getTime(),
       nickname: '',
       presetId: '',
       size: messageList.length,
-      actions: parsedMessageActions
+      actions: parsedMessageActions,
     });
   }
   // if presets contains one with id "staff", move it to the front
-  const staffPreset = presets.find(p => p.id === 'staff');
+  const staffPreset = presets.find((p) => p.id === 'staff');
   if (staffPreset) {
     presets.splice(presets.indexOf(staffPreset), 1);
     presets.unshift(staffPreset);
@@ -428,20 +456,21 @@ export const getParsedV2Data = async (importedData: object | null = null): Promi
   return {
     presets,
     archives,
-    defaultPreset: data.global.globalDefault
+    defaultPreset: data.global.globalDefault,
   };
 };
 
 const MESSAGE_ACTION_PREFIX = 'ytcf.savedMessageActions.';
-const keyGen = (key: string, dataType: 'actions' | 'info' = 'actions'): string => dataType === 'info' ? `${YTCF_MESSAGEDUMPINFOS_KEY}.${key}` : `${MESSAGE_ACTION_PREFIX}${dataType}.${key}`;
+const keyGen = (key: string, dataType: 'actions' | 'info' = 'actions'): string =>
+  dataType === 'info' ? `${YTCF_MESSAGEDUMPINFOS_KEY}.${key}` : `${MESSAGE_ACTION_PREFIX}${dataType}.${key}`;
 
 export const clearV2Storage = async (): Promise<void> => {
   return await browserObject.storage.local.remove('@@vwe-persistence');
 };
 
 export const migrateV2toV3 = async (
-  what: { presetsAndFilters: boolean, archives: boolean },
-  importedData: object | null = null
+  what: { presetsAndFilters: boolean; archives: boolean },
+  importedData: object | null = null,
 ): Promise<void> => {
   const { presets, archives, defaultPreset } = await getParsedV2Data(importedData);
   await clearV2Storage();
@@ -452,25 +481,27 @@ export const migrateV2toV3 = async (
   }
   if (what.archives) {
     const messageDumpInfosData: { [key: string]: YtcF.MessageDumpInfoItem } = {};
-    await Promise.all(archives.map(async archive => {
-      const actions = archive.actions;
-      delete (archive as any).actions;
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      messageDumpInfosData[archive.key] = archive;
-      // const actionsStore = stores.addSyncStore(keyGen(archive.key, 'actions'), actions, false);
-      // await actionsStore.ready();
-      // // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      // await actionsStore.set(actions);
-      await browserObject.storage.local.set({
-        [keyGen(archive.key, 'actions')]: actions
-      });
-    }));
+    await Promise.all(
+      archives.map(async (archive) => {
+        const actions = archive.actions;
+        delete (archive as any).actions;
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        messageDumpInfosData[archive.key] = archive;
+        // const actionsStore = stores.addSyncStore(keyGen(archive.key, 'actions'), actions, false);
+        // await actionsStore.ready();
+        // // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        // await actionsStore.set(actions);
+        await browserObject.storage.local.set({
+          [keyGen(archive.key, 'actions')]: actions,
+        });
+      }),
+    );
     // browserObject.storage.local.set({
     //   [YTCF_MESSAGEDUMPINFOS_KEY]: messageDumpInfosData
     // });
-    Object.keys(messageDumpInfosData).forEach(key => {
+    Object.keys(messageDumpInfosData).forEach((key) => {
       browserObject.storage.local.set({
-        [keyGen(key, 'info')]: messageDumpInfosData[key]
+        [keyGen(key, 'info')]: messageDumpInfosData[key],
       });
     });
   }
@@ -479,9 +510,7 @@ export const migrateV2toV3 = async (
   await currentStorageVersion.set('v3');
 };
 
-export const getSavedMessageDump = async (
-  key: string
-): Promise<YtcF.MessageDumpActionsItem | undefined> => {
+export const getSavedMessageDump = async (key: string): Promise<YtcF.MessageDumpActionsItem | undefined> => {
   const k = keyGen(key, 'actions');
   // const s = stores.addSyncStore(k, undefined as YtcF.MessageDumpActionsItem | undefined, false);
   // await s.ready();
@@ -489,39 +518,37 @@ export const getSavedMessageDump = async (
   return (await browserObject.storage.local.get(k))[k];
 };
 
-export const getSavedMessageDumpInfo = async (
-  key: string
-): Promise<YtcF.MessageDumpInfoItem> => {
+export const getSavedMessageDumpInfo = async (key: string): Promise<YtcF.MessageDumpInfoItem> => {
   const storageKey = keyGen(key, 'info');
   const data = (await browserObject.storage.local.get(storageKey))[storageKey];
-  return data || {
-    continuation: [],
-    info: {
-      channel: {
-        channelId: '',
-        name: '',
-        handle: ''
+  return (
+    data || {
+      continuation: [],
+      info: {
+        channel: {
+          channelId: '',
+          name: '',
+          handle: '',
+        },
+        video: {
+          videoId: '',
+          title: '',
+        },
       },
-      video: {
-        videoId: '',
-        title: ''
-      }
-    },
-    key,
-    lastEdited: new Date().getTime(),
-    nickname: '',
-    presetId: '',
-    size: 0
-  };
+      key,
+      lastEdited: new Date().getTime(),
+      nickname: '',
+      presetId: '',
+      size: 0,
+    }
+  );
 };
 
-export const getSavedMessageDumpExportItem = async (
-  key: string
-): Promise<YtcF.MessageDump> => {
+export const getSavedMessageDumpExportItem = async (key: string): Promise<YtcF.MessageDump> => {
   const info = await getSavedMessageDumpInfo(key);
   const emptyItem = {
     version: '3',
-    dumps: []
+    dumps: [],
   };
   if (!(info as any)) {
     return emptyItem;
@@ -536,26 +563,23 @@ export const getSavedMessageDumpExportItem = async (
   }
   return {
     ...emptyItem,
-    dumps: [{
-      ...info,
-      actions
-    }]
+    dumps: [
+      {
+        ...info,
+        actions,
+      },
+    ],
   };
 };
 
-export const saveMessageDumpInfo = async (
-  key: string,
-  info: YtcF.MessageDumpInfoItem
-): Promise<void> => {
+export const saveMessageDumpInfo = async (key: string, info: YtcF.MessageDumpInfoItem): Promise<void> => {
   const storageKey = keyGen(key, 'info');
   await browserObject.storage.local.set({
-    [storageKey]: info
+    [storageKey]: info,
   });
 };
 
-export const getSavedMessageDumpActions = async (
-  key: string
-): Promise<YtcF.MessageDumpActionsItem | undefined> => {
+export const getSavedMessageDumpActions = async (key: string): Promise<YtcF.MessageDumpActionsItem | undefined> => {
   const k = keyGen(key, 'actions');
   // const s = stores.addSyncStore(k, undefined as YtcF.MessageDumpActionsItem | undefined, false);
   // await s.ready();
@@ -568,23 +592,21 @@ export const saveMessageActions = async (
   continuation: string | null,
   info: SimpleVideoInfo | undefined | null,
   actions: Chat.MessageAction[],
-  presetId: string
+  presetId: string,
 ): Promise<void> => {
   const lastObj = await getSavedMessageDumpInfo(key);
   const obj: YtcF.MessageDumpInfoItem = {
-    continuation: (
-      continuation === null ||
-      lastObj.continuation?.includes(continuation)
+    continuation:
+      continuation === null || lastObj.continuation?.includes(continuation)
         ? lastObj.continuation
-        : [...(lastObj.continuation as any || []), continuation]
-    ),
+        : [...((lastObj.continuation as any) || []), continuation],
     info: mergeVideoInfoObjs(lastObj?.info, info),
     key,
     presetId,
     lastEdited: Date.now(),
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions, @typescript-eslint/prefer-nullish-coalescing
     nickname: lastObj.nickname || '',
-    size: actions.length
+    size: actions.length,
   };
   await saveMessageDumpInfo(key, obj);
   // const actionsStore = stores.addSyncStore(keyGen(key, 'actions'), actions, false);
@@ -592,25 +614,25 @@ export const saveMessageActions = async (
   // // eslint-disable-next-line @typescript-eslint/no-floating-promises
   // await actionsStore.set(actions);
   await browserObject.storage.local.set({
-    [keyGen(key, 'actions')]: actions
+    [keyGen(key, 'actions')]: actions,
   });
 };
 
 export const mergeVideoInfoObjs = (
   lastObj: SimpleVideoInfo | null | undefined,
-  newObj: SimpleVideoInfo | null | undefined
+  newObj: SimpleVideoInfo | null | undefined,
 ): SimpleVideoInfo => {
   return {
     channel: {
       channelId: newObj?.channel?.channelId ?? lastObj?.channel?.channelId ?? '',
       name: newObj?.channel?.name ?? lastObj?.channel?.name ?? '',
-      handle: newObj?.channel?.handle ?? lastObj?.channel?.handle ?? ''
+      handle: newObj?.channel?.handle ?? lastObj?.channel?.handle ?? '',
     },
     video: {
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions, @typescript-eslint/prefer-nullish-coalescing
+      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions, @typescript-eslint/prefer-nullish-coalescing
       videoId: newObj?.video.videoId || lastObj?.video.videoId || '',
-      title: newObj?.video.title ?? lastObj?.video.title ?? ''
-    }
+      title: newObj?.video.title ?? lastObj?.video.title ?? '',
+    },
   };
 };
 
@@ -621,7 +643,7 @@ export const deleteSavedMessageActions = async (key: string): Promise<void> => {
 export const findSavedMessageActionKey = async (
   continuation: string | null,
   info: SimpleVideoInfo | null,
-  autoClearDurationObject: YtcF.AutoClearDurationObject
+  autoClearDurationObject: YtcF.AutoClearDurationObject,
 ): Promise<string | null> => {
   // return await new Promise((resolve) => {
   //   chrome.storage.local.get(null, (s) => {
@@ -645,8 +667,10 @@ export const findSavedMessageActionKey = async (
       dump.lastEdited < Date.now() - convertDurationObjectToMs(autoClearDurationObject)
     ) {
       await deleteSavedMessageActions(dump.key);
-    } else if ((continuation != null && continuation && dump.continuation.includes(continuation)) ||
-      (info?.video != null && dump.info?.video?.videoId === info.video.videoId && info.video.videoId)) {
+    } else if (
+      (continuation != null && continuation && dump.continuation.includes(continuation)) ||
+      (info?.video != null && dump.info?.video?.videoId === info.video.videoId && info.video.videoId)
+    ) {
       // return dump.key;
       returnValue = dump.key;
     }
@@ -657,7 +681,9 @@ export const findSavedMessageActionKey = async (
 
 export const getAllMessageDumpInfoItems = async (): Promise<YtcF.MessageDumpInfoItem[]> => {
   const data = await chrome.storage.local.get(null);
-  return Object.keys(data).filter(s => s.startsWith(YTCF_MESSAGEDUMPINFOS_KEY)).map((key) => data[key]);
+  return Object.keys(data)
+    .filter((s) => s.startsWith(YTCF_MESSAGEDUMPINFOS_KEY))
+    .map((key) => data[key]);
 };
 
 const getTitle = (obj: YtcF.MessageDumpExportItem | undefined): string => {
@@ -703,12 +729,15 @@ export const downloadV2Data = async (): Promise<void> => {
 export const downloadAsTxt = async (item: YtcF.MessageDumpInfoItem): Promise<void> => {
   const obj = (await getSavedMessageDumpExportItem(item.key)).dumps[0];
   const title = getTitle(obj);
-  const str = obj?.actions.map(action => {
-    const msg = action.message;
-    const author = msg.author.name;
-    const message = stringifyRuns(msg.message);
-    return `[${msg.timestamp}] ${author}: ${message}`;
-  }).join('\n') ?? '';
+  const str =
+    obj?.actions
+      .map((action) => {
+        const msg = action.message;
+        const author = msg.author.name;
+        const message = stringifyRuns(msg.message);
+        return `[${msg.timestamp}] ${author}: ${message}`;
+      })
+      .join('\n') ?? '';
   const a = document.createElement('a');
   a.href = `data:text/plain;charset=utf-8,${encodeURIComponent(str)}`;
   a.download = `${title}.txt`;
@@ -746,7 +775,7 @@ export const redirectIfInitialSetup = async (): Promise<boolean> => {
     const query = window.location.search;
     const params = new URLSearchParams(query);
     params.set('referrer', window.location.href);
-    window.location.href = chrome.runtime.getURL(`${(isLiveTL ? 'ytcfilter' : '')}/setup.html?${params.toString()}`);
+    window.location.href = chrome.runtime.getURL(`${isLiveTL ? 'ytcfilter' : ''}/setup.html?${params.toString()}`);
     return true;
   } else {
     await currentStorageVersion.set('v3');
@@ -797,13 +826,7 @@ export const importJsonDump = async (): Promise<string | undefined> => {
     const itemClone = JSON.parse(JSON.stringify(item));
     delete itemClone.actions;
     await saveMessageDumpInfo(item.key, itemClone);
-    await saveMessageActions(
-      item.key,
-      item.continuation,
-      item.info,
-      item.actions,
-      item.presetId
-    );
+    await saveMessageActions(item.key, item.continuation, item.info, item.actions, item.presetId);
     return item.key;
   }
 };

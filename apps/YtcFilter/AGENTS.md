@@ -104,6 +104,7 @@ Paths and commands in this file are relative to `apps/YtcFilter` unless noted ot
 
 ```md
 ## Here's what's new in vX.Y.Z:
+
 - fix visual conflicts w/ YT
 ```
 
