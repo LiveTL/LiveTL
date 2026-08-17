@@ -5,11 +5,13 @@
 [Chrome Web Store](https://chrome.google.com/webstore/detail/ytcfilter/mnldnbhgfocmkehnlkeanlhfmopepnko)
 <!-- [Firefox](https://addons.mozilla.org/en-US/firefox/addon/ytcfilter/) -->
 
-Release packages are also available [on GitHub](https://github.com/LiveTL/ytcfilter/releases).
+Release packages are also available
+[on GitHub](https://github.com/LiveTL/LiveTL/releases).
 
 ## Building from Source
 
-YtcFilter lives in `apps/YtcFilter` in the LiveTL monorepo.
+YtcFilter lives in `apps/YtcFilter` in the LiveTL monorepo and builds from the
+root release workflow.
 
 ### Development
 

@@ -2,13 +2,18 @@
 
 ## Scope
 
-- This npm workspace builds LiveTL from `apps/LiveTL` and standalone HyperChat
-  from `apps/HyperChat`.
+- This npm workspace builds LiveTL from `apps/LiveTL`, standalone HyperChat
+  from `apps/HyperChat`, and YtcFilter from `apps/YtcFilter`.
 - LiveTL bundles the shared HyperChat source directly from `apps/HyperChat`.
+- YtcFilter carries an adapted chat runtime in its own workspace. When shared
+  HyperChat runtime behavior changes and applies to YtcFilter, port or merge it
+  into `apps/YtcFilter` explicitly.
 - Keep HyperChat implementation details in HyperChat docs. Do not duplicate
   full HyperChat internals here.
 - For chat internals and architecture, start with `apps/HyperChat/README.md` and
   `apps/HyperChat/AGENTS.md`.
+- For YtcFilter-specific behavior, start with `apps/YtcFilter/README.md` and
+  `apps/YtcFilter/AGENTS.md`.
 
 ## Branch Discipline (Mandatory)
 
@@ -19,8 +24,9 @@
 - `release` is a legacy rollback branch, not a development or packaging branch.
 - MV2 and MV3 are build targets from the same source, not separate source
   branches. Do not restore the old `develop -> mv3-fr -> release` sync ladder.
-- Changes under `apps/HyperChat` affect both standalone HyperChat and LiveTL;
-  verify both applications before merging them to `main`.
+- Changes under `apps/HyperChat` affect both standalone HyperChat and LiveTL.
+  If the same runtime change applies to YtcFilter, port or merge it before
+  release. Verify every affected application before merging to `main`.
 
 ## House Style
 
@@ -46,6 +52,8 @@
   - LiveTL owns its UI, player wiring, translation aggregation,
     browser-specific manifest/runtime seams, packaging, and release automation.
   - HyperChat owns chat parsing, rendering, actions, and shared chat behavior.
+  - YtcFilter owns filters, presets, triggers, archives, setup, settings, and
+    its adapted filtered-chat runtime.
 - Keep MV-specific behavior at the manifest or numeric `__MV__` seam; do not
   fork general feature modules by manifest version.
 - Firefox MV3 cannot perform LiveTL's blocking response-header rewrite to strip
@@ -58,6 +66,13 @@
   modules under `apps/LiveTL/src/hyperchat`.
 - `__LIVETL__` is `true` for LiveTL bundles and `false` for standalone
   HyperChat bundles. Keep all other shared behavior in `apps/HyperChat`.
+
+## YtcFilter Workspace Mapping
+
+- YtcFilter builds from `apps/YtcFilter`; it does not import HyperChat at build
+  time.
+- Preserve HyperChat ancestry when carrying shared runtime fixes into YtcFilter,
+  but resolve conflicts as an adapted YtcFilter port.
 
 ## Branch Switch Hygiene
 
@@ -81,11 +96,21 @@ runnable and declare new generated outputs and output-affecting environment
 variables in `turbo.json`. Local cache data lives in ignored `.turbo`
 directories; remote caching is not configured.
 
+The root LiveTL shortcuts build these targets:
+
 | Target      | Build                   | Watch                 | Output                      | Release status  |
 | ----------- | ----------------------- | --------------------- | --------------------------- | --------------- |
 | Chrome MV3  | `npm run build:chrome`  | `npm run dev:chrome`  | `apps/LiveTL/build/chrome`  | Published       |
 | Firefox MV3 | `npm run build:firefox` | `npm run dev:firefox` | `apps/LiveTL/build/firefox` | Validation-only |
 | Firefox MV2 | `npm run build:mv2`     | `npm run dev:mv2`     | `apps/LiveTL/build/mv2`     | Published       |
+
+Product-specific root build aliases:
+
+| Product   | Command                   | Published archives                              |
+| --------- | ------------------------- | ----------------------------------------------- |
+| LiveTL    | `npm run build:livetl`    | `LiveTL-Chrome.zip`, `LiveTL-Firefox-mv2.xpi`   |
+| HyperChat | `npm run build:hyperchat` | `HyperChat-Chrome.zip`, `HyperChat-Firefox.xpi` |
+| YtcFilter | `npm run build:ytcfilter` | `YtcFilter-Chrome.zip`, `YtcFilter-Firefox.xpi` |
 
 `VERSION=0.0.0 npm run build` typechecks, builds, verifies, and packages all
 targets. The published archives are created in the application build directories.

@@ -27,7 +27,7 @@ npm run start # watch Chrome MV3
 npm run dev:firefox # watch Firefox MV3
 npm run dev:mv2 # watch Firefox MV2
 
-VERSION=0.0.0 npm run build # build, verify, and package all six targets
+VERSION=0.0.0 npm run build -w @livetl/livetl # build, verify, and package LiveTL targets
 
 npm run test # jest
 npm run test:watch # autotest
