@@ -1,10 +1,11 @@
 {
-  "name": "YtcFilter",
-  "version": "69.42.0",
+  "name": "@livetl/ytcfilter",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
-    "typecheck": "tsc --noEmit",
-    "build": "npm run typecheck && npm-run-all --parallel build:chrome build:firefox",
+    "type:check": "tsc --noEmit",
+    "build": "npm run type:check && npm-run-all --parallel build:chrome build:firefox",
+    "build:all": "npm run build",
     "build:chrome": "cross-env BROWSER=chrome vite build",
     "build:firefox": "cross-env BROWSER=firefox vite build",
     "dev:chrome": "cross-env MINIFY=false BROWSER=chrome vite build --watch",
@@ -13,16 +14,17 @@
     "start:firefox": "cross-env AUTOLAUNCH=true npm run dev:firefox",
     "lint": "npm run lint:check -- --fix",
     "lint:check": "eslint src --max-warnings=0",
-    "postinstall": "patch-package"
+    "test": "echo \"TODO: add YtcFilter tests\""
   },
   "dependencies": {
     "@livetl/svelte-webext-stores": "^0.0.14",
+    "@livetl/ui": "*",
     "@mdi/js": "^6.5.95",
-    "iframe-translator": "^0.3.8",
+    "iframe-translator": "0.3.8",
     "is-dark-color": "^1.2.0",
     "sha-1": "^1.0.0",
     "smelte": "^1.1.8",
-    "svelte": "^3.49.0",
+    "svelte": "3.59.2",
     "tailwindcss": "^2.2.7"
   },
   "devDependencies": {
@@ -34,19 +36,11 @@
     "cross-env": "^7.0.3",
     "cssnano": "^5.0.7",
     "download": "8.0.0",
-    "eslint": "7",
     "eslint-config-standard-with-typescript": "^43.0.1",
-    "eslint-plugin-import": "2",
-    "eslint-plugin-node": "11",
-    "eslint-plugin-promise": "4",
-    "eslint-plugin-svelte3": "^3.2.0",
     "exio": "^0.6.54",
     "express": "4.17.3",
     "html2canvas": "^1.4.1",
-    "iframe-translator": "^0.3.8",
-    "is-dark-color": "^1.2.0",
     "npm-run-all": "^4.1.5",
-    "patch-package": "^8.0.0",
     "postcss": "^8.5.10",
     "postcss-extend": "^1.0.5",
     "postcss-import": "^14.0.2",
@@ -57,15 +51,11 @@
     "rollup-plugin-copy": "^3.4.0",
     "safe-compare": "1.1.4",
     "sanitize-filename": "^1.6.3",
-    "sha-1": "^1.0.0",
-    "smelte": "^1.1.8",
-    "svelte": "^3.49.0",
     "svelte-check": "^2.8.0",
     "svelte-preprocess": "^4.7.4",
     "terser": "^5.19.2",
-    "typescript": "4.3.5",
+    "typescript": "4.7.4",
     "vite": "2.9.16",
-    "vite-plugin-web-extension": "^1.4.0",
-    "vite-plugin-zip-pack": "1.0.7"
+    "vite-plugin-web-extension": "^1.4.0"
   }
 }
