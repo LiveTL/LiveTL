@@ -17,7 +17,9 @@ published.
 release assembly.
 
 LiveTL and standalone HyperChat compile the same source from `apps/HyperChat`.
-Do not select different HyperChat or LiveTL source per browser.
+YtcFilter builds from `apps/YtcFilter`; when a HyperChat runtime fix applies to
+YtcFilter, carry it into that workspace before tagging. Do not select different
+source per browser for any product.
 
 ## Pre-release verification
 
@@ -43,21 +45,25 @@ archives to use the same `X.Y.Z`.
 
 ## Artifact parity
 
-HyperChat does not yet have an automated test suite, so its build output is an
-important regression oracle. For changes expected not to affect shipped code,
-capture the two published HyperChat archives before the change and compare
-their entries byte-for-byte afterward; matching file names and sizes are not
-enough to catch same-size changes.
+HyperChat and YtcFilter do not yet have automated test suites, so their build
+outputs are important regression oracles. For changes expected not to affect
+shipped code, capture the published archives before the change and compare their
+entries byte-for-byte afterward; matching file names and sizes are not enough to
+catch same-size changes.
 
 ```bash
 python3 -c "
 import zipfile
-for name in ['HyperChat-Chrome.zip', 'HyperChat-Firefox.xpi']:
-    before = zipfile.ZipFile('/tmp/golden/' + name)
-    after = zipfile.ZipFile('apps/HyperChat/build/' + name)
-    names = sorted(set(before.namelist()) | set(after.namelist()))
-    changed = [n for n in names if n not in before.namelist() or n not in after.namelist() or before.read(n) != after.read(n)]
-    print(name, changed or 'all bytes match')
+for app, archives in {
+    'HyperChat': ['HyperChat-Chrome.zip', 'HyperChat-Firefox.xpi'],
+    'YtcFilter': ['YtcFilter-Chrome.zip', 'YtcFilter-Firefox.xpi'],
+}.items():
+    for name in archives:
+        before = zipfile.ZipFile('/tmp/golden/' + name)
+        after = zipfile.ZipFile('apps/' + app + '/build/' + name)
+        entries = sorted(set(before.namelist()) | set(after.namelist()))
+        changed = [n for n in entries if n not in before.namelist() or n not in after.namelist() or before.read(n) != after.read(n)]
+        print(app, name, changed or 'all bytes match')
 "
 ```
 

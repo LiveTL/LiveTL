@@ -46,7 +46,7 @@ on this [Discord server](https://discord.gg/uJrV3tmthg).**
 3. Switch to the maintained branch (`git switch main`)
 4. Install dependencies (`npm ci`)
 
-   Congratulations, you should now be running a local environment for LiveTL!
+   Congratulations, you should now be running a local environment for the LiveTL monorepo!
 
 ## Starting up a local development environment
 
@@ -62,6 +62,8 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 - `npm run dev:mv2` watches the Firefox MV2 build
 - `VERSION=0.0.0 npm run build` builds, verifies, and packages every target
 - `npm run test:watch` will run the tests in watch mode
+- These root dev commands target LiveTL by default. For standalone HyperChat or
+  YtcFilter commands, use the app README.
 - In Firefox, use `about:debugging` to load `apps/LiveTL/build/firefox` or
   `apps/LiveTL/build/mv2`.
 - In Chromium-based browsers, load `apps/LiveTL/build/chrome` as an unpacked
@@ -81,9 +83,11 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 ├── apps\
 │ ├── HyperChat - standalone HyperChat extension\
 │ │ └── src - chat parsing, rendering, actions, and shared chat behavior\
+│ ├── YtcFilter - standalone filtered chat extension\
+│ │ └── src - filters, presets, archives, settings, and filtered chat runtime\
 │ └── LiveTL\
 │ ├── build - browser targets and release archives\
-│ ├── e2e - python selenium tests\
+│ ├── e2e - python browser tests\
 │ ├── img - images used in LiveTL README and docs\
 │ └── src\
 │   ├── changelogs - changelog components\

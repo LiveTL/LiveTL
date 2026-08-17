@@ -16,7 +16,8 @@ Paths and commands in this file are relative to `apps/YtcFilter` unless noted ot
 
 ## Runtime Sync Model
 
-- If a fix belongs to shared chat runtime behavior, land it in the source app first, then port/merge it into YTCF.
+- If a fix belongs to shared chat runtime behavior that is maintained in
+  HyperChat, land it there first, then port or merge it into YTCF.
 - Prefer proper merge/subtree history when the user asks for ancestry.
 - Resolve conflicts in YTCF terms:
   - keep YTCF filters, presets, triggers, archives, setup, settings, and panel controls

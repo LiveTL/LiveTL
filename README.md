@@ -1,7 +1,8 @@
 # LiveTL Monorepo
 
-This repository contains both [the LiveTL translation extension](./apps/LiveTL) and
-[the standalone HyperChat extension](./apps/HyperChat).
+This repository contains [the LiveTL translation extension](./apps/LiveTL),
+[the standalone HyperChat extension](./apps/HyperChat), and
+[YtcFilter](./apps/YtcFilter).
 
 [![Build](https://github.com/LiveTL/LiveTL/actions/workflows/build.yml/badge.svg)](https://github.com/LiveTL/LiveTL/actions/workflows/build.yml)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
@@ -22,14 +23,14 @@ submit a Pull Request!
 
 ## Development
 
-Both extensions are maintained on `main`. Each application produces Chrome
-MV3, Firefox MV3, and Firefox MV2 builds; manifest versions are build targets,
-not separate source branches.
+All three extensions are maintained on `main`. Manifest versions are build
+targets, not separate source branches.
 
 Refer to the specific READMEs for details:
 
 - [LiveTL](apps/LiveTL/README.md)
 - [HyperChat](apps/HyperChat/README.md)
+- [YtcFilter](apps/YtcFilter/README.md)
 
 ## Developers
 
