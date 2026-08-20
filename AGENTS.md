@@ -211,9 +211,10 @@ KEEP_OPEN=1 bash apps/LiveTL/scripts/codex-dev.sh go-test
 ## Release Process and Versioning
 
 - Full release choreography lives in `AGENT_RELEASE.md`.
-- Release tags are created on `main`.
+- GitHub Releases are published from tags on `main`.
 - The tag version is supplied to every target through `VERSION`; local builds
   fall back to `src/manifest.json`.
-- Release automation uploads `LiveTL-Chrome.zip`, `LiveTL-Firefox-mv2.xpi`,
-  `HyperChat-Chrome.zip`, `HyperChat-Firefox.xpi`, `YtcFilter-Chrome.zip`, and
-  `YtcFilter-Firefox.xpi`.
+- Release automation uploads the archives for the matching release tag:
+  `LiveTL-Chrome.zip` and `LiveTL-Firefox-mv2.xpi`,
+  `HyperChat-Chrome.zip` and `HyperChat-Firefox.xpi`, or
+  `YtcFilter-Chrome.zip` and `YtcFilter-Firefox.xpi`.

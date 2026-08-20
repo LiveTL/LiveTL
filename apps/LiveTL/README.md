@@ -10,7 +10,8 @@ LiveTL maintains one implementation on `main`. That branch produces Chrome
 MV3, Firefox MV3, and Firefox MV2 builds; manifest versions are build targets,
 not separate source branches.
 
-The LiveTL release workflow builds from tags in the format `livetl-vX.Y.Z`.
+The LiveTL release workflow runs when a GitHub Release is published with a tag
+in the format `livetl-vX.Y.Z`.
 
 ### Setup
 

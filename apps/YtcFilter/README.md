@@ -10,8 +10,9 @@ Release packages are also available
 
 ## Building from Source
 
-YtcFilter lives in `apps/YtcFilter` in the LiveTL monorepo and builds from the
-YtcFilter release workflow.
+YtcFilter lives in `apps/YtcFilter` in the LiveTL monorepo. Its release workflow
+runs when a GitHub Release is published with a tag in the format
+`ytcfilter-vX.Y.Z`.
 
 ### Development
 

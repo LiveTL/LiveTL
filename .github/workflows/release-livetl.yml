@@ -6,12 +6,12 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Existing LiveTL release tag to rebuild
+        description: Published LiveTL release tag to rebuild
         required: true
         type: string
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.release.tag_name || inputs.tag || github.ref }}
   cancel-in-progress: true
 
 permissions:
