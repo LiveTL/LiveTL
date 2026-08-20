@@ -1,8 +1,7 @@
 <script>
   import ExpandingCard from '../common/ExpandingCard.svelte';
-  import HCChangelogs from '@hyperchat/components/changelog/Changelog.svelte';
 </script>
 
-<ExpandingCard title="New HyperChat features" icon="chat">
-  <HCChangelogs />
+<ExpandingCard title="LiveTL, HC, YtcF codebases unified!" icon="merge_type">
+  LiveTL, HyperChat, and YtcFilter now share one codebase and release flow.
 </ExpandingCard>
