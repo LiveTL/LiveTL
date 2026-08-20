@@ -30,6 +30,13 @@ Release tags and matching workflows:
 | HyperChat | `hyperchat-vX.Y.Z` | `.github/workflows/release-hyperchat.yml` | `VERSION=X.Y.Z npm run build:hyperchat` |
 | YtcFilter | `ytcfilter-vX.Y.Z` | `.github/workflows/release-ytcfilter.yml` | `VERSION=X.Y.Z npm run build:ytcfilter` |
 
+Prerelease tags use the same prefixes with a suffix, such as
+`livetl-v10.0.0-beta1`, `hyperchat-v4.0.0-beta1`, or
+`ytcfilter-v4.0.0-beta1`. The GitHub Release keeps the full prerelease tag, but
+the release workflows strip both the extension prefix and any suffix after `-`
+before setting `VERSION`, so the built extension manifests use `10.0.0`,
+`4.0.0`, and `4.0.0` for those examples.
+
 ## Pre-release verification
 
 From the exact `main` commit the release tag will point at, run the shared
