@@ -48,8 +48,8 @@ npm run start:firefox -w @livetl/hyperchat # watch + open Firefox
 
 ### Building for Production
 
-The HyperChat release workflow builds from tags in the format
-`hyperchat-vX.Y.Z`.
+The HyperChat release workflow runs when a GitHub Release is published with a
+tag in the format `hyperchat-vX.Y.Z`.
 
 To simulate the build:
 
