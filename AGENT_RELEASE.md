@@ -2,7 +2,8 @@
 
 ## Sources and release assets
 
-Each extension release comes from one tagged commit on `main`:
+Each extension release comes from one GitHub Release on one tag pointing at
+`main`:
 
 - `apps/LiveTL/build/LiveTL-Chrome.zip`: Chrome MV3 from `apps/LiveTL/build/chrome`
 - `apps/LiveTL/build/LiveTL-Firefox-mv2.xpi`: Firefox MV2 from `apps/LiveTL/build/mv2`
@@ -18,10 +19,10 @@ release assembly.
 
 LiveTL and standalone HyperChat compile the same source from `apps/HyperChat`.
 YtcFilter builds from `apps/YtcFilter`; when a HyperChat runtime fix applies to
-YtcFilter, carry it into that workspace before tagging. Do not select different
+YtcFilter, carry it into that workspace before release. Do not select different
 source per browser for an extension release.
 
-Release tags and workflows:
+Release tags and matching workflows:
 
 | Extension | Tags               | Workflow                                  | Build command                           |
 | --------- | ------------------ | ----------------------------------------- | --------------------------------------- |
@@ -31,7 +32,8 @@ Release tags and workflows:
 
 ## Pre-release verification
 
-From the exact `main` commit to tag, run the shared checks:
+From the exact `main` commit the release tag will point at, run the shared
+checks:
 
 ```bash
 npm ci
@@ -92,22 +94,30 @@ stale or different dependency trees invalidate the baseline.
 
 ## Publish
 
-Create the release tag on the verified `main` commit, push it, then publish the
-matching GitHub Release:
+Publish one GitHub Release for each extension being released. The release body
+is the public update text for that extension, so do not replace this with a tag
+push as the normal release path.
+
+In the GitHub UI:
+
+1. Draft a new release.
+2. Choose or create the matching tag on the verified `main` commit.
+3. Fill in that extension's release title and notes.
+4. Publish the release.
+
+CLI equivalent:
 
 ```bash
 git switch main
 git pull --ff-only
-git tag livetl-vX.Y.Z
-git push origin livetl-vX.Y.Z
-git tag hyperchat-vX.Y.Z
-git push origin hyperchat-vX.Y.Z
-git tag ytcfilter-vX.Y.Z
-git push origin ytcfilter-vX.Y.Z
+SHA="$(git rev-parse HEAD)"
+gh release create livetl-vX.Y.Z --target "$SHA" --title "LiveTL vX.Y.Z" --notes-file livetl-notes.md
+gh release create hyperchat-vX.Y.Z --target "$SHA" --title "HyperChat vX.Y.Z" --notes-file hyperchat-notes.md
+gh release create ytcfilter-vX.Y.Z --target "$SHA" --title "YtcFilter vX.Y.Z" --notes-file ytcfilter-notes.md
 ```
 
-Publishing the GitHub Release triggers the matching release workflow. It checks
-out that tag, strips the extension prefix, strips any prerelease suffix to derive
-`VERSION`, builds that extension, and uploads only that extension's release
-assets. Each release workflow can be rerun manually with the existing release
-tag as its `tag` input.
+Run only the commands for the extensions being released. Publishing a release
+triggers the matching release workflow. It checks out that tag, strips the
+extension prefix, strips any prerelease suffix to derive `VERSION`, builds that
+extension, and uploads only that extension's release assets. Each release
+workflow can be rerun manually with the existing release tag as its `tag` input.
