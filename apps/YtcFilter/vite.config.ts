@@ -64,7 +64,7 @@ export default defineConfig({
     zipPack({
       inDir: buildDir,
       outDir: 'build',
-      outFileName: `YtcFilter-${browser === 'chrome' ? 'Chrome.zip' : 'Firefox.xpi'}`,
+      outFileName: `YtcFilter-${browser === 'chrome' ? 'Chrome' : 'Firefox'}.zip`,
     }),
   ],
 });

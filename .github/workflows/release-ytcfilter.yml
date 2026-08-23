@@ -71,7 +71,7 @@ jobs:
         uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # v2.11.5
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: apps/YtcFilter/build/YtcFilter-Firefox.xpi
-          asset_name: YtcFilter-Firefox.xpi
+          file: apps/YtcFilter/build/YtcFilter-Firefox.zip
+          asset_name: YtcFilter-Firefox.zip
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true

@@ -71,7 +71,7 @@ jobs:
         uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # v2.11.5
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: apps/HyperChat/build/HyperChat-Firefox.xpi
-          asset_name: HyperChat-Firefox.xpi
+          file: apps/HyperChat/build/HyperChat-Firefox.zip
+          asset_name: HyperChat-Firefox.zip
           tag: ${{ env.RELEASE_TAG }}
           overwrite: true

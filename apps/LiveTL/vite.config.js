@@ -167,7 +167,7 @@ export default defineConfig({
           zipPack({
             inDir: buildDir,
             outDir: 'build',
-            outFileName: target === 'chrome' ? 'LiveTL-Chrome.zip' : 'LiveTL-Firefox-mv2.xpi',
+            outFileName: `${target === 'chrome' ? 'LiveTL-Chrome' : 'LiveTL-Firefox-mv2'}.zip`,
           }),
         ]
       : []),
