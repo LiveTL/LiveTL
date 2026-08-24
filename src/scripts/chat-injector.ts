@@ -15,6 +15,8 @@ import { hcEnabled, autoLiveChat } from '../ts/storage';
 const isFirefox = navigator.userAgent.includes('Firefox');
 let hcSettings: HcSettings | null = null;
 
+const initialDataPrefixes = ['window["ytInitialData"] = ', 'var ytInitialData = '];
+
 const hcWarning =
   'An existing HyperChat button has been detected. This ' +
   'usually means both LiveTL and standalone HyperChat are enabled. ' +
@@ -73,12 +75,12 @@ const chatLoaded = async (): Promise<void> => {
     return;
   }
   for (const script of Array.from(scripts)) {
-    const start = 'window["ytInitialData"] = ';
     const text = script.text;
-    if (!text || !text.startsWith(start)) {
+    const start = initialDataPrefixes.find((prefix) => text?.startsWith(prefix));
+    if (!text || !start) {
       continue;
     }
-    const json = text.replace(start, '').slice(0, -1);
+    const json = text.slice(start.length).replace(/;$/, '');
     setInitialData(json);
     break;
   }
