@@ -171,6 +171,29 @@
     min-width: 0px;
   }
 
+  @media (max-width: 320px) {
+    :global(#viewer-leaderboard-entry-point) {
+      display: none !important;
+    }
+
+    .toggleButton {
+      width: 32px;
+      height: 24px;
+      padding: 0 4px;
+      margin: 0;
+    }
+
+    .toggleButton img {
+      width: 24px;
+      height: 24px;
+      margin: 0;
+    }
+
+    .toggleButton span {
+      display: none;
+    }
+  }
+
   /**
     * Tooltip Styles (source: https://codepen.io/cbracco/pen/nufHz)
   */
