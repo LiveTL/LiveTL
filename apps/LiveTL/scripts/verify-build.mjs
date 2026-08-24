@@ -24,7 +24,10 @@ for (const [target, mv] of Object.entries(targets)) {
   assert.equal(manifest.manifest_version, mv, `${target}: wrong manifest version`);
   assert.ok(!serializedManifest.includes('{{'), `${target}: unresolved manifest tag`);
   assert.ok(!serializedManifest.includes('submodules/chat'), `${target}: legacy HyperChat path`);
-  assert.ok(serializedManifest.includes('hyperchat/scripts/chat-interceptor.js'), `${target}: missing HyperChat interceptor`);
+  assert.ok(
+    serializedManifest.includes('hyperchat/scripts/chat-interceptor.js'),
+    `${target}: missing HyperChat interceptor`,
+  );
   assert.ok(serializedManifest.includes('hyperchat/scripts/chat-injector.js'), `${target}: missing HyperChat injector`);
 
   if (mv === 2) {
