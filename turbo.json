@@ -39,12 +39,12 @@
     "build:firefox": {
       "dependsOn": ["^build"],
       "env": ["MINIFY", "VERSION"],
-      "outputs": ["build/firefox/**", "build/*-Firefox.xpi"]
+      "outputs": ["build/firefox/**", "build/*-Firefox.zip"]
     },
     "build:mv2": {
       "dependsOn": ["^build"],
       "env": ["MINIFY", "VERSION"],
-      "outputs": ["build/mv2/**", "build/*-mv2.xpi"]
+      "outputs": ["build/mv2/**", "build/*-mv2.zip"]
     },
     "dev:chrome": {
       "cache": false,
