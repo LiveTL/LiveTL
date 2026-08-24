@@ -31,7 +31,7 @@ from ublock import ublock
 build = Path(__file__).parent / "../build"
 
 livetl = Extension(
-    firefox=str((build / "LiveTL-Firefox-mv2.xpi").resolve()),
+    firefox=str((build / "LiveTL-Firefox-mv2.zip").resolve()),
     chrome=str((build / "LiveTL-Chrome.zip").resolve())
 )
 

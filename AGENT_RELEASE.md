@@ -6,11 +6,11 @@ Each extension release comes from one GitHub Release on one tag pointing at
 `main`:
 
 - `apps/LiveTL/build/LiveTL-Chrome.zip`: Chrome MV3 from `apps/LiveTL/build/chrome`
-- `apps/LiveTL/build/LiveTL-Firefox-mv2.xpi`: Firefox MV2 from `apps/LiveTL/build/mv2`
+- `apps/LiveTL/build/LiveTL-Firefox-mv2.zip`: Firefox MV2 from `apps/LiveTL/build/mv2`
 - `apps/HyperChat/build/HyperChat-Chrome.zip`: HyperChat Chrome MV3
-- `apps/HyperChat/build/HyperChat-Firefox.xpi`: HyperChat Firefox MV3
+- `apps/HyperChat/build/HyperChat-Firefox.zip`: HyperChat Firefox MV3
 - `apps/YtcFilter/build/YtcFilter-Chrome.zip`: YtcFilter Chrome MV3
-- `apps/YtcFilter/build/YtcFilter-Firefox.xpi`: YtcFilter Firefox MV3
+- `apps/YtcFilter/build/YtcFilter-Firefox.zip`: YtcFilter Firefox MV3
 
 LiveTL Firefox MV3 and HyperChat Firefox MV2 are built and verified, but are not
 published.
@@ -61,11 +61,11 @@ Check the archive version for the extension being released:
 
 ```bash
 unzip -p apps/LiveTL/build/LiveTL-Chrome.zip manifest.json | jq '.manifest_version, .version'
-unzip -p apps/LiveTL/build/LiveTL-Firefox-mv2.xpi manifest.json | jq '.manifest_version, .version'
+unzip -p apps/LiveTL/build/LiveTL-Firefox-mv2.zip manifest.json | jq '.manifest_version, .version'
 unzip -p apps/HyperChat/build/HyperChat-Chrome.zip manifest.json | jq '.manifest_version, .version'
-unzip -p apps/HyperChat/build/HyperChat-Firefox.xpi manifest.json | jq '.manifest_version, .version'
+unzip -p apps/HyperChat/build/HyperChat-Firefox.zip manifest.json | jq '.manifest_version, .version'
 unzip -p apps/YtcFilter/build/YtcFilter-Chrome.zip manifest.json | jq '.manifest_version, .version'
-unzip -p apps/YtcFilter/build/YtcFilter-Firefox.xpi manifest.json | jq '.manifest_version, .version'
+unzip -p apps/YtcFilter/build/YtcFilter-Firefox.zip manifest.json | jq '.manifest_version, .version'
 ```
 
 Expect LiveTL Chrome, HyperChat, and YtcFilter archives to use manifest version
@@ -84,8 +84,8 @@ catch same-size changes.
 python3 -c "
 import zipfile
 for app, archives in {
-    'HyperChat': ['HyperChat-Chrome.zip', 'HyperChat-Firefox.xpi'],
-    'YtcFilter': ['YtcFilter-Chrome.zip', 'YtcFilter-Firefox.xpi'],
+    'HyperChat': ['HyperChat-Chrome.zip', 'HyperChat-Firefox.zip'],
+    'YtcFilter': ['YtcFilter-Chrome.zip', 'YtcFilter-Firefox.zip'],
 }.items():
     for name in archives:
         before = zipfile.ZipFile('/tmp/golden/' + name)

@@ -108,9 +108,9 @@ Extension-specific root build aliases:
 
 | Extension | Command                   | Published archives                              |
 | --------- | ------------------------- | ----------------------------------------------- |
-| LiveTL    | `npm run build:livetl`    | `LiveTL-Chrome.zip`, `LiveTL-Firefox-mv2.xpi`   |
-| HyperChat | `npm run build:hyperchat` | `HyperChat-Chrome.zip`, `HyperChat-Firefox.xpi` |
-| YtcFilter | `npm run build:ytcfilter` | `YtcFilter-Chrome.zip`, `YtcFilter-Firefox.xpi` |
+| LiveTL    | `npm run build:livetl`    | `LiveTL-Chrome.zip`, `LiveTL-Firefox-mv2.zip`   |
+| HyperChat | `npm run build:hyperchat` | `HyperChat-Chrome.zip`, `HyperChat-Firefox.zip` |
+| YtcFilter | `npm run build:ytcfilter` | `YtcFilter-Chrome.zip`, `YtcFilter-Firefox.zip` |
 
 `VERSION=0.0.0 npm run build` typechecks, builds, verifies, and packages all
 targets. The published archives are created in the application build directories.
@@ -215,6 +215,6 @@ KEEP_OPEN=1 bash apps/LiveTL/scripts/codex-dev.sh go-test
 - The tag version is supplied to every target through `VERSION`; local builds
   fall back to `src/manifest.json`.
 - Release automation uploads the archives for the matching release tag:
-  `LiveTL-Chrome.zip` and `LiveTL-Firefox-mv2.xpi`,
-  `HyperChat-Chrome.zip` and `HyperChat-Firefox.xpi`, or
-  `YtcFilter-Chrome.zip` and `YtcFilter-Firefox.xpi`.
+  `LiveTL-Chrome.zip` and `LiveTL-Firefox-mv2.zip`,
+  `HyperChat-Chrome.zip` and `HyperChat-Firefox.zip`, or
+  `YtcFilter-Chrome.zip` and `YtcFilter-Firefox.zip`.
