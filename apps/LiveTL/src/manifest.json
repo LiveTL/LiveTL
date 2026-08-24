@@ -45,7 +45,12 @@
         "https://studio.youtube.com/live_chat*",
         "https://studio.youtube.com/live_chat_replay*"
       ],
-      "js": ["hyperchat/scripts/chat-injector.ts", "ts/content_scripts/injector.ts", "js/pages/translatormode.js"],
+      "js": [
+        "hyperchat/scripts/chat-interceptor.ts",
+        "hyperchat/scripts/chat-injector.ts",
+        "ts/content_scripts/injector.ts",
+        "js/pages/translatormode.js"
+      ],
       "css": ["hyperchat/stylesheets/titlebar.css"],
       "all_frames": true
     },
@@ -74,7 +79,12 @@
         "https://studio.youtube.com/live_chat*",
         "https://studio.youtube.com/live_chat_replay*"
       ],
-      "js": ["hyperchat/scripts/chat-injector.ts", "ts/content_scripts/injector.ts", "js/pages/translatormode.js"],
+      "js": [
+        "hyperchat/scripts/chat-interceptor.ts",
+        "hyperchat/scripts/chat-injector.ts",
+        "ts/content_scripts/injector.ts",
+        "js/pages/translatormode.js"
+      ],
       "css": ["hyperchat/stylesheets/titlebar.css"],
       "all_frames": true
     },
