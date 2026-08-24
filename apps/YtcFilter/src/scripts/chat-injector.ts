@@ -11,6 +11,8 @@ import {
 import { autoOpenFilterPanel, filterInBackground, initialSetupDone } from '../ts/storage';
 import { detectForceReload } from '../ts/ytcf-logic';
 
+const initialDataPrefixes = ['window["ytInitialData"] = ', 'var ytInitialData = '];
+
 const getScriptURL = (path: string): string => {
   return chrome.runtime.getURL('scripts/' + path);
 };
@@ -43,12 +45,12 @@ const chatLoaded = async (): Promise<void> => {
   const scripts = document.querySelectorAll('script');
   let json = '{}';
   for (const script of Array.from(scripts)) {
-    const start = 'window["ytInitialData"] = ';
     const text = script.text;
-    if (!text || !text.startsWith(start)) {
+    const start = initialDataPrefixes.find((prefix) => text?.startsWith(prefix));
+    if (!text || !start) {
       continue;
     }
-    json = text.replace(start, '').slice(0, -1);
+    json = text.slice(start.length).replace(/;$/, '');
     break;
   }
   window.addEventListener('videoInfoYtcFilter', (d) => {
