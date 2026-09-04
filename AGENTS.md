@@ -38,6 +38,8 @@
   - `bump both`
 - Avoid padded scopes, issue-number prefixes, and long explanatory subjects.
 - A mildly funny subject is acceptable if it is still clear immediately.
+- Keep machine-specific paths, hostnames, profile directories, and private debug
+  aliases out of committed docs.
 
 ## Code Patterns
 
@@ -150,9 +152,11 @@ bash apps/LiveTL/scripts/codex-dev.sh go-test
 2. Launch Chromium with only LiveTL enabled:
 
    ```bash
+   PROFILE_DIR="$(mktemp -d)"
+   DEVTOOLS_PORT="${DEVTOOLS_PORT:-9222}"
    chromium --headless=new --no-sandbox --disable-setuid-sandbox \
-     --disable-dev-shm-usage --remote-debugging-port=9222 \
-     --user-data-dir=/tmp/livetl-mv3-profile \
+     --disable-dev-shm-usage --remote-debugging-port="$DEVTOOLS_PORT" \
+     --user-data-dir="$PROFILE_DIR" \
      --disable-extensions-except="$PWD/apps/LiveTL/build/chrome" \
      --load-extension="$PWD/apps/LiveTL/build/chrome" \
      https://www.youtube.com/watch?v=X4VbdwhkE10
@@ -161,7 +165,7 @@ bash apps/LiveTL/scripts/codex-dev.sh go-test
 3. Inspect the DevTools target list:
 
    ```bash
-   curl -s http://127.0.0.1:9222/json/list | jq '[.[] | {type, url, title}]'
+   curl -s "http://127.0.0.1:${DEVTOOLS_PORT}/json/list" | jq '[.[] | {type, url, title}]'
    ```
 
 4. Expect a LiveTL `service_worker` target at

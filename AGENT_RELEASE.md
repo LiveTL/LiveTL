@@ -81,19 +81,22 @@ entries byte-for-byte afterward; matching file names and sizes are not enough to
 catch same-size changes.
 
 ```bash
-python3 -c "
+GOLDEN_DIR="${GOLDEN_DIR:?set GOLDEN_DIR to the baseline archive directory}" python3 - <<'PY'
+import os
 import zipfile
+
+golden_dir = os.environ['GOLDEN_DIR']
 for app, archives in {
     'HyperChat': ['HyperChat-Chrome.zip', 'HyperChat-Firefox.zip'],
     'YtcFilter': ['YtcFilter-Chrome.zip', 'YtcFilter-Firefox.zip'],
 }.items():
     for name in archives:
-        before = zipfile.ZipFile('/tmp/golden/' + name)
+        before = zipfile.ZipFile(os.path.join(golden_dir, name))
         after = zipfile.ZipFile('apps/' + app + '/build/' + name)
         entries = sorted(set(before.namelist()) | set(after.namelist()))
         changed = [n for n in entries if n not in before.namelist() or n not in after.namelist() or before.read(n) != after.read(n)]
         print(app, name, changed or 'all bytes match')
-"
+PY
 ```
 
 Reinstall with `npm ci` before creating both sides of an artifact comparison;

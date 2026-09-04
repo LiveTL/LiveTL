@@ -13,6 +13,8 @@ Paths and commands in this file are relative to `apps/YtcFilter` unless noted ot
 - Work on the active monorepo feature branch unless the user explicitly asks for a different branch.
 - Keep repository-wide policy, CI, and release automation at the monorepo root.
 - Commit subjects should be short, direct, and readable in `git log --oneline`.
+- Keep machine-specific paths, hostnames, profile directories, and private debug
+  aliases out of committed docs.
 
 ## Runtime Sync Model
 
