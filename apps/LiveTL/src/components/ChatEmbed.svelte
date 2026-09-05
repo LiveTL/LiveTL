@@ -6,10 +6,29 @@
   let iframe;
   let src;
   const extensionId = chrome.runtime.id;
+  const chatParams = new URLSearchParams(window.location.search);
+  [
+    'ytVideo',
+    'popout',
+    'tabid',
+    'frameid',
+    'title',
+    'embedded',
+    'twitchUrl',
+    'standalone',
+    'isReplay',
+  ].forEach(param => chatParams.delete(param));
+  chatParams.set('embed_domain', extensionId);
+  chatParams.set('dark_theme', 'true');
+
   if (isReplay) {
-    src = `https://www.youtube.com/live_chat_replay?continuation=${continuation}&embed_domain=${extensionId}`;
+    chatParams.set('continuation', continuation);
+    chatParams.delete('v');
+    src = `https://www.youtube.com/live_chat_replay?${chatParams}`;
   } else if (videoId) {
-    src = `https://www.youtube.com/live_chat?v=${videoId}&embed_domain=${extensionId}`;
+    chatParams.set('v', videoId);
+    chatParams.delete('continuation');
+    src = `https://www.youtube.com/live_chat?${chatParams}`;
   }
   window.addEventListener('message', packet => {
     try {
@@ -30,16 +49,6 @@
       }
     }
   });
-  setInterval(() => {
-    if (iframe) {
-      iframe.contentWindow.postMessage(
-        {
-          'yt-live-chat-set-dark-theme': true
-        },
-        '*'
-      );
-    }
-  }, 2500);
 </script>
 
 <div class="wrapper">
