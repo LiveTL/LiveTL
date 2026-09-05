@@ -16,12 +16,3 @@
 #view-selector #label #label-text {
   white-space: break-spaces;
 }
-
-html[dark] yt-live-chat-header-renderer button,
-html[dark] yt-live-chat-header-renderer #view-selector yt-icon {
-  color: var(--yt-live-chat-header-button-color, var(--yt-live-chat-secondary-text-color)) !important;
-}
-
-html[dark] yt-live-chat-header-renderer button.ytSpecButtonShapeNextOutline {
-  border-color: var(--yt-live-chat-header-button-color, var(--yt-live-chat-secondary-text-color)) !important;
-}
