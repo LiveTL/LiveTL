@@ -2,7 +2,7 @@
   import { slide, fade } from 'svelte/transition';
   import MessageRun from './MessageRuns.svelte';
   import Tooltip from './common/Tooltip.svelte';
-  import Button from 'smelte/src/components/Button';
+  import Button from '@livetl/ui/Button';
   import Icon from 'smelte/src/components/Icon';
   import { Theme } from '../ts/chat-constants';
   import { createEventDispatcher } from 'svelte';

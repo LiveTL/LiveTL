@@ -1,6 +1,7 @@
 // import { displayMode } from '../store.js';
 // import { DisplayMode } from '../constants.js';
 import 'smelte/src/tailwind.css';
+import '@livetl/ui/styles.css';
 
 import App from '../../components/Lite.svelte';
 

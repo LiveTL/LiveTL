@@ -30,7 +30,7 @@
     useReconnect
   } from '../ts/chat-utils';
   import { handleReplyThreadResponse } from '../ts/chat-actions';
-  import Button from 'smelte/src/components/Button';
+  import Button from '@livetl/ui/Button';
   import {
     theme,
     showOnlyMemberChat,
