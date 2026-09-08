@@ -398,7 +398,7 @@
   // Doesn't work well with onMount, so onLoad will have to do
   // Update: use onMount because hc now mounts in content script
   const onLoad = (): (() => void) | undefined => {
-    $lastOpenedVersion = __VERSION__;
+    $lastOpenedVersion = __HC_VERSION__;
     document.body.classList.add('overflow-hidden');
 
     if (paramsTabId == null || paramsFrameId == null || paramsTabId.length < 1 || paramsFrameId.length < 1) {

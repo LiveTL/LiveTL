@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 declare const __BROWSER__: 'chrome' | 'firefox';
 declare const __VERSION__: string;
+declare const __HC_VERSION__: string;
 /**
  * Target manifest version. Build-time constant, so `__MV__` branches are dead-code-eliminated and each bundle only
  * carries its own MV's code.

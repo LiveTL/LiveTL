@@ -96,7 +96,10 @@ module.exports = {
         return true;
       }
 
-      if (warning.code === 'missing-declaration' && warning.message === "'__VERSION__' is not defined") {
+      if (
+        warning.code === 'missing-declaration' &&
+        (warning.message === "'__VERSION__' is not defined" || warning.message === "'__HC_VERSION__' is not defined")
+      ) {
         return true;
       }
 
