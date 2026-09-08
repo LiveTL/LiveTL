@@ -1,1 +1,1 @@
-code unified, scale fixed
+custom emote sizes, hide video errors
