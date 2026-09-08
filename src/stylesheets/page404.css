@@ -6,6 +6,7 @@ yt-live-chat-app,
 ytd-app,
 ytm-app,
 #player,
+#player-controls,
 .player-unavailable {
   display: none !important;
 }
