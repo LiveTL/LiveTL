@@ -8,6 +8,8 @@ const targets = {
   mv2: 2,
 };
 const versions = new Set();
+const hyperchatPackage = JSON.parse(await readFile('../HyperChat/package.json', 'utf8'));
+const pkg = JSON.parse(await readFile('package.json', 'utf8'));
 
 const iconFiles = (value) => (typeof value === 'string' ? [value] : Object.values(value ?? {}).flatMap(iconFiles));
 
@@ -20,6 +22,7 @@ for (const [target, mv] of Object.entries(targets)) {
   const manifest = JSON.parse(await readFile(path.join(buildDir, 'manifest.json'), 'utf8'));
   const serializedManifest = JSON.stringify(manifest);
   versions.add(manifest.version);
+  assert.equal(manifest.version, process.env.VERSION ?? pkg.version, `${target}: wrong release version`);
 
   assert.equal(manifest.manifest_version, mv, `${target}: wrong manifest version`);
   assert.ok(!serializedManifest.includes('{{'), `${target}: unresolved manifest tag`);
@@ -97,6 +100,12 @@ for (const [target, mv] of Object.entries(targets)) {
 
   const chatMounter = await readFile(path.join(buildDir, 'hyperchat/scripts/chat-mounter.js'), 'utf8');
   assert.ok(chatMounter.includes('.dark\\\\:bg-ytbg-dark'), `${target}: missing HyperChat dark theme styles`);
+  const chat = await readFile(
+    path.join(buildDir, mv === 2 ? 'hyperchat/index.js' : 'hyperchat/scripts/chat-mounter.js'),
+    'utf8',
+  );
+  assert.ok(chat.includes(`v${hyperchatPackage.version}`), `${target}: wrong bundled HyperChat version`);
+  assert.ok(!chat.includes('__HC_VERSION__'), `${target}: unresolved HyperChat version`);
 }
 
 assert.equal(versions.size, 1, 'build versions differ');

@@ -14,7 +14,7 @@
   let updated = false;
 
   lastOpenedVersion.ready().then(() => {
-    updated = !$hcEnabled && $lastOpenedVersion !== __VERSION__;
+    updated = !$hcEnabled && $lastOpenedVersion !== __HC_VERSION__;
   });
 </script>
 
@@ -27,7 +27,7 @@
       </svg>
       <div style="cursor: pointer;" on:click={() => {
         updated = false;
-        $lastOpenedVersion = __VERSION__;
+        $lastOpenedVersion = __HC_VERSION__;
       }}>
         <svg height="20" width="24" viewBox="0 0 24 24" class="close">
           <path d={mdiClose} fill="black"/>

@@ -7,8 +7,10 @@ import { defineConfig } from 'vite';
 import browserExtension from 'vite-plugin-web-extension';
 import zipPack from 'vite-plugin-zip-pack';
 
+import hyperchatPackage from '../HyperChat/package.json';
 import { resolveMv } from '../HyperChat/scripts/resolve-manifest';
 
+import pkg from './package.json';
 import manifest from './src/manifest.json';
 
 const htmlInputs = [
@@ -43,7 +45,7 @@ function sanitizeFileName(name) {
 
 const browser = process.env.BROWSER ?? 'chrome';
 const mv = process.env.MV === '2' ? 2 : 3;
-const version = process.env.VERSION ?? manifest.version ?? '69.420';
+const version = process.env.VERSION ?? pkg.version;
 const target = mv === 2 ? 'mv2' : browser;
 const buildDir = `build/${target}`;
 
@@ -56,6 +58,7 @@ export default defineConfig({
   define: {
     __BROWSER__: JSON.stringify(browser),
     __VERSION__: JSON.stringify(version),
+    __HC_VERSION__: JSON.stringify(hyperchatPackage.version),
     __MV__: JSON.stringify(mv),
     __LIVETL__: JSON.stringify(true),
   },

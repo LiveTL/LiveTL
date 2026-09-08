@@ -15,6 +15,8 @@ const firefoxSettings = {
     strict_min_version: '115.0',
   },
 };
+const pkg = JSON.parse(await readFile('package.json', 'utf8'));
+const version = process.env.VERSION ?? pkg.version;
 
 const unresolvedKeys = (value, result = []) => {
   if (Array.isArray(value)) {
@@ -32,6 +34,10 @@ for (const target of ['chrome', 'firefox', 'mv2']) {
   const buildDir = path.resolve('build', target);
   const manifest = JSON.parse(await readFile(path.join(buildDir, 'manifest.json'), 'utf8'));
   const mv = target === 'mv2' ? 2 : 3;
+  assert.equal(manifest.version, version, `${target}: wrong release version`);
+  const chat = await readFile(path.join(buildDir, mv === 2 ? 'hyperchat.js' : 'scripts/chat-mounter.js'), 'utf8');
+  assert.ok(chat.includes(`v${version}`), `${target}: wrong HyperChat display version`);
+  assert.ok(!chat.includes('__HC_VERSION__'), `${target}: unresolved HyperChat version`);
 
   assert.equal(manifest.manifest_version, mv, `${target}: wrong manifest version`);
   assert.deepEqual(unresolvedKeys(manifest), [], `${target}: unresolved manifest key`);

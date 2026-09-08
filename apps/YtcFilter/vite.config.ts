@@ -30,7 +30,7 @@ export default defineConfig({
       manifest: () => {
         const nextManifest = {
           ...manifest,
-          version: (process.env.VERSION ?? '').split('-')[0] || manifest.version,
+          version: version.split('-')[0],
         };
         if ('browser_specific_settings' in nextManifest && process.env.ADDON_ID) {
           nextManifest.browser_specific_settings.gecko.id = process.env.ADDON_ID;

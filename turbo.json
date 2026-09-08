@@ -1,5 +1,6 @@
 {
   "$schema": "./node_modules/turbo/schema.json",
+  "globalDependencies": ["apps/HyperChat/package.json"],
   "tasks": {
     "//#format": {
       "cache": false
@@ -22,13 +23,15 @@
       "dependsOn": ["^build"]
     },
     "verify:build": {
-      "cache": false
+      "cache": false,
+      "env": ["VERSION"]
     },
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
     "build:all": {
+      "env": ["VERSION"],
       "dependsOn": ["type:check", "build:chrome", "build:firefox", "build:mv2"]
     },
     "build:chrome": {

@@ -15,6 +15,7 @@ const firefoxSettings = {
     strict_min_version: '115.0',
   },
 };
+const pkg = JSON.parse(await readFile('package.json', 'utf8'));
 
 const unresolvedKeys = (value, result = []) => {
   if (Array.isArray(value)) {
@@ -31,6 +32,11 @@ const unresolvedKeys = (value, result = []) => {
 for (const target of ['chrome', 'firefox']) {
   const buildDir = path.resolve('build', target);
   const manifest = JSON.parse(await readFile(path.join(buildDir, 'manifest.json'), 'utf8'));
+  assert.equal(
+    manifest.version,
+    (process.env.VERSION ?? pkg.version).split('-')[0],
+    `${target}: wrong release version`,
+  );
 
   assert.equal(manifest.manifest_version, 3, `${target}: wrong manifest version`);
   assert.deepEqual(unresolvedKeys(manifest), [], `${target}: unresolved manifest key`);

@@ -35,7 +35,7 @@
     }
   ];
 
-  $: showChangelog = $lastClosedVersion !== __VERSION__;
+  $: showChangelog = $lastClosedVersion !== __HC_VERSION__;
 </script>
 
 <div class={classes}>
@@ -55,10 +55,10 @@
             $refreshScroll = true;
             e.preventDefault();
           }} class="underline text-primary-900 dark:text-primary-50">
-            v{__VERSION__}
+            v{__HC_VERSION__}
           </a>
         {:else}
-          v{__VERSION__}
+          v{__HC_VERSION__}
         {/if}
       </p>
 
@@ -84,7 +84,7 @@
   {#if showChangelog}
     <p class="leading-tight mt-1.5 flex flex-row">
       <span href="/" on:click={(e) => {
-        $lastClosedVersion = __VERSION__;
+        $lastClosedVersion = __HC_VERSION__;
         $refreshScroll = true;
         e.preventDefault();
       }}

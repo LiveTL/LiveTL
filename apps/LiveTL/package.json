@@ -1,6 +1,6 @@
 {
   "name": "@livetl/livetl",
-  "version": "0.0.0",
+  "version": "10.0.0",
   "description": "Get live translations for YouTube and Twitch streams, crowdsourced from multilingual viewers!",
   "scripts": {
     "build": "npm run type:check && npm run build:chrome && npm run build:firefox && npm run build:mv2 && npm run verify:build",

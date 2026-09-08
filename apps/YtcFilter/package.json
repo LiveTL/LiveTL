@@ -1,6 +1,6 @@
 {
   "name": "@livetl/ytcfilter",
-  "version": "0.0.0",
+  "version": "4.0.0",
   "private": true,
   "scripts": {
     "type:check": "tsc --noEmit",

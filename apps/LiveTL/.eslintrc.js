@@ -124,5 +124,6 @@ module.exports = {
     __BROWSER__: 'readonly',
     __MV__: 'readonly',
     __VERSION__: 'readonly',
+    __HC_VERSION__: 'readonly',
   },
 };
