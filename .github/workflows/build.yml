@@ -36,7 +36,9 @@ jobs:
         run: npm run lint:check
 
       - name: Run tests
-        run: npm run test
+        run: |
+          node --test .github/scripts/prepare-release.test.mjs
+          npm run test
 
       - name: Build, verify, and package all targets
         run: VERSION=0.0.0 npm run build
