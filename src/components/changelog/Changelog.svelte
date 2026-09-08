@@ -1,9 +1,12 @@
 <ul class="list-disc list-inside">
   <strong>Serving in our latest update:</strong>
   <li>
-    Codebases unified
+    Hide video unavailable errors
   </li>
   <li>
-    Scaling issues fixed
+    Customize emoji size
+  </li>
+  <li>
+    Fix version display
   </li>
 </ul>
