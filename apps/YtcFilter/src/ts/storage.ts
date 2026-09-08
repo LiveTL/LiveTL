@@ -64,6 +64,7 @@ export const showChatSummary = stores.addSyncStore('ytcf.messages.showChatSummar
 export const lastClosedVersion = stores.addSyncStore('ytcf.lastClosedVersion', '');
 export const showOnlyMemberChat = stores.addSyncStore('ytcf.showOnlyMemberChat', false);
 export const emojiRenderMode = stores.addSyncStore('ytcf.emojiRenderMode', YoutubeEmojiRenderMode.SHOW_ALL);
+export const emojiScale = stores.addSyncStore('ytcf.emojiScale', 1);
 export const autoLiveChat = stores.addSyncStore('ytcf.autoLiveChat', false);
 export const useSystemEmojis = stores.addSyncStore('ytcf.useSystemEmojis', false);
 export const hoveredItem = writable(null as null | Chat.MessageAction['message']['messageId']);

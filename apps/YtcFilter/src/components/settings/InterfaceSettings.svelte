@@ -7,6 +7,7 @@
     showUsernames,
     showUserBadges,
     emojiRenderMode,
+    emojiScale,
     autoLiveChat,
     useSystemEmojis,
     isDark,
@@ -67,6 +68,29 @@
 </Card>
 
 <Card title="Emojis" icon="emoji_emotions">
+  <div class="flex items-center justify-between gap-2">
+    <label for="emoji-scale">Emoji size: {Math.round($emojiScale * 100)}%</label>
+    <button
+      type="button"
+      class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-200 dark:hover:bg-dark-400"
+      title="Reset emoji size"
+      aria-label="Reset emoji size"
+      on:click={() => { $emojiScale = 1; }}
+    >
+      <Icon small>restore</Icon>
+    </button>
+  </div>
+  <input
+    id="emoji-scale"
+    type="range"
+    min="0.5"
+    max="2"
+    step="0.05"
+    bind:value={$emojiScale}
+    aria-valuetext="{Math.round($emojiScale * 100)}%"
+    class="w-full rounded cursor-pointer bg-primary-200 my-2"
+    style="--bg: var(--color-primary-500); --bg-focus: var(--color-primary-500)"
+  />
   <Checkbox name="Use system emojis when possible" store={useSystemEmojis} />
   <i>{willChangeOnNextChunkMessage}</i>
   <Radio store={emojiRenderMode} items={emojiRenderItems} vertical />

@@ -2,7 +2,7 @@
   import { Theme, YoutubeEmojiRenderMode } from '../ts/chat-constants';
   import TranslatedMessage from './TranslatedMessage.svelte';
   import {
-    emojiRenderMode, useSystemEmojis
+    emojiRenderMode, emojiScale, useSystemEmojis
   } from '../ts/storage';
   import { textIsObsoleteMemberEmoji } from '../ts/chat-utils';
 
@@ -68,12 +68,14 @@
         {#if run.standardEmoji && $useSystemEmojis}
           <span
             class="cursor-auto align-middle text-base"
+            style="font-size: {16 * $emojiScale}px; line-height: 1.5"
           >
             {run.alt}
           </span>
         {:else if run.src}
           <img
-            class="h-6 w-6 inline mx-0.5 align-middle"
+            class="inline mx-0.5 align-middle"
+            style="height: {24 * $emojiScale}px; width: {24 * $emojiScale}px"
             src={run.src}
             alt={run.alt}
             title={run.alt}

@@ -41,6 +41,7 @@
     showChatSummary,
     refreshScroll,
     emojiRenderMode,
+    emojiScale,
     useSystemEmojis,
     hoveredItem,
     port,
@@ -472,7 +473,7 @@
   const isMessage = (action: Chat.MessageAction | Welcome): action is Chat.MessageAction =>
     (!isWelcome(action) && !isSuperchat(action) && !isMembership(action));
 
-  $: $useSystemEmojis, onRefresh();
+  $: $useSystemEmojis, $emojiScale, onRefresh();
 
   const setHover = (action: Chat.MessageAction | Welcome | null) => {
     if (action == null) $hoveredItem = null;
