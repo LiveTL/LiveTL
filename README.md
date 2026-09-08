@@ -49,7 +49,9 @@ npm run start:firefox -w @livetl/hyperchat # watch + open Firefox
 ### Building for Production
 
 The HyperChat release workflow runs when a GitHub Release is published with a
-tag in the format `hyperchat-vX.Y.Z`.
+tag in the format `hyperchat-vX.Y.Z`. It records the version in `package.json`
+and the root lockfile, moves that release tag to the version commit, and builds
+from it. Local builds use the recorded version unless `VERSION` is supplied.
 
 To simulate the build:
 

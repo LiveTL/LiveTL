@@ -35,39 +35,40 @@ Paths and commands in this file are relative to `apps/HyperChat` unless noted ot
 
 ## Build-Time Constants (workspace consumers)
 
-`src/` depends on four bare globals, declared in `src/ts/typings/vite-env.d.ts`
+Build constants are declared in `src/ts/typings/vite-env.d.ts`
 and supplied by `vite.config.ts` for our own builds:
 
-| Constant      | Emitted literal                   | Meaning                                  |
-| ------------- | --------------------------------- | ---------------------------------------- |
-| `__BROWSER__` | string — `"chrome"` / `"firefox"` | target browser                           |
-| `__VERSION__` | string — `"3.3.0"`                | version written into the manifest        |
-| `__MV__`      | **number** — `2` / `3`            | target manifest version                  |
-| `__LIVETL__`  | boolean                           | whether HyperChat is bundled into LiveTL |
+| Constant         | Emitted literal                   | Meaning                                  |
+| ---------------- | --------------------------------- | ---------------------------------------- |
+| `__BROWSER__`    | string — `"chrome"` / `"firefox"` | target browser                           |
+| `__VERSION__`    | string — `"3.3.0"`                | version written into the manifest        |
+| `__HC_VERSION__` | string — `"4.0.0"`                | HC display version and update tracking   |
+| `__MV__`         | **number** — `2` / `3`            | target manifest version                  |
+| `__LIVETL__`     | boolean                           | whether HyperChat is bundled into LiveTL |
 
 `__MV__` is compared with strict equality (`__MV__ === 2`), so it must emit a
 **number literal**. Defining it as the string `"2"` makes every check silently
 false and the MV2 build takes MV3 code paths — no error, just wrong behavior.
 
-Both bundlers do textual substitution, so the value is source text, not a JS
-value. `JSON.stringify()` is the safe spelling in both:
+Vite does textual substitution, so the value is source text, not a JS
+value. Use `JSON.stringify()`:
 
 ```js
-// vite
 define: { __BROWSER__: JSON.stringify(browser), __MV__: JSON.stringify(2) }
-
-// webpack — values are code fragments, so a bare string is an identifier:
-//   __BROWSER__: 'firefox'  ->  emits `firefox`  ->  ReferenceError
-new webpack.DefinePlugin({ __BROWSER__: JSON.stringify('firefox'), __MV__: 2 })
 ```
 
-**Anything that compiles this source with its own bundler must define all four**,
+**Anything that compiles this source with its own bundler must define these**,
 or the bundle ships a reference to an undefined global and throws at runtime.
 LiveTL is the one such consumer: it builds `chat-background.ts`,
 `chat-injector.ts`, `chat-interceptor.ts`, `hyperchat.ts` and `options.ts` as its
-own entry points, so it needs these in **both** its webpack (MV2) and vite (MV3)
-config. `__MV__` must match that consumer's own manifest version, and
+own entry points through Vite for both MV2 and MV3.
+`__MV__` must match that consumer's own manifest version, and
 `__LIVETL__` must be `true` there and `false` in standalone HyperChat.
+
+Standalone HC uses `VERSION` or its own `package.json` for both version
+constants. LiveTL supplies HC's recorded package version as `__HC_VERSION__`
+and its own release version as `__VERSION__`. Keep all HC version display and
+last-opened/closed comparisons on `__HC_VERSION__`.
 
 Used by `WelcomeMessage.svelte`, `Hyperchat.svelte`, `HyperchatButton.svelte`,
 `chat-background.ts`, `chat-injector.ts`. When adding a new constant, update this
@@ -161,13 +162,14 @@ table — a missing define fails at runtime, not at build time.
 - Firefox validation needs a writable browser profile owned by the current user.
 - For Firefox runtime checks, prefer `https://www.youtube.com/live_chat?is_popout=1&v=X4VbdwhkE10&continuation=0ofMyAOAARpeQ2lrcUp3b1lWVU5UU2pSbmExWkROazV5ZGtsSk9IVnRlblJtTUU5M0VndFlORlppWkhkb2EwVXhNQm9UNnFqZHVRRU5DZ3RZTkZaaVpIZG9hMFV4TUNBQk1BQSUzRDABggEICAQYAiAAKACIAQGgAfr808_a-JQDqAEAsgEA` for deterministic chat-frame loading in headless mode.
 - Packaged LiveTL Firefox translation is a special case: keep the request bridge in HC, but host the actual translator iframe on the YouTube page side.
-- For LiveTL MV2 (webpack), `iframe-translator`'s `getClient()` is safe to use as long as the bundler rewrites `import.meta.env.DEV` to `false` for `node_modules/iframe-translator/index.js` (otherwise `import.meta.env` can be undefined at runtime).
+- Both LiveTL targets use Vite, which resolves `iframe-translator`'s `import.meta.env.DEV` at build time.
 
 ## Embed 404 Notes (MV3)
 
 - The MV3 embed fallback page (`/embed/hyperchat_embed`) can render a centered YouTube logo/error artifact if page elements are not fully removed.
-- In `src/scripts/chat-mounter.ts`, treat the HyperChat mount root as the only allowed direct `body` child and aggressively remove fallback embed artifacts, including `#player-controls`.
-- If the logo reappears in browser tests, prioritize checking `chat-mounter.ts` cleanup selectors and page timing behavior before touching parser/UI code.
+- `src/stylesheets/page404.css` must hide both `#player` and its sibling `#player-controls` before the mounter runs. YouTube's error renderer can paint under `#player-controls` during the mounting delay.
+- `src/scripts/chat-mounter.ts` removes known player elements through `stripYoutubePlayerShell`. Do not remove every body child: HC dialogs and the translator host can also attach there.
+- If an artifact reappears, check its actual parent and visibility before mount as well as the later JS cleanup.
 
 ## Operational Commands
 
