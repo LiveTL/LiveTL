@@ -122,6 +122,7 @@ Before handing off a change, run:
 ```bash
 npm run format:check
 npm run lint:check
+node --test .github/scripts/prepare-release.test.mjs
 npm run test
 VERSION=0.0.0 npm run build
 ```
@@ -216,8 +217,16 @@ KEEP_OPEN=1 bash apps/LiveTL/scripts/codex-dev.sh go-test
 
 - Full release choreography lives in `AGENT_RELEASE.md`.
 - GitHub Releases are published from tags on `main`.
-- The tag version is supplied to every target through `VERSION`; local builds
-  fall back to `src/manifest.json`.
+- Before building, the matching release workflow records the tag version in
+  that app's `package.json` and workspace lock entry, moves the existing tag
+  to that version-only commit, and carries the commit into `main` atomically.
+- Build from the returned SHA, not the release event's original `GITHUB_SHA`.
+  Reruns reuse the commit; newer changes on `main` must not enter the release.
+- The tag version is supplied to that extension's targets through `VERSION`;
+  local builds fall back to that app's `package.json`.
+- LiveTL's bundled HC uses `apps/HyperChat/package.json` through
+  `__HC_VERSION__`, not LiveTL's `__VERSION__`. Release HC first, then create
+  LiveTL's release from updated `main` when both versions need to advance.
 - Release automation uploads the archives for the matching release tag:
   `LiveTL-Chrome.zip` and `LiveTL-Firefox-mv2.zip`,
   `HyperChat-Chrome.zip` and `HyperChat-Firefox.zip`, or

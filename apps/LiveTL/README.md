@@ -11,7 +11,12 @@ MV3, Firefox MV3, and Firefox MV2 builds; manifest versions are build targets,
 not separate source branches.
 
 The LiveTL release workflow runs when a GitHub Release is published with a tag
-in the format `livetl-vX.Y.Z`.
+in the format `livetl-vX.Y.Z`. It records LiveTL's version in `package.json`
+and the root lockfile, moves that release tag to the version commit, and builds
+from it. Local builds use the recorded version unless `VERSION` is supplied.
+Bundled HyperChat uses its own recorded package version.
+
+See the [release playbook](../../AGENT_RELEASE.md) for release ordering and reruns.
 
 ### Setup
 

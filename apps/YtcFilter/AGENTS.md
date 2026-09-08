@@ -103,6 +103,10 @@ Paths and commands in this file are relative to `apps/YtcFilter` unless noted ot
 
 ### GitHub Release Notes Style
 
+- The release workflow records the numeric tag version in `package.json` and
+  the root lockfile before building; local builds use the recorded version
+  unless `VERSION` is supplied. See the root `AGENT_RELEASE.md` for tag updates
+  and reruns.
 - Match the existing release format:
 
 ```md
@@ -123,4 +127,5 @@ Paths and commands in this file are relative to `apps/YtcFilter` unless noted ot
 ## Embed 404 Notes
 
 - The embed fallback page (`/embed/ytcfilter_embed`) can render a centered YouTube logo/error artifact if page elements are not fully removed.
-- In `src/scripts/chat-mounter.ts`, treat the YTCF mount root as the only allowed direct `body` child and aggressively remove fallback embed artifacts.
+- `src/stylesheets/page404.css` hides both `#player` and `#player-controls` before mounting, including error renderers under the controls container.
+- `src/scripts/chat-mounter.ts` retains the mount root, `exio-` elements, and `html2canvas-container` elements while removing unrelated body children. Preserve these exceptions for dialogs and exports.

@@ -12,7 +12,11 @@ Release packages are also available
 
 YtcFilter lives in `apps/YtcFilter` in the LiveTL monorepo. Its release workflow
 runs when a GitHub Release is published with a tag in the format
-`ytcfilter-vX.Y.Z`.
+`ytcfilter-vX.Y.Z`. It records the version in `package.json` and the root lockfile,
+moves that release tag to the version commit, and builds from it. Local builds
+use the recorded version unless `VERSION` is supplied.
+
+See the [release playbook](../../AGENT_RELEASE.md) for details.
 
 ### Development
 

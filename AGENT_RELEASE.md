@@ -2,8 +2,8 @@
 
 ## Sources and release assets
 
-Each extension release comes from one GitHub Release on one tag pointing at
-`main`:
+Each extension release comes from one GitHub Release created from a verified
+commit on `main`:
 
 - `apps/LiveTL/build/LiveTL-Chrome.zip`: Chrome MV3 from `apps/LiveTL/build/chrome`
 - `apps/LiveTL/build/LiveTL-Firefox-mv2.zip`: Firefox MV2 from `apps/LiveTL/build/mv2`
@@ -37,6 +37,43 @@ the release workflows strip both the extension prefix and any suffix after `-`
 before setting `VERSION`, so the built extension manifests use `10.0.0`,
 `4.0.0`, and `4.0.0` for those examples.
 
+## Recorded versions
+
+Each app's `package.json` records its own version. The matching entry under
+`packages` in the root `package-lock.json` must agree. Local builds use that
+version unless `VERSION` is supplied; `src/manifest.json` is a template, not the
+version source.
+
+HyperChat's UI and update tracking use `__HC_VERSION__`. Standalone builds set
+it from their release version. LiveTL builds set it from
+`apps/HyperChat/package.json`, independently of LiveTL's own `__VERSION__`.
+An HC version change must also invalidate LiveTL's build cache.
+
+Publishing a release runs `.github/scripts/prepare-release.mjs` before the build:
+
+1. Read the selected tag's commit and normalize its version.
+2. Make a bot commit changing only that app's package version and lock entry.
+   Skip the commit if both already match.
+3. Immediately move the existing release tag to that commit and carry the
+   commit into `main` in one atomic push, before installing or building.
+4. Explicitly check out the returned commit SHA, build, and upload to the same
+   release. Its title, notes, and prerelease setting are unchanged.
+
+If `main` advanced, the release commit still has the selected source as its
+parent. A separate merge carries it into `main`, preserving newer code and
+versions there. Concurrent updates are retried; a changed tag or rejected push
+fails without partially updating the refs. Reruns reuse the recorded commit.
+
+Tag updates must be allowed and GitHub immutable releases must remain disabled
+for this flow. A build failure leaves the version commit and tag in place;
+rerun the workflow rather than creating another version commit.
+
+When releasing HC and LiveTL together, publish HC first and wait for its workflow
+to succeed. Then create LiveTL's release from updated `main`, which contains
+the recorded HC version. Creating both tags from the old commit would leave
+LiveTL's bundled HC version unchanged. YtcFilter is independent. No workflow
+automatically publishes either of the other extensions.
+
 ## Pre-release verification
 
 From the exact `main` commit the release tag will point at, run the shared
@@ -46,6 +83,7 @@ checks:
 npm ci
 npm run format:check
 npm run lint:check
+node --test .github/scripts/prepare-release.test.mjs
 npm run test
 ```
 
@@ -121,13 +159,21 @@ CLI equivalent:
 git switch main
 git pull --ff-only
 SHA="$(git rev-parse HEAD)"
-gh release create livetl-vX.Y.Z --target "$SHA" --title "LiveTL vX.Y.Z" --notes-file livetl-notes.md
 gh release create hyperchat-vX.Y.Z --target "$SHA" --title "HyperChat vX.Y.Z" --notes-file hyperchat-notes.md
-gh release create ytcfilter-vX.Y.Z --target "$SHA" --title "YtcFilter vX.Y.Z" --notes-file ytcfilter-notes.md
 ```
 
-Run only the commands for the extensions being released. Publishing a release
-triggers the matching release workflow. It checks out that tag, strips the
-extension prefix, strips any prerelease suffix to derive `VERSION`, builds that
-extension, and uploads only that extension's release assets. Each release
-workflow can be rerun manually with the existing release tag as its `tag` input.
+Use `livetl-vX.Y.Z` / `LiveTL vX.Y.Z` / `livetl-notes.md` or
+`ytcfilter-vX.Y.Z` / `YtcFilter vX.Y.Z` / `ytcfilter-notes.md` for the other
+extensions, with their own version numbers. Pull and select the source again
+between releases that need the newly recorded HC version. Add `--prerelease`
+and the desired tag suffix for a beta.
+
+Publishing triggers only the matching release build, which uploads only that
+extension's assets. Each workflow can be rerun with its existing release tag as
+the manual `tag` input. After a workflow moves a tag, refresh that local tag
+explicitly before inspecting it:
+
+```bash
+git fetch origin "+refs/tags/hyperchat-vX.Y.Z:refs/tags/hyperchat-vX.Y.Z"
+git pull --ff-only
+```
