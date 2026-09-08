@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Theme, TimeUnit } from '../../ts/chat-constants';
-  import { theme, showProfileIcons, showUsernames, showTimestamps, showUserBadges, errorDialog, confirmDialog, inputDialog, filterInBackground, initialSetupDone, autoOpenFilterPanel, autoClear } from '../../ts/storage';
-  import { exioButton, exioCheckbox, exioDropdown, exioIcon, exioTextbox } from 'exio/svelte';
+  import { theme, showProfileIcons, showUsernames, showTimestamps, showUserBadges, emojiScale, errorDialog, confirmDialog, inputDialog, filterInBackground, initialSetupDone, autoOpenFilterPanel, autoClear } from '../../ts/storage';
+  import { exioButton, exioCheckbox, exioDropdown, exioIcon, exioSlider, exioTextbox } from 'exio/svelte';
   import { forceReloadAll, readFromJson, exportSettingsAsJson, importSettingsFromJson } from '../../ts/ytcf-logic';
   import '../../stylesheets/ui.css';
   import YtcFilterErrorDialog from '../YtcFilterErrorDialog.svelte';
@@ -114,6 +114,28 @@
   <div class="setting-item" style="margin-bottom: 5px;">
     <input class="check" type="checkbox" use:exioCheckbox bind:checked={$showUserBadges} id="show-user-badges" />
     <label for="show-user-badges">Show User Badges</label>
+  </div>
+  <div class="setting-item">
+    <label for="emoji-scale">Emoji size: {Math.round($emojiScale * 100)}%</label>
+    <button
+      type="button"
+      use:exioButton
+      title="Reset emoji size"
+      aria-label="Reset emoji size"
+      on:click={() => { $emojiScale = 1; }}
+    >
+      <span use:exioIcon>restore</span>
+    </button>
+    <input
+      id="emoji-scale"
+      type="range"
+      use:exioSlider
+      min="0.5"
+      max="2"
+      step="0.05"
+      bind:value={$emojiScale}
+      aria-valuetext="{Math.round($emojiScale * 100)}%"
+    />
   </div>
 </div>
 <!-- <div class="settings-title big-text">Background Activity</div> -->
