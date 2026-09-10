@@ -1,6 +1,7 @@
 module.exports = {
   moduleFileExtensions: ['js', 'svelte', 'ts'],
   moduleNameMapper: {
+    '^@livetl/ui/(.*)$': '<rootDir>/../../packages/ui/dist/$1.js',
     '^utils(.*)$': '<rootDir>/src/utils$1',
     '^.+\\.(css|less|scss)$': 'babel-jest',
   },

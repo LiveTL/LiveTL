@@ -2,7 +2,7 @@
   import { macros } from '../../js/store.js';
   import Checkbox from '../common/Checkbox.svelte';
   import TextField from '../common/TextField.svelte';
-  import Button from '../common/IconButton.svelte';
+  import Button from '@livetl/ui/IconButton';
 
   export let name;
   export let expansion;

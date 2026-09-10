@@ -1,4 +1,5 @@
 import 'smelte/src/tailwind.css';
+import '@livetl/ui/styles.css';
 
 import App from '../../components/OptionsDisplay.svelte';
 import { DisplayMode } from '../constants.js';

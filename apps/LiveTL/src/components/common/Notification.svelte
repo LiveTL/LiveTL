@@ -2,7 +2,7 @@
   import { tick } from 'svelte';
   import { TextDirection } from '../../js/constants';
   import { textDirection } from '../../js/store';
-  import IconButton from './IconButton.svelte';
+  import IconButton from '@livetl/ui/IconButton';
 
   export let active = false;
 

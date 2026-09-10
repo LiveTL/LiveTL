@@ -1,6 +1,6 @@
 <script lang="ts">
   import { currentlyEditingPreset } from '../../js/store';
-  import Button from 'smelte/src/components/Button';
+  import Button from '@livetl/ui/Button';
   import { createEventDispatcher } from 'svelte';
 
   const dispatch = createEventDispatcher();

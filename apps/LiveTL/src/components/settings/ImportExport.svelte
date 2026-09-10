@@ -1,10 +1,10 @@
 <script lang="ts">
   import { importStores, exportStores } from '../../js/storage.js';
   import { compose } from '../../js/utils.js';
-  import Button from 'smelte/src/components/Button';
+  import Button from '@livetl/ui/Button';
   import Dialog from '../common/Dialog.svelte';
   import TextField from '../common/TextField.svelte';
-  import IconButton from '../common/IconButton.svelte';
+  import IconButton from '@livetl/ui/IconButton';
 
   let isImporting = false;
   let value = '';

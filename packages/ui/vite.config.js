@@ -1,13 +1,15 @@
-import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { svelte, vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { defineConfig } from 'vite';
 
+import componentNames from './components.js';
+
 export default defineConfig({
-  plugins: [svelte()],
+  plugins: [svelte({ preprocess: vitePreprocess() })],
   build: {
     lib: {
-      entry: 'src/Icon.svelte',
+      entry: Object.fromEntries(componentNames.map((name) => [name, `src/${name}.svelte`])),
       formats: ['es'],
-      fileName: () => 'Icon.js',
+      fileName: (_, entryName) => `${entryName}.js`,
     },
     rollupOptions: {
       external: [/^svelte(?:\/.*)?$/],

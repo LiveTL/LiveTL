@@ -1,4 +1,5 @@
 import 'smelte/src/tailwind.css';
+import '@livetl/ui/styles.css';
 
 import Settings from './components/Settings.svelte';
 
