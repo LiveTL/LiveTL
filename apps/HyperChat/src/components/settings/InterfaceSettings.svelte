@@ -44,6 +44,15 @@
     superchatBarWasToggled = superchatBarWasToggled !== null;
   };
   $: $enableStickySuperchatBar, updateSuperchatBarToggle();
+
+  let emojiSize: number | undefined;
+  let editingEmojiSize = false;
+  $: if (!editingEmojiSize) emojiSize = Math.round($emojiScale * 100);
+  const setEmojiSize = (value: number | undefined) => {
+    const size = value !== undefined && Number.isFinite(value) ? value : $emojiScale * 100;
+    $emojiScale = Math.max(50, Math.min(200, Math.round(size))) / 100;
+    emojiSize = Math.round($emojiScale * 100);
+  };
 </script>
 
 <Card title="Appearance" icon="format_paint">
@@ -68,25 +77,66 @@
 </Card>
 
 <Card title="Emojis" icon="emoji_emotions">
-  <div class="flex items-center justify-between gap-2">
-    <label for="emoji-scale">Emoji size: {Math.round($emojiScale * 100)}%</label>
-    <button
-      type="button"
-      class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-200 dark:hover:bg-dark-400"
-      title="Reset emoji size"
-      aria-label="Reset emoji size"
-      on:click={() => { $emojiScale = 1; }}
-    >
-      <Icon small>restore</Icon>
-    </button>
+  <div class="flex flex-wrap items-center justify-between gap-2">
+    <label for="emoji-size">Emoji size</label>
+    <div class="flex items-center gap-1">
+      <button
+        type="button"
+        class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-200 dark:hover:bg-dark-400 disabled:opacity-50"
+        title="Decrease emoji size"
+        aria-label="Decrease emoji size"
+        disabled={$emojiScale <= 0.5}
+        on:click={() => setEmojiSize(Math.round($emojiScale * 100) - 5)}
+      >
+        <Icon small>remove</Icon>
+      </button>
+      <input
+        id="emoji-size"
+        type="number"
+        min="50"
+        max="200"
+        step="1"
+        bind:value={emojiSize}
+        on:focus={() => { editingEmojiSize = true; }}
+        on:blur={() => { editingEmojiSize = false; }}
+        on:input={(e) => {
+          if (e.currentTarget.validity.valid && Number.isFinite(e.currentTarget.valueAsNumber)) {
+            setEmojiSize(e.currentTarget.valueAsNumber);
+          }
+        }}
+        on:change={() => setEmojiSize(emojiSize)}
+        class="w-16 h-8 px-2 rounded border border-gray-300 dark:border-dark-400 bg-white dark:bg-dark-500 text-right"
+      />
+      <span>%</span>
+      <button
+        type="button"
+        class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-200 dark:hover:bg-dark-400 disabled:opacity-50"
+        title="Increase emoji size"
+        aria-label="Increase emoji size"
+        disabled={$emojiScale >= 2}
+        on:click={() => setEmojiSize(Math.round($emojiScale * 100) + 5)}
+      >
+        <Icon small>add</Icon>
+      </button>
+      <button
+        type="button"
+        class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-200 dark:hover:bg-dark-400"
+        title="Reset emoji size"
+        aria-label="Reset emoji size"
+        on:click={() => setEmojiSize(100)}
+      >
+        <Icon small>restore</Icon>
+      </button>
+    </div>
   </div>
   <input
     id="emoji-scale"
     type="range"
     min="0.5"
     max="2"
-    step="0.05"
+    step="0.01"
     bind:value={$emojiScale}
+    aria-label="Emoji size"
     aria-valuetext="{Math.round($emojiScale * 100)}%"
     class="w-full rounded cursor-pointer bg-primary-200 my-2"
     style="--bg: var(--color-primary-500); --bg-focus: var(--color-primary-500)"

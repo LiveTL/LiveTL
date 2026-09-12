@@ -85,6 +85,15 @@
       unit: unitAutoClear
     };
   };
+
+  let emojiSize: number | undefined;
+  let editingEmojiSize = false;
+  $: if (!editingEmojiSize) emojiSize = Math.round($emojiScale * 100);
+  const setEmojiSize = (value: number | undefined) => {
+    const size = value !== undefined && Number.isFinite(value) ? value : $emojiScale * 100;
+    $emojiScale = Math.max(50, Math.min(200, Math.round(size))) / 100;
+    emojiSize = Math.round($emojiScale * 100);
+  };
 </script>
 
 <YtcFilterErrorDialog />
@@ -116,24 +125,68 @@
     <label for="show-user-badges">Show User Badges</label>
   </div>
   <div class="setting-item">
-    <label for="emoji-scale">Emoji size: {Math.round($emojiScale * 100)}%</label>
-    <button
-      type="button"
-      use:exioButton
-      title="Reset emoji size"
-      aria-label="Reset emoji size"
-      on:click={() => { $emojiScale = 1; }}
-    >
-      <span use:exioIcon>restore</span>
-    </button>
+    <div class="emoji-size-row">
+      <label for="emoji-size">Emoji size</label>
+      <div class="emoji-size-controls">
+        <button
+          type="button"
+          use:exioButton
+          title="Decrease emoji size"
+          aria-label="Decrease emoji size"
+          disabled={$emojiScale <= 0.5}
+          on:click={() => setEmojiSize(Math.round($emojiScale * 100) - 5)}
+        >
+          <span use:exioIcon>remove</span>
+        </button>
+        <input
+          id="emoji-size"
+          type="number"
+          use:exioTextbox
+          min="50"
+          max="200"
+          step="1"
+          bind:value={emojiSize}
+          on:focus={() => { editingEmojiSize = true; }}
+          on:blur={() => { editingEmojiSize = false; }}
+          on:input={(e) => {
+            if (e.currentTarget.validity.valid && Number.isFinite(e.currentTarget.valueAsNumber)) {
+              setEmojiSize(e.currentTarget.valueAsNumber);
+            }
+          }}
+          on:change={() => setEmojiSize(emojiSize)}
+          style="width: 5em; height: 2em; text-align: right;"
+        />
+        <span>%</span>
+        <button
+          type="button"
+          use:exioButton
+          title="Increase emoji size"
+          aria-label="Increase emoji size"
+          disabled={$emojiScale >= 2}
+          on:click={() => setEmojiSize(Math.round($emojiScale * 100) + 5)}
+        >
+          <span use:exioIcon>add</span>
+        </button>
+        <button
+          type="button"
+          use:exioButton
+          title="Reset emoji size"
+          aria-label="Reset emoji size"
+          on:click={() => setEmojiSize(100)}
+        >
+          <span use:exioIcon>restore</span>
+        </button>
+      </div>
+    </div>
     <input
       id="emoji-scale"
       type="range"
       use:exioSlider
       min="0.5"
       max="2"
-      step="0.05"
+      step="0.01"
       bind:value={$emojiScale}
+      aria-label="Emoji size"
       aria-valuetext="{Math.round($emojiScale * 100)}%"
     />
   </div>
@@ -224,6 +277,22 @@
 </div>
 
 <style>
+  .emoji-size-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .emoji-size-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .emoji-size-controls button {
+    width: 2em;
+    height: 2em;
+    padding: 0;
+  }
   .setting-item {
     display: block;
     margin-top: 10px;
