@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/turbo/schema.json",
-  "globalDependencies": ["apps/HyperChat/package.json"],
+  "globalDependencies": ["apps/HyperChat/package.json", "apps/HyperChat/src/**"],
   "tasks": {
     "//#format": {
       "cache": false
