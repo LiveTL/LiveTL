@@ -1,12 +1,9 @@
 <ul class="list-disc list-inside">
   <strong>Serving in our latest update:</strong>
   <li>
-    Hide video unavailable errors
+    Add emoji size setting
   </li>
   <li>
-    Customize emoji size
-  </li>
-  <li>
-    Fix version display
+    Fix chat load errors
   </li>
 </ul>
