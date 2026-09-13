@@ -10,6 +10,7 @@
   import YtcFilterInputDialog from './YtcFilterInputDialog.svelte';
   import YtcFilterErrorDialog from './YtcFilterErrorDialog.svelte';
   import LoadingBar from './common/LoadingBar.svelte';
+  const appVersion = __VERSION__;
   $: document.documentElement.setAttribute('data-theme', $dataTheme);
   let hasV2Data = false;
   const params = new URLSearchParams(window.location.search);
@@ -157,7 +158,7 @@
       {#if currentPanel === 'welcome'}
         <div style="text-align: center;" use:exioZoomInAnimation>
           <div style="font-size: 1.5rem;">Welcome to</div>
-          <div class="ytcf-text">YtcFilter v3</div>
+          <div class="ytcf-text">YtcFilter v{appVersion}</div>
           <div style="font-size: 0.9rem;">Made with 🧡 by the devs<br />behind LiveTL and HyperChat</div>
           <button use:exioButton style="font-size: 1rem; margin-top: 1rem;" on:click={startSetup}>
             Start Setup
