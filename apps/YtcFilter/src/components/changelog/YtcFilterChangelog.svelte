@@ -1,1 +1,1 @@
-custom emote sizes, hide video errors
+emote sizing, fix yt errors
