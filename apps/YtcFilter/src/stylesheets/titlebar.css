@@ -1,0 +1,18 @@
+#primary-content {
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+}
+
+#view-selector {
+  flex-grow: 1;
+  width: 100%;
+}
+
+#primary-content > #title {
+  width: 0px;
+}
+
+#view-selector #label #label-text {
+  white-space: break-spaces;
+}

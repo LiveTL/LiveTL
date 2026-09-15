@@ -16,7 +16,7 @@ to essentially "wing it" should you wish to contribute.
 
 ## Pull Request Guidelines
 
-1. Only pull requests to the development branch will be honored.
+1. Target pull requests to the `main` branch.
 2. Explain what you did and how.
 3. If its a new feature, explain what it is.
 4. Add a screen shot if applicable.
@@ -25,7 +25,7 @@ to essentially "wing it" should you wish to contribute.
 ## Set up a local development environment
 
 **Refer
-to '[Starting up a local development environment](https://github.com/LiveTL/LiveTL/blob/develop/CONTRIBUTING.md#starting-up-a-local-development-environment)'
+to '[Starting up a local development environment](https://github.com/LiveTL/LiveTL/blob/main/CONTRIBUTING.md#starting-up-a-local-development-environment)'
 if you have already set up a local development environment**
 
 **If you have difficulty setting up this environment, do _not_ open an issue. Message one of the admins or ask for help
@@ -35,7 +35,7 @@ on this [Discord server](https://discord.gg/uJrV3tmthg).**
 
 - Git ([Windows](https://git-scm.com/download/win) | [MacOS](https://git-scm.com/download/mac)
   | [Linux](https://git-scm.com/download/linux))
-- Node.js 10+ ([Windows, MacOS, and Linux](https://nodejs.org/en/download))
+- Node.js 24 ([Windows, MacOS, and Linux](https://nodejs.org/en/download))
 - Chrome ([Windows, MacOS, and Linux](https://www.google.com/chrome/))
 - Firefox ([Windows, MacOS, and Linux](https://www.mozilla.org/en-US/firefox/new/))
 
@@ -43,24 +43,31 @@ on this [Discord server](https://discord.gg/uJrV3tmthg).**
 
 1. Clone this repo (`git clone https://github.com/LiveTL/LiveTL.git`)
 2. Change directory `cd` to the newly created `LiveTL` repo.
-3. Switch to the `develop` branch (`git checkout develop`)
+3. Switch to the maintained branch (`git switch main`)
+4. Install dependencies (`npm ci`)
 
-   Congratulations, you should now be running a local environment for LiveTL!
+   Congratulations, you should now be running a local environment for the LiveTL monorepo!
 
 ## Starting up a local development environment
 
 **Refer
-to '[Set up a local development environment](https://github.com/LiveTL/LiveTL/blob/develop/CONTRIBUTING.md#set-up-a-local-development-environment)'
+to '[Set up a local development environment](https://github.com/LiveTL/LiveTL/blob/main/CONTRIBUTING.md#set-up-a-local-development-environment)'
 if you have not yet set up a local development environment with the instructions provided above.**
 
 **If you have difficulty starting up your environments, do _not_ open an issue. Message one of the admins or ask for
 help on the [discord server](https://discord.gg/uJrV3tmthg).**
 
-- `yarn start` will start the development server in hmr mode
-- `yarn test:watch` will run the tests in watch mode
-- `make clean` will clear the build
-- In firefox, use about:debuggging to load the extension.
-- In chromium-based browsers, load an unpacked extension in the extension menu.
+- `npm run start` watches the Chrome MV3 build
+- `npm run dev:firefox` watches the Firefox MV3 build
+- `npm run dev:mv2` watches the Firefox MV2 build
+- `VERSION=0.0.0 npm run build` builds, verifies, and packages every target
+- `npm run test:watch` will run the tests in watch mode
+- These root dev commands target LiveTL by default. For standalone HyperChat or
+  YtcFilter commands, use the app README.
+- In Firefox, use `about:debugging` to load `apps/LiveTL/build/firefox` or
+  `apps/LiveTL/build/mv2`.
+- In Chromium-based browsers, load `apps/LiveTL/build/chrome` as an unpacked
+  extension.
 
 ## Naming Scheme Conventions
 
@@ -73,11 +80,16 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 ## Directory structure
 
 .\
-├── build - build files that get hot reloaded\
-├── dist - two zips, one for firefox and one for chrome\
-├── e2e - python selenium tests\
-├── img - images used in LiveTL README and docs\
-├── src\
+├── apps\
+│ ├── HyperChat - standalone HyperChat extension\
+│ │ └── src - chat parsing, rendering, actions, and shared chat behavior\
+│ ├── YtcFilter - standalone filtered chat extension\
+│ │ └── src - filters, presets, archives, settings, and filtered chat runtime\
+│ └── LiveTL\
+│ ├── build - browser targets and release archives\
+│ ├── e2e - python browser tests\
+│ ├── img - images used in LiveTL README and docs\
+│ └── src\
 │   ├── changelogs - changelog components\
 │   │   ├── common\
 │   │   └── img\
@@ -88,14 +100,10 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 │   ├── img - images available in the extension\
 │   ├── js - all our modules\
 │   │   ├── content_scripts - has the injector script that injects the LiveTL buttons\
-│   │   ├── pages - the exports of the svelte components that represent each LiveTL page\
-│   │   └── polyfills - polyfills we use\
+│   │   └── pages - the exports of the svelte components that represent each LiveTL page\
 │   ├── plugins - plugins for injection to our script\
-│   ├── submodules - submodules\
-│   │   └── chat - the chat optimizer of [Hyperchat](https://www.github.com/LiveTL/HyperChat)\
-│   └── __tests__ - tests that match the directory structure of `src`\
-├── theme - theming for svelte-materialify\
-└── utils - utility scripts for yarn commands
+│   ├── hyperchat - LiveTL entry points for the shared HyperChat source\
+│   └── **tests** - tests that match the directory structure of `src`
 
 ## Other
 

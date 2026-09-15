@@ -1,18 +1,17 @@
-# LiveTL - Translation Filter for Streams
+# LiveTL Monorepo
 
-[![Tests](https://github.com/LiveTL/LiveTL/actions/workflows/tests.yaml/badge.svg)](https://github.com/LiveTL/LiveTL/actions/workflows/tests.yaml)
-[![E2E Tests](https://github.com/LiveTL/LiveTL/actions/workflows/tests-e2e.yml/badge.svg)](https://github.com/LiveTL/LiveTL/actions/workflows/tests-e2e.yml)
+This repository contains [the LiveTL translation extension](./apps/LiveTL),
+[the standalone HyperChat extension](./apps/HyperChat), and the
+[YtcFilter chat filter extension](./apps/YtcFilter).
+
+[![Build](https://github.com/LiveTL/LiveTL/actions/workflows/build.yml/badge.svg)](https://github.com/LiveTL/LiveTL/actions/workflows/build.yml)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg)](https://github.com/standard/semistandard)
+[![code style: oxfmt](https://img.shields.io/badge/code%20style-oxfmt-brightgreen.svg)](https://www.npmjs.com/package/oxfmt)
 [![Contributors](https://img.shields.io/github/contributors/LiveTL/LiveTL)](https://github.com/LiveTL/LiveTL/contributors)
 [![Issues](https://img.shields.io/github/issues/LiveTL/LiveTL)](https://github.com/LiveTL/LiveTL/issues)
-![Total Lines](https://img.shields.io/tokei/lines/github/LiveTL/LiveTL)
+![Code Size](https://img.shields.io/github/languages/code-size/LiveTL/LiveTL)
 [![Commit Activity](https://img.shields.io/github/commit-activity/w/LiveTL/LiveTL)](https://github.com/LiveTL/LiveTL/commits/)
 [![Discord](https://img.shields.io/discord/780938154437640232.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/uJrV3tmthg)
-
-### [Download LiveTL](https://livetl.app/)
-
-![Demo](./img/demo.png)
 
 ## Feedback and Contributing
 
@@ -24,35 +23,15 @@ submit a Pull Request!
 
 ## Development
 
-### Setup
+All three extensions are maintained on `main`. Manifest versions are build
+targets, not separate source branches.
 
-> ℹ LiveTL uses submodules. Make sure to clone the repo with the `--recursive` flag!
->
-> ℹ When pulling, you should also use `git pull --recurse`.
+Refer to the specific READMEs for details:
 
-```bash
-yarn # use yarn, not npm
-```
-
-### Commands
-
-```bash
-yarn start # devServer
-yarn build:production # production
-yarn package # package extension zips
-yarn build:android # android
-yarn test # jest
-yarn test:watch # autotest
-yarn format # lint
-yarn e2e # run e2e tests
-```
-
-Load the `build` directory in Chrome developer mode.
-
-### Hot Reload
-
-Enable `chrome://flags/#allow-insecure-localhost` to use hot module and UI component reloading.
+- [LiveTL](apps/LiveTL/README.md)
+- [HyperChat](apps/HyperChat/README.md)
+- [YtcFilter](apps/YtcFilter/README.md)
 
 ## Developers
 
-LiveTL is developed by [these fine people](https://github.com/LiveTL/LiveTL/graphs/contributors)!
+This project is developed by [these fine people](https://github.com/LiveTL/LiveTL/graphs/contributors)!

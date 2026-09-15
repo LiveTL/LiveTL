@@ -1,0 +1,13 @@
+{
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "outDir": "./build/",
+    "baseUrl": "./src",
+    "strict": true,
+    "lib": ["DOM"],
+    "target": "ES2017"
+  },
+  "include": ["src/**/*", "*.js", "utils/**/*", "scripts/**/*", "vite.config.ts"],
+  "exclude": ["node_modules", "build"]
+}

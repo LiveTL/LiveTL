@@ -1,15 +1,17 @@
-node_modules/*
+node_modules/
 build
 dist
 secrets.*.js
-package-lock.json
 .vscode
 .idea/
 *.swp
 *.log
 __pycache__/
 .eslintcache
+.codex-profile/
+.codex-runtime/
 
 .DS_Store
 venv/
 failure-test*.png
+.turbo/

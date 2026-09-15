@@ -1,4 +1,5 @@
 name: Update Screenshots
+
 on:
   workflow_dispatch:
     inputs:
@@ -6,30 +7,39 @@ on:
         description: 'Pages to screenshot. "all" or a list separated by commas.'
         required: true
         default: 'all'
-  
+
 jobs:
   update_screenshots:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          submodules: 'recursive'
-      - uses: c-hive/gha-yarn-cache@v1
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Cache for Turbo
+        uses: rharkor/caching-for-turbo@5d14fba18e450c09393333cfd4242e8b3cb455a6 # v2.4.2
+
       - name: Install modules
         run: |
-          yarn
-          yarn add puppeteer
+          npm ci
+          npm install --no-save --package-lock=false puppeteer
           sudo apt install xvfb libnss3 libatk-adaptor libcups2 libxkbcommon0 libgtk-3-0 libgbm1 fonts-indic fonts-noto fonts-noto-cjk
+
       - name: Build extensions
-        run: |
-          yarn build production
-          yarn package
+        run: npm run build
+
       - name: Screenshot pages
         run: |
-          mkdir ss
-          yarn ss ${{ github.event.inputs.pages }}
+          mkdir -p apps/LiveTL/ss
+          npm run ss -- ${{ github.event.inputs.pages }}
+
       - name: Commit screenshots
         uses: EndBug/add-and-commit@v7
         with:
           message: 'Updated screenshots'
-          add: img
+          add: apps/LiveTL/img
