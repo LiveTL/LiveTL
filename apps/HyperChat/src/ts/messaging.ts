@@ -3,6 +3,7 @@ import sha1 from 'sha-1';
 import {
   chatReportUserOptions,
   ChatUserActions,
+  ChatPollActions,
   ChatReportUserOptions,
   replyThreadPanelTag,
   currentDomain,
@@ -473,6 +474,24 @@ const fetchReplyThread = async (requestId: string, params: string, ytcfg: YtCfg,
   );
 };
 
+const executePollAction = async (poll: Ytc.ParsedPoll, ytcfg: YtCfg, action: ChatPollActions): Promise<void> => {
+  try {
+    if (action !== ChatPollActions.END_POLL) return;
+    const params = poll.item.action?.params;
+    const apiPath = poll.item.action?.api || '/youtubei/v1/live_chat/live_chat_action';
+    if (!params) return;
+    await proxyFetch(`${currentDomain}${apiPath}?prettyPrint=false`, {
+      ...buildInnertubeHeaders(ytcfg),
+      body: JSON.stringify({
+        context: ytcfg.data_.INNERTUBE_CONTEXT,
+        params,
+      }),
+    });
+  } catch (e) {
+    console.debug('Error executing poll action', e);
+  }
+};
+
 export const initInterceptor = (source: Chat.InterceptorSource, ytcfg: YtCfg, isReplay?: boolean): void => {
   if (source === 'ytc') {
     const queue = ytcQueue(isReplay);
@@ -507,6 +526,9 @@ export const initInterceptor = (source: Chat.InterceptorSource, ytcfg: YtCfg, is
           break;
         case 'executeChatAction':
           executeChatAction(message.message, ytcfg, message.action, message.reportOption).catch(console.error);
+          break;
+        case 'executePollAction':
+          executePollAction(message.poll, ytcfg, message.action).catch(console.error);
           break;
         case 'fetchReplyThread':
           fetchReplyThread(message.requestId, message.params, ytcfg, isReplay ?? false).catch(console.error);
