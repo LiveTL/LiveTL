@@ -1,5 +1,6 @@
 <script lang="ts">
   import Message from './Message.svelte';
+  import GiftedMembershipToggle from './GiftedMembershipToggle.svelte';
   import MessageRun from './MessageRuns.svelte';
   import { formatAuthorName } from '../ts/component-utils';
   import { showProfileIcons, showTimestamps } from '../ts/storage';
@@ -50,6 +51,7 @@
       {#if membership}
         <MessageRun class="float-right align-middle ml-2" runs={membership.headerSubtext} />
       {/if}
+      <div class="float-right ml-2"><GiftedMembershipToggle /></div>
       {#if primaryText && primaryText.length > 0}
         <MessageRun class="font-medium block clear-both" runs={primaryText} />
       {/if}

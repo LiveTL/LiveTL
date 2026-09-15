@@ -473,6 +473,53 @@ const fetchReplyThread = async (requestId: string, params: string, ytcfg: YtCfg,
   );
 };
 
+const toggleMembershipGifting = async (port: Chat.Port): Promise<void> => {
+  let success = true;
+  try {
+    const parent = window.parent.document;
+    const waitAndClick = async (find: () => HTMLElement | null): Promise<void> => {
+      await new Promise<void>((resolve, reject) => {
+        const finish = (error?: Error): void => {
+          clearInterval(interval);
+          clearTimeout(timeout);
+          if (error != null) reject(error);
+          else resolve();
+        };
+        const check = (): void => {
+          try {
+            const item = find();
+            if (item != null) {
+              item.click();
+              finish();
+            }
+          } catch (error) {
+            finish(error instanceof Error ? error : new Error(String(error)));
+          }
+        };
+        const interval = setInterval(check, 50);
+        const timeout = setTimeout(() => finish(new Error('Membership gifting controls were not found')), 1000);
+        check();
+      });
+    };
+    await waitAndClick(() =>
+      parent.querySelector<HTMLElement>('#owner #sponsor-button button, #owner .ytd-button-renderer .style-suggestive'),
+    );
+    await waitAndClick(() => parent.querySelector<HTMLElement>('.ytd-sponsorships-offer-renderer button'));
+    // The original PR selected the third menu item. Match the intended setting
+    // instead; this legacy UI flow still needs current/localized YouTube validation.
+    await waitAndClick(
+      () =>
+        Array.from(parent.querySelectorAll<HTMLElement>('ytd-menu-service-item-renderer')).find((item) =>
+          /gift(?:ing)? settings/i.test(item.textContent ?? ''),
+        ) ?? null,
+    );
+  } catch (error) {
+    console.debug('Error opening membership gifting settings', error);
+    success = false;
+  }
+  port.postMessage({ type: 'toggleMembershipGiftingResponse', success });
+};
+
 export const initInterceptor = (source: Chat.InterceptorSource, ytcfg: YtCfg, isReplay?: boolean): void => {
   if (source === 'ytc') {
     const queue = ytcQueue(isReplay);
@@ -507,6 +554,9 @@ export const initInterceptor = (source: Chat.InterceptorSource, ytcfg: YtCfg, is
           break;
         case 'executeChatAction':
           executeChatAction(message.message, ytcfg, message.action, message.reportOption).catch(console.error);
+          break;
+        case 'toggleMembershipGifting':
+          toggleMembershipGifting(port).catch(console.error);
           break;
         case 'fetchReplyThread':
           fetchReplyThread(message.requestId, message.params, ytcfg, isReplay ?? false).catch(console.error);
