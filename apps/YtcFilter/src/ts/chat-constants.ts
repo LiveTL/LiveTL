@@ -99,3 +99,5 @@ export const replyThreadPanelTag = 'PAreply_thread';
 export const currentDomain = location.host.includes('youtube')
   ? location.protocol + '//' + location.host
   : 'https://www.youtube.com';
+
+export const isYtFrame = new URLSearchParams(location.search).get('isYtFrame') === '1';
