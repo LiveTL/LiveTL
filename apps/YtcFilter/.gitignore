@@ -1,0 +1,23 @@
+.DS_Store
+node_modules
+build
+.eslintcache
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+.codex-runtime/
+.codex-profile/

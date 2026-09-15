@@ -41,13 +41,12 @@ on this [Discord server](https://discord.gg/uJrV3tmthg).**
 
 ### Setting up the environment
 
-1. Clone this repo with submodules (`git clone --recursive https://github.com/LiveTL/LiveTL.git`)
+1. Clone this repo (`git clone https://github.com/LiveTL/LiveTL.git`)
 2. Change directory `cd` to the newly created `LiveTL` repo.
 3. Switch to the maintained branch (`git switch main`)
 4. Install dependencies (`npm ci`)
-5. Install the managed test browsers (`npx playwright install chromium firefox`)
 
-   Congratulations, you should now be running a local environment for LiveTL!
+   Congratulations, you should now be running a local environment for the LiveTL monorepo!
 
 ## Starting up a local development environment
 
@@ -61,16 +60,14 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 - `npm run start` watches the Chrome MV3 build
 - `npm run dev:firefox` watches the Firefox MV3 build
 - `npm run dev:mv2` watches the Firefox MV2 build
-- `VERSION=0.0.0 npm run build` builds and verifies every target
-- `npm run package` creates the Chrome MV3 and Firefox MV2 release ZIPs
+- `VERSION=0.0.0 npm run build` builds, verifies, and packages every target
 - `npm run test:watch` will run the tests in watch mode
-- `npm run test:e2e` tests existing builds with deterministic browser fixtures
-- `npm run test:e2e:live` runs the manual real-YouTube tests without rebuilding
-- `npm run test:e2e:ui` opens Playwright UI mode for existing builds
-- `npm run e2e` builds all targets and runs the deterministic browser tests
-- `npm run e2e:live` runs the manual real-YouTube Chrome MV3 tests
-- In Firefox, use `about:debugging` to load `build/firefox` or `build/mv2`.
-- In Chromium-based browsers, load `build/chrome` as an unpacked extension.
+- These root dev commands target LiveTL by default. For standalone HyperChat or
+  YtcFilter commands, use the app README.
+- In Firefox, use `about:debugging` to load `apps/LiveTL/build/firefox` or
+  `apps/LiveTL/build/mv2`.
+- In Chromium-based browsers, load `apps/LiveTL/build/chrome` as an unpacked
+  extension.
 
 ## Naming Scheme Conventions
 
@@ -78,15 +75,21 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 - folders are hyphen-cased
 - test files are cased according to the file that the test runs
 - follow the [semistandard style](https://github.com/standard/semistandard) for javascript
+- use [black](https://github.com/psf/black) and [isort](https://github.com/pycqa/isort/) for python
 
 ## Directory structure
 
 .\
-├── build - isolated chrome, firefox, and mv2 build targets\
-├── dist - two zips, one for firefox and one for chrome\
-├── e2e - Playwright browser tests and fixtures\
-├── img - images used in LiveTL README and docs\
-├── src\
+├── apps\
+│ ├── HyperChat - standalone HyperChat extension\
+│ │ └── src - chat parsing, rendering, actions, and shared chat behavior\
+│ ├── YtcFilter - standalone filtered chat extension\
+│ │ └── src - filters, presets, archives, settings, and filtered chat runtime\
+│ └── LiveTL\
+│ ├── build - browser targets and release archives\
+│ ├── e2e - python browser tests\
+│ ├── img - images used in LiveTL README and docs\
+│ └── src\
 │   ├── changelogs - changelog components\
 │   │   ├── common\
 │   │   └── img\
@@ -99,11 +102,8 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 │   │   ├── content_scripts - has the injector script that injects the LiveTL buttons\
 │   │   └── pages - the exports of the svelte components that represent each LiveTL page\
 │   ├── plugins - plugins for injection to our script\
-│   ├── submodules - submodules\
-│   │   └── chat - the chat optimizer of [Hyperchat](https://www.github.com/LiveTL/HyperChat)\
-│   └── __tests__ - tests that match the directory structure of `src`\
-├── theme - theming for svelte-materialify\
-└── utils - utility scripts for build commands
+│   ├── hyperchat - LiveTL entry points for the shared HyperChat source\
+│   └── **tests** - tests that match the directory structure of `src`
 
 ## Other
 
@@ -113,3 +113,18 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 These guidelines are based off the guidelines from [Pogify](https://www.github.com/Pogify/pogify).
 
 ## **Thanks for contributing to LiveTL! We can't wait to see what you do with it!**
+
+## Playwright migration (draft)
+
+The proposed browser suite lives in `apps/LiveTL/e2e` and uses
+`apps/LiveTL/playwright.config.mjs`. Build the LiveTL targets first with
+`npm run e2e:build`, then install the test browsers with
+`npm exec -w @livetl/livetl -- playwright install chromium firefox`.
+
+- `npm run test:e2e` runs the deterministic fixtures and packaged Firefox MV2 translator-host test.
+- `npm run test:e2e:live` runs the manual tests against YouTube.
+- `npm run test:e2e:ui` opens Playwright UI mode.
+
+The existing smoke harness and Selenium suite remain available while this draft
+is validated against the monorepo builds. The Firefox test exercises the bundled
+page-side translator host; it does not install the full Firefox extension.
