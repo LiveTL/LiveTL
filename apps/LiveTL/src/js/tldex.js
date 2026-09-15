@@ -2,7 +2,7 @@ import { readable } from 'svelte/store';
 
 import { archiveStreamFromScript } from './api.js';
 import { Holodex, AuthorType, languageNameCode, holodexKey, isTwitch } from './constants.js';
-import { enableTldexTLs } from './store.js';
+import { enableTldexTLs, mchadUsers, languages } from './store.js';
 import * as Twitch from './twitch.js';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as Ty from './types.js';
