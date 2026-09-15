@@ -170,6 +170,12 @@ declare namespace Chat {
     reportOption?: ChatReportUserOptions;
   }
 
+  interface executePollActionMsg {
+    type: 'executePollAction';
+    poll: Ytc.ParsedPoll;
+    action: ChatPollActions;
+  }
+
   type BackgroundMessage =
     | RegisterInterceptorMsg
     | RegisterClientMsg
@@ -180,6 +186,7 @@ declare namespace Chat {
     | getThemeMsg
     | RegisterYtcInterceptorMsg
     | executeChatActionMsg
+    | executePollActionMsg
     | chatUserActionResponse
     | Ping
     | fetchReplyThreadMsg
