@@ -1,17 +1,19 @@
 import { writable } from 'svelte/store';
 
-import { ChatReportUserOptions, ChatUserActions } from './chat-constants';
-import { reportDialog } from './storage';
+import { ChatReportUserOptions, ChatUserActions, chatModeratorRoleOptions, chatTimeoutOptions } from './chat-constants';
+import { chatActionOptionDialog, reportDialog } from './storage';
 import type { Chat } from './typings/chat';
 
 export function useBanHammer(message: Ytc.ParsedMessage, action: ChatUserActions, port: Chat.Port | null): void {
-  if (action === ChatUserActions.BLOCK || action === ChatUserActions.DELETE_MESSAGE) {
+  const executeAction = (actionOption?: string): void => {
     port?.postMessage({
       type: 'executeChatAction',
       message,
       action,
+      actionOption,
     });
-  } else if (action === ChatUserActions.REPORT_USER) {
+  };
+  if (action === ChatUserActions.REPORT_USER) {
     const store = writable(null as null | ChatReportUserOptions);
     reportDialog.set({
       callback: (selection) => {
@@ -24,6 +26,26 @@ export function useBanHammer(message: Ytc.ParsedMessage, action: ChatUserActions
       },
       optionStore: store,
     });
+  } else if (action === ChatUserActions.TIMEOUT_USER) {
+    const store = writable(null as null | string);
+    chatActionOptionDialog.set({
+      title: 'Put User In Timeout',
+      confirmText: 'Timeout',
+      items: chatTimeoutOptions,
+      callback: executeAction,
+      optionStore: store,
+    });
+  } else if (action === ChatUserActions.ADD_MODERATOR) {
+    const store = writable(null as null | string);
+    chatActionOptionDialog.set({
+      title: 'Add Moderator',
+      confirmText: 'Add',
+      items: chatModeratorRoleOptions,
+      callback: executeAction,
+      optionStore: store,
+    });
+  } else {
+    executeAction();
   }
 }
 
