@@ -35,9 +35,9 @@
     "update:list": "npm run update:list -w @livetl/livetl",
     "type:check": "turbo run type:check",
     "verify:build": "turbo run verify:build",
-    "test:e2e": "npm run test:e2e -w @livetl/livetl",
-    "test:e2e:live": "npm run test:e2e:live -w @livetl/livetl",
-    "test:e2e:ui": "npm run test:e2e:ui -w @livetl/livetl"
+    "test:e2e": "npm run test:e2e -w @livetl/livetl --",
+    "test:e2e:live": "npm run test:e2e:live -w @livetl/livetl --",
+    "test:e2e:ui": "npm run test:e2e:ui -w @livetl/livetl --"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.21.0",
