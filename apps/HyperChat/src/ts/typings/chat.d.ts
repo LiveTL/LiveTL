@@ -96,6 +96,15 @@ declare namespace Chat {
     success: boolean;
   }
 
+  interface toggleMembershipGiftingMsg {
+    type: 'toggleMembershipGifting';
+  }
+
+  interface toggleMembershipGiftingResponse {
+    type: 'toggleMembershipGiftingResponse';
+    success: boolean;
+  }
+
   interface fetchReplyThreadMsg {
     type: 'fetchReplyThread';
     requestId: string;
@@ -119,7 +128,8 @@ declare namespace Chat {
     | executeChatActionMsg
     | chatUserActionResponse
     | Ping
-    | replyThreadResponse;
+    | replyThreadResponse
+    | toggleMembershipGiftingResponse;
 
   type InterceptorSource = 'ytc' | 'ltlMessage';
 
@@ -194,7 +204,9 @@ declare namespace Chat {
     | chatUserActionResponse
     | Ping
     | fetchReplyThreadMsg
-    | replyThreadResponse;
+    | toggleMembershipGiftingMsg
+    | replyThreadResponse
+    | toggleMembershipGiftingResponse;
 
   type Port = Omit<chrome.runtime.Port, 'postMessage' | 'onMessage'> & {
     postMessage: (message: BackgroundMessage | BackgroundResponse) => void;

@@ -166,6 +166,11 @@ const chatLoaded = async (): Promise<void> => {
   const params = new URLSearchParams();
   params.set('tabid', frameInfo.tabId.toString());
   params.set('frameid', frameInfo.frameId.toString());
+  try {
+    params.set('isYtFrame', window.parent.location.pathname === '/watch' ? '1' : '0');
+  } catch {
+    // The watch-page gifting controls are unavailable across origins.
+  }
   if (frameIsReplay()) params.set('isReplay', 'true');
   // MV2 can iframe the extension page directly. MV3 cannot, so it points at an
   // empty YouTube 404 page and lets chat-mounter mount into it instead.
