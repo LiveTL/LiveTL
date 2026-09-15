@@ -1,0 +1,65 @@
+{
+  "$schema": "./node_modules/turbo/schema.json",
+  "globalDependencies": ["apps/HyperChat/package.json", "apps/HyperChat/src/**"],
+  "tasks": {
+    "//#format": {
+      "cache": false
+    },
+    "//#format:check": {},
+    "lint": {
+      "cache": false,
+      "dependsOn": ["^build"]
+    },
+    "lint:check": {
+      "cache": false,
+      "dependsOn": ["^build"]
+    },
+    "test": {
+      "cache": false,
+      "dependsOn": ["^build"]
+    },
+    "type:check": {
+      "cache": false,
+      "dependsOn": ["^build"]
+    },
+    "verify:build": {
+      "cache": false,
+      "env": ["VERSION"]
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "build:all": {
+      "env": ["VERSION"],
+      "dependsOn": ["type:check", "build:chrome", "build:firefox", "build:mv2"]
+    },
+    "build:chrome": {
+      "dependsOn": ["^build"],
+      "env": ["MINIFY", "VERSION"],
+      "outputs": ["build/chrome/**", "build/*-Chrome.zip"]
+    },
+    "build:firefox": {
+      "dependsOn": ["^build"],
+      "env": ["MINIFY", "VERSION"],
+      "outputs": ["build/firefox/**", "build/*-Firefox.zip"]
+    },
+    "build:mv2": {
+      "dependsOn": ["^build"],
+      "env": ["MINIFY", "VERSION"],
+      "outputs": ["build/mv2/**", "build/*-mv2.zip"]
+    },
+    "dev:chrome": {
+      "cache": false,
+      "persistent": true
+    },
+    "dev:firefox": {
+      "cache": false,
+      "persistent": true
+    },
+    "dev:mv2": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}

@@ -41,12 +41,12 @@ on this [Discord server](https://discord.gg/uJrV3tmthg).**
 
 ### Setting up the environment
 
-1. Clone this repo with submodules (`git clone --recursive https://github.com/LiveTL/LiveTL.git`)
+1. Clone this repo (`git clone https://github.com/LiveTL/LiveTL.git`)
 2. Change directory `cd` to the newly created `LiveTL` repo.
 3. Switch to the maintained branch (`git switch main`)
 4. Install dependencies (`npm ci`)
 
-   Congratulations, you should now be running a local environment for LiveTL!
+   Congratulations, you should now be running a local environment for the LiveTL monorepo!
 
 ## Starting up a local development environment
 
@@ -60,11 +60,14 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 - `npm run start` watches the Chrome MV3 build
 - `npm run dev:firefox` watches the Firefox MV3 build
 - `npm run dev:mv2` watches the Firefox MV2 build
-- `VERSION=0.0.0 npm run build` builds and verifies every target
-- `npm run package` creates the Chrome MV3 and Firefox MV2 release ZIPs
+- `VERSION=0.0.0 npm run build` builds, verifies, and packages every target
 - `npm run test:watch` will run the tests in watch mode
-- In Firefox, use `about:debugging` to load `build/firefox` or `build/mv2`.
-- In Chromium-based browsers, load `build/chrome` as an unpacked extension.
+- These root dev commands target LiveTL by default. For standalone HyperChat or
+  YtcFilter commands, use the app README.
+- In Firefox, use `about:debugging` to load `apps/LiveTL/build/firefox` or
+  `apps/LiveTL/build/mv2`.
+- In Chromium-based browsers, load `apps/LiveTL/build/chrome` as an unpacked
+  extension.
 
 ## Naming Scheme Conventions
 
@@ -77,11 +80,16 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 ## Directory structure
 
 .\
-├── build - isolated chrome, firefox, and mv2 build targets\
-├── dist - two zips, one for firefox and one for chrome\
-├── e2e - python selenium tests\
-├── img - images used in LiveTL README and docs\
-├── src\
+├── apps\
+│ ├── HyperChat - standalone HyperChat extension\
+│ │ └── src - chat parsing, rendering, actions, and shared chat behavior\
+│ ├── YtcFilter - standalone filtered chat extension\
+│ │ └── src - filters, presets, archives, settings, and filtered chat runtime\
+│ └── LiveTL\
+│ ├── build - browser targets and release archives\
+│ ├── e2e - python browser tests\
+│ ├── img - images used in LiveTL README and docs\
+│ └── src\
 │   ├── changelogs - changelog components\
 │   │   ├── common\
 │   │   └── img\
@@ -94,11 +102,8 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 │   │   ├── content_scripts - has the injector script that injects the LiveTL buttons\
 │   │   └── pages - the exports of the svelte components that represent each LiveTL page\
 │   ├── plugins - plugins for injection to our script\
-│   ├── submodules - submodules\
-│   │   └── chat - the chat optimizer of [Hyperchat](https://www.github.com/LiveTL/HyperChat)\
-│   └── __tests__ - tests that match the directory structure of `src`\
-├── theme - theming for svelte-materialify\
-└── utils - utility scripts for build commands
+│   ├── hyperchat - LiveTL entry points for the shared HyperChat source\
+│   └── **tests** - tests that match the directory structure of `src`
 
 ## Other
 

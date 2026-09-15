@@ -2,12 +2,18 @@
 
 ## Scope
 
-- This repo builds the LiveTL browser extension and vendors HyperChat as a
-  submodule at `src/submodules/chat`.
+- This npm workspace builds LiveTL from `apps/LiveTL`, standalone HyperChat
+  from `apps/HyperChat`, and YtcFilter from `apps/YtcFilter`.
+- LiveTL bundles the shared HyperChat source directly from `apps/HyperChat`.
+- YtcFilter carries an adapted chat runtime in its own workspace. When shared
+  HyperChat runtime behavior changes and applies to YtcFilter, port or merge it
+  into `apps/YtcFilter` explicitly.
 - Keep HyperChat implementation details in HyperChat docs. Do not duplicate
   full HyperChat internals here.
-- For chat internals and architecture, start with
-  `src/submodules/chat/README.md` and then inspect upstream HyperChat directly.
+- For chat internals and architecture, start with `apps/HyperChat/README.md` and
+  `apps/HyperChat/AGENTS.md`.
+- For YtcFilter-specific behavior, start with `apps/YtcFilter/README.md` and
+  `apps/YtcFilter/AGENTS.md`.
 
 ## Branch Discipline (Mandatory)
 
@@ -18,9 +24,9 @@
 - `release` is a legacy rollback branch, not a development or packaging branch.
 - MV2 and MV3 are build targets from the same source, not separate source
   branches. Do not restore the old `develop -> mv3-fr -> release` sync ladder.
-- If a change belongs in HyperChat, land it on HyperChat `main` first, then
-  update the single `src/submodules/chat` gitlink on LiveTL `main`.
-- All LiveTL targets must use the same HyperChat commit.
+- Changes under `apps/HyperChat` affect both standalone HyperChat and LiveTL.
+  If the same runtime change applies to YtcFilter, port or merge it before
+  release. Verify every affected application before merging to `main`.
 
 ## House Style
 
@@ -32,13 +38,13 @@
   - `bump both`
 - Avoid padded scopes, issue-number prefixes, and long explanatory subjects.
 - A mildly funny subject is acceptable if it is still clear immediately.
+- Keep machine-specific paths, hostnames, profile directories, and private debug
+  aliases out of committed docs.
 
 ## Code Patterns
 
-- Do not duplicate HyperChat internals in LiveTL when the right fix belongs
-  upstream in the submodule.
-- If a bug spans HyperChat and LiveTL, land the shared chat-side fix in
-  HyperChat first, then bump the submodule in LiveTL.
+- Do not duplicate HyperChat internals in LiveTL when the right fix belongs in
+  the shared `apps/HyperChat` source.
 - Packaged HyperChat translation on Firefox is a split-boundary case: HyperChat
   owns the request/response bridge, while LiveTL owns the bundling entry that
   injects the page-side translator host.
@@ -48,24 +54,27 @@
   - LiveTL owns its UI, player wiring, translation aggregation,
     browser-specific manifest/runtime seams, packaging, and release automation.
   - HyperChat owns chat parsing, rendering, actions, and shared chat behavior.
+  - YtcFilter owns filters, presets, triggers, archives, setup, settings, and
+    its adapted filtered-chat runtime.
 - Keep MV-specific behavior at the manifest or numeric `__MV__` seam; do not
   fork general feature modules by manifest version.
 - Firefox MV3 cannot perform LiveTL's blocking response-header rewrite to strip
   YouTube CSP and `X-Frame-Options`. Firefox MV2 therefore remains the published
   Firefox target; Firefox MV3 is validation-only until that requirement changes.
 
-## HyperChat Submodule Mapping
+## HyperChat Workspace Mapping
 
-- LiveTL `main` pins one validated HyperChat `main` commit for every build
-  target.
-- After cloning or changing commits, run:
+- LiveTL imports HyperChat through the `@hyperchat` alias and small build entry
+  modules under `apps/LiveTL/src/hyperchat`.
+- `__LIVETL__` is `true` for LiveTL bundles and `false` for standalone
+  HyperChat bundles. Keep all other shared behavior in `apps/HyperChat`.
 
-  ```bash
-  git submodule update --init --recursive
-  ```
+## YtcFilter Workspace Mapping
 
-- If the submodule appears dirty after a branch switch, treat it as a sync issue
-  first, not as a code change.
+- YtcFilter builds from `apps/YtcFilter`; it does not import HyperChat at build
+  time.
+- Preserve HyperChat ancestry when carrying shared runtime fixes into YtcFilter,
+  but resolve conflicts as an adapted YtcFilter port.
 
 ## Branch Switch Hygiene
 
@@ -79,26 +88,43 @@
 - Use a separate worktree for legacy-branch checks or parallel work. Do not
   disturb an existing dirty checkout.
 - If switching leaves untracked build artifacts behind, remove only generated
-  files and normalize submodules before continuing.
+  files before continuing.
 
 ## Build and Test Matrix
 
-| Target | Build | Watch | Output | Release status |
-| --- | --- | --- | --- | --- |
-| Chrome MV3 | `npm run build:chrome` | `npm run dev:chrome` | `build/chrome` | Published |
-| Firefox MV3 | `npm run build:firefox` | `npm run dev:firefox` | `build/firefox` | Validation-only |
-| Firefox MV2 | `npm run build:mv2` | `npm run dev:mv2` | `build/mv2` | Published |
+Root build, check, test, lint, and type-check commands are orchestrated by
+Turborepo. Keep the implementation commands in each workspace independently
+runnable and declare new generated outputs and output-affecting environment
+variables in `turbo.json`. Local cache data lives in ignored `.turbo`
+directories; remote caching is not configured.
 
-`VERSION=0.0.0 npm run build` typechecks, builds, and verifies all three targets.
-`npm run package` creates the published Chrome MV3 and Firefox MV2 ZIPs in `dist`.
+The root LiveTL shortcuts build these targets:
+
+| Target      | Build                   | Watch                 | Output                      | Release status  |
+| ----------- | ----------------------- | --------------------- | --------------------------- | --------------- |
+| Chrome MV3  | `npm run build:chrome`  | `npm run dev:chrome`  | `apps/LiveTL/build/chrome`  | Published       |
+| Firefox MV3 | `npm run build:firefox` | `npm run dev:firefox` | `apps/LiveTL/build/firefox` | Validation-only |
+| Firefox MV2 | `npm run build:mv2`     | `npm run dev:mv2`     | `apps/LiveTL/build/mv2`     | Published       |
+
+Extension-specific root build aliases:
+
+| Extension | Command                   | Published archives                              |
+| --------- | ------------------------- | ----------------------------------------------- |
+| LiveTL    | `npm run build:livetl`    | `LiveTL-Chrome.zip`, `LiveTL-Firefox-mv2.zip`   |
+| HyperChat | `npm run build:hyperchat` | `HyperChat-Chrome.zip`, `HyperChat-Firefox.zip` |
+| YtcFilter | `npm run build:ytcfilter` | `YtcFilter-Chrome.zip`, `YtcFilter-Firefox.zip` |
+
+`VERSION=0.0.0 npm run build` typechecks, builds, verifies, and packages all
+targets. The published archives are created in the application build directories.
 
 Before handing off a change, run:
 
 ```bash
 npm run format:check
+npm run lint:check
+node --test .github/scripts/prepare-release.test.mjs
 npm run test
 VERSION=0.0.0 npm run build
-npm run package
 ```
 
 Runtime notes:
@@ -110,10 +136,10 @@ Runtime notes:
 
 ## Chromium Validation (MV3, Tested)
 
-The Chromium functional smoke test defaults to `build/chrome`:
+The Chromium functional smoke test defaults to `apps/LiveTL/build/chrome`:
 
 ```bash
-bash scripts/codex-dev.sh go-test
+bash apps/LiveTL/scripts/codex-dev.sh go-test
 ```
 
 ### Smoke Load (`--headless=new`)
@@ -127,18 +153,20 @@ bash scripts/codex-dev.sh go-test
 2. Launch Chromium with only LiveTL enabled:
 
    ```bash
+   PROFILE_DIR="$(mktemp -d)"
+   DEVTOOLS_PORT="${DEVTOOLS_PORT:-9222}"
    chromium --headless=new --no-sandbox --disable-setuid-sandbox \
-     --disable-dev-shm-usage --remote-debugging-port=9222 \
-     --user-data-dir=/tmp/livetl-mv3-profile \
-     --disable-extensions-except="$PWD/build/chrome" \
-     --load-extension="$PWD/build/chrome" \
+     --disable-dev-shm-usage --remote-debugging-port="$DEVTOOLS_PORT" \
+     --user-data-dir="$PROFILE_DIR" \
+     --disable-extensions-except="$PWD/apps/LiveTL/build/chrome" \
+     --load-extension="$PWD/apps/LiveTL/build/chrome" \
      https://www.youtube.com/watch?v=X4VbdwhkE10
    ```
 
 3. Inspect the DevTools target list:
 
    ```bash
-   curl -s http://127.0.0.1:9222/json/list | jq '[.[] | {type, url, title}]'
+   curl -s "http://127.0.0.1:${DEVTOOLS_PORT}/json/list" | jq '[.[] | {type, url, title}]'
    ```
 
 4. Expect a LiveTL `service_worker` target at
@@ -151,7 +179,7 @@ scripts mounted.
 ### Functional MV3 Browser Validation
 
 The repo harness uses `xvfb-run`, Playwright, a fresh non-headless Chromium
-profile, the unpacked `build/chrome` extension, and seeded extension storage so
+profile, the unpacked `apps/LiveTL/build/chrome` extension, and seeded extension storage so
 HyperChat is enabled. It checks:
 
 - LiveTL button injection in the YouTube chat frame
@@ -170,10 +198,10 @@ The smoke script exits nonzero if any required mount or cleanup check fails.
 Useful entrypoints are:
 
 ```bash
-bash scripts/codex-dev.sh watch
-bash scripts/codex-dev.sh go-test
-bash scripts/codex-dev.sh status
-KEEP_OPEN=1 bash scripts/codex-dev.sh go-test
+bash apps/LiveTL/scripts/codex-dev.sh watch
+bash apps/LiveTL/scripts/codex-dev.sh go-test
+bash apps/LiveTL/scripts/codex-dev.sh status
+KEEP_OPEN=1 bash apps/LiveTL/scripts/codex-dev.sh go-test
 ```
 
 ## Testbed URL Guidance
@@ -188,8 +216,18 @@ KEEP_OPEN=1 bash scripts/codex-dev.sh go-test
 ## Release Process and Versioning
 
 - Full release choreography lives in `AGENT_RELEASE.md`.
-- Release tags are created on `main`.
-- The tag version is supplied to every target through `VERSION`; local builds
-  fall back to `src/manifest.json`.
-- Release automation uploads only `LiveTL-Chrome.zip` and
-  `LiveTL-Firefox.zip`.
+- GitHub Releases are published from tags on `main`.
+- Before building, the matching release workflow records the tag version in
+  that app's `package.json` and workspace lock entry, moves the existing tag
+  to that version-only commit, and carries the commit into `main` atomically.
+- Build from the returned SHA, not the release event's original `GITHUB_SHA`.
+  Reruns reuse the commit; newer changes on `main` must not enter the release.
+- The tag version is supplied to that extension's targets through `VERSION`;
+  local builds fall back to that app's `package.json`.
+- LiveTL's bundled HC uses `apps/HyperChat/package.json` through
+  `__HC_VERSION__`, not LiveTL's `__VERSION__`. Release HC first, then create
+  LiveTL's release from updated `main` when both versions need to advance.
+- Release automation uploads the archives for the matching release tag:
+  `LiveTL-Chrome.zip` and `LiveTL-Firefox-mv2.zip`,
+  `HyperChat-Chrome.zip` and `HyperChat-Firefox.zip`, or
+  `YtcFilter-Chrome.zip` and `YtcFilter-Firefox.zip`.

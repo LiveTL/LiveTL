@@ -1,4 +1,4 @@
-node_modules/*
+node_modules/
 build
 dist
 secrets.*.js
@@ -14,7 +14,4 @@ __pycache__/
 .DS_Store
 venv/
 failure-test*.png
-
-# auto-generated html from vite
-src/html/*.html
-src/html/**/*.html
+.turbo/

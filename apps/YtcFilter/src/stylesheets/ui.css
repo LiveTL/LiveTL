@@ -1,0 +1,120 @@
+button,
+select {
+  background-color: #c6c6c6;
+  width: fit-content;
+}
+
+[data-theme='dark'] button,
+[data-theme='dark'] select {
+  background-color: #3f3f3f;
+}
+
+input:not([type='radio']):not([type='checkbox']) {
+  box-sizing: border-box;
+  background-color: white;
+}
+
+[data-theme='dark'] input:not([type='checkbox']):not([type='radio']) {
+  background-color: #191919;
+}
+
+input[type='radio'] {
+  transform: translateZ(0px);
+}
+
+input[type='checkbox'] {
+  margin: 0px;
+}
+
+label {
+  user-select: none;
+  margin-right: 20px;
+}
+
+.red-bg {
+  background-color: #ff5656;
+}
+
+.blue-bg {
+  background-color: #5dceff;
+}
+
+.gray-bg {
+  background-color: var(--gray-bg);
+}
+
+[data-theme='dark'] .red-bg {
+  background-color: #c80000;
+}
+
+[data-theme='dark'] .blue-bg {
+  background-color: #0080e9 !important;
+}
+
+.blue-text {
+  color: #0064d1 !important;
+}
+
+[data-theme='dark'] .blue-text {
+  color: #3ba7ff !important;
+}
+
+.offset-1px {
+  vertical-align: -1px;
+}
+
+.big-text {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.select-none {
+  user-select: none;
+}
+
+:root {
+  --gray-bg: #4f4f4f;
+  --filter-color: #dcdcdc;
+}
+
+:root [data-theme='dark'] {
+  --filter-color: #292929;
+}
+
+.settings-card {
+  background-color: rgba(128, 128, 128, 0.1);
+  margin-top: 10px;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+[data-theme='dark'] .settings-card {
+  background-color: rgba(128, 128, 128, 0.15);
+}
+
+.settings-title {
+  padding: 5px 10px;
+  height: 30px;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  background-color: #0d2e46;
+}
+
+[data-theme='dark'] .settings-title {
+  background-color: #0d2e46;
+}
+
+[data-theme='light'] .settings-title {
+  background-color: #cfe0f6;
+}
+
+.settings-content {
+  padding: 10px 10px 10px 10px;
+  margin-bottom: 5px;
+}
+.shifted-icon {
+  display: inline-block;
+  transform: translateY(2px);
+}

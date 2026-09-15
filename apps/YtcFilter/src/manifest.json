@@ -1,0 +1,67 @@
+{
+  "manifest_version": 3,
+  "name": "YtcFilter - YouTube Chat Filter",
+  "homepage_url": "https://livetl.app/ytcfilter/",
+  "description": "The most powerful and intuitive YouTube chat filter extension.",
+  "version": "0.3.0",
+  "icons": {
+    "48": "assets/logo-48.png",
+    "128": "assets/logo-128.png"
+  },
+  "permissions": ["storage", "unlimitedStorage"],
+  "host_permissions": [
+    "https://www.youtube.com/live_chat*",
+    "https://www.youtube.com/live_chat_replay*",
+    "https://studio.youtube.com/live_chat*",
+    "https://studio.youtube.com/live_chat_replay*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/live_chat*",
+        "https://www.youtube.com/live_chat_replay*",
+        "https://studio.youtube.com/live_chat*",
+        "https://studio.youtube.com/live_chat_replay*"
+      ],
+      "js": ["scripts/chat-injector.ts"],
+      "css": ["stylesheets/titlebar.css"],
+      "all_frames": true
+    },
+    {
+      "matches": ["https://www.youtube.com/embed/ytcfilter_embed?*"],
+      "js": ["scripts/chat-mounter.ts"],
+      "css": ["stylesheets/scrollbar.css", "stylesheets/page404.css"],
+      "all_frames": true
+    }
+  ],
+  "{{firefox}}.background": {
+    "scripts": ["scripts/chat-background.ts"]
+  },
+  "{{chrome}}.background": {
+    "service_worker": "scripts/chat-background.ts"
+  },
+  "action": {
+    "default_icon": {
+      "48": "assets/logo-48.png",
+      "128": "assets/logo-128.png"
+    },
+    "default_popup": "options.html"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "{{chrome}}.incognito": "split",
+  "{{firefox}}.browser_specific_settings": {
+    "gecko": {
+      "id": "{20f2dcdf-6f8d-4aeb-862b-b13174475d9c}",
+      "strict_min_version": "115.0"
+    }
+  }
+}
