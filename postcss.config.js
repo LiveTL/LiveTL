@@ -29,7 +29,7 @@ module.exports = {
     tailwindcss: tailwindConfig,
     autoprefixer: {},
     '@fullhuman/postcss-purgecss': {
-      content: ['./**/*.svelte'],
+      content: ['./**/*.svelte', '../../node_modules/**/*.svelte'],
       extractors: [
         {
           extractor,
