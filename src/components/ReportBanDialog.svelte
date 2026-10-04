@@ -1,6 +1,5 @@
 <script lang="ts">
-  import type { ChatReportUserOptions } from '../ts/chat-constants';
-  import { chatReportUserOptions } from '../ts/chat-constants';
+  import { ChatReportUserOptions, chatReportUserOptions } from '../ts/chat-constants';
   import {
     reportDialog,
     alertDialog
@@ -9,6 +8,14 @@
   import type { Writable } from 'svelte/store';
   import RadioGroupStore from './common/RadioGroupStore.svelte';
   import Button from 'smelte/src/components/Button';
+  const reportOptions = chatReportUserOptions.flatMap((option) =>
+    option.value === ChatReportUserOptions.HARASSMENT
+      ? [
+          { value: ChatReportUserOptions.HARASSMENT_SELF, label: 'Harassment or bullying: directed at me' },
+          { value: ChatReportUserOptions.HARASSMENT_OTHER, label: 'Harassment or bullying: directed at someone else' }
+        ]
+      : [option]
+  );
   $: optionStore = $reportDialog?.optionStore as Writable<ChatReportUserOptions>;
 </script>
 
@@ -18,7 +25,7 @@
   <div>
     <RadioGroupStore
       store={optionStore}
-      items={chatReportUserOptions}
+      items={reportOptions}
       vertical
     />
   </div>
