@@ -126,17 +126,23 @@ const chatLoaded = async (): Promise<void> => {
         try {
           hcSettings.$destroy();
         } catch (_) {}
+        hcSettings = null;
       }
     };
 
-    const ytcItemMenu = document.querySelector('tp-yt-paper-listbox#items');
+    const ytcItemMenu = document.querySelector<HTMLElement>('tp-yt-paper-listbox#items');
     if (ytcItemMenu) {
       // Prevent duplicates
-      if (document.getElementById('hc-settings')) return;
+      if (ytcItemMenu.querySelector('#hc-settings')) return;
+
+      // Wait for a real native row to be stamped before cloning it.
+      const nativeItem = ytcItemMenu.querySelector<HTMLElement>('ytd-menu-service-item-renderer tp-yt-paper-item');
+      if (!nativeItem?.querySelector('yt-formatted-string')) return;
 
       destroyButton();
       hcSettings = new HcSettings({
         target: ytcItemMenu,
+        props: { menu: ytcItemMenu, nativeItem },
       });
 
       return;
@@ -145,6 +151,7 @@ const chatLoaded = async (): Promise<void> => {
     destroyButton();
   };
 
+  injectSettings();
   const chatApp = document.querySelector('yt-live-chat-app');
   if (chatApp) {
     new MutationObserver(injectSettings).observe(chatApp, {
