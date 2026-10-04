@@ -517,7 +517,7 @@
     <StickyBar />
   {/if}
   <div class="w-screen min-h-0 flex-1 flex justify-end flex-col relative">
-    <div bind:this={div} on:scroll={checkAtBottom} class="content overflow-y-scroll">
+    <div bind:this={div} on:scroll={checkAtBottom} class="content overflow-y-scroll relative z-0">
       <div style="height: {topBarSize}px;" />
       {#each messageActions as action (action.message.messageId)}
         <div
@@ -546,7 +546,7 @@
       {/each}
     </div>
     {#if hasBanner}
-      <div class="absolute top-0 w-full" bind:this={topBar}>
+      <div class="absolute top-0 w-full z-10" bind:this={topBar}>
         {#if poll}
           <div class="mx-1.5 mt-1.5">
             <PollResults poll={poll} on:resize={topBarResized} />
