@@ -28,6 +28,12 @@ export enum ChatUserActions {
   BLOCK = 'BLOCK',
   REPORT_USER = 'REPORT_USER',
   DELETE_MESSAGE = 'DELETE_MESSAGE',
+  PIN_MESSAGE = 'PIN_MESSAGE',
+  TIMEOUT_USER = 'TIMEOUT_USER',
+  HIDE_USER = 'HIDE_USER',
+  UNHIDE_USER = 'UNHIDE_USER',
+  ADD_MODERATOR = 'ADD_MODERATOR',
+  REMOVE_MODERATOR = 'REMOVE_MODERATOR',
 }
 
 export enum ChatReportUserOptions {
@@ -50,6 +56,20 @@ export const chatReportUserOptions = [
   { value: ChatReportUserOptions.HARASSMENT, label: 'Harassment or bullying' },
   { value: ChatReportUserOptions.SUICIDE, label: 'Suicide or self injury' },
   { value: ChatReportUserOptions.MISINFORMATION, label: 'Misinformation' },
+];
+
+export const chatTimeoutOptions = [
+  { value: '10 seconds', label: '10 seconds' },
+  { value: '1 minute', label: '1 minute' },
+  { value: '5 minutes', label: '5 minutes' },
+  { value: '10 minutes', label: '10 minutes' },
+  { value: '30 minutes', label: '30 minutes' },
+  { value: '24 hours', label: '24 hours' },
+];
+
+export const chatModeratorRoleOptions = [
+  { value: 'Managing moderator', label: 'Managing moderator' },
+  { value: 'Standard moderator', label: 'Standard moderator' },
 ];
 
 export const chatUserActionsItems = [
@@ -80,6 +100,60 @@ export const chatUserActionsItems = [
     messages: {
       success: 'Your message has been deleted.',
       error: 'There was an error deleting your message. Please try again later.',
+    },
+  },
+  {
+    value: ChatUserActions.PIN_MESSAGE,
+    text: 'Pin message',
+    icon: 'push_pin',
+    messages: {
+      success: 'The message has been pinned.',
+      error: 'There was an error pinning the message. Please try again later.',
+    },
+  },
+  {
+    value: ChatUserActions.TIMEOUT_USER,
+    text: 'Put user in timeout',
+    icon: 'hourglass_empty',
+    messages: {
+      success: 'The user has been timed out.',
+      error: 'There was an error timing out the user. Please try again later.',
+    },
+  },
+  {
+    value: ChatUserActions.HIDE_USER,
+    text: 'Hide user',
+    icon: 'remove_circle',
+    messages: {
+      success: 'The user has been hidden from this channel.',
+      error: 'There was an error hiding the user. Please try again later.',
+    },
+  },
+  {
+    value: ChatUserActions.UNHIDE_USER,
+    text: 'Unhide user',
+    icon: 'add_circle',
+    messages: {
+      success: 'The user has been unhidden from this channel.',
+      error: 'There was an error unhiding the user. Please try again later.',
+    },
+  },
+  {
+    value: ChatUserActions.ADD_MODERATOR,
+    text: 'Add moderator',
+    icon: 'person_add',
+    messages: {
+      success: 'The user has been added as a moderator.',
+      error: 'There was an error adding the moderator. Please try again later.',
+    },
+  },
+  {
+    value: ChatUserActions.REMOVE_MODERATOR,
+    text: 'Remove moderator',
+    icon: 'person_remove',
+    messages: {
+      success: 'The moderator has been removed.',
+      error: 'There was an error removing the moderator. Please try again later.',
     },
   },
 ];

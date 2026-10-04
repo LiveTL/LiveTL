@@ -414,6 +414,12 @@
     archiveEmbedFrame = 'https://www.youtube.com/embed/ytcfilter_embed?' + paramsClone.toString();
   };
 
+  const removesAuthorMessages = (action: ChatUserActions): boolean => {
+    return action === ChatUserActions.BLOCK ||
+      action === ChatUserActions.REPORT_USER ||
+      action === ChatUserActions.HIDE_USER;
+  };
+
   const onPortMessage = (response: Chat.BackgroundResponse) => {
     if (responseIsAction(response)) {
       onChatAction(response);
@@ -447,6 +453,7 @@
           color: response.success ? 'primary' : 'error'
         };
         if (response.success) {
+          if (!removesAuthorMessages(response.action)) break;
           messageActions = messageActions.filter(
             (a) => {
               if (isWelcome(a)) return true;

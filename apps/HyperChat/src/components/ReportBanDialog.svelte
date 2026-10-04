@@ -3,6 +3,7 @@
   import { chatReportUserOptions } from '../ts/chat-constants';
   import {
     reportDialog,
+    chatActionOptionDialog,
     alertDialog
   } from '../ts/storage';
   import Dialog from './common/Dialog.svelte';
@@ -10,6 +11,7 @@
   import RadioGroupStore from './common/RadioGroupStore.svelte';
   import Button from 'smelte/src/components/Button';
   $: optionStore = $reportDialog?.optionStore as Writable<ChatReportUserOptions>;
+  $: actionOptionStore = $chatActionOptionDialog?.optionStore as Writable<string>;
 </script>
 
 <Dialog active={Boolean($reportDialog)} class="max-w-full max-h-full" style="height: 500px; width: 500px;">
@@ -28,6 +30,23 @@
       $reportDialog?.callback($optionStore);
       $reportDialog = null;
     }} color="error" disabled={!$optionStore}>Report</Button>
+  </div>
+</Dialog>
+
+<Dialog active={Boolean($chatActionOptionDialog)} class="max-w-full max-h-full" style="height: 360px; width: 420px;">
+  <svelte:fragment slot="title">{$chatActionOptionDialog?.title}</svelte:fragment>
+  <div>
+    <RadioGroupStore
+      store={actionOptionStore}
+      items={$chatActionOptionDialog?.items ?? []}
+      vertical
+    />
+  </div>
+  <div slot="actions">
+    <Button on:click={() => {
+      $chatActionOptionDialog?.callback($actionOptionStore);
+      $chatActionOptionDialog = null;
+    }} color="error" disabled={!$actionOptionStore}>{$chatActionOptionDialog?.confirmText}</Button>
   </div>
 </Dialog>
 
