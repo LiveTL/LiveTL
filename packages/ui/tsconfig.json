@@ -3,7 +3,8 @@
   "compilerOptions": {
     "allowJs": true,
     "moduleResolution": "node",
+    "strict": true,
     "types": ["svelte"]
   },
-  "include": ["src/**/*.svelte", "src/**/*.d.ts", "vite.config.js"]
+  "include": ["src/**/*.svelte", "src/**/*.d.ts", "components.js", "scripts/**/*.mjs", "vite.config.js"]
 }

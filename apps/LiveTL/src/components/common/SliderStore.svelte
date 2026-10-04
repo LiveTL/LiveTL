@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { SyncStore } from 'js/storage';
   import Slider from 'smelte/src/components/Slider';
-  import Button from './IconButton.svelte';
+  import Button from '@livetl/ui/IconButton';
 
   /** SyncStore for value updates. */
   export let store: SyncStore<number>;

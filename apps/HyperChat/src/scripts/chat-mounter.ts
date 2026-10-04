@@ -1,3 +1,4 @@
+import sharedStyles from '@livetl/ui/styles.css?inline';
 import tailwind from 'smelte/src/tailwind.css?inline';
 
 import Hyperchat from '../components/Hyperchat.svelte';
@@ -24,7 +25,7 @@ const ensureHeadAssets = (): void => {
   if (document.getElementById(TAILWIND_STYLE_ID) === null) {
     const style = document.createElement('style');
     style.id = TAILWIND_STYLE_ID;
-    style.innerHTML = tailwind;
+    style.innerHTML = `${tailwind}\n${sharedStyles}`;
     document.head.appendChild(style);
   }
 };

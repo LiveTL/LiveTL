@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Button from 'smelte/src/components/Button';
+  import Button from './Button.svelte';
 
   export let icon: string;
   export let color = 'primary';
@@ -9,11 +9,11 @@
   export let iconClass = '';
 
   const getAdd = (noRound: boolean, noPadding: boolean) => {
-    let c = '';
-    if (!noRound) c += ' rounded-full';
-    if (!noPadding) c += ' p-2';
+    let classes = '';
+    if (!noRound) classes += ' rounded-full';
+    if (!noPadding) classes += ' p-2';
 
-    return `${c} ${$$props.class ? $$props.class : ''}`;
+    return `${classes} ${$$props.class ? $$props.class : ''}`;
   };
   $: add = getAdd(noRound, noPadding);
 </script>
