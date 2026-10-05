@@ -398,9 +398,29 @@ const executeChatAction = async (
       if (!Array.isArray(options) || options.length < 1) {
         throw new Error('Report options are missing');
       }
-      const reportIndex = chatReportUserOptions.findIndex((d) => d.value === reportOption);
-      const index = reportIndex >= 0 && reportIndex < options.length ? reportIndex : 0;
-      const submitEndpoint = options[index]?.optionSelectableItemRenderer?.submitEndpoint;
+      const harassmentIndex =
+        reportOption === ChatReportUserOptions.HARASSMENT_SELF
+          ? 0
+          : reportOption === ChatReportUserOptions.HARASSMENT_OTHER
+            ? 1
+            : -1;
+      const category = harassmentIndex >= 0 ? ChatReportUserOptions.HARASSMENT : reportOption;
+      const reportIndex = chatReportUserOptions.findIndex((d) => d.value === category);
+      if (reportIndex < 0 || reportIndex >= options.length) {
+        throw new Error('Report reason is missing');
+      }
+      let option = options[reportIndex]?.optionSelectableItemRenderer;
+      if (harassmentIndex >= 0) {
+        // YouTube includes a disabled placeholder before the two harassment choices.
+        const choices = option?.subOptions
+          ?.map((item: any) => item.optionSelectableItemRenderer)
+          .filter((item: any) => item?.disableSubmitButton !== true && item?.submitEndpoint?.flagEndpoint != null);
+        if (choices?.length !== 2) {
+          throw new Error('Harassment report options are missing');
+        }
+        option = choices[harassmentIndex];
+      }
+      const submitEndpoint = option?.disableSubmitButton === true ? null : option?.submitEndpoint;
       const clickTrackingParams = submitEndpoint?.clickTrackingParams;
       const flagAction = submitEndpoint?.flagEndpoint?.flagAction;
       if (flagAction == null) {
