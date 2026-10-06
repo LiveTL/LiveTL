@@ -33,18 +33,15 @@ import { compose } from './utils';
  * }} YTCSources
  */
 
-const tldex = derived(
-  combineStores(TLDEX.getArchive(paramsTwitchUrl ?? paramsYtVideoId), TLDEX.getLiveTranslations(paramsYtVideoId)).store,
-  ($message) => {
-    if (!$message) return;
-    const parsed = parseTranslation($message.text);
-    if (isTranslation(parsed)) {
-      $message = replaceFirstTranslation($message);
-      $message.text = parsed.msg;
-    }
-    return $message;
-  },
-);
+const tldex = derived(TLDEX.getArchive(paramsTwitchUrl ?? paramsYtVideoId), ($message) => {
+  if (!$message) return;
+  const parsed = parseTranslation($message.text);
+  if (isTranslation(parsed)) {
+    $message = replaceFirstTranslation($message);
+    $message.text = parsed.msg;
+  }
+  return $message;
+});
 
 /**
  * @type {YTCSources & {
