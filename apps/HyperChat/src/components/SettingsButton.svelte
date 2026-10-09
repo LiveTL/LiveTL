@@ -19,33 +19,34 @@
     item.removeAttribute('aria-labelledby');
     item.setAttribute('aria-label', 'HyperChat Settings');
     item.tabIndex = 0;
+    item.style.cursor = 'pointer';
+    item.style.color = 'inherit';
     item.querySelectorAll('dom-if, .subtitle-text, ytd-badge-supported-renderer').forEach(node => node.remove());
     const openSettings = () => {
       createPopup(chrome.runtime.getURL(`${isLiveTL ? 'hyperchat/' : ''}options.html${document.documentElement.hasAttribute('dark') ? '?dark' : ''}`));
     };
     item.addEventListener('click', openSettings);
+    // Keep the native paper item for interaction, but use ordinary DOM for
+    // our contents so YouTube's custom-element lifecycle cannot clear them.
+    const label = item.querySelector('yt-formatted-string');
+    if (label) {
+      const text = document.createElement('span');
+      text.className = label.className;
+      text.textContent = 'HyperChat Settings';
+      label.replaceWith(text);
+    }
+    const icon = item.querySelector('yt-icon');
+    const nativeIcon = nativeItem.querySelector('yt-icon');
+    if (icon && nativeIcon) {
+      const holder = document.createElement('span');
+      const style = getComputedStyle(nativeIcon);
+      holder.style.cssText = `display: flex; width: ${style.width}; height: ${style.height}; margin: ${style.margin}; flex-shrink: 0; background-color: currentColor;`;
+      holder.style.mask = `url("data:image/svg+xml,${encodeURIComponent(outline)}") center / contain no-repeat`;
+      holder.setAttribute('aria-hidden', 'true');
+      icon.replaceWith(holder);
+    }
     menu.appendChild(item);
-    // Let YouTube initialize the cloned custom elements before changing their
-    // contents; initialization otherwise clears the label and icon.
-    const frame = requestAnimationFrame(() => {
-      const label = item.querySelector('yt-formatted-string');
-      if (label) {
-        label.textContent = 'HyperChat Settings';
-        label.removeAttribute('is-empty');
-      }
-      const icon = item.querySelector('yt-icon');
-      if (icon) {
-        icon.removeAttribute('icon');
-        icon.removeAttribute('hidden');
-        const template = document.createElement('template');
-        template.innerHTML = outline;
-        const svg = template.content.querySelector('svg');
-        if (svg) svg.style.fill = 'currentColor';
-        icon.replaceChildren(template.content);
-      }
-    });
     return () => {
-      cancelAnimationFrame(frame);
       item.removeEventListener('click', openSettings);
       item.remove();
     };
