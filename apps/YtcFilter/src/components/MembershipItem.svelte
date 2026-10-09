@@ -1,5 +1,6 @@
 <script lang="ts">
   import Message from './Message.svelte';
+  import GiftedMembershipToggle from './GiftedMembershipToggle.svelte';
   import MessageRun from './MessageRuns.svelte';
   import { membershipBackground } from '../ts/chat-constants';
   import type { Chat } from '../ts/typings/chat';
@@ -79,6 +80,7 @@
         </span>
       </span>
     </Message>
+    <div class="flex justify-end"><GiftedMembershipToggle /></div>
   </div>
 {/if}
 
