@@ -5,8 +5,10 @@
   import Icon from 'smelte/src/components/Icon';
   import { Theme } from '../ts/chat-constants';
   import { createEventDispatcher } from 'svelte';
-  import { showProfileIcons } from '../ts/storage';
+  import { port, showProfileIcons } from '../ts/storage';
   import ProgressLinear from 'smelte/src/components/ProgressLinear';
+  import { endPoll } from '../ts/chat-actions';
+  import Button from 'smelte/src/components/Button';
 
   export let poll: Ytc.ParsedPoll;
 
@@ -59,18 +61,20 @@
           {/if}
         {/each}
       </div>
-      <div class="flex-none self-end" style="transform: translateY(3px);">
-        <Tooltip offsetY={0} small>
-          <Icon
-            slot="activator"
-            class="cursor-pointer text-lg"
-            on:click={() => { dismissed = true; }}
-          >
-            close
-          </Icon>
-          Dismiss
-        </Tooltip>
-      </div>
+      {#if !poll.item.action}
+        <div class="flex-none self-end" style="transform: translateY(3px);">
+          <Tooltip offsetY={0} small>
+            <Icon
+              slot="activator"
+              class="cursor-pointer text-lg"
+              on:click={() => { dismissed = true; }}
+            >
+              close
+            </Icon>
+            Dismiss
+          </Tooltip>
+        </div>
+      {/if}
     </div>
     {#if !shorten && !dismissed}
       <div class="mt-1 inline-flex flex-row gap-2 break-words w-full overflow-visible" transition:slide|local={{ duration: 300 }}>
@@ -85,6 +89,15 @@
         </div>
         <ProgressLinear progress={(choice.ratio || 0.001) * 100} color="gray"/>
       {/each}
+      {#if poll.item.action}
+        <div class="mt-1 whitespace-pre-line flex justify-end" transition:slide|global={{ duration: 300 }}>
+          <Button on:click={() => endPoll(poll, $port)} small>
+            <span forceDark forceTLColor={Theme.DARK} class="cursor-pointer">
+              {poll.item.action.text}
+            </span>
+          </Button>
+        </div>
+      {/if}
     {/if}
   </div>
 {/if}
