@@ -1,4 +1,4 @@
-import { derived, readable } from 'svelte/store';
+import { readable } from 'svelte/store';
 
 import { archiveStreamFromScript } from './api.js';
 import { Holodex, AuthorType, languageNameCode, holodexKey, isTwitch } from './constants.js';
@@ -9,9 +9,6 @@ import * as Ty from './types.js';
 import { formatTimestampMillis, sleep, sortBy, toJson } from './utils.js';
 
 /** @typedef {import('svelte/store').Readable} Readable */
-/** @typedef {(unix: Ty.UnixTimestamp) => String} UnixToTimestamp */
-/** @typedef {(unix: Ty.UnixTimestamp) => number} UnixToNumber */
-
 /** @type {(arr: Array) => Boolean} */
 const isNotEmpty = (arr) => arr.length !== 0;
 
@@ -32,7 +29,7 @@ const dexfetch = async (url, default_ = undefined, retry = 40) => {
   }
 };
 
-/** @type {(videoLink: String) => Promise<Ty.MCHADLiveRoom[] | undefined>} */
+/** @type {(videoLink: String) => Promise<number | undefined>} */
 const getVideoDataWithRetry = async (videoLink) => {
   const dt = await dexfetch(`${Holodex}/videos/${videoLink}`);
   if (dt === undefined) return undefined;
@@ -128,53 +125,4 @@ export const getArchive = (videoLink) =>
     return () => unsubscribes.forEach((u) => u());
   });
 
-// MCHAD is just down, disable mchad for now
-/** @type {(videoLink: string, langcode: string) => Readable<Ty.MCHADStreamItem>} */
-const streamRoom = (_videoLink, _langcode) => readable();
-// const streamRoom = (videoLink, langcode) => sseToStream(`${MCHAD}/holoproxy?id=YT_${videoLink}&lang=${langcode}`);
-
-/** @type {UnixToTimestamp} */
-const liveUnixToTimestamp = (unix) =>
-  new Date(unix).toLocaleTimeString('en-us', { hour: '2-digit', minute: '2-digit' });
-
 let mchadTLCounter = 0;
-
-/** @type {(room: Ty.MCHADLiveRoom) => Readable<Ty.Message>} */
-export const getRoomTranslations = (videoLink, langCode) =>
-  derived(streamRoom(videoLink, langCode), (data, set) => {
-    if (!enableTldexTLs.get()) return;
-    const flag = data?.flag;
-
-    if ((flag === 'insert' || flag === 'update') && !data?.content?.channel_id) {
-      set({
-        text: data.content.msg,
-        messageArray: [{ type: 'text', text: data.content.msg }],
-        author: data.content.name,
-        authorId: data.content.name,
-        langCode,
-        messageId: ++mchadTLCounter,
-        timestamp: liveUnixToTimestamp(data.content.time),
-        types: AuthorType.tldex,
-        timestampMs: data.content.time,
-      });
-    }
-  });
-
-/** @type {(link: String) => Readable<Ty.Message>} */
-export const getLiveTranslations = (videoLink) =>
-  readable(null, async (set) => {
-    await languages.loaded;
-    const unsubscribes = languages
-      .get()
-      .map((language) => languageNameCode[language])
-      .map((e) => e.code)
-      .map((langcode) =>
-        getRoomTranslations(videoLink, langcode).subscribe((msg) => {
-          if (msg && enableTldexTLs.get() && !mchadUsers.get(msg.author)) {
-            set(msg);
-          }
-        }),
-      );
-
-    return () => unsubscribes.forEach((u) => u());
-  });
