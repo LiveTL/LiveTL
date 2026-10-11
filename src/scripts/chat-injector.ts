@@ -119,7 +119,8 @@ const chatLoaded = async (): Promise<void> => {
     target: ytcPrimaryContent,
   });
 
-  // Inject HC settings
+  // Inject HC settings only for the header overflow menu.
+  let headerMenuOpen = false;
   const injectSettings = (): void => {
     const destroyButton = (): void => {
       if (hcSettings !== null) {
@@ -131,12 +132,14 @@ const chatLoaded = async (): Promise<void> => {
     };
 
     const ytcItemMenu = document.querySelector<HTMLElement>('tp-yt-paper-listbox#items');
-    if (ytcItemMenu) {
+    if (headerMenuOpen && ytcItemMenu) {
       // Prevent duplicates
       if (ytcItemMenu.querySelector('#hc-settings')) return;
 
       // Wait for a real native row to be stamped before cloning it.
-      const nativeItem = ytcItemMenu.querySelector<HTMLElement>('ytd-menu-service-item-renderer tp-yt-paper-item');
+      const nativeItem = ytcItemMenu.querySelector<HTMLElement>(
+        'ytd-menu-service-item-renderer tp-yt-paper-item, ytd-menu-navigation-item-renderer tp-yt-paper-item',
+      );
       if (!nativeItem?.querySelector('yt-formatted-string')) return;
 
       destroyButton();
@@ -150,6 +153,17 @@ const chatLoaded = async (): Promise<void> => {
 
     destroyButton();
   };
+
+  document.addEventListener(
+    'click',
+    (event) => {
+      const target = event.target as Element;
+      if (target.closest('tp-yt-paper-listbox#items')) return;
+      headerMenuOpen = !!target.closest('yt-live-chat-header-renderer #live-chat-header-context-menu');
+      injectSettings();
+    },
+    true,
+  );
 
   injectSettings();
   const chatApp = document.querySelector('yt-live-chat-app');
