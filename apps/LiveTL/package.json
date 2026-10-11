@@ -24,7 +24,10 @@
     "e2e:test": "pytest --tests-per-worker auto e2e",
     "e2e": "npm run build && npm run e2e:test",
     "lint": "npm run lint:check -- --fix",
-    "lint:check": "eslint . --max-warnings=0"
+    "lint:check": "eslint . --max-warnings=0",
+    "test:e2e": "playwright test --grep-invert @live",
+    "test:e2e:live": "playwright test --project=chromium-mv3 --grep @live",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@livetl/svelte-webext-stores": "^0.0.14",
@@ -51,6 +54,7 @@
     "@babel/core": "^7.0.0",
     "@babel/preset-env": "^7.15.6",
     "@fullhuman/postcss-purgecss": "^4.0.3",
+    "@playwright/test": "^1.62.1",
     "@rollup/plugin-alias": "^4.0.2",
     "@sveltejs/vite-plugin-svelte": "^1.2.0",
     "@testing-library/dom": "^8.5.0",

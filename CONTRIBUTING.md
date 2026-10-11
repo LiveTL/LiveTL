@@ -113,3 +113,18 @@ help on the [discord server](https://discord.gg/uJrV3tmthg).**
 These guidelines are based off the guidelines from [Pogify](https://www.github.com/Pogify/pogify).
 
 ## **Thanks for contributing to LiveTL! We can't wait to see what you do with it!**
+
+## Playwright migration (draft)
+
+The proposed browser suite lives in `apps/LiveTL/e2e` and uses
+`apps/LiveTL/playwright.config.mjs`. Build the LiveTL targets first with
+`npm run e2e:build`, then install the test browsers with
+`npm exec -w @livetl/livetl -- playwright install chromium firefox`.
+
+- `npm run test:e2e` runs the deterministic fixtures and packaged Firefox MV2 translator-host test.
+- `npm run test:e2e:live` runs the manual tests against YouTube.
+- `npm run test:e2e:ui` opens Playwright UI mode.
+
+The existing smoke harness and Selenium suite remain available while this draft
+is validated against the monorepo builds. The Firefox test exercises the bundled
+page-side translator host; it does not install the full Firefox extension.
