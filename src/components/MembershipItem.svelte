@@ -7,7 +7,7 @@
 
   export let message: Ytc.ParsedMessage;
 
-  const classes = 'relative inline-flex flex-col rounded break-words overflow-hidden w-full text-white';
+  const classes = 'relative inline-flex flex-col rounded break-words w-full text-white';
 
   $: membership = message.membership;
   $: membershipGift = message.membershipGiftPurchase;
