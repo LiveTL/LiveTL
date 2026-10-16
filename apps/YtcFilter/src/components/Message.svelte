@@ -81,10 +81,11 @@
 
   export let forceTLColor: Theme = Theme.YOUTUBE;
 
-  const visibleYtActions = chatUserActionsItems.filter((d) => (
-    !miniDropdown && d.value !== ChatUserActions.DELETE_MESSAGE
+  $: visibleYtActions = chatUserActionsItems.filter((d) => (
+    !miniDropdown && d.value !== ChatUserActions.DELETE_MESSAGE &&
+    (message.params != null || d.value === ChatUserActions.BLOCK || d.value === ChatUserActions.REPORT_USER)
   ));
-  const menuItems = [
+  $: menuItems = [
     ...visibleYtActions.map((d) => ({
       icon: d.icon,
       text: d.text,

@@ -79,6 +79,15 @@ export const reportDialog = writable(
     optionStore: Writable<null | ChatReportUserOptions>;
   },
 );
+export const chatActionOptionDialog = writable(
+  null as null | {
+    title: string;
+    confirmText: string;
+    items: Array<{ value: string; label: string }>;
+    callback: (selection: string) => void;
+    optionStore: Writable<null | string>;
+  },
+);
 export const alertDialog = writable(
   null as null | {
     title: string;
