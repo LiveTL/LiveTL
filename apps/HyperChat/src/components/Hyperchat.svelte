@@ -383,6 +383,15 @@
           );
         }
         break;
+      case 'toggleMembershipGiftingResponse':
+        if (!response.success) {
+          $alertDialog = {
+            title: 'Error',
+            message: "Please try again from YouTube's membership settings interface.",
+            color: 'error'
+          };
+        }
+        break;
       case 'registerClientResponse':
         break;
       case 'ping':

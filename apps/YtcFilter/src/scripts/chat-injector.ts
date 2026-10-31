@@ -100,6 +100,11 @@ const chatLoaded = async (): Promise<void> => {
   params.set('tabid', frameInfo.tabId.toString());
   params.set('frameid', frameInfo.frameId.toString());
   params.set('continuation', new URLSearchParams(window.location.search).get('continuation') ?? '');
+  try {
+    params.set('isYtFrame', window.parent.location.pathname === '/watch' ? '1' : '0');
+  } catch {
+    // The watch-page gifting controls are unavailable across origins.
+  }
   if (frameIsReplay()) params.set('isReplay', 'true');
   const source = `https://www.youtube.com/embed/ytcfilter_embed?${params.toString()}`;
 
