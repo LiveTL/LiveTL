@@ -1,1 +1,1 @@
-fix layer conflicts, fix kebab menu
+fix chat freezes (support new YT protocol)

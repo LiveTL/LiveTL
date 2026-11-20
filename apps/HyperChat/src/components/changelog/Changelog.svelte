@@ -1,9 +1,6 @@
 <ul class="list-disc list-inside">
   <strong>Serving in our latest update:</strong>
   <li>
-    fix layer conflicts
-  </li>
-  <li>
-    fix kebab menu
+    fix chat freezes (support new YT protocol)
   </li>
 </ul>
