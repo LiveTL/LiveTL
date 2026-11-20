@@ -10,6 +10,19 @@ for (const eventName of ['visibilitychange', 'webkitvisibilitychange', 'blur']) 
   );
 }
 
+const liveChat = (document.querySelector('yt-live-chat-renderer') as any)?.controllerProxy;
+if (liveChat?.handleStreamedResponse) {
+  const streamFallback = liveChat.handleStreamedResponse.bind(liveChat);
+  liveChat.handleStreamedResponse = (response: Ytc.RawResponse) => {
+    try {
+      window.dispatchEvent(new CustomEvent('messageReceive', { detail: JSON.stringify(response) }));
+    } catch (error) {
+      console.debug('Could not observe chat response', error);
+    }
+    return streamFallback(response);
+  };
+}
+
 const fetchFallback = window.fetch;
 (window as any).fetchFallback = fetchFallback;
 window.fetch = async (...args) => {
