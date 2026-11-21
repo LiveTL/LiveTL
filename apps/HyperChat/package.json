@@ -51,6 +51,6 @@
     "terser": "^5.19.2",
     "typescript": "4.7.4",
     "vite": "2.9.16",
-    "vite-plugin-web-extension": "^1.4.0"
+    "vite-plugin-web-extension": "^4.5.1"
   }
 }
