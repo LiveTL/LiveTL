@@ -83,7 +83,7 @@
     "tailwindcss": "^2.2.7",
     "ts-jest": "^26.5.5",
     "typescript": "^4.7.4",
-    "vite": "^3.2.4",
+    "vite": "6.4.4",
     "vite-plugin-web-extension": "1.4.5",
     "ws": "^7.5.0",
     "xvfb": "^0.4.0"
