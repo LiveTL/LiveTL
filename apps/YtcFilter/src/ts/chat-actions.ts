@@ -66,3 +66,7 @@ export function handleReplyThreadResponse(response: Chat.replyThreadResponse): v
     pending.reject(new Error(response.error ?? 'Failed to fetch reply thread'));
   }
 }
+
+export function toggleMembershipGifting(port: Chat.Port | null): void {
+  port?.postMessage({ type: 'toggleMembershipGifting' });
+}
