@@ -379,6 +379,13 @@ const executeChatAction = async (
       if (moderationResponse?.error != null || moderationResponse?.success === false) {
         throw new Error('Moderation request failed');
       }
+      const deletion = moderationResponse?.actions?.find(
+        (a: Ytc.Action) => a.markChatItemAsDeletedAction?.targetItemId === message.messageId,
+      );
+      if (deletion) {
+        processSentMessage(JSON.stringify({ actions: [deletion] }));
+        return;
+      }
     } else if (action === ChatUserActions.REPORT_USER) {
       const serviceEndpoint = findServiceEndpoint(res, 'getReportFormEndpoint');
       if (serviceEndpoint == null) {

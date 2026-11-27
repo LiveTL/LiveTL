@@ -300,6 +300,7 @@
     const f = (action: typeof messageActions[number]) => {
       if (isWelcome(action)) return false;
       if (action.message.messageId === deletion.messageId) {
+        if (deletion.pending && action.deleted) return false;
         action.deleted = buildDeletedObj(deletion, action.message.message);
         return true;
       }
