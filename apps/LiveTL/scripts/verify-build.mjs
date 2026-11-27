@@ -28,8 +28,8 @@ for (const [target, mv] of Object.entries(targets)) {
   assert.ok(!serializedManifest.includes('{{'), `${target}: unresolved manifest tag`);
   assert.ok(!serializedManifest.includes('submodules/chat'), `${target}: legacy HyperChat path`);
   assert.ok(
-    serializedManifest.includes('hyperchat/scripts/chat-interceptor.js'),
-    `${target}: missing HyperChat interceptor`,
+    !manifest.content_scripts.some((script) => script.js?.includes('hyperchat/scripts/chat-interceptor.js')),
+    `${target}: duplicate HyperChat interceptor`,
   );
   assert.ok(serializedManifest.includes('hyperchat/scripts/chat-injector.js'), `${target}: missing HyperChat injector`);
 
